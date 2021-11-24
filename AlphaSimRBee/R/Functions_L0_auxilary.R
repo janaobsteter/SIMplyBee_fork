@@ -2,13 +2,12 @@
 
 # Number of colonies----
 #' @rdname nColonies
-#' @method nColonies
 #' @title Returns number of colonies in the colonies object
 #' @usage \method{nColonies}(colonies)
 #' @description Returns the number of colonies present in the colonies object
 #' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -37,13 +36,12 @@ nColonies <- function(colonies) {
 
 # nWorkers----
 #' @rdname nWorkers
-#' @method nWorkers
 #' @title Number of workers present in the colony
 #' @usage \method{nWorkers}(colony)
 #' @description Returns the number of workers present in the colony object
 #' @param colony AlphaSimRBee population object of class "Colony"
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -73,13 +71,12 @@ nWorkers <- function(colony) {
 
 # nDrones----
 #' @rdname nDrones
-#' @method nDrones
 #' @title Number of workers present in the colony
 #' @usage \method{nDrones}(colony)
 #' @description Returns the number of drones present in the colony object
 #' @param colony AlphaSimRBee population object of class "Colony"
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -108,13 +105,12 @@ nDrones <- function(colony) {
 
 # nVirginQueens----
 #' @rdname nVirginQueens
-#' @method nVirginQueens
 #' @title Number of virgin queens present in the colony
 #' @usage \method{nVirginQueens}(colony)
 #' @description Returns the number of virgin queens present in the colony object
 #' @param colony AlphaSimRBee population object of class "Colony"
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -142,14 +138,13 @@ nVirginQueens <- function(colony) {
 
 # nFathers----
 #' @rdname nFathers
-#' @method nFathers
 #' @title Number of fathers queens present in the colony
 #' @usage \method{nFathers}(colony)
 #' @description Returns the number of fathers present in the colony object.
 #' If no queens are present in the colony, no fathers are present and function is returned as 0.
 #' @param colony AlphaSimRBee population object of class "Colony"
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -193,13 +188,12 @@ isQueenMated <- function(x) {
 
 # Extract the queen's year of birth----
 #' @rdname extractQueenYOB
-#' @method extractQueenYOB
 #' @title Extract the queen's year of birth
 #' @usage \method{extractQueenYOB}(colony)
 #' @description Extract the queen's year of birth \code{colony@queen@misc$yearOfBirth} slot
 #' @param colony AlphaSimRBee population object of class "Colony"
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -227,14 +221,13 @@ extractQueenYOB <- function(colony) {
 # Compute the age of the queen----
 
 #' @rdname computeQueenAge
-#' @method computeQueenAge
 #' @title Compute the queen's age in years
 #' @usage \method{computeQueenAge}(colony, year)
 #' @description Compute the age of the queen from the \code{colony@queen@misc$yearOfBirth} slot
 #' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
 #' @param currentYear Integer, current year
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -267,13 +260,12 @@ computeQueenAge <- function(x, currentYear) {
 
 # Get colony IDs from the colonies----
 #' @rdname getIDs
-#' @method getIDs
 #' @title Get the colonies IDs from the colonies
 #' @usage \method{getIDs}(colonies)
 #' @description Get the colony IDs from the colonies
 #' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
 #'
-#' @example
+#' @examples
 #'  #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'

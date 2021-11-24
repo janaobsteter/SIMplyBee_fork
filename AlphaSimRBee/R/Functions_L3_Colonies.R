@@ -3,7 +3,6 @@
 
 # Create  Colonies ----
 #' @rdname createColonies
-#' @method createColonies
 #' @title
 #' @usage \method {createColonies}(..., n)
 #'
@@ -36,7 +35,6 @@ createColonies <- function(..., n = NULL) {
 
 # Add colony to Colonies----
 #' @rdname addColonyToTheColonies
-#' @method addColonyToTheColonies
 #' @title Adds a colony to the group of colonies
 #' @usage \method{addColonyToTheColonies}(colony, colonies)
 #'
@@ -80,7 +78,6 @@ addColonyToTheColonies <- function(colony, Colonies) {
 
 # Select colonies ----
 #' @rdname selectColonies
-#' @method selectColonies
 #' @title Select the colonies from the colony list based on IDs.
 #' @usage \method{selectColonies}(colonies, IDs)
 #'
@@ -90,7 +87,7 @@ addColonyToTheColonies <- function(colony, Colonies) {
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
 
-#' @example inst/examples/examples_selectColonies.R
+#' @examples inst/examples/examples_selectColonies.R
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -136,7 +133,6 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 
 # Pull colonies ----
 #' @rdname pullColonies
-#' @method pullColonies
 #' @title Pull the colonies from the colony list based on IDs.
 #' @usage \method{pullColonies}(colonies,ID, p)
 #'
@@ -148,7 +144,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
 #' @param p Percentage of colonies to pull out of the "colonies" list object
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -200,7 +196,6 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 
 # Remove colonies ----
 #' @rdname removeColonies
-#' @method removeColonies
 #' @title Remove the colonies from the colony list based on IDs.
 #' @usage \method{removeColonies}(colonies, ID)
 #'
@@ -210,7 +205,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -244,7 +239,6 @@ removeColonies <- function(colonies, ID) {
 
 # Create multiple Virgin colonies ----
 #' @rdname createMultipleVirginColonies
-#' @method createMultipleVirginColonies
 #' @title Create a list object of class "colonies" containing only unmated virgin queens
 #' @usage \method{createMultipleVirginColonies}(colonies, ID)
 #'
@@ -256,7 +250,7 @@ removeColonies <- function(colonies, ID) {
 #' @param founderPop The initial founder population
 #' @param nColonies Number of colonies the use wants to create
 #'
-#' @example
+#' @examples
 #' #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -284,7 +278,6 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 
 # Create multiple mated colonies ----
 #' @rdname createMultipleMatedColonies
-#' @method createMultipleMatedColonies
 #' @title Create a list object of class "colonies" containing mated queens, virgin queens and fathers
 #' @usage \method{createMultipleMatedColonies}(founderPop, nColonies, nAvgFathers)
 #'
@@ -296,7 +289,7 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #' @param nColonies Number of colonies the use wants to create
 #' @param nAvgFathers Average number of fathers that mates with a queen
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -334,7 +327,6 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
 #
 # # Build up colonies (add workers and drones)----
 #' @rdname buildUpColonies
-#' @method buildUpColonies
 #' @title  Build up Colonies by adding workers and drones
 #' @usage \method{buildUpColonies}(colonies, nWorkers, nDrones)
 #'
@@ -347,7 +339,7 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
 #' @param nWorkers Desired number of workers wanted in the colonies
 #' @param nDrones Desired number of drones wanted in the colonies
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -381,7 +373,6 @@ buildUpColonies <- function(colonies, nWorkers, nDrones) {
 #
 # # reQueen Colonies----
 #' @rdname reQueenColonies
-#' @method reQueenColonies
 #' @title  reQueen Colonies
 #' @usage \method{reQueenColonies}(colonies, queens)
 #'
@@ -391,7 +382,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones) {
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param queens Selected individuals to insert into the queen slot of the colony object
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -439,7 +430,6 @@ reQueenColonies <- function(colonies, queens) {
 
 # # Collapse the colonies----
 #' @rdname collapseColonies
-#' @method collapseColonies
 #' @title  collapseColonies
 #' @usage \method{collapseColonies}(colonies, ID)
 #'
@@ -448,21 +438,20 @@ reQueenColonies <- function(colonies, queens) {
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
 #'
-#' @example
+#' @examples
 #'
 #' @return An updated AlphaSimRBee Colonies object
 #' @export
 #
-# collapseColonies <- function(colonies, ID) {
-#   return(removeColonies(colonies, ID))
-# }
+collapseColonies <- function(colonies, ID) {
+  return(removeColonies(colonies, ID))
+}
 
 
 
 
 # Supersede the colonies----
 #' @rdname supersedeColonies
-#' @method supersedeColonies
 #' @title  supersedeColonies
 #' @usage \method{supersedeColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
 #'
@@ -476,7 +465,7 @@ reQueenColonies <- function(colonies, queens) {
 #' @param pWorkers
 #' @param pDrones
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -515,7 +504,6 @@ supersedeColonies <- function(colonies
 
 # Swarm the colonies----
 #' @rdname swarmColonies
-#' @method swarmColonies
 #' @title  swarmColonies
 #' @usage \method{swarmColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
 #'
@@ -534,7 +522,7 @@ supersedeColonies <- function(colonies
 #' @param pWorkers
 #' @param pDrones
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -578,7 +566,6 @@ swarmColonies <- function(colonies
 
 # Split the colonies----
 #' @rdname splitColonies
-#' @method splitColonies
 #' @title  splitColonies
 #' @usage \method{splitColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
 #'
@@ -596,7 +583,7 @@ swarmColonies <- function(colonies
 #' @param pWorkers
 #' @param pDrones
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -639,7 +626,6 @@ splitColonies <- function(colonies
 
 # Cross the colonies----
 #' @rdname crossColonies
-#' @method crossColonies
 #' @title  crossColonies
 #' @usage \method{crossColonies}(colonies, DCA, nAvgFathers, crossVirginQueen, fathers, pWorkers, pDrones)
 #'
@@ -656,7 +642,7 @@ splitColonies <- function(colonies
 #' @param DCA
 #' @param nAvgFathers
 #'
-#' @example
+#' @examples
 #' #Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
@@ -698,7 +684,6 @@ crossColonies <- function(colonies, DCA, nAvgFathers
 
 # Set Pheno colonies ----
 #' @rdname setPhenoColonies
-#' @method setPhenoColonies
 #' @title  setPhenoColonies
 #' @usage \method{setPhenoColonies}(colonies, FUN, ...)
 #'
@@ -708,7 +693,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers
 #' @param FUN
 #' @param ...
 #'
-#' @example
+#' @examples
 #' @return An updated AlphaSimRBee Colonies object
 #' @export
 #'
