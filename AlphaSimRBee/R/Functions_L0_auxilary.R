@@ -323,7 +323,7 @@ hasSuperseded <- function(x) {
   }
 }
 
-# Check the production
+# Check the production ----
 isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@production)
@@ -332,4 +332,26 @@ isProductive <- function(x) {
   } else {
     stop("x has to be of class Colony or Colonies")
   }
+}
+
+
+#simulate the HoneyBeeGenome ---- includes csd locus
+simulateHoneyBeeGenome = function(nInd = NULL){
+  founderGenomes = runMacs2(
+    nInd = nInd,
+    nChr = 16,
+    segSites = 1000,
+    Ne = 157598, #based on Wallberg 2014
+    bp = 2.252e+8, #length of whole genome? Based on GenBank Amel_Hv3.1
+    genLen = 34.5,#for full genome (Hunt&Page 1995)
+    mutRate = 9.0e-9, #based on Yang 2015
+    inbred = FALSE,
+    ploidy = 2L
+  )
+  SP = SimParam$new(founderGenomes)
+  GenMap = SP$genMap
+  GenMap[[3]],[86.43:86.50] = 0 # do the percentages need to be the location in the whole genome or just chromomsome 3?
+  SP$switchGenMap(GenMap)
+
+  return(founderGenomes)
 }
