@@ -257,9 +257,9 @@ pullDronesFromDCA = function(DCA, nInd) {
 
 # Pull Drone Packages from DCA----
 
-#' @rdname pullDronePackagesFromDCA
+#' @rdname pullDroneGroupsFromDCA
 #' @title Pulls a drone package from DCA
-#' @usage \method{pullDronePackagesFromDCA}(DCA, n, nAvgFathers)
+#' @usage \method{pullDroneGroupsFromDCA}(DCA, n, nAvgFathers)
 #' @description Pulls the packages of drones from DCA. Each package is then used to cros colonies.
 #'              Number of drones in package is sampled from the Poisson distribution
 #'              with the average = nAvgFathers. Selected drones are removed from DCA.
@@ -290,13 +290,13 @@ pullDronesFromDCA = function(DCA, nInd) {
 #' DCA = createDCA(c(colony1, colony2))
 #'
 #' #pull drone packages from DCA
-#'dronePack = pullDronePackagesFromDCA(DCA, n = 7, nAvgFathers = 19)
+#'dronePack = pullDroneGroupsFromDCA(DCA, n = 7, nAvgFathers = 19)
 #'
 #'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
 #'@export
 #'
 
-pullDronePackagesFromDCA <- function(DCA, n, nAvgFathers) {
+pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
   nFathers = rpois(n = n, lambda = nAvgFathers)
   if (sum(nFathers) > DCA@nInd) {
     stop("Not enough drones in the DCA!")
@@ -393,7 +393,7 @@ pullIndFromCaste = function(colony, caste, nInd) {
 #' DCA = createDCA(c(colony1, colony2))
 #'
 #' #pull drone packages from DCA
-#' dronePack = pullDronePackagesFromDCA(DCA, n = 7, nAvgFathers = 19)
+#' dronePack = pullDroneGroupsFromDCA(DCA, n = 7, nAvgFathers = 19)
 #'
 #'# Cross the virgin queen
 #'

@@ -9,24 +9,24 @@
 #' @description
 #' Creates a new \code{\link{Colonies-class}} from one or more
 #' \code{\link{Colony-class}} and/or \code{\link{Colonies-class}}
-#' objects. 
+#' objects.
 #'
 #' @param ... one or more \code{\link{Colony-class}} and/or
 #' \code{\link{Colonies-class}} objects.
 #' @param n Number of colony-class objects to add to the colonies-class object
-#' 
+#'
 #' @return Returns an empty object of \code{\link{Colonies-class}}
 #'
 #' @examples
 #' # Create founder haplotypes
 #' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Create colonies
 #' apiary1 <- createColonies(n = 10)
 #' @export
@@ -59,22 +59,22 @@ createColonies <- function(..., n = NULL) {
 #' @examples
 #' # Create founder haplotypes
 #' founderPop = quickHaplo(nInd=300, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Creates founder drones
 #' DCA = createFounderDrones(pop[1:100], nDronesPerQueen = 17)
-#' 
+#'
 #' # Create colony
 #' colony1 <- createColony(queen = pop[201], fathers = DCA[1:27])
-#' 
+#'
 #' # Create apiary
 #' apiary1 <- createMultipleMatedColonies(pop[101:200], nColonies = 10, nAvgFathers = 15)
-#' 
+#'
 #' # Add colony to the apiary
 #' apiary1 = addColonyToTheColonies(colony1, apiary1)
 
@@ -102,30 +102,30 @@ addColonyToTheColonies <- function(colony, Colonies) {
 
 #' @examples inst/examples/examples_selectColonies.R
 #'  # Create founder haplotypes
-#' 
+#'
 #' founderPop = quickHaplo(nInd=300, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
-#' 
+#'
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
-#' 
+#'
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Create colonies
-#' 
+#'
 #' founderDrones = createFounderDrones(pop[13:300], nDronesPerQueen = 17)
 #' colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
 #' colony2 = createColony(queen = pop[2], fathers = founderDrones[18:37])
 #' colony3 = createColony(queen = pop[3], fathers = founderDrones[37:51])
-#' 
+#'
 #' # Put the colonies together to the apiary
-#' 
+#'
 #' apiary = c(colony1, colony2, colony3)
-#' 
+#'
 #' # Select colonies
-#' 
+#'
 #' selectedColonies = selectColonies(apiary, ID = c(1,2))
 #'
 #' @return A list of selected colonies.
@@ -164,35 +164,35 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @examples
 #'  # Create founder haplotypes
-#' 
+#'
 #' founderPop = quickHaplo(nInd=300, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
-#' 
+#'
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
-#' 
+#'
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Create colonies
-#' 
+#'
 #' founderDrones = createFounderDrones(pop[13:300], nDronesPerQueen = 17)
 #' colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
 #' colony2 = createColony(queen = pop[2], fathers = founderDrones[18:37])
 #' colony3 = createColony(queen = pop[3], fathers = founderDrones[37:51])
-#' 
+#'
 #' # Put the colonies together to the apiary
-#' 
+#'
 #' apiary = c(colony1, colony2, colony3)
-#' 
+#'
 #' # Pull the selected colonies
-#' 
+#'
 #' pulledColonies = pullColonies(apiary, ID = c(1,2))
-#' 
+#'
 #' apiary = pulledColonies$remainingColonies
 #' pull = pulledColonies$pulledColonies
-#' 
+#'
 #' @return Two lists: a list of selected colonies and an updated input colonies
 #' @export
 #'
@@ -204,7 +204,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     lPull <- as.logical(rbinom(n = nColonies(colonies), size = 2, p = p))
     message(paste0("Pulling out ", sum(lPull), " colonies."))
     if (any(lPull)) {
-      ids <- getIDs(colonies)
+      ids <- getId(colonies)
       pulledColonies <- selectColonies(colonies, ids[lPull])
       remainingColonies <- removeColonies(colonies, ids[lPull])
     } else {
@@ -231,30 +231,30 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @examples
 #' # Create founder haplotypes
-#' 
+#'
 #' founderPop = quickHaplo(nInd=300, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
-#' 
+#'
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
-#' 
+#'
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Create colonies
-#' 
+#'
 #' founderDrones = createFounderDrones(pop[13:300], nDronesPerQueen = 17)
 #' colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
 #' colony2 = createColony(queen = pop[2], fathers = founderDrones[18:37])
 #' colony3 = createColony(queen = pop[3], fathers = founderDrones[37:51])
-#' 
+#'
 #' # Put the colonies together to the apiary
-#' 
+#'
 #' apiary = c(colony1, colony2, colony3)
-#' 
+#'
 #' # Remove colonies
-#' 
+#'
 #' apiary = removeColonies(apiary, ID = c(1,2))
 #'
 #' @return A list of remaining colonies. Updated AlphaSimRBee Colonies object
@@ -341,7 +341,7 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
   DPQMatch <- founderPop@id[!founderPop@id %in% queensID]
   DPQs <- founderPop[DPQMatch]
   DCA <- createFounderDrones(queenPop = DPQs, nDronesPerQueen = 10)
-  fatherPackages <- pullDronePackagesFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
+  fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(
       queen = queens[colony],
@@ -468,32 +468,32 @@ reQueenColonies <- function(colonies, queens) {
 #'
 #' @examples
 #'# Create founder haplotypes
-#' 
+#'
 #' founderPop = quickHaplo(nInd=300, nChr=1, segSites=10)
-#' 
+#'
 #' # Set simulation parameters
-#' 
+#'
 #' SP = SimParam$new(founderPop)
-#' 
+#'
 #' # Create population
-#' 
+#'
 #' pop = newPop(founderPop, simParam=SP)
-#' 
+#'
 #' # Create colonies
-#' 
+#'
 #' founderDrones = createFounderDrones(pop[13:300], nDronesPerQueen = 17)
 #' colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
 #' colony2 = createColony(queen = pop[2], fathers = founderDrones[18:37])
 #' colony3 = createColony(queen = pop[3], fathers = founderDrones[37:51])
-#' 
+#'
 #' # Put the colonies together to the apiary
-#' 
+#'
 #' apiary = c(colony1, colony2, colony3)
-#' 
+#'
 #' # Collapse colonies
-#' 
+#'
 #' apiary = collapseColonies(apiary, ID = c(1,2))
-#' 
+#'
 #' @return An updated AlphaSimRBee Colonies object
 #' @export
 #
@@ -531,17 +531,17 @@ collapseColonies <- function(colonies, ID) {
 #' TODO NOT WORKING EXAMPLE
 #' #Create 10 virgin queen colonies
 #'  apiary1 = createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'  
+#'
 #' # Select colonies for supersedure
-#' 
+#'
 #' coloniesForSupersedure = pullColonies(apiary1, p = 0.1)
 #'
 #' # Supersedure the colonies
 #'
 #' tmp = supersedeColonies(coloniesForSupersedure)
-#' 
+#'
 #' # Put superseded colonies back to the apiary
-#' 
+#'
 #' apiary1 = c(apiary1, tmp)
 #'
 #' @return An updated AlphaSimRBee Colonies object
@@ -599,7 +599,7 @@ supersedeColonies <- function(colonies
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 = buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
 #'
-#'  
+#'
 #'
 #' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
 #' @export
@@ -733,7 +733,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers
   # }
   ret <- createColonies(n = nCol)
   nFathers <- rpois(n = nCol, lambda = nAvgFathers)
-  fatherPackages <- pullDronePackagesFromDCA(DCA, n = nCol, nAvgFathers = nAvgFathers)
+  fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nCol, nAvgFathers = nAvgFathers)
 
   for (colony in 1:nCol) {
     ret@colonies[[colony]] <- crossColony(colonies[[colony]],

@@ -259,9 +259,9 @@ computeQueenAge <- function(x, currentYear) {
 
 
 # Get colony IDs from the colonies----
-#' @rdname getIDs
+#' @rdname getId
 #' @title Get the colonies IDs from the colonies
-#' @usage \method{getIDs}(colonies)
+#' @usage \method{getId}(colonies)
 #' @description Get the colony IDs from the colonies
 #' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
 #'
@@ -279,13 +279,13 @@ computeQueenAge <- function(x, currentYear) {
 #' Apiary1 = createColonies(,n = 10)
 #'
 #' #Get colony IDs from the colonies
-#' getIDs (Apiary1)
+#' getId (Apiary1)
 #'
 
 #' @return Character. Colony IDs
 #' @export
 #'
-getIDs <- function(colonies, ID) {
+getId <- function(colonies, ID) {
   return(sapply(colonies@colonies, FUN = function(x) x@id))
 }
 
