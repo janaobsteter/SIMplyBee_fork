@@ -204,7 +204,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     lPull <- as.logical(rbinom(n = nColonies(colonies), size = 2, p = p))
     message(paste0("Pulling out ", sum(lPull), " colonies."))
     if (any(lPull)) {
-      ids <- getIDs(colonies)
+      ids <- getId(colonies)
       pulledColonies <- selectColonies(colonies, ids[lPull])
       remainingColonies <- removeColonies(colonies, ids[lPull])
     } else {
@@ -341,7 +341,7 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
   DPQMatch <- founderPop@id[!founderPop@id %in% queensID]
   DPQs <- founderPop[DPQMatch]
   DCA <- createFounderDrones(queenPop = DPQs, nDronesPerQueen = 10)
-  fatherPackages <- pullDronePackagesFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
+  fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(
       queen = queens[colony],
@@ -831,7 +831,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers
   # }
   ret <- createColonies(n = nCol)
   nFathers <- rpois(n = nCol, lambda = nAvgFathers)
-  fatherPackages <- pullDronePackagesFromDCA(DCA, n = nCol, nAvgFathers = nAvgFathers)
+  fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nCol, nAvgFathers = nAvgFathers)
 
   for (colony in 1:nCol) {
     ret@colonies[[colony]] <- crossColony(colonies[[colony]],

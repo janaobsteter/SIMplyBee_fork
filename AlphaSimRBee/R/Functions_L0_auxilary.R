@@ -259,9 +259,9 @@ computeQueenAge <- function(x, currentYear) {
 
 
 # Get colony IDs from the colonies----
-#' @rdname getIDs
+#' @rdname getId
 #' @title Get the colonies IDs from the colonies
-#' @usage \method{getIDs}(colonies)
+#' @usage \method{getId}(colonies)
 #' @description Get the colony IDs from the colonies
 #' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
 #'
@@ -279,13 +279,13 @@ computeQueenAge <- function(x, currentYear) {
 #' Apiary1 = createColonies(,n = 10)
 #'
 #' #Get colony IDs from the colonies
-#' getIDs (Apiary1)
+#' getId (Apiary1)
 #'
 
 #' @return Character. Colony IDs
 #' @export
 #'
-getIDs <- function(colonies, ID) {
+getId <- function(colonies, ID) {
   return(sapply(colonies@colonies, FUN = function(x) x@id))
 }
 
@@ -323,7 +323,7 @@ hasSuperseded <- function(x) {
   }
 }
 
-# Check the production
+# Check the production ----
 isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@production)
@@ -332,4 +332,26 @@ isProductive <- function(x) {
   } else {
     stop("x has to be of class Colony or Colonies")
   }
+}
+
+
+#simulate the HoneyBeeGenome ---- includes csd locus
+simulateHoneyBeeGenome = function(nInd = NULL){
+  founderGenomes = runMacs2(
+    nInd = nInd,
+    nChr = 16,
+    segSites = 1000,
+    Ne = 157598, #based on Wallberg 2014
+    bp = 2.252e+8, #length of whole genome? Based on GenBank Amel_Hv3.1
+    genLen = 34.5,#for full genome (Hunt&Page 1995)
+    mutRate = 9.0e-9, #based on Yang 2015
+    inbred = FALSE,
+    ploidy = 2L
+  )
+  SP = SimParam$new(founderGenomes)
+  GenMap = SP$genMap
+  GenMap[[3]],[86.43:86.50] = 0 # do the percentages need to be the location in the whole genome or just chromomsome 3?
+  SP$switchGenMap(GenMap)
+
+  return(founderGenomes)
 }
