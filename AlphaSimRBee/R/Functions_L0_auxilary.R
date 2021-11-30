@@ -174,6 +174,18 @@ nFathers <- function(colony) {
 }
 
 # isQueenMated----
+#' @rdname isQueenMated
+#' @title Is the queen mated?
+#' @usage \method{isQueenMated}(x)
+#' @description
+#' @param x
+#'
+#' @examples
+
+#' @return Logical.
+#'
+#' @export
+
 isQueenMated <- function(x) {
   if ("Pop" %in% class(x)) {
     return(!is.null(x@misc$fathers))
@@ -187,6 +199,7 @@ isQueenMated <- function(x) {
 }
 
 # Extract the queen's year of birth----
+
 #' @rdname extractQueenYOB
 #' @title Extract the queen's year of birth
 #' @usage \method{extractQueenYOB}(colony)
@@ -292,6 +305,18 @@ getId <- function(colonies, ID) {
 
 
 # Check whether the colony has split
+#' @rdname hasSplit
+#' @title Test to see if colony/colonies have split in the current period
+#' @usage \method{hasSplit}(x)
+#' @description
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'
+#' @examples
+
+#' @return
+#'
+#' @export
+
 hasSplit <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@split)
@@ -303,6 +328,18 @@ hasSplit <- function(x) {
 }
 
 # Check whether the colony has swarmed
+#' @rdname hasSwarmed
+#' @title Test to see if colony/colonies have swarmed in the current period
+#' @usage \method{hasSwarmed}(x)
+#' @description
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'
+#' @examples
+
+#' @return
+#'
+#' @export
+
 hasSwarmed <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@swarm)
@@ -313,6 +350,18 @@ hasSwarmed <- function(x) {
   }
 }
 # Check whether the colony has superseded
+#' @rdname hasSuperseded
+#' @title Test to see if colony/colonies have superseded in the current period
+#' @usage \method{hasSuperseded}(x)
+#' @description
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'
+#' @examples
+
+#' @return
+#'
+#' @export
+#'
 hasSuperseded <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@supersedure)
@@ -324,6 +373,20 @@ hasSuperseded <- function(x) {
 }
 
 # Check the production ----
+#' @rdname isProductive
+#' @title Test to see if colony/colonies are currently productive
+#' @usage \method{isProductive}(x)
+#' @description
+#'
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'
+#' @examples
+
+#' @return
+#'
+#' @export
+
+
 isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@production)
@@ -335,7 +398,36 @@ isProductive <- function(x) {
 }
 
 #SimulateHoneyBeeGenomes ----
-           
+#' @rdname simulateHoneyBeeGenomes
+#' @title Simulate the Honey bee genome, including the csd locus
+#' @usage \method{simulateHoneyBeeGenomes}(nInd, nChr, nSegSites, Ne, nBp. genLen,
+#'                                         mutRate, histNe, histGen, split, csdChr,
+#'                                         csdPos, nCsdHaplos, nThreads)
+#'
+#' @description
+#'
+#' @param nInd number of individuals to simulate
+#' @param nChr number of chromosomes to simulate
+#' @param nSegSites number of segregating sites to keep per chromosome
+#' @param Ne effective population size
+#' @param nBp  base pair length of chromosome
+#' @param genLen genetic length of chromosome in Morgans
+#' @param mutRate per base pair mutation rate
+#' @param histNe effective population size in previous generations
+#' @param histGen number of generations ago for effective population sizes given in histNe
+#' @param split an optional historic population split in terms of generations ago
+#' @param csdChr which number chromosome the csd locus is located on
+#' @param csdPos vector. position of the csd locus on the chromosome
+#' @param nCsdHaplos number of possible csd haplotypes
+#' @param nThreads if OpenMP is available, this will allow for simulating chromosomes in parallel.
+#'                 If the value is NULL, the number of threads is automatically detected
+#'
+#' @examples
+
+#' @return
+#'
+#' @export
+
 simulateHoneyBeeGenomes = function(nInd = NULL,
                                    nChr = 16,
                                    nSegSites = 1000,
@@ -365,7 +457,7 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
                                 nChr = nChr,
                                 segSites = nSegSites,
                                 Ne = Ne,
-                                bp = nBp, 
+                                bp = nBp,
                                 genLen = genLen,
                                 mutRate = mutRate,
                                 histNe = histNe,
