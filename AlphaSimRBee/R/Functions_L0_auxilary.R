@@ -334,24 +334,52 @@ isProductive <- function(x) {
   }
 }
 
-
-#simulate the HoneyBeeGenome ---- includes csd locus
-simulateHoneyBeeGenome = function(nInd = NULL){
-  founderGenomes = runMacs2(
-    nInd = nInd,
-    nChr = 16,
-    segSites = 1000,
-    Ne = 157598, #based on Wallberg 2014
-    bp = 2.252e+8, #length of whole genome? Based on GenBank Amel_Hv3.1
-    genLen = 34.5,#for full genome (Hunt&Page 1995)
-    mutRate = 9.0e-9, #based on Yang 2015
-    inbred = FALSE,
-    ploidy = 2L
-  )
-  SP = SimParam$new(founderGenomes)
-  GenMap = SP$genMap
-  GenMap[[3]],[86.43:86.50] = 0 # do the percentages need to be the location in the whole genome or just chromomsome 3?
-  SP$switchGenMap(GenMap)
-
-  return(founderGenomes)
+#SimulateHoneyBeeGenomes ----
+           
+simulateHoneyBeeGenomes = function(nInd = NULL,
+                                   nChr = 16,
+                                   nSegSites = 1000,
+                                   Ne = 157598,  # Wallberg et al. (2014)
+                                   nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
+                                   genLen = 34.5 / 16, # Hunt&Page (1995)
+                                   mutRate = 9.0e-9, # Yang et al. (2015)
+                                   histNe = Ne, # TODO revise and citation
+                                   histGen = 1, # TODO revise and citation
+                                   split = NULL, # TODO revise and citation
+                                   csdChr = 3, # TODO citation
+                                   csdPos = TODO, # TODO citation
+                                   nCsdHaplos = 100, # TODO revise & citation
+                                   nThreads = NULL) {
+  # No of possible haplotypes from n biallelic SNP is 2^n, so we need at least
+  # n seg sites (if 2^n must be at least k, then log2(2^n) = log2(k) = n log2(2);
+  # then n must be at least log2(k) / log2(2) = log2(k))
+  if (!is.null(csdChr) & nSegSites < ceiling(log2(nCsdHaplos))) {
+    stop("You must have at the least ", ceiling(log2(nCsdHaplos)), " segregating sites to simulate ", nCsdHaplos, " csd haplotypes!")
+  }
+  ret = vector(mode = "list", length = 2)
+  names(ret) = c("founderGenomes", "SimParam")
+  # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
+  #       because runMacs2 works only with simple splits, while honenybee demography is more
+  #       "involved"
+  tmp$founderGenomes = runMacs2(nInd = nInd,
+                                nChr = nChr,
+                                segSites = nSegSites,
+                                Ne = Ne,
+                                bp = nBp, 
+                                genLen = genLen,
+                                mutRate = mutRate,
+                                histNe = histNe,
+                                histGen = histGen,
+                                split = split,
+                                inbred = FALSE,
+                                ploidy = 2L,
+                                nThreads = nThreads)
+  if (!is.null(csdChr) {
+    tmp$SP = SimParam$new(founderPop = founderGenomes)
+    genMap = tmp$SP$genMap
+    # TODO on csdPos!
+    genMap[[csdChr]][csdPos] = 0
+    tmp$SP$switchGenMap(genMap = genMap)
+  }
+  return(tmp)
 }
