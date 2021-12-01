@@ -423,7 +423,12 @@ isProductive <- function(x) {
 #'                 If the value is NULL, the number of threads is automatically detected
 #'
 #' @examples
-
+#' tmp = simulateHoneyBeeGenomes(nInd = 1000, ...)
+#' founderGenomes = tmp$founderGenomes
+#' SP = tmp$SP
+#' csd = tmp$csd
+#' rm(tmp)
+#'
 #' @return
 #'
 #' @export
@@ -439,17 +444,20 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
                                    histGen = 1, # TODO revise and citation
                                    split = NULL, # TODO revise and citation
                                    csdChr = 3, # TODO citation
-                                   csdPos = TODO, # TODO citation
+                                   csdPos = 0.865, # TODO citation
                                    nCsdHaplos = 100, # TODO revise & citation
                                    nThreads = NULL) {
   # No of possible haplotypes from n biallelic SNP is 2^n, so we need at least
   # n seg sites (if 2^n must be at least k, then log2(2^n) = log2(k) = n log2(2);
   # then n must be at least log2(k) / log2(2) = log2(k))
-  if (!is.null(csdChr) & nSegSites < ceiling(log2(nCsdHaplos))) {
-    stop("You must have at the least ", ceiling(log2(nCsdHaplos)), " segregating sites to simulate ", nCsdHaplos, " csd haplotypes!")
+  if (!is.null(csdChr)) {
+    nCsdLoci = ceiling(log2(nCsdHaplos))
+    if (nSegSites < nCsdLoci) {
+      stop("You must have at the least ", ceiling(log2(nCsdHaplos)), " segregating sites to simulate ", nCsdHaplos, " csd haplotypes!")
+    }
   }
-  ret = vector(mode = "list", length = 2)
-  names(ret) = c("founderGenomes", "SimParam")
+  ret = vector(mode = "list", length = 3)
+  names(ret) = c("founderGenomes", "SimParam", "csd")
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
@@ -469,9 +477,109 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
   if (!is.null(csdChr) {
     tmp$SP = SimParam$new(founderPop = founderGenomes)
     genMap = tmp$SP$genMap
-    # TODO on csdPos!
-    genMap[[csdChr]][csdPos] = 0
+    csdPosStart = floor(nSegSites * csdPos)
+    csdPosStop = ceiling(csdPos + nCsdLoci - 1)
+    if (csdPosStop > nSegSites) {
+      stop("Too few segregagting sites to simulate so many csd haplotypes at the given position!")
+    }
+    genMap[[csdChr]][csdPosStart:csdPosStop] = 0
     tmp$SP$switchGenMap(genMap = genMap)
+    tmp$csd = list(chr = 3, start = csdPosStart, stop = csdPosStop)
   }
   return(tmp)
 }
+
+
+# getCsdHaplo ----
+#' @rdname getCsdHaplo
+#' @title Get the Haplotypes of the csd locus
+#' @usage \method{getCsdHaplo}(x, csd)
+#'
+#'@param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'@param csd complementary sex determination locus- list with nodes chr, start and stop
+#'
+#' @description
+#'
+#' @examples
+#'
+#' @return
+#'
+#' @export
+
+getCsdHaplo = function(x, csd = NULL) {
+  if (is.null(csd) | !is.list(csd)) {
+    stop("csd must be given and has to be a list with nodes chr, start, and stop")
+  }
+  if ("Pop" %in% class(x)) {
+    ret = pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+  }
+  else if ("Colony" %in% class(x)) {
+    ret = vector(mode = "list", length = 4)
+    names(ret) = c("queen", "virgin_queens", "workers", "drones")
+    ret$queen         = getCsdHaplo(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdHaplo(x = getQueen(x),        csd = csd)
+    ret$virgin_queens = getCsdHaplo(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdHaplo(x = getVirginQueens(x), csd = csd)
+    ret$workers       = getCsdHaplo(x = x@workers,       csd = csd)
+    ret$drones        = getCsdHaplo(x = x@drones,        csd = csd)
+  }
+  else if ("Colonies" %in% class(x)) {
+    ret = lapply(X = x, FUN = getCsdHaplo, csd = csd)
+    names(ret) = c("colonies")
+    ret$colonies   = FUN(x@colonies, csd= csd)
+
+  }
+  else {
+    stop("x must be of class Pop, Colony, or Colonies!")
+  }
+  return(ret)
+}
+
+
+# getCsdGeno ----
+#' @rdname getCsdGeno
+#' @title Get the Genotypes of the csd locus
+#' @usage \method{getCsdGeno}(x, csd)
+#'
+#'@param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#'@param csd complementary sex determination locus- list with nodes chr, start and stop
+#'
+#' @description
+#'
+#' @examples
+#'
+#' @return
+#'
+#' @export
+
+getCsdGeno = function(x, csd = NULL) {
+  if (is.null(csd) | !is.list(csd)) {
+    stop("csd must be given and has to be a list with nodes chr, start, and stop")
+  }
+  if ("Pop" %in% class(x)) {
+    ret = pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+  }
+  else if ("Colony" %in% class(x)) {
+    ret = vector(mode = "list", length = 4)
+    names(ret) = c("queen", "virgin_queens", "workers", "drones")
+    ret$queen         = getCsdGeno(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdGeno(x = getQueen(x),        csd = csd)
+    ret$virgin_queens = getCsdGeno(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdGeno(x = getVirginQueens(x), csd = csd)
+    ret$workers       = getCsdGeno(x = x@workers,       csd = csd)
+    ret$drones        = getCsdGeno(x = x@drones,        csd = csd)
+  }
+  else if ("Colonies" %in% class(x)) {
+    ret = lapply(X = x, FUN = getCsdGeno, csd = csd)
+    names(ret) = c("colonies")
+    ret$colonies      = FUN(x@colonies,   csd = csd)
+  }
+  else {
+    stop("x must be of class Pop, Colony, or Colonies!")
+  }
+  return(ret)
+}
+
+#TODO : add in SimParamBee when it is created
+#getCsdHaplo = function(x, SimParamBee = NULL) {
+  #if (is.null(SimParamBee)) {
+#    SimParamBee = get("SPBee", envir = .GlobalEnv)
+ # }
+  ...
+  # then we would access SimParamBee$csd$chr etc.

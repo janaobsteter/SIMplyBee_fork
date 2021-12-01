@@ -3,7 +3,7 @@
 
 # Create  Colonies ----
 #' @rdname createColonies
-#' @title
+#' @title Create Colonies
 #' @usage \method {createColonies}(..., n)
 #'
 #' @description

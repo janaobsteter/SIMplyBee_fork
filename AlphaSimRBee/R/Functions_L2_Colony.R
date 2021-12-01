@@ -1,4 +1,4 @@
-# Level 2 Colony Fuctions----
+# Level 2 Colony Functions----
 
 
 # Create Colony ----
@@ -167,14 +167,18 @@ setQueenYOB <- function(x, year) {
 #'
 #' @export
 #'
-addWorkers <- function(colony, nInd) {
-  newWorkers <- createWorkers(colony, nInd)
+addWorkers <- function(colony, nWorkers = NULL, ...) {
+  if (is.function(nWorkers)) {
+    nWorkers = nWorkers(colony, ...)
+    }
+  newWorkers <- createWorkers(colony, nWorkers)
   if (!is.null(colony@workers)) {
     colony@workers <- mergePops(list(colony@workers, newWorkers))
-  } else {
+     }
+  else {
     colony@workers <- newWorkers
   }
-  print(paste0(nInd, " workers added to the colony"))
+  print(paste0(nWorkers, "workers added to the colony"))
   return(colony)
 }
 
@@ -212,14 +216,18 @@ addWorkers <- function(colony, nInd) {
 #'
 #' @export
 
-addDrones <- function(colony, nInd) {
-  newDrones <- createDrones(colony, nInd)
+addDrones <- function(colony, nDrones) {
+  if (is.function(nDrones)) {
+    nWorkers = nWorkers(colony, ...)
+  }
+  newDrones <- createDrones(colony, nDrones)
   if (!is.null(colony@drones)) {
     colony@drones <- mergePops(list(colony@drones, newDrones))
-  } else {
+  }
+  else {
     colony@drones <- newDrones
   }
-  print(paste0(nInd, " drones added to the colony"))
+  print(paste0(nDrones, " drones added to the colony"))
   return(colony)
 }
 
@@ -265,13 +273,11 @@ addVirginQueens <- function(colony, nVirginQueens) {
   if (is.null(colony@queen@misc$fathers)) {
     stop("Missing fathers!")
   }
-
   virginQueenPop <- randCross2(
     females = colony@queen,
     males = colony@queen@misc$fathers,
     nCrosses = nVirginQueens
   )
-
   colony@virgin_queens <- virginQueenPop
 
   return(colony)
