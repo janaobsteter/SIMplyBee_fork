@@ -8,16 +8,16 @@
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' # Create an apiary containing 10 colonies
-#' Apiary1 = createColonies(,n = 10)
+#' Apiary1 <- createColonies(,n = 10)
 #'
 #' #Check number of colonies present in the apiary
 #' nColonies(apiary2)
@@ -27,9 +27,10 @@
 #' @export
 nColonies <- function(colonies) {
   if (!"Colonies" %in% class(colonies)) {
-    stop("Argument colonies has to be a class Colonies")
+    stop("Argument colonies must be a Colonies class object!")
   }
-  return(length(colonies@colonies))
+  n <- length(colonies@colonies)
+  return(n)
 }
 
 #' @rdname nWorkers
@@ -40,17 +41,17 @@ nColonies <- function(colonies) {
 #'
 #' @examples
 #' #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
-#' colony1@workers = createWorkers(colony1, nInd = 1000)
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
+#' colony1@workers <- createWorkers(colony1, nInd = 1000)
 #'
 #' Check number of workers in the colony
 #' nWorkers(colony1)
@@ -61,9 +62,9 @@ nColonies <- function(colonies) {
 #'
 nWorkers <- function(colony) {
   if (!"Colony" %in% class(colony)) {
-    stop("colony must be an object of the class Colony")
+    stop("Argument colony must be a Colony class object!")
   }
-  n <- ifelse(!is.null(colony@workers), colony@workers@nInd, 0)
+  n <- ifelse(is.null(colony@workers), 0, colony@workers@nInd)
   return(n)
 }
 
@@ -75,17 +76,17 @@ nWorkers <- function(colony) {
 #'
 #' @examples
 #' #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
-#' colony1@drones = createDrones(colony1, nInd = 100)
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
+#' colony1@drones <- createDrones(colony1, nInd = 100)
 #'
 #' Check number of drones in the colony
 #' nDrones(colony1)
@@ -95,9 +96,9 @@ nWorkers <- function(colony) {
 #' @export
 nDrones <- function(colony) {
   if (!"Colony" %in% class(colony)) {
-    stop("colony must be an object of the class Colony")
+    stop("Argument colony must be a Colony class object!")
   }
-  n <- ifelse(!is.null(colony@drones), colony@drones@nInd, 0)
+  n <- ifelse(is.null(colony@drones), 0, colony@drones@nInd)
   return(n)
 }
 
@@ -109,17 +110,17 @@ nDrones <- function(colony) {
 #'
 #' @examples
 #' #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
-#' colony1@virgin_queens = createVirginQueens(colony1, nInd = 5)
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
+#' colony1@virgin_queens <- createVirginQueens(colony1, nInd = 5)
 #'
 #' Check number of drones in the colony
 #' nVirginQueens(colony1)
@@ -129,9 +130,9 @@ nDrones <- function(colony) {
 #' @export
 nVirginQueens <- function(colony) {
   if (!"Colony" %in% class(colony)) {
-    stop("colony must be an object of the class Colony")
+    stop("Argument colony must be a Colony class object!")
   }
-  n <- ifelse(!is.null(colony@virgin_queens), colony@virgin_queens@nInd, 0)
+  n <- ifelse(is.null(colony@virgin_queens), 0, colony@virgin_queens@nInd)
   return(n)
 }
 
@@ -144,16 +145,16 @@ nVirginQueens <- function(colony) {
 #'
 #' @examples
 #' #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
 #'
 #' Check number of fathers in the colony
 #' nFathers(colony1)
@@ -163,12 +164,12 @@ nVirginQueens <- function(colony) {
 #' @export
 nFathers <- function(colony) {
   if (!"Colony" %in% class(colony)) {
-    stop("colony must be an object of the class Colony")
+    stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
     n <- 0
   } else {
-    n <- ifelse(!is.null(colony@queen@misc$fathers), colony@queen@misc$fathers@nInd, 0)
+    n <- ifelse(is.null(colony@queen@misc$fathers), 0, colony@queen@misc$fathers@nInd)
   }
   return(n)
 }
@@ -185,18 +186,18 @@ nFathers <- function(colony) {
 #'
 #' @export
 isQueenMated <- function(x) {
-  if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
-    stop("Argument must be an object of the class Colony or class Pop")
-  }
   if ("Pop" %in% class(x)) {
-    return(!is.null(x@misc$fathers))
+    ret <- !is.null(x@misc$fathers)
   } else if ("Colony" %in% class(x)) {
     if (!is.null(x@queen)) {
-      return(!is.null(x@queen@misc$fathers))
+      ret <- !is.null(x@queen@misc$fathers)
     } else {
-      return(FALSE)
+      ret <- FALSE
     }
+  } else {
+    stop("Argument x must be a Colony or Pop class object!")
   }
+  return(ret)
 }
 
 #' @rdname extractQueenYOB
@@ -207,16 +208,16 @@ isQueenMated <- function(x) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
 #' setQueenAge(colony, 1)
 #' extractQueenYOB(colony)
 #'
@@ -225,9 +226,10 @@ isQueenMated <- function(x) {
 #' @export
 extractQueenYOB <- function(colony) {
   if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be an object of the class Colony")
+    stop("Argument colony must be a Colony class object!")
   }
-  return(colony@queen@misc$yearOfBirth)
+  year <- colony@queen@misc$yearOfBirth
+  return(year)
 }
 
 #' @rdname computeQueenAge
@@ -239,16 +241,16 @@ extractQueenYOB <- function(colony) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Creates colony
-#' colony1 = createColony(queen = base[1], fathers = base[2:15])
+#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
 #' setQueenAge(colony, year = 1)
 #' extractQueenYOB(colony)
 #' computerQueenAge(colony, currentYear = 5)
@@ -257,16 +259,16 @@ extractQueenYOB <- function(colony) {
 #'
 #' @export
 computeQueenAge <- function(x, currentYear) {
-  if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
-    stop("Argument must be an object of the class Colony or class Pop")
-  }
   if ("Pop" %in% class(x)) {
-    return(currentYear - x@misc$yearOfBirth)
+    ret <- currentYear - x@misc$yearOfBirth
   } else if ("Colony" %in% class(x)) {
     if (!is.null(x@queen)) {
-      return(currentYear - x@queen@misc$yearOfBirth)
+      ret <- currentYear - x@queen@misc$yearOfBirth
     }
+  } else {
+    stop("Argument x must be a Colony or Pop class object!")
   }
+  return(ret)
 }
 
 #' @rdname getId
@@ -277,16 +279,16 @@ computeQueenAge <- function(x, currentYear) {
 #'
 #' @examples
 #'  #Create founder haplotypes
-#' founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
-#' SP = SimParam$new(founderPop)
+#' SP <- SimParam$new(founderPop)
 #'
 #' #Create population
-#' pop = newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop, simParam=SP)
 #'
 #' #Create an apiary containing 10 colonies
-#' Apiary1 = createColonies(,n = 10)
+#' Apiary1 <- createColonies(,n = 10)
 #'
 #' #Get colony IDs from the colonies
 #' getId (Apiary1)
@@ -295,9 +297,10 @@ computeQueenAge <- function(x, currentYear) {
 #' @export
 getId <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
-    stop("Argument colonies must be an object of the class Colonies")
+    stop("Argument colonies must be a Colonies class object!")
   }
-  return(sapply(colonies@colonies, FUN = function(x) x@id))
+  id <- sapply(colonies@colonies, FUN = function(x) x@id)
+  return(id)
 }
 
 #' @rdname hasSplit
@@ -313,12 +316,13 @@ getId <- function(colonies, ID) {
 #' @export
 hasSplit <- function(x) {
   if ("Colony" %in% class(x)) {
-    return(x@split)
+    ret <- x@split
   } else if ("Colonies" %in% class(x)) {
-    sapply(x@colonies, FUN = function(z) z@split)
+    ret <- sapply(x@colonies, FUN = function(z) z@split)
   } else {
-    stop("Argument x must be of class Colony or Colonies")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
+  return(ret)
 }
 
 #' @rdname hasSwarmed
@@ -333,12 +337,13 @@ hasSplit <- function(x) {
 #' @export
 hasSwarmed <- function(x) {
   if ("Colony" %in% class(x)) {
-    return(x@swarm)
+    ret <- x@swarm
   } else if ("Colonies" %in% class(x)) {
-    sapply(x@colonies, FUN = function(z) z@swarm)
+    ret <- sapply(x@colonies, FUN = function(z) z@swarm)
   } else {
-    stop("Argument x must be of class Colony or Colonies")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
+  return(ret)
 }
 
 #' @rdname hasSuperseded
@@ -354,12 +359,13 @@ hasSwarmed <- function(x) {
 #' @export
 hasSuperseded <- function(x) {
   if ("Colony" %in% class(x)) {
-    return(x@supersedure)
+    ret <- x@supersedure
   } else if ("Colonies" %in% class(x)) {
-    sapply(x@colonies, FUN = function(z) z@supersedure)
+    ret <- sapply(x@colonies, FUN = function(z) z@supersedure)
   } else {
-    stop("Argument x must be of class Colony or Colonies")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
+  return(ret)
 }
 
 #' @rdname isProductive
@@ -376,12 +382,13 @@ hasSuperseded <- function(x) {
 #' @export
 isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
-    return(x@production)
+    ret <- x@production
   } else if ("Colonies" %in% class(x)) {
-    sapply(x@colonies, FUN = function(z) z@production)
+    ret <- sapply(x@colonies, FUN = function(z) z@production)
   } else {
-    stop("Argument x must be of class Colony or Colonies")
+    stop("Argument x must be Colony or Colonies class object!")
   }
+  return(ret)
 }
 
 #' @rdname simulateHoneyBeeGenomes
@@ -409,16 +416,16 @@ isProductive <- function(x) {
 #'                 If the value is NULL, the number of threads is automatically detected
 #'
 #' @examples
-#' tmp = simulateHoneyBeeGenomes(nInd = 1000, ...)
-#' founderGenomes = tmp$founderGenomes
-#' SP = tmp$SP
-#' csd = tmp$csd
+#' tmp <- simulateHoneyBeeGenomes(nInd = 1000, ...)
+#' founderGenomes <- tmp$founderGenomes
+#' SP <- tmp$SP
+#' csd <- tmp$csd
 #' rm(tmp)
 #'
 #' @return
 #'
 #' @export
-simulateHoneyBeeGenomes = function(nInd = NULL,
+simulateHoneyBeeGenomes <- function(nInd = NULL,
                                    nChr = 16,
                                    nSegSites = 1000,
                                    Ne = 157598,  # Wallberg et al. (2014)
@@ -436,17 +443,17 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
   # n seg sites (if 2^n must be at least k, then log2(2^n) = log2(k) = n log2(2);
   # then n must be at least log2(k) / log2(2) = log2(k))
   if (!is.null(csdChr)) {
-    nCsdLoci = ceiling(log2(nCsdHaplos))
+    nCsdLoci <- ceiling(log2(nCsdHaplos))
     if (nSegSites < nCsdLoci) {
       stop("You must have at the least ", ceiling(log2(nCsdHaplos)), " segregating sites to simulate ", nCsdHaplos, " csd haplotypes!")
     }
   }
-  ret = vector(mode = "list", length = 3)
-  names(ret) = c("founderGenomes", "SimParam", "csd")
+  ret <- vector(mode = "list", length = 3)
+  names(ret) <- c("founderGenomes", "SimParam", "csd")
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
-  tmp$founderGenomes = runMacs2(nInd = nInd,
+  tmp$founderGenomes <- runMacs2(nInd = nInd,
                                 nChr = nChr,
                                 segSites = nSegSites,
                                 Ne = Ne,
@@ -459,17 +466,17 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
                                 inbred = FALSE,
                                 ploidy = 2L,
                                 nThreads = nThreads)
-  if (!is.null(csdChr) {
-    tmp$SP = SimParam$new(founderPop = founderGenomes)
-    genMap = tmp$SP$genMap
-    csdPosStart = floor(nSegSites * csdPos)
-    csdPosStop = ceiling(csdPos + nCsdLoci - 1)
+  if (!is.null(csdChr)) {
+    tmp$SP <- SimParam$new(founderPop = founderGenomes)
+    genMap <- tmp$SP$genMap
+    csdPosStart <- floor(nSegSites * csdPos)
+    csdPosStop <- ceiling(csdPos + nCsdLoci - 1)
     if (csdPosStop > nSegSites) {
       stop("Too few segregagting sites to simulate so many csd haplotypes at the given position!")
     }
-    genMap[[csdChr]][csdPosStart:csdPosStop] = 0
+    genMap[[csdChr]][csdPosStart:csdPosStop] <- 0
     tmp$SP$switchGenMap(genMap = genMap)
-    tmp$csd = list(chr = 3, start = csdPosStart, stop = csdPosStop)
+    tmp$csd <- list(chr = 3, start = csdPosStart, stop = csdPosStop)
   }
   return(tmp)
 }
@@ -488,29 +495,24 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
 #' @return
 #'
 #' @export
-getCsdHaplo = function(x, csd = NULL) {
+getCsdHaplo <- function(x, csd = NULL) {
   if (is.null(csd) | !is.list(csd)) {
     stop("csd must be given and has to be a list with nodes chr, start, and stop")
   }
   if ("Pop" %in% class(x)) {
-    ret = pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
-  }
-  else if ("Colony" %in% class(x)) {
-    ret = vector(mode = "list", length = 4)
-    names(ret) = c("queen", "virgin_queens", "workers", "drones")
-    ret$queen         = getCsdHaplo(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdHaplo(x = getQueen(x),        csd = csd)
-    ret$virgin_queens = getCsdHaplo(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdHaplo(x = getVirginQueens(x), csd = csd)
-    ret$workers       = getCsdHaplo(x = x@workers,       csd = csd)
-    ret$drones        = getCsdHaplo(x = x@drones,        csd = csd)
-  }
-  else if ("Colonies" %in% class(x)) {
-    ret = lapply(X = x, FUN = getCsdHaplo, csd = csd)
-    names(ret) = getId(x)
-    ret$colonies   = FUN(x@Id, csd= csd)
-
-  }
-  else {
-    stop("Argument x must be of class Pop, Colony, or Colonies!")
+    ret <- pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+  } else if ("Colony" %in% class(x)) {
+    ret <- vector(mode = "list", length = 4)
+    names(ret) <- c("queen", "virgin_queens", "workers", "drones")
+    ret$queen         <- getCsdHaplo(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdHaplo(x = getQueen(x),        csd = csd)
+    ret$virgin_queens <- getCsdHaplo(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdHaplo(x = getVirginQueens(x), csd = csd)
+    ret$workers       <- getCsdHaplo(x = x@workers,       csd = csd)
+    ret$drones        <- getCsdHaplo(x = x@drones,        csd = csd)
+  } else if ("Colonies" %in% class(x)) {
+    ret <- lapply(X = x, FUN = getCsdHaplo, csd = csd)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
@@ -529,28 +531,24 @@ getCsdHaplo = function(x, csd = NULL) {
 #' @return
 #'
 #' @export
-getCsdGeno = function(x, csd = NULL) {
+getCsdGeno <- function(x, csd = NULL) {
   if (is.null(csd) | !is.list(csd)) {
-    stop("csd must be given and has to be a list with nodes chr, start, and stop")
+    stop("Argument csd must be given and has to be a list with nodes chr, start, and stop!")
   }
   if ("Pop" %in% class(x)) {
-    ret = pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
-  }
-  else if ("Colony" %in% class(x)) {
-    ret = vector(mode = "list", length = 4)
-    names(ret) = c("queen", "virgin_queens", "workers", "drones")
-    ret$queen         = getCsdGeno(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdGeno(x = getQueen(x),        csd = csd)
-    ret$virgin_queens = getCsdGeno(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdGeno(x = getVirginQueens(x), csd = csd)
-    ret$workers       = getCsdGeno(x = x@workers,       csd = csd)
-    ret$drones        = getCsdGeno(x = x@drones,        csd = csd)
-  }
-  else if ("Colonies" %in% class(x)) {
-    ret = lapply(X = x, FUN = getCsdGeno, csd = csd)
-    names(ret) = c("colonies")
-    ret$colonies      = FUN(x@colonies,   csd = csd)
-  }
-  else {
-    stop("Argument x must be of class Pop, Colony, or Colonies!")
+    ret <- pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+  } else if ("Colony" %in% class(x)) {
+    ret <- vector(mode = "list", length = 4)
+    names(ret) <- c("queen", "virgin_queens", "workers", "drones")
+    ret$queen         <- getCsdGeno(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdGeno(x = getQueen(x),        csd = csd)
+    ret$virgin_queens <- getCsdGeno(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdGeno(x = getVirginQueens(x), csd = csd)
+    ret$workers       <- getCsdGeno(x = x@workers,       csd = csd)
+    ret$drones        <- getCsdGeno(x = x@drones,        csd = csd)
+  } else if ("Colonies" %in% class(x)) {
+    ret <- lapply(X = x, FUN = getCsdGeno, csd = csd)
+    names(ret) <- c("colonies")
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }

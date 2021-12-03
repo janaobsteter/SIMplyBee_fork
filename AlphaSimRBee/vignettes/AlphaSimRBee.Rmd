@@ -14,6 +14,134 @@ knitr::opts_chunk$set(
 )
 ```
 
+# L0 functions 
+
+nColonies; input colonies; return n
+
+nWorkers; input colony; return n; TODO input Colony or Colonies
+
+nDrones; input colony; return n; TODO input Colony or Colonies
+
+nVirginQueens; input colony; return n; TODO input Colony or Colonies
+
+nFathers; input colony; return n; TODO input Colony or Colonies
+
+isQueenMated; input Pop or colony; return logical; TODO input Colony or Colonies
+
+extractQueenYOB; input colony; return numeric; TODO input Pop, Colony or Colonies
+
+computeQueenAge; input Pop or colony; return numeric; TODO input Pop, Colony or Colonies
+
+getId; input colonies; return character; TODO input Colony or Colonies
+
+hasSplit; input Colony or Colonies; return logical
+
+hasSwarmed; input Colony or Colonies; return logical
+
+hasSuperseded; input Colony or Colonies; return logical
+
+isProductive; input Colony or Colonies; return logical
+
+simulateHoneyBeeGenomes
+
+getCsdHaplo; input Pop; return numeric; TODO input Pop, Colony, or Colonies
+
+getCsdGeno; input Pop; return numeric; TODO input Pop, Colony, or Colonies
+
+# L1 functions
+
+crateFounderDrones; input Pop; return Pop
+
+createWorkers; input Colony; return Pop
+
+createDrones; input Colony; return Pop
+
+createVirginQueens; input Colony; return Pop
+
+createDCA; input Colony or Colonies; return Pop
+
+pullDronesFromDCA; input Pop; return list of 2 Pop
+
+pullDroneGroupsFromDCA; input Pop; list of n Pop
+
+pullIndFromCaste; input Colony; return list of Colony and Pop
+
+crossVirginQueen; input 2 Pop; return Pop
+
+# L2 functions
+
+createColony; input Pop; return Colony
+
+setQueensYOB; input Pop or Colony; return Pop or Colony
+
+addWorkers; input Colony, return Colony
+
+addDrones; input Colony, return Colony
+
+addVirginQueens; input Colony, return Colony
+
+reQueenColony; input Colony, return Colony
+
+buildUpColony; input Colony, return Colony
+
+replaceWorkers; input Colony, return Colony
+
+replaceDrones; input Colony, return Colony
+
+removeWorkers; input Colony, return Colony
+
+removeDrones; input Colony, return Colony
+
+resetEvents; input Colony, return Colony
+
+crossColony; input Colony, return Colony
+
+collapseColony; input Colony, return Colony
+
+swarmColony; input Colony, return list of 2 Colony
+
+supersedeColony; input Colony, return Colony
+
+splitColony; input Colony; return list of 2 Colony
+
+setPhenoColony; input Colony, return Colony
+
+# L3 functions
+
+createColonies; input NULL, Colony, or Colonies; return Colonies
+
+addColonyToTheColonies; input Colony and Colonies; return Colonies; TODO rename to addColony?; swap Colony and Colonies order of arguments
+
+selectColonies; input Colonies; return Colonies
+
+pullColonies; input Colonies; return list of 2 Colonies
+
+removeColonies; input Colonies; return Colonies
+
+createMultipleVirginColonies; input Pop; return Colonies
+
+createMultipleMatedColonies; input Pop; return Colonies
+
+buildUpColonies; input Colonies; return Colonies
+
+replaceWorkersColonies; input Colonies; return Colonies
+
+replaceDronesColonies; input Colonies; return Colonies
+
+reQueenColonies; input Colonies; return Colonies
+
+collapseColonies; input Colonies; return Colonies
+
+supersedeColonies; input Colonies; return Colonies
+
+swarmColonies; input Colonies; return list of 2 Colonies
+
+splitColonies; input Colonies; return list of 2 Colonies
+
+crossColonies; input Colonies; return Colonies
+
+setPhenoColonies; input Colonies; return Colonies
+
 ```{r setup}
 library(AlphaSimRBee)
 ```
