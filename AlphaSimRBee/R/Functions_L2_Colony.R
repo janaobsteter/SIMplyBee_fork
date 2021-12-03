@@ -1,7 +1,5 @@
-# Level 2 Colony Functions----
+# Level 2 Colony Functions
 
-
-# Create Colony ----
 #' @rdname createColony
 #' @title Create a new Colony
 #'
@@ -45,7 +43,6 @@
 #' @return AlphaSim Colony object of class "Colony"
 #'
 #' @export
-
 createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL,
                          workers = NULL, virgin_queens = NULL, fathers = NULL,
                          pheno = NULL, swarm = FALSE, split = FALSE, supersedure = FALSE,
@@ -91,7 +88,6 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
   return(output)
 }
 
-# Set the queen's Year of Birth----
 #' @rdname setQueensYOB
 #' @title Set the queen's year of birth
 #' @usage \method{setQueenYOB}(colony)
@@ -116,7 +112,6 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #' @return AlphaSimRBee Colony object
 #'
 #' @export
-
 setQueenYOB <- function(x, year) {
   if ("Pop" %in% class(x)) {
     x@misc$yearOfBirth <- year
@@ -130,7 +125,6 @@ setQueenYOB <- function(x, year) {
   }
 }
 
-# addWorkers----
 #' @rdname addWorkers
 #' @title Add workers to the colony
 #' @usage \method{addWorkers}(colony, nInd)
@@ -178,8 +172,6 @@ addWorkers <- function(colony, nInd = NULL, ...) {
   return(colony)
 }
 
-
-# addDrones----
 #' @rdname addDrones
 #' @title
 #' @usage \method{addDrones}(colony, nInd)
@@ -211,7 +203,6 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #' @return Updated AlphaSimRBee Colony object
 #'
 #' @export
-
 addDrones <- function(colony, nInd) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -229,8 +220,6 @@ addDrones <- function(colony, nInd) {
   print(paste0(nInd, " drones added to the colony"))
   return(colony)
 }
-
-# addVirginQueens----
 
 #' @rdname addVirginQueens
 #' @title Create additional virgin queens
@@ -264,7 +253,6 @@ addDrones <- function(colony, nInd) {
 #'
 #' @return Updated AlphaSimRBee Colony object
 #' @export
-
 addVirginQueens <- function(colony, nVirginQueens) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -284,7 +272,6 @@ addVirginQueens <- function(colony, nVirginQueens) {
   return(colony)
 }
 
-# # reQueenColony----
 #' @rdname reQueenColony
 #' @title  reQueenColony
 #' @usage \method{reQueenColony}(colony, queen)
@@ -325,7 +312,6 @@ addVirginQueens <- function(colony, nVirginQueens) {
 #'
 #' @return Updated AlphaSimRBee Colony object
 #' @export
-#
 reQueenColony <- function(colony, queen) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
@@ -342,7 +328,6 @@ reQueenColony <- function(colony, queen) {
   return(colony)
 }
 
-# Build up colony (add workers and drones)----
 #' @rdname buildUpColony
 #' @title  buildUpColony
 #' @usage \method{buildUpColony}(colony, nWorkers, nDrones)
@@ -376,7 +361,6 @@ reQueenColony <- function(colony, queen) {
 #' @return Updated AlphaSimRBee Colony object
 #'
 #' @export
-#
 buildUpColony <- function(colony, nWorkers, nDrones) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
@@ -394,7 +378,6 @@ buildUpColony <- function(colony, nWorkers, nDrones) {
   return(colony)
 }
 
-# Replace workers ----
 #' @rdname replaceWorkers
 #' @title Replaces a proportion workers with new workers with new genetic information
 #' @usage \method{replaceWorkers}(colony, p)
@@ -424,7 +407,6 @@ buildUpColony <- function(colony, nWorkers, nDrones) {
 #' @return Updated AlphaSimRBee Colony object
 #'
 #' @export
-
 replaceWorkers <- function(colony, p = 1) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -445,8 +427,6 @@ replaceWorkers <- function(colony, p = 1) {
   return(colony)
 }
 
-
-# Replace drones ----
 #' @rdname replaceDrones
 #' @title Replaces drone with new drone with new genetic information
 #' @usage \method{replaceWorkers}(colony, p)
@@ -476,7 +456,6 @@ replaceWorkers <- function(colony, p = 1) {
 #' @return Updated AlphaSimRBee Colony object
 #'
 #' @export
-
 replaceDrones <- function(colony, p = 1) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -497,9 +476,6 @@ replaceDrones <- function(colony, p = 1) {
   return(colony)
 }
 
-
-
-# removeWorkers----
 #' @rdname removeWorkers
 #' @title Remove selected percentage of workers
 #' @usage \method{removeWorkers}(colony, p)
@@ -512,7 +488,6 @@ replaceDrones <- function(colony, p = 1) {
 #' @examples inst/examples/examples_removeWorkers.R
 #' @return Updated AlphaSimRBee Colony object
 #' @export
-
 removeWorkers <- function(colony, p) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -532,9 +507,6 @@ removeWorkers <- function(colony, p) {
   return(colony)
 }
 
-
-
-# removeDrones----
 #' @rdname removeDrones
 #' @title Remove selected percentage of drones
 #' @usage \method{removeWorkers}(colony, nWorkers)
@@ -547,7 +519,6 @@ removeWorkers <- function(colony, p) {
 #' @examples inst/examples/examples_removeDrones.R
 #' #' @return Updated AlphaSimRBee Colony object
 #' @export
-
 removeDrones <- function(colony, p) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -567,8 +538,6 @@ removeDrones <- function(colony, p) {
   return(colony)
 }
 
-
-# Reset events----
 #' @rdname resetEvents
 #' @title Reset the swarm, split, supersedure events
 #' @usage \method{resetEvents}(colony)
@@ -586,7 +555,6 @@ removeDrones <- function(colony, p) {
 #' @return An updated AlphaSimRBee Colony object
 #'
 #' @export
-#'
 resetEvents <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -597,7 +565,6 @@ resetEvents <- function(colony) {
   return(colony)
 }
 
-# Cross colony----
 #' @rdname crossColony
 #' @title Crosses a colony with a virgin queen to a group of fathers pulled from the DCA.
 #' @usage \method{crossColony}(colony, fathers, nWorkers, nDrones)
@@ -612,12 +579,9 @@ resetEvents <- function(colony) {
 #' @param fathers Pop Class. Father group pulled from the DCA.
 #' @param nWorkers Integer.Number of workers to create
 #' @param nDrones Integer. Number of drones to create
-
-#'
 #' @examples inst/examples/examples_crossColony.R
 #' @return Single AlphaSim population object of a mated colony
 #' @export
-
 crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -649,9 +613,6 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
   return(colony)
 }
 
-
-
-# Collapse of the colony ----
 #' @rdname collapseColony
 #' @title Replicates colony collapse
 #' @usage \method{collapseColony}(colony)
@@ -673,8 +634,6 @@ collapseColony <- function(colony) {
   return(colony)
 }
 
-
-# Swarm colony ----
 #' @rdname swarmColony
 #' @title Replicates the swarming process and produces two colonies.
 #' @usage \method{swarmColony}(colony, pSwarm, crossVirginQueen. fathers, nWorkers, nDrones, swarmLocation)
@@ -686,7 +645,7 @@ collapseColony <- function(colony) {
 #'  a percentage (pSwarm) of the original colonies workers, no drones and a virgin queen is created from the worker population.
 #'  A new location must be given to the new swarm colony.
 #'  The colony that stays contains the remaining workers and drones. A virgin queen is selected from the workers and mated if fathers are present.
-
+#'
 #' @seealso \code{\link[??????]{createColony}}
 #' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
 #' @param pSwarm Integer. Percentage of colony that will swarm
@@ -700,7 +659,6 @@ collapseColony <- function(colony) {
 #' @return Two colonies, one with the new queen and proportion of workers and
 #' one with the old queen and proportion of workers.
 #' @export
-
 swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, pDrones = 1, swarmLocation = NULL) {
   if (!"Colony" %in% class(colony)) {
@@ -754,15 +712,11 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   remnantColony@production <- FALSE
   swarm@production <- FALSE
 
-
   message("Created two colonies.")
 
   return(list(remnant = remnantColony, swarm = swarm))
 }
 
-
-
-# Supersede colony ----
 #' @rdname supersedeColony
 #' @title Replicates a supersedure of the colony and replaces the queen with a virgin queen.
 #' @usage \method{supersedureColony}(colony, crossVirginQueen, fathers, nWorkers, nDrones)
@@ -781,7 +735,6 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 #' @examples inst/examples/examples_supersedeColony.R
 #' @return Single AlphaSim population object of superseded colony
 #' @export
-
 supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
                             pWorkers = 1, pDrones = 1) {
   if (!"Colony" %in% class(colony)) {
@@ -813,7 +766,6 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
   return(colony)
 }
 
-# Split colony----
 #' @rdname splitColony
 #' @title Split the colony in two colonies.
 #' @usage \method{splitColony}(colony, pSplit, newQueen, crossVirginQueen, fathers, nWorkers, nDrones, splitLocation)
@@ -836,7 +788,6 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @examples inst/examples/examples_splitColony.R
 #' @return Two AlphaSim population objects of the split colony and the remaining colony
 #' @export
-
 splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, splitLocation = NULL) {
   if (!"Colony" %in% class(colony)) {
@@ -898,7 +849,7 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   return(list(remnant = colony, split = splitColony))
 }
 
-# Set Pheno colony----
+# TODO
 setPhenoColony <- function(colony, FUN = NULL, ...) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")

@@ -1,6 +1,5 @@
-# Level 0 Auxilary Fuctions----
+# Level 0 Auxiliary Functions
 
-# Number of colonies----
 #' @rdname nColonies
 #' @title Returns number of colonies in the colonies object
 #' @usage \method{nColonies}(colonies)
@@ -26,7 +25,6 @@
 #' @return Integer. Number of colonies present in the colonies AlphaSimRBee object
 #'
 #' @export
-
 nColonies <- function(colonies) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies has to be a class Colonies")
@@ -34,7 +32,6 @@ nColonies <- function(colonies) {
   return(length(colonies@colonies))
 }
 
-# nWorkers----
 #' @rdname nWorkers
 #' @title Number of workers present in the colony
 #' @usage \method{nWorkers}(colony)
@@ -62,7 +59,6 @@ nColonies <- function(colonies) {
 #'
 #' @export
 #'
-
 nWorkers <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -71,8 +67,6 @@ nWorkers <- function(colony) {
   return(n)
 }
 
-
-# nDrones----
 #' @rdname nDrones
 #' @title Number of workers present in the colony
 #' @usage \method{nDrones}(colony)
@@ -99,7 +93,6 @@ nWorkers <- function(colony) {
 #' @return Integer. Number of drones present in the colony AlphaSimRBee object
 #'
 #' @export
-
 nDrones <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -108,8 +101,6 @@ nDrones <- function(colony) {
   return(n)
 }
 
-
-# nVirginQueens----
 #' @rdname nVirginQueens
 #' @title Number of virgin queens present in the colony
 #' @usage \method{nVirginQueens}(colony)
@@ -136,7 +127,6 @@ nDrones <- function(colony) {
 #' @return Integer. Number of virgin queens present in the colony AlphaSimRBee object
 #'
 #' @export
-
 nVirginQueens <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -145,7 +135,6 @@ nVirginQueens <- function(colony) {
   return(n)
 }
 
-# nFathers----
 #' @rdname nFathers
 #' @title Number of fathers queens present in the colony
 #' @usage \method{nFathers}(colony)
@@ -172,7 +161,6 @@ nVirginQueens <- function(colony) {
 #' @return Integer. Number of fathers present in the colony AlphaSimRBee object
 #'
 #' @export
-
 nFathers <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("colony must be an object of the class Colony")
@@ -185,7 +173,6 @@ nFathers <- function(colony) {
   return(n)
 }
 
-# isQueenMated----
 #' @rdname isQueenMated
 #' @title Is the queen mated?
 #' @usage \method{isQueenMated}(x)
@@ -193,11 +180,10 @@ nFathers <- function(colony) {
 #' @param x Undefined argument. Can be a "Pop" class or "Colony" class
 #'
 #' @examples
-
+#'
 #' @return Logical.
 #'
 #' @export
-
 isQueenMated <- function(x) {
   if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
     stop("Argument must be an object of the class Colony or class Pop")
@@ -212,8 +198,6 @@ isQueenMated <- function(x) {
     }
   }
 }
-
-# Extract the queen's year of birth----
 
 #' @rdname extractQueenYOB
 #' @title Extract the queen's year of birth
@@ -239,17 +223,12 @@ isQueenMated <- function(x) {
 #' @return Integer, the year of birth of the queen.
 #'
 #' @export
-#'
 extractQueenYOB <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
   }
   return(colony@queen@misc$yearOfBirth)
 }
-
-
-
-# Compute the age of the queen----
 
 #' @rdname computeQueenAge
 #' @title Compute the queen's age in years
@@ -277,7 +256,6 @@ extractQueenYOB <- function(colony) {
 #' @return Integer, the age of the queen.
 #'
 #' @export
-#'
 computeQueenAge <- function(x, currentYear) {
   if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
     stop("Argument must be an object of the class Colony or class Pop")
@@ -291,8 +269,6 @@ computeQueenAge <- function(x, currentYear) {
   }
 }
 
-
-# Get colony IDs from the colonies----
 #' @rdname getId
 #' @title Get the colonies IDs from the colonies
 #' @usage \method{getId}(colonies)
@@ -315,10 +291,8 @@ computeQueenAge <- function(x, currentYear) {
 #' #Get colony IDs from the colonies
 #' getId (Apiary1)
 #'
-
 #' @return Character. Colony IDs
 #' @export
-#'
 getId <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be an object of the class Colonies")
@@ -326,9 +300,6 @@ getId <- function(colonies, ID) {
   return(sapply(colonies@colonies, FUN = function(x) x@id))
 }
 
-
-
-# Check whether the colony has split
 #' @rdname hasSplit
 #' @title Test to see if colony/colonies have split in the current period
 #' @usage \method{hasSplit}(x)
@@ -336,11 +307,10 @@ getId <- function(colonies, ID) {
 #' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
 #'
 #' @examples
-
+#'
 #' @return
 #'
 #' @export
-
 hasSplit <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@split)
@@ -351,7 +321,6 @@ hasSplit <- function(x) {
   }
 }
 
-# Check whether the colony has swarmed
 #' @rdname hasSwarmed
 #' @title Test to see if colony/colonies have swarmed in the current period
 #' @usage \method{hasSwarmed}(x)
@@ -359,11 +328,9 @@ hasSplit <- function(x) {
 #' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
 #'
 #' @examples
-
 #' @return
 #'
 #' @export
-
 hasSwarmed <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@swarm)
@@ -373,7 +340,7 @@ hasSwarmed <- function(x) {
     stop("Argument x must be of class Colony or Colonies")
   }
 }
-# Check whether the colony has superseded
+
 #' @rdname hasSuperseded
 #' @title Test to see if colony/colonies have superseded in the current period
 #' @usage \method{hasSuperseded}(x)
@@ -381,11 +348,10 @@ hasSwarmed <- function(x) {
 #' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
 #'
 #' @examples
-
+#'
 #' @return
 #'
 #' @export
-#'
 hasSuperseded <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@supersedure)
@@ -396,7 +362,6 @@ hasSuperseded <- function(x) {
   }
 }
 
-# Check the production ----
 #' @rdname isProductive
 #' @title Test to see if colony/colonies are currently productive
 #' @usage \method{isProductive}(x)
@@ -405,12 +370,10 @@ hasSuperseded <- function(x) {
 #' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
 #'
 #' @examples
-
+#'
 #' @return
 #'
 #' @export
-
-
 isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
     return(x@production)
@@ -421,7 +384,6 @@ isProductive <- function(x) {
   }
 }
 
-#SimulateHoneyBeeGenomes ----
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome, including the csd locus
 #' @usage \method{simulateHoneyBeeGenomes}(nInd, nChr, nSegSites, Ne, nBp. genLen,
@@ -456,7 +418,6 @@ isProductive <- function(x) {
 #' @return
 #'
 #' @export
-
 simulateHoneyBeeGenomes = function(nInd = NULL,
                                    nChr = 16,
                                    nSegSites = 1000,
@@ -513,8 +474,6 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
   return(tmp)
 }
 
-
-# getCsdHaplo ----
 #' @rdname getCsdHaplo
 #' @title Get the Haplotypes of the csd locus
 #' @usage \method{getCsdHaplo}(x, csd)
@@ -529,7 +488,6 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
 #' @return
 #'
 #' @export
-
 getCsdHaplo = function(x, csd = NULL) {
   if (is.null(csd) | !is.list(csd)) {
     stop("csd must be given and has to be a list with nodes chr, start, and stop")
@@ -557,8 +515,6 @@ getCsdHaplo = function(x, csd = NULL) {
   return(ret)
 }
 
-
-# getCsdGeno ----
 #' @rdname getCsdGeno
 #' @title Get the Genotypes of the csd locus
 #' @usage \method{getCsdGeno}(x, csd)
@@ -573,7 +529,6 @@ getCsdHaplo = function(x, csd = NULL) {
 #' @return
 #'
 #' @export
-
 getCsdGeno = function(x, csd = NULL) {
   if (is.null(csd) | !is.list(csd)) {
     stop("csd must be given and has to be a list with nodes chr, start, and stop")
@@ -599,11 +554,3 @@ getCsdGeno = function(x, csd = NULL) {
   }
   return(ret)
 }
-
-#TODO : add in SimParamBee when it is created
-#getCsdHaplo = function(x, SimParamBee = NULL) {
-  #if (is.null(SimParamBee)) {
-#    SimParamBee = get("SPBee", envir = .GlobalEnv)
- # }
-  ...
-  # then we would access SimParamBee$csd$chr etc.

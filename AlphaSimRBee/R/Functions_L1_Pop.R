@@ -1,6 +1,4 @@
-#Level 1 Population Fuctions----
-
-# CreateFounderDrones---- NOT FINISED YET
+# Level 1 Pop Functions
 
 #' @rdname crateFounderDrones
 #' @title Creates drones from base population
@@ -26,17 +24,12 @@
 #' @return AlphaSim population object of created drones.
 #'
 #' @export
-# createFounderDrones----
-
 createFounderDrones <- function(pop, nDronesPerQueen) {
   if (!("Pop" %in% class(pop))) {
     stop("Argument pop must be a Pop class object!")
   }
   return(makeDH(pop, nDH = nDronesPerQueen))
 }
-
-
-# createWorkers----
 
 #' @rdname createWorkers
 #' @title Creates workers of the colony
@@ -66,7 +59,6 @@ createFounderDrones <- function(pop, nDronesPerQueen) {
 #' @return AlphaSim population object of created workers.
 #'
 #' @export
-
 createWorkers = function(colony, nInd){
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
@@ -83,9 +75,6 @@ createWorkers = function(colony, nInd){
                          nCrosses = nInd)
   return(workerPop)
 }
-
-
-# createDrones----
 
 #' @rdname createDrones
 #' @title Creates drones of the colony as double haploids
@@ -114,7 +103,6 @@ createWorkers = function(colony, nInd){
 #'
 #' @return AlphaSim population object of created drones.
 #' @export
-
 createDrones = function(colony, nInd){
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
@@ -125,10 +113,6 @@ createDrones = function(colony, nInd){
   dronePop = makeDH(pop = colony@queen, nDH = nInd)
   return(dronePop)
 }
-
-
-
-# createVirginQueens----
 
 #' @rdname createVirginQueens
 #' @title Creates virgin queen
@@ -157,17 +141,12 @@ createDrones = function(colony, nInd){
 #'
 #' @return AlphaSim population object of created virgin queens.
 #' @export
-
 createVirginQueens = function(colony, nInd){
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
   }
   return(createWorkers(colony, nInd = nInd))
 }
-
-
-
-# Create DCA----
 
 #' @rdname createDCA
 #' @title Creates a drone congregation area (DCA) from the list of colonies
@@ -200,7 +179,6 @@ createVirginQueens = function(colony, nInd){
 #'
 #' @return Single AlphaSim population object of drones from the provided colonies.
 #' @export
-
 createDCA = function(colonies) {
   if ("Colonies" %in% class(colonies)) {
     DCA = lapply(X = colonies@colonies, FUN = function(z) z@drones)
@@ -213,10 +191,6 @@ createDCA = function(colonies) {
   print(paste0("Created a DCA with ", DCA@nInd, " drones."))
   return(DCA)
 }
-
-
-
-# pullDronesFromDCA----
 
 #' @rdname pullDronesFromDCA
 #' @title Pulls the drones from the DCA
@@ -254,7 +228,6 @@ createDCA = function(colonies) {
 #' selected drones. The second element is the updated DCA with the selected drones removed.
 #'
 #' @export
-
 pullDronesFromDCA = function(DCA, nInd) {
   if (!"Pop" %in% class(DCA)) {
     stop("Argument DCA must be an object of the class Pop")
@@ -266,11 +239,6 @@ pullDronesFromDCA = function(DCA, nInd) {
   message(paste0("Selected ", nInd, " fathers from DCA"))
   return(list(selectedDrones = selectedDrones, DCA = updatedDCA))
 }
-
-
-
-
-# Pull Drone Packages from DCA----
 
 #' @rdname pullDroneGroupsFromDCA
 #' @title Pulls a drone package from DCA
@@ -309,8 +277,6 @@ pullDronesFromDCA = function(DCA, nInd) {
 #'
 #'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
 #'@export
-#'
-
 pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
   if (!"Pop" %in% class(DCA)) {
     stop("Argument DCA must be an object of the class Pop")
@@ -327,8 +293,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
   }
   return(ret)
 }
-
-# pull Individuals from the caste----
 
 #' @rdname pullIndFromCaste
 #' @title Randomly pulls a number of individuals from any caste group.
@@ -363,7 +327,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
 #'
 #'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
 #'@export
-#'
 pullIndFromCaste = function(colony, caste, nInd) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
@@ -382,8 +345,6 @@ pullIndFromCaste = function(colony, caste, nInd) {
   slot(colony, caste) = indStay
   return(list(colony = colony, pulledInd = indPull))
 }
-
-# Cross the virgin queen----
 
 #' @rdname crossVirginQueen
 #' @title Crosses a virgin queen to a group drones.
@@ -423,7 +384,6 @@ pullIndFromCaste = function(colony, caste, nInd) {
 #'
 #' @return AlphaSim population object of a mated queen
 #' @export
-
 crossVirginQueen = function(virginQueen, fathers) {
   if (!"Pop" %in% class(virginQueen)) {
     stop("Argument virginQueen must be an object of the class Pop")
