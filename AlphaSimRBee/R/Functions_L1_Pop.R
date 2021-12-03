@@ -40,9 +40,9 @@ getQueen <- function(x) {
 }
 
 #' @rdname getFathers
-#' @title Access the fathers
+#' @title Access fathers
 #'
-#' @description Access the fathers (drones the queen mated with)
+#' @description Access fathers (drones the queen mated with)
 #'
 #' @param x Colony or Colonies
 #'
@@ -71,14 +71,56 @@ getQueen <- function(x) {
 #'
 #' @export
 getFathers <- function(x) {
-if ("Colony" %in% class(x)) {
-  ret <- x@queen@misc$fathers
-} else if ("Colonies" %in% class(x)) {
-  ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
-} else {
-  stop("Argument x must be a Colony or Colonies class object!")
+  if ("Colony" %in% class(x)) {
+    ret <- x@queen@misc$fathers
+  } else if ("Colonies" %in% class(x)) {
+    ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
 }
-return(ret)
+
+#' @rdname getVirginQueens
+#' @title Access virgin queens
+#'
+#' @description Access virgin queens
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addVirginQueens(colony1, nVirginQueens = 1)
+#' colony2 <- addVirginQueens(colony1, nVirginQueens = 10)
+#' getVirginQueens(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getVirginQueens(apiary)
+#' getVirginQueens(apiary)[[1]]@id
+#' getVirginQueens(apiary)[[2]]@id
+#'
+#' @return
+#' When \code{x} is Colony then return is Pop, population object with fathers
+#' When \code{x} is Colonies then return is a list of Pop, population objects with fathers
+#'
+#' @export
+getVirginQueens <- function(x) {
+  if ("Colony" %in% class(x)) {
+    ret <- x@virgin_queens
+  } else if ("Colonies" %in% class(x)) {
+    ret <- lapply(X = x@colonies, FUN = function(z) z@virgin_queens)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
 }
 
 #' @rdname crateFounderDrones
