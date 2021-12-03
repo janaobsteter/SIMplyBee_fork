@@ -214,7 +214,7 @@ isQueenMated <- function(x) {
   return(ret)
 }
 
-#' @rdname extractQueenYOB
+#' @rdname extractQueensYOB
 #' @title Extract the queen's year of birth
 #' @usage \method{extractQueenYOB}(colony)
 #' @description Extract the queen's year of birth \code{colony@queen@misc$yearOfBirth} slot
@@ -238,7 +238,7 @@ isQueenMated <- function(x) {
 #' @return Integer, the year of birth of the queen.
 #'
 #' @export
-extractQueenYOB <- function(colony) {
+extractQueensYOB <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -246,7 +246,7 @@ extractQueenYOB <- function(colony) {
   return(year)
 }
 
-#' @rdname computeQueenAge
+#' @rdname computeQueensAge
 #' @title Compute the queen's age in years
 #' @usage \method{computeQueenAge}(colony, year)
 #' @description Compute the age of the queen from the \code{colony@queen@misc$yearOfBirth} slot
@@ -272,7 +272,7 @@ extractQueenYOB <- function(colony) {
 #' @return Integer, the age of the queen.
 #'
 #' @export
-computeQueenAge <- function(x, currentYear) {
+computeQueensAge <- function(x, currentYear) {
   if ("Pop" %in% class(x)) {
     ret <- currentYear - x@misc$yearOfBirth
   } else if ("Colony" %in% class(x)) {
