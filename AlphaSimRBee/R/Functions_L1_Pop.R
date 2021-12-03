@@ -18,7 +18,7 @@
 #' colony <- createColony(queen = basePop[1], fathers = drones)
 #' getQueen(colony)
 #'
-#' @return Pop, population object of created drones.
+#' @return Pop, population object with the queen
 #'
 #' @export
 getQueen <- function(colony) {
@@ -26,6 +26,37 @@ getQueen <- function(colony) {
     stop("Argument colony must be a Colony class object!")
   }
   ret <- colony@queen
+  return(ret)
+}
+
+#' @rdname getFathers
+#' @title Access the fathers
+#'
+#' @description Access the fathers (drones the queen mated with)
+#'
+#' @param colony Colony
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[1], fathers = drones)
+#' getFathers(colony)
+#' getFathers(colony)@id
+#' drones@id
+#'
+#' @return Pop, population object with fathers
+#'
+#' @export
+getFathers <- function(colony) {
+  if (!("Colony" %in% class(colony))) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  ret <- colony@queen@misc$fathers
   return(ret)
 }
 
