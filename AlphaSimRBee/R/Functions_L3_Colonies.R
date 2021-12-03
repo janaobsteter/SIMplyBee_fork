@@ -18,9 +18,11 @@
 #' apiary <- createColonies(n = 10)
 #'
 #' # Create an apiary from two existing colonies
+#' # ... AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
+#' # ... Honeybees
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[1], fathers = drones)
 #' colony2 <- createColony(virgin_queens = basePop[3])
@@ -52,7 +54,7 @@ createColonies <- function(..., n = NULL) {
 #' @param colony Colony, colony that will be added
 #' @param colonies Colonies, set of colonies that will be expanded
 #'
-#' @return Updated AlphaSimRBee Colonies object
+#' @return Expanded \code{\link{Colonies-class}} object
 #'
 #' @examples
 #' # AlphaSimR
@@ -60,7 +62,7 @@ createColonies <- function(..., n = NULL) {
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Drones and colonies
+#' # Honeybees
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
@@ -103,10 +105,12 @@ addColonyToColonies <- function(colonies, colony) {
 #' @return Colonies, selected colonies
 #'
 #' @examples
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
+#' # Honeybees
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #'
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
