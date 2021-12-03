@@ -1,5 +1,34 @@
 # Level 1 Pop Functions
 
+#' @rdname getQueen
+#' @title Access the queen
+#'
+#' @description Access the queen of a colony
+#'
+#' @param colony Colony
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[1], fathers = drones)
+#' getQueen(colony)
+#'
+#' @return Pop, population object of created drones.
+#'
+#' @export
+getQueen <- function(colony) {
+  if (!("Colony" %in% class(colony))) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  ret <- colony@queen
+  return(ret)
+}
+
 #' @rdname crateFounderDrones
 #' @title Creates drones from base population
 #' @usage \method{createFounderDrones}(pop, nDronesPerQueen)
