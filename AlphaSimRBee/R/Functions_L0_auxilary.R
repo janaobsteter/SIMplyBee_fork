@@ -176,13 +176,27 @@ nFathers <- function(colony) {
 
 #' @rdname isQueenMated
 #' @title Is the queen mated?
-#' @usage \method{isQueenMated}(x)
+#'
 #' @description
-#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
+#' When queen is mated, we store drones she mated with (fathers of future progeny)
+#' in the same object to have genetic information for generating future progeny.
+#' This function tests if queen is mated, by testing for the presence of fathers.
+#'
+#' @param x Pop or Colony, queen or colony that will be inspected
 #'
 #' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return Logical.
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[1], fathers = drones)
+#' isQueenMated(colony)
+#' isQueenMated(getQueen(colony))
+#'
+#' @return Logical
 #'
 #' @export
 isQueenMated <- function(x) {
