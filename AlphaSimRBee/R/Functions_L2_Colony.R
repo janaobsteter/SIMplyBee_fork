@@ -96,7 +96,7 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #' @title Set the queen's year of birth
 #' @usage \method{setQueenYOB}(colony)
 #' @description Set the year of birth of the queen in the \code{colony@queen@misc$yearOfBirth} slot
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
 #' @param year Integer, the year of the birth of the queen
 #'
 #' @examples

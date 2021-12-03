@@ -4,10 +4,10 @@
 
 #' @rdname crateFounderDrones
 #' @title Creates drones from base population
-#' @usage \method{createFounderDrones}(queenPop, nDronesPerQueen)
+#' @usage \method{createFounderDrones}(pop, nDronesPerQueen)
 #' @description Creates population of drones from base population.
 #'       \Drones are created as double haploids. Founder drones are used when crating colonies to be used as fathers.
-#' @param queenPop AlphaSimRBee Colony object from the \code{createColony(...)}
+#' @param pop AlphaSimRBee Colony object from the \code{createColony(...)}
 #' @param nDronesPerQueen Integer, number of drones to create
 #'
 #' @examples

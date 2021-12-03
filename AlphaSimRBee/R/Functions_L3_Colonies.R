@@ -1,6 +1,5 @@
 # Level 3 Colonies Functions----
 
-
 # Create  Colonies ----
 #' @rdname createColonies
 #' @title Create Colonies
@@ -82,8 +81,11 @@ createColonies <- function(..., n = NULL) {
 #' @export
 
 addColonyToTheColonies <- function(colony, Colonies) {
-  if (class(colony) != "Colony") {
-    message("The colony parameter is not a Colony object.")
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
+  if (!"Colonies" %in% class(Colonies)) {
+    stop("Argument Colonies must be an object of the class Colonies")
   }
   Colonies@colonies <- append(Colonies@colonies, list(colony))
   return(Colonies)
@@ -132,6 +134,9 @@ addColonyToTheColonies <- function(colony, Colonies) {
 #' @export
 #'
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument colonies must be an object of the class Colonies")
+  }
   if (!is.null(ID)) {
     ret <- colonies[sapply(colonies@colonies, FUN = function(x) x@id %in% ID)]
   } else if (!is.null(p)) {
@@ -188,7 +193,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' # Pull the selected colonies
 #'
-#' pulledColonies = pullColonies(apiary, ID = c(1,2))
+#' pulledColonies = pullColonies(colonies = apiary, ID = c(1,2))
 #'
 #' apiary = pulledColonies$remainingColonies
 #' pull = pulledColonies$pulledColonies
@@ -197,6 +202,9 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @export
 #'
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument colonies must be an object of the class Colonies")
+  }
   if (!is.null(ID)) {
     pulledColonies <- selectColonies(colonies, ID)
     remainingColonies <- removeColonies(colonies, ID)
@@ -261,6 +269,12 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @export
 #'
 removeColonies <- function(colonies, ID) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument colonies must be an object of the class Colonies")
+  }
+  if (!"Pop" %in% class(ID)) {
+    stop("Argument ID must be an object of the class Pop")
+  }
   return(colonies[!sapply(colonies@colonies, FUN = function(x) x@id %in% ID)])
 }
 
@@ -340,7 +354,7 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
   queens <- founderPop[queenMatch]
   DPQMatch <- founderPop@id[!founderPop@id %in% queensID]
   DPQs <- founderPop[DPQMatch]
-  DCA <- createFounderDrones(queenPop = DPQs, nDronesPerQueen = 10)
+  DCA <- createFounderDrones(pop = DPQs, nDronesPerQueen = 10)
   fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(

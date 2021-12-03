@@ -29,7 +29,7 @@
 
 nColonies <- function(colonies) {
   if (!"Colonies" %in% class(colonies)) {
-    stop("colonies has to be a class Colonies")
+    stop("Argument colonies has to be a class Colonies")
   }
   return(length(colonies@colonies))
 }
@@ -64,6 +64,9 @@ nColonies <- function(colonies) {
 #'
 
 nWorkers <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   n <- ifelse(!is.null(colony@workers), colony@workers@nInd, 0)
   return(n)
 }
@@ -98,6 +101,9 @@ nWorkers <- function(colony) {
 #' @export
 
 nDrones <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   n <- ifelse(!is.null(colony@drones), colony@drones@nInd, 0)
   return(n)
 }
@@ -132,6 +138,9 @@ nDrones <- function(colony) {
 #' @export
 
 nVirginQueens <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   n <- ifelse(!is.null(colony@virgin_queens), colony@virgin_queens@nInd, 0)
   return(n)
 }
@@ -165,6 +174,9 @@ nVirginQueens <- function(colony) {
 #' @export
 
 nFathers <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.null(colony@queen)) {
     n <- 0
   } else {
@@ -178,7 +190,7 @@ nFathers <- function(colony) {
 #' @title Is the queen mated?
 #' @usage \method{isQueenMated}(x)
 #' @description
-#' @param x
+#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
 #'
 #' @examples
 
@@ -187,6 +199,9 @@ nFathers <- function(colony) {
 #' @export
 
 isQueenMated <- function(x) {
+  if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
+    stop("Argument must be an object of the class Colony or class Pop")
+  }
   if ("Pop" %in% class(x)) {
     return(!is.null(x@misc$fathers))
   } else if ("Colony" %in% class(x)) {
@@ -226,6 +241,9 @@ isQueenMated <- function(x) {
 #' @export
 #'
 extractQueenYOB <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
   return(colony@queen@misc$yearOfBirth)
 }
 
@@ -237,7 +255,7 @@ extractQueenYOB <- function(colony) {
 #' @title Compute the queen's age in years
 #' @usage \method{computeQueenAge}(colony, year)
 #' @description Compute the age of the queen from the \code{colony@queen@misc$yearOfBirth} slot
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
 #' @param currentYear Integer, current year
 #'
 #' @examples
@@ -261,6 +279,9 @@ extractQueenYOB <- function(colony) {
 #' @export
 #'
 computeQueenAge <- function(x, currentYear) {
+  if ( !any(c("Pop" %in% class(x), "Colony" %in% class(x))) ) {
+    stop("Argument must be an object of the class Colony or class Pop")
+  }
   if ("Pop" %in% class(x)) {
     return(currentYear - x@misc$yearOfBirth)
   } else if ("Colony" %in% class(x)) {
@@ -299,6 +320,9 @@ computeQueenAge <- function(x, currentYear) {
 #' @export
 #'
 getId <- function(colonies, ID) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument colonies must be an object of the class Colonies")
+  }
   return(sapply(colonies@colonies, FUN = function(x) x@id))
 }
 
@@ -323,7 +347,7 @@ hasSplit <- function(x) {
   } else if ("Colonies" %in% class(x)) {
     sapply(x@colonies, FUN = function(z) z@split)
   } else {
-    stop("x has to be of class Colony or Colonies")
+    stop("Argument x must be of class Colony or Colonies")
   }
 }
 
@@ -346,7 +370,7 @@ hasSwarmed <- function(x) {
   } else if ("Colonies" %in% class(x)) {
     sapply(x@colonies, FUN = function(z) z@swarm)
   } else {
-    stop("x has to be of class Colony or Colonies")
+    stop("Argument x must be of class Colony or Colonies")
   }
 }
 # Check whether the colony has superseded
@@ -368,7 +392,7 @@ hasSuperseded <- function(x) {
   } else if ("Colonies" %in% class(x)) {
     sapply(x@colonies, FUN = function(z) z@supersedure)
   } else {
-    stop("x has to be of class Colony or Colonies")
+    stop("Argument x must be of class Colony or Colonies")
   }
 }
 
@@ -393,7 +417,7 @@ isProductive <- function(x) {
   } else if ("Colonies" %in% class(x)) {
     sapply(x@colonies, FUN = function(z) z@production)
   } else {
-    stop("x has to be of class Colony or Colonies")
+    stop("Argument x must be of class Colony or Colonies")
   }
 }
 
@@ -528,7 +552,7 @@ getCsdHaplo = function(x, csd = NULL) {
 
   }
   else {
-    stop("x must be of class Pop, Colony, or Colonies!")
+    stop("Argument x must be of class Pop, Colony, or Colonies!")
   }
   return(ret)
 }
@@ -571,7 +595,7 @@ getCsdGeno = function(x, csd = NULL) {
     ret$colonies      = FUN(x@colonies,   csd = csd)
   }
   else {
-    stop("x must be of class Pop, Colony, or Colonies!")
+    stop("Argument x must be of class Pop, Colony, or Colonies!")
   }
   return(ret)
 }
