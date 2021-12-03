@@ -167,18 +167,18 @@ setQueenYOB <- function(x, year) {
 #'
 #' @export
 #'
-addWorkers <- function(colony, nWorkers = NULL, ...) {
-  if (is.function(nWorkers)) {
-    nWorkers = nWorkers(colony, ...)
+addWorkers <- function(colony, nInd = NULL, ...) {
+  if (is.function(nInd)) {
+    nInd = nInd(colony, ...)
     }
-  newWorkers <- createWorkers(colony, nWorkers)
+  newWorkers <- createWorkers(colony, nInd)
   if (!is.null(colony@workers)) {
     colony@workers <- mergePops(list(colony@workers, newWorkers))
      }
   else {
     colony@workers <- newWorkers
   }
-  print(paste0(nWorkers, "workers added to the colony"))
+  print(paste0(nInd, "workers added to the colony"))
   return(colony)
 }
 
@@ -216,18 +216,18 @@ addWorkers <- function(colony, nWorkers = NULL, ...) {
 #'
 #' @export
 
-addDrones <- function(colony, nDrones) {
-  if (is.function(nDrones)) {
+addDrones <- function(colony, nInd) {
+  if (is.function(nInd)) {
     nWorkers = nWorkers(colony, ...)
   }
-  newDrones <- createDrones(colony, nDrones)
+  newDrones <- createDrones(colony, nInd)
   if (!is.null(colony@drones)) {
     colony@drones <- mergePops(list(colony@drones, newDrones))
   }
   else {
     colony@drones <- newDrones
   }
-  print(paste0(nDrones, " drones added to the colony"))
+  print(paste0(nInd, " drones added to the colony"))
   return(colony)
 }
 

@@ -523,8 +523,8 @@ getCsdHaplo = function(x, csd = NULL) {
   }
   else if ("Colonies" %in% class(x)) {
     ret = lapply(X = x, FUN = getCsdHaplo, csd = csd)
-    names(ret) = c("colonies")
-    ret$colonies   = FUN(x@colonies, csd= csd)
+    names(ret) = getId(x)
+    ret$colonies   = FUN(x@Id, csd= csd)
 
   }
   else {
