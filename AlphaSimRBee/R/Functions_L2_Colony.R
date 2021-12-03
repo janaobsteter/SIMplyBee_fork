@@ -23,22 +23,21 @@
 #' @param last_event Character, the last event of the colony #TODO: WE probably don't need this
 #' @param misc A list, normally empty and exists solely as an open slot available for uses to store extra information about individuals.
 #'
-#'
 #' @return Returns an object of \code{\link{Colony}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # Create founder genomes
+#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 10)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Set simulation parameters
+#' SP <- SimParam$new(founderGenomes)
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' # Create a base population
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony2 <- createColony(virgin_queens = base[16])
+#' # Create two colonies
+#' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
+#' colony2 <- createColony(virgin_queens = basePop[16])
 #'
 #' @return AlphaSim Colony object of class "Colony"
 #'
@@ -56,34 +55,35 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
   if (is.null(id)) {
     if (!is.null(queen)) {
       id <- queen@id
+    } else {
+      id <- NA
     }
   }
   if (!is.null(queen) & !is.null(fathers)) {
-    virgin_queens <- randCross2(
-      females = queen,
-      males = fathers,
-      nCrosses = 1)
+    virgin_queens <- randCross2(females = queen,
+                                males = fathers,
+                                nCrosses = 1)
   }
   if (!is.null(queen)) {
     queen@misc <- list(fathers = fathers, yearOfBirth = yearOfBirth)
   }
   output <- new("Colony",
-    id = as.character(id),
-    location = location,
-    queen = queen,
-    drones = drones,
-    workers = workers,
-    virgin_queens = virgin_queens,
-    pheno = matrix(),
-    # ncol=simParam@nTraits),
-    swarm = swarm,
-    split = split,
-    supersedure = supersedure,
-    collapse = collapse,
-    # rob=rob,
-    production = production,
-    last_event = "new_colony",
-    misc = list()
+                id = as.character(id),
+                location = location,
+                queen = queen,
+                drones = drones,
+                workers = workers,
+                virgin_queens = virgin_queens,
+                pheno = matrix(),
+                # ncol=simParam@nTraits),
+                swarm = swarm,
+                split = split,
+                supersedure = supersedure,
+                collapse = collapse,
+                # rob=rob,
+                production = production,
+                last_event = "new_colony",
+                misc = list()
   )
   return(output)
 }
@@ -538,8 +538,7 @@ removeDrones <- function(colony, p) {
 #' @param colony AlphaSimRBee Colony object.
 #'
 #' @examples
-# TODO----
-# make reset events' example
+#' make reset events' example
 #'
 #' @return An updated AlphaSimRBee Colony object
 #'

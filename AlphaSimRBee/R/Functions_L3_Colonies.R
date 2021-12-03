@@ -1,38 +1,39 @@
 # Level 3 Colonies Functions
 
 #' @rdname createColonies
-#' @title Create Colonies
-#' @usage \method {createColonies}(..., n)
+#' @title Create colonies
 #'
 #' @description
-#' Creates a new \code{\link{Colonies-class}} from one or more
-#' \code{\link{Colony-class}} and/or \code{\link{Colonies-class}}
-#' objects.
+#' Creates a set of colonies
 #'
-#' @param ... one or more \code{\link{Colony-class}} and/or
-#' \code{\link{Colonies-class}} objects.
-#' @param n Number of colony-class objects to add to the colonies-class object
+#' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
+#' or NULL objects.
+#' @param n numeric, number of colonies to create; this argument takes precedence
+#' over \code{...}
 #'
-#' @return Returns an empty object of \code{\link{Colonies-class}}
+#' @return A \code{\link{Colonies-class}} object
 #'
 #' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # Create 10 empty colonies
+#' apiary <- createColonies(n = 10)
 #'
-#' # Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Create an apiary from two existing colonies
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[1], fathers = drones)
+#' colony2 <- createColony(virgin_queens = basePop[3])
+#' apiary2 <- createColonies(colony1, colony2)
+#' # ... an alternative
+#' apiary2 <- c(colony1, colony2)
 #'
-#' # Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Create colonies
-#' apiary1 <- createColonies(n = 10)
 #' @export
 createColonies <- function(..., n = NULL) {
   if (is.null(n)) {
     input <- list(...)
     class <- sapply(input, "class")
-    if (!all(class == "Colony" | class == "Colonies") | all(class == "NULL")) {
+    if (!all("NULL" %in% class | "Colony" %in% class | "Colonies" %in% class)) {
       stop("Arguments have to be a NULL, Colony, or Colonies class object!")
     }
     output <- new("Colonies", colonies = input)
@@ -42,98 +43,98 @@ createColonies <- function(..., n = NULL) {
   return(output)
 }
 
-#' @rdname addColonyToTheColonies
-#' @title Adds a colony to the group of colonies
-#' @usage \method{addColonyToTheColonies}(colony, colonies)
+#' @rdname addColonyToColonies
+#' @title Add a colony to colonies
 #'
-#' @description  Adds a colony object into a grouped colonies object.
-#' For example : A user can use this function to add a new colony to their apiary.
+#' @description Adds a colony to a set of colonies, for example, to add a new
+#' colony to an apiary.
 #'
-#' @param colony AlphaSimRBee Colony object
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param colony Colony, colony that will be added
+#' @param colonies Colonies, set of colonies that will be expanded
+#'
 #' @return Updated AlphaSimRBee Colonies object
 #'
 #' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' # Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' # Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Creates founder drones
-#' DCA <- createFounderDrones(pop[1:100], nDronesPerQueen = 17)
-#'
-#' # Create colony
-#' colony1 <- createColony(queen = pop[201], fathers = DCA[1:27])
-#'
-#' # Create apiary
-#' apiary1 <- createMultipleMatedColonies(pop[101:200], nColonies = 10, nAvgFathers = 15)
+#' # Drones and colonies
+#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
+#' apiary <- c(colony1, colony2)
 #'
 #' # Add colony to the apiary
-#' apiary1 <- addColonyToTheColonies(colony1, apiary1)
+#' apiaryNew <- addColonyToColonies(apiary, colony3)
+#' getId(apiary)
+#' getId(apiaryNew)
+#' # ... and alternative
+#' apiaryNew <- c(apiary, colony3)
+#' getId(apiaryNew)
 #'
-#' @return Updated AlphaSimRBee Colonies object
+#' @return Expanded Colonies object
+#'
 #' @export
-addColonyToTheColonies <- function(colony, Colonies) {
+addColonyToColonies <- function(colonies, colony) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument Colonies must be a Colonies class object!")
+  }
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!"Colonies" %in% class(Colonies)) {
-    stop("Argument Colonies must be a Colonies class object!")
-  }
-  Colonies@colonies <- append(Colonies@colonies, list(colony))
-  return(Colonies)
+  colonies@colonies <- c(colonies@colonies, colony)
+  return(colonies)
 }
 
 #' @rdname selectColonies
-#' @title Select the colonies from the colony list based on IDs.
-#' @usage \method{selectColonies}(colonies, IDs)
+#' @title Select individual colonies from a set of colonies
 #'
-#' @description Select the colonies from the list of all colonies based
-#' on colony IDs and return a list of selected colonies.
+#' @description Select individual colonies from a set of colonies based on colony
+#' index or name
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param ID IDs of "colony" class objects listed in the "colonies" object
-
-#' @examples inst/examples/examples_selectColonies.R
-#'  # Create founder haplotypes
+#' @param colonies Colonies, a set of colonies
+#' @param ID numeric or character, name of a colony (one or more) in
+#' \code{colonies}; note that numeric value is effectively converted to character
+#' - see examples how to select by index
 #'
-#' founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+#' @return Colonies, selected colonies
 #'
-#' # Set simulation parameters
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' SP <- SimParam$new(founderPop)
+#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #'
-#' # Create population
-#'
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Create colonies
-#'
-#' founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#' colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-#'
-#' # Put the colonies together to the apiary
-#'
+#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
 #' apiary <- c(colony1, colony2, colony3)
 #'
-#' # Select colonies
+#' selectColonies(apiary, ID = 4)
+#' selectColonies(apiary, ID = "4")
+#' selectColonies(apiary, ID = c(4, 5))
+#' selectColonies(apiary, ID = c("4", "5"))
 #'
-#' selectedColonies <- selectColonies(apiary, ID = c(1,2))
+#' apiary[1]
+#' apiary[[1]]
+#' apiary["4"]
+#' apiary[["4"]]
+#' getId(apiary[c(1, 2)])
+#' getId(apiary[c("4", "5")])
+#' getId(apiary[c(2, 1)])
+#' getId(apiary[c("5", "4")])
 #'
-#' @return A list of selected colonies.
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
-    ret <- colonies[sapply(colonies@colonies, FUN = function(x) x@id %in% ID)]
+    ret <- colonies[getId(colonies) %in% ID]
   } else if (!is.null(p)) {
     lPull <- as.logical(rbinom(n = nColonies(colonies), size = 2, p = p))
     if (any(lPull)) {

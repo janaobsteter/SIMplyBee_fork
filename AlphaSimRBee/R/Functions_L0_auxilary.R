@@ -295,11 +295,14 @@ computeQueenAge <- function(x, currentYear) {
 #'
 #' @return Character. Colony IDs
 #' @export
-getId <- function(colonies, ID) {
-  if (!"Colonies" %in% class(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+getId <- function(x) {
+  if ("Colony" %in% class(x)) {
+    id <- x@id
+  } else if ("Colonies" %in% class(x)) {
+    id <- sapply(x@colonies, FUN = function(x) x@id)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  id <- sapply(colonies@colonies, FUN = function(x) x@id)
   return(id)
 }
 
