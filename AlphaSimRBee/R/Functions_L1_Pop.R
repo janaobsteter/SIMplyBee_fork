@@ -181,6 +181,64 @@ getWorkers <- function(x, nInd = NULL) {
   return(ret)
 }
 
+#' @rdname getDrones
+#' @title Access drones
+#'
+#' @description Access drones
+#'
+#' @param x Colony or Colonies
+#' @param nInd numeric, number of drones to access
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony2 <- addDrones(colony2, nInd = 20)
+#' getDrones(colony1)
+#' getDrones(colony1)@id
+#' getDrones(colony1, nInd = 2)@id
+#' getDrones(colony1, nInd = 2)@id
+#'
+#' apiary <- c(colony1, colony2)
+#' getDrones(apiary)
+#' getDrones(apiary)[[1]]@id
+#' getDrones(apiary)[[2]]@id
+#'
+#' getDrones(apiary, nInd = 10)
+#' getDrones(apiary, nInd = 10)[[1]]@id
+#' getDrones(apiary, nInd = 10)[[2]]@id
+#'
+#' @return
+#' When \code{x} is Colony then return is Pop, population object with workers
+#' When \code{x} is Colonies then return is a list of Pop, population objects with workers
+#'
+#' @export
+getDrones <- function(x, nInd = NULL) {
+  if ("Colony" %in% class(x)) {
+    if (is.null(nInd)) {
+      ret <- x@drones
+    } else {
+      ret <- selectInd(pop = x@drones, nInd = nInd, use = "rand")
+    }
+  } else if ("Colonies" %in% class(x)) {
+    if (is.null(nInd)) {
+      ret <- lapply(X = x@colonies, FUN = function(z) z@drones)
+    } else {
+      ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@drones, nInd = nInd, use = "rand"))
+    }
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname crateFounderDrones
 #' @title Creates drones from base population
 #' @usage \method{createFounderDrones}(pop, nDronesPerQueen)
