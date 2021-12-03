@@ -169,7 +169,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
   } else {
     colony@workers <- newWorkers
   }
-  message(paste0(nInd, "workers added to the colony"))
+  message(paste0(nInd, " workers added to the colony"))
   return(colony)
 }
 
@@ -223,13 +223,12 @@ addDrones <- function(colony, nInd) {
 
 #' @rdname addVirginQueens
 #' @title Create additional virgin queens
-#' @usage \method{createVirginQueens}(colony, nVirginQueens)
 #'
 #' @description Creates the specified number of virgin queens in the colony
 #'       \by crossing the current queen and the fathers and adds them in
 #'       \ the \code{colony@virgin_queens} slot.
 #' @param colony AlphaSimRBee Colony object
-#' @param nVirginQueens Numeric. Number of virgin queens to create
+#' @param nInd Numeric. Number of virgin queens to create
 #'
 #' @examples
 #' #Create founder haplotypes
@@ -249,23 +248,23 @@ addDrones <- function(colony, nInd) {
 #' colony1 <- addDrones(colony, nInd = 100)
 #'
 #' #Insert 10  virgin queens into the colony
-#' colony1 <- addVirginQueens(colony1, nVirginQueen = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 10)
 #'
 #' @return Updated AlphaSimRBee Colony object
 #' @export
-addVirginQueens <- function(colony, nVirginQueens) {
+addVirginQueens <- function(colony, nInd) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
     stop("Missing queen!")
   }
-  if (is.null(colony@queen@misc$fathers)) {
-    stop("Missing fathers!")
+  if (!isQueenMated(colony)) {
+    stop("Unmated queen!")
   }
-  virginQueenPop <- randCross2(females <- colony@queen,
-                               males <- colony@queen@misc$fathers,
-                               nCrosses <- nVirginQueens)
+  virginQueenPop <- randCross2(females = colony@queen,
+                               males = colony@queen@misc$fathers,
+                               nCrosses = nInd)
   colony@virgin_queens <- virginQueenPop
   return(colony)
 }
