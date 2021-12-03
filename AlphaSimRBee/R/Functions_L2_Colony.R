@@ -56,26 +56,20 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
   if (is.null(simParam)) {
     simParam <- get("SP", envir = .GlobalEnv)
   }
-
   if (is.null(id)) {
     if (!is.null(queen)) {
       id <- queen@id
     }
   }
-
-
   if (!is.null(queen) & !is.null(fathers)) {
     virgin_queens <- randCross2(
       females = queen,
       males = fathers,
-      nCrosses = 1
-    )
+      nCrosses = 1)
   }
-
   if (!is.null(queen)) {
     queen@misc <- list(fathers = fathers, yearOfBirth = yearOfBirth)
   }
-
   output <- new("Colony",
     id = as.character(id),
     location = location,
@@ -94,8 +88,6 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
     last_event = "new_colony",
     misc = list()
   )
-
-
   return(output)
 }
 
@@ -133,7 +125,8 @@ setQueenYOB <- function(x, year) {
     if (!is.null(x@queen)) {
       x@queen@misc$yearOfBirth <- year
       return(x)
-    }
+  } else {
+    stop("Argument x must be of class Pop or Colony")
   }
 }
 
@@ -168,6 +161,9 @@ setQueenYOB <- function(x, year) {
 #' @export
 #'
 addWorkers <- function(colony, nInd = NULL, ...) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.function(nInd)) {
     nInd = nInd(colony, ...)
     }
@@ -217,6 +213,9 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #' @export
 
 addDrones <- function(colony, nInd) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.function(nInd)) {
     nWorkers = nWorkers(colony, ...)
   }
@@ -261,12 +260,15 @@ addDrones <- function(colony, nInd) {
 #' colony1 = addDrones(colony, nInd = 100)
 #'
 #' #Insert 10  virgin queens into the colony
-#' colony1 = addVirginQueens(colony1, nInd = 10)
+#' colony1 = addVirginQueens(colony1, nVirginQueen = 10)
 #'
 #' @return Updated AlphaSimRBee Colony object
 #' @export
 
 addVirginQueens <- function(colony, nVirginQueens) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.null(colony@queen)) {
     stop("Missing queen!")
   }
@@ -279,7 +281,6 @@ addVirginQueens <- function(colony, nVirginQueens) {
     nCrosses = nVirginQueens
   )
   colony@virgin_queens <- virginQueenPop
-
   return(colony)
 }
 
@@ -293,7 +294,7 @@ addVirginQueens <- function(colony, nVirginQueens) {
 #' into the queen-less colony.
 #'
 #' @param colony AlphaSimRBee Colony object
-#' @param queen  Number of queens to add to the queen-less colony/colonies
+#' @param queen  Pop/number of queens to add to the queen-less colony/colonies
 #'
 #' @examples
 #' Create founder haplotypes
@@ -317,15 +318,21 @@ addVirginQueens <- function(colony, nVirginQueens) {
 #' apiary0 <- tmp$splits
 #'
 #' #Create 10 virgin queens from the base population
-#' virginQueens = base[1:10]
+#' virginQueens = base[1]
 #'
 #' #Repopulate the split colonies with virgin queens taken from the base population
-#' apiary0 <- reQueenColonies(apiary0, queens = virginQueens)
+#' apiary0 <- reQueenColonies(apiary0, queen = virginQueens)
 #'
 #' @return Updated AlphaSimRBee Colony object
 #' @export
 #
 reQueenColony <- function(colony, queen) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
+  if (!"Pop" %in% class(queen)) {
+    stop("Argument queen must be an object of the class Pop")
+  }
   if (!isQueenMated(queen)) {
     colony@virgin_queens <- queen
   } else {
@@ -371,6 +378,9 @@ reQueenColony <- function(colony, queen) {
 #' @export
 #
 buildUpColony <- function(colony, nWorkers, nDrones) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
   n <- nWorkers - nWorkers(colony)
   if (n > 0) {
     colony <- addWorkers(colony, nInd = n)
@@ -416,6 +426,9 @@ buildUpColony <- function(colony, nWorkers, nDrones) {
 #' @export
 
 replaceWorkers <- function(colony, p = 1) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   nWorkers <- colony@workers@nInd
   nWorkersReplaced <- round(nWorkers * p)
   if (nWorkersReplaced < nWorkers) {
@@ -429,7 +442,6 @@ replaceWorkers <- function(colony, p = 1) {
       colony@workers <- createWorkers(colony, nWorkersReplaced)
     )
   }
-
   return(colony)
 }
 
@@ -466,6 +478,9 @@ replaceWorkers <- function(colony, p = 1) {
 #' @export
 
 replaceDrones <- function(colony, p = 1) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   nDrones <- colony@drones@nInd
   nDronesReplaced <- round(nDrones * p)
   if (nDronesReplaced < nDrones) {
@@ -499,6 +514,9 @@ replaceDrones <- function(colony, p = 1) {
 #' @export
 
 removeWorkers <- function(colony, p) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (p > 1) {
     stop("p can not be higher than 1")
   } else if (p < 0) {
@@ -511,7 +529,6 @@ removeWorkers <- function(colony, p) {
     nWorkesNew <- round(nWorkers * (1 - p))
     colony@workers <- selectInd(colony@workers, nInd = nWorkersNew, use = "rand")
   }
-
   return(colony)
 }
 
@@ -532,6 +549,9 @@ removeWorkers <- function(colony, p) {
 #' @export
 
 removeDrones <- function(colony, p) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (p > 1) {
     stop("p can not be higher than 1")
   } else if (p < 0) {
@@ -568,6 +588,9 @@ removeDrones <- function(colony, p) {
 #' @export
 #'
 resetEvents <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   colony@swarm <- FALSE
   colony@split <- FALSE
   colony@supersedure <- FALSE
@@ -596,18 +619,21 @@ resetEvents <- function(colony) {
 #' @export
 
 crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
-  if (is.null(colony@virgin_queens)) {
-    stop("No virgin queen!")
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
   }
-
-  if (!is.null(colony@queen)) {
-    stop("Mated queen present!")
+  if (!"Pop" %in% class(fathers)) {
+    stop("Argument fathers must be an object of the class Pop")
   }
-
   if (is.null(fathers)) {
     stop("Missing fathers!")
   }
-
+  if (is.null(colony@virgin_queens)) {
+    stop("No virgin queen!")
+  }
+  if (!is.null(colony@queen)) {
+    stop("Mated queen present!")
+  }
   colony@queen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@id <- colony@queen@id
   colony@queen@misc$fathers <- fathers
@@ -618,7 +644,6 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
   if (nDrones != 0) {
     colony@drones <- createDrones(colony, nDrones)
   }
-
   colony@virgin_queens <- selectInd(colony@workers, nInd = 1, use = "rand")
 
   return(colony)
@@ -641,6 +666,9 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
 #' @export
 #'
 collapseColony <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   colony@collapse <- TRUE
   return(colony)
 }
@@ -675,6 +703,12 @@ collapseColony <- function(colony) {
 
 swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, pDrones = 1, swarmLocation = NULL) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
+  if (!"Pop" %in% class(fathers)) {
+    stop("Argument fathers must be an object of the class Pop")
+  }
   if (is.null(colony@virgin_queens)) {
     stop("Virgin queen not present in the colony, cannot swarm")
   }
@@ -750,6 +784,12 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 
 supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
                             pWorkers = 1, pDrones = 1) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be an object of the class Colony")
+  }
+  if (!"Pop" %in% class(fathers)) {
+    stop("Argument fathers must be an object of the class Pop")
+  }
   if (is.null(colony@queen)) {
     stop("No queen present in the colony!")
   }
@@ -766,7 +806,6 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
     colony <- replaceDrones(colony, pDrones)
     colony@virgin_queens <- createWorkers(colony, 1)
   }
-
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
   colony@production <- TRUE
@@ -800,6 +839,15 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 
 splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, splitLocation = NULL) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
+  if (!"Pop" %in% class(newQueen)) {
+    stop("Argument newQueen must be an object of the class Pop")
+  }
+  if (!"Pop" %in% class(fathers)) {
+    stop("Argument fathers must be an object of the class Pop")
+  }
   nWorkersSplit <- round(colony@workers@nInd * pSplit, 0)
   noWorkersStay <- colony@workers@nInd - nWorkersSplit
   workersSplitId <- sample(x = colony@workers@id, size = nWorkersSplit, replace = FALSE)
@@ -852,6 +900,9 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 
 # Set Pheno colony----
 setPhenoColony <- function(colony, FUN = NULL, ...) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   colony@queen <- setPheno(colony@queen, ...)
   colony@workers <- setPheno(colony@workers, ...)
   colony@drones <- setPheno(colony@drones, ...)

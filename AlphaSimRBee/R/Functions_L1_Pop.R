@@ -29,6 +29,9 @@
 # createFounderDrones----
 
 createFounderDrones <- function(queenPop, nDronesPerQueen) {
+  if (!("Pop" %in% class(queenPop))) {
+    stop("queenPop must be a Pop class object!")
+  }
   return(makeDH(queenPop, nDH = nDronesPerQueen))
 }
 
@@ -65,6 +68,9 @@ createFounderDrones <- function(queenPop, nDronesPerQueen) {
 #' @export
 
 createWorkers = function(colony, nInd){
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.null(colony@queen)) {
     stop("Missing queen!")
   }
@@ -110,6 +116,9 @@ createWorkers = function(colony, nInd){
 #' @export
 
 createDrones = function(colony, nInd){
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (is.null(colony@queen)) {
     stop("Missing queen!")
   }
@@ -150,6 +159,9 @@ createDrones = function(colony, nInd){
 #' @export
 
 createVirginQueens = function(colony, nInd){
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   return(createWorkers(colony, nInd = nInd))
 }
 
@@ -198,7 +210,6 @@ createDCA = function(colonies) {
   } else {
     stop("Argument colonies must be of class Colonies or Colony")
   }
-
   print(paste0("Created a DCA with ", DCA@nInd, " drones."))
   return(DCA)
 }
@@ -245,6 +256,9 @@ createDCA = function(colonies) {
 #' @export
 
 pullDronesFromDCA = function(DCA, nInd) {
+  if (!"Pop" %in% class(DCA)) {
+    stop("DCA must be an object of the class Pop")
+  }
   selectedDronesID = sample(DCA@id, size = nInd, replace = FALSE)
   sel = DCA@id %in% selectedDronesID
   selectedDrones = DCA[sel]
@@ -252,6 +266,7 @@ pullDronesFromDCA = function(DCA, nInd) {
   message(paste0("Selected ", nInd, " fathers from DCA"))
   return(list(selectedDrones = selectedDrones, DCA = updatedDCA))
 }
+
 
 
 
@@ -297,6 +312,9 @@ pullDronesFromDCA = function(DCA, nInd) {
 #'
 
 pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
+  if (!"Pop" %in% class(DCA)) {
+    stop("DCA must be an object of the class Pop")
+  }
   nFathers = rpois(n = n, lambda = nAvgFathers)
   if (sum(nFathers) > DCA@nInd) {
     stop("Not enough drones in the DCA!")
@@ -347,6 +365,9 @@ pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
 #'@export
 #'
 pullIndFromCaste = function(colony, caste, nInd) {
+  if (!"Colony" %in% class(colony)) {
+    stop("colony must be an object of the class Colony")
+  }
   if (nInd > slot(colony, caste)@nInd) {
     stop(paste0("Not enough individuals in ", caste, " ! " ,
                 nInd, " required, but ", slot(colony, caste)@nInd, " available."))
@@ -404,19 +425,21 @@ pullIndFromCaste = function(colony, caste, nInd) {
 #' @export
 
 crossVirginQueen = function(virginQueen, fathers) {
+  if (!"Pop" %in% class(virginQueen)) {
+    stop("Argument virginQueen must be an object of the class Pop")
+  }
+  if (!"Pop" %in% class(fathers)) {
+    stop("Argument fathers must be an object of the class Pop")
+  }
   if (isQueenMated(virginQueen)) {
     stop("The queen is mated already!")
   }
-
   if (is.null(fathers)) {
     stop("Missing fathers!")
   }
-
   if (virginQueen@nInd > 1) {
     stop("#TODO: A function to mate multiple virgin queens at once")
   }
-
   virginQueen@misc$fathers = fathers
-
   return(virginQueen)
 }
