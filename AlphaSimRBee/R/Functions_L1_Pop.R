@@ -1,5 +1,82 @@
 # Level 1 Pop Functions
 
+#' @rdname getCaste
+#' @title Access individuals of a caste
+#'
+#' @description Access individuals of a caste
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' getCaste(colony1, caste = "queen")
+#' getCaste(colony1, caste = "fathers")
+#' getCaste(colony1, caste = "fathers", nInd = 2)
+#' getCaste(colony1, caste = "fathers", nInd = 2)@id
+#' getCaste(colony1, caste = "fathers", nInd = 2)@id
+#'
+#' apiary <- c(colony1, colony2)
+#' getCaste(apiary, caste = "queen")
+#' getCaste(apiary, caste = "queen")[[1]]@id
+#' getCaste(apiary, caste = "queen")[[2]]@id
+#'
+#' getWorkers(apiary, nInd = 10)
+#' getWorkers(apiary, nInd = 10)[[1]]@id
+#' getWorkers(apiary, nInd = 10)[[2]]@id
+#'
+#' @return
+#' When \code{x} is Colony then return is Pop, population object with individuals
+#' When \code{x} is Colonies then return is a list of Pop, population objects with individuals
+#'
+#' @export
+getCaste <- function(x, caste, nInd = NULL) {
+  if ("Colony" %in% class(x)) {
+    if (is.null(nInd)) {
+      if (caste == "fathers") {
+        ret <- x@queen@misc$fathers
+      } else {
+        ret <- slot(x, caste)
+      }
+    } else {
+      if (caste == "fathers") {
+        ret <- selectInd(pop = x@queen@misc$fathers, nInd = nInd, use = "rand")
+      } else {
+        ret <- selectInd(pop = slot(x, caste), nInd = nInd, use = "rand")
+      }
+    }
+  } else if ("Colonies" %in% class(x)) {
+    if (is.null(nInd)) {
+      if (caste == "fathers") {
+        ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
+      } else {
+        ret <- lapply(X = x@colonies, FUN = function(z) slot(z, caste))
+      }
+    } else {
+      if (caste == "fathers") {
+        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@queen@misc$fathers, nInd = nInd, use = "rand"))
+      } else {
+        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = slot(z, caste), nInd = nInd, use = "rand"))
+      }
+    }
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname getQueen
 #' @title Access the queen
 #'
@@ -29,13 +106,7 @@
 #'
 #' @export
 getQueen <- function(x) {
-  if ("Colony" %in% class(x)) {
-    ret <- x@queen
-  } else if ("Colonies" %in% class(x)) {
-    ret <- lapply(X = x@colonies, FUN = function(z) z@queen)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCaste(x, caste = "queen")
   return(ret)
 }
 
@@ -45,7 +116,9 @@ getQueen <- function(x) {
 #' @description Access fathers (drones the queen mated with)
 #'
 #' @param x Colony or Colonies
-#'
+#' @param nInd numeric, number of fathers to access, if NULL all fathers
+#' are accessed, otherwise a random sample
+
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
@@ -70,14 +143,8 @@ getQueen <- function(x) {
 #' When \code{x} is Colonies then return is a list of Pop, population objects with fathers
 #'
 #' @export
-getFathers <- function(x) {
-  if ("Colony" %in% class(x)) {
-    ret <- x@queen@misc$fathers
-  } else if ("Colonies" %in% class(x)) {
-    ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+getFathers <- function(x, nInd = NULL) {
+  ret <- getCaste(x, caste = "fathers", nInd = nInd)
   return(ret)
 }
 
@@ -87,6 +154,8 @@ getFathers <- function(x) {
 #' @description Access virgin queens
 #'
 #' @param x Colony or Colonies
+#' @param nInd numeric, number of virgin queens to access, if NULL all virgin queens
+#' are accessed, otherwise a random sample
 #'
 #' @examples
 #' # AlphaSimR
@@ -101,6 +170,10 @@ getFathers <- function(x) {
 #' colony1 <- addVirginQueens(colony1, nVirginQueens = 1)
 #' colony2 <- addVirginQueens(colony1, nVirginQueens = 10)
 #' getVirginQueens(colony1)
+#' getVirginQueens(colony2)
+#' getVirginQueens(colony2, nInd = 2)
+#' getVirginQueens(colony2, nInd = 2)@id
+#' getVirginQueens(colony2, nInd = 2)@id
 #'
 #' apiary <- c(colony1, colony2)
 #' getVirginQueens(apiary)
@@ -108,18 +181,12 @@ getFathers <- function(x) {
 #' getVirginQueens(apiary)[[2]]@id
 #'
 #' @return
-#' When \code{x} is Colony then return is Pop, population object with fathers
-#' When \code{x} is Colonies then return is a list of Pop, population objects with fathers
+#' When \code{x} is Colony then return is Pop, population object with virgin queens
+#' When \code{x} is Colonies then return is a list of Pop, population objects with virgin queens
 #'
 #' @export
-getVirginQueens <- function(x) {
-  if ("Colony" %in% class(x)) {
-    ret <- x@virgin_queens
-  } else if ("Colonies" %in% class(x)) {
-    ret <- lapply(X = x@colonies, FUN = function(z) z@virgin_queens)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+getVirginQueens <- function(x, nInd = NULL) {
+  ret <- getCaste(x, caste = "virgin_queens", nInd = nInd)
   return(ret)
 }
 
@@ -129,7 +196,8 @@ getVirginQueens <- function(x) {
 #' @description Access workers
 #'
 #' @param x Colony or Colonies
-#' @param nInd numeric, number of workers to access
+#' @param nInd numeric, number of workers to access, if NULL all workers
+#' are accessed, otherwise a random sample
 #'
 #' @examples
 #' # AlphaSimR
@@ -163,21 +231,7 @@ getVirginQueens <- function(x) {
 #'
 #' @export
 getWorkers <- function(x, nInd = NULL) {
-  if ("Colony" %in% class(x)) {
-    if (is.null(nInd)) {
-      ret <- x@workers
-    } else {
-      ret <- selectInd(pop = x@workers, nInd = nInd, use = "rand")
-    }
-  } else if ("Colonies" %in% class(x)) {
-    if (is.null(nInd)) {
-      ret <- lapply(X = x@colonies, FUN = function(z) z@workers)
-    } else {
-      ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@workers, nInd = nInd, use = "rand"))
-    }
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCaste(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
@@ -187,7 +241,8 @@ getWorkers <- function(x, nInd = NULL) {
 #' @description Access drones
 #'
 #' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to access
+#' @param nInd numeric, number of drnes to access, if NULL all drones
+#' are accessed, otherwise a random sample
 #'
 #' @examples
 #' # AlphaSimR
@@ -216,26 +271,12 @@ getWorkers <- function(x, nInd = NULL) {
 #' getDrones(apiary, nInd = 10)[[2]]@id
 #'
 #' @return
-#' When \code{x} is Colony then return is Pop, population object with workers
-#' When \code{x} is Colonies then return is a list of Pop, population objects with workers
+#' When \code{x} is Colony then return is Pop, population object with drones
+#' When \code{x} is Colonies then return is a list of Pop, population objects with drones
 #'
 #' @export
 getDrones <- function(x, nInd = NULL) {
-  if ("Colony" %in% class(x)) {
-    if (is.null(nInd)) {
-      ret <- x@drones
-    } else {
-      ret <- selectInd(pop = x@drones, nInd = nInd, use = "rand")
-    }
-  } else if ("Colonies" %in% class(x)) {
-    if (is.null(nInd)) {
-      ret <- lapply(X = x@colonies, FUN = function(z) z@drones)
-    } else {
-      ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@drones, nInd = nInd, use = "rand"))
-    }
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCaste(x, caste = "drones", nInd = nInd)
   return(ret)
 }
 
@@ -544,7 +585,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
 #' @seealso \code{\link[??????]{pullIndFromCaste}}
 #' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
 #' @param caste Character. Replicating the caste class structure present in the hive (queen, drones, workers etc)
-#' @param nInd Integer. Number of individuals to be pulled from the caste
+#' @param nInd Integer. Number of individuals to be pulled from the caste; if NULL
+#' all individuals are pulled
 #'
 #' @examples inst/examples/examples_pullIndFromCaste.R
 #' Create founder haplotypes
@@ -567,12 +609,14 @@ pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
 #' indDrone <- pullIndFromCaste(colony1, caste = 'drones', nInd = 1)
 #'
 #'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
-#'@export
-pullIndFromCaste <- function(colony, caste, nInd) {
+pullIndFromCaste <- function(colony, caste, nInd = NULL) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (nInd > slot(colony, caste)@nInd) {
+  if (is.nul(nInd)) {
+    nInd <- nInd(slot(colony, caste))
+  }
+  if (nInd > nInd(slot(colony, caste))) {
     stop(paste0("Not enough individuals in ", caste, " ! " ,
                 nInd, " required, but only ", slot(colony, caste)@nInd, " available."))
   }
