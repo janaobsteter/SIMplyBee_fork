@@ -24,19 +24,19 @@ occur.
 }
 \examples{
 #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-base = newPop(founderPop, simParam=SP)
+base <- newPop(founderPop, simParam=SP)
 
 #Create 10 mated colonies from the base population
-apiary1 = createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
+apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
 
 #Build-up the colonies
-colonyFullSize = 500
-apiary1 = buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+colonyFullSize <- 500
+apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
 
 }

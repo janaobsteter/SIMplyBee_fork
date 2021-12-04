@@ -2,34 +2,34 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nFathers}
 \alias{nFathers}
-\title{Number of fathers queens present in the colony}
+\title{Number of fathers in a colony}
 \usage{
-\method{nFathers}(colony)
+nFathers(x)
 }
 \arguments{
-\item{colony}{AlphaSimRBee population object of class "Colony"}
+\item{x}{Colony or Colonies}
 }
 \value{
-Integer. Number of fathers present in the colony AlphaSimRBee object
+Integer, named by colony id when \code{x} is Colonies
 }
 \description{
-Returns the number of fathers present in the colony object.
-If no queens are present in the colony, no fathers are present and function is returned as 0.
+Returns the number of nFathers (drones the queen mated with) in
+a colony
 }
 \examples{
-#' #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
-
-#Create population
-pop = newPop(founderPop, simParam=SP)
-
-#Creates colony
-colony1 = createColony(queen = base[1], fathers = base[2:15])
-
-Check number of fathers in the colony
+# Honeybees
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
 nFathers(colony1)
+nFathers(colony2)
+
+apiary <- c(colony1, colony2)
+nFathers(apiary)
 
 }

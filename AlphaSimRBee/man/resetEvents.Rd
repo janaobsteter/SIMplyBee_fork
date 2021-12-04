@@ -17,6 +17,3 @@ Reset the slots swarm, split and supersedure to FALSE.
 A user will use this function at the end of a yearly cycle to reset the events,
 allowing the user to track the events of the current year without overlap.
 }
-\examples{
-
-}

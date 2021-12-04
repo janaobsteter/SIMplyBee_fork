@@ -20,29 +20,29 @@ For example: this can be used to re-queen swarmed or split colonies where no que
 }
 \examples{
 #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-base = newPop(founderPop, simParam=SP)
+base <- newPop(founderPop, simParam=SP)
 
 #Create 10 virgin queen colonies
- apiary1 = createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+ apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 
 #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 = buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+ apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
 
  #Split all the colonies
- tmp = splitColonies(apiary1)
- apiary1 = tmp$remnants
- splitcolonies = tmp$splits
+ tmp <- splitColonies(apiary1)
+ apiary1 <- tmp$remnants
+ splitcolonies <- tmp$splits
 
  #Create 10 virgin queens
- virginQueens = createVirginQueens(apiary1[[10]], nColonies(splitcolonies))
+ virginQueens <- createVirginQueens(apiary1[[10]], nColonies(splitcolonies))
 
  # Requeen the splits
- splitcolonies = reQueenColonies(splitcolonies, queens = virginQueens)
+ splitcolonies <- reQueenColonies(splitcolonies, queens = virginQueens)
 
 }

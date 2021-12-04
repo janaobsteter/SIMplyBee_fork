@@ -64,17 +64,17 @@ The function is intended for creating initial colonies from
 'FOUNDERPOP' created by \code{\link{runMacs}}.
 }
 \examples{
-#Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+# Create founder genomes
+founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 10)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
+# Set simulation parameters
+SP <- SimParam$new(founderGenomes)
 
-#Create population
-pop = newPop(founderPop, simParam=SP)
+# Create a base population
+basePop <- newPop(founderGenomes)
 
-#Creates colony
-colony1 = createColony(queen = base[1], fathers = base[2:15])
-colony2 = createColony(virgin_queens = base[16])
+# Create two colonies
+colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
+colony2 <- createColony(virgin_queens = basePop[16])
 
 }

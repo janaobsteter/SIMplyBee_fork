@@ -21,19 +21,19 @@ combine the newly created and the existing drones The function returns the updat
 }
 \examples{
 Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-pop = newPop(founderPop, simParam=SP)
+pop <- newPop(founderPop, simParam=SP)
 
 #Creates colony with queen and fathers
-colony1 = createColony(queen = base[1], fathers = base[2:15])
+colony1 <- createColony(queen = base[1], fathers = base[2:15])
 
 #Insert workers and drones into the colony
-colony1 = addWorkers(colony1, nInd = 2000)
-colony1 = addDrones(colony, nInd = 100)
+colony1 <- addWorkers(colony1, nInd = 2000)
+colony1 <- addDrones(colony, nInd = 100)
 
 }

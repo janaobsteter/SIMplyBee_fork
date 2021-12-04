@@ -4,12 +4,12 @@
 \alias{addVirginQueens}
 \title{Create additional virgin queens}
 \usage{
-\method{createVirginQueens}(colony, nVirginQueens)
+addVirginQueens(colony, nInd)
 }
 \arguments{
 \item{colony}{AlphaSimRBee Colony object}
 
-\item{nVirginQueens}{Numeric. Number of virgin queens to create}
+\item{nInd}{Numeric. Number of virgin queens to create}
 }
 \value{
 Updated AlphaSimRBee Colony object
@@ -21,22 +21,22 @@ Creates the specified number of virgin queens in the colony
 }
 \examples{
 #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-pop = newPop(founderPop, simParam=SP)
+pop <- newPop(founderPop, simParam=SP)
 
 #Creates colony with queen and fathers
-colony1 = createColony(queen = base[1], fathers = base[2:15])
+colony1 <- createColony(queen = base[1], fathers = base[2:15])
 
 #Insert workers and drones into the colony
-colony1 = addWorkers(colony1, nInd = 2000)
-colony1 = addDrones(colony, nInd = 100)
+colony1 <- addWorkers(colony1, nInd = 2000)
+colony1 <- addDrones(colony, nInd = 100)
 
 #Insert 10  virgin queens into the colony
-colony1 = addVirginQueens(colony1, nInd = 10)
+colony1 <- addVirginQueens(colony1, nInd = 10)
 
 }

@@ -20,19 +20,19 @@ Creates the specified number of drones in the colony
 }
 \examples{
 # Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-pop = newPop(founderPop, simParam=SP)
+pop <- newPop(founderPop, simParam=SP)
 
 #Creates colony
-founderDrones = createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
+founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
+colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
 
 #Create drones
-colony1@drones = createDrones(colony1, nInd = 200)
+colony1@drones <- createDrones(colony1, nInd = 200)
 
 }

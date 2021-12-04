@@ -2,34 +2,35 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nVirginQueens}
 \alias{nVirginQueens}
-\title{Number of virgin queens present in the colony}
+\title{Number of virgin queens in a colony}
 \usage{
-\method{nVirginQueens}(colony)
+nVirginQueens(x)
 }
 \arguments{
-\item{colony}{AlphaSimRBee population object of class "Colony"}
+\item{x}{Colony or Colonies}
 }
 \value{
-Integer. Number of virgin queens present in the colony AlphaSimRBee object
+Integer, named by colony id when \code{x} is Colonies
 }
 \description{
-Returns the number of virgin queens present in the colony object
+Returns the number of virgin queens in a colony
 }
 \examples{
-#' #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
-
-#Create population
-pop = newPop(founderPop, simParam=SP)
-
-#Creates colony
-colony1 = createColony(queen = base[1], fathers = base[2:15])
-colony1@virgin_queens = createVirginQueens(colony1, nInd = 5)
-
-Check number of drones in the colony
+# Honeybees
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addVirginQueens(colony1, nInd = 3)
+colony2 <- addVirginQueens(colony2, nInd = 5)
 nVirginQueens(colony1)
+nVirginQueens(colony2)
+
+apiary <- c(colony1, colony2)
+nVirginQueens(apiary)
 
 }

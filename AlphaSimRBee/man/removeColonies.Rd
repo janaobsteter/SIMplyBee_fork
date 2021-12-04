@@ -19,27 +19,31 @@ Remove the colonies from the list of all colonies based
 on colony IDs and return a list of remaining colonies.
 }
 \examples{
-#' #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+# Create founder haplotypes
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
+founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
 
-#Create population
-base = newPop(founderPop, simParam=SP)
+# Set simulation parameters
 
-#Create an apiary with 10 mated colonies (contains only queens, fathers and virgin queens)
-apiary1 = createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
+SP <- SimParam$new(founderPop)
 
-#Build up the colonies to full size by adding workers and drones (drones are 1/10 size of workers)
-colonyFullSize = 1000
-apiary1 = buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+# Create population
 
-#Check colony IDs in colony
-apiary@colonies
+pop <- newPop(founderPop, simParam=SP)
 
-#Remove colonies with IDs 8, 40 and 45
-apiary1 = removeColonies(apiary1, ID = c(8,40,45))
+# Create colonies
 
+founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
+colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
+colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
+
+# Put the colonies together to the apiary
+
+apiary <- c(colony1, colony2, colony3)
+
+# Remove colonies
+
+apiary <- removeColonies(apiary, ID = c(1,2))
 
 }

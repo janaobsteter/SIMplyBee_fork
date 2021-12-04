@@ -21,16 +21,16 @@ combine the newly created and the existing workers. The function returns the upd
 }
 \examples{
 Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-pop = newPop(founderPop, simParam=SP)
+pop <- newPop(founderPop, simParam=SP)
 
 #Creates colony
-colony1 = createColony(queen = base[1], fathers = base[2:15])
-colony1 = addWorkers(colony1, nInd = 2000)
+colony1 <- createColony(queen = base[1], fathers = base[2:15])
+colony1 <- addWorkers(colony1, nInd = 2000)
 
 }

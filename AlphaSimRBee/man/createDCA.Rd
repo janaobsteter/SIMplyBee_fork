@@ -2,42 +2,41 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createDCA}
 \alias{createDCA}
-\title{Creates a drone congregation area (DCA) from the list of colonies}
+\title{Create a drone congregation area (DCA)}
 \usage{
-\method{createDCA}(list(colonies))
+createDCA(x, nInd = NULL)
 }
 \arguments{
-\item{colonies}{A list of colonies, each of AlphaSimRBee Colony object}
+\item{x}{Colony or Colonies}
+
+\item{nInd}{numeric, number of drones to access, if NULL all drones
+are accessed, otherwise a random sample}
 }
 \value{
-Single AlphaSim population object of drones from the provided colonies.
+Pop, population object with drones
 }
 \description{
-Creates a drone congregation area (DCA) from selected colonies.
-The function takes a vector of the colonies and returns a combined population of drones.
+Create a drone congregation area (DCA) from colony or colonies.
 }
 \examples{
-# Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+# AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
+# Honeybee
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addDrones(colony1, nInd = 10)
+colony2 <- addDrones(colony2, nInd = 20)
+createDCA(colony1)
+createDCA(colony2)
+createDCA(colony2, nInd = 10)@id
+createDCA(colony2, nInd = 10)@id
 
-#Create population
-pop = newPop(founderPop, simParam=SP)
+apiary <- c(colony1, colony2)
+createDCA(apiary)
+createDCA(apiary, nInd = 10)
 
-#Creates colony
-founderDrones = createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
-colony2 = createColony(queen = pop[2], fathers = founderDrones[18:37])
-
-#Create drones that will be in DCA
-colony1@drones = createDrones(colony1, nInd = 300)
-colony2@drones = createDrones(colony2, nInd = 300)
-
-DCA = createDCA(c(colony1, colony2))
-
-}
-\seealso{
-\code{\link[??????]{select_colonies}}
 }

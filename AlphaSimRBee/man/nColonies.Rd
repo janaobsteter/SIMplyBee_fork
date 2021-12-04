@@ -2,33 +2,31 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nColonies}
 \alias{nColonies}
-\title{Returns number of colonies in the colonies object}
+\title{Number of colonies}
 \usage{
-\method{nColonies}(colonies)
+nColonies(colonies)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object from the \code{createColonies(...)} call}
+\item{colonies}{Colonies}
 }
 \value{
-Integer. Number of colonies present in the colonies AlphaSimRBee object
+Integer
 }
 \description{
-Returns the number of colonies present in the colonies object
+Returns the number of colonies in a colonies object
 }
 \examples{
-#Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
-
-#Create population
-pop = newPop(founderPop, simParam=SP)
-
-# Create an apiary containing 10 colonies
-Apiary1 = createColonies(,n = 10)
-
-#Check number of colonies present in the apiary
-nColonies(apiary2)
+# Honeybees
+drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+nColonies(apiary)
+nColonies(createColonies(n = 10))
 
 }
