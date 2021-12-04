@@ -590,22 +590,12 @@ pullIndFromCaste <- function(colony, caste, nInd = NULL) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (is.nul(nInd)) {
+  if (is.null(nInd)) {
     nInd <- nInd(slot(colony, caste))
   }
-  if (nInd > nInd(slot(colony, caste))) {
-    stop(paste0("Not enough individuals in ", caste, " ! " ,
-                nInd, " required, but only ", slot(colony, caste)@nInd, " available."))
-  }
-  pullId <- sample(slot(colony, caste)@id, nInd, replace = F)
-  pullMatch <- slot(colony, caste)@id %in% pullId
-  stayMatch <- !slot(colony, caste)@id %in% pullId
-
-  indPull <- slot(colony, caste)[pullMatch]
-  indStay <- slot(colony, caste)[stayMatch]
-
-  slot(colony, caste) <- indStay
-  ret <- list(colony = colony, pulledInd = indPull)
+  tmp <- pullIndFromPop(pop = slot(colony, caste), nInd = nInd)
+  slot(colony, caste) <- tmp$remainder
+  ret <- list(colony = colony, pulled = tmp$pulled)
   return(ret)
 }
 
