@@ -431,7 +431,7 @@ getQueensAge <- function(x, currentYear) {
 #'
 #' @description Get the colony ID. This is by definition the ID of the queen.
 #'
-#' @param x Colony or Colonies
+#' @param x Pop, Colony, or Colonies
 #'
 #' @examples
 #' # AlphaSimR
@@ -445,6 +445,7 @@ getQueensAge <- function(x, currentYear) {
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #'
+#' getId(getQueen(colony1))
 #' getId(colony1)
 #' getId(colony2)
 #' getId(apiary)
@@ -456,13 +457,17 @@ getQueensAge <- function(x, currentYear) {
 #'
 #' @export
 getId <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (is.null(x)) {
+    id <- NA
+  } else if ("Pop" %in% class(x)) {
+    id <- x@id
+  } else if ("Colony" %in% class(x)) {
     id <- ifelse(is.null(x@id), NA, x@id)
   } else if ("Colonies" %in% class(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     id <- sapply(x@colonies, FUN = function(z) ifelse(is.null(z@id), NA, z@id))
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a NULL, Pop, Colony, or Colonies class object!")
   }
   return(id)
 }
