@@ -58,6 +58,7 @@ getCaste <- function(x, caste, nInd = NULL) {
       }
     }
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     if (is.null(nInd)) {
       if (caste == "fathers") {
         ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
@@ -506,12 +507,12 @@ pullIndFromPop <- function(pop, nInd) {
 }
 
 #' @rdname pullDroneGroupsFromDCA
-#' @title Pulls drone groups from a DCA
+#' @title Pulls drone groups from a Drone Congregation Area (DCA)
 #'
 #' @description
-#' Pulls drone groups from a DCA to use them later in mating. Number of drones
-#' per group is sampled from a Poisson distribution with average group size.
-#' Pulled drones are removed from the DCA.
+#' Pulls drone groups from a Drone Congregation Area (DCA) to use them later in
+#' mating. Number of drones per group is sampled from a Poisson distribution with
+#' average group size. Pulled drones are removed from the DCA.
 #'
 #'@param DCA Pop, population of drones
 #'@param nGroups Integer, number of drone groups to be created
@@ -541,7 +542,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
     stop("Argument DCA must be a Pop class object!")
   }
   nDrones <- rpois(n = nGroup, lambda = avgGroupSize)
-  if (sum(nDrones) > DCA@nInd) {
+  if (sum(nDrones) > nInd(DCA)) {
     stop("Not enough drones in the DCA!")
   }
   ret <- vector(mode = "list", length = nGroup)
@@ -553,49 +554,233 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
   return(ret)
 }
 
-#' @rdname pullIndFromCaste
-#' @title Randomly pulls a number of individuals from any caste group.
-#' @usage \method{pullIndFromCaste}(colony, caste, nInd)
-#' @description Pulls and separates a random number of individuals from any caste group.
-#' Two list groups are created, the group of pulled individuals and the colony.
+#' @rdname pullCaste
+#' @title Pull individuals from a caste in a colony
 #'
-#' @seealso \code{\link[??????]{pullIndFromCaste}}
-#' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
-#' @param caste Character. Replicating the caste class structure present in the hive (queen, drones, workers etc)
-#' @param nInd Integer. Number of individuals to be pulled from the caste; if NULL
-#' all individuals are pulled
+#' @description
+#' Pull individuals from a caste in a colony
 #'
-#' @examples inst/examples/examples_pullIndFromCaste.R
-#' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' @param x Colony or Colonies
+#' @param caste character, "queen", virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to pull, if NULL all individuals
+#' are pulled, otherwise a random sample
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony2 <- addDrones(colony2, nInd = 5)
+#' pullCaste(colony1, caste = "queen")
+#' pullCaste(colony1, caste = "virgin_queens")
+#' pullCaste(colony1, caste = "workers")
+#' pullCaste(colony1, caste = "workers", nInd = 5)
+#' pullCaste(colony1, caste = "drones")
+#' pullCaste(colony2, caste = "drones")
 #'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+#' apiary <- c(colony1, colony2)
+#' pullCaste(apiary, caste = "queen")
+#' pullCaste(apiary, caste = "virgin_queens")
+#' pullCaste(apiary, caste = "workers")
+#' nWorkers(pullCaste(apiary, caste = "workers")$colonies)
+#' nWorkers(pullCaste(apiary, caste = "workers", nInd = 5)$colonies)
+#' pullCaste(apiary, caste = "drones")
+#' nDrones(pullCaste(apiary, caste = "drones")$colonies)
 #'
-#' #Create drones
-#' colony1@drones <- createDrones(colony1, nInd = 300)
+#' @return
+#' When \code{x} is Colony then return is a list with a population object (Pop) with pulled individuals and remaining colony
+#' When \code{x} is Colonies then return is a list with a list of population object (Pop) with pulled individuals and remaining colonies
 #'
-#' # Pull individuals from the caste
-#' indDrone <- pullIndFromCaste(colony1, caste = 'drones', nInd = 1)
-#'
-#'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
-pullIndFromCaste <- function(colony, caste, nInd = NULL) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
+#' @export
+pullCaste <- function(x, caste, nInd = NULL) {
+  if ("Colony" %in% class(x)) {
+    if (is.null(slot(x, caste))) {
+      ret <- list(pulled = NULL, colony = x)
+    } else {
+      if (is.null(nInd)) {
+        nInd <- nInd(slot(x, caste))
+      }
+      tmp <- pullIndFromPop(pop = slot(x, caste), nInd = nInd)
+      slot(x, caste) <- tmp$remainder
+      ret <- list(pulled = tmp$pulled, colony = x)
+    }
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = 2)
+    names(ret) <- c("pulled", "colonies")
+    ret$pulled <- vector(mode = "list", length = nCol)
+    names(ret$pulled) <- getId(x)
+    ret$colonies <- x
+    for (colony in 1:nCol) {
+      tmp = pullCaste(x = x@colonies[[colony]], caste = caste, nInd = nInd)
+      ret$pulled[[colony]] <- tmp$pulled
+      ret$colonies@colonies[[colony]] <- tmp$colony
+    }
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  if (is.null(nInd)) {
-    nInd <- nInd(slot(colony, caste))
-  }
-  tmp <- pullIndFromPop(pop = slot(colony, caste), nInd = nInd)
-  slot(colony, caste) <- tmp$remainder
-  ret <- list(colony = colony, pulled = tmp$pulled)
+  return(ret)
+}
+
+#' @rdname pullQueen
+#' @title Pull queen from a colony
+#'
+#' @description Pull queen from a colony
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony2 <- addDrones(colony2, nInd = 5)
+#' pullQueen(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' pullQueen(apiary)
+#' nQueen(apiary)
+#' nQueen(pullQueen(apiary)$colonies)
+#'
+#' @return
+#' When \code{x} is Colony then return is a list with a population object (Pop) with the pulled queen and remaining colony
+#' When \code{x} is Colonies then return is a list with a list of population object (Pop) with the pulled queens and remaining colonies
+#'
+#' @export
+pullQueen <- function(x) {
+  ret <- pullCaste(x, caste = "queen")
+  return(ret)
+}
+
+#' @rdname pullVirginQueens
+#' @title Pull virgin queens from a colony
+#'
+#' @description Pull virgin queen from a colony
+#'
+#' @param x Colony or Colonies
+#' @param nInd numeric, number of virgin queens to pull, if NULL all virgin queens
+#' are pulled, otherwise a random sample
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addVirginQueens(colony1, nInd = 10)
+#' pullVirginQueens(colony1)
+#' pullVirginQueens(colony1, nInd = 2)
+#' pullVirginQueens(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' pullVirginQueens(apiary)
+#' nVirginQueens(apiary)
+#' nVirginQueens(pullVirginQueens(apiary)$colonies)
+#'
+#' @return
+#' When \code{x} is Colony then return is a list with a population object (Pop) with the pulled virgin queen and remaining colony
+#' When \code{x} is Colonies then return is a list with a list of population object (Pop) with the pulled virgin queens and remaining colonies
+#'
+#' @export
+pullVirginQueens <- function(x, nInd = NULL) {
+  ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd)
+  return(ret)
+}
+
+
+#' @rdname pullWorkers
+#' @title Pull workers from a colony
+#'
+#' @description Pull workers from a colony
+#'
+#' @param x Colony or Colonies
+#' @param nInd numeric, number of workers to pull, if NULL all workers
+#' are pulled, otherwise a random sample
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' pullWorkers(colony1)
+#' pullWorkers(colony1, nInd = 5)
+#' pullWorkers(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' pullWorkers(apiary)
+#' nWorkers(apiary)
+#' nWorkers(pullWorkers(apiary)$colonies)
+#'
+#' @return
+#' When \code{x} is Colony then return is a list with a population object (Pop) with the pulled workers and remaining colony
+#' When \code{x} is Colonies then return is a list with a list of population object (Pop) with the pulled workers and remaining colonies
+#'
+#' @export
+pullWorkers <- function(x, nInd = NULL) {
+  ret <- pullCaste(x, caste = "workers", nInd = nInd)
+  return(ret)
+}
+
+#' @rdname pullDrones
+#' @title Pull drones from a colony
+#'
+#' @description Pull drones from a colony
+#'
+#' @param x Colony or Colonies
+#' @param nInd numeric, number of drones to pull, if NULL all drones
+#' are pulled, otherwise a random sample
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' pullDrones(colony1)
+#' pullDrones(colony1, nInd = 5)
+#' pullDrones(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' pullDrones(apiary)
+#' nDrones(apiary)
+#' nDrones(pullDrones(apiary)$colonies)
+#'
+#' @return
+#' When \code{x} is Colony then return is a list with a population object (Pop) with the pulled drones and remaining colony
+#' When \code{x} is Colonies then return is a list with a list of population object (Pop) with the pulled drones and remaining colonies
+#'
+#' @export
+pullDrones <- function(x, nInd = NULL) {
+  ret <- pullCaste(x, caste = "drones", nInd = nInd)
   return(ret)
 }
 
@@ -650,7 +835,7 @@ crossVirginQueen <- function(virginQueen, fathers) {
   if (is.null(fathers)) {
     stop("Missing fathers!")
   }
-  if (virginQueen@nInd > 1) {
+  if (nInd(virginQueen) > 1) {
     stop("#TODO: Expand the function to mate multiple virgin queens at once!")
   }
   virginQueen@misc$fathers <- fathers
