@@ -112,7 +112,7 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #' @return AlphaSimRBee Colony object
 #'
 #' @export
-setQueenYOB <- function(x, year) {
+setQueensYOB <- function(x, year) {
   if ("Pop" %in% class(x)) {
     x@misc$yearOfBirth <- year
   } else if ("Colony" %in% class(x)) {
@@ -493,6 +493,40 @@ removeQueen <- function(colony) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@queen <- NULL
+  return(colony)
+}
+
+#' @rdname removeVirginQueens
+#' @title Remove virgin queens
+#'
+#' @description Remove virgin queens of a colony
+#'
+#' @param colony Colony
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' getVirginQueens(colony)
+#'
+#' colony <- removeVirginQueens(colony)
+#' colony
+#' getVirginQueens(colony)
+#'
+#' @return Colony without virgin queens
+#'
+#' @export
+removeVirginQueens <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  colony@virgin_queens <- NULL
   return(colony)
 }
 
