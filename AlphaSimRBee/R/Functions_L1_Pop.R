@@ -638,12 +638,12 @@ pullIndFromCaste <- function(colony, caste, nInd = NULL) {
 #' DCA <- createDCA(c(colony1, colony2))
 #'
 #' #pull drone packages from DCA
-#' dronePack <- pullDroneGroupsFromDCA(DCA, n = 7, nAvgFathers = 19)
+#' droneGroups <- pullDroneGroupsFromDCA(DCA, nGroup = 7, avgGroupSize = 19)
 #'
 #'# Cross the virgin queen
 #'
 #' virginQueen <- colony1@virgin_queens
-#' queen <- crossVirginQueen(virginQueen, fathers = dronePack[4])
+#' queen <- crossVirginQueen(virginQueen, fathers = droneGroups[[1]])
 #'
 #' @return AlphaSim population object of a mated queen
 #' @export

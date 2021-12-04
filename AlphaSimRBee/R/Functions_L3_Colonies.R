@@ -344,7 +344,7 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
   DPQMatch <- founderPop@id[!founderPop@id %in% queensID]
   DPQs <- founderPop[DPQMatch]
   DCA <- createFounderDrones(pop = DPQs, nDronesPerQueen = 10)
-  fatherPackages <- pullDroneGroupsFromDCA(DCA, n = nColonies, nAvgFathers = nAvgFathers)
+  fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                            fathers = fatherPackages[[colony]])
@@ -778,7 +778,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers) {
   } else {
     ret <- createColonies(n = nCol)
     nFathers <- rpois(n = nCol, lambda = nAvgFathers)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA, n = nCol, nAvgFathers = nAvgFathers)
+    fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol, avgGroupSize = nAvgFathers)
     for (colony in 1:nCol) {
       ret@colonies[[colony]] <- crossColony(colonies[[colony]],
                                             fathers = fatherGroups[[colony]])
