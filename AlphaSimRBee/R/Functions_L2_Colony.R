@@ -751,9 +751,6 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!"Pop" %in% class(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
-  }
   if (is.null(colony@queen)) {
     stop("No queen present in the colony!")
   }
@@ -762,6 +759,9 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
   if (crossVirginQueen) {
     if (is.null(fathers)) {
       stop("No fathers provided, cannot mate the queen!")
+    }
+    if (!"Pop" %in% class(fathers)) {
+      stop("Argument fathers must be a Pop class object!")
     }
     colony@queen <- colony@virgin_queens
     colony@queen@misc$fathers <- fathers
