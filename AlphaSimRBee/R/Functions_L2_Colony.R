@@ -169,7 +169,6 @@ addWorkers <- function(colony, nInd = NULL, ...) {
   } else {
     colony@workers <- newWorkers
   }
-  message(paste0(nInd, " workers added to the colony"))
   return(colony)
 }
 
@@ -217,7 +216,6 @@ addDrones <- function(colony, nInd) {
   } else {
     colony@drones <- newDrones
   }
-  message(paste0(nInd, " drones added to the colony"))
   return(colony)
 }
 
@@ -464,6 +462,40 @@ replaceDrones <- function(colony, p = 1) {
   return(colony)
 }
 
+#' @rdname removeQueen
+#' @title Remove queen
+#'
+#' @description Remove queen of a colony
+#'
+#' @param colony Colony
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' getQueen(colony)
+#'
+#' colony <- removeQueen(colony)
+#' colony
+#' getQueen(colony)
+#'
+#' @return Colony without a queen
+#'
+#' @export
+removeQueen <- function(colony) {
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  colony@queen <- NULL
+  return(colony)
+}
+
 #' @rdname removeWorkers
 #' @title Remove selected percentage of workers
 #' @usage \method{removeWorkers}(colony, p)
@@ -486,7 +518,6 @@ removeWorkers <- function(colony, p) {
     stop("p can not be less than 0!")
   } else if (p == 1) {
     colony@workers <- NULL
-    messgge("All workers removed")
   } else {
     nWorkers <- nWorkers(colony)
     nWorkesNew <- round(nWorkers * (1 - p))
@@ -517,7 +548,6 @@ removeDrones <- function(colony, p) {
     stop("p can not be less than 0!")
   } else if (p == 1) {
     colony@drones <- NULL
-    message("All drones removed")
   } else {
     nDrones <- nDrones(colony)
     nDronesNew <- round(nDrones * (1 - p))
@@ -655,9 +685,6 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   if (is.null(colony@virgin_queens)) {
     stop("Virgin queen not present in the colony, cannot swarm!")
   }
-  if (is.null(colony@drones)) {
-    message("No drones present in the colony")
-  }
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * pSwarm, 0)
@@ -697,7 +724,6 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   remnantColony@production <- FALSE
   swarm@production <- FALSE
 
-  message("Created two colonies.")
   ret <- list(remnant = remnantColony, swarm = swarm)
   return(ret)
 }
@@ -827,7 +853,6 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   colony@production <- TRUE
   splitColony@production <- FALSE
 
-  message("Created two colonies.")
   ret <- list(remnant = colony, split = splitColony)
   return(ret)
 }
