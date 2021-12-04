@@ -433,7 +433,7 @@ createVirginQueens <- function(colony, nInd){
 #' @title Create a drone congregation area (DCA)
 #'
 #' @description Create a drone congregation area (DCA) from colony or colonies.
-#'#'
+#'
 #' @param x Colony or Colonies
 #' @param nInd numeric, number of drones to access, if NULL all drones
 #' are accessed, otherwise a random sample
@@ -474,104 +474,81 @@ createDCA <- function(x, nInd = NULL) {
   return(DCA)
 }
 
-#' @rdname pullDronesFromDCA
-#' @title Pulls the drones from the DCA
-#' @usage \method{pullDronesFromDCA}(DCA, nInd)
-#' @description  Pulls a specified number of drones from the DCA and updates the DCA.
-#'               Selected drones are removed from DCA.
-#' @param DCA AlphaSimR population object created with \code{createDCA(...)} call
-#' @param nInd Integer, the number of drones to pull from the DCA
+#' @rdname pullIndFromPop
+#' @title Pull individuals from a population
+#'
+#' @description Pull individuals from a population and update the population
+#'
+#' @param pop Pop
+#' @param nInd numeric, number of individuals to pull
 #'
 #' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#' pullIndFromPop(basePop, nInd = 2)
+#' pullIndFromPop(basePop, nInd = 3)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#'
-#' #Create drones that will be in DCA
-#' colony1@drones <- createDrones(colony1, nInd = 300)
-#' colony2@drones <- createDrones(colony2, nInd = 300)
-#'
-#' DCA <- createDCA(c(colony1, colony2))
-#'
-#' # Pull drones from DCA
-#'fathers <-  pullDronesFromDCA(DCA, nInd = 19)
-#'
-#' @return A list with two elements. The first element is the AlphaSimR population object of
-#' selected drones. The second element is the updated DCA with the selected drones removed.
+#' @return Pop, population object with drones
 #'
 #' @export
-pullDronesFromDCA <- function(DCA, nInd) {
-  if (!"Pop" %in% class(DCA)) {
-    stop("Argument DCA must be a Pop class object!")
+pullIndFromPop <- function(pop, nInd) {
+  if (!"Pop" %in% class(pop)) {
+    stop("Argument pop must be a Pop class object!")
   }
-  selectedDronesID <- sample(DCA@id, size = nInd, replace = FALSE)
-  sel <- DCA@id %in% selectedDronesID
-  selectedDrones <- DCA[sel]
-  updatedDCA <- DCA[!sel]
-  ret <- list(selectedDrones = selectedDrones, DCA = updatedDCA)
+  selectedInd <- sample(pop@id, size = nInd, replace = FALSE)
+  sel <- pop@id %in% selectedInd
+  pulled <- pop[sel]
+  remainder <- pop[!sel]
+  ret <- list(pulled = pulled, remainder = remainder)
   return(ret)
 }
 
 #' @rdname pullDroneGroupsFromDCA
-#' @title Pulls a drone package from DCA
-#' @usage \method{pullDroneGroupsFromDCA}(DCA, n, nAvgFathers)
-#' @description Pulls the packages of drones from DCA. Each package is then used to cros colonies.
-#'              Number of drones in package is sampled from the Poisson distribution
-#'              with the average = nAvgFathers. Selected drones are removed from DCA.
-#'@seealso \code{\link[??????]{pullIndFromCaste}}
-#'@param  DCA object of class pop. AlphaSimRBee Colony object from the \code{createColony(...)} call
-#'@param n Integer. Number of the packages that needs to be created.
-#'@param nAvgFathers Integer. The average number of drones that will be in the package.
+#' @title Pulls drone groups from a DCA
+#'
+#' @description
+#' Pulls drone groups from a DCA to use them later in mating. Number of drones
+#' per group is sampled from a Poisson distribution with average group size.
+#' Pulled drones are removed from the DCA.
+#'
+#'@param DCA Pop, population of drones
+#'@param nGroups Integer, number of drone groups to be created
+#'@param avgGroupSize Numeric, average number of drones per group
 #'
 #'@examples
-#'# Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#'
-#' #Create drones that will be in DCA
-#' colony1@drones <- createDrones(colony1, nInd = 300)
-#' colony2@drones <- createDrones(colony2, nInd = 300)
-#'
-#' DCA <- createDCA(c(colony1, colony2))
-#'
-#' #pull drone packages from DCA
-#'dronePack <- pullDroneGroupsFromDCA(DCA, n = 7, nAvgFathers = 19)
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony2 <- addDrones(colony2, nInd = 20)
+#' apiary <- c(colony1, colony2)
+#' DCA <- createDCA(apiary)
+#' pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
 #'
 #'@return Two AlphaSim population objects of the colony and the group of pulled individuals.
+#'
 #'@export
-pullDroneGroupsFromDCA <- function(DCA, n, nAvgFathers) {
+pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
   if (!"Pop" %in% class(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
-  nFathers <- rpois(n = n, lambda = nAvgFathers)
-  if (sum(nFathers) > DCA@nInd) {
+  nDrones <- rpois(n = nGroup, lambda = avgGroupSize)
+  if (sum(nDrones) > DCA@nInd) {
     stop("Not enough drones in the DCA!")
   }
-  ret <- vector(mode = "list", length = n)
-  for (group in 1:n) {
-    DCAresult <- pullDronesFromDCA(DCA, nInd = nFathers[group])
-    DCA <- DCAresult$DCA
-    ret[[group]] <- DCAresult$selectedDrones
+  ret <- vector(mode = "list", length = nGroup)
+  for (group in 1:nGroup) {
+    tmp <- pullIndFromPop(pop = DCA, nInd = nDrones[group])
+    ret[[group]] <- tmp$pulled
+    DCA <- tmp$remainder
   }
   return(ret)
 }
