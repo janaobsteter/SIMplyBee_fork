@@ -1,28 +1,28 @@
 # Level 0 Auxiliary Functions
 
 #' @rdname nColonies
-#' @title Returns number of colonies in the colonies object
-#' @usage \method{nColonies}(colonies)
-#' @description Returns the number of colonies present in the colonies object
-#' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
+#' @title Number of colonies
+#'
+#' @description
+#' Returns the number of colonies in a colonies object
+#'
+#' @param colonies Colonies
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' nColonies(apiary)
+#' nColonies(createColonies(n = 10))
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Create an apiary containing 10 colonies
-#' Apiary1 <- createColonies(,n = 10)
-#'
-#' #Check number of colonies present in the apiary
-#' nColonies(apiary2)
-#'
-#' @return Integer. Number of colonies present in the colonies AlphaSimRBee object
+#' @return Integer
 #'
 #' @export
 nColonies <- function(colonies) {
@@ -33,145 +33,226 @@ nColonies <- function(colonies) {
   return(n)
 }
 
-#' @rdname nWorkers
-#' @title Number of workers present in the colony
-#' @usage \method{nWorkers}(colony)
-#' @description Returns the number of workers present in the colony object
-#' @param colony AlphaSimRBee population object of class "Colony"
+#' @rdname nCaste
+#' @title Number of individuals of a caste in a colony
+#'
+#' @description Returns the number of individuals of a caste in a colony
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
 #'
 #' @examples
-#' #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 100)
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 3)
+#' colony2 <- addWorkers(colony2, nInd = 200)
+#' nCaste(colony1, caste = "queen")
+#' nCaste(colony1, caste = "fathers")
+#' nCaste(colony1, caste = "virgin_queens")
+#' nCaste(colony1, caste = "workers")
+#' nCaste(colony1, caste = "drones")
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' apiary <- c(colony1, colony2)
+#' nCaste(apiary, caste = "queen")
+#' nCaste(apiary, caste = "fathers")
+#' nCaste(apiary, caste = "virgin_queens")
+#' nCaste(apiary, caste = "workers")
+#' nCaste(apiary, caste = "drones")
 #'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1@workers <- createWorkers(colony1, nInd = 1000)
-#'
-#' Check number of workers in the colony
-#' nWorkers(colony1)
-#'
-#' @return Integer. Number of workers present in the colony AlphaSimRBee object
+#' @return Integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-#'
-nWorkers <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
+nCaste <- function(x, caste) {
+  if ("Colony" %in% class(x)) {
+    if (caste == "fathers") {
+      if (is.null(x@queen)) {
+        ret <- 0
+      } else {
+        ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
+      }
+    } else {
+      ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+    }
+  } else if ("Colonies" %in% class(x)) {
+    ret <- sapply(X = x@colonies, FUN = nCaste, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument colony must be a Colony or Colonies class object!")
   }
-  n <- ifelse(is.null(colony@workers), 0, colony@workers@nInd)
-  return(n)
+  return(ret)
+}
+
+#' @rdname nWorkers
+#' @title Number of workers in a colony
+#'
+#' @description Returns the number of workers in a colony
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 100)
+#' colony2 <- addWorkers(colony2, nInd = 200)
+#' nWorkers(colony1)
+#' nWorkers(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nWorkers(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
+#'
+#' @export
+nWorkers <- function(x) {
+  ret <- nCaste(x, caste = "workers")
+  return(ret)
 }
 
 #' @rdname nDrones
-#' @title Number of workers present in the colony
-#' @usage \method{nDrones}(colony)
-#' @description Returns the number of drones present in the colony object
-#' @param colony AlphaSimRBee population object of class "Colony"
+#' @title Number of drones in a colony
+#'
+#' @description Returns the number of drones in a colony
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
-#' #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1@drones <- createDrones(colony1, nInd = 100)
-#'
-#' Check number of drones in the colony
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 100)
+#' colony2 <- addDrones(colony2, nInd = 200)
 #' nDrones(colony1)
+#' nDrones(colony2)
 #'
-#' @return Integer. Number of drones present in the colony AlphaSimRBee object
+#' apiary <- c(colony1, colony2)
+#' nDrones(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-nDrones <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  n <- ifelse(is.null(colony@drones), 0, colony@drones@nInd)
-  return(n)
+nDrones <- function(x) {
+  ret <- nCaste(x, caste = "drones")
+  return(ret)
 }
 
 #' @rdname nVirginQueens
-#' @title Number of virgin queens present in the colony
-#' @usage \method{nVirginQueens}(colony)
-#' @description Returns the number of virgin queens present in the colony object
-#' @param colony AlphaSimRBee population object of class "Colony"
+#' @title Number of virgin queens in a colony
+#'
+#' @description Returns the number of virgin queens in a colony
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
-#' #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1@virgin_queens <- createVirginQueens(colony1, nInd = 5)
-#'
-#' Check number of drones in the colony
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addVirginQueens(colony1, nInd = 3)
+#' colony2 <- addVirginQueens(colony2, nInd = 5)
 #' nVirginQueens(colony1)
+#' nVirginQueens(colony2)
 #'
-#' @return Integer. Number of virgin queens present in the colony AlphaSimRBee object
+#' apiary <- c(colony1, colony2)
+#' nVirginQueens(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-nVirginQueens <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  n <- ifelse(is.null(colony@virgin_queens), 0, colony@virgin_queens@nInd)
-  return(n)
+nVirginQueens <- function(x) {
+  ret <- nCaste(x, caste = "virgin_queens")
+  return(ret)
 }
 
 #' @rdname nFathers
-#' @title Number of fathers queens present in the colony
-#' @usage \method{nFathers}(colony)
-#' @description Returns the number of fathers present in the colony object.
-#' If no queens are present in the colony, no fathers are present and function is returned as 0.
-#' @param colony AlphaSimRBee population object of class "Colony"
+#' @title Number of fathers in a colony
+#'
+#' @description Returns the number of nFathers (drones the queen mated with) in
+#' a colony
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
-#' #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#'
-#' Check number of fathers in the colony
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
 #' nFathers(colony1)
+#' nFathers(colony2)
 #'
-#' @return Integer. Number of fathers present in the colony AlphaSimRBee object
+#' apiary <- c(colony1, colony2)
+#' nFathers(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-nFathers <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if (is.null(colony@queen)) {
-    n <- 0
-  } else {
-    n <- ifelse(is.null(colony@queen@misc$fathers), 0, colony@queen@misc$fathers@nInd)
-  }
-  return(n)
+nFathers <- function(x) {
+  ret <- nCaste(x, caste = "fathers")
+  return(ret)
+}
+
+#' @rdname nQueen
+#' @title Number of queens in a colony
+#'
+#' @description Returns the number of queens in a colony (expect 0 or 1)
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
+#' nQueen(colony1)
+#' nQueen(colony2)
+#' colony2 <- removeQueen(colony2)
+#' nQueen(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nQueen(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
+#'
+#' @export
+nQueen <- function(x) {
+  ret <- nCaste(x, caste = "queen")
+  return(ret)
 }
 
 #' @rdname isQueenMated
@@ -313,6 +394,7 @@ getId <- function(x) {
   if ("Colony" %in% class(x)) {
     id <- x@id
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     id <- sapply(x@colonies, FUN = function(x) x@id)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -335,7 +417,9 @@ hasSplit <- function(x) {
   if ("Colony" %in% class(x)) {
     ret <- x@split
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@split)
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -356,7 +440,9 @@ hasSwarmed <- function(x) {
   if ("Colony" %in% class(x)) {
     ret <- x@swarm
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@swarm)
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -378,7 +464,9 @@ hasSuperseded <- function(x) {
   if ("Colony" %in% class(x)) {
     ret <- x@supersedure
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@supersedure)
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -401,7 +489,9 @@ isProductive <- function(x) {
   if ("Colony" %in% class(x)) {
     ret <- x@production
   } else if ("Colonies" %in% class(x)) {
+    # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@production)
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be Colony or Colonies class object!")
   }
@@ -519,7 +609,7 @@ getCsdHaplo <- function(x, csd = NULL) {
   if ("Pop" %in% class(x)) {
     ret <- pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
   } else if ("Colony" %in% class(x)) {
-    ret <- vector(mode = "list", length = 4)
+    ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
     ret$queen         <- getCsdHaplo(x = getQueen(x),        csd = csd)
     ret$fathers       <- getCsdHaplo(x = getFathers(x),      csd = csd)
@@ -527,7 +617,7 @@ getCsdHaplo <- function(x, csd = NULL) {
     ret$workers       <- getCsdHaplo(x = getWorkers(x),      csd = csd)
     ret$drones        <- getCsdHaplo(x = getDrones(x),       csd = csd)
   } else if ("Colonies" %in% class(x)) {
-    ret <- lapply(X = x, FUN = getCsdHaplo, csd = csd)
+    ret <- lapply(X = x@colonies, FUN = getCsdHaplo, csd = csd)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -556,7 +646,7 @@ getCsdGeno <- function(x, csd = NULL) {
   if ("Pop" %in% class(x)) {
     ret <- pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
   } else if ("Colony" %in% class(x)) {
-    ret <- vector(mode = "list", length = 4)
+    ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
     ret$queen         <- getCsdGeno(x = getQueen(x),        csd = csd)
     ret$fathers       <- getCsdGeno(x = getFathers(x),      csd = csd)
@@ -564,7 +654,7 @@ getCsdGeno <- function(x, csd = NULL) {
     ret$workers       <- getCsdGeno(x = getWorkers(x),      csd = csd)
     ret$drones        <- getCsdGeno(x = getDrones(x),       csd = csd)
   } else if ("Colonies" %in% class(x)) {
-    ret <- lapply(X = x, FUN = getCsdGeno, csd = csd)
+    ret <- lapply(X = x@colonies, FUN = getCsdGeno, csd = csd)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
