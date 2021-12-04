@@ -31,6 +31,7 @@ getQueensYOB; input Pop, Colony or Colonies; return numeric; TODO w/o s?
 getQueensAge; TODO w/o s?
 
 getId; input Colony or Colonies; return character
+getLocation; input Colony or Colonies; return numeric or list of numeric
 
 hasSplit; input Colony or Colonies; return logical
 hasSwarmed
@@ -41,6 +42,35 @@ simulateHoneyBeeGenomes
 
 getCsdHaplo; input Pop, Colony or Colonies; return numeric
 getCsdGeno
+
+getIbdHaplo
+getQtlHaplo
+getQtlGeno
+getSegSiteHaplo
+getSegSiteGeno
+getSnpHaplo
+getSnpGeno
+
+getCasteIbdHaplo
+getQueensIbdHaplo
+getFathersIbdHaplo
+getVirginQueensIbdHaplo
+getWorkersIbdHaplo
+getDronesIbdHaplo
+
+getCasteSegSiteHaplo
+getQueensSegSiteHaplo
+getFathersSegSiteHaplo
+getVirginQueensSegSiteHaplo
+getWorkersSegSiteHaplo
+getDronesSegSiteHaplo
+
+getCasteSegSiteGeno
+getQueensSegSiteGeno
+getFathersSegSiteGeno
+getVirginQueensSegSiteGeno
+getWorkersSegSiteGeno
+getDronesSegSiteGeno
 
 # L1 functions
 
@@ -70,6 +100,8 @@ pullWorkers
 pullDrones
 
 crossVirginQueen; input 2 Pop; return Pop
+
+setLocation; input Colony or Colonies; return Colony or Colonies
 
 setQueensYOB; input Pop, Colony, or Colonies; return Pop, Colony, or Colonies; TODO w/o s??
 
