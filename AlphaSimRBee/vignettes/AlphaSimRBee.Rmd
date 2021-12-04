@@ -27,19 +27,15 @@ nFathers
 
 isQueenMated; input Pop, Colony, or Colonies; return logical
 
-extractQueensYOB; input colony; return numeric; TODO input Pop, Colony or Colonies
-
-computeQueensAge; input Pop or colony; return numeric; TODO input Pop, Colony or Colonies
+getQueensYOB; input Pop, Colony or Colonies; return numeric; TODO w/o s?
+getQueensAge; TODO w/o s?
 
 getId; input Colony or Colonies; return character
 
 hasSplit; input Colony or Colonies; return logical
-
-hasSwarmed; input Colony or Colonies; return logical
-
-hasSuperseded; input Colony or Colonies; return logical
-
-isProductive; input Colony or Colonies; return logical
+hasSwarmed
+hasSuperseded
+isProductive
 
 simulateHoneyBeeGenomes
 
@@ -57,11 +53,9 @@ getDrones
 
 crateFounderDrones; input Pop; return Pop
 
-createWorkers; input Colony; return Pop
-
-createDrones; input Colony; return Pop
-
-createVirginQueens; input Colony; return Pop
+createWorkers; input Colony; return Pop; TODO Colonies?
+createDrones
+createVirginQueens
 
 createDCA; input Colony or Colonies; return Pop
 
@@ -69,7 +63,7 @@ pullIndFromPop; input Pop; return list of 2 Pop
 
 pullDroneGroupsFromDCA; input Pop; list of n Pop
 
-pullCaste; input Colony or Colonies; return list of Colony and Pop
+pullCaste; input Colony or Colonies; return list of Pop and Colony
 pullQueen
 pullVirginQueens
 pullWorkers
@@ -77,43 +71,31 @@ pullDrones
 
 crossVirginQueen; input 2 Pop; return Pop
 
+setQueensYOB; input Pop, Colony, or Colonies; return Pop, Colony, or Colonies; TODO w/o s??
+
 # L2 functions
 
 createColony; input Pop; return Colony
 
-setQueensYOB; input Pop or Colony; return Pop or Colony
-
-addWorkers; input Colony, return Colony
-
-addDrones; input Colony, return Colony
-
-addVirginQueens; input Colony, return Colony
-
-reQueenColony; input Colony, return Colony
-
-buildUpColony; input Colony, return Colony
-
-replaceWorkers; input Colony, return Colony
+addWorkers; input Colony, return Colony; TODO some have Colony in name, some don't!?
+addDrones
+addVirginQueens; TODO add external virgin queens?
+reQueenColony
+buildUpColony; TODO add replace?
+replaceWorkers
 replaceDrones
-
-removeQueen; input Colony, return Colony
+removeQueen
 removeVirginQueen
 removeWorkers
 removeDrones
-
-resetEvents; input Colony, return Colony
-
-crossColony; input Colony, return Colony
-
-collapseColony; input Colony, return Colony
+resetEvents
+crossColony
+collapseColony
+supersedeColony
+setPhenoColony
 
 swarmColony; input Colony, return list of 2 Colony
-
-supersedeColony; input Colony, return Colony
-
-splitColony; input Colony; return list of 2 Colony
-
-setPhenoColony; input Colony, return Colony
+splitColony
 
 # L3 functions
 
@@ -123,34 +105,25 @@ addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename t
 assignColonyToColonies
 
 selectColonies; input Colonies; return Colonies
+removeColonies
 
 pullColonies; input Colonies; return list of 2 Colonies
 
-removeColonies; input Colonies; return Colonies
-
-createMultipleVirginColonies; input Pop; return Colonies
-
-createMultipleMatedColonies; input Pop; return Colonies
+createMultipleVirginColonies; input Pop; return Colonies; TODO remove mulitiple? How is this different to createColonies?
+createMultipleMatedColonies
 
 buildUpColonies; input Colonies; return Colonies
-
-replaceWorkersColonies; input Colonies; return Colonies
-
-replaceDronesColonies; input Colonies; return Colonies
-
-reQueenColonies; input Colonies; return Colonies
-
-collapseColonies; input Colonies; return Colonies
-
-supersedeColonies; input Colonies; return Colonies
+replaceWorkersColonies
+replaceDronesColonies
+reQueenColonies
+collapseColonies
+supersedeColonies
 
 swarmColonies; input Colonies; return list of 2 Colonies
-
-splitColonies; input Colonies; return list of 2 Colonies
+splitColonies
 
 crossColonies; input Colonies; return Colonies
-
-setPhenoColonies; input Colonies; return Colonies
+setPhenoColonies
 
 ```{r setup}
 library(AlphaSimRBee)

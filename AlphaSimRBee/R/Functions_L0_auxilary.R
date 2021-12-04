@@ -3,13 +3,12 @@
 #' @rdname nColonies
 #' @title Number of colonies
 #'
-#' @description
-#' Returns the number of colonies in a colonies object
+#' @description Returns the number of colonies in a colonies object
 #'
 #' @param colonies Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -22,7 +21,7 @@
 #' nColonies(apiary)
 #' nColonies(createColonies(n = 10))
 #'
-#' @return Integer
+#' @return integer
 #'
 #' @export
 nColonies <- function(colonies) {
@@ -42,7 +41,7 @@ nColonies <- function(colonies) {
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -68,7 +67,7 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nCaste <- function(x, caste) {
@@ -91,8 +90,6 @@ nCaste <- function(x, caste) {
   return(ret)
 }
 
-
-
 #' @rdname nQueen
 #' @title Number of queens in a colony
 #'
@@ -101,7 +98,7 @@ nCaste <- function(x, caste) {
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -118,7 +115,7 @@ nCaste <- function(x, caste) {
 #' apiary <- c(colony1, colony2)
 #' nQueen(apiary)
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nQueen <- function(x) {
@@ -129,13 +126,12 @@ nQueen <- function(x) {
 #' @rdname nFathers
 #' @title Number of fathers in a colony
 #'
-#' @description Returns the number of nFathers (drones the queen mated with) in
-#' a colony
+#' @description Returns the number of nFathers (drones the queen mated with) in a colony
 #'
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -150,7 +146,7 @@ nQueen <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' nFathers(apiary)
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nFathers <- function(x) {
@@ -166,7 +162,7 @@ nFathers <- function(x) {
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -183,7 +179,7 @@ nFathers <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' nVirginQueens(apiary)
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nVirginQueens <- function(x) {
@@ -199,7 +195,7 @@ nVirginQueens <- function(x) {
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -216,7 +212,7 @@ nVirginQueens <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' nWorkers(apiary)
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nWorkers <- function(x) {
@@ -232,7 +228,7 @@ nWorkers <- function(x) {
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -249,7 +245,7 @@ nWorkers <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' nDrones(apiary)
 #'
-#' @return Integer, named by colony id when \code{x} is Colonies
+#' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
 nDrones <- function(x) {
@@ -260,10 +256,10 @@ nDrones <- function(x) {
 #' @rdname isQueenMated
 #' @title Is the queen mated?
 #'
-#' @description
-#' When queen is mated, we store drones she mated with (fathers of future progeny)
-#' in the same object to have genetic information for generating future progeny.
-#' This function tests if queen is mated, by testing for the presence of fathers.
+#' @description When queen is mated, we store drones she mated with (fathers of
+#' future progeny) in the same object to have genetic information for generating
+#' future progeny. This function tests if queen is mated, by testing for the
+#' presence of fathers.
 #'
 #' @param x Pop or Colony, queen or colony that will be inspected
 #'
@@ -288,7 +284,7 @@ nDrones <- function(x) {
 #' colony2 <- supersedeColony(colony2, fathers = drones[1:5])
 #' isQueenMated(colony2)
 #'
-#' @return Logical
+#' @return logical, named by colony id when \code{x} is Colonies
 #'
 #' @export
 isQueenMated <- function(x) {
@@ -302,47 +298,80 @@ isQueenMated <- function(x) {
     }
   } else if ("Colonies" %in% class(x)) {
     ret <- sapply(X = x@colonies, FUN = isQueenMated)
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
 
-#' @rdname extractQueensYOB
-#' @title Extract the queen's year of birth
-#' @usage \method{extractQueenYOB}(colony)
-#' @description Extract the queen's year of birth \code{colony@queen@misc$yearOfBirth} slot
-#' @param colony AlphaSimRBee population object of class "Colony"
+#' @rdname getQueensYOB
+#' @title Access the queen's year of birth
+#'
+#' @description Access the queen's year of birth
+#'
+#' @param x Pop, Colony, or Colonies
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' getQueensYOB(getQueen(colony1))
+#' getQueensYOB(colony1)
+#' getQueensYOB(apiary)
 #'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' setQueenAge(colony, 1)
-#' extractQueenYOB(colony)
+#' queen <- getQueen(colony1)
+#' queen <- setQueensYOB(queen, year = 2021)
+#' getQueensYOB(queen)
 #'
-#' @return Integer, the year of birth of the queen.
+#' colony1 <- setQueensYOB(colony1, year = 2021)
+#' getQueensYOB(colony1)
+#'
+#' apiary <- setQueensYOB(apiary, year = 2021)
+#' getQueensYOB(apiary)
+#'
+#' queen <- setQueensYearOfBirth(queen, year = 2022)
+#' getQueensYearOfBirth(queen)
+#'
+#' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
+#' getQueensYearOfBirth(colony1)
+#'
+#' apiary <- setQueensYearOfBirth(apiary, year = 2022)
+#' getQueensYearOfBirth(apiary)
+#'
+#' @return numeric, the year of birth of the queen when \code{x} is colony or
+#' queens when \code{x} is Colonies, \code{NA} if queen not present, named by
+#' colony id when \code{x} is Colonies
 #'
 #' @export
-extractQueensYOB <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
+getQueensYearOfBirth <- getQueensYOB <- function(x) {
+  if ("Pop" %in% class(x)) {
+    ret <- ifelse(is.null(x@misc$yearOfBirth), NA, x@misc$yearOfBirth)
+  } else if ("Colony" %in% class(x)) {
+    ret <- ifelse(is.null(x@queen@misc$yearOfBirth), NA, x@queen@misc$yearOfBirth)
+  } else if ("Colonies" %in% class(x)) {
+    ret <- sapply(X = x@colonies,
+                  FUN = function(z) {
+                    ifelse(is.null(z@queen@misc$yearOfBirth), NA, z@queen@misc$yearOfBirth)
+                  })
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
-  year <- colony@queen@misc$yearOfBirth
-  return(year)
+  return(ret)
 }
 
 #' @rdname computeQueensAge
 #' @title Compute the queen's age in years
-#' @usage \method{computeQueenAge}(colony, year)
+#'
 #' @description Compute the age of the queen from the \code{colony@queen@misc$yearOfBirth} slot
 #' @param x Undefined argument. Can be a "Pop" class or "Colony" class
 #' @param currentYear Integer, current year
@@ -363,7 +392,7 @@ extractQueensYOB <- function(colony) {
 #' extractQueenYOB(colony)
 #' computerQueenAge(colony, currentYear = 5)
 #'
-#' @return Integer, the age of the queen.
+#' @return integer, namedTODO
 #'
 #' @export
 computeQueensAge <- function(x, currentYear) {
@@ -380,13 +409,14 @@ computeQueensAge <- function(x, currentYear) {
 }
 
 #' @rdname getId
-#' @title Get the colonies IDs from the colonies
-#' @usage \method{getId}(colonies)
-#' @description Get the colony IDs from the colonies
-#' @param colonies AlphaSimRBee Colonies object from the \code{createColonies(...)} call
+#' @title Get the colony ID
+#'
+#' @description Get the colony ID. This is by definition the ID of the queen.
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
-#'  #Create founder haplotypes
+#' #Create founder haplotypes
 #' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 #'
 #' #Set simulation parameters
@@ -399,9 +429,10 @@ computeQueensAge <- function(x, currentYear) {
 #' Apiary1 <- createColonies(,n = 10)
 #'
 #' #Get colony IDs from the colonies
-#' getId (Apiary1)
+#' getId(Apiary1)
 #'
-#' @return Character. Colony IDs
+#' @return character
+#'
 #' @export
 getId <- function(x) {
   if ("Colony" %in% class(x)) {
@@ -416,14 +447,16 @@ getId <- function(x) {
 }
 
 #' @rdname hasSplit
-#' @title Test to see if colony/colonies have split in the current period
-#' @usage \method{hasSplit}(x)
-#' @description
-#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @title Test if colony has split
+#'
+#' @description Test if colony has split. This will obviously impact colony strength.
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
+#' TODO
 #'
-#' @return
+#' @return logical, named by colony id when \code{x} is Colonies
 #'
 #' @export
 hasSplit <- function(x) {
@@ -440,13 +473,17 @@ hasSplit <- function(x) {
 }
 
 #' @rdname hasSwarmed
-#' @title Test to see if colony/colonies have swarmed in the current period
-#' @usage \method{hasSwarmed}(x)
-#' @description
-#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @title Test if colony has swarmed
+#'
+#' @description Test if colony has swarmed. This will obviously have major impact
+#' on the colony and its downstream events.
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
-#' @return
+#' TODO
+#'
+#' @return logical, named by colony id when \code{x} is Colonies
 #'
 #' @export
 hasSwarmed <- function(x) {
@@ -463,14 +500,16 @@ hasSwarmed <- function(x) {
 }
 
 #' @rdname hasSuperseded
-#' @title Test to see if colony/colonies have superseded in the current period
-#' @usage \method{hasSuperseded}(x)
-#' @description
-#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @title Test if colony has superseded
+#'
+#' @description Test if colony has superseded.
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
+#' TODO
 #'
-#' @return
+#' @return logical, named by colony id when \code{x} is Colonies
 #'
 #' @export
 hasSuperseded <- function(x) {
@@ -487,15 +526,17 @@ hasSuperseded <- function(x) {
 }
 
 #' @rdname isProductive
-#' @title Test to see if colony/colonies are currently productive
-#' @usage \method{isProductive}(x)
-#' @description
+#' @title Test if colony is currently productive
 #'
-#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @description Test if colony is currently productive. This can be used to
+#' programatically decided if colony production can be simulated.
+#'
+#' @param x Colony or Colonies
 #'
 #' @examples
+#' TODO
 #'
-#' @return
+#' @return logical, named by colony id when \code{x} is Colonies
 #'
 #' @export
 isProductive <- function(x) {
@@ -512,11 +553,8 @@ isProductive <- function(x) {
 }
 
 #' @rdname simulateHoneyBeeGenomes
-#' @title Simulate the Honey bee genome, including the csd locus
-#' @usage \method{simulateHoneyBeeGenomes}(nInd, nChr, nSegSites, Ne, nBp. genLen,
-#'                                         mutRate, histNe, histGen, split, csdChr,
-#'                                         csdPos, nCsdHaplos, nThreads)
-#'
+#' @title Simulate the Honey bee genome, including the csd locus WORK IN PROGRESS
+
 #' @description
 #'
 #' @param nInd number of individuals to simulate
@@ -542,7 +580,7 @@ isProductive <- function(x) {
 #' csd <- tmp$csd
 #' rm(tmp)
 #'
-#' @return
+#' @return TODO
 #'
 #' @export
 simulateHoneyBeeGenomes <- function(nInd = NULL,
@@ -602,17 +640,17 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 }
 
 #' @rdname getCsdHaplo
-#' @title Get the Haplotypes of the csd locus
-#' @usage \method{getCsdHaplo}(x, csd)
+#' @title Get the Haplotypes of the csd locus WORK in PROGRESS
 #'
-#'@param x Undefined argument. Can be a "Colony" class or "Colonies" class
-#'@param csd complementary sex determination locus- list with nodes chr, start and stop
+#' @description TODO
 #'
-#' @description
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @param csd complementary sex determination locus- list with nodes chr, start and stop
 #'
 #' @examples
+#' TODO
 #'
-#' @return
+#' @return TODO
 #'
 #' @export
 getCsdHaplo <- function(x, csd = NULL) {
@@ -639,17 +677,18 @@ getCsdHaplo <- function(x, csd = NULL) {
 }
 
 #' @rdname getCsdGeno
-#' @title Get the Genotypes of the csd locus
-#' @usage \method{getCsdGeno}(x, csd)
+#' @title Get the Genotypes of the csd locus WORK in PROGRESS
 #'
-#'@param x Undefined argument. Can be a "Colony" class or "Colonies" class
-#'@param csd complementary sex determination locus- list with nodes chr, start and stop
+#' @description TODO
 #'
-#' @description
+#' @param x Undefined argument. Can be a "Colony" class or "Colonies" class
+#' @param csd complementary sex determination locus- list with nodes chr, start and stop
+#'
 #'
 #' @examples
+#' TODO
 #'
-#' @return
+#' @return TODO
 #'
 #' @export
 getCsdGeno <- function(x, csd = NULL) {

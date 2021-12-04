@@ -3,15 +3,12 @@
 #' @rdname createColonies
 #' @title Create colonies
 #'
-#' @description
-#' Creates a set of colonies
+#' @description Creates a set of colonies
 #'
 #' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
 #' or NULL objects.
 #' @param n numeric, number of colonies to create; this argument takes precedence
 #' over \code{...}
-#'
-#' @return A \code{\link{Colonies-class}} object
 #'
 #' @examples
 #' # Create 10 empty colonies
@@ -29,6 +26,8 @@
 #' apiary2 <- createColonies(colony1, colony2)
 #' # ... an alternative
 #' apiary2 <- c(colony1, colony2)
+#'
+#' @return A \code{\link{Colonies-class}} object
 #'
 #' @export
 createColonies <- function(..., n = NULL) {
@@ -48,8 +47,8 @@ createColonies <- function(..., n = NULL) {
 #' @rdname addColonyToColonies
 #' @title Add a colony to colonies
 #'
-#' @description
-#' Adds a colony to a set of colonies, for example, to add a new colony to an apiary.
+#' @description Adds a colony to a set of colonies, for example, to add a new
+#' colony to an apiary.
 #'
 #' @param colonies Colonies, set of colonies that will be expanded
 #' @param colony Colony, colony that will be added
@@ -94,10 +93,9 @@ addColonyToColonies <- function(colonies, colony) {
 #' @rdname assignColonyToColonies
 #' @title Assign (replace) a colony to colonies
 #'
-#' @description
-#' Assigns (replaces) a colony among a set of colonies, for example, to replace
-#' an old colony. By defining a position, it will insert the colony to that position
-#' and with this replace the old colony at that position.
+#' @description Assigns (replaces) a colony among a set of colonies, for example,
+#' to replace an old colony. By defining a position, it will insert the colony to
+#' that position and with this replace the old colony at that position.
 #'
 #' @param colony Colony, colony that will be added
 #' @param colonies Colonies, set of colonies that will be expanded
@@ -147,8 +145,6 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' \code{colonies}; note that numeric value is effectively converted to character
 #' - see examples how to select by index
 #'
-#' @return Colonies, selected colonies
-#'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
@@ -177,6 +173,8 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' getId(apiary[c(2, 1)])
 #' getId(apiary[c("5", "4")])
 #'
+#' @return Colonies, selected colonies
+#'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!"Colonies" %in% class(colonies)) {
@@ -199,11 +197,10 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 
 #' @rdname pullColonies
 #' @title Pull the colonies from the colony list based on IDs.
-#' @usage \method{pullColonies}(colonies,ID, p)
 #'
-#' @description Pull the colonies from the list of all colonies based
-#' on colony IDs and return two lists: a list of selected colonies and
-#' updated original colonies
+#' @description Pull the colonies from the list of all colonies based on colony
+#' IDs and return two lists: a list of selected colonies and updated original
+#' colonies.
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
@@ -241,6 +238,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' pull <- pulledColonies$pulledColonies
 #'
 #' @return Two lists: a list of selected colonies and an updated input colonies
+#'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!"Colonies" %in% class(colonies)) {
@@ -268,8 +266,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 }
 
 #' @rdname removeColonies
-#' @title Remove the colonies from the colony list based on IDs.
-#' @usage \method{removeColonies}(colonies, ID)
+#' @title Remove the colonies from the colony list based on IDs
 #'
 #' @description Remove the colonies from the list of all colonies based
 #' on colony IDs and return a list of remaining colonies.
@@ -306,6 +303,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' apiary <- removeColonies(apiary, ID = c(1,2))
 #'
 #' @return A list of remaining colonies. Updated AlphaSimRBee Colonies object
+#'
 #' @export
 removeColonies <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
@@ -320,7 +318,6 @@ removeColonies <- function(colonies, ID) {
 
 #' @rdname createMultipleVirginColonies
 #' @title Create a list object of class "colonies" containing only unmated virgin queens
-#' @usage \method{createMultipleVirginColonies}(colonies, ID)
 #'
 #' @description The function is intended for creating initial colonies from
 #' 'FOUNDERPOP'. The user can create a list containing their desired number of colonies (nColonies).
@@ -344,6 +341,7 @@ removeColonies <- function(colonies, ID) {
 #'  apiary1 <- createMultipleVirginColonies(founderPop = base, nColonies = 10)
 #'
 #' @return A AlphaSimRBee Colonies object
+#'
 #' @export
 createMultipleVirginColonies <- function(founderPop, nColonies) {
   ret <- createColonies(n = nColonies)
@@ -356,7 +354,6 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 
 #' @rdname createMultipleMatedColonies
 #' @title Create a list object of class "colonies" containing mated queens, virgin queens and fathers
-#' @usage \method{createMultipleMatedColonies}(founderPop, nColonies, nAvgFathers)
 #'
 #' @description The function is intended for creating initial colonies from
 #' 'FOUNDERPOP'. The user can create a list containing their desired number of colonies (nColonies).
@@ -380,6 +377,7 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' @return A AlphaSimRBee Colonies object
+#'
 #' @export
 createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
   ret <- createColonies(n = nColonies)
@@ -399,7 +397,6 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
 
 #' @rdname buildUpColonies
 #' @title  Build up Colonies by adding workers and drones
-#' @usage \method{buildUpColonies}(colonies, nWorkers, nDrones)
 #'
 #' @description Workers and drones are added to the colonies to build them
 #' up to the number of desired workers and drones (nWorkers and nDrones).
@@ -427,8 +424,8 @@ createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
-#
 buildUpColonies <- function(colonies, nWorkers, nDrones) {
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
@@ -441,7 +438,6 @@ buildUpColonies <- function(colonies, nWorkers, nDrones) {
 
 #' @rdname replaceWorkersColonies
 #' @title  Replace workers in all the colonies of a Colonies object
-#' @usage replaceWorkersColonies(colonies)
 #'
 #' @description The function replaces a given proportion of workers in all the colonies
 #' of a Colonies object with new workers from the same mated queen. The default percentage
@@ -470,6 +466,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones) {
 #'   apiary1 <- replaceWorkers(apiary1)
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 replaceWorkersColonies <- function(colonies, p = 1) {
   nCol <- nColonies(colonies)
@@ -484,7 +481,6 @@ replaceWorkersColonies <- function(colonies, p = 1) {
 
 #' @rdname replaceDronesColonies
 #' @title  Replace drones in all the colonies of a Colonies object
-#' @usage replaceDronesColonies(colonies)
 #'
 #' @description The function replaces a given proportion of drones in all the colonies
 #' of a Colonies object with new drones from the same queen. The default percentage
@@ -513,6 +509,7 @@ replaceWorkersColonies <- function(colonies, p = 1) {
 #'   apiary1 <- replaceDrones(apiary1)
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 replaceDronesColonies <- function(colonies, p = 1) {
   nCol <- nColonies(colonies)
@@ -526,8 +523,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
 }
 
 #' @rdname reQueenColonies
-#' @title  reQueen Colonies
-#' @usage \method{reQueenColonies}(colonies, queens)
+#' @title TODO
 #'
 #' @description: Add a new queen/virgin queen into the queens slot of the colonies.
 #' For example: this can be used to re-queen swarmed or split colonies where no queens are present.
@@ -561,9 +557,9 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #'
 #'  # Requeen the splits
 #'  splitcolonies <- reQueenColonies(splitcolonies, queens = virginQueens)
-
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 reQueenColonies <- function(colonies, queens) {
   nCol <- nColonies(colonies)
@@ -578,10 +574,9 @@ reQueenColonies <- function(colonies, queens) {
 }
 
 #' @rdname collapseColonies
-#' @title  collapseColonies
-#' @usage \method{collapseColonies}(colonies, ID)
+#' @title TODO
 #'
-#' @description:
+#' @description TODO
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
@@ -615,6 +610,7 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary <- collapseColonies(apiary, ID = c(1,2))
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 collapseColonies <- function(colonies, ID) {
   ret <- removeColonies(colonies, ID)
@@ -622,8 +618,7 @@ collapseColonies <- function(colonies, ID) {
 }
 
 #' @rdname supersedeColonies
-#' @title  supersedeColonies
-#' @usage \method{supersedeColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+#' @title TODO
 #'
 #' @description:  Replicates the process of supersedure, where the
 #' queen is replaced by a new virgin queen. The workers and the drones stay
@@ -661,6 +656,7 @@ collapseColonies <- function(colonies, ID) {
 #' apiary1 <- c(apiary1, tmp)
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 supersedeColonies <- function(colonies) {
   nCol <- nColonies(colonies)
@@ -675,8 +671,7 @@ supersedeColonies <- function(colonies) {
 }
 
 #' @rdname swarmColonies
-#' @title  swarmColonies
-#' @usage \method{swarmColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+#' @title TODO
 #'
 #' @description: Replicates the swarming of the colonies - the process in which
 #' a part of the workers leave with the old queen and creates a new colony (the swarm),
@@ -710,6 +705,7 @@ supersedeColonies <- function(colonies) {
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
 #'
 #' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
+#'
 #' @export
 swarmColonies <- function(colonies) {
   nCol <- nColonies(colonies)
@@ -727,8 +723,7 @@ swarmColonies <- function(colonies) {
 }
 
 #' @rdname splitColonies
-#' @title  splitColonies
-#' @usage \method{splitColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+#' @title TODO
 #'
 #' @description: Two AlphaSim population objects of the split colonies and the remaining colonies are created.
 #' Spit the colony into two new colonies to prevent swarming (in managed populations)
@@ -763,6 +758,7 @@ swarmColonies <- function(colonies) {
 #'  TODO FINISH EXAMPLE
 #'
 #' @return Two AlphaSim population objects of the split colonies and the remaining colonies
+#'
 #' @export
 splitColonies <- function(colonies) {
   nCol <- nColonies(colonies)
@@ -780,8 +776,7 @@ splitColonies <- function(colonies) {
 }
 
 #' @rdname crossColonies
-#' @title  crossColonies
-#' @usage \method{crossColonies}(colonies, DCA, nAvgFathers, crossVirginQueen, fathers, pWorkers, pDrones)
+#' @title TODO
 #'
 #' @description:  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
 #' \creates workers, drones and a new virgin queen and write them to the corresponding
@@ -815,6 +810,7 @@ splitColonies <- function(colonies) {
 #'  TODO FINISH
 #'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 crossColonies <- function(colonies, DCA, nAvgFathers) {
   nCol <- nColonies(colonies)
@@ -833,17 +829,19 @@ crossColonies <- function(colonies, DCA, nAvgFathers) {
 }
 
 #' @rdname setPhenoColonies
-#' @title  setPhenoColonies
-#' @usage \method{setPhenoColonies}(colonies, FUN, ...)
+#' @title TODO
 #'
-#' @description:
+#' @description
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param FUN
 #' @param ...
 #'
 #' @examples
+#' TODO
+#'
 #' @return An updated AlphaSimRBee Colonies object
+#'
 #' @export
 setPhenoColonies <- function(colonies, FUN = NULL, ...) {
   nCol <- nColonies(colonies)

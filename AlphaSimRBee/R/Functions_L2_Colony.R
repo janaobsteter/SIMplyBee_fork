@@ -3,8 +3,7 @@
 #' @rdname createColony
 #' @title Create a new Colony
 #'
-#' @description
-#' Creates a new \code{\link{Colony}}.
+#' @description Creates a new \code{\link{Colony}}.
 #' The function is intended for creating initial colonies from
 #' 'FOUNDERPOP' created by \code{\link{runMacs}}.
 #'
@@ -23,8 +22,6 @@
 #' @param last_event Character, the last event of the colony #TODO: WE probably don't need this
 #' @param misc A list, normally empty and exists solely as an open slot available for uses to store extra information about individuals.
 #'
-#' @return Returns an object of \code{\link{Colony}}
-#'
 #' @examples
 #' # Create founder genomes
 #' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 10)
@@ -39,7 +36,7 @@
 #' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
 #' colony2 <- createColony(virgin_queens = basePop[16])
 #'
-#' @return AlphaSim Colony object of class "Colony"
+#' @return Colony
 #'
 #' @export
 createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL,
@@ -88,48 +85,8 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
   return(output)
 }
 
-#' @rdname setQueensYOB
-#' @title Set the queen's year of birth
-#' @usage \method{setQueenYOB}(colony)
-#' @description Set the year of birth of the queen in the \code{colony@queen@misc$yearOfBirth} slot
-#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
-#' @param year Integer, the year of the birth of the queen
-#'
-#' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
-#'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' setQueenAge(colony, 1)
-#'
-#' @return AlphaSimRBee Colony object
-#'
-#' @export
-setQueensYOB <- function(x, year) {
-  if ("Pop" %in% class(x)) {
-    x@misc$yearOfBirth <- year
-  } else if ("Colony" %in% class(x)) {
-    if (!is.null(x@queen)) {
-      x@queen@misc$yearOfBirth <- year
-    } else {
-      stop("Missing queen!")
-    }
-  } else {
-    stop("Argument x must be a Pop or Colony class object!")
-  }
-  return(x)
-}
-
 #' @rdname addWorkers
 #' @title Add workers to the colony
-#' @usage \method{addWorkers}(colony, nInd)
 #'
 #' @description Create workers and store them in the \code{colony@workers} slot. If there is
 #' already some workers present in the hive, the function will not overwrite them but instead
@@ -152,7 +109,7 @@ setQueensYOB <- function(x, year) {
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
 #' colony1 <- addWorkers(colony1, nInd = 2000)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 #'
@@ -173,8 +130,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 }
 
 #' @rdname addDrones
-#' @title
-#' @usage \method{addDrones}(colony, nInd)
+#' @title TODO
 #'
 #' @description Create drones and store them in the \code{colony@drones} slot. If there is
 #' already some drones present in the hive, the function will not overwrite them but instead
@@ -200,7 +156,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #' colony1 <- addWorkers(colony1, nInd = 2000)
 #' colony1 <- addDrones(colony, nInd = 100)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 addDrones <- function(colony, nInd) {
@@ -225,6 +181,7 @@ addDrones <- function(colony, nInd) {
 #' @description Creates the specified number of virgin queens in the colony
 #'       \by crossing the current queen and the fathers and adds them in
 #'       \ the \code{colony@virgin_queens} slot.
+#'
 #' @param colony AlphaSimRBee Colony object
 #' @param nInd Numeric. Number of virgin queens to create
 #'
@@ -248,7 +205,8 @@ addDrones <- function(colony, nInd) {
 #' #Insert 10  virgin queens into the colony
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
+#'
 #' @export
 addVirginQueens <- function(colony, nInd) {
   if (!"Colony" %in% class(colony)) {
@@ -268,8 +226,7 @@ addVirginQueens <- function(colony, nInd) {
 }
 
 #' @rdname reQueenColony
-#' @title  reQueenColony
-#' @usage \method{reQueenColony}(colony, queen)
+#' @title TODO
 #'
 #' @description Re-queens a colony/colonies that have no queen or virgin queens present.
 #' This function allows users to insert a virgin queen or a previously mated queen
@@ -305,7 +262,8 @@ addVirginQueens <- function(colony, nInd) {
 #' #Repopulate the split colonies with virgin queens taken from the base population
 #' apiary0 <- reQueenColonies(apiary0, queen = virginQueens)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
+#'
 #' @export
 reQueenColony <- function(colony, queen) {
   if (!"Colony" %in% class(colony)) {
@@ -324,8 +282,7 @@ reQueenColony <- function(colony, queen) {
 }
 
 #' @rdname buildUpColony
-#' @title  buildUpColony
-#' @usage \method{buildUpColony}(colony, nWorkers, nDrones)
+#' @title TODO
 #'
 #' @description Workers and drones are added to a colony/colonies to build it/them
 #' up to the number of desired workers and drones (nWorkers and nDrones).
@@ -353,7 +310,7 @@ reQueenColony <- function(colony, queen) {
 #' colonyFullSize <- 500
 #' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers, nDrones) {
@@ -374,7 +331,6 @@ buildUpColony <- function(colony, nWorkers, nDrones) {
 
 #' @rdname replaceWorkers
 #' @title Replaces a proportion workers with new workers with new genetic information
-#' @usage \method{replaceWorkers}(colony, p)
 #'
 #' @description Replace a proportion of workers in the new with new workers from the same queen and same fathers.
 #' A user would want to replace a proportion (or all) of workers after swarming and supersedure or
@@ -398,7 +354,7 @@ buildUpColony <- function(colony, nWorkers, nDrones) {
 #' colony1 <- addWorkers(colony1, nInd = 2000)
 #' colony1 <- replaceWorkers(colony1, p = 0.2)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 replaceWorkers <- function(colony, p = 1) {
@@ -419,7 +375,6 @@ replaceWorkers <- function(colony, p = 1) {
 
 #' @rdname replaceDrones
 #' @title Replaces drone with new drone with new genetic information
-#' @usage \method{replaceWorkers}(colony, p)
 #'
 #' @description Replace a proportion of drones in the new with new drones from the same queen.
 #' A user would want to replace a proportion (or all) of drones after swarming and supersedure or
@@ -443,7 +398,7 @@ replaceWorkers <- function(colony, p = 1) {
 #' colony1 <- addDrones(colony1, nInd = 2000)
 #' colony1 <- replaceDrones(colony1, p = 0.2)
 #'
-#' @return Updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 replaceDrones <- function(colony, p = 1) {
@@ -485,7 +440,7 @@ replaceDrones <- function(colony, p = 1) {
 #' colony
 #' getQueen(colony)
 #'
-#' @return Colony without a queen
+#' @return Colony
 #'
 #' @export
 removeQueen <- function(colony) {
@@ -519,7 +474,7 @@ removeQueen <- function(colony) {
 #' colony
 #' getVirginQueens(colony)
 #'
-#' @return Colony without virgin queens
+#' @return Colony
 #'
 #' @export
 removeVirginQueens <- function(colony) {
@@ -532,15 +487,17 @@ removeVirginQueens <- function(colony) {
 
 #' @rdname removeWorkers
 #' @title Remove selected percentage of workers
-#' @usage \method{removeWorkers}(colony, p)
 #'
 #' @description To decrease the number of workers (for example, in winter)
 #'
 #' @param colony Colony class. AlphaSimR Colony object from the \code{createColony(...)} call
 #' @param p Numeric. 0<=p>=1 .
 #'
-#' @examples inst/examples/examples_removeWorkers.R
-#' @return Updated AlphaSimRBee Colony object
+#' @examples
+#' TODO
+#'
+#' @return Colony
+#'
 #' @export
 removeWorkers <- function(colony, p) {
   if (!"Colony" %in% class(colony)) {
@@ -562,15 +519,16 @@ removeWorkers <- function(colony, p) {
 
 #' @rdname removeDrones
 #' @title Remove selected percentage of drones
-#' @usage \method{removeWorkers}(colony, nWorkers)
 #'
 #' @description To decrease the number of drones (for example, in winter)
 #'
 #' @param colony Colony class. AlphaSimR Colony object from the \code{createColony(...)} call
 #' @param p Numeric. 0<=p>=1 .
 #'
-#' @examples inst/examples/examples_removeDrones.R
-#' #' @return Updated AlphaSimRBee Colony object
+#' @examples
+#'
+#' @return Colony
+#'
 #' @export
 removeDrones <- function(colony, p) {
   if (!"Colony" %in% class(colony)) {
@@ -592,7 +550,6 @@ removeDrones <- function(colony, p) {
 
 #' @rdname resetEvents
 #' @title Reset the swarm, split, supersedure events
-#' @usage \method{resetEvents}(colony)
 #'
 #' @description Reset the slots swarm, split and supersedure to FALSE.
 #' A user will use this function at the end of a yearly cycle to reset the events,
@@ -601,9 +558,9 @@ removeDrones <- function(colony, p) {
 #' @param colony AlphaSimRBee Colony object.
 #'
 #' @examples
-#' make reset events' example
+#' TODO
 #'
-#' @return An updated AlphaSimRBee Colony object
+#' @return Colony
 #'
 #' @export
 resetEvents <- function(colony) {
@@ -617,8 +574,7 @@ resetEvents <- function(colony) {
 }
 
 #' @rdname crossColony
-#' @title Crosses a colony with a virgin queen to a group of fathers pulled from the DCA.
-#' @usage \method{crossColony}(colony, fathers, nWorkers, nDrones)
+#' @title Crosses a colony with a virgin queen to a group of fathers pulled from the DCA
 #'
 #' @description Crosses a colony with a virgin queen to a group of fathers pulled from the DCA
 #' \creates workers, drones and a new virgin queen and write them to the corresponding
@@ -630,8 +586,12 @@ resetEvents <- function(colony) {
 #' @param fathers Pop Class. Father group pulled from the DCA.
 #' @param nWorkers Integer.Number of workers to create
 #' @param nDrones Integer. Number of drones to create
-#' @examples inst/examples/examples_crossColony.R
-#' @return Single AlphaSim population object of a mated colony
+#'
+#' @examples
+#' TODO
+#'
+#' @return Colony
+#'
 #' @export
 crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
   if (!"Colony" %in% class(colony)) {
@@ -664,17 +624,18 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
 
 #' @rdname collapseColony
 #' @title Replicates colony collapse
-#' @usage \method{collapseColony}(colony)
 #'
 #' @description Replicates the collapse of a colony. This can be due to winter losses, disease or other factors.
 #' @seealso \code{\link[??????]{collapseColony}}
 #'
 #' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
 #'
-#' @examples inst/examples/examples_collapseColony.R
-#' @return Single AlphaSim population object of collapsed colony
-#' @export
+#' @examples
+#' TODO
 #'
+#' @return Colony
+#'
+#' @export
 collapseColony <- function(colony) {
   if (!"Colony" %in% class(colony)) {
     stop("Argumnet colony must be a Colony class object!")
@@ -684,8 +645,7 @@ collapseColony <- function(colony) {
 }
 
 #' @rdname swarmColony
-#' @title Replicates the swarming process and produces two colonies.
-#' @usage \method{swarmColony}(colony, pSwarm, crossVirginQueen. fathers, nWorkers, nDrones, swarmLocation)
+#' @title Replicates the swarming process and produces two colonies
 #'
 #' @description List. Replicates the swarming of the colony - the process in which
 #' a part of the workers leave with the old queen and creates a new colony (the swarm),
@@ -705,8 +665,10 @@ collapseColony <- function(colony) {
 #' @param swarm Location Integer. X,Y coordinates of newly made swarmed hive
 #'
 #' @examples inst/examples/examples_swarm.R
-#' @return Two colonies, one with the new queen and proportion of workers and
-#' one with the old queen and proportion of workers.
+#'
+#' @return list with two Colony, swarm with the old queen and a proportion of workers,
+#' and remnant with a new queen and a proportion of workers
+#'
 #' @export
 swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, pDrones = 1, swarmLocation = NULL) {
@@ -763,8 +725,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 }
 
 #' @rdname supersedeColony
-#' @title Replicates a supersedure of the colony and replaces the queen with a virgin queen.
-#' @usage \method{supersedureColony}(colony, crossVirginQueen, fathers, nWorkers, nDrones)
+#' @title Replicates a supersedure of the colony and replaces the queen with a virgin queen
 #'
 #' @description Replicates the process of supersedure, where the
 #' queen is replaced by a new virgin queen. The workers and the drones stay
@@ -777,8 +738,11 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 #' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen
 #' @param pDrones Numeric, proportion of drones that are replaced with the drones from the new queen
 #'
-#' @examples inst/examples/examples_supersedeColony.R
-#' @return Single AlphaSim population object of superseded colony
+#' @examples
+#' TODO
+#'
+#' @return Colony
+#'
 #' @export
 supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
                             pWorkers = 1, pDrones = 1) {
@@ -810,8 +774,7 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 }
 
 #' @rdname splitColony
-#' @title Split the colony in two colonies.
-#' @usage \method{splitColony}(colony, pSplit, newQueen, crossVirginQueen, fathers, nWorkers, nDrones, splitLocation)
+#' @title Split the colony in two colonies
 #'
 #' @description Spit the colony into two new colonies to prevent swarming (in managed populations)
 #' - one colony is with the old queen and a part of the workers and drones (this is the remaining colony)
@@ -828,8 +791,12 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen in the split
 #' @param splitLocation Integer. X,Y coordinates of newly made split hive
 #'
-#' @examples inst/examples/examples_splitColony.R
-#' @return Two AlphaSim population objects of the split colony and the remaining colony
+#' @examples
+#' TODO
+#'
+#' @return list with two Colony, split with the old queen and a proportion of workers,
+#' and remnant with a ??? and a proportion of workers TODO
+#'
 #' @export
 splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, splitLocation = NULL) {
