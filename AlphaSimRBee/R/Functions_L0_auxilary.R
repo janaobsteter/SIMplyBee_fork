@@ -434,30 +434,33 @@ getQueensAge <- function(x, currentYear) {
 #' @param x Colony or Colonies
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' getId(colony1)
+#' getId(colony2)
+#' getId(apiary)
 #'
-#' #Create an apiary containing 10 colonies
-#' Apiary1 <- createColonies(,n = 10)
+#' colony2 <- removeQueen(colony2)
+#' getId(colony2)
 #'
-#' #Get colony IDs from the colonies
-#' getId(Apiary1)
-#'
-#' @return character
+#' @return character, \code{NA} when queen not present
 #'
 #' @export
 getId <- function(x) {
   if ("Colony" %in% class(x)) {
-    id <- x@id
+    id <- ifelse(is.null(x@id), NA, x@id)
   } else if ("Colonies" %in% class(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
-    id <- sapply(x@colonies, FUN = function(x) x@id)
+    id <- sapply(x@colonies, FUN = function(z) ifelse(is.null(z@id), NA, z@id))
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }

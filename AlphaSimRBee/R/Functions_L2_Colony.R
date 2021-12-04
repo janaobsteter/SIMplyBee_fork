@@ -448,6 +448,7 @@ removeQueen <- function(colony) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@queen <- NULL
+  colony@id <- NULL
   return(colony)
 }
 

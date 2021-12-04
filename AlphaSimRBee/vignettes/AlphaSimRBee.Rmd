@@ -80,8 +80,8 @@ createColony; input Pop; return Colony
 addWorkers; input Colony, return Colony; TODO some have Colony in name, some don't!?
 addDrones
 addVirginQueens; TODO add external virgin queens?
-reQueenColony
-buildUpColony; TODO add replace?
+reQueenColony; TODO rename to replaceQueen()?
+buildUpColony; TODO add replace? rename to buildUp()?
 replaceWorkers
 replaceDrones
 removeQueen
@@ -89,13 +89,13 @@ removeVirginQueen
 removeWorkers
 removeDrones
 resetEvents
-crossColony
-collapseColony
-supersedeColony
+crossColony; TODO rename to cross()?
+collapseColony; TODO rename to collapse()?
+supersedeColony; TODO rename to supersede()?
 setPhenoColony
 
-swarmColony; input Colony, return list of 2 Colony
-splitColony
+swarmColony; input Colony, return list of 2 Colony; TODO rename to swarm()?
+splitColony; TODO rename to split()?
 
 # L3 functions
 
@@ -112,17 +112,17 @@ pullColonies; input Colonies; return list of 2 Colonies
 createMultipleVirginColonies; input Pop; return Colonies; TODO remove mulitiple? How is this different to createColonies?
 createMultipleMatedColonies
 
-buildUpColonies; input Colonies; return Colonies
-replaceWorkersColonies
-replaceDronesColonies
-reQueenColonies
+buildUpColonies; input Colonies; return Colonies; TODO rename to buildUp()?
+replaceWorkersColonies; TODO rename to replaceWorkers()?
+replaceDronesColonies; TODO rename to replaceDrones()?
+reQueenColonies; TODO rename to replaceQueen()?
 collapseColonies
 supersedeColonies
 
-swarmColonies; input Colonies; return list of 2 Colonies
-splitColonies
+swarmColonies; input Colonies; return list of 2 Colonies; TODO rename to swarm()?
+splitColonies; TODO rename to split()?
 
-crossColonies; input Colonies; return Colonies
+crossColonies; input Colonies; return Colonies; TODO rename to cross()?
 setPhenoColonies
 
 ```{r setup}

@@ -55,7 +55,7 @@ setMethod("show",
           signature(object = "Colony"),
           function(object) {
             cat("An object of class", classLabel(class(object)), "\n")
-            cat("Id:", ifelse(is.null(object@id), NA, object@id),"\n")
+            cat("Id:", getId(object),"\n")
             cat("Location:", ifelse(is.null(object@location), NA, object@location),"\n")
             cat("Queen:", ifelse(is.null(object@queen), NA, object@queen@id),"\n")
             cat("Fathers:", nFathers(object), "\n")
