@@ -241,7 +241,7 @@ getWorkers <- function(x, nInd = NULL) {
 #' @description Access drones
 #'
 #' @param x Colony or Colonies
-#' @param nInd numeric, number of drnes to access, if NULL all drones
+#' @param nInd numeric, number of drones to access, if NULL all drones
 #' are accessed, otherwise a random sample
 #'
 #' @examples
@@ -430,46 +430,47 @@ createVirginQueens <- function(colony, nInd){
 }
 
 #' @rdname createDCA
-#' @title Creates a drone congregation area (DCA) from the list of colonies
-#' @usage \method{createDCA}(list(x))
-#' @description Creates a drone congregation area (DCA) from selected colonies.
-#' The function takes a vector of the colonies and returns a combined population of drones.
-#' @seealso \code{\link[??????]{select_colonies}}
-#' @param colonies A list of colonies, each of AlphaSimRBee Colony object
+#' @title Create a drone congregation area (DCA)
+#'
+#' @description Create a drone congregation area (DCA) from colony or colonies.
+#'#'
+#' @param x Colony or Colonies
+#' @param nInd numeric, number of drones to access, if NULL all drones
+#' are accessed, otherwise a random sample
 #'
 #' @examples
-#'# Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony2 <- addDrones(colony2, nInd = 20)
+#' createDCA(colony1)
+#' createDCA(colony2)
+#' createDCA(colony2, nInd = 10)@id
+#' createDCA(colony2, nInd = 10)@id
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' apiary <- c(colony1, colony2)
+#' createDCA(apiary)
+#' createDCA(apiary, nInd = 10)
 #'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
+#' @return Pop, population object with drones
 #'
-#' #Create drones that will be in DCA
-#' colony1@drones <- createDrones(colony1, nInd = 300)
-#' colony2@drones <- createDrones(colony2, nInd = 300)
-#'
-#' DCA <- createDCA(c(colony1, colony2))
-#'
-#' @return Single AlphaSim population object of drones from the provided colonies.
 #' @export
-createDCA <- function(x) {
+createDCA <- function(x, nInd = NULL) {
   if ("Colony" %in% class(x)) {
-    DCA <- x@drones
+    DCA <- getDrones(x, nInd = nInd)
   } else if ("Colonies" %in% class(x)) {
-    DCA <- lapply(X = x@colonies, FUN = function(z) z@drones)
+    DCA <- getDrones(x, nInd = nInd)
     DCA <- mergePops(popList = DCA)
   } else {
     stop("Argument x must be a Colony of Colonies class object!")
   }
-  message(paste0("Created a DCA with ", DCA@nInd, " drones."))
   return(DCA)
 }
 
@@ -517,7 +518,6 @@ pullDronesFromDCA <- function(DCA, nInd) {
   sel <- DCA@id %in% selectedDronesID
   selectedDrones <- DCA[sel]
   updatedDCA <- DCA[!sel]
-  message(paste0("Selected ", nInd, " fathers from DCA"))
   ret <- list(selectedDrones = selectedDrones, DCA = updatedDCA)
   return(ret)
 }
