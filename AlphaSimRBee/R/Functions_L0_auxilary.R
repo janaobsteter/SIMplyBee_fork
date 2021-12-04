@@ -369,41 +369,59 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
   return(ret)
 }
 
-#' @rdname computeQueensAge
-#' @title Compute the queen's age in years
+#' @rdname getQueensAge
+#' @title Get (calculate) the queen's age
 #'
-#' @description Compute the age of the queen from the \code{colony@queen@misc$yearOfBirth} slot
-#' @param x Undefined argument. Can be a "Pop" class or "Colony" class
-#' @param currentYear Integer, current year
+#' @description Get (calculate) the queen's age
+#'
+#' @param x Pop, Colony, or Colonies
+#' @param currentYear integer, current year
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
 #'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' queen <- getQueen(colony1)
+#' queen <- setQueensYOB(queen, year = 2021)
+#' getQueensAge(queen, currentYear = 2022)
 #'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' setQueenAge(colony, year = 1)
-#' extractQueenYOB(colony)
-#' computerQueenAge(colony, currentYear = 5)
+#' colony1 <- setQueensYOB(colony1, year = 2021)
+#' getQueensAge(colony1, currentYear = 2022)
 #'
-#' @return integer, namedTODO
+#' apiary <- setQueensYOB(apiary, year = 2021)
+#' getQueensAge(apiary, currentYear = 2022)
+#'
+#' @return numeric, the age of the queen when \code{x} is colony or queens when
+#' \code{x} is Colonies, \code{NA} if queen of year of birth not present, named
+#' by colony id when \code{x} is Colonies
 #'
 #' @export
-computeQueensAge <- function(x, currentYear) {
+getQueensAge <- function(x, currentYear) {
   if ("Pop" %in% class(x)) {
-    ret <- currentYear - x@misc$yearOfBirth
+    if (is.null(x@misc$yearOfBirth)) {
+      ret <- NA
+    } else {
+      ret <- currentYear - x@misc$yearOfBirth
+    }
   } else if ("Colony" %in% class(x)) {
-    if (!is.null(x@queen)) {
+    if (is.null(x@queen)) {
+      ret <- NA
+    } else {
       ret <- currentYear - x@queen@misc$yearOfBirth
     }
+  } else if ("Colonies" %in% class(x)) {
+    ret <- sapply(X = x@colonies, FUN = getQueensAge, currentYear = currentYear)
+    names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Pop class object!")
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
