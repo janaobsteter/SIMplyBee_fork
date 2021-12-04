@@ -48,11 +48,11 @@ createColonies <- function(..., n = NULL) {
 #' @rdname addColonyToColonies
 #' @title Add a colony to colonies
 #'
-#' @description Adds a colony to a set of colonies, for example, to add a new
-#' colony to an apiary.
+#' @description
+#' Adds a colony to a set of colonies, for example, to add a new colony to an apiary.
 #'
-#' @param colony Colony, colony that will be added
 #' @param colonies Colonies, set of colonies that will be expanded
+#' @param colony Colony, colony that will be added
 #'
 #' @return Expanded \code{\link{Colonies-class}} object
 #'
@@ -88,6 +88,51 @@ addColonyToColonies <- function(colonies, colony) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies <- c(colonies@colonies, colony)
+  return(colonies)
+}
+
+#' @rdname assignColonyToColonies
+#' @title Assign (replace) a colony to colonies
+#'
+#' @description
+#' Assigns (replaces) a colony among a set of colonies, for example, to replace
+#' an old colony. By defining a position, it will insert the colony to that position
+#' and with this replace the old colony at that position.
+#'
+#' @param colony Colony, colony that will be added
+#' @param colonies Colonies, set of colonies that will be expanded
+#' @param pos numeric or character, position of the old colony
+#'
+#' @return Expanded \code{\link{Colonies-class}} object
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
+#' apiary <- c(colony1, colony2)
+#'
+#' getId(apiary)
+#' apiary <- assignColonyToColonies(apiary, colony3, pos = 2)
+#' getId(apiary)
+#'
+#' @return Expanded Colonies object
+#'
+#' @export
+assignColonyToColonies <- function(colonies, colony, pos) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument Colonies must be a Colonies class object!")
+  }
+  if (!"Colony" %in% class(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  colonies@colonies[[pos]] <- colony
   return(colonies)
 }
 
