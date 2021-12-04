@@ -91,6 +91,106 @@ nCaste <- function(x, caste) {
   return(ret)
 }
 
+
+
+#' @rdname nQueen
+#' @title Number of queens in a colony
+#'
+#' @description Returns the number of queens in a colony (expect 0 or 1)
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
+#' nQueen(colony1)
+#' nQueen(colony2)
+#' colony2 <- removeQueen(colony2)
+#' nQueen(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nQueen(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
+#'
+#' @export
+nQueen <- function(x) {
+  ret <- nCaste(x, caste = "queen")
+  return(ret)
+}
+
+#' @rdname nFathers
+#' @title Number of fathers in a colony
+#'
+#' @description Returns the number of nFathers (drones the queen mated with) in
+#' a colony
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
+#' nFathers(colony1)
+#' nFathers(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nFathers(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
+#'
+#' @export
+nFathers <- function(x) {
+  ret <- nCaste(x, caste = "fathers")
+  return(ret)
+}
+
+#' @rdname nVirginQueens
+#' @title Number of virgin queens in a colony
+#'
+#' @description Returns the number of virgin queens in a colony
+#'
+#' @param x Colony or Colonies
+#'
+#' @examples
+#' AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addVirginQueens(colony1, nInd = 3)
+#' colony2 <- addVirginQueens(colony2, nInd = 5)
+#' nVirginQueens(colony1)
+#' nVirginQueens(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nVirginQueens(apiary)
+#'
+#' @return Integer, named by colony id when \code{x} is Colonies
+#'
+#' @export
+nVirginQueens <- function(x) {
+  ret <- nCaste(x, caste = "virgin_queens")
+  return(ret)
+}
+
 #' @rdname nWorkers
 #' @title Number of workers in a colony
 #'
@@ -157,104 +257,6 @@ nDrones <- function(x) {
   return(ret)
 }
 
-#' @rdname nVirginQueens
-#' @title Number of virgin queens in a colony
-#'
-#' @description Returns the number of virgin queens in a colony
-#'
-#' @param x Colony or Colonies
-#'
-#' @examples
-#' AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybees
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addVirginQueens(colony1, nInd = 3)
-#' colony2 <- addVirginQueens(colony2, nInd = 5)
-#' nVirginQueens(colony1)
-#' nVirginQueens(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' nVirginQueens(apiary)
-#'
-#' @return Integer, named by colony id when \code{x} is Colonies
-#'
-#' @export
-nVirginQueens <- function(x) {
-  ret <- nCaste(x, caste = "virgin_queens")
-  return(ret)
-}
-
-#' @rdname nFathers
-#' @title Number of fathers in a colony
-#'
-#' @description Returns the number of nFathers (drones the queen mated with) in
-#' a colony
-#'
-#' @param x Colony or Colonies
-#'
-#' @examples
-#' AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybees
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
-#' nFathers(colony1)
-#' nFathers(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' nFathers(apiary)
-#'
-#' @return Integer, named by colony id when \code{x} is Colonies
-#'
-#' @export
-nFathers <- function(x) {
-  ret <- nCaste(x, caste = "fathers")
-  return(ret)
-}
-
-#' @rdname nQueen
-#' @title Number of queens in a colony
-#'
-#' @description Returns the number of queens in a colony (expect 0 or 1)
-#'
-#' @param x Colony or Colonies
-#'
-#' @examples
-#' AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybees
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
-#' nQueen(colony1)
-#' nQueen(colony2)
-#' colony2 <- removeQueen(colony2)
-#' nQueen(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' nQueen(apiary)
-#'
-#' @return Integer, named by colony id when \code{x} is Colonies
-#'
-#' @export
-nQueen <- function(x) {
-  ret <- nCaste(x, caste = "queen")
-  return(ret)
-}
-
 #' @rdname isQueenMated
 #' @title Is the queen mated?
 #'
@@ -267,15 +269,24 @@ nQueen <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
-#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-#' colony <- createColony(queen = basePop[1], fathers = drones)
-#' isQueenMated(colony)
-#' isQueenMated(getQueen(colony))
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' isQueenMated(getQueen(colony1))
+#' isQueenMated(colony1)
+#' isQueenMated(apiary)
+#'
+#' colony1 <- removeQueen(colony1)
+#' isQueenMated(colony1)
+#'
+#' colony2 <- supersedeColony(colony2, fathers = drones[1:5])
+#' isQueenMated(colony2)
 #'
 #' @return Logical
 #'
@@ -289,8 +300,10 @@ isQueenMated <- function(x) {
     } else {
       ret <- FALSE
     }
+  } else if ("Colonies" %in% class(x)) {
+    ret <- sapply(X = x@colonies, FUN = isQueenMated)
   } else {
-    stop("Argument x must be a Colony or Pop class object!")
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
