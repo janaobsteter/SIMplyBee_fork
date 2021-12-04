@@ -859,6 +859,75 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   return(ret)
 }
 
+#' @rdname setLocation
+#' @title Set the colony location
+#'
+#' @description Set the colony location as (x, y) coordinates.
+#'
+#' @param x Colony or Colonies
+#' @param location numeric or list, location (x, y) to be set for the Colony
+#' (numeric) or for Colonies (numeric to set the same location for all colony or
+#' list to set different location for each colony - if list, it has to has the
+#' same length at there is colonies in \code{x})
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybees
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#'
+#' getLocation(colony1)
+#' getLocation(colony2)
+#' getLocation(apiary)
+#'
+#' loc1 <- c(512, 722)
+#' colony1 <- setLocation(colony1, location = loc1)
+#' getLocation(colony1)
+#'
+#' loc2 <- c(189, 357)
+#' colony2 <- setLocation(colony1, location = loc2)
+#' getLocation(colony2)
+#'
+#' # Assuming one location (as in bringing colonies to one place!)
+#' apiary <- setLocation(apiary, location = loc1)
+#' getLocation(apiary)
+#'
+#' # Assuming different locations (so tmp is not an apiary in one location!)
+#' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
+#' getLocation(tmp)
+#'
+#' @return Colony or Colonies
+#'
+#' @export
+setLocation <- function(x, location) {
+  if ("Colony" %in% class(x)) {
+    x@location <- location
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    if (is.list(location)) {
+      if (length(location) != nCol) {
+        stop("The length of location list and the number of colonies must match!")
+      }
+      for (colony in 1:nCol) {
+        x@colonies[[colony]]@location <- location[[colony]]
+      }
+    } else {
+      for (colony in 1:nCol) {
+        x@colonies[[colony]]@location <- location
+      }
+    }
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(x)
+}
+
 # TODO
 setPhenoColony <- function(colony, FUN = NULL, ...) {
   if (!"Colony" %in% class(colony)) {

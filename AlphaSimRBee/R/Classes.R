@@ -56,7 +56,7 @@ setMethod("show",
           function(object) {
             cat("An object of class", classLabel(class(object)), "\n")
             cat("Id:", getId(object),"\n")
-            cat("Location:", ifelse(is.null(object@location), NA, object@location),"\n")
+            cat("Location:", getLocation(object),"\n")
             cat("Queen:", getId(object@queen),"\n")
             cat("Fathers:", nFathers(object), "\n")
             cat("Virgin queens:", nVirginQueens(object),"\n")
