@@ -18,21 +18,20 @@ knitr::opts_chunk$set(
 
 nColonies; input colonies; return n
 
-nWorkers; input colony; return n; TODO input Colony or Colonies
+nCaste; input Colony or Colonies; return n
+nQueen
+nWorkers 
+nDrones 
+nVirginQueens
+nFathers
 
-nDrones; input colony; return n; TODO input Colony or Colonies
+isQueenMated; input Pop, Colony, or Colonies; return logical
 
-nVirginQueens; input colony; return n; TODO input Colony or Colonies
+extractQueensYOB; input colony; return numeric; TODO input Pop, Colony or Colonies
 
-nFathers; input colony; return n; TODO input Colony or Colonies
+computeQueensAge; input Pop or colony; return numeric; TODO input Pop, Colony or Colonies
 
-isQueenMated; input Pop or colony; return logical; TODO input Colony or Colonies
-
-extractQueenYOB; input colony; return numeric; TODO input Pop, Colony or Colonies
-
-computeQueenAge; input Pop or colony; return numeric; TODO input Pop, Colony or Colonies
-
-getId; input colonies; return character; TODO input Colony or Colonies
+getId; input Colony or Colonies; return character
 
 hasSplit; input Colony or Colonies; return logical
 
@@ -44,11 +43,17 @@ isProductive; input Colony or Colonies; return logical
 
 simulateHoneyBeeGenomes
 
-getCsdHaplo; input Pop; return numeric; TODO input Pop, Colony, or Colonies
-
-getCsdGeno; input Pop; return numeric; TODO input Pop, Colony, or Colonies
+getCsdHaplo; input Pop, Colony or Colonies; return numeric
+getCsdGeno
 
 # L1 functions
+
+getCaste; input Colony or Colonies; return Pop
+getQueen
+getFathers
+getVirginQueens
+getWorkers
+getDrones
 
 crateFounderDrones; input Pop; return Pop
 
@@ -60,11 +65,15 @@ createVirginQueens; input Colony; return Pop
 
 createDCA; input Colony or Colonies; return Pop
 
-pullDronesFromDCA; input Pop; return list of 2 Pop
+pullIndFromPop; input Pop; return list of 2 Pop
 
 pullDroneGroupsFromDCA; input Pop; list of n Pop
 
-pullIndFromCaste; input Colony; return list of Colony and Pop
+pullCaste; input Colony or Colonies; return list of Colony and Pop
+pullQueen
+pullVirginQueens
+pullWorkers
+pullDrones
 
 crossVirginQueen; input 2 Pop; return Pop
 
@@ -85,12 +94,12 @@ reQueenColony; input Colony, return Colony
 buildUpColony; input Colony, return Colony
 
 replaceWorkers; input Colony, return Colony
+replaceDrones
 
-replaceDrones; input Colony, return Colony
-
-removeWorkers; input Colony, return Colony
-
-removeDrones; input Colony, return Colony
+removeQueen; input Colony, return Colony
+removeVirginQueen
+removeWorkers
+removeDrones
 
 resetEvents; input Colony, return Colony
 
@@ -110,7 +119,8 @@ setPhenoColony; input Colony, return Colony
 
 createColonies; input NULL, Colony, or Colonies; return Colonies
 
-addColonyToTheColonies; input Colony and Colonies; return Colonies; TODO rename to addColony?; swap Colony and Colonies order of arguments
+addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename to addColony?
+assignColonyToColonies
 
 selectColonies; input Colonies; return Colonies
 
