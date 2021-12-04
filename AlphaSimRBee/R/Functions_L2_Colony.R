@@ -724,7 +724,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   remnantColony@production <- FALSE
   swarm@production <- FALSE
 
-  ret <- list(remnant = remnantColony, swarm = swarm)
+  ret <- list(swarm = swarm, remnant = remnantColony)
   return(ret)
 }
 
@@ -853,7 +853,7 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   colony@production <- TRUE
   splitColony@production <- FALSE
 
-  ret <- list(remnant = colony, split = splitColony)
+  ret <- list(split = splitColony, remnant = colony)
   return(ret)
 }
 
