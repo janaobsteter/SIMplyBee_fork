@@ -520,11 +520,12 @@ getCsdHaplo <- function(x, csd = NULL) {
     ret <- pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
   } else if ("Colony" %in% class(x)) {
     ret <- vector(mode = "list", length = 4)
-    names(ret) <- c("queen", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdHaplo(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdHaplo(x = getQueen(x),        csd = csd)
-    ret$virgin_queens <- getCsdHaplo(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdHaplo(x = getVirginQueens(x), csd = csd)
-    ret$workers       <- getCsdHaplo(x = x@workers,       csd = csd)
-    ret$drones        <- getCsdHaplo(x = x@drones,        csd = csd)
+    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    ret$queen         <- getCsdHaplo(x = getQueen(x),        csd = csd)
+    ret$fathers       <- getCsdHaplo(x = getFathers(x),      csd = csd)
+    ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), csd = csd)
+    ret$workers       <- getCsdHaplo(x = getWorkers(x),      csd = csd)
+    ret$drones        <- getCsdHaplo(x = getDrones(x),       csd = csd)
   } else if ("Colonies" %in% class(x)) {
     ret <- lapply(X = x, FUN = getCsdHaplo, csd = csd)
     names(ret) <- getId(x)
@@ -556,14 +557,15 @@ getCsdGeno <- function(x, csd = NULL) {
     ret <- pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
   } else if ("Colony" %in% class(x)) {
     ret <- vector(mode = "list", length = 4)
-    names(ret) <- c("queen", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdGeno(x = x@queen,         csd = csd) # TODO: would be nice to call getCsdGeno(x = getQueen(x),        csd = csd)
-    ret$virgin_queens <- getCsdGeno(x = x@virgin_queens, csd = csd) # TODO: would be nice to call getCsdGeno(x = getVirginQueens(x), csd = csd)
-    ret$workers       <- getCsdGeno(x = x@workers,       csd = csd)
-    ret$drones        <- getCsdGeno(x = x@drones,        csd = csd)
+    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    ret$queen         <- getCsdGeno(x = getQueen(x),        csd = csd)
+    ret$fathers       <- getCsdGeno(x = getFathers(x),      csd = csd)
+    ret$virgin_queens <- getCsdGeno(x = getVirginQueens(x), csd = csd)
+    ret$workers       <- getCsdGeno(x = getWorkers(x),      csd = csd)
+    ret$drones        <- getCsdGeno(x = getDrones(x),       csd = csd)
   } else if ("Colonies" %in% class(x)) {
     ret <- lapply(X = x, FUN = getCsdGeno, csd = csd)
-    names(ret) <- c("colonies")
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
