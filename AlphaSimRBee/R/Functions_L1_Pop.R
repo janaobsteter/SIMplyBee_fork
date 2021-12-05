@@ -28,23 +28,76 @@
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#'
 #' getCaste(colony1, caste = "queen")
+#' getQueen(colony1)
+#'
+#' drones@id
 #' getCaste(colony1, caste = "fathers")
-#' getCaste(colony1, caste = "fathers", nInd = 2)
+#' getCaste(colony1, caste = "fathers")@id
 #' getCaste(colony1, caste = "fathers", nInd = 2)@id
 #' getCaste(colony1, caste = "fathers", nInd = 2)@id
+#' getFathers(colony1)
+#' getFathers(colony1)@id
+#' getFathers(colony1, nInd = 2)@id
+#' getFathers(colony1, nInd = 2)@id
+#'
 #' getCaste(colony1, caste = "virgin_queens")
+#' getCaste(colony1, caste = "virgin_queens")@id
+#' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+#' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+#' getVirginQueens(colony1)
+#' getVirginQueens(colony2)@id
+#' getVirginQueens(colony2, nInd = 2)@id
+#' getVirginQueens(colony2, nInd = 2)@id
+#'
 #' getCaste(colony1, caste = "workers")
+#' getCaste(colony1, caste = "workers")@id
+#' getCaste(colony1, caste = "workers", nInd = 2)@id
+#' getCaste(colony1, caste = "workers", nInd = 2)@id
+#' getWorkers(colony1)
+#' getWorkers(colony2)@id
+#' getWorkers(colony1, nInd = 2)@id
+#' getWorkers(colony1, nInd = 2)@id
+#'
 #' getCaste(colony1, caste = "drones")
+#' getCaste(colony1, caste = "drones")@id
+#' getCaste(colony1, caste = "drones", nInd = 2)@id
+#' getCaste(colony1, caste = "drones", nInd = 2)@id
+#' getDrones(colony1)
+#' getDrones(colony1)@id
+#' getDrones(colony1, nInd = 2)@id
+#' getDrones(colony1, nInd = 2)@id
 #'
 #' apiary <- c(colony1, colony2)
 #' getCaste(apiary, caste = "queen")
+#' getQueen(apiary)
 #' getCaste(apiary, caste = "queen")[[1]]@id
 #' getCaste(apiary, caste = "queen")[[2]]@id
+#'
 #' getCaste(apiary, caste = "fathers")
+#' getFathers(apiary)
+#' getFathers(apiary)[[1]]@id
+#' getFathers(apiary)[[2]]@id
+#' getFathers(apiary, nInd = 2)
+#'
 #' getCaste(apiary, caste = "virgin_queens")
+#' getVirginQueens(apiary)
+#' getVirginQueens(apiary)[[1]]@id
+#' getVirginQueens(apiary)[[2]]@id
+#' getVirginQueens(apiary, nInd = 2)
+#'
 #' getCaste(apiary, caste = "workers")
+#' getWorkers(apiary)
+#' getWorkers(apiary)[[1]]@id
+#' getWorkers(apiary)[[2]]@id
+#' getWorkers(apiary, nInd = 2)
+#'
 #' getCaste(apiary, caste = "drones")
+#' getDrones(apiary)
+#' getDrones(apiary)[[1]]@id
+#' getDrones(apiary)[[2]]@id
+#' getDrones(apiary, nInd = 2)
 #'
 #' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
 #' named by colony id when \code{x} is Colonies
@@ -87,199 +140,35 @@ getCaste <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-#' @rdname getQueen
-#' @title Access the queen
-#'
-#' @description Access the queen of a colony. The queen stays in the colony.
-#'
-#' @param x Colony or Colonies
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' getQueen(colony1)
-#' getQueen(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' getQueen(apiary)
-#'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
-#'
+#' @describeIn getQueen Access the queen
 #' @export
 getQueen <- function(x) {
   ret <- getCaste(x, caste = "queen")
   return(ret)
 }
 
-#' @rdname getFathers
-#' @title Access fathers
-#'
-#' @description Access fathers (drones the queen mated with). These fathers stay
-#' in the colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of fathers to access, if NULL all fathers
-#' are accessed, otherwise a random sample
-
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' getFathers(colony1)
-#' getFathers(colony1)@id
-#' drones@id
-#'
-#' apiary <- c(colony1, colony2)
-#' getFathers(apiary)
-#' getFathers(apiary)[[1]]@id
-#' getFathers(apiary)[[2]]@id
-#'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
-#'
+#' @describeIn getFathers Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL) {
   ret <- getCaste(x, caste = "fathers", nInd = nInd)
   return(ret)
 }
 
-#' @rdname getVirginQueens
-#' @title Access virgin queens
-#'
-#' @description Access virgin queens. These virgin queens stay in the colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of virgin queens to access, if NULL all virgin queens
-#' are accessed, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addVirginQueens(colony1, nVirginQueens = 1)
-#' colony2 <- addVirginQueens(colony2, nVirginQueens = 10)
-#' getVirginQueens(colony1)
-#' getVirginQueens(colony2)
-#' getVirginQueens(colony2, nInd = 2)
-#' getVirginQueens(colony2, nInd = 2)@id
-#' getVirginQueens(colony2, nInd = 2)@id
-#'
-#' apiary <- c(colony1, colony2)
-#' getVirginQueens(apiary)
-#' getVirginQueens(apiary)[[1]]@id
-#' getVirginQueens(apiary)[[2]]@id
-#'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
-#'
+#' @describeIn getVirginQueens Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL) {
   ret <- getCaste(x, caste = "virgin_queens", nInd = nInd)
   return(ret)
 }
 
-#' @rdname getWorkers
-#' @title Access workers
-#'
-#' @description Access workers. These workers stay in the colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of workers to access, if NULL all workers
-#' are accessed, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' getWorkers(colony1)
-#' getWorkers(colony1)@id
-#' getWorkers(colony1, nInd = 2)@id
-#' getWorkers(colony1, nInd = 2)@id
-#'
-#' apiary <- c(colony1, colony2)
-#' getWorkers(apiary)
-#' getWorkers(apiary)[[1]]@id
-#' getWorkers(apiary)[[2]]@id
-#'
-#' getWorkers(apiary, nInd = 10)
-#' getWorkers(apiary, nInd = 10)[[1]]@id
-#' getWorkers(apiary, nInd = 10)[[2]]@id
-#'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
-#'
+#' @describeIn getWorkers Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL) {
   ret <- getCaste(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
-#' @rdname getDrones
-#' @title Access drones
-#'
-#' @description Access drones. These drones stay in the colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to access, if NULL all drones
-#' are accessed, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' getDrones(colony1)
-#' getDrones(colony1)@id
-#' getDrones(colony1, nInd = 2)@id
-#' getDrones(colony1, nInd = 2)@id
-#'
-#' apiary <- c(colony1, colony2)
-#' getDrones(apiary)
-#' getDrones(apiary)[[1]]@id
-#' getDrones(apiary)[[2]]@id
-#'
-#' getDrones(apiary, nInd = 10)
-#' getDrones(apiary, nInd = 10)[[1]]@id
-#' getDrones(apiary, nInd = 10)[[2]]@id
-#'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
-#'
+#' @describeIn getDrones Access drones
 #' @export
 getDrones <- function(x, nInd = NULL) {
   ret <- getCaste(x, caste = "drones", nInd = nInd)
@@ -588,24 +477,54 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addVirginQueens(colony1, nInd = 10)
+#' colony2 <- addVirginQueens(colony1, nInd = 5)
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony2 <- addDrones(colony2, nInd = 5)
+#' colony1 <- addDrones(colony1, nInd = 5)
+#' colony2 <- addDrones(colony2, nInd = 6)
 #' pullCaste(colony1, caste = "queen")
+#' pullQueen(colony1)
+#'
 #' pullCaste(colony1, caste = "virgin_queens")
+#' pullCaste(colony1, caste = "virgin_queens", nInd = 2)
+#' pullVirginQueens(colony1)
+#' pullVirginQueens(colony1, nInd = 2)
+#'
 #' pullCaste(colony1, caste = "workers")
 #' pullCaste(colony1, caste = "workers", nInd = 5)
+#' pullWorkers(colony1)
+#' pullWorkers(colony1, nInd = 5)
+#'
 #' pullCaste(colony1, caste = "drones")
-#' pullCaste(colony2, caste = "drones")
+#' pullCaste(colony1, caste = "drones", nInd = 5)
+#' pullDrones(colony1)
+#' pullDrones(colony1, nInd = 5)
 #'
 #' apiary <- c(colony1, colony2)
+#'
 #' pullCaste(apiary, caste = "queen")
+#' pullQueen(apiary)
+#' nQueen(apiary)
+#' nQueen(pullQueen(apiary)$colonies)
+#'
 #' pullCaste(apiary, caste = "virgin_queens")
+#' pullVirginQueens(apiary)
+#' nVirginQueens(apiary)
+#' nVirginQueens(pullVirginQueens(apiary)$colonies)
+#' nVirginQueens(pullVirginQueens(apiary, nInd = 5)$colonies)
+#'
 #' pullCaste(apiary, caste = "workers")
-#' nWorkers(pullCaste(apiary, caste = "workers")$colonies)
-#' nWorkers(pullCaste(apiary, caste = "workers", nInd = 5)$colonies)
+#' pullWorkers(apiary)
+#' nWorkers(apiary)
+#' nWorkers(pullWorkers(apiary)$colonies)
+#' nWorkers(pullWorkers(apiary, nInd = 5)$colonies)
+#'
 #' pullCaste(apiary, caste = "drones")
-#' nDrones(pullCaste(apiary, caste = "drones")$colonies)
+#' pullDrones(apiary)
+#' nDrones(apiary)
+#' nDrones(pullDrones(apiary)$colonies)
+#' nDrones(pullDrones(apiary, nInd = 5)$colonies)
 #'
 #' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
 #' Pop (named by colony id) and Colonies) when \code{x} is Colonies
@@ -641,154 +560,28 @@ pullCaste <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-#' @rdname pullQueen
-#' @title Pull queen from a colony
-#'
-#' @description Pull queen from a colony. The queen is removed from the colony.
-#'
-#' @param x Colony or Colonies
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony2 <- addDrones(colony2, nInd = 5)
-#' pullQueen(colony1)
-#'
-#' apiary <- c(colony1, colony2)
-#' pullQueen(apiary)
-#' nQueen(apiary)
-#' nQueen(pullQueen(apiary)$colonies)
-#'
-#' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
-#' Pop (named by colony id) and Colonies) when \code{x} is Colonies
-#'
+#' @describeIn pullQueen Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
   ret <- pullCaste(x, caste = "queen")
   return(ret)
 }
 
-#' @rdname pullVirginQueens
-#' @title Pull virgin queens from a colony
-#'
-#' @description Pull virgin queen from a colony. These virgin queens are
-#' removed from the colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of virgin queens to pull, if NULL all virgin queens
-#' are pulled, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
-#' pullVirginQueens(colony1)
-#' pullVirginQueens(colony1, nInd = 2)
-#' pullVirginQueens(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' pullVirginQueens(apiary)
-#' nVirginQueens(apiary)
-#' nVirginQueens(pullVirginQueens(apiary)$colonies)
-#'
-#' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
-#' Pop (named by colony id) and Colonies) when \code{x} is Colonies
-#'
+#' @describeIn pullVirginQueens Pull virgin queens from a colony
 #' @export
 pullVirginQueens <- function(x, nInd = NULL) {
   ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd)
   return(ret)
 }
 
-
-#' @rdname pullWorkers
-#' @title Pull workers from a colony
-#'
-#' @description Pull workers from a colony. These workers are removed from the
-#' colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of workers to pull, if NULL all workers
-#' are pulled, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' pullWorkers(colony1)
-#' pullWorkers(colony1, nInd = 5)
-#' pullWorkers(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' pullWorkers(apiary)
-#' nWorkers(apiary)
-#' nWorkers(pullWorkers(apiary)$colonies)
-#'
-#' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
-#' Pop (named by colony id) and Colonies) when \code{x} is Colonies
-#'
+#' @describeIn pullWorkers Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL) {
   ret <- pullCaste(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
-#' @rdname pullDrones
-#' @title Pull drones from a colony
-#'
-#' @description Pull drones from a colony. These drones are removed from the
-#' colony.
-#'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to pull, if NULL all drones
-#' are pulled, otherwise a random sample
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' pullDrones(colony1)
-#' pullDrones(colony1, nInd = 5)
-#' pullDrones(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' pullDrones(apiary)
-#' nDrones(apiary)
-#' nDrones(pullDrones(apiary)$colonies)
-#'
-#' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
-#' Pop (named by colony id) and Colonies) when \code{x} is Colonies
-#'
+#' @describeIn pullDrones Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL) {
   ret <- pullCaste(x, caste = "drones", nInd = nInd)

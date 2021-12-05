@@ -877,6 +877,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, simParam = NULL)
 }
 
 #' @describeIn getCasteIbdHaplo TODO
+#' @export
 getQueensIbdHaplo <- function(x, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "queen",
                           chr = chr, simParam = simParam)
@@ -884,6 +885,7 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteIbdHaplo TODO
+#' @export
 getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd,
                           chr = chr, simParam = simParam)
@@ -891,6 +893,7 @@ getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteIbdHaplo TODO
+#' @export
 getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "virgin_queens", nInd = nInd,
                           chr = chr, simParam = simParam)
@@ -898,6 +901,7 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL)
 }
 
 #' @describeIn getCasteIbdHaplo TODO
+#' @export
 getWorkersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "workers", nInd = nInd,
                           chr = chr, simParam = simParam)
@@ -905,6 +909,7 @@ getWorkersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteIbdHaplo TODO
+#' @export
 getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd,
                           chr = chr, simParam = simParam)
@@ -995,7 +1000,6 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL, haplo = "all", chr = NUL
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteHaplo(pop = tmp, haplo = haplo, chr = chr, simParam = simParam)
   } else if ("Colonies" %in% class(x)) {
-    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1011,6 +1015,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL, haplo = "all", chr = NUL
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of queen
+#' @export
 getQueensSegSiteHaplo <- function(x, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "queen",
                               haplo = haplo, chr = chr, simParam = simParam)
@@ -1018,6 +1023,7 @@ getQueensSegSiteHaplo <- function(x, haplo = "all", chr = NULL, simParam = NULL)
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of fathers
+#' @export
 getFathersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "fathers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
@@ -1025,6 +1031,7 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, si
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of virgin queens
+#' @export
 getVirginQueensSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "virgin_queens", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
@@ -1032,6 +1039,7 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NUL
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of workers
+#' @export
 getWorkersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "workers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
@@ -1039,6 +1047,7 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, si
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of drones
+#' @export
 getDronesSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "drones", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
@@ -1123,7 +1132,6 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL, chr = NULL, simParam = NU
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteGeno(pop = tmp, chr = chr, simParam = simParam)
   } else if ("Colonies" %in% class(x)) {
-    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1139,6 +1147,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL, chr = NULL, simParam = NU
 }
 
 #' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of queen
+#' @export
 getQueensSegSiteGeno <- function(x, chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "queen",
                              chr = chr, simParam = simParam)
@@ -1146,6 +1155,7 @@ getQueensSegSiteGeno <- function(x, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of fathers
+#' @export
 getFathersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "fathers", nInd = nInd,
                              chr = chr, simParam = simParam)
@@ -1153,6 +1163,7 @@ getFathersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of virgin queens
+#' @export
 getVirginQueensSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "virgin_queens", nInd = nInd,
                              chr = chr, simParam = simParam)
@@ -1160,6 +1171,7 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NU
 }
 
 #' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of workers
+#' @export
 getWorkersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "workers", nInd = nInd,
                              chr = chr, simParam = simParam)
@@ -1167,6 +1179,7 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 }
 
 #' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of drones
+#' @export
 getDronesSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "drones", nInd = nInd,
                              chr = chr, simParam = simParam)
