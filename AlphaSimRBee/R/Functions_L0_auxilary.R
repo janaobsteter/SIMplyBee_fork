@@ -670,19 +670,19 @@ isProductive <- function(x) {
 #'
 #' @export
 simulateHoneyBeeGenomes <- function(nInd = NULL,
-                                   nChr = 16,
-                                   nSegSites = 1000,
-                                   Ne = 157598,  # Wallberg et al. (2014)
-                                   nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
-                                   genLen = 34.5 / 16, # Hunt&Page (1995)
-                                   mutRate = 9.0e-9, # Yang et al. (2015)
-                                   histNe = Ne, # TODO revise and citation
-                                   histGen = 1, # TODO revise and citation
-                                   split = NULL, # TODO revise and citation
-                                   csdChr = 3, # TODO citation
-                                   csdPos = 0.865, # TODO citation
-                                   nCsdHaplos = 100, # TODO revise & citation
-                                   nThreads = NULL) {
+                                    nChr = 16,
+                                    nSegSites = 1000,
+                                    Ne = 157598,  # Wallberg et al. (2014)
+                                    nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
+                                    genLen = 34.5 / 16, # Hunt&Page (1995)
+                                    mutRate = 9.0e-9, # Yang et al. (2015)
+                                    histNe = Ne, # TODO revise and citation
+                                    histGen = 1, # TODO revise and citation
+                                    split = NULL, # TODO revise and citation
+                                    csdChr = 3, # TODO citation
+                                    csdPos = 0.865, # TODO citation
+                                    nCsdHaplos = 100, # TODO revise & citation
+                                    nThreads = NULL) {
   # No of possible haplotypes from n biallelic SNP is 2^n, so we need at least
   # n seg sites (if 2^n must be at least k, then log2(2^n) = log2(k) = n log2(2);
   # then n must be at least log2(k) / log2(2) = log2(k))
@@ -698,18 +698,18 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
   tmp$founderGenomes <- runMacs2(nInd = nInd,
-                                nChr = nChr,
-                                segSites = nSegSites,
-                                Ne = Ne,
-                                bp = nBp,
-                                genLen = genLen,
-                                mutRate = mutRate,
-                                histNe = histNe,
-                                histGen = histGen,
-                                split = split,
-                                inbred = FALSE,
-                                ploidy = 2L,
-                                nThreads = nThreads)
+                                 nChr = nChr,
+                                 segSites = nSegSites,
+                                 Ne = Ne,
+                                 bp = nBp,
+                                 genLen = genLen,
+                                 mutRate = mutRate,
+                                 histNe = histNe,
+                                 histGen = histGen,
+                                 split = split,
+                                 inbred = FALSE,
+                                 ploidy = 2L,
+                                 nThreads = nThreads)
   if (!is.null(csdChr)) {
     tmp$SP <- SimParam$new(founderPop = founderGenomes)
     genMap <- tmp$SP$genMap
@@ -813,60 +813,235 @@ getCsdGeno <- function(x, csd = NULL) {
   return(ret)
 }
 
-# TODO: document
+#' @rdname getIbdHaplo
+#' @title Access IBD haplotype data
+#'
+#' @description Access IBD (identity by descent) haplotype data
+#'
+#' @param pop Pop
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullIbdHaplo}}
+#'
+#' @return Matrix of haplotypes
+#'
+#' @export
 getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
   ret <- pullIbdHaplo(pop = pop, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getQtlHaplo
+#' @title Access QTL haplotype data
+#'
+#' @description Access QTL haplotype data
+#'
+#' @param pop Pop
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullQtlHaplo}}
+#'
+#' @return Matrix of haplotypes
+#'
+#' @export
 getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- pullQtlHaplo(pop = pop, trait = trait, haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getQtlGeno
+#' @title Access QTL genotype data
+#'
+#' @description Access QTL genotype data
+#'
+#' @param pop Pop
+#' @param trait numeric, indicates which trait's QTL genotype to retrieve
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullQtlGeno}}
+#'
+#' @return Matrix of genotypes
+#'
+#' @export
 getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
   ret <- pullQtlGeno(pop = pop, trait = trait, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getSegSiteHaplo
+#' @title Access haplotype data for all segregating sites
+#'
+#' @description Access haplotype data for all segregating sites
+#'
+#' @param pop Pop
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullSegSiteHaplo}}
+#'
+#' @return Matrix of haplotypes
+#'
+#' @export
 getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- pullSegSiteHaplo(pop = pop, haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getSegSiteGeno
+#' @title Access genotype data for all segregating sites
+#'
+#' @description Access genotype data for all segregating sites
+#'
+#' @param pop Pop
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullSegSiteHaplo}}
+#'
+#' @return Matrix of genotypes
+#'
+#' @export
 getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
   ret <- pullSegSiteGeno(pop = pop, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getSnpHaplo
+#' @title Access SNP array haplotype data
+#'
+#' @description Access SNP array haplotype data
+#'
+#' @param pop Pop
+#' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullSnpHaplo}}
+#'
+#' @return Matrix of haplotypes
+#'
+#' @export
 getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
   ret <- pullSnpHaplo(pop = pop, snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
+#' @rdname getSnpGeno
+#' @title Access SNP array genotype data
+#'
+#' @description Access SNP array genotype data
+#'
+#' @param pop Pop
+#' @param snpChip numeric, indicates which SNP array genotype to retrieve
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{pullSnpHaplo}}
+#'
+#' @return Matrix of genotypes
+#'
+#' @export
+#' @export
 getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
   ret <- pullSnpGeno(pop = pop, snpChip = snpChip, chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: document
-getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, simParam = NULL) {
+#' @rdname getCasteIbdHaplo
+#' @title Access IBD haplotype data of individuals in a caste
+#'
+#' @description Access IBD (identity by descent) haplotype data of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "workers")
+#' getWorkersIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "drones")
+#' getDronesIbdHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteIbdHaplo(apiary, caste = "queen")
+#' getQueensIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "fathers")
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(apiary)
+#' getFathersIbdHaplo(apiary, nInd = 2)
+#'
+#' getCasteIbdHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "workers")
+#' getWorkersIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "drones")
+#' getDronesIbdHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteIbdHaplo <- function(x, caste, nInd = NULL,
+                             chr = NULL, simParam = NULL) {
   if ("Colony" %in% class(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getIbdHaplo(pop = tmp, chr = chr, simParam = simParam)
   } else if ("Colonies" %in% class(x)) {
-    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
-      ret[[colony]] <- getCasteIbdHaplo(x = x@colonies[[colony]],
-                                        caste = caste, nInd = nInd,
+      ret[[colony]] <- getCasteIbdHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
                                         chr = chr, simParam = simParam)
     }
     names(ret) <- getId(x)
@@ -876,7 +1051,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, simParam = NULL)
   return(ret)
 }
 
-#' @describeIn getCasteIbdHaplo TODO
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
 #' @export
 getQueensIbdHaplo <- function(x, chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "queen",
@@ -884,40 +1059,316 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParam = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteIbdHaplo TODO
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of fathers
 #' @export
-getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getFathersIbdHaplo <- function(x, nInd = NULL,
+                               chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd,
                           chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteIbdHaplo TODO
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of virgin queens
 #' @export
-getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getVirginQueensIbdHaplo <- function(x, nInd = NULL,
+                                    chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "virgin_queens", nInd = nInd,
                           chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteIbdHaplo TODO
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of workers
 #' @export
-getWorkersIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getWorkersIbdHaplo <- function(x, nInd = NULL,
+                               chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "workers", nInd = nInd,
                           chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteIbdHaplo TODO
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of drones
 #' @export
-getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getDronesIbdHaplo <- function(x, nInd = NULL,
+                              chr = NULL, simParam = NULL) {
   ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd,
                           chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: getQtlHaplo
-# TODO: getQtlGeno
+#' @rdname getCasteQtlHaplo
+#' @title Access QTL haplotype data of individuals in a caste
+#'
+#' @description Access QTL haplotype data of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "fathers")
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(colony1)
+#' getFathersQtlHaplo(colony1, nInd = 2)
+#'
+#' getCasteQtlHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "workers")
+#' getWorkersQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "drones")
+#' getDronesQtlHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteQtlHaplo(apiary, caste = "queen")
+#' getQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "fathers")
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(apiary)
+#' getFathersQtlHaplo(apiary, nInd = 2)
+#'
+#' getCasteQtlHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "workers")
+#' getWorkersQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "drones")
+#' getDronesQtlHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteQtlHaplo <- function(x, caste, nInd = NULL,
+                             trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+    ret <- getQtlHaplo(pop = tmp, haplo = haplo, trait = trait, chr = chr, simParam = simParam)
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getCasteQtlHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                        trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
+#' @export
+getQueensQtlHaplo <- function(x,
+                              trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlHaplo(x, caste = "queen",
+                          trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of fathers
+#' @export
+getFathersQtlHaplo <- function(x, nInd = NULL,
+                               trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlHaplo(x, caste = "fathers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of virgin queens
+#' @export
+getVirginQueensQtlHaplo <- function(x, nInd = NULL,
+                                    trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlHaplo(x, caste = "virgin_queens", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlHaplo Access QTL haplotype of workers
+#' @export
+getWorkersQtlHaplo <- function(x, nInd = NULL,
+                               trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlHaplo(x, caste = "workers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of drones
+#' @export
+getDronesQtlHaplo <- function(x, nInd = NULL,
+                              trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlHaplo(x, caste = "drones", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @rdname getCasteQtlGeno
+#' @title Access QTL genotype data of individuals in a caste
+#'
+#' @description Access QTL genotype data of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#' @param snpChip numeric, indicates which trait's QTL genotypes to retrieve
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlGeno(colony1, caste = "queen")
+#' getQueensQtlGeno(colony1)
+#'
+#' getCasteQtlGeno(colony1, caste = "fathers")
+#' getCasteQtlGeno(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlGeno(colony1)
+#' getFathersQtlGeno(colony1, nInd = 2)
+#'
+#' getCasteQtlGeno(colony1, caste = "virgin_queens")
+#' getVirginQueensQtlGeno(colony1)
+#'
+#' getCasteQtlGeno(colony1, caste = "workers")
+#' getWorkersQtlGeno(colony1)
+#'
+#' getCasteQtlGeno(colony1, caste = "drones")
+#' getDronesQtlGeno(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteQtlGeno(apiary, caste = "queen")
+#' getQueensQtlGeno(apiary)
+#'
+#' getCasteQtlGeno(apiary, caste = "fathers")
+#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
+#' getFathersQtlGeno(apiary)
+#' getFathersQtlGeno(apiary, nInd = 2)
+#'
+#' getCasteQtlGeno(apiary, caste = "virgin_queens")
+#' getVirginQueensQtlGeno(apiary)
+#'
+#' getCasteQtlGeno(apiary, caste = "workers")
+#' getWorkersQtlGeno(apiary)
+#'
+#' getCasteQtlGeno(apiary, caste = "drones")
+#' getDronesQtlGeno(apiary)
+#'
+#' @return matrix with genotypes when \code{x} is Colony and list of matrices
+#' with genotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteQtlGeno <- function(x, caste, nInd = NULL,
+                            trait = 1, chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+    ret <- getQtlGeno(pop = tmp, trait = trait, chr = chr, simParam = simParam)
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getCasteQtlGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                       trait = trait, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteQtlGeno Access QTL genotype data of the queen
+#' @export
+getQueensQtlGeno <- function(x,
+                             trait = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlGeno(x, caste = "queen",
+                         trait = trait, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlGeno Access QTL genotype data of fathers
+#' @export
+getFathersQtlGeno <- function(x, nInd = NULL,
+                              trait = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlGeno(x, caste = "fathers", nInd = nInd,
+                         trait = trait, chhr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlGeno Access QTL genotype data of virgin queens
+#' @export
+getVirginQueensQtlGeno <- function(x, nInd = NULL,
+                                   trait = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlGeno(x, caste = "virgin_queens", nInd = nInd,
+                         trait = trait, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlGeno Access QTL genotype data of workers
+#' @export
+getWorkersQtlGeno <- function(x, nInd = NULL,
+                              trait = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlGeno(x, caste = "workers", nInd = nInd,
+                         trait = trait, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteQtlGeno Access QTL genotype data of drones
+#' @export
+getDronesQtlGeno <- function(x, nInd = NULL,
+                             trait = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteQtlGeno(x, caste = "drones", nInd = nInd,
+                         trait = trait, chr = chr, simParam = simParam)
+  return(ret)
+}
 
 #' @rdname getCasteSegSiteHaplo
 #' @title Access haplotype data for all segregating sites of individuals in a
@@ -963,7 +1414,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 #' getFathersSegSiteHaplo(colony1, nInd = 2)
 #'
 #' getCasteSegSiteHaplo(colony1, caste = "virgin_queens")
-#' getViriginQueensSegSiteHaplo(colony1)
+#' getVirginQueensSegSiteHaplo(colony1)
 #'
 #' getCasteSegSiteHaplo(colony1, caste = "workers")
 #' getWorkersSegSiteHaplo(colony1)
@@ -995,7 +1446,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
 #' is Colonies
 #'
 #' @export
-getCasteSegSiteHaplo <- function(x, caste, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
+getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
+                                 haplo = "all", chr = NULL, simParam = NULL) {
   if ("Colony" %in% class(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteHaplo(pop = tmp, haplo = haplo, chr = chr, simParam = simParam)
@@ -1003,8 +1455,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL, haplo = "all", chr = NUL
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
-      ret[[colony]] <- getCasteSegSiteHaplo(x = x@colonies[[colony]],
-                                            caste = caste, nInd = nInd,
+      ret[[colony]] <- getCasteSegSiteHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
                                             haplo = haplo, chr = chr, simParam = simParam)
     }
     names(ret) <- getId(x)
@@ -1014,9 +1465,10 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL, haplo = "all", chr = NUL
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of queen
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteHaplo <- function(x, haplo = "all", chr = NULL, simParam = NULL) {
+getQueensSegSiteHaplo <- function(x,
+                                  haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "queen",
                               haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
@@ -1024,7 +1476,8 @@ getQueensSegSiteHaplo <- function(x, haplo = "all", chr = NULL, simParam = NULL)
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of fathers
 #' @export
-getFathersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
+getFathersSegSiteHaplo <- function(x, nInd = NULL,
+                                   haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "fathers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
@@ -1032,7 +1485,8 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, si
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of virgin queens
 #' @export
-getVirginQueensSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
+getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
+                                        haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "virgin_queens", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
@@ -1040,7 +1494,8 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NUL
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of workers
 #' @export
-getWorkersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
+getWorkersSegSiteHaplo <- function(x, nInd = NULL,
+                                   haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "workers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
@@ -1048,7 +1503,8 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, si
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of drones
 #' @export
-getDronesSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, simParam = NULL) {
+getDronesSegSiteHaplo <- function(x, nInd = NULL,
+                                  haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "drones", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
   return(ret)
@@ -1095,7 +1551,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, sim
 #' getFathersSegSiteGeno(colony1, nInd = 2)
 #'
 #' getCasteSegSiteGeno(colony1, caste = "virgin_queens")
-#' getViriginQueensSegSiteGeno(colony1)
+#' getVirginQueensSegSiteGeno(colony1)
 #'
 #' getCasteSegSiteGeno(colony1, caste = "workers")
 #' getWorkersSegSiteGeno(colony1)
@@ -1127,7 +1583,8 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL, haplo = "all", chr = NULL, sim
 #' is Colonies
 #'
 #' @export
-getCasteSegSiteGeno <- function(x, caste, nInd = NULL, chr = NULL, simParam = NULL) {
+getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
+                                chr = NULL, simParam = NULL) {
   if ("Colony" %in% class(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteGeno(pop = tmp, chr = chr, simParam = simParam)
@@ -1135,8 +1592,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL, chr = NULL, simParam = NU
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
-      ret[[colony]] <- getCasteSegSiteGeno(x = x@colonies[[colony]],
-                                           caste = caste, nInd = nInd,
+      ret[[colony]] <- getCasteSegSiteGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
                                            chr = chr, simParam = simParam)
     }
     names(ret) <- getId(x)
@@ -1146,45 +1602,322 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL, chr = NULL, simParam = NU
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of queen
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteGeno <- function(x, chr = NULL, simParam = NULL) {
+getQueensSegSiteGeno <- function(x,
+                                 chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "queen",
                              chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of fathers
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of fathers
 #' @export
-getFathersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getFathersSegSiteGeno <- function(x, nInd = NULL,
+                                  chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "fathers", nInd = nInd,
                              chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of virgin queens
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of virgin queens
 #' @export
-getVirginQueensSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
+                                       chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "virgin_queens", nInd = nInd,
                              chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of workers
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of workers
 #' @export
-getWorkersSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getWorkersSegSiteGeno <- function(x, nInd = NULL,
+                                  chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "workers", nInd = nInd,
                              chr = chr, simParam = simParam)
   return(ret)
 }
 
-#' @describeIn getCasteSegSiteGeno Access gentoype data for all segregating sites of drones
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of drones
 #' @export
-getDronesSegSiteGeno <- function(x, nInd = NULL, chr = NULL, simParam = NULL) {
+getDronesSegSiteGeno <- function(x, nInd = NULL,
+                                 chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteGeno(x, caste = "drones", nInd = nInd,
                              chr = chr, simParam = simParam)
   return(ret)
 }
 
-# TODO: getSnpHaplo
-# TODO: getSnpGeno
+#' @rdname getCasteSnpHaplo
+#' @title Access SNP array haplotype data of individuals in a caste
+#'
+#' @description Access SNP array haplotype data of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteSnpHaplo(colony1, caste = "queen")
+#' getQueensSnpHaplo(colony1)
+#'
+#' getCasteSnpHaplo(colony1, caste = "fathers")
+#' getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersSnpHaplo(colony1)
+#' getFathersSnpHaplo(colony1, nInd = 2)
+#'
+#' getCasteSnpHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensSnpHaplo(colony1)
+#'
+#' getCasteSnpHaplo(colony1, caste = "workers")
+#' getWorkersSnpHaplo(colony1)
+#'
+#' getCasteSnpHaplo(colony1, caste = "drones")
+#' getDronesSnpHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteSnpHaplo(apiary, caste = "queen")
+#' getQueensSnpHaplo(apiary)
+#'
+#' getCasteSnpHaplo(apiary, caste = "fathers")
+#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersSnpHaplo(apiary)
+#' getFathersSnpHaplo(apiary, nInd = 2)
+#'
+#' getCasteSnpHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensSnpHaplo(apiary)
+#'
+#' getCasteSnpHaplo(apiary, caste = "workers")
+#' getWorkersSnpHaplo(apiary)
+#'
+#' getCasteSnpHaplo(apiary, caste = "drones")
+#' getDronesSnpHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteSnpHaplo <- function(x, caste, nInd = NULL,
+                             snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+    ret <- getSnpHaplo(pop = tmp, haplo = haplo, snpChip = snpChip, chr = chr, simParam = simParam)
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getCasteSnpHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                        snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
+#' @export
+getQueensSnpHaplo <- function(x,
+                              snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpHaplo(x, caste = "queen",
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of fathers
+#' @export
+getFathersSnpHaplo <- function(x, nInd = NULL,
+                               snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpHaplo(x, caste = "fathers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of virgin queens
+#' @export
+getVirginQueensSnpHaplo <- function(x, nInd = NULL,
+                                    snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpHaplo(x, caste = "virgin_queens", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype of workers
+#' @export
+getWorkersSnpHaplo <- function(x, nInd = NULL,
+                               snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpHaplo(x, caste = "workers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of drones
+#' @export
+getDronesSnpHaplo <- function(x, nInd = NULL,
+                              snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpHaplo(x, caste = "drones", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @rdname getCasteSnpGeno
+#' @title Access SNP array genotype data of individuals in a caste
+#'
+#' @description Access SNP array genotype data of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample
+#' @param snpChip numeric, indicates which SNP array genotypes to retrieve
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteSnpGeno(colony1, caste = "queen")
+#' getQueensSnpGeno(colony1)
+#'
+#' getCasteSnpGeno(colony1, caste = "fathers")
+#' getCasteSnpGeno(colony1, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(colony1, caste = "fathers", nInd = 2)
+#' getFathersSnpGeno(colony1)
+#' getFathersSnpGeno(colony1, nInd = 2)
+#'
+#' getCasteSnpGeno(colony1, caste = "virgin_queens")
+#' getVirginQueensSnpGeno(colony1)
+#'
+#' getCasteSnpGeno(colony1, caste = "workers")
+#' getWorkersSnpGeno(colony1)
+#'
+#' getCasteSnpGeno(colony1, caste = "drones")
+#' getDronesSnpGeno(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteSnpGeno(apiary, caste = "queen")
+#' getQueensSnpGeno(apiary)
+#'
+#' getCasteSnpGeno(apiary, caste = "fathers")
+#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
+#' getFathersSnpGeno(apiary)
+#' getFathersSnpGeno(apiary, nInd = 2)
+#'
+#' getCasteSnpGeno(apiary, caste = "virgin_queens")
+#' getVirginQueensSnpGeno(apiary)
+#'
+#' getCasteSnpGeno(apiary, caste = "workers")
+#' getWorkersSnpGeno(apiary)
+#'
+#' getCasteSnpGeno(apiary, caste = "drones")
+#' getDronesSnpGeno(apiary)
+#'
+#' @return matrix with genotypes when \code{x} is Colony and list of matrices
+#' with genotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteSnpGeno <- function(x, caste, nInd = NULL,
+                            snpChip = 1, chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+    ret <- getSnpGeno(pop = tmp, snpChip = snpChip, chr = chr, simParam = simParam)
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getCasteSnpGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                       snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
+#' @export
+getQueensSnpGeno <- function(x,
+                             snpChip = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpGeno(x, caste = "queen",
+                         snpChip = snpChip, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of fathers
+#' @export
+getFathersSnpGeno <- function(x, nInd = NULL,
+                              snpChip = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpGeno(x, caste = "fathers", nInd = nInd,
+                         snpChip = snpChip, chhr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of virgin queens
+#' @export
+getVirginQueensSnpGeno <- function(x, nInd = NULL,
+                                   snpChip = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpGeno(x, caste = "virgin_queens", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of workers
+#' @export
+getWorkersSnpGeno <- function(x, nInd = NULL,
+                              snpChip = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpGeno(x, caste = "workers", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of drones
+#' @export
+getDronesSnpGeno <- function(x, nInd = NULL,
+                             snpChip = 1, chr = NULL, simParam = NULL) {
+  ret <- getCasteSnpGeno(x, caste = "drones", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParam = simParam)
+  return(ret)
+}

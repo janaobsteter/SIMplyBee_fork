@@ -425,7 +425,7 @@ replaceDrones <- function(colony, p = 1) {
 #' @param colony Colony
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -460,7 +460,7 @@ removeQueen <- function(colony) {
 #' @param colony Colony
 #'
 #' @examples
-#' AlphaSimR
+#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
