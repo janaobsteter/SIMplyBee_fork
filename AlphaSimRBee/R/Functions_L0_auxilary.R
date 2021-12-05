@@ -1634,8 +1634,8 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' getColonyQtlGeno(apiary, nInd = 1)
 #' getColonyQtlGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of matrices with haplotypes when \code{x} is Colony (list nodes
-#' named by caste) and list of a list of matrices with haplotypes when \code{x}
+#' @return list of matrices with genotypes when \code{x} is Colony (list nodes
+#' named by caste) and list of a list of matrices with genotypes when \code{x}
 #' is Colonies, outer list is named by colony id when \code{x} is Colonies
 #'
 #' @export
@@ -1830,6 +1830,114 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
                                   haplo = "all", chr = NULL, simParam = NULL) {
   ret <- getCasteSegSiteHaplo(x, caste = "drones", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
+  return(ret)
+}
+
+#' @rdname getColonySegSiteHaplo
+#' @title Access haplotype data for all segregating sites of individuals in colony
+#'
+#' @description Access haplotype data for all segregating sites of individuals
+#' in colony.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample; can be a list to access different
+#' number of different caste - when this is the case \code{nInd} takes precedence over
+#' \code{caste} (see examples)
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @details
+#'
+#' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getColonySegSiteHaplo(colony1)
+#' getColonySegSiteHaplo(colony1, caste = c("queen", "fathers"))
+#' getColonySegSiteHaplo(colony1, nInd = 1)
+#' getColonySegSiteHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' apiary <- c(colony1, colony2)
+#' getColonySegSiteHaplo(apiary)
+#' getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
+#' getColonySegSiteHaplo(apiary, nInd = 1)
+#' getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' @return list of matrices with haplotypes when \code{x} is Colony (list nodes
+#' named by caste) and list of a list of matrices with haplotypes when \code{x}
+#' is Colonies, outer list is named by colony id when \code{x} is Colonies
+#'
+#' @export
+getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
+                                  haplo = "all", chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    if (is.list(nInd)) {
+      caste <- names(nInd)
+    } else {
+      if (length(nInd) > 1) {
+        warning("Using only the first value of nInd!")
+      }
+      nIndOrig <- nInd
+      nInd <- vector(mode = "list", length = length(caste))
+      if (!is.null(nIndOrig)) {
+        for (node in 1:length(caste)) {
+          nInd[[node]] <- nIndOrig
+        }
+      }
+      names(nInd) <- caste
+    }
+    ret <- vector(mode = "list", length = length(caste))
+    names(ret) <- caste
+    if ("queen" %in% caste) {
+      ret$queen <- getQueensSegSiteHaplo(x = x,
+                                         haplo = haplo, chr = chr, simParam = simParam)
+    }
+    if ("fathers" %in% caste) {
+      ret$fathers <- getFathersSegSiteHaplo(x = x, nInd = nInd$fathers,
+                                            haplo = haplo, chr = chr, simParam = simParam)
+    }
+    if ("virgin_queens" %in% caste) {
+      ret$virgin_queens <- getVirginQueensSegSiteHaplo(x = x, nInd = nInd$virgin_queens,
+                                                       haplo = haplo, chr = chr, simParam = simParam)
+    }
+    if ("workers" %in% caste) {
+      ret$workers <- getWorkersSegSiteHaplo(x = x, nInd = nInd$workers,
+                                            haplo = haplo, chr = chr, simParam = simParam)
+    }
+    if ("drones" %in% caste) {
+      ret$drones <- getDronesSegSiteHaplo(x = x, nInd = nInd$drones,
+                                          haplo = haplo, chr = chr, simParam = simParam)
+    }
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getColonySegSiteHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                             haplo = haplo, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
