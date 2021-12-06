@@ -259,7 +259,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
       remainingColonies <- colonies
     }
   } else {
-    stop("Provide either ID or p!")
+    stop("You must provide either ID or p!")
   }
   ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
   return(ret)
@@ -338,10 +338,10 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #' @title Create multiple mated colonies quickly
 #'
 #' @description
-#' This function is intended for quick creation of multiple mated colonies, often
+#' This function is intended for quickly creating multiple mated colonies, often
 #' at the start of a simulation - to seed the simulation. This function takes
-#' a population, pulls out queens and from the remainder creates drones, which
-#' are then mated with the queens to initiate the colonies.
+#' a population, pulls out queens, creates drones from the remainder, and then
+#' mates the queens to initiate the colonies.
 #'
 #' @param pop Pop
 #' @param nColonies numeric, number of colonies to create
@@ -364,6 +364,9 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #'
 #' @export
 createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1000) {
+  if (!"Pop" %in% class(pop)) {
+    stop("Arguments pop must be a Pop class object!")
+  }
   ret <- createColonies(n = nColonies)
   tmp <- pullIndFromPop(pop = pop, nInd = nColonies)
   queens <- tmp$pulled
