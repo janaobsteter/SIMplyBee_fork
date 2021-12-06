@@ -282,14 +282,7 @@ removeColonies <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-<<<<<<< HEAD
-  # if (!"Pop" %in% class(ID)) {
-  #   stop("Argument ID must be a Pop class object!")
-  # }
-  ret <- colonies[!sapply(colonies@colonies, FUN = function(x) x@id %in% ID)]
-=======
   ret <- colonies[!getId(colonies) %in% ID]
->>>>>>> 90db6f4e1814f0823b988b0e82999a6111a91a75
   return(ret)
 }
 
