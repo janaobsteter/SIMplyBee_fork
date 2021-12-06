@@ -676,7 +676,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
-  if (!any("Pop" %in% class(fathers), is.null(fathers))) {
+  if (!is.null(fathers) && !"Pop" %in% class(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (is.null(colony@virgin_queens)) {
@@ -804,10 +804,10 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   if (!"Colony" %in% class(colony)) {
     stop("colony must be a Colony class object!")
   }
-  if (!any("Pop" %in% class(newQueen), is.null(newQueen))) {
+  if (!is.null(newQueen) && !"Pop" %in% class(newQueen)) {
     stop("Argument newQueen must be a Pop class object!")
   }
-  if (!any("Pop" %in% class(fathers), is.null(fathers))) {
+  if (!is.null(fathers) && !"Pop" %in% class(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   nWorkers <- nWorkers(colony)
