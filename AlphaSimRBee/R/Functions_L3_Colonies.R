@@ -6,7 +6,7 @@
 #' @description Creates a set of colonies
 #'
 #' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
-#' or NULL objects.
+#' or \code{NULL} objects
 #' @param n numeric, number of colonies to create; this argument takes precedence
 #' over \code{...}
 #'

@@ -8,8 +8,8 @@
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all individuals
+#' are accessed
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}}, \code{\link{getVirginQueens}},
 #' \code{\link{getWorkers}}, and \code{\link{getDrones}}
@@ -336,7 +336,7 @@ createVirginQueens <- function(colony, nInd){
 #' @description Create a drone congregation area (DCA) from colony or colonies.
 #'
 #' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to access, if NULL all drones
+#' @param nInd numeric, number of drones to access, if \code{NULL} all drones
 #' are accessed, otherwise a random sample
 #'
 #' @examples
@@ -381,7 +381,9 @@ createDCA <- function(x, nInd = NULL) {
 #' @description Pull individuals from a population and update the population
 #'
 #' @param pop Pop
-#' @param nInd numeric, number of individuals to pull
+#' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
+#' individuals
+#' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @examples
 #' # AlphaSimR
@@ -390,17 +392,20 @@ createDCA <- function(x, nInd = NULL) {
 #' basePop <- newPop(founderGenomes)
 #' pullIndFromPop(basePop, nInd = 2)
 #' pullIndFromPop(basePop, nInd = 3)
+#' pullIndFromPop(basePop)
 #'
 #' @return Pop
 #'
 #' @export
-pullIndFromPop <- function(pop, nInd) {
+pullIndFromPop <- function(pop, nInd = NULL, use = "rand") {
   if (!"Pop" %in% class(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  selectedInd <- sample(pop@id, size = nInd, replace = FALSE)
-  sel <- pop@id %in% selectedInd
-  pulled <- pop[sel]
+  if (is.null(nInd)) {
+    nInd <- nInd(pop)
+  }
+  pulled <- selectInd(pop = pop, nInd = nInd, use = use)
+  sel <- pop@id %in% pulled@id
   remainder <- pop[!sel]
   ret <- list(pulled = pulled, remainder = remainder)
   return(ret)
@@ -461,8 +466,9 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to pull, if NULL all individuals
-#' are pulled, otherwise a random sample
+#' @param nInd numeric, number of individuals to pull, if \code{NULL} all individuals
+#' are pulled
+#' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #' \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
