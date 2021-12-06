@@ -2570,3 +2570,108 @@ getDronesSnpGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
+#' @rdname getColonySnpGeno
+#' @title Access SNP array genotype data of individuals in colony
+#'
+#' @description Access SNP array genotype data of individuals in colony.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if NULL all individuals
+#' are accessed, otherwise a random sample; can be a list to access different
+#' number of different caste - when this is the case \code{nInd} takes precedence over
+#' \code{caste} (see examples)
+#' @param snpChip numeric, indicates which SNP array genotypes to retrieve
+#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param simParam SimParam
+#'
+#' @details
+#'
+#' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addSnpChip(nSnpPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getColonySnpGeno(colony1)
+#' getColonySnpGeno(colony1, caste = c("queen", "fathers"))
+#' getColonySnpGeno(colony1, nInd = 1)
+#' getColonySnpGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' apiary <- c(colony1, colony2)
+#' getColonySnpGeno(apiary)
+#' getColonySnpGeno(apiary, caste = c("queen", "fathers"))
+#' getColonySnpGeno(apiary, nInd = 1)
+#' getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' @return list of matrices with genotypes when \code{x} is Colony (list nodes
+#' named by caste) and list of a list of matrices with genotypes when \code{x}
+#' is Colonies, outer list is named by colony id when \code{x} is Colonies
+#'
+#' @export
+getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
+                              snpChip = 1, chr = NULL, simParam = NULL) {
+  if ("Colony" %in% class(x)) {
+    if (is.list(nInd)) {
+      caste <- names(nInd)
+    } else {
+      if (length(nInd) > 1) {
+        warning("Using only the first value of nInd!")
+      }
+      nIndOrig <- nInd
+      nInd <- vector(mode = "list", length = length(caste))
+      if (!is.null(nIndOrig)) {
+        for (node in 1:length(caste)) {
+          nInd[[node]] <- nIndOrig
+        }
+      }
+      names(nInd) <- caste
+    }
+    ret <- vector(mode = "list", length = length(caste))
+    names(ret) <- caste
+    if ("queen" %in% caste) {
+      ret$queen <- getQueensSnpGeno(x = x,
+                                     snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    if ("fathers" %in% caste) {
+      ret$fathers <- getFathersSnpGeno(x = x, nInd = nInd$fathers,
+                                        snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    if ("virgin_queens" %in% caste) {
+      ret$virgin_queens <- getVirginQueensSnpGeno(x = x, nInd = nInd$virgin_queens,
+                                                   snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    if ("workers" %in% caste) {
+      ret$workers <- getWorkersSnpGeno(x = x, nInd = nInd$workers,
+                                        snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    if ("drones" %in% caste) {
+      ret$drones <- getDronesSnpGeno(x = x, nInd = nInd$drones,
+                                      snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+  } else if ("Colonies" %in% class(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getColonySnpGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+                                        snpChip = snpChip, chr = chr, simParam = simParam)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
