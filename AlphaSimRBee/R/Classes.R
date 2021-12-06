@@ -80,6 +80,12 @@ setMethod("c",
           }
 )
 
+#' @describeIn Colony Test if object is a Colony class object
+isColony = function(x) {
+  ret = is(x, class2 = "Colony")
+  return(ret)
+}
+
 # Class Colonies ----
 
 #' @rdname Colonies
@@ -172,3 +178,9 @@ setMethod("c",
             return(x)
           }
 )
+
+#' @describeIn Colonies Test if object is a Colonies class object
+isColonies = function(x) {
+  ret = is(x, class2 = "Colonies")
+  return(ret)
+}
