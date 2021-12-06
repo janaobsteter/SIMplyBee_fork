@@ -201,7 +201,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @return AlphaSim population object of created drones.
 #'
 #' @export
-createFounderDrones <- function(pop, nDronesPerQueen) {
+createFounderDrones <- function(pop, nDronesPerQueen = 100) {
   if (!("Pop" %in% class(pop))) {
     stop("Argument pop must be a Pop class object!")
   }
@@ -442,7 +442,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @return list of Pop
 #'
 #' @export
-pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
+pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
   if (!"Pop" %in% class(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }

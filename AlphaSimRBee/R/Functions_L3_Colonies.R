@@ -351,7 +351,7 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #' @return Colonies
 #'
 #' @export
-createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1000) {
+createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 100) {
   if (!"Pop" %in% class(pop)) {
     stop("Arguments pop must be a Pop class object!")
   }
@@ -393,12 +393,12 @@ createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
-buildUpColonies <- function(colonies, nWorkers, nDrones) {
+buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1) {
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
@@ -432,7 +432,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #' #Replace the workers
 #'   apiary1 <- replaceWorkers(apiary1)
@@ -475,7 +475,7 @@ replaceWorkersColonies <- function(colonies, p = 1) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #' #Replace the drones
 #'   apiary1 <- replaceDrones(apiary1)
@@ -517,7 +517,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #'  #Split all the colonies
 #'  tmp <- splitColonies(apiary1)
@@ -674,7 +674,7 @@ supersedeColonies <- function(colonies) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
 #'
@@ -725,7 +725,7 @@ swarmColonies <- function(colonies) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #'  TODO FINISH EXAMPLE
 #'
@@ -777,7 +777,7 @@ splitColonies <- function(colonies) {
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
 #'
 #'  TODO FINISH
 #'
