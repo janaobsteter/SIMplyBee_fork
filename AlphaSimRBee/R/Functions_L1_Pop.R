@@ -7,7 +7,7 @@
 #' @usage \method{createFounderDrones}(pop, nDronesPerQueen)
 #' @description Creates population of drones from base population.
 #'       \Drones are created as double haploids. Founder drones are used when crating colonies to be used as fathers.
-#' @param pop AlphaSimRBee Colony object from the \code{createColony(...)}
+#' @param pop
 #' @param nDronesPerQueen Integer, number of drones to create
 #'
 #' @examples

@@ -900,9 +900,6 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 
 # Set Pheno colony----
 setPhenoColony <- function(colony, FUN = NULL, ...) {
-  if (!"Colony" %in% class(colony)) {
-    stop("colony must be an object of the class Colony")
-  }
   colony@queen <- setPheno(colony@queen, ...)
   colony@workers <- setPheno(colony@workers, ...)
   colony@drones <- setPheno(colony@drones, ...)
@@ -910,4 +907,4 @@ setPhenoColony <- function(colony, FUN = NULL, ...) {
     colony@pheno <- FUN(colony, ...)
   }
   return(colony)
-}
+  }

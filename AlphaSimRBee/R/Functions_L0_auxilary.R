@@ -240,7 +240,8 @@ isQueenMated <- function(x) {
 #'
 #' @export
 #'
-extractQueenYOB <- function(colony) {
+
+extractQueenYOB <- function(colony){
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be an object of the class Colony")
   }
@@ -498,7 +499,7 @@ simulateHoneyBeeGenomes = function(nInd = NULL,
                                 inbred = FALSE,
                                 ploidy = 2L,
                                 nThreads = nThreads)
-  if (!is.null(csdChr) {
+  if (!is.null(csdChr)) {
     tmp$SP = SimParam$new(founderPop = founderGenomes)
     genMap = tmp$SP$genMap
     csdPosStart = floor(nSegSites * csdPos)
