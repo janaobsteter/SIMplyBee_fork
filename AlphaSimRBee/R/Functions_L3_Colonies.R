@@ -173,7 +173,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' getId(apiary[c(2, 1)])
 #' getId(apiary[c("5", "4")])
 #'
-#' @return Colonies, selected colonies
+#' @return Colonies
 #'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
@@ -196,48 +196,36 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 }
 
 #' @rdname pullColonies
-#' @title Pull the colonies from the colony list based on IDs.
+#' @title Pull some colonies from a larger set of colonies
 #'
 #' @description Pull the colonies from the list of all colonies based on colony
 #' IDs and return two lists: a list of selected colonies and updated original
 #' colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param ID IDs of "colony" class objects listed in the "colonies" object
-#' @param p Percentage of colonies to pull out of the "colonies" list object
+#' @param colonies Colonies, a set of colonies
+#' @param ID numeric or character, name of a colony (one or more) in
+#' \code{colonies}; note that numeric value is effectively converted to character
+#' @param p numeric, percentage of colonies to pull
 #'
 #' @examples
-#'  # Create founder haplotypes
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+#' # Honeybee
+#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
+#' (names <- getId(apiary))
 #'
-#' # Set simulation parameters
+#' tmp <- pullColonies(apiary, ID = names[1])
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
 #'
-#' SP <- SimParam$new(founderPop)
+#' tmp <- pullColonies(apiary, p = 0.5)
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
 #'
-#' # Create population
-#'
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Create colonies
-#'
-#' founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#' colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-#'
-#' # Put the colonies together to the apiary
-#'
-#' apiary <- c(colony1, colony2, colony3)
-#'
-#' # Pull the selected colonies
-#'
-#' pulledColonies <- pullColonies(colonies = apiary, ID = c(1,2))
-#'
-#' apiary <- pulledColonies$remainingColonies
-#' pull <- pulledColonies$pulledColonies
-#'
-#' @return Two lists: a list of selected colonies and an updated input colonies
+#' @return Colonies
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
@@ -282,10 +270,10 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' # Honeybee
 #' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
-#' getId(apiary)
+#' (names <- getId(apiary))
 #'
-#' getId(removeColonies(apiary, ID = 1))
-#' getId(removeColonies(apiary, ID = c(1, 3)))
+#' getId(removeColonies(apiary, ID = names[1]))
+#' getId(removeColonies(apiary, ID = names[c(2, 3)]))
 #'
 #' @return Colonies
 #'
