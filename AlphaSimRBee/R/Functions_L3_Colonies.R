@@ -286,36 +286,37 @@ removeColonies <- function(colonies, ID) {
   return(ret)
 }
 
-#' @rdname createMultipleVirginColonies
-#' @title Create a list object of class "colonies" containing only unmated virgin queens
+#' @title Create multiple unmated/virgin colonies quickly
 #'
-#' @description The function is intended for creating initial colonies from
-#' 'FOUNDERPOP'. The user can create a list containing their desired number of colonies (nColonies).
-#' All colonies created are populated with un-mated virgin queens, no other members of the caste are
-#' present and must be populated in further steps.
+#' @description
+#' This function is intended for quickly creating multiple unmated/virgin
+#' colonies, often at the start of a simulation - to seed the simulation. This
+#' function takes a population, pulls out virgin queens to initiate the colonies.
+#' Other caste members have to be added later!
 #'
-#' @param founderPop The initial founder population
-#' @param nColonies Number of colonies the use wants to create
+#' @param pop Pop
+#' @param nColonies numeric, number of colonies to create
 #'
 #' @examples
-#' #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybee
+#' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
+#' nQueen(apiary)
+#' nVirginQueens(apiary)
+#' nFathers(apiary)
+#' nWorkers(apiary)
+#' nDrones(apiary)
 #'
-#' #Create population
-#' base <- newPop(founderPop, simParam=SP)
-#'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleVirginColonies(founderPop = base, nColonies = 10)
-#'
-#' @return A AlphaSimRBee Colonies object
+#' @return Colonies
 #'
 #' @export
-createMultipleVirginColonies <- function(founderPop, nColonies) {
+createVirginColonies <- function(pop, nColonies) {
   ret <- createColonies(n = nColonies)
-  virginQueens <- selectInd(founderPop, nInd = nColonies, use = "rand")
+  virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
   }
@@ -329,7 +330,8 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #' This function is intended for quickly creating multiple mated colonies, often
 #' at the start of a simulation - to seed the simulation. This function takes
 #' a population, pulls out queens, creates drones from the remainder, and then
-#' mates the queens to initiate the colonies.
+#' mates the queens to initiate the colonies. Other caste members have to be
+#' added later!
 #'
 #' @param pop Pop
 #' @param nColonies numeric, number of colonies to create
@@ -347,6 +349,11 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
 #'
 #' # Honeybee
 #' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 2)
+#' nQueen(apiary)
+#' nVirginQueens(apiary)
+#' nFathers(apiary)
+#' nWorkers(apiary)
+#' nDrones(apiary)
 #'
 #' @return Colonies
 #'
