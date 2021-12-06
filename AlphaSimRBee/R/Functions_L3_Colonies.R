@@ -33,7 +33,7 @@
 createColonies <- function(..., n = NULL) {
   if (is.null(n)) {
     input <- list(...)
-    class <- sapply(input, "class")
+    class <- ifelse(length(input) == 0, "NULL", sapply(input, "class"))
     if (!all("NULL" %in% class | "Colony" %in% class | "Colonies" %in% class)) {
       stop("Arguments have to be a NULL, Colony, or Colonies class object!")
     }
@@ -282,7 +282,14 @@ removeColonies <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
+<<<<<<< HEAD
+  # if (!"Pop" %in% class(ID)) {
+  #   stop("Argument ID must be a Pop class object!")
+  # }
+  ret <- colonies[!sapply(colonies@colonies, FUN = function(x) x@id %in% ID)]
+=======
   ret <- colonies[!getId(colonies) %in% ID]
+>>>>>>> 90db6f4e1814f0823b988b0e82999a6111a91a75
   return(ret)
 }
 
