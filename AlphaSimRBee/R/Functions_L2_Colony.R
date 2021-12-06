@@ -940,4 +940,4 @@ setPhenoColony <- function(colony, FUN = NULL, ...) {
     colony@pheno <- FUN(colony, ...)
   }
   return(colony)
-}
+  }

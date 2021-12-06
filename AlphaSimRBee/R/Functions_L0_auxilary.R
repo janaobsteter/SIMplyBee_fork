@@ -337,7 +337,6 @@ isQueenMated <- function(x) {
 #'
 #' apiary <- setQueensYOB(apiary, year = 2021)
 #' getQueensYOB(apiary)
-#'
 #' queen <- setQueensYearOfBirth(queen, year = 2022)
 #' getQueensYearOfBirth(queen)
 #'
@@ -697,6 +696,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
+
   tmp$founderGenomes <- runMacs2(nInd = nInd,
                                  nChr = nChr,
                                  segSites = nSegSites,
