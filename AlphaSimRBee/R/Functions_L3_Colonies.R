@@ -6,7 +6,7 @@
 #' @description Creates a set of colonies
 #'
 #' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
-#' or NULL objects.
+#' or \code{NULL} objects
 #' @param n numeric, number of colonies to create; this argument takes precedence
 #' over \code{...}
 #'
@@ -259,7 +259,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
       remainingColonies <- colonies
     }
   } else {
-    stop("Provide either ID or p!")
+    stop("You must provide either ID or p!")
   }
   ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
   return(ret)
@@ -271,48 +271,37 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @description Remove the colonies from the list of all colonies based
 #' on colony IDs and return a list of remaining colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param ID IDs of "colony" class objects listed in the "colonies" object
+#' @param colonies Colonies
+#' @param ID character, IDs of colony(ies) in \code{colonies}
 #'
 #' @examples
-#' # Create founder haplotypes
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+#' # Honeybee
+#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
+#' getId(apiary)
 #'
-#' # Set simulation parameters
+#' getId(removeColonies(apiary, ID = 1))
+#' getId(removeColonies(apiary, ID = c(1, 3)))
 #'
-#' SP <- SimParam$new(founderPop)
-#'
-#' # Create population
-#'
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' # Create colonies
-#'
-#' founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#' colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-#'
-#' # Put the colonies together to the apiary
-#'
-#' apiary <- c(colony1, colony2, colony3)
-#'
-#' # Remove colonies
-#'
-#' apiary <- removeColonies(apiary, ID = c(1,2))
-#'
-#' @return A list of remaining colonies. Updated AlphaSimRBee Colonies object
+#' @return Colonies
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
+<<<<<<< HEAD
   # if (!"Pop" %in% class(ID)) {
   #   stop("Argument ID must be a Pop class object!")
   # }
   ret <- colonies[!sapply(colonies@colonies, FUN = function(x) x@id %in% ID)]
+=======
+  ret <- colonies[!getId(colonies) %in% ID]
+>>>>>>> 90db6f4e1814f0823b988b0e82999a6111a91a75
   return(ret)
 }
 
@@ -352,41 +341,43 @@ createMultipleVirginColonies <- function(founderPop, nColonies) {
   return(ret)
 }
 
-#' @rdname createMultipleMatedColonies
-#' @title Create a list object of class "colonies" containing mated queens, virgin queens and fathers
+#' @rdname createMatedColonies
+#' @title Create multiple mated colonies quickly
 #'
-#' @description The function is intended for creating initial colonies from
-#' 'FOUNDERPOP'. The user can create a list containing their desired number of colonies (nColonies).
-#' The colonies created contain a mated queen, a virgin queen and fathers (varying number surrounding the nAvgFathers)
+#' @description
+#' This function is intended for quickly creating multiple mated colonies, often
+#' at the start of a simulation - to seed the simulation. This function takes
+#' a population, pulls out queens, creates drones from the remainder, and then
+#' mates the queens to initiate the colonies.
 #'
-#' @param founderPop The initial founder population
-#' @param nColonies Number of colonies the use wants to create
-#' @param nAvgFathers Average number of fathers that mates with a queen
+#' @param pop Pop
+#' @param nColonies numeric, number of colonies to create
+#' @param nAvgFathers numeric, average number of fathers (drones) that mate with
+#' a queen
+#' @param nDronesPerQueen numeric, number of drones to produce per queen - these
+#' drones will later mate with queens that initiated the colonies (to add drones)
+#' to colony see \code{\link{addDrones}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' # Honeybee
+#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 2)
 #'
-#' #Create population
-#' base <- newPop(founderPop, simParam=SP)
-#'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' @return A AlphaSimRBee Colonies object
+#' @return Colonies
 #'
 #' @export
-createMultipleMatedColonies <- function(founderPop, nColonies, nAvgFathers) {
+createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1000) {
+  if (!"Pop" %in% class(pop)) {
+    stop("Arguments pop must be a Pop class object!")
+  }
   ret <- createColonies(n = nColonies)
-  queensID <- sample(founderPop@id, size = nColonies, replace = FALSE)
-  queenMatch <- founderPop@id[founderPop@id %in% queensID]
-  queens <- founderPop[queenMatch]
-  DPQMatch <- founderPop@id[!founderPop@id %in% queensID]
-  DPQs <- founderPop[DPQMatch]
-  DCA <- createFounderDrones(pop = DPQs, nDronesPerQueen = 10)
+  tmp <- pullIndFromPop(pop = pop, nInd = nColonies)
+  queens <- tmp$pulled
+  DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
   fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
   for (colony in 1:nColonies) {
     ret@colonies[[colony]] <- createColony(queen = queens[colony],

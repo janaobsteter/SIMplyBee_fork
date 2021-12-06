@@ -928,7 +928,7 @@ setLocation <- function(x, location) {
   return(x)
 }
 
-# TODO
+# TODO: Document
 setPhenoColony <- function(colony, FUN = NULL, ...) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")

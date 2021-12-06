@@ -8,8 +8,9 @@
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all individuals
+#' are accessed
+#' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}}, \code{\link{getVirginQueens}},
 #' \code{\link{getWorkers}}, and \code{\link{getDrones}}
@@ -103,7 +104,7 @@
 #' named by colony id when \code{x} is Colonies
 #'
 #' @export
-getCaste <- function(x, caste, nInd = NULL) {
+getCaste <- function(x, caste, nInd = NULL, use = "rand") {
   if ("Colony" %in% class(x)) {
     if (is.null(nInd)) {
       if (caste == "fathers") {
@@ -113,9 +114,9 @@ getCaste <- function(x, caste, nInd = NULL) {
       }
     } else {
       if (caste == "fathers") {
-        ret <- selectInd(pop = x@queen@misc$fathers, nInd = nInd, use = "rand")
+        ret <- selectInd(pop = x@queen@misc$fathers, nInd = nInd, use = use)
       } else {
-        ret <- selectInd(pop = slot(x, caste), nInd = nInd, use = "rand")
+        ret <- selectInd(pop = slot(x, caste), nInd = nInd, use = use)
       }
     }
   } else if ("Colonies" %in% class(x)) {
@@ -128,9 +129,9 @@ getCaste <- function(x, caste, nInd = NULL) {
       }
     } else {
       if (caste == "fathers") {
-        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@queen@misc$fathers, nInd = nInd, use = "rand"))
+        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@queen@misc$fathers, nInd = nInd, use = use))
       } else {
-        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = slot(z, caste), nInd = nInd, use = "rand"))
+        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = slot(z, caste), nInd = nInd, use = use))
       }
     }
     names(ret) <- getId(x)
@@ -140,38 +141,38 @@ getCaste <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-#' @describeIn getQueen Access the queen
+#' @describeIn getCaste Access the queen
 #' @export
 getQueen <- function(x) {
   ret <- getCaste(x, caste = "queen")
   return(ret)
 }
 
-#' @describeIn getFathers Access fathers (drones the queen mated with)
+#' @describeIn getCaste Access fathers (drones the queen mated with)
 #' @export
-getFathers <- function(x, nInd = NULL) {
-  ret <- getCaste(x, caste = "fathers", nInd = nInd)
+getFathers <- function(x, nInd = NULL, use = "rand") {
+  ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
   return(ret)
 }
 
-#' @describeIn getVirginQueens Access virgin queens
+#' @describeIn getCaste Access virgin queens
 #' @export
-getVirginQueens <- function(x, nInd = NULL) {
-  ret <- getCaste(x, caste = "virgin_queens", nInd = nInd)
+getVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   return(ret)
 }
 
-#' @describeIn getWorkers Access workers
+#' @describeIn getCaste Access workers
 #' @export
-getWorkers <- function(x, nInd = NULL) {
-  ret <- getCaste(x, caste = "workers", nInd = nInd)
+getWorkers <- function(x, nInd = NULL, use = "rand") {
+  ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
   return(ret)
 }
 
-#' @describeIn getDrones Access drones
+#' @describeIn getCaste Access drones
 #' @export
-getDrones <- function(x, nInd = NULL) {
-  ret <- getCaste(x, caste = "drones", nInd = nInd)
+getDrones <- function(x, nInd = NULL, use = "rand") {
+  ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
   return(ret)
 }
 
@@ -336,7 +337,7 @@ createVirginQueens <- function(colony, nInd){
 #' @description Create a drone congregation area (DCA) from colony or colonies.
 #'
 #' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to access, if NULL all drones
+#' @param nInd numeric, number of drones to access, if \code{NULL} all drones
 #' are accessed, otherwise a random sample
 #'
 #' @examples
@@ -381,7 +382,9 @@ createDCA <- function(x, nInd = NULL) {
 #' @description Pull individuals from a population and update the population
 #'
 #' @param pop Pop
-#' @param nInd numeric, number of individuals to pull
+#' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
+#' individuals
+#' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @examples
 #' # AlphaSimR
@@ -390,17 +393,20 @@ createDCA <- function(x, nInd = NULL) {
 #' basePop <- newPop(founderGenomes)
 #' pullIndFromPop(basePop, nInd = 2)
 #' pullIndFromPop(basePop, nInd = 3)
+#' pullIndFromPop(basePop)
 #'
 #' @return Pop
 #'
 #' @export
-pullIndFromPop <- function(pop, nInd) {
+pullIndFromPop <- function(pop, nInd = NULL, use = "rand") {
   if (!"Pop" %in% class(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  selectedInd <- sample(pop@id, size = nInd, replace = FALSE)
-  sel <- pop@id %in% selectedInd
-  pulled <- pop[sel]
+  if (is.null(nInd)) {
+    nInd <- nInd(pop)
+  }
+  pulled <- selectInd(pop = pop, nInd = nInd, use = use)
+  sel <- pop@id %in% pulled@id
   remainder <- pop[!sel]
   ret <- list(pulled = pulled, remainder = remainder)
   return(ret)
@@ -461,8 +467,9 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to pull, if NULL all individuals
-#' are pulled, otherwise a random sample
+#' @param nInd numeric, number of individuals to pull, if \code{NULL} all individuals
+#' are pulled
+#' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #' \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
@@ -530,7 +537,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
 #' Pop (named by colony id) and Colonies) when \code{x} is Colonies
 #'
 #' @export
-pullCaste <- function(x, caste, nInd = NULL) {
+pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
   if ("Colony" %in% class(x)) {
     if (is.null(slot(x, caste))) {
       ret <- list(pulled = NULL, colony = x)
@@ -538,7 +545,7 @@ pullCaste <- function(x, caste, nInd = NULL) {
       if (is.null(nInd)) {
         nInd <- nInd(slot(x, caste))
       }
-      tmp <- pullIndFromPop(pop = slot(x, caste), nInd = nInd)
+      tmp <- pullIndFromPop(pop = slot(x, caste), nInd = nInd, use = use)
       slot(x, caste) <- tmp$remainder
       ret <- list(pulled = tmp$pulled, colony = x)
     }
@@ -550,7 +557,7 @@ pullCaste <- function(x, caste, nInd = NULL) {
     names(ret$pulled) <- getId(x)
     ret$colonies <- x
     for (colony in 1:nCol) {
-      tmp = pullCaste(x = x@colonies[[colony]], caste = caste, nInd = nInd)
+      tmp = pullCaste(x = x@colonies[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
       ret$colonies@colonies[[colony]] <- tmp$colony
     }
@@ -560,31 +567,31 @@ pullCaste <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-#' @describeIn pullQueen Pull queen from a colony
+#' @describeIn pullCaste Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
   ret <- pullCaste(x, caste = "queen")
   return(ret)
 }
 
-#' @describeIn pullVirginQueens Pull virgin queens from a colony
+#' @describeIn pullCaste Pull virgin queens from a colony
 #' @export
-pullVirginQueens <- function(x, nInd = NULL) {
-  ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd)
+pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   return(ret)
 }
 
-#' @describeIn pullWorkers Pull workers from a colony
+#' @describeIn pullCaste Pull workers from a colony
 #' @export
-pullWorkers <- function(x, nInd = NULL) {
-  ret <- pullCaste(x, caste = "workers", nInd = nInd)
+pullWorkers <- function(x, nInd = NULL, use = "rand") {
+  ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
   return(ret)
 }
 
-#' @describeIn pullDrones Pull drones from a colony
+#' @describeIn pullCaste Pull drones from a colony
 #' @export
-pullDrones <- function(x, nInd = NULL) {
-  ret <- pullCaste(x, caste = "drones", nInd = nInd)
+pullDrones <- function(x, nInd = NULL, use = "rand") {
+  ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
   return(ret)
 }
 

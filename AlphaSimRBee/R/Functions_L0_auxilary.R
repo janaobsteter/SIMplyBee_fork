@@ -819,7 +819,8 @@ getCsdGeno <- function(x, csd = NULL) {
 #' @description Access IBD (identity by descent) haplotype data
 #'
 #' @param pop Pop
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullIbdHaplo}}
@@ -842,7 +843,8 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
@@ -862,7 +864,8 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #'
 #' @param pop Pop
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullQtlGeno}}
@@ -884,7 +887,8 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
@@ -903,7 +907,8 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @description Access genotype data for all segregating sites
 #'
 #' @param pop Pop
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
@@ -926,7 +931,8 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
@@ -946,7 +952,8 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #'
 #' @param pop Pop
 #' @param snpChip numeric, indicates which SNP array genotype to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
@@ -967,9 +974,10 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
@@ -1104,11 +1112,13 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over
 #' \code{caste} (see examples)
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -1208,13 +1218,14 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
 #' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
@@ -1349,15 +1360,16 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
 #' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -1457,10 +1469,11 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
 #' @param trait numeric, indicates which trait's QTL genotypes to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
@@ -1595,12 +1608,13 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -1702,12 +1716,13 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
@@ -1842,14 +1857,15 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -1950,9 +1966,10 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
@@ -2087,11 +2104,12 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -2190,13 +2208,14 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
@@ -2332,15 +2351,16 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value of
 #' 2 for male haplotypes
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
@@ -2440,10 +2460,11 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
@@ -2578,12 +2599,13 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @param x Colony or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
 #' "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if NULL all individuals
-#' are accessed, otherwise a random sample; can be a list to access different
-#' number of different caste - when this is the case \code{nInd} takes precedence over
-#' \code{caste} (see examples)
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
-#' @param chr numeric, chromosomes to retrieve, if NULL, all chromosome are retrieved
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
 #' @param simParam SimParam
 #'
 #' @details
