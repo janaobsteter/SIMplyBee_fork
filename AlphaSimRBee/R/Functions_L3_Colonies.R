@@ -315,6 +315,9 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @export
 createVirginColonies <- function(pop, nColonies) {
+  if (!"Pop" %in% class(pop)) {
+    stop("Arguments pop must be a Pop class object!")
+  }
   ret <- createColonies(n = nColonies)
   virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
   for (colony in 1:nColonies) {
