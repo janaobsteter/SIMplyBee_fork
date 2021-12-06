@@ -2697,3 +2697,222 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
   }
   return(ret)
 }
+
+#' @rdname getCasteGv
+#' @title Access genetic values of individuals in a caste
+#'
+#' @description Access genetic values of individuals in a caste.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#'
+#' @seealso \code{\link{gv}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteGv(colony1, caste = "queen")
+#' getQueensGv(colony1)
+#'
+#' getCasteGv(colony1, caste = "fathers")
+#' getCasteGv(colony1, caste = "fathers", nInd = 2)
+#' getCasteGv(colony1, caste = "fathers", nInd = 2)
+#' getFathersGv(colony1)
+#' getFathersGv(colony1, nInd = 2)
+#'
+#' getCasteGv(colony1, caste = "virgin_queens")
+#' getVirginQueensGv(colony1)
+#'
+#' getCasteGv(colony1, caste = "workers")
+#' getWorkersGv(colony1)
+#'
+#' getCasteGv(colony1, caste = "drones")
+#' getDronesGv(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteGv(apiary, caste = "queen")
+#' getQueensGv(apiary)
+#'
+#' getCasteGv(apiary, caste = "fathers")
+#' getCasteGv(apiary, caste = "fathers", nInd = 2)
+#' getCasteGv(apiary, caste = "fathers", nInd = 2)
+#' getFathersGv(apiary)
+#' getFathersGv(apiary, nInd = 2)
+#'
+#' getCasteGv(apiary, caste = "virgin_queens")
+#' getVirginQueensGv(apiary)
+#'
+#' getCasteGv(apiary, caste = "workers")
+#' getWorkersGv(apiary)
+#'
+#' getCasteGv(apiary, caste = "drones")
+#' getDronesGv(apiary)
+#'
+#' @return vector of genetic values when \code{x} is Colony and list of vectors
+#' of genetic values when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
+#' @export
+getCasteGv <- function(x, caste, nInd = NULL) {
+  if (isColony(x)) {
+    tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+    ret <- gv(pop = tmp)
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getCasteGv(x = x@colonies[[colony]], caste = caste)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteGv Access genetic values of the queen
+#' @export
+getQueensGv <- function(x) {
+  ret <- getCasteGv(x, caste = "queen")
+  return(ret)
+}
+
+#' @describeIn getCasteGv Access genetic values of fathers
+#' @export
+getFathersGv <- function(x, nInd = NULL) {
+  ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCasteGv Access genetic values of virgin queens
+#' @export
+getVirginQueensGv <- function(x, nInd = NULL) {
+  ret <- getCasteGv(x, caste = "virgin_queens", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCasteGv Access genetic values of workers
+#' @export
+getWorkersGv <- function(x, nInd = NULL) {
+  ret <- getCasteGv(x, caste = "workers", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCasteGv Access genetic values of drones
+#' @export
+getDronesGv <- function(x, nInd = NULL) {
+  ret <- getCasteGv(x, caste = "drones", nInd = nInd)
+  return(ret)
+}
+
+#' @rdname getColonyGv
+#' @title Access genetic values of individuals in colony
+#'
+#' @description Access genetic values of individuals
+#' in colony.
+#'
+#' @param x Colony or Colonies
+#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample; can be a list to access
+#' different number of different caste - when this is the case \code{nInd} takes
+#' precedence over \code{caste} (see examples)
+#'
+#' @details
+#'
+#' @seealso \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getColonyGv(colony1)
+#' getColonyGv(colony1, caste = c("queen", "fathers"))
+#' getColonyGv(colony1, nInd = 1)
+#' getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' apiary <- c(colony1, colony2)
+#' getColonyGv(apiary)
+#' getColonyGv(apiary, caste = c("queen", "fathers"))
+#' getColonyGv(apiary, nInd = 1)
+#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#'
+#' @return list of vector of genetic values when \code{x} is Colony (list nodes
+#' named by caste) and list of a list of vectors of genetic values when \code{x}
+#' is Colonies, outer list is named by colony id when \code{x} is Colonies
+#'
+#' @export
+getColonyCv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL) {
+  if (isColony(x)) {
+    if (is.list(nInd)) {
+      caste <- names(nInd)
+    } else {
+      if (length(nInd) > 1) {
+        warning("Using only the first value of nInd!")
+      }
+      nIndOrig <- nInd
+      nInd <- vector(mode = "list", length = length(caste))
+      if (!is.null(nIndOrig)) {
+        for (node in 1:length(caste)) {
+          nInd[[node]] <- nIndOrig
+        }
+      }
+      names(nInd) <- caste
+    }
+    ret <- vector(mode = "list", length = length(caste))
+    names(ret) <- caste
+    if ("queen" %in% caste) {
+      ret$queen <- getQueensGv(x = x)
+    }
+    if ("fathers" %in% caste) {
+      ret$fathers <- getFathersGv(x = x, nInd = nInd$fathers)
+    }
+    if ("virgin_queens" %in% caste) {
+      ret$virgin_queens <- getVirginQueensGv(x = x, nInd = nInd$virgin_queens)
+    }
+    if ("workers" %in% caste) {
+      ret$workers <- getWorkersGv(x = x, nInd = nInd$workers)
+    }
+    if ("drones" %in% caste) {
+      ret$drones <- getDronesGv(x = x, nInd = nInd$drones)
+    }
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in 1:nCol) {
+      ret[[colony]] <- getColonyGv(x = x@colonies[[colony]], caste = caste, nInd = nInd)
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
