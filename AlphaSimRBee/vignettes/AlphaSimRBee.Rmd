@@ -27,7 +27,7 @@ nVirginQueens
 
 isQueenMated; input Pop, Colony, or Colonies; return logical
 
-getQueensYearOfBirgh & getQueensYOB; input Pop, Colony or Colonies; return numeric; TODO w/o s?
+getQueensYearOfBirth & getQueensYOB; input Pop, Colony or Colonies; return numeric; TODO w/o s?
 getQueensAge; TODO w/o s?
 
 getId; input Colony or Colonies; return character
@@ -57,7 +57,7 @@ getFathersIbdHaplo
 getVirginQueensIbdHaplo
 getWorkersIbdHaplo
 getDronesIbdHaplo
-getColonyIbdHaplo
+getColonyIbdHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteQtlHaplo; input Colony or Colonies; return matrix or list of matrix
 getQueensQtlHaplo
@@ -65,7 +65,7 @@ getFathersQtlHaplo
 getVirginQueensQtlHaplo
 getWorkersQtlHaplo
 getDronesQtlHaplo
-getColonyQtlHaplo
+getColonyQtlHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteQtlGeno; input Colony or Colonies; return matrix or list of matrix
 getQueensQtlGeno
@@ -73,7 +73,7 @@ getFathersQtlGeno
 getVirginQueensQtlGeno
 getWorkersQtlGeno
 getDronesQtlGeno
-getColonyQtlGeno
+getColonyQtlGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteSegSiteHaplo; input Colony or Colonies; return matrix or list of matrix
 getQueensSegSiteHaplo
@@ -81,7 +81,7 @@ getFathersSegSiteHaplo
 getVirginQueensSegSiteHaplo
 getWorkersSegSiteHaplo
 getDronesSegSiteHaplo
-getColonySegSiteHaplo TODO
+getColonySegSiteHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteSegSiteGeno; input Colony or Colonies; return matrix or list of matrix
 getQueensSegSiteGeno
@@ -89,7 +89,7 @@ getFathersSegSiteGeno
 getVirginQueensSegSiteGeno
 getWorkersSegSiteGeno
 getDronesSegSiteGeno
-getColonySegSiteGeno TODO
+getColonySegSiteGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteSnpHaplo; input Colony or Colonies; return matrix or list of matrix
 getQueensSnpHaplo
@@ -97,7 +97,7 @@ getFathersSnpHaplo
 getVirginQueensSnpHaplo
 getWorkersSnpHaplo
 getDronesSnpHaplo
-getColonySnpHaplo TODO
+getColonySnpHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 getCasteSnpGeno; input Colony or Colonies; return matrix or list of matrix
 getQueensSnpGeno
@@ -105,7 +105,7 @@ getFathersSnpGeno
 getVirginQueensSnpGeno
 getWorkersSnpGeno
 getDronesSnpGeno
-getColonySnpGeno TODO
+getColonySnpGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
 
 # L1 functions
 
