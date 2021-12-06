@@ -1,3 +1,11 @@
+#' @describeIn Pop Test if object is a Pop class object
+# TOOD: I have provided this as PullRequest for AlphaSimR https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
+#   once it gets incorporated there we should remove it here
+isPop = function(x) {
+  ret = is(x, class2 = "isPop")
+  return(ret)
+}
+
 # Class Colony ----
 
 #' @rdname Colony
