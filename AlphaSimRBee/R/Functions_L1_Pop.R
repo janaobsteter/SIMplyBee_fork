@@ -376,7 +376,7 @@ createDCA <- function(x, nInd = NULL) {
   return(DCA)
 }
 
-#' @rdname pullIndFromPop
+#' @rdname pullInd
 #' @title Pull individuals from a population
 #'
 #' @description Pull individuals from a population and update the population
@@ -391,14 +391,14 @@ createDCA <- function(x, nInd = NULL) {
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
-#' pullIndFromPop(basePop, nInd = 2)
-#' pullIndFromPop(basePop, nInd = 3)
-#' pullIndFromPop(basePop)
+#' pullInd(basePop, nInd = 2)
+#' pullInd(basePop, nInd = 3)
+#' pullInd(basePop)
 #'
 #' @return Pop
 #'
 #' @export
-pullIndFromPop <- function(pop, nInd = NULL, use = "rand") {
+pullInd <- function(pop, nInd = NULL, use = "rand") {
   if (!"Pop" %in% class(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
@@ -452,7 +452,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize) {
   }
   ret <- vector(mode = "list", length = nGroup)
   for (group in 1:nGroup) {
-    tmp <- pullIndFromPop(pop = DCA, nInd = nDrones[group])
+    tmp <- pullInd(pop = DCA, nInd = nDrones[group])
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
   }
@@ -545,7 +545,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
       if (is.null(nInd)) {
         nInd <- nInd(slot(x, caste))
       }
-      tmp <- pullIndFromPop(pop = slot(x, caste), nInd = nInd, use = use)
+      tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
       slot(x, caste) <- tmp$remainder
       ret <- list(pulled = tmp$pulled, colony = x)
     }

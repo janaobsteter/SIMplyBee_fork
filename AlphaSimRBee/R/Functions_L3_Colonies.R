@@ -356,7 +356,7 @@ createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1
     stop("Arguments pop must be a Pop class object!")
   }
   ret <- createColonies(n = nColonies)
-  tmp <- pullIndFromPop(pop = pop, nInd = nColonies)
+  tmp <- pullInd(pop = pop, nInd = nColonies)
   queens <- tmp$pulled
   DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
   fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
