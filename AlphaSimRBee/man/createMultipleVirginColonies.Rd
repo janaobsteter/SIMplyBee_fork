@@ -22,15 +22,15 @@ present and must be populated in further steps.
 }
 \examples{
 #' #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-base = newPop(founderPop, simParam=SP)
+base <- newPop(founderPop, simParam=SP)
 
 #Create 10 virgin queen colonies
- apiary1 = createMultipleVirginColonies(founderPop = base, nColonies = 10)
+ apiary1 <- createMultipleVirginColonies(founderPop = base, nColonies = 10)
 
 }

@@ -2,44 +2,50 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{selectColonies}
 \alias{selectColonies}
-\title{Select the colonies from the colony list based on IDs.}
+\title{Select individual colonies from a set of colonies}
 \usage{
-\method{selectColonies}(colonies, IDs)
+selectColonies(colonies, ID = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{Colonies, a set of colonies}
 
-\item{ID}{IDs of "colony" class objects listed in the "colonies" object}
+\item{ID}{numeric or character, name of a colony (one or more) in
+\code{colonies}; note that numeric value is effectively converted to character
+- see examples how to select by index}
 }
 \value{
-A list of selected colonies.
+Colonies, selected colonies
 }
 \description{
-Select the colonies from the list of all colonies based
-on colony IDs and return a list of selected colonies.
+Select individual colonies from a set of colonies based on colony
+index or name
 }
 \examples{
-inst/examples/examples_selectColonies.R
-#Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+# AlphaSimR
+founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
+# Honeybees
+founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 
-#Create population
-base = newPop(founderPop, simParam=SP)
+colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
+colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
+colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
+apiary <- c(colony1, colony2, colony3)
 
-#Create an apiary with 10 mated colonies (contains only queens, fathers and virgin queens)
-apiary1 = createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
+selectColonies(apiary, ID = 4)
+selectColonies(apiary, ID = "4")
+selectColonies(apiary, ID = c(4, 5))
+selectColonies(apiary, ID = c("4", "5"))
 
-#Build up the colonies to full size by adding workers and drones (drones are 1/10 size of workers)
-colonyFullSize = 1000
-apiary1 = buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
-
-#Check colony IDs in colony
-apiary@colonies
-
-#Select colonies with IDs 8, 40 and 45
-chosenColonies = selectColonies(apiary1, ID = c(8,40,45))
+apiary[1]
+apiary[[1]]
+apiary["4"]
+apiary[["4"]]
+getId(apiary[c(1, 2)])
+getId(apiary[c("4", "5")])
+getId(apiary[c(2, 1)])
+getId(apiary[c("5", "4")])
 
 }

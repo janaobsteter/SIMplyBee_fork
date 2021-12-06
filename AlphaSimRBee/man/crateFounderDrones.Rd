@@ -4,10 +4,10 @@
 \alias{createFounderDrones}
 \title{Creates drones from base population}
 \usage{
-\method{createFounderDrones}(queenPop, nDronesPerQueen)
+\method{createFounderDrones}(pop, nDronesPerQueen)
 }
 \arguments{
-\item{queenPop}{AlphaSimRBee Colony object from the \code{createColony(...)}}
+\item{pop}{AlphaSimRBee Colony object from the \code{createColony(...)}}
 
 \item{nDronesPerQueen}{Integer, number of drones to create}
 }
@@ -20,15 +20,15 @@ Creates population of drones from base population.
 }
 \examples{
 #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-pop = newPop(founderPop, simParam=SP)
+pop <- newPop(founderPop, simParam=SP)
 
-founderDrones = createFounderDrones(pop[2:110], nDronesPerQueen = 100)
-colony1 = createColony(queen = pop[1], fathers = founderDrones[1:17])
+founderDrones <- createFounderDrones(pop[2:110], nDronesPerQueen = 100)
+colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
 
 }

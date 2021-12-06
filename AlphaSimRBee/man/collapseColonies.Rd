@@ -18,5 +18,31 @@ An updated AlphaSimRBee Colonies object
 :
 }
 \examples{
+# Create founder haplotypes
+
+founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+
+# Set simulation parameters
+
+SP <- SimParam$new(founderPop)
+
+# Create population
+
+pop <- newPop(founderPop, simParam=SP)
+
+# Create colonies
+
+founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
+colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
+colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
+
+# Put the colonies together to the apiary
+
+apiary <- c(colony1, colony2, colony3)
+
+# Collapse colonies
+
+apiary <- collapseColonies(apiary, ID = c(1,2))
 
 }

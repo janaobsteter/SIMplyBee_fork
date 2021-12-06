@@ -9,7 +9,7 @@
 \arguments{
 \item{colony}{AlphaSimRBee Colony object}
 
-\item{queen}{Number of queens to add to the queen-less colony/colonies}
+\item{queen}{Pop/number of queens to add to the queen-less colony/colonies}
 }
 \value{
 Updated AlphaSimRBee Colony object
@@ -21,19 +21,19 @@ into the queen-less colony.
 }
 \examples{
 Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-base = newPop(founderPop, simParam=SP)
+base <- newPop(founderPop, simParam=SP)
 
 #Create 10 mated colonies from the base population
-apiary1 = createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
+apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
 
 #Build-up the colonies
-apiary1 = buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
 
 #Split all the colonies
 tmp <- splitColonies(apiary1)
@@ -41,9 +41,9 @@ apiary1 <- tmp$remnants
 apiary0 <- tmp$splits
 
 #Create 10 virgin queens from the base population
-virginQueens = base[1:10]
+virginQueens <- base[1]
 
 #Repopulate the split colonies with virgin queens taken from the base population
-apiary0 <- reQueenColonies(apiary0, queens = virginQueens)
+apiary0 <- reQueenColonies(apiary0, queen = virginQueens)
 
 }

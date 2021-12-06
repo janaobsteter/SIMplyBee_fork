@@ -1,0 +1,6 @@
+library(package = "AlphaSimR")
+source(file = "R/Classes.R")
+source(file = "R/Functions_L0_auxilary.R")
+source(file = "R/Functions_L1_Pop.R")
+source(file = "R/Functions_L2_Colony.R")
+source(file = "R/Functions_L3_Colonies.R")

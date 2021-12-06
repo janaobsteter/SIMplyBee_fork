@@ -26,20 +26,18 @@ A virgin queen is selected from the workers and mated if fathers are present.
 }
 \examples{
 #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
 
 #Set simulation parameters
-SP = SimParam$new(founderPop)
+SP <- SimParam$new(founderPop)
 
 #Create population
-base = newPop(founderPop, simParam=SP)
+base <- newPop(founderPop, simParam=SP)
 
 #Create 10 virgin queen colonies
- apiary1 = createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+ apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
 
 #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 = buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
-
- TODO FINISH EXAMPLE
+ apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
 
 }

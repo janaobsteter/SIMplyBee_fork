@@ -2,34 +2,35 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nDrones}
 \alias{nDrones}
-\title{Number of workers present in the colony}
+\title{Number of drones in a colony}
 \usage{
-\method{nDrones}(colony)
+nDrones(x)
 }
 \arguments{
-\item{colony}{AlphaSimRBee population object of class "Colony"}
+\item{x}{Colony or Colonies}
 }
 \value{
-Integer. Number of drones present in the colony AlphaSimRBee object
+Integer, named by colony id when \code{x} is Colonies
 }
 \description{
-Returns the number of drones present in the colony object
+Returns the number of drones in a colony
 }
 \examples{
-#' #Create founder haplotypes
-founderPop = quickHaplo(nInd=200, nChr=1, segSites=10)
+AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP = SimParam$new(founderPop)
-
-#Create population
-pop = newPop(founderPop, simParam=SP)
-
-#Creates colony
-colony1 = createColony(queen = base[1], fathers = base[2:15])
-colony1@drones = createDrones(colony1, nInd = 100)
-
-Check number of drones in the colony
+# Honeybees
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addDrones(colony1, nInd = 100)
+colony2 <- addDrones(colony2, nInd = 200)
 nDrones(colony1)
+nDrones(colony2)
+
+apiary <- c(colony1, colony2)
+nDrones(apiary)
 
 }

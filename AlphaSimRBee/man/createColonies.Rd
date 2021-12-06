@@ -2,21 +2,38 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{createColonies}
 \alias{createColonies}
-\title{}
+\title{Create colonies}
 \usage{
-\method {createColonies}(..., n)
+createColonies(..., n = NULL)
 }
 \arguments{
-\item{...}{one or more \code{\link{Colony-class}} and/or
-\code{\link{Colonies-class}} objects.}
+\item{...}{one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
+or NULL objects.}
 
-\item{n}{Number of colony-class objects to add to the colonies-class object}
+\item{n}{numeric, number of colonies to create; this argument takes precedence
+over \code{...}}
 }
 \value{
-Returns an empty object of \code{\link{Colonies-class}}
+A \code{\link{Colonies-class}} object
 }
 \description{
-Creates a new \code{\link{Colonies-class}} from one or more
-\code{\link{Colony-class}} and/or \code{\link{Colonies-class}}
-objects.
+Creates a set of colonies
+}
+\examples{
+# Create 10 empty colonies
+apiary <- createColonies(n = 10)
+
+# Create an apiary from two existing colonies
+# ... AlphaSimR
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+SP <- SimParam$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+# ... Honeybees
+drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[1], fathers = drones)
+colony2 <- createColony(virgin_queens = basePop[3])
+apiary2 <- createColonies(colony1, colony2)
+# ... an alternative
+apiary2 <- c(colony1, colony2)
+
 }
