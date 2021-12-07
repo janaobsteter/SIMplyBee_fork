@@ -71,7 +71,7 @@ nColonies <- function(colonies) {
 #'
 #' @export
 nCaste <- function(x, caste) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (caste == "fathers") {
       if (is.null(x@queen)) {
         ret <- 0
@@ -81,7 +81,7 @@ nCaste <- function(x, caste) {
     } else {
       ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = nCaste, caste = caste)
     names(ret) <- getId(x)
   } else {
@@ -90,7 +90,7 @@ nCaste <- function(x, caste) {
   return(ret)
 }
 
-#' @rdname nQueen
+#' @rdname nQueens
 #' @title Number of queens in a colony
 #'
 #' @description Returns the number of queens in a colony (expect 0 or 1)
@@ -107,21 +107,27 @@ nCaste <- function(x, caste) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
-#' nQueen(colony1)
-#' nQueen(colony2)
+#' nQueens(colony1)
+#' nQueens(colony2)
 #' colony2 <- removeQueen(colony2)
-#' nQueen(colony2)
+#' nQueens(colony2)
 #'
 #' apiary <- c(colony1, colony2)
-#' nQueen(apiary)
+#' nQueens(apiary)
 #'
 #' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-nQueen <- function(x) {
-  ret <- nCaste(x, caste = "queen")
+
+nQueens <- function(x) {
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "queen")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
+
 
 #' @rdname nFathers
 #' @title Number of fathers in a colony
@@ -150,7 +156,11 @@ nQueen <- function(x) {
 #'
 #' @export
 nFathers <- function(x) {
+  if (isColony(x) | isColonies(x)) {
   ret <- nCaste(x, caste = "fathers")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -183,7 +193,11 @@ nFathers <- function(x) {
 #'
 #' @export
 nVirginQueens <- function(x) {
-  ret <- nCaste(x, caste = "virgin_queens")
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "virgin_queens")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -215,8 +229,13 @@ nVirginQueens <- function(x) {
 #' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
+
 nWorkers <- function(x) {
-  ret <- nCaste(x, caste = "workers")
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "workers")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -248,8 +267,13 @@ nWorkers <- function(x) {
 #' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
+
 nDrones <- function(x) {
-  ret <- nCaste(x, caste = "drones")
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "drones")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -288,15 +312,15 @@ nDrones <- function(x) {
 #'
 #' @export
 isQueenMated <- function(x) {
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     ret <- !is.null(x@misc$fathers)
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     if (!is.null(x@queen)) {
       ret <- !is.null(x@queen@misc$fathers)
     } else {
       ret <- FALSE
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = isQueenMated)
     names(ret) <- getId(x)
   } else {
@@ -352,11 +376,11 @@ isQueenMated <- function(x) {
 #'
 #' @export
 getQueensYearOfBirth <- getQueensYOB <- function(x) {
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     ret <- ifelse(is.null(x@misc$yearOfBirth), NA, x@misc$yearOfBirth)
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc$yearOfBirth), NA, x@queen@misc$yearOfBirth)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies,
                   FUN = function(z) {
                     ifelse(is.null(z@queen@misc$yearOfBirth), NA, z@queen@misc$yearOfBirth)
@@ -404,19 +428,19 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #'
 #' @export
 getQueensAge <- function(x, currentYear) {
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     if (is.null(x@misc$yearOfBirth)) {
       ret <- NA
     } else {
       ret <- currentYear - x@misc$yearOfBirth
     }
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     if (is.null(x@queen)) {
       ret <- NA
     } else {
       ret <- currentYear - x@queen@misc$yearOfBirth
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueensAge, currentYear = currentYear)
     names(ret) <- getId(x)
   } else {
@@ -455,14 +479,15 @@ getQueensAge <- function(x, currentYear) {
 #' @return character, \code{NA} when queen not present
 #'
 #' @export
+
 getId <- function(x) {
   if (is.null(x)) {
     id <- NA
-  } else if ("Pop" %in% class(x)) {
+  } else if (isPop(x)) {
     id <- x@id
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     id <- ifelse(is.null(x@id), NA, x@id)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     id <- sapply(x@colonies, FUN = function(z) ifelse(is.null(z@id), NA, z@id))
   } else {
@@ -516,13 +541,13 @@ getId <- function(x) {
 #'
 #' @export
 getLocation <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if(is.null(x@location)) {
       ret <- c(NA, NA)
     } else {
       ret <- x@location
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- lapply(x@colonies, FUN = getLocation)
     names(ret) <- getId(x)
   } else {
@@ -545,9 +570,9 @@ getLocation <- function(x) {
 #'
 #' @export
 hasSplit <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     ret <- x@split
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@split)
     names(ret) <- getId(x)
@@ -572,9 +597,9 @@ hasSplit <- function(x) {
 #'
 #' @export
 hasSwarmed <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     ret <- x@swarm
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@swarm)
     names(ret) <- getId(x)
@@ -598,9 +623,9 @@ hasSwarmed <- function(x) {
 #'
 #' @export
 hasSuperseded <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     ret <- x@supersedure
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@supersedure)
     names(ret) <- getId(x)
@@ -625,9 +650,9 @@ hasSuperseded <- function(x) {
 #'
 #' @export
 isProductive <- function(x) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     ret <- x@production
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     ret <- sapply(x@colonies, FUN = function(z) z@production)
     names(ret) <- getId(x)
@@ -749,9 +774,9 @@ getCsdHaplo <- function(x, csd = NULL) {
   if (is.null(csd) | !is.list(csd)) {
     stop("csd must be given and has to be a list with nodes chr, start, and stop")
   }
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
     ret$queen         <- getCsdHaplo(x = getQueen(x),        csd = csd)
@@ -759,7 +784,7 @@ getCsdHaplo <- function(x, csd = NULL) {
     ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), csd = csd)
     ret$workers       <- getCsdHaplo(x = getWorkers(x),      csd = csd)
     ret$drones        <- getCsdHaplo(x = getDrones(x),       csd = csd)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdHaplo, csd = csd)
     names(ret) <- getId(x)
   } else {
@@ -789,14 +814,15 @@ getCsdHaplo <- function(x, csd = NULL) {
 #' @return TODO
 #'
 #' @export
+
 getCsdGeno <- function(x, csd = NULL) {
   # TODO: make use of SimParamBee once we have it
   if (is.null(csd) | !is.list(csd)) {
     stop("Argument csd must be given and has to be a list with nodes chr, start, and stop!")
   }
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     ret <- pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
     ret$queen         <- getCsdGeno(x = getQueen(x),        csd = csd)
@@ -804,7 +830,7 @@ getCsdGeno <- function(x, csd = NULL) {
     ret$virgin_queens <- getCsdGeno(x = getVirginQueens(x), csd = csd)
     ret$workers       <- getCsdGeno(x = getWorkers(x),      csd = csd)
     ret$drones        <- getCsdGeno(x = getDrones(x),       csd = csd)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdGeno, csd = csd)
     names(ret) <- getId(x)
   } else {
@@ -829,7 +855,12 @@ getCsdGeno <- function(x, csd = NULL) {
 #'
 #' @export
 getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
+  if (isPop(pop)){
   ret <- pullIbdHaplo(pop = pop, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -853,7 +884,12 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
 #'
 #' @export
 getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isPop(pop)){
   ret <- pullQtlHaplo(pop = pop, trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -874,7 +910,12 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #'
 #' @export
 getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
+  if (isPop(pop)){
   ret <- pullQtlGeno(pop = pop, trait = trait, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -897,7 +938,12 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #'
 #' @export
 getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isPop(pop)) {
   ret <- pullSegSiteHaplo(pop = pop, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -916,8 +962,14 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @return Matrix of genotypes
 #'
 #' @export
+
 getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
+  if (isPop(pop)){
   ret <- pullSegSiteGeno(pop = pop, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -940,8 +992,14 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @return Matrix of haplotypes
 #'
 #' @export
+
 getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isPop(pop)){
   ret <- pullSnpHaplo(pop = pop, snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -962,8 +1020,14 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #'
 #' @export
 #' @export
+
 getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isPop(pop)) {
   ret <- pullSnpGeno(pop = pop, snpChip = snpChip, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument pop must be a Pop class object")
+  }
   return(ret)
 }
 
@@ -1042,10 +1106,10 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' @export
 getCasteIbdHaplo <- function(x, caste, nInd = NULL,
                              chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getIbdHaplo(pop = tmp, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1060,46 +1124,361 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
+#' @title Access IBD haplotype data of the queen
+#'
+#' @description Access IBD (identity by descent) haplotype data the queen
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "workers")
+#' getWorkersIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "drones")
+#' getDronesIbdHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteIbdHaplo(apiary, caste = "queen")
+#' getQueensIbdHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getQueensIbdHaplo <- function(x, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteIbdHaplo(x, caste = "queen",
                           chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of fathers
+#' @title Access IBD haplotype data of individuals of the fathers
+#'
+#' @description Access IBD (identity by descent) haplotype data of individuals of the fathers
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getFathersIbdHaplo <- function(x, nInd = NULL,
                                chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd,
                           chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of virgin queens
+#' @title Access IBD haplotype data of individuals of the virgin queens
+#'
+#' @description Access IBD (identity by descent) haplotype data of individuals of the virgin queens
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "workers")
+#' getWorkersIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "drones")
+#' getDronesIbdHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteIbdHaplo(apiary, caste = "queen")
+#' getQueensIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "fathers")
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(apiary)
+#' getFathersIbdHaplo(apiary, nInd = 2)
+#'
+#' getCasteIbdHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(apiary)
+#'
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getVirginQueensIbdHaplo <- function(x, nInd = NULL,
                                     chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteIbdHaplo(x, caste = "virgin_queens", nInd = nInd,
                           chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of workers
+#' @title Access IBD haplotype data of individuals of the workers
+#'
+#' @description Access IBD (identity by descent) haplotype data of individuals of the workers
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "workers")
+#' getWorkersIbdHaplo(colony1)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getWorkersIbdHaplo <- function(x, nInd = NULL,
                                chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteIbdHaplo(x, caste = "workers", nInd = nInd,
                           chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of drones
+#' @title Access IBD haplotype data of individuals of the drones
+#'
+#' @description Access IBD (identity by descent) haplotype data of individuals of the drones
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteIbdHaplo(colony1, caste = "queen")
+#' getQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "fathers")
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(colony1)
+#' getFathersIbdHaplo(colony1, nInd = 2)
+#'
+#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "workers")
+#' getWorkersIbdHaplo(colony1)
+#'
+#' getCasteIbdHaplo(colony1, caste = "drones")
+#' getDronesIbdHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteIbdHaplo(apiary, caste = "queen")
+#' getQueensIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "fathers")
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersIbdHaplo(apiary)
+#' getFathersIbdHaplo(apiary, nInd = 2)
+#'
+#' getCasteIbdHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "workers")
+#' getWorkersIbdHaplo(apiary)
+#'
+#' getCasteIbdHaplo(apiary, caste = "drones")
+#' getDronesIbdHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getDronesIbdHaplo <- function(x, nInd = NULL,
                               chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd,
                           chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1159,7 +1538,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' @export
 getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                               chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -1197,7 +1576,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
       ret$drones <- getDronesIbdHaplo(x = x, nInd = nInd$drones,
                                       chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (ifColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1290,10 +1669,10 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @export
 getCasteQtlHaplo <- function(x, caste, nInd = NULL,
                              trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getQtlHaplo(pop = tmp, haplo = haplo, trait = trait, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1307,48 +1686,386 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
+#' @rdname getQueensQtlHaplo
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
+#' @title Access QTL haplotype data of individuals of the queen
+#'
+#' @description Access QTL haplotype data of individuals of the queen
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getQueensQtlHaplo <- function(x,
                               trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlHaplo(x, caste = "queen",
                           trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
+#' @rdname getFathersQtlHaplo
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of fathers
+#' @title Access QTL haplotype data of individuals of the fathers
+#'
+#' @description Access QTL haplotype data of individuals of the fathers
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "fathers")
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(colony1)
+#' getFathersQtlHaplo(colony1, nInd = 2)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getFathersQtlHaplo <- function(x, nInd = NULL,
                                trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlHaplo(x, caste = "fathers", nInd = nInd,
                           trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
+#' @rdname getVirginQueensQtlHaplo
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of virgin queens
+#' @title Access QTL haplotype data of individuals of the virgin queens
+#'
+#' @description Access QTL haplotype data of individuals of the virgin queens
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "fathers")
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(colony1)
+#' getFathersQtlHaplo(colony1, nInd = 2)
+#'
+#' getCasteQtlHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "workers")
+#' getWorkersQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "drones")
+#' getDronesQtlHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteQtlHaplo(apiary, caste = "queen")
+#' getQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "fathers")
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(apiary)
+#' getFathersQtlHaplo(apiary, nInd = 2)
+#'
+#' getCasteQtlHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
 getVirginQueensQtlHaplo <- function(x, nInd = NULL,
                                     trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlHaplo(x, caste = "virgin_queens", nInd = nInd,
                           trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else{
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
+#' @rdname getWorkersQtlHaplo
 #' @describeIn getCasteQtlHaplo Access QTL haplotype of workers
+#' @title Access QTL haplotype data of individuals of the workers
+#'
+#' @description Access QTL haplotype data of individuals of the workers
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "fathers")
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(colony1)
+#' getFathersQtlHaplo(colony1, nInd = 2)
+#'
+#' getCasteQtlHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "workers")
+#' getWorkersQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "drones")
+#' getDronesQtlHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteQtlHaplo(apiary, caste = "queen")
+#' getQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "fathers")
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(apiary)
+#' getFathersQtlHaplo(apiary, nInd = 2)
+#'
+#' getCasteQtlHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "workers")
+#' getWorkersQtlHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getWorkersQtlHaplo <- function(x, nInd = NULL,
                                trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x)| isColonies(x)){
   ret <- getCasteQtlHaplo(x, caste = "workers", nInd = nInd,
                           trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
+#' @rdname getDronesQtlHaplo
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of drones
+#' @title Access QTL haplotype data of individuals of the drones
+#'
+#' @description Access QTL haplotype data of individuals of the drones
+#'
+#' @param x Colony or Colonies
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#' individuals are accessed, otherwise a random sample
+#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
+#' 2 for male haplotypes
+#' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
+#' are retrieved
+#' @param simParam SimParam
+#'
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @examples
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#'
+#' getCasteQtlHaplo(colony1, caste = "queen")
+#' getQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "fathers")
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(colony1)
+#' getFathersQtlHaplo(colony1, nInd = 2)
+#'
+#' getCasteQtlHaplo(colony1, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "workers")
+#' getWorkersQtlHaplo(colony1)
+#'
+#' getCasteQtlHaplo(colony1, caste = "drones")
+#' getDronesQtlHaplo(colony1)
+#'
+#' apiary <- c(colony1, colony2)
+#' getCasteQtlHaplo(apiary, caste = "queen")
+#' getQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "fathers")
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getFathersQtlHaplo(apiary)
+#' getFathersQtlHaplo(apiary, nInd = 2)
+#'
+#' getCasteQtlHaplo(apiary, caste = "virgin_queens")
+#' getVirginQueensQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "workers")
+#' getWorkersQtlHaplo(apiary)
+#'
+#' getCasteQtlHaplo(apiary, caste = "drones")
+#' getDronesQtlHaplo(apiary)
+#'
+#' @return matrix with haplotypes when \code{x} is Colony and list of matrices
+#' with haplotypes when \code{x} is Colonies, named by colony id when \code{x}
+#' is Colonies
+#'
 #' @export
+
 getDronesQtlHaplo <- function(x, nInd = NULL,
                               trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlHaplo(x, caste = "drones", nInd = nInd,
                           trait = trait, haplo = haplo, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1410,7 +2127,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @export
 getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                               trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -1448,7 +2165,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
       ret$drones <- getDronesQtlHaplo(x = x, nInd = nInd$drones,
                                       trait = trait, haplo = haplo, chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1538,10 +2255,10 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @export
 getCasteQtlGeno <- function(x, caste, nInd = NULL,
                             trait = 1, chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getQtlGeno(pop = tmp, trait = trait, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1559,8 +2276,13 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
 #' @export
 getQueensQtlGeno <- function(x,
                              trait = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlGeno(x, caste = "queen",
                          trait = trait, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1568,8 +2290,13 @@ getQueensQtlGeno <- function(x,
 #' @export
 getFathersQtlGeno <- function(x, nInd = NULL,
                               trait = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlGeno(x, caste = "fathers", nInd = nInd,
                          trait = trait, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1577,8 +2304,13 @@ getFathersQtlGeno <- function(x, nInd = NULL,
 #' @export
 getVirginQueensQtlGeno <- function(x, nInd = NULL,
                                    trait = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlGeno(x, caste = "virgin_queens", nInd = nInd,
                          trait = trait, chr = chr, simParam = simParam)
+  }
+  else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1586,8 +2318,13 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
 #' @export
 getWorkersQtlGeno <- function(x, nInd = NULL,
                               trait = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlGeno(x, caste = "workers", nInd = nInd,
                          trait = trait, chr = chr, simParam = simParam)
+  }
+  else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1595,8 +2332,13 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
 #' @export
 getDronesQtlGeno <- function(x, nInd = NULL,
                              trait = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteQtlGeno(x, caste = "drones", nInd = nInd,
                          trait = trait, chr = chr, simParam = simParam)
+  }
+  else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -1655,7 +2397,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @export
 getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                              trait = 1, chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -1693,7 +2435,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
       ret$drones <- getDronesQtlGeno(x = x, nInd = nInd$drones,
                                      trait = trait, chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1786,10 +2528,10 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' @export
 getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
                                  haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteHaplo(pop = tmp, haplo = haplo, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1807,8 +2549,12 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
 #' @export
 getQueensSegSiteHaplo <- function(x,
                                   haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteHaplo(x, caste = "queen",
                               haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -1816,8 +2562,12 @@ getQueensSegSiteHaplo <- function(x,
 #' @export
 getFathersSegSiteHaplo <- function(x, nInd = NULL,
                                    haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteHaplo(x, caste = "fathers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -1825,8 +2575,12 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL,
 #' @export
 getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
                                         haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteHaplo(x, caste = "virgin_queens", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -1834,8 +2588,12 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
 #' @export
 getWorkersSegSiteHaplo <- function(x, nInd = NULL,
                                    haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteHaplo(x, caste = "workers", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -1843,8 +2601,12 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL,
 #' @export
 getDronesSegSiteHaplo <- function(x, nInd = NULL,
                                   haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteHaplo(x, caste = "drones", nInd = nInd,
                               haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -1905,7 +2667,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @export
 getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                                   haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -1943,7 +2705,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
       ret$drones <- getDronesSegSiteHaplo(x = x, nInd = nInd$drones,
                                           haplo = haplo, chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2033,10 +2795,10 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #' @export
 getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
                                 chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSegSiteGeno(pop = tmp, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2054,8 +2816,12 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
 #' @export
 getQueensSegSiteGeno <- function(x,
                                  chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteGeno(x, caste = "queen",
                              chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2063,8 +2829,12 @@ getQueensSegSiteGeno <- function(x,
 #' @export
 getFathersSegSiteGeno <- function(x, nInd = NULL,
                                   chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteGeno(x, caste = "fathers", nInd = nInd,
                              chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2072,8 +2842,12 @@ getFathersSegSiteGeno <- function(x, nInd = NULL,
 #' @export
 getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
                                        chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteGeno(x, caste = "virgin_queens", nInd = nInd,
                              chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2081,8 +2855,12 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
 #' @export
 getWorkersSegSiteGeno <- function(x, nInd = NULL,
                                   chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteGeno(x, caste = "workers", nInd = nInd,
                              chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2090,8 +2868,12 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL,
 #' @export
 getDronesSegSiteGeno <- function(x, nInd = NULL,
                                  chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSegSiteGeno(x, caste = "drones", nInd = nInd,
                              chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2149,7 +2931,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @export
 getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                                  chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -2187,7 +2969,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
       ret$drones <- getDronesSegSiteGeno(x = x, nInd = nInd$drones,
                                          chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2280,10 +3062,10 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' @export
 getCasteSnpHaplo <- function(x, caste, nInd = NULL,
                              snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSnpHaplo(pop = tmp, haplo = haplo, snpChip = snpChip, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2301,8 +3083,12 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
 #' @export
 getQueensSnpHaplo <- function(x,
                               snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpHaplo(x, caste = "queen",
                           snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 
 }
@@ -2311,8 +3097,12 @@ getQueensSnpHaplo <- function(x,
 #' @export
 getFathersSnpHaplo <- function(x, nInd = NULL,
                                snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpHaplo(x, caste = "fathers", nInd = nInd,
                           snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2320,8 +3110,12 @@ getFathersSnpHaplo <- function(x, nInd = NULL,
 #' @export
 getVirginQueensSnpHaplo <- function(x, nInd = NULL,
                                     snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpHaplo(x, caste = "virgin_queens", nInd = nInd,
                           snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2329,8 +3123,12 @@ getVirginQueensSnpHaplo <- function(x, nInd = NULL,
 #' @export
 getWorkersSnpHaplo <- function(x, nInd = NULL,
                                snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpHaplo(x, caste = "workers", nInd = nInd,
                           snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2338,8 +3136,12 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
 #' @export
 getDronesSnpHaplo <- function(x, nInd = NULL,
                               snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpHaplo(x, caste = "drones", nInd = nInd,
                           snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2401,7 +3203,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @export
 getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                               snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -2439,7 +3241,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
       ret$drones <- getDronesSnpHaplo(x = x, nInd = nInd$drones,
                                       snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2529,10 +3331,10 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @export
 getCasteSnpGeno <- function(x, caste, nInd = NULL,
                             snpChip = 1, chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     tmp <- getCaste(x = x, caste = caste, nInd = nInd)
     ret <- getSnpGeno(pop = tmp, snpChip = snpChip, chr = chr, simParam = simParam)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2550,8 +3352,12 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
 #' @export
 getQueensSnpGeno <- function(x,
                              snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpGeno(x, caste = "queen",
                          snpChip = snpChip, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2559,8 +3365,12 @@ getQueensSnpGeno <- function(x,
 #' @export
 getFathersSnpGeno <- function(x, nInd = NULL,
                               snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpGeno(x, caste = "fathers", nInd = nInd,
                          snpChip = snpChip, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2568,8 +3378,12 @@ getFathersSnpGeno <- function(x, nInd = NULL,
 #' @export
 getVirginQueensSnpGeno <- function(x, nInd = NULL,
                                    snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpGeno(x, caste = "virgin_queens", nInd = nInd,
                          snpChip = snpChip, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2577,8 +3391,12 @@ getVirginQueensSnpGeno <- function(x, nInd = NULL,
 #' @export
 getWorkersSnpGeno <- function(x, nInd = NULL,
                               snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpGeno(x, caste = "workers", nInd = nInd,
                          snpChip = snpChip, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2586,8 +3404,12 @@ getWorkersSnpGeno <- function(x, nInd = NULL,
 #' @export
 getDronesSnpGeno <- function(x, nInd = NULL,
                              snpChip = 1, chr = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteSnpGeno(x, caste = "drones", nInd = nInd,
                          snpChip = snpChip, chr = chr, simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -2646,7 +3468,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @export
 getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
                               snpChip = 1, chr = NULL, simParam = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
     } else {
@@ -2684,7 +3506,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
       ret$drones <- getDronesSnpGeno(x = x, nInd = nInd$drones,
                                       snpChip = snpChip, chr = chr, simParam = simParam)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -2788,35 +3610,55 @@ getCasteGv <- function(x, caste, nInd = NULL) {
 #' @describeIn getCasteGv Access genetic value of the queen
 #' @export
 getQueensGv <- function(x) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteGv(x, caste = "queen")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of fathers
 #' @export
 getFathersGv <- function(x, nInd = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of virgin queens
 #' @export
 getVirginQueensGv <- function(x, nInd = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteGv(x, caste = "virgin_queens", nInd = nInd)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of workers
 #' @export
 getWorkersGv <- function(x, nInd = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteGv(x, caste = "workers", nInd = nInd)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of drones
 #' @export
 getDronesGv <- function(x, nInd = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteGv(x, caste = "drones", nInd = nInd)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -3010,40 +3852,60 @@ getCasteBv <- function(x, caste, nInd = NULL, simParam = NULL) {
 #' @describeIn getCasteBv Access breeding value of the queen
 #' @export
 getQueensBv <- function(x, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteBv(x, caste = "queen",
                     simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteBv Access breeding values of fathers
 #' @export
 getFathersBv <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteBv(x, caste = "fathers", nInd = nInd,
                     simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteBv Access breeding values of virgin queens
 #' @export
 getVirginQueensBv <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteBv(x, caste = "virgin_queens", nInd = nInd,
                     simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteBv Access breeding values of workers
 #' @export
 getWorkersBv <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteBv(x, caste = "workers", nInd = nInd,
                     simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteBv Access breeding values of drones
 #' @export
 getDronesBv <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteBv(x, caste = "drones", nInd = nInd,
                     simParam = simParam)
+  } else {
+  stop("Argument x must be a Colony or Colonies class object")
+  }
   return(ret)
 }
 
@@ -3246,40 +4108,60 @@ getCasteDd <- function(x, caste, nInd = NULL, simParam = NULL) {
 #' @describeIn getCasteDd Access dominance deviation of the queen
 #' @export
 getQueensDd <- function(x, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteDd(x, caste = "queen",
                     simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteDd Access dominance deviations of fathers
 #' @export
 getFathersDd <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteDd(x, caste = "fathers", nInd = nInd,
                     simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteDd Access dominance deviations of virgin queens
 #' @export
 getVirginQueensDd <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteDd(x, caste = "virgin_queens", nInd = nInd,
                     simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteDd Access dominance deviations of workers
 #' @export
 getWorkersDd <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteDd(x, caste = "workers", nInd = nInd,
                     simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCasteDd Access dominance deviations of drones
 #' @export
 getDronesDd <- function(x, nInd = NULL, simParam = NULL) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCasteDd(x, caste = "drones", nInd = nInd,
                     simParam = simParam)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 

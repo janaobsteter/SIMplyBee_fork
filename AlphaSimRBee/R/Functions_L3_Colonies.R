@@ -34,7 +34,7 @@ createColonies <- function(..., n = NULL) {
   if (is.null(n)) {
     input <- list(...)
     class <- ifelse(length(input) == 0, "NULL", sapply(input, "class"))
-    if (!all("NULL" %in% class | "Colony" %in% class | "Colonies" %in% class)) {
+    if (!all("NULL" %in% class | isColony | isColony)) {
       stop("Arguments have to be a NULL, Colony, or Colonies class object!")
     }
     output <- new("Colonies", colonies = input)
@@ -80,10 +80,10 @@ createColonies <- function(..., n = NULL) {
 #'
 #' @export
 addColonyToColonies <- function(colonies, colony) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies <- c(colonies@colonies, colony)
@@ -124,10 +124,10 @@ addColonyToColonies <- function(colonies, colony) {
 #'
 #' @export
 assignColonyToColonies <- function(colonies, colony, pos) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies[[pos]] <- colony
@@ -177,7 +177,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -229,7 +229,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -279,7 +279,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   ret <- colonies[!getId(colonies) %in% ID]
