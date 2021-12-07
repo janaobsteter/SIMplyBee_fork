@@ -249,7 +249,7 @@ addVirginQueens <- function(colony, nInd) {
 #' apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build-up the colonies
-#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize)
 #'
 #' #Split all the colonies
 #' tmp <- splitColonies(apiary1)
@@ -308,12 +308,12 @@ reQueenColony <- function(colony, queen) {
 #'
 #' #Build-up the colonies
 #' colonyFullSize <- 500
-#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize)
 #'
 #' @return Colony
 #'
 #' @export
-buildUpColony <- function(colony, nWorkers, nDrones) {
+buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -585,8 +585,8 @@ resetEvents <- function(colony) {
 #'
 #' @param colony AlphaSimRBee Colony object with a non-mated virgin queen
 #' @param fathers Pop Class. Father group pulled from the DCA.
-#' @param nWorkers Integer.Number of workers to create
-#' @param nDrones Integer. Number of drones to create
+#' @param nWorkers integer, number of workers to create
+#' @param nDrones integer, number of drones to create
 #'
 #' @examples
 #' TODO
@@ -594,7 +594,7 @@ resetEvents <- function(colony) {
 #' @return Colony
 #'
 #' @export
-crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
+crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers * 0.1) {
   if (!"Colony" %in% class(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -608,16 +608,16 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = 0) {
     stop("No virgin queen!")
   }
   if (!is.null(colony@queen)) {
-    stop("Mated queen present!")
+    stop("Mated queen already present!")
   }
   colony@queen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@id <- colony@queen@id
   colony@queen@misc$fathers <- fathers
   if (nWorkers != 0) {
-    colony@workers <- createWorkers(colony, nWorkers)
+    colony@workers <- createWorkers(colony, nInd = nWorkers)
   }
   if (nDrones != 0) {
-    colony@drones <- createDrones(colony, nDrones)
+    colony@drones <- createDrones(colony, nInd = nDrones)
   }
   colony@virgin_queens <- selectInd(colony@workers, nInd = 1, use = "rand")
   return(colony)

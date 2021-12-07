@@ -118,15 +118,15 @@ getDrones
 
 createFounderDrones; input Pop; return Pop; TODO merge with createDrones?
 
-createWorkers; input Colony; return Pop; TODO Colonies?
+createWorkers; input Colony; return Pop; TODO work also with Colonies?
 createDrones
 createVirginQueens
 
 createDCA; input Colony or Colonies; return Pop
 
-pullIndFromPop; input Pop; return list of 2 Pop
+pullInd; input Pop; return list of 2 Pop
 
-pullDroneGroupsFromDCA; input Pop; list of n Pop
+pullDroneGroupsFromDCA; input Pop; list of n Pop; TODO rename to pullIndGroups?
 
 pullCaste; input Colony or Colonies; return list of Pop and Colony
 pullQueen
@@ -146,9 +146,9 @@ createColony; input Pop; return Colony
 
 addWorkers; input Colony, return Colony; TODO some have Colony in name, some don't!?
 addDrones
-addVirginQueens; TODO add external virgin queens?
-reQueenColony; TODO rename to replaceQueen()?
-buildUpColony; TODO use both replace* and add*? rename to buildUp()?
+addVirginQueens; TODO add external virgin queens instead of just generating them from the hive?
+reQueenColony; TODO rename to replaceQueen() to be consistent with other replace functions?
+buildUpColony; TODO use replace* and add* arguments? rename to buildUp()?
 replaceWorkers
 replaceDrones
 removeQueen
@@ -168,29 +168,29 @@ splitColony; TODO rename to split() (clash with other R func(s))?
 
 createColonies; input NULL, Colony, or Colonies; return Colonies
 
-addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename to addColony?
-assignColonyToColonies
+addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename to addColony() or just add()?
+assignColonyToColonies; TODO rename to assignColony() or just assign()?
 
 selectColonies; input Colonies; return Colonies
 removeColonies
 
 pullColonies; input Colonies; return list of 2 Colonies
 
-createMultipleVirginColonies; input Pop; return Colonies; TODO remove mulitiple? How is this different to createColonies?
-createMultipleMatedColonies
+createVirginColonies; input Pop; return Colonies; TODO how is this different to createColonies and createColony?
+createMatedColonies
 
 buildUpColonies; input Colonies; return Colonies; TODO rename to buildUp()?
-replaceWorkersColonies; TODO rename to replaceWorkers()?
-replaceDronesColonies; TODO rename to replaceDrones()?
-reQueenColonies; TODO rename to replaceQueen()?
-collapseColonies; TODO rename to collapse()?
-supersedeColonies; TODO rename to supersede()?
+replaceWorkersColonies; TODO merge with replaceWorkers()?
+replaceDronesColonies; TODO merge with replaceDrones()?
+reQueenColonies; TODO merge with replaceQueen()?
+collapseColonies; TODO merge with collapse()?
+supersedeColonies; TODO merge with supersede()?
 
-swarmColonies; input Colonies; return list of 2 Colonies; TODO rename to swarm()?
-splitColonies; TODO rename to split() (clash with other R func(s))?
+swarmColonies; input Colonies; return list of 2 Colonies; TODO merge with swarm()?
+splitColonies; TODO merge with split() (clash with other R func(s))?
 
-crossColonies; input Colonies; return Colonies; TODO rename to cross()?
-setPhenoColonies; TODO rename to setColonyPheno?
+crossColonies; input Colonies; return Colonies; TODO merge with cross()?
+setPhenoColonies; TODO merge with setColonyPheno?
 
 ```{r setup}
 library(AlphaSimRBee)
