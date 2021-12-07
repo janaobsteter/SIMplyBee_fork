@@ -266,8 +266,11 @@ addVirginQueens <- function(colony, nInd) {
 #'
 #' @export
 reQueenColony <- function(colony, queen) {
-  if (!isColony(colony) | isPop(colony)) {
-    stop("Argument colony must be a Colony or Pop class object!")
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colonyclass object!")
+  }
+  if  (!isPop(queen)) {
+    stop("Argument queen must be a Pop class object!")
   }
   if (!isQueenMated(queen)) {
     colony@virgin_queens <- queen
@@ -903,9 +906,9 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #'
 #' @export
 setLocation <- function(x, location) {
-  if (inColony(x)) {
+  if (isColony(x)) {
     x@location <- location
-  } else if (inColonies(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     if (is.list(location)) {
       if (length(location) != nCol) {
