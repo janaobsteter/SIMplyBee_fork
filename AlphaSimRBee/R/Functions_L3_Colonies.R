@@ -286,13 +286,9 @@ removeColonies <- function(colonies, ID) {
   return(ret)
 }
 
-<<<<<<< HEAD
+
 #' @rdname createVirginColonies
-#' @title Create a list object of class "colonies" containing only unmated virgin queens
-=======
-#' @title Create multiple unmated/virgin colonies quickly
->>>>>>> b26013cf4f98611cb6aba180b71832850a33efee
-#'
+#' @title Create a list object of class "colonies" containing only unmated virgin queens.
 #' @description
 #' This function is intended for quickly creating multiple unmated/virgin
 #' colonies, often at the start of a simulation - to seed the simulation. This
@@ -308,10 +304,6 @@ removeColonies <- function(colonies, ID) {
 #' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-<<<<<<< HEAD
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createVirginColonies(founderPop = base, nColonies = 10)
-=======
 #' # Honeybee
 #' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
 #' nQueen(apiary)
@@ -319,19 +311,14 @@ removeColonies <- function(colonies, ID) {
 #' nFathers(apiary)
 #' nWorkers(apiary)
 #' nDrones(apiary)
->>>>>>> b26013cf4f98611cb6aba180b71832850a33efee
 #'
 #' @return Colonies
 #'
 #' @export
-<<<<<<< HEAD
-createVirginColonies <- function(founderPop, nColonies) {
-=======
 createVirginColonies <- function(pop, nColonies) {
   if (!"Pop" %in% class(pop)) {
     stop("Arguments pop must be a Pop class object!")
   }
->>>>>>> b26013cf4f98611cb6aba180b71832850a33efee
   ret <- createColonies(n = nColonies)
   virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
   for (colony in 1:nColonies) {
