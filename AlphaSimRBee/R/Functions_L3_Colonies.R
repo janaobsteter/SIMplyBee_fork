@@ -286,7 +286,7 @@ removeColonies <- function(colonies, ID) {
   return(ret)
 }
 
-#' @rdname createMultipleVirginColonies
+#' @rdname createVirginColonies
 #' @title Create a list object of class "colonies" containing only unmated virgin queens
 #'
 #' @description The function is intended for creating initial colonies from
@@ -308,12 +308,12 @@ removeColonies <- function(colonies, ID) {
 #' base <- newPop(founderPop, simParam=SP)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleVirginColonies(founderPop = base, nColonies = 10)
+#'  apiary1 <- createVirginColonies(founderPop = base, nColonies = 10)
 #'
 #' @return A AlphaSimRBee Colonies object
 #'
 #' @export
-createMultipleVirginColonies <- function(founderPop, nColonies) {
+createVirginColonies <- function(founderPop, nColonies) {
   ret <- createColonies(n = nColonies)
   virginQueens <- selectInd(founderPop, nInd = nColonies, use = "rand")
   for (colony in 1:nColonies) {
