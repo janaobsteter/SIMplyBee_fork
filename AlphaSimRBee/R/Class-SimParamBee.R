@@ -2,10 +2,10 @@
 #'
 #' @description
 #' Container for global simulation parameters. Saving this object
-#' as SP will allow it to be accessed by function defaults.
+#' as SPBee will allow it to be accessed by function defaults.
 #'
 #' @export
-SimParamBee = R6Class(
+SimParamBee <- R6Class(
   "SimParamBee",
   public = list(
     #### Public ----
@@ -19,7 +19,6 @@ SimParamBee = R6Class(
     #' @field nCsdAlleles number of sites (i.e. length) representing the csd locus
     #' (if affects the number of possible alleles)
     nCsdSites = "integer",
-
 
     #' @description Starts the process of building a new honeybee simulation
     #' by creating a new SimParamBee object and assigning a founder
@@ -53,14 +52,14 @@ SimParamBee = R6Class(
 
       # Private items
       private$.csdChr = 3
-      private$.csdPos =  0.865
+      private$.csdPos = 0.865
       private$.csdHaplo = 2 ** self$nCsdSites
 
       invisible(self)
     },
 
-
     #I'VE LEFT THE BELOW IN TO SERVE AS A TEMPLATE IF WE DECIDE TO ADD FUNTIONS
+    someFunc = function(x) {x}
 
     #' #' @description Changes how sexes are determined in the simulation.
     #' #' The default sexes is "no", indicating all individuals are hermaphrodites.
