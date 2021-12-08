@@ -34,7 +34,7 @@ createColonies <- function(..., n = NULL) {
   if (is.null(n)) {
     input <- list(...)
     class <- ifelse(length(input) == 0, "NULL", sapply(input, "class"))
-    if (!all("NULL" %in% class | isColony | isColony)) {
+    if (!all("NULL" %in% class | "Colony" %in% class | "Colonies" %in% class)) {
       stop("Arguments have to be a NULL, Colony, or Colonies class object!")
     }
     output <- new("Colonies", colonies = input)
