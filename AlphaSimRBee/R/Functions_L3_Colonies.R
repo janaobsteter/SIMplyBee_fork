@@ -378,6 +378,48 @@ createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 1
   return(ret)
 }
 
+
+#' @rdname createColoniesFromAPop
+#' @title  A merger of the createVirginColonies and createMatedColonies 
+#'
+#' @description 
+#'
+#' @param pop
+#' @param nColonies
+#' @param nAvgFathers
+#' @param c 
+#'
+#' @examples
+#' @return An updated AlphaSimRBee Colonies object
+#'
+#' @export
+
+createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  c = 100) {
+  # TODO: should pullDroneGroupsFromDCA go into SimParamBee?
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
+  }
+  ret <- createColonies(n = nColonies)
+  if (is.null(nAvgFathers)) {
+    virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
+    for (colony in 1:nColonies) {
+      ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
+      message("Virgin Colonies created")
+    }
+  } else {
+    tmp <- pullInd(pop = pop, nInd = nColonies)
+    queens <- tmp$pulled
+    DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
+    fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
+    for (colony in 1:nColonies) {
+      ret@colonies[[colony]] <- createColony(queen = queens[colony],
+                                             fathers = fatherPackages[[colony]])
+      message("Mated Colonies created")
+    }
+  }
+  return(ret)
+}
+
 #' @rdname buildUpColonies
 #' @title  Build up Colonies by adding workers and drones
 #'
