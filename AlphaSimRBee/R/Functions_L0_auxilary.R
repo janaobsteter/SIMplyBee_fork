@@ -703,36 +703,16 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     histNe = Ne, # TODO revise and citation
                                     histGen = 1, # TODO revise and citation
                                     split = NULL, # TODO revise and citation
-                                    #csdChr = 3, # TODO citation
-                                    #csdPos = 0.865, # TODO citation
-                                    #nCsdHaplos = 100, # TODO revise & citation
-                                    nThreads = NULL,
-                                    simParam = NULL,
-                                    simParamBee = NULL) {
+                                    nThreads = NULL) {
 
-  if(is.null(simParam)){
-    simParam = get("SP",envir=.GlobalEnv)
-  }
-
-  if(is.null(simParamBee)){
-    simParam = get("SPBee",envir=.GlobalEnv)
-  }
-
-  # No of possible haplotypes from n biallelic SNP is 2^n, so we need at least
-  # n seg sites (if 2^n must be at least k, then log2(2^n) = log2(k) = n log2(2);
-  # then n must be at least log2(k) / log2(2) = log2(k))
-
-  if (simParam$nCsdSites < nCsdLoci) {
-    stop("You must have at the least ", simParamBee$nCsdSites, " segregating sites to simulate ", simParamBee$.nCsdHaplo, " csd haplotypes!")
-  }
 
   ret <- vector(mode = "list", length = 3)
-  names(ret) <- c("founderGenomes", "SimParam", "csd")
+  names(ret) <- c("founderGenomes", "SP")
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
 
-  tmp$founderGenomes <- runMacs2(nInd = nInd,
+  ret$founderGenomes <- runMacs2(nInd = nInd,
                                  nChr = nChr,
                                  segSites = nSegSites,
                                  Ne = Ne,
@@ -745,19 +725,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                  inbred = FALSE,
                                  ploidy = 2L,
                                  nThreads = nThreads)
-  if (!is.null(simParamBee$csdChr)) {
-    tmp$SP <- SimParam$new(founderPop = founderGenomes)
-    genMap <- tmp$SP$genMap
-    csdPosStart <- floor(nSegSites * simParamBee$csdPos) #WHAT FORMAT IS THE CSD POSITION IN?
-    csdPosStop <- ceiling(csdPos + nCsdLoci - 1)
-    if (csdPosStop > nSegSites) {
-      stop("Too few segregagting sites to simulate so many csd haplotypes at the given position!")
-    }
-    genMap[[csdChr]][csdPosStart:csdPosStop] <- 0
-    tmp$SP$switchGenMap(genMap = genMap)
-    tmp$csd <- list(chr = 3, start = csdPosStart, stop = csdPosStop)
-  }
-  return(tmp)
+  ret$SP = SimParamBee$new(founderPop = founderGenomes)
+  return(ret)
 }
 
 #' @rdname getCsdHaplo

@@ -205,7 +205,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
 #' \code{colonies}; note that numeric value is effectively converted to character
-#' @param p numeric, percentage of colonies to pull
+#' @param p numeric, probability of a colony being chosen
 #'
 #' @examples
 #' # AlphaSimR
