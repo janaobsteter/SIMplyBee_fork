@@ -205,7 +205,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
 #' \code{colonies}; note that numeric value is effectively converted to character
-#' @param p numeric, percentage of colonies to pull
+#' @param p numeric, probability of a colony being chosen
 #'
 #' @examples
 #' # AlphaSimR
@@ -286,7 +286,6 @@ removeColonies <- function(colonies, ID) {
   return(ret)
 }
 
-
 #' @rdname createColoniesFromAPop
 #' @title  A merger of the createVirginColonies and createMatedColonies 
 #' @description Virgin Colonies description:  This function is intended for quickly creating multiple mated or unmated/virgin
@@ -301,12 +300,23 @@ removeColonies <- function(colonies, ID) {
 #' @param nDronesPerQueen
 #' 
 #' @examples
-#' @return An updated AlphaSimRBee Colonies object
+#' # AlphaSimR
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Honeybee
+#' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
+#' nQueens(apiary)
+#' nVirginQueens(apiary)
+#' nFathers(apiary)
+#' nWorkers(apiary)
+#' nDrones(apiary)
+#'
+#' @return Colonies
 #'
 #' @export
-
 createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesPerQueen = 100) {
-  # TODO: should pullDroneGroupsFromDCA go into SimParamBee?
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
