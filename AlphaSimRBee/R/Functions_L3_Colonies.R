@@ -287,114 +287,25 @@ removeColonies <- function(colonies, ID) {
 }
 
 
-#' @rdname createVirginColonies
-#' @title Create a list object of class "colonies" containing only unmated virgin queens.
-#' @description
-#' This function is intended for quickly creating multiple unmated/virgin
-#' colonies, often at the start of a simulation - to seed the simulation. This
-#' function takes a population, pulls out virgin queens to initiate the colonies.
-#' Other caste members have to be added later!
-#'
-#' @param pop Pop
-#' @param nColonies numeric, number of colonies to create
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
-#' nQueen(apiary)
-#' nVirginQueens(apiary)
-#' nFathers(apiary)
-#' nWorkers(apiary)
-#' nDrones(apiary)
-#'
-#' @return Colonies
-#'
-#' @export
-createVirginColonies <- function(pop, nColonies) {
-  if (!"Pop" %in% class(pop)) {
-    stop("Arguments pop must be a Pop class object!")
-  }
-  ret <- createColonies(n = nColonies)
-  virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
-  for (colony in 1:nColonies) {
-    ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
-  }
-  return(ret)
-}
-
-#' @rdname createMatedColonies
-#' @title Create multiple mated colonies quickly
-#'
-#' @description
-#' This function is intended for quickly creating multiple mated colonies, often
-#' at the start of a simulation - to seed the simulation. This function takes
-#' a population, pulls out queens, creates drones from the remainder, and then
-#' mates the queens to initiate the colonies. Other caste members have to be
-#' added later!
-#'
-#' @param pop Pop
-#' @param nColonies numeric, number of colonies to create
-#' @param nAvgFathers numeric, average number of fathers (drones) that mate with
-#' a queen
-#' @param nDronesPerQueen numeric, number of drones to produce per queen - these
-#' drones will later mate with queens that initiated the colonies (to add drones)
-#' to colony see \code{\link{addDrones}}
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 2)
-#' nQueen(apiary)
-#' nVirginQueens(apiary)
-#' nFathers(apiary)
-#' nWorkers(apiary)
-#' nDrones(apiary)
-#'
-#' @return Colonies
-#'
-#' @export
-createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 100) {
-  if (!"Pop" %in% class(pop)) {
-    stop("Arguments pop must be a Pop class object!")
-  }
-  ret <- createColonies(n = nColonies)
-  tmp <- pullInd(pop = pop, nInd = nColonies)
-  queens <- tmp$pulled
-  DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
-  fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
-  for (colony in 1:nColonies) {
-    ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                           fathers = fatherPackages[[colony]])
-  }
-  return(ret)
-}
-
-
 #' @rdname createColoniesFromAPop
 #' @title  A merger of the createVirginColonies and createMatedColonies 
-#'
-#' @description 
+#' @description Virgin Colonies description:  This function is intended for quickly creating multiple mated or unmated/virgin
+#' colonies, often at the start of a simulation - to seed the simulation. To create virgin colonies this
+#' function takes a population, pulls out virgin queens to initiate the colonies. To create mated colonies 
+#' this function takes a population, pulls out queens, creates drones from the remainder, and then
+#' mates the queens to initiate the colonies. Other caste members have to be added later!
 #'
 #' @param pop
 #' @param nColonies
 #' @param nAvgFathers
-#' @param c 
-#'
+#' @param nDronesPerQueen
+#' 
 #' @examples
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
 
-createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  c = 100) {
+createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesPerQueen = 100) {
   # TODO: should pullDroneGroupsFromDCA go into SimParamBee?
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
@@ -404,7 +315,6 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  c = 100)
     virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
     for (colony in 1:nColonies) {
       ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
-      message("Virgin Colonies created")
     }
   } else {
     tmp <- pullInd(pop = pop, nInd = nColonies)
@@ -414,7 +324,6 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  c = 100)
     for (colony in 1:nColonies) {
       ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                              fathers = fatherPackages[[colony]])
-      message("Mated Colonies created")
     }
   }
   return(ret)
