@@ -118,7 +118,6 @@ nCaste <- function(x, caste) {
 #' @return integer, named by colony id when \code{x} is Colonies
 #'
 #' @export
-
 nQueens <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "queen")

@@ -306,7 +306,7 @@ removeColonies <- function(colonies, ID) {
 #'
 #' # Honeybee
 #' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
-#' nQueen(apiary)
+#' nQueens(apiary)
 #' nVirginQueens(apiary)
 #' nFathers(apiary)
 #' nWorkers(apiary)
