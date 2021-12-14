@@ -1,15 +1,31 @@
-Package: AlphaSimRBee
+Package: SIMplyBee
 Type: Package
 Title: AlphaSimR extension for simulating honeybee populations and breeding programmes
 Version: 0.1.0
-Author: Jana Obšteter, Laura Strachan, Jernej Bubnič, Gregor Gorjanc
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: The AlphaSimRBee is an extension of the AlphaSimR package (https://cran.r-project.org/web/packages/AlphaSimR/index.html) 
-        for stochastic simulations of honeybee populations and breeding programmes.
+Authors@R: c(person("Jana", "Obšteter", email = "obsteter.jana@gmail.com",
+  role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1511-3916")),
+  person("Laura", "Strachan", role = "aut", 
+  comment = c(ORCID = "TODO")),
+  person("Jernej", "Bubnič", role = "aut", 
+  comment = c(ORCID = "TODO")),
+  person("Gregor", "Gorjanc", role = c("aut"), 
+  comment = c(ORCID = "0000-0001-8008-2787")))
+Description: SIMplyBee is an extension of the AlphaSimR package
+  (https://cran.r-project.org/package=AlphaSimR) for stochastic simulations of
+  honeybee populations and breeding programmes. It enables simulation of
+  individual bees that form a colony, which includes a queen, fathers (drones
+  the queen mated with), virgin queens, workers, and drones. Multiple colony can
+  be merged into a population of colonies, such as an apiary or whole country of
+  colonies. Functions enable operations on castes, colony, or colonies, to ease
+  R scripting of whole populations. All AlphaSimR functionality with respect to
+  genomes and genetic and phenotype values is available and further extended for
+  honeybees, including haplo-diploidy, csd locus, colony events (swarming,
+  supersedure, etc.) and colony phenotype values.
+URL: https://github.com/HighlanderLab/SIMplyBee
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-Imports: AlphaSimR (>= 1.0.4)
+Depends: R (>= 3.3.0), methods, R6, AlphaSimR (>= 1.0.4)
 RoxygenNote: 7.1.2
 Suggests: 
     rmarkdown,

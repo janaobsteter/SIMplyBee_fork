@@ -80,10 +80,10 @@ createColonies <- function(..., n = NULL) {
 #'
 #' @export
 addColonyToColonies <- function(colonies, colony) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies <- c(colonies@colonies, colony)
@@ -124,10 +124,10 @@ addColonyToColonies <- function(colonies, colony) {
 #'
 #' @export
 assignColonyToColonies <- function(colonies, colony, pos) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies[[pos]] <- colony
@@ -177,7 +177,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -205,7 +205,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
 #' \code{colonies}; note that numeric value is effectively converted to character
-#' @param p numeric, percentage of colonies to pull
+#' @param p numeric, probability of a colony being pulled
 #'
 #' @examples
 #' # AlphaSimR
@@ -229,7 +229,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -279,23 +279,25 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
-  if (!"Colonies" %in% class(colonies)) {
+  if (!isColony(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   ret <- colonies[!getId(colonies) %in% ID]
   return(ret)
 }
 
-#' @title Create multiple unmated/virgin colonies quickly
+#' @rdname createColoniesFromAPop
+#' @title  A merger of the createVirginColonies and createMatedColonies
+#' @description Virgin Colonies description:  This function is intended for quickly creating multiple mated or unmated/virgin
+#' colonies, often at the start of a simulation - to seed the simulation. To create virgin colonies this
+#' function takes a population, pulls out virgin queens to initiate the colonies. To create mated colonies
+#' this function takes a population, pulls out queens, creates drones from the remainder, and then
+#' mates the queens to initiate the colonies. Other caste members have to be added later!
 #'
-#' @description
-#' This function is intended for quickly creating multiple unmated/virgin
-#' colonies, often at the start of a simulation - to seed the simulation. This
-#' function takes a population, pulls out virgin queens to initiate the colonies.
-#' Other caste members have to be added later!
-#'
-#' @param pop Pop
-#' @param nColonies numeric, number of colonies to create
+#' @param pop
+#' @param nColonies
+#' @param nAvgFathers
+#' @param nDronesPerQueen
 #'
 #' @examples
 #' # AlphaSimR
@@ -305,7 +307,7 @@ removeColonies <- function(colonies, ID) {
 #'
 #' # Honeybee
 #' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
-#' nQueen(apiary)
+#' nQueens(apiary)
 #' nVirginQueens(apiary)
 #' nFathers(apiary)
 #' nWorkers(apiary)
@@ -314,65 +316,25 @@ removeColonies <- function(colonies, ID) {
 #' @return Colonies
 #'
 #' @export
-createVirginColonies <- function(pop, nColonies) {
-  if (!"Pop" %in% class(pop)) {
-    stop("Arguments pop must be a Pop class object!")
+createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesPerQueen = 100) {
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
   }
   ret <- createColonies(n = nColonies)
-  virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
-  for (colony in 1:nColonies) {
-    ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
-  }
-  return(ret)
-}
-
-#' @rdname createMatedColonies
-#' @title Create multiple mated colonies quickly
-#'
-#' @description
-#' This function is intended for quickly creating multiple mated colonies, often
-#' at the start of a simulation - to seed the simulation. This function takes
-#' a population, pulls out queens, creates drones from the remainder, and then
-#' mates the queens to initiate the colonies. Other caste members have to be
-#' added later!
-#'
-#' @param pop Pop
-#' @param nColonies numeric, number of colonies to create
-#' @param nAvgFathers numeric, average number of fathers (drones) that mate with
-#' a queen
-#' @param nDronesPerQueen numeric, number of drones to produce per queen - these
-#' drones will later mate with queens that initiated the colonies (to add drones)
-#' to colony see \code{\link{addDrones}}
-#'
-#' @examples
-#' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' # Honeybee
-#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 2)
-#' nQueen(apiary)
-#' nVirginQueens(apiary)
-#' nFathers(apiary)
-#' nWorkers(apiary)
-#' nDrones(apiary)
-#'
-#' @return Colonies
-#'
-#' @export
-createMatedColonies <- function(pop, nColonies, nAvgFathers, nDronesPerQueen = 100) {
-  if (!"Pop" %in% class(pop)) {
-    stop("Arguments pop must be a Pop class object!")
-  }
-  ret <- createColonies(n = nColonies)
-  tmp <- pullInd(pop = pop, nInd = nColonies)
-  queens <- tmp$pulled
-  DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
-  fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
-  for (colony in 1:nColonies) {
-    ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                           fathers = fatherPackages[[colony]])
+  if (is.null(nAvgFathers)) {
+    virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
+    for (colony in 1:nColonies) {
+      ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
+    }
+  } else {
+    tmp <- pullInd(pop = pop, nInd = nColonies)
+    queens <- tmp$pulled
+    DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
+    fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
+    for (colony in 1:nColonies) {
+      ret@colonies[[colony]] <- createColony(queen = queens[colony],
+                                             fathers = fatherPackages[[colony]])
+    }
   }
   return(ret)
 }

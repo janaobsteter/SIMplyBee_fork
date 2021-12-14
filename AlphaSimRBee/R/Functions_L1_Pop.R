@@ -105,7 +105,7 @@
 #'
 #' @export
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.null(nInd)) {
       if (caste == "fathers") {
         ret <- x@queen@misc$fathers
@@ -119,7 +119,7 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
         ret <- selectInd(pop = slot(x, caste), nInd = nInd, use = use)
       }
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     # Could have called Colony method for every colony of x, but the code below will be faster
     if (is.null(nInd)) {
       if (caste == "fathers") {
@@ -144,39 +144,59 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @describeIn getCaste Access the queen
 #' @export
 getQueen <- function(x) {
+  if (isColony(x) | isColonies(x)){
   ret <- getCaste(x, caste = "queen")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCaste Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCaste Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCaste Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn getCaste Access drones
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
-#' @rdname crateFounderDrones
+#' @rdname createFounderDrones
 #' @title Creates drones from base population
 #'
 #' @description Creates population of drones from base population.
@@ -201,8 +221,9 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @return AlphaSim population object of created drones.
 #'
 #' @export
+
 createFounderDrones <- function(pop, nDronesPerQueen = 100) {
-  if (!("Pop" %in% class(pop))) {
+  if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
   drones <- makeDH(pop, nDH = nDronesPerQueen)
@@ -238,8 +259,9 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @return AlphaSim population object of created workers.
 #'
 #' @export
+
 createWorkers <- function(colony, nInd){
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
@@ -284,7 +306,7 @@ createWorkers <- function(colony, nInd){
 #'
 #' @export
 createDrones <- function(colony, nInd){
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
@@ -324,7 +346,7 @@ createDrones <- function(colony, nInd){
 #'
 #' @export
 createVirginQueens <- function(colony, nInd){
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   virginQueens <- createWorkers(colony, nInd = nInd)
@@ -365,9 +387,9 @@ createVirginQueens <- function(colony, nInd){
 #'
 #' @export
 createDCA <- function(x, nInd = NULL) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     DCA <- getDrones(x, nInd = nInd)
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     DCA <- getDrones(x, nInd = nInd)
     DCA <- mergePops(popList = DCA)
   } else {
@@ -399,7 +421,7 @@ createDCA <- function(x, nInd = NULL) {
 #'
 #' @export
 pullInd <- function(pop, nInd = NULL, use = "rand") {
-  if (!"Pop" %in% class(pop)) {
+  if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
   if (is.null(nInd)) {
@@ -443,7 +465,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
-  if (!"Pop" %in% class(DCA)) {
+  if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
   nDrones <- rpois(n = nGroup, lambda = avgGroupSize)
@@ -538,7 +560,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #'
 #' @export
 pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     if (is.null(slot(x, caste))) {
       ret <- list(pulled = NULL, colony = x)
     } else {
@@ -549,7 +571,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
       slot(x, caste) <- tmp$remainder
       ret <- list(pulled = tmp$pulled, colony = x)
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("pulled", "colonies")
@@ -570,28 +592,44 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @describeIn pullCaste Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
+  if (isColony(x) | isColonies(x)){
   ret <- pullCaste(x, caste = "queen")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn pullCaste Pull virgin queens from a colony
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn pullCaste Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
 #' @describeIn pullCaste Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand") {
+  if (isColony(x) | isColonies(x)){
   ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
   return(ret)
 }
 
@@ -636,10 +674,10 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' @export
 crossVirginQueen <- function(virginQueen, fathers) {
-  if (!"Pop" %in% class(virginQueen)) {
+  if (!isPop(virginQueen)) {
     stop("Argument virginQueen must be a Pop class object!")
   }
-  if (!"Pop" %in% class(fathers)) {
+  if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (isQueenMated(virginQueen)) {
@@ -702,15 +740,15 @@ crossVirginQueen <- function(virginQueen, fathers) {
 #'
 #' @export
 setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
-  if ("Pop" %in% class(x)) {
+  if (isPop(x)) {
     x@misc$yearOfBirth <- year
-  } else if ("Colony" %in% class(x)) {
+  } else if (isColony(x)) {
     if (!is.null(x@queen)) {
       x@queen@misc$yearOfBirth <- year
     } else {
       stop("Missing queen!") # TODO: should this be a warning?
     }
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in 1:nCol) {
       x@colonies[[colony]]@queen@misc$yearOfBirth <- year

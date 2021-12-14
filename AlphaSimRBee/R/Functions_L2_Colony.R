@@ -114,7 +114,7 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #' @export
 #'
 addWorkers <- function(colony, nInd = NULL, ...) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.function(nInd)) {
@@ -160,7 +160,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #'
 #' @export
 addDrones <- function(colony, nInd) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.function(nInd)) {
@@ -209,7 +209,7 @@ addDrones <- function(colony, nInd) {
 #'
 #' @export
 addVirginQueens <- function(colony, nInd) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
@@ -266,10 +266,10 @@ addVirginQueens <- function(colony, nInd) {
 #'
 #' @export
 reQueenColony <- function(colony, queen) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argument colony must be a Colony class object!")
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colonyclass object!")
   }
-  if (!"Pop" %in% class(queen)) {
+  if  (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
   }
   if (!isQueenMated(queen)) {
@@ -314,7 +314,7 @@ reQueenColony <- function(colony, queen) {
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   n <- nWorkers - nWorkers(colony)
@@ -358,7 +358,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
 #'
 #' @export
 replaceWorkers <- function(colony, p = 1) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   nWorkers <- nWorkers(colony)
@@ -402,7 +402,7 @@ replaceWorkers <- function(colony, p = 1) {
 #'
 #' @export
 replaceDrones <- function(colony, p = 1) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   nDrones <- nDrones(colony)
@@ -444,7 +444,7 @@ replaceDrones <- function(colony, p = 1) {
 #'
 #' @export
 removeQueen <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@queen <- NULL
@@ -479,7 +479,7 @@ removeQueen <- function(colony) {
 #'
 #' @export
 removeVirginQueens <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@virgin_queens <- NULL
@@ -501,7 +501,7 @@ removeVirginQueens <- function(colony) {
 #'
 #' @export
 removeWorkers <- function(colony, p) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (p > 1) {
@@ -532,7 +532,7 @@ removeWorkers <- function(colony, p) {
 #'
 #' @export
 removeDrones <- function(colony, p) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (p > 1) {
@@ -565,7 +565,7 @@ removeDrones <- function(colony, p) {
 #'
 #' @export
 resetEvents <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@swarm <- FALSE
@@ -595,10 +595,10 @@ resetEvents <- function(colony) {
 #'
 #' @export
 crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers * 0.1) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!"Pop" %in% class(fathers)) {
+  if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (is.null(fathers)) {
@@ -638,8 +638,8 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers
 #'
 #' @export
 collapseColony <- function(colony) {
-  if (!"Colony" %in% class(colony)) {
-    stop("Argumnet colony must be a Colony class object!")
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
   }
   colony@collapse <- TRUE
   return(colony)
@@ -673,10 +673,10 @@ collapseColony <- function(colony) {
 #' @export
 swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, pDrones = 1, swarmLocation = NULL) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
-  if (!is.null(fathers) && !"Pop" %in% class(fathers)) {
+  if (!is.null(fathers) && !isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (is.null(colony@virgin_queens)) {
@@ -747,7 +747,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 #' @export
 supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
                             pWorkers = 1, pDrones = 1) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(colony@queen)) {
@@ -759,7 +759,7 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
     if (is.null(fathers)) {
       stop("No fathers provided, cannot mate the queen!")
     }
-    if (!"Pop" %in% class(fathers)) {
+    if (!isPop(fathers)) {
       stop("Argument fathers must be a Pop class object!")
     }
     colony@queen <- colony@virgin_queens
@@ -801,13 +801,13 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @export
 splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen = FALSE, fathers = NULL,
                         pWorkers = 1, splitLocation = NULL) {
-  if (!"Colony" %in% class(colony)) {
-    stop("colony must be a Colony class object!")
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
   }
-  if (!is.null(newQueen) && !"Pop" %in% class(newQueen)) {
+  if (!is.null(newQueen) && !isPop(newQueen)) {
     stop("Argument newQueen must be a Pop class object!")
   }
-  if (!is.null(fathers) && !"Pop" %in% class(fathers)) {
+  if (!is.null(fathers) && !isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
   nWorkers <- nWorkers(colony)
@@ -906,9 +906,9 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #'
 #' @export
 setLocation <- function(x, location) {
-  if ("Colony" %in% class(x)) {
+  if (isColony(x)) {
     x@location <- location
-  } else if ("Colonies" %in% class(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     if (is.list(location)) {
       if (length(location) != nCol) {
@@ -934,7 +934,7 @@ setLocation <- function(x, location) {
 # TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
 #  it will not work for simParam - so best to add all these arguments directly?
 setPhenoColony <- function(colony, FUN = NULL, ...) {
-  if (!"Colony" %in% class(colony)) {
+  if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@queen <- setPheno(colony@queen, ...)
