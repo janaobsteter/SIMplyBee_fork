@@ -47,39 +47,29 @@ SimParamBee <- R6Class(
     #'
     #' #Set simulation parameters
     #' SP = SimParam$new(founderPop)
-    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdSites = NULL){
+    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL){
 
       # Public items
-      self$csdChr <- ifelse(!is.null(csdChr), csdChr, 3)
-      self$csdPos <- ifelse(!is.null(csdPos), csdPos, 0.865)
-      self$nCsdSites <- ifelse(!is.null(nCsdSites), nCsdSites, 5)
+      self$csdChr <- ifelse(is.null(csdChr), 3, csdChr)
+      self$csdPos <- ifelse(is.null(csdPos), 0.865, csdPos)
+      self$nCsdHaplo <- ifelse(is.null(nCsdHaplo), 32, nCsdHaplo)
 
       # self items
-      self$nCsdHaplo <- self$nCsdSites ^ 2
+      self$nCsdSites <- log2(self$nCsdHaplo)
 
       if (founderPop@nChr < self$csdChr) {
-        stop("Csd chosen to be on chromosome ", self$csdChr, " but there is only ", founderPop@nChr, " chromosome(s).")
+        stop("Csd chosen to be on chromosome ", self$csdChr, " but we only have ", founderPop@nChr, " chromosome(s).")
       }
 
-      if (length(founderPop@nLoci) == 1) {
-        self$csdPosStart <- floor(founderPop@nLoci * self$csdPos)
-        csdPosStop <- self$csdPosStart + self$nCsdSites
-        if (csdPosStop > founderPop@nLoci) {
-          stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
-        } else {
-          self$csdPosStop = csdPosStop
-        }
+      nLoci = ifelse(length(founderPop@nLoci) == 1, founderPop@nLoci, founderPop@nLoci[self$csdChr])
+      self$csdPosStart <- floor(nLoci * self$csdPos)
+      csdPosStop <- self$csdPosStart + self$nCsdSites
+      if (csdPosStop > nLoci) {
+        stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
       } else {
-        self$csdPosStart <- floor(founderPop@nLoci[self$csdChr] * self$csdPos)
-        csdPosStop <- self$csdPosStart + self$nCsdSites
-        if (csdPosStop > founderPop@nLoci[self$csdChr]) {
-          stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
-        } else {
-          self$csdPosStop = csdPosStop
-        }
+        self$csdPosStop = csdPosStop
       }
 
-      invisible(self)
     }
   )
 )

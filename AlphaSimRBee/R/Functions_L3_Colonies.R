@@ -205,7 +205,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
 #' \code{colonies}; note that numeric value is effectively converted to character
-#' @param p numeric, probability of a colony being chosen
+#' @param p numeric, probability of a colony being pulled
 #'
 #' @examples
 #' # AlphaSimR
@@ -287,10 +287,10 @@ removeColonies <- function(colonies, ID) {
 }
 
 #' @rdname createColoniesFromAPop
-#' @title  A merger of the createVirginColonies and createMatedColonies 
+#' @title  A merger of the createVirginColonies and createMatedColonies
 #' @description Virgin Colonies description:  This function is intended for quickly creating multiple mated or unmated/virgin
 #' colonies, often at the start of a simulation - to seed the simulation. To create virgin colonies this
-#' function takes a population, pulls out virgin queens to initiate the colonies. To create mated colonies 
+#' function takes a population, pulls out virgin queens to initiate the colonies. To create mated colonies
 #' this function takes a population, pulls out queens, creates drones from the remainder, and then
 #' mates the queens to initiate the colonies. Other caste members have to be added later!
 #'
@@ -298,7 +298,7 @@ removeColonies <- function(colonies, ID) {
 #' @param nColonies
 #' @param nAvgFathers
 #' @param nDronesPerQueen
-#' 
+#'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 10)
