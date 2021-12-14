@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: c(person("Jana", "Obšteter", email = "obsteter.jana@gmail.com",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1511-3916")),
   person("Laura", "Strachan", role = "aut", 
-  comment = c(ORCID = "TODO")),
+  comment = c(ORCID = "0000-0003-1362-3736")),
   person("Jernej", "Bubnič", role = "aut", 
   comment = c(ORCID = "TODO")),
   person("Gregor", "Gorjanc", role = c("aut"), 
