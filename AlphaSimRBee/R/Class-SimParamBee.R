@@ -8,6 +8,7 @@
 SimParamBee <- R6Class(
   "SimParamBee",
   inherit = SimParam,
+  ,
   public = list(
     #### Public ----
 
@@ -69,6 +70,7 @@ SimParamBee <- R6Class(
       } else {
         self$csdPosStop = csdPosStop
       }
+
 
     }
   )
