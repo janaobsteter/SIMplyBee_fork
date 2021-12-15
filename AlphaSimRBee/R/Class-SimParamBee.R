@@ -47,7 +47,8 @@ SimParamBee <- R6Class(
     #'
     #' #Set simulation parameters
     #' SP = SimParam$new(founderPop)
-    addCsd = function( csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL){
+    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL) {
+      super$initialize(founderPop)
 
       # Public items
       self$csdChr <- ifelse(is.null(csdChr), 3, csdChr)
@@ -70,6 +71,9 @@ SimParamBee <- R6Class(
         self$csdPosStop = csdPosStop
       }
 
+    genMap = self$genMap
+    genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+    self$switchGenMap(genMap)
 
     }
   )
