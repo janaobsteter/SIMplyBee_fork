@@ -67,3 +67,29 @@ test_that("nDrones", {
   expect_equal(nDrones(c(colony1, colony2)), c("2" = 5, "3" = 10))
   expect_error(nDrones(basePop))
 })
+
+test_that("getCsdHaploGeno", {
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 4)
+  basePop <- newPop(founderGenomes)
+
+  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+  colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+  colony1 <- addWorkers(colony1, nInd = 10)
+  colony2 <- addWorkers(colony2, nInd = 20)
+  colony1 <- addDrones(colony1, nInd = 2)
+  colony2 <- addDrones(colony2, nInd = 4)
+  apiary <- c(colony1, colony2)
+
+  expect_equal(colSums(getCsdHaplo(getQueen(colony1))),
+               getCsdGeno(getQueen(colony1)))
+  haplo <- getCsdHaplo(colony1)$queen
+  geno  <- getCsdGeno(colony1)$queen
+  expect_equal(colSums(haplo), geno)
+
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  basePop <- newPop(founderGenomes)
+  expect_error(getCsdHaplo(basePop))
+  expect_error(getCsdGeno(basePop))
+})
