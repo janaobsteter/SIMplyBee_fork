@@ -929,6 +929,10 @@ setLocation <- function(x, location) {
 }
 
 # TODO: Document
+# TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
+#   in getColonyGv()?
+# TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
+#  it will not work for simParam - so best to add all these arguments directly?
 setPhenoColony <- function(colony, FUN = NULL, ...) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")

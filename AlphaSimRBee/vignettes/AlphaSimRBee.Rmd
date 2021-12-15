@@ -107,6 +107,30 @@ getWorkersSnpGeno
 getDronesSnpGeno
 getColonySnpGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
 
+getCasteGv; input Colony or Colonies; return vector or list of vector
+getQueensGv
+getFathersGv
+getVirginQueensGv
+getWorkersGv
+getDronesGv
+getColonyGv; input Colony or Colonies; return list of vector or list of a list of vector
+
+getCasteBv; input Colony or Colonies; return vector or list of vector
+getQueensBv
+getFathersBv
+getVirginQueensBv
+getWorkersBv
+getDronesBv
+getColonyBv; input Colony or Colonies; return list of vector or list of a list of vector
+
+getCasteDd; input Colony or Colonies; return vector or list of vector
+getQueensDd
+getFathersDd
+getVirginQueensDd
+getWorkersDd
+getDronesDd
+getColonyDd; input Colony or Colonies; return list of vector or list of a list of vector
+
 # L1 functions
 
 getCaste; input Colony or Colonies; return Pop
