@@ -8,7 +8,6 @@
 SimParamBee <- R6Class(
   "SimParamBee",
   inherit = SimParam,
-  ,
   public = list(
     #### Public ----
 
@@ -48,7 +47,8 @@ SimParamBee <- R6Class(
     #'
     #' #Set simulation parameters
     #' SP = SimParam$new(founderPop)
-    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL){
+    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL) {
+      super$initialize(founderPop)
 
       # Public items
       self$csdChr <- ifelse(is.null(csdChr), 3, csdChr)
@@ -58,11 +58,11 @@ SimParamBee <- R6Class(
       # self items
       self$nCsdSites <- log2(self$nCsdHaplo)
 
-      if (founderPop@nChr < self$csdChr) {
-        stop("Csd chosen to be on chromosome ", self$csdChr, " but we only have ", founderPop@nChr, " chromosome(s).")
+      if (self$nChr < self$csdChr) {
+        stop("Csd chosen to be on chromosome ", self$csdChr, " but we only have ", self$nChr, " chromosome(s).")
       }
 
-      nLoci = ifelse(length(founderPop@nLoci) == 1, founderPop@nLoci, founderPop@nLoci[self$csdChr])
+      nLoci = self$segSites[self$csdChr]
       self$csdPosStart <- floor(nLoci * self$csdPos)
       csdPosStop <- self$csdPosStart + self$nCsdSites
       if (csdPosStop > nLoci) {
@@ -71,6 +71,9 @@ SimParamBee <- R6Class(
         self$csdPosStop = csdPosStop
       }
 
+    genMap = self$genMap
+    genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+    self$switchGenMap(genMap)
 
     }
   )

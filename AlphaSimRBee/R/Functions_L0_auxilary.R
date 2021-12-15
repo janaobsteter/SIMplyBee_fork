@@ -724,7 +724,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                  inbred = FALSE,
                                  ploidy = 2L,
                                  nThreads = nThreads)
-  ret$SP = SimParamBee$new(founderPop = founderGenomes)
+  ret$SP = SimParamBee$new(founderPop = ret$founderGenomes)
   return(ret)
 }
 
