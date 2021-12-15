@@ -10,7 +10,7 @@
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -43,7 +43,7 @@ nColonies <- function(colonies) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -100,7 +100,7 @@ nCaste <- function(x, caste) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -138,7 +138,7 @@ nQueens <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -173,7 +173,7 @@ nFathers <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -210,7 +210,7 @@ nVirginQueens <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -247,7 +247,7 @@ nWorkers <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -287,7 +287,7 @@ nDrones <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -336,7 +336,7 @@ isQueenMated <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -400,7 +400,7 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -456,7 +456,7 @@ getQueensAge <- function(x, currentYear) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -502,7 +502,7 @@ getId <- function(x) {
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -673,18 +673,11 @@ isProductive <- function(x) {
 #' @param histNe effective population size in previous generations
 #' @param histGen number of generations ago for effective population sizes given in histNe
 #' @param split an optional historic population split in terms of generations ago
-#' @param csdChr which number chromosome the csd locus is located on
-#' @param csdPos vector. position of the csd locus on the chromosome
-#' @param nCsdHaplos number of possible csd haplotypes
 #' @param nThreads if OpenMP is available, this will allow for simulating chromosomes in parallel.
 #'                 If the value is NULL, the number of threads is automatically detected
 #'
 #' @examples
-#' tmp <- simulateHoneyBeeGenomes(nInd = 1000, ...)
-#' founderGenomes <- tmp$founderGenomes
-#' SP <- tmp$SP
-#' csd <- tmp$csd
-#' rm(tmp)
+#' founderGenomes <- simulateHoneyBeeGenomes(nInd = 2)
 #'
 #' @return TODO
 #'
@@ -700,29 +693,23 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     histGen = 1, # TODO revise and citation
                                     split = NULL, # TODO revise and citation
                                     nThreads = NULL) {
-
-
-  ret <- vector(mode = "list", length = 3)
-  names(ret) <- c("founderGenomes", "SP")
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
   #       "involved"
-
-  ret$founderGenomes <- runMacs2(nInd = nInd,
-                                 nChr = nChr,
-                                 segSites = nSegSites,
-                                 Ne = Ne,
-                                 bp = nBp,
-                                 genLen = genLen,
-                                 mutRate = mutRate,
-                                 histNe = histNe,
-                                 histGen = histGen,
-                                 split = split,
-                                 inbred = FALSE,
-                                 ploidy = 2L,
-                                 nThreads = nThreads)
-  ret$SP = SimParamBee$new(founderPop = ret$founderGenomes)
-  return(ret)
+  founderGenomes <- runMacs2(nInd = nInd,
+                             nChr = nChr,
+                             segSites = nSegSites,
+                             Ne = Ne,
+                             bp = nBp,
+                             genLen = genLen,
+                             mutRate = mutRate,
+                             histNe = histNe,
+                             histGen = histGen,
+                             split = split,
+                             inbred = FALSE,
+                             ploidy = 2L,
+                             nThreads = nThreads)
+  return(founderGenomes)
 }
 
 #' @rdname getCsdHaplo
@@ -875,7 +862,7 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
   if (isPop(pop)) {
     ret <- pullQtlHaplo(pop = pop, trait = trait, haplo = haplo, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -900,7 +887,7 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
     ret <- pullQtlGeno(pop = pop, trait = trait, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -927,7 +914,7 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
     ret <- pullSegSiteHaplo(pop = pop, haplo = haplo, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -951,7 +938,7 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
     ret <- pullSegSiteGeno(pop = pop, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -979,7 +966,7 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
   if (isPop(pop)) {
     ret <- pullSnpHaplo(pop = pop, snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -1004,7 +991,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
     ret <- pullSnpGeno(pop = pop, snpChip = snpChip, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -1020,14 +1007,14 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1112,14 +1099,14 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1164,7 +1151,7 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
     ret <- getCasteIbdHaplo(x, caste = "queen",
                             chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1180,14 +1167,14 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1220,7 +1207,7 @@ getFathersIbdHaplo <- function(x, nInd = NULL,
     ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd,
                             chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1236,14 +1223,14 @@ getFathersIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1299,7 +1286,7 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL,
     ret <- getCasteIbdHaplo(x, caste = "virgin_queens", nInd = nInd,
                             chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1315,7 +1302,7 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
@@ -1361,7 +1348,7 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
     ret <- getCasteIbdHaplo(x, caste = "workers", nInd = nInd,
                             chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1377,14 +1364,14 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1441,11 +1428,11 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
 #' @export
 getDronesIbdHaplo <- function(x, nInd = NULL,
                               chr = NULL, simParamBee = NULL) {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd,
                             chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1466,7 +1453,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee SimParamBee
 #'
 #' @details
 #'
