@@ -2,7 +2,9 @@
 #'
 #' @description
 #' Container for global honeybee simulation parameters. Saving this object
-#' as SP will allow it to be accessed by function defaults.
+#' as SP will allow it to be accessed by function defaults. SimParamBee inherits
+#' from \code{\link{SimParam}} so all of \code{\link{SimParam}} slots and
+#' methods are available. Some might have updated behaviour as documented below.
 #'
 #' @export
 SimParamBee <- R6Class(
@@ -56,21 +58,22 @@ SimParamBee <- R6Class(
     #' the underlying bi-allelic SNP - \cove{log2(nCsdHaplo)})
     #'
     #' @examples
-    #' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
-    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 2)
+    #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
+    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 2)
     #'
     #' # We need enough segregating sites
-    #' try(SP <- SimParamBee$new(founderPop, nCsdHaplo = 100))
-    #' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
-    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 100)
+    #' try(SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100))
+    #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
+    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
     #'
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
-    #' founderPop <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 100)
+    #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
     initialize = function(founderPop, csdChr = 3, csdPos = 0.865, nCsdHaplo = 100) {
+      # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
 
-      # Public items
+      # csd chromosome
       self$csdChr <- NULL
       if (!is.null(csdChr)) {
         if (self$nChr < csdChr) {
@@ -80,12 +83,12 @@ SimParamBee <- R6Class(
           self$csdChr <- csdChr
         }
       }
+
+      # csd position and sites
       self$csdPos <- csdPos
       self$nCsdHaplo <- nCsdHaplo
-
-      # self items
       self$nCsdSites <- log2(self$nCsdHaplo)
-      nLoci = self$segSites[self$csdChr]
+      nLoci <- self$segSites[self$csdChr]
       self$csdPosStart <- floor(nLoci * self$csdPos)
       csdPosStop <- self$csdPosStart + self$nCsdSites
       if (csdPosStop > nLoci) {
@@ -94,11 +97,12 @@ SimParamBee <- R6Class(
         self$csdPosStop <- csdPosStop
       }
       genMap <- self$genMap
-      # Set recombination to zero in the region to get fixed haplotypes as csd alleles
+      # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
       genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
       self$switchGenMap(genMap)
     }
   )
 )
 
+# TODO: remove this once AlphaSimR exports getNumThreads (pull request accepted)
 getNumThreads = AlphaSimR:::getNumThreads()
