@@ -24,10 +24,10 @@
 #'
 #' @examples
 #' # Create founder genomes
-#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
 #'
 #' # Set simulation parameters
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' # Create a base population
 #' basePop <- newPop(founderGenomes)
@@ -97,10 +97,10 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #'
 #' @examples
 #' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' pop <- newPop(founderPop, simParam=SP)
@@ -141,10 +141,10 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #'
 #' @examples
 #' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites = 100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' pop <- newPop(founderPop, simParam=SP)
@@ -187,10 +187,10 @@ addDrones <- function(colony, nInd) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' pop <- newPop(founderPop, simParam=SP)
@@ -237,10 +237,10 @@ addVirginQueens <- function(colony, nInd) {
 #'
 #' @examples
 #' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' base <- newPop(founderPop, simParam=SP)
@@ -295,10 +295,10 @@ reQueenColony <- function(colony, queen) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' base <- newPop(founderPop, simParam=SP)
@@ -341,10 +341,10 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' pop <- newPop(founderPop, simParam=SP)
@@ -385,10 +385,10 @@ replaceWorkers <- function(colony, p = 1) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParam$new(founderPop)
+#' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
 #' pop <- newPop(founderPop, simParam=SP)
@@ -426,8 +426,8 @@ replaceDrones <- function(colony, p = 1) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -461,8 +461,8 @@ removeQueen <- function(colony) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees
@@ -872,8 +872,8 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybees

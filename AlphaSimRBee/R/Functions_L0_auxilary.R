@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -42,7 +42,7 @@ nColonies <- function(colonies) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -99,7 +99,7 @@ nCaste <- function(x, caste) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -137,7 +137,7 @@ nQueens <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -172,7 +172,7 @@ nFathers <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -209,7 +209,7 @@ nVirginQueens <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -246,7 +246,7 @@ nWorkers <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -286,7 +286,7 @@ nDrones <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -335,7 +335,7 @@ isQueenMated <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -399,7 +399,7 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -455,7 +455,7 @@ getQueensAge <- function(x, currentYear) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -501,7 +501,7 @@ getId <- function(x) {
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -720,18 +720,17 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' become workers or queens, while homozygous individuals become unviable
 #' "drones". Hence knowledge of haplotypes at the locus is critical for honeybee
 #' simulations. The csd locus spans a number of non-recombining loci as defined
-#' in SimParamBee and this function gives haplotypes at these loci.
+#' in \code{\link{SimParamBee}} and this function gives haplotypes at these loci.
 #'
 #' @param x Pop, Colony, or Colonies
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #' single set of haplotypes, use a value of 1 for female haplotypes and a value
 #' of 2 for male haplotypes
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @examples
-#' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
+#' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 2)
-#'
 #'
 #' @return matrix with haplotypes when \code{x} is Pop, list of matrices with
 #' haplotypes when \code{x} is Colony (list nodes named by caste) and list of a
@@ -773,12 +772,10 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' become workers or queens, while homozygous individuals become unviable
 #' "drones". Hence knowledge of haplotypes at the locus is critical for honeybee
 #' simulations. The csd locus spans a number of non-recombining loci as defined
-#' in SimParamBee and this function gives genotypes at these loci.
+#' in \code{\link{SimParamBee}} and this function gives genotypes at these loci.
 #'
 #' @param x Pop, Colony, or Colonies
-#' @param simParamBee SimParamBee
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @examples
 #' TODO
@@ -823,7 +820,7 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' @param pop Pop
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullIbdHaplo}}
 #'
@@ -851,7 +848,7 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
 #'
@@ -876,7 +873,7 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullQtlGeno}}
 #'
@@ -903,7 +900,7 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
 #'
@@ -927,7 +924,7 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @param pop Pop
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
 #'
@@ -955,7 +952,7 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
 #'
@@ -980,7 +977,7 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @param snpChip numeric, indicates which SNP array genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParam \code{\link{simParam}}
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
 #'
@@ -1007,13 +1004,13 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
@@ -1099,13 +1096,13 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
@@ -1167,13 +1164,13 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
@@ -1223,13 +1220,13 @@ getFathersIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
@@ -1302,14 +1299,14 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1364,13 +1361,13 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
@@ -1453,16 +1450,14 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParamBee SimParamBee
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1560,14 +1555,14 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1657,14 +1652,14 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1712,14 +1707,14 @@ getQueensQtlHaplo <- function(x,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1773,14 +1768,14 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1856,14 +1851,14 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -1942,14 +1937,14 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -2033,16 +2028,14 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -2137,14 +2130,14 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @param trait numeric, indicates which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -2298,16 +2291,14 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -2406,14 +2397,14 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybee
@@ -2569,16 +2560,14 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybee
@@ -2673,14 +2662,14 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #' individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybee
@@ -2833,16 +2822,14 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Honeybee
@@ -2939,14 +2926,14 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3104,16 +3091,14 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3208,14 +3193,14 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3369,16 +3354,14 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3475,8 +3458,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3617,14 +3600,12 @@ getDronesGv <- function(x, nInd = NULL) {
 #' different number of different caste - when this is the case \code{nInd} takes
 #' precedence over \code{caste} (see examples)
 #'
-#' @details
-#'
 #' @seealso \code{\link{gv}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3710,14 +3691,14 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #' individuals are accessed, otherwise a random sample
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{bv}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3863,16 +3844,14 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' individuals are accessed, otherwise a random sample; can be a list to access
 #' different number of different caste - when this is the case \code{nInd} takes
 #' precedence over \code{caste} (see examples)
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{bv}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -3966,14 +3945,14 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #' individuals are accessed, otherwise a random sample
-#' @param simParam SimParam
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{dd}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -4118,16 +4097,14 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' individuals are accessed, otherwise a random sample; can be a list to access
 #' different number of different caste - when this is the case \code{nInd} takes
 #' precedence over \code{caste} (see examples)
-#' @param simParam SimParam
-#'
-#' @details
+#' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{dd}}
 #'
 #' @examples
 #' # AlphaSimR
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-#' SP <- SimParam$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
