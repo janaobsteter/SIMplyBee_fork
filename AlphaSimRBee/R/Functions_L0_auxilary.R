@@ -644,7 +644,7 @@ isProductive <- function(x) {
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome
 
-#' @description
+#' @description TODO
 #'
 #' @param nInd number of individuals to simulate
 #' @param nChr number of chromosomes to simulate
@@ -681,7 +681,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     nThreads = NULL) {
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honenybee demography is more
-  #       "involved"
+  #       "involved"; see also https://github.com/HighlanderLab/AlphaSimRBee/issues/45
   founderGenomes <- runMacs2(nInd = nInd,
                              nChr = nChr,
                              segSites = nSegSites,
@@ -3111,6 +3111,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
       ret$drones <- getCasteGv(x = x, caste = "drones", nInd = nInd$drones)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
+    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/28 (for gv)
+    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29 (for bv and dd)
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -3362,7 +3364,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
                                simParamBee = simParamBee)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
-    # we might need some theoretical development first to derive it first!
+    #       we might need some theoretical development first to derive it first!
+    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -3615,7 +3618,8 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
                                simParamBee = simParamBee)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
-    # we might need some theoretical development first to derive it first!
+    #       we might need some theoretical development first to derive it first!
+    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)

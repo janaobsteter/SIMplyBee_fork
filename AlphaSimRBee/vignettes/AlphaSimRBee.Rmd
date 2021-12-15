@@ -27,8 +27,8 @@ nVirginQueens
 
 isQueenMated; input Pop, Colony, or Colonies; return logical
 
-getQueensYearOfBirth & getQueensYOB; input Pop, Colony or Colonies; return numeric; TODO w/o s?
-getQueensAge; TODO w/o s?
+getQueensYearOfBirth & getQueensYOB; input Pop, Colony or Colonies; return numeric
+getQueensAge
 
 getId; input Colony or Colonies; return character
 getLocation; input Colony or Colonies; return numeric or list of numeric
@@ -38,9 +38,10 @@ hasSwarmed
 hasSuperseded
 isProductive
 
+SimParamBee
 simulateHoneyBeeGenomes TODO
 
-getCsdHaplo; input Pop, Colony or Colonies; return matrix TODO
+getCsdHaplo; input Pop, Colony or Colonies; return matrix, list of matrix, list of a list of matrix
 getCsdGeno
 
 getIbdHaplo; input Pop; return matrix
@@ -162,7 +163,7 @@ crossVirginQueen; input 2 Pop; return Pop
 
 setLocation; input Colony or Colonies; return Colony or Colonies
 
-setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or Colonies; return Pop, Colony, or Colonies; TODO w/o s??
+setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or Colonies; return Pop, Colony, or Colonies
 
 # L2 functions
 
@@ -180,7 +181,7 @@ removeVirginQueen
 removeWorkers
 removeDrones
 resetEvents
-crossColony; TODO rename to cross()?
+crossColony; TODO rename to cross()? there is many cross() in R, so this won't work
 collapseColony; TODO rename to collapse()?
 supersedeColony; TODO rename to supersede()?
 setPhenoColony; TODO rename to setColonyPheno()?
@@ -190,7 +191,7 @@ splitColony; TODO rename to split() (clash with other R func(s))?
 
 # L3 functions
 
-createColonies; input NULL, Colony, or Colonies; return Colonies
+createColonies; input n or Pop; return Colonies; TODO how is this different to createColony?
 
 addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename to addColony() or just add()?
 assignColonyToColonies; TODO rename to assignColony() or just assign()?
@@ -199,9 +200,6 @@ selectColonies; input Colonies; return Colonies
 removeColonies
 
 pullColonies; input Colonies; return list of 2 Colonies
-
-createVirginColonies; input Pop; return Colonies; TODO how is this different to createColonies and createColony?
-createMatedColonies
 
 buildUpColonies; input Colonies; return Colonies; TODO rename to buildUp()?
 replaceWorkersColonies; TODO merge with replaceWorkers()?
@@ -213,7 +211,7 @@ supersedeColonies; TODO merge with supersede()?
 swarmColonies; input Colonies; return list of 2 Colonies; TODO merge with swarm()?
 splitColonies; TODO merge with split() (clash with other R func(s))?
 
-crossColonies; input Colonies; return Colonies; TODO merge with cross()?
+crossColonies; input Colonies; return Colonies; TODO merge with cross()? there is many cross() in R, so this won't work
 setPhenoColonies; TODO merge with setColonyPheno?
 
 ```{r setup}
