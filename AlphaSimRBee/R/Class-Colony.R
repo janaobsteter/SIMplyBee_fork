@@ -37,6 +37,7 @@ isPop = function(x) {
 
 setClassUnion("PopOrNULL", c("Pop", "NULL"))
 setClassUnion("characterOrNULL", c("character", "NULL"))
+setClassUnion("integerOrNULL", c("integer", "NULL"))
 setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
 setClass("Colony",

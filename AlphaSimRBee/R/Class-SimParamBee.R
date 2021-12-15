@@ -1,8 +1,8 @@
-#' @title Simulation parameters
+#' @title Honeybee simulation parameters
 #'
 #' @description
-#' Container for global simulation parameters. Saving this object
-#' as SPBee will allow it to be accessed by function defaults.
+#' Container for global honeybee simulation parameters. Saving this object
+#' as SP will allow it to be accessed by function defaults.
 #'
 #' @export
 SimParamBee <- R6Class(
@@ -11,70 +11,92 @@ SimParamBee <- R6Class(
   public = list(
     #### Public ----
 
-    #' @field csdChr Chromosome of the csd locus
-    csdChr = "integer",
+    #' @field csdChr integer, chromosome of the csd locus
+    csdChr = "integerOrNULL",
 
-    #' @field csdPos Starting position (in bp) of the csd locus on the chosen chromosome
-    csdPos = "numeric",
+    #' @field csdPos numeric, starting position of the csd locus on the
+    #' \code{csdChr} chromosome (relative at the moment, but could be in bp in
+    #' the future)
+    csdPos = "numericOrNULL",
 
-    #' @field nCsdAlleles number of sites (i.e. length) representing the csd locus
-    #' (if affects the number of possible alleles)
-    nCsdSites = "integer",
+    #' @field nCsdHaplo integer, number of possible csd alleles
+    nCsdHaplo = "integerOrNULL",
 
-    #' @field nCsdHaplo Number of possible csd alleles
-    nCsdHaplo = "integer",
+    #' @field nCsdSites integer, number of segregating sites representing the
+    #' csd locus
+    nCsdSites = "integerOrNULL",
 
-    #' @field csdPosStart Starting absolute position (in bp) of the csd locus
-    csdPosStart = "integer",
+    #' @field csdPosStart integer, starting position of the csd locus (this is
+    #' worked out internally based on \code{csdPos})
+    csdPosStart = "integerOrNULL",
 
-    #' @field csdPosStop Ending absolute position (in bp) of the csd locus
-    csdPosStop = "integer",
+    #' @field csdPosStop integer, ending position of the csd locus (this is
+    #' worked out internally based on \code{csdPosStart} and \code{nCsdSites})
+    csdPosStop = "integerOrNULL",
 
-    #' @description Starts the process of building a new simulation
-    #' by creating a new SimParam object and assigning a founder
-    #' population to the class. It is recommended that you save the
-    #' object with the name "SP", because subsequent functions will
-    #' check your global environment for an object of this name if
-    #' their simParam arguments are NULL. This allows you to call
-    #' these functions without explicitly supplying a simParam
-    #' argument with every call.
+    #' @description Starts the process of building a new simulation by creating
+    #' a new SimParamBee object and assigning a founder population to the class.
+    #' It is recommended that you save the object with the name "SP", because
+    #' subsequent functions will check your global environment for an object of
+    #' this name if their \code{simParamBee} arguments are \code{NULL}. This
+    #' allows you to call these functions without explicitly supplying a
+    #' \code{simParamBee} argument with every call.
     #'
-    #' @param founderPop an object of \code{\link{MapPop-class}}
+    #' @param founderPop \code{\link{MapPop-class}}, founder population of
+    #' haplotypes
+    #' @param csdChr integer, chromosome that will carry the csd locus, by
+    #' default 3, but if there are less chromosomes (for a simplified simulation),
+    #' the locus is put on the last available chromosome (1 or 2); if \code{NULL}
+    #' then csd locus is ignored in the simulation
+    #' @param csdPos numeric, starting position of the csd locus on the
+    #' \code{csdChr} chromosome (relative at the moment, but could be in bp in
+    #' the future)
+    #' @param nCsdHaplo integer, number of possible csd alleles (this determines
+    #' how many segregating sites will be needed to represent the csd loci from
+    #' the underlying bi-allelic SNP - \cove{log2(nCsdHaplo)})
     #'
     #' @examples
-    #' #Create founder haplotypes
-    #' founderPop = quickHaplo(nInd=10, nChr=1, segSites=10)
+    #' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
+    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 2)
     #'
-    #' #Set simulation parameters
-    #' SP = SimParam$new(founderPop)
-    initialize = function(founderPop, csdChr = NULL, csdPos = NULL, nCsdHaplo = NULL) {
+    #' # We need enough segregating sites
+    #' try(SP <- SimParamBee$new(founderPop, nCsdHaplo = 100))
+    #' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
+    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 100)
+    #'
+    #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
+    #' founderPop <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+    #' SP <- SimParamBee$new(founderPop, nCsdHaplo = 100)
+    initialize = function(founderPop, csdChr = 3, csdPos = 0.865, nCsdHaplo = 100) {
       super$initialize(founderPop)
 
       # Public items
-      self$csdChr <- ifelse(is.null(csdChr), 3, csdChr)
-      self$csdPos <- ifelse(is.null(csdPos), 0.865, csdPos)
-      self$nCsdHaplo <- ifelse(is.null(nCsdHaplo), 32, nCsdHaplo)
+      self$csdChr <- NULL
+      if (!is.null(csdChr)) {
+        if (self$nChr < csdChr) {
+          self$csdChr <- self$nChr
+          warning(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
+        } else {
+          self$csdChr <- csdChr
+        }
+      }
+      self$csdPos <- csdPos
+      self$nCsdHaplo <- nCsdHaplo
 
       # self items
       self$nCsdSites <- log2(self$nCsdHaplo)
-
-      if (self$nChr < self$csdChr) {
-        stop("Csd chosen to be on chromosome ", self$csdChr, " but we only have ", self$nChr, " chromosome(s).")
-      }
-
       nLoci = self$segSites[self$csdChr]
       self$csdPosStart <- floor(nLoci * self$csdPos)
       csdPosStop <- self$csdPosStart + self$nCsdSites
       if (csdPosStop > nLoci) {
         stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
       } else {
-        self$csdPosStop = csdPosStop
+        self$csdPosStop <- csdPosStop
       }
-
-    genMap = self$genMap
-    genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
-    self$switchGenMap(genMap)
-
+      genMap <- self$genMap
+      # Set recombination to zero in the region to get fixed haplotypes as csd alleles
+      genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+      self$switchGenMap(genMap)
     }
   )
 )
