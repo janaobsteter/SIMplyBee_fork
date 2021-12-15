@@ -87,7 +87,7 @@ SimParamBee <- R6Class(
       # csd position and sites
       self$csdPos <- csdPos
       self$nCsdHaplo <- nCsdHaplo
-      self$nCsdSites <- log2(self$nCsdHaplo)
+      self$nCsdSites <- ceiling(log2(self$nCsdHaplo))
       nLoci <- self$segSites[self$csdChr]
       self$csdPosStart <- floor(nLoci * self$csdPos)
       csdPosStop <- self$csdPosStart + self$nCsdSites
