@@ -1,6 +1,6 @@
 test_that("nColonies", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = c(10, 20, 100))
-  SP <- SimParam$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
@@ -12,8 +12,8 @@ test_that("nColonies", {
 })
 
 test_that("nCaste", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = c(10, 20, 100))
-  SP <- SimParam$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -37,8 +37,8 @@ test_that("nCaste", {
 })
 
 test_that("nQueens", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-  SP <- SimParam$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -52,8 +52,8 @@ test_that("nQueens", {
 })
 
 test_that("nDrones", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = c(10, 20, 100))
-  SP <- SimParam$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
