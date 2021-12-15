@@ -369,13 +369,13 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesP
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -408,13 +408,13 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -451,13 +451,13 @@ replaceWorkersColonies <- function(colonies, p = 1) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -493,13 +493,13 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -544,15 +544,15 @@ reQueenColonies <- function(colonies, queens) {
 #' @examples
 #'# Create founder haplotypes
 #'
-#' founderPop <- quickHaplo(nInd=300, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=300, nChr=1, segSites=100)
 #'
 #' # Set simulation parameters
 #'
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' # Create population
 #'
-#' pop <- newPop(founderPop)
+#' pop <- newPop(founderGenomes)
 #'
 #' # Create colonies
 #'
@@ -592,13 +592,13 @@ collapseColonies <- function(colonies, ID) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #' TODO NOT WORKING EXAMPLE
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -650,13 +650,13 @@ supersedeColonies <- function(colonies) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -701,13 +701,13 @@ swarmColonies <- function(colonies) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
@@ -753,13 +753,13 @@ splitColonies <- function(colonies) {
 #'
 #' @examples
 #' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
 #'
 #' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
 #' #Create population
-#' base <- newPop(founderPop)
+#' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
 #'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
