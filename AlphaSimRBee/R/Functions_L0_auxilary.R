@@ -1257,24 +1257,24 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensIbdHaplo(x = x,
-                                     chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteIbdHaplo(x = x, caste = "queen",
+                                    chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersIbdHaplo(x = x, nInd = nInd$fathers,
-                                        chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteIbdHaplo(x = x, caste = "fathers", nInd = nInd$fathers,
+                                      chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensIbdHaplo(x = x, nInd = nInd$virgin_queens,
-                                                   chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteIbdHaplo(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                            chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersIbdHaplo(x = x, nInd = nInd$workers,
-                                        chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteIbdHaplo(x = x, caste = "workers", nInd = nInd$workers,
+                                      chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesIbdHaplo(x = x, nInd = nInd$drones,
-                                      chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteIbdHaplo(x = x, caste = "drones", nInd = nInd$drones,
+                                     chr = chr, simParamBee = simParamBee)
     }
   } else if (ifColonies(x)) {
     nCol <- nColonies(x)
@@ -1526,24 +1526,24 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensQtlHaplo(x = x,
-                                     trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteQtlHaplo(x = x, caste = "queen",
+                                    trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersQtlHaplo(x = x, nInd = nInd$fathers,
-                                        trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteQtlHaplo(x = x, caste = "fathers", nInd = nInd$fathers,
+                                      trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensQtlHaplo(x = x, nInd = nInd$virgin_queens,
-                                                   trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteQtlHaplo(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersQtlHaplo(x = x, nInd = nInd$workers,
-                                        trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteQtlHaplo(x = x, caste = "workers", nInd = nInd$workers,
+                                      trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesQtlHaplo(x = x, nInd = nInd$drones,
-                                      trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteQtlHaplo(x = x, caste = "drones", nInd = nInd$drones,
+                                     trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -1789,24 +1789,24 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensQtlGeno(x = x,
-                                    trait = trait, chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteQtlGeno(x = x, caste = "queen",
+                                   trait = trait, chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersQtlGeno(x = x, nInd = nInd$fathers,
-                                       trait = trait, chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteQtlGeno(x = x, caste = "fathers", nInd = nInd$fathers,
+                                     trait = trait, chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensQtlGeno(x = x, nInd = nInd$virgin_queens,
-                                                  trait = trait, chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteQtlGeno(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                           trait = trait, chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersQtlGeno(x = x, nInd = nInd$workers,
-                                       trait = trait, chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteQtlGeno(x = x, caste = "workers", nInd = nInd$workers,
+                                     trait = trait, chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesQtlGeno(x = x, nInd = nInd$drones,
-                                     trait = trait, chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteQtlGeno(x = x, caste = "drones", nInd = nInd$drones,
+                                    trait = trait, chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -2058,24 +2058,24 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensSegSiteHaplo(x = x,
-                                         haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteSegSiteHaplo(x = x, caste = "queen",
+                                        haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersSegSiteHaplo(x = x, nInd = nInd$fathers,
-                                            haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteSegSiteHaplo(x = x, caste = "fathers", nInd = nInd$fathers,
+                                          haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensSegSiteHaplo(x = x, nInd = nInd$virgin_queens,
-                                                       haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteSegSiteHaplo(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                                haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersSegSiteHaplo(x = x, nInd = nInd$workers,
-                                            haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteSegSiteHaplo(x = x, caste = "workers", nInd = nInd$workers,
+                                          haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesSegSiteHaplo(x = x, nInd = nInd$drones,
-                                          haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteSegSiteHaplo(x = x, caste = "drones", nInd = nInd$drones,
+                                         haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -2321,24 +2321,24 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensSegSiteGeno(x = x,
-                                        chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteSegSiteGeno(x = x, caste = "queen",
+                                       chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersSegSiteGeno(x = x, nInd = nInd$fathers,
-                                           chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteSegSiteGeno(x = x, caste = "fathers", nInd = nInd$fathers,
+                                         chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensSegSiteGeno(x = x, nInd = nInd$virgin_queens,
-                                                      chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteSegSiteGeno(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                               chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersSegSiteGeno(x = x, nInd = nInd$workers,
-                                           chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteSegSiteGeno(x = x, caste = "workers", nInd = nInd$workers,
+                                         chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesSegSiteGeno(x = x, nInd = nInd$drones,
-                                         chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteSegSiteGeno(x = x, caste = "drones", nInd = nInd$drones,
+                                        chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -2591,24 +2591,24 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensSnpHaplo(x = x,
-                                     snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteSnpHaplo(x = x, caste = "queen",
+                                    snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersSnpHaplo(x = x, nInd = nInd$fathers,
-                                        snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteSnpHaplo(x = x, caste = "fathers", nInd = nInd$fathers,
+                                      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensSnpHaplo(x = x, nInd = nInd$virgin_queens,
-                                                   snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteSnpHaplo(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                            snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersSnpHaplo(x = x, nInd = nInd$workers,
-                                        snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteSnpHaplo(x = x, caste = "workers", nInd = nInd$workers,
+                                      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesSnpHaplo(x = x, nInd = nInd$drones,
-                                      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteSnpHaplo(x = x, caste = "drones", nInd = nInd$drones,
+                                     snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -2854,24 +2854,24 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensSnpGeno(x = x,
-                                    snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+      ret$queen <- getCasteSnpGeno(x = x, caste = "queen",
+                                   snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersSnpGeno(x = x, nInd = nInd$fathers,
-                                       snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+      ret$fathers <- getCasteSnpGeno(x = x, caste = "fathers", nInd = nInd$fathers,
+                                     snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensSnpGeno(x = x, nInd = nInd$virgin_queens,
-                                                  snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteSnpGeno(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                           snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersSnpGeno(x = x, nInd = nInd$workers,
-                                       snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+      ret$workers <- getCasteSnpGeno(x = x, caste = "workers", nInd = nInd$workers,
+                                     snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesSnpGeno(x = x, nInd = nInd$drones,
-                                     snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+      ret$drones <- getCasteSnpGeno(x = x, caste = "drones", nInd = nInd$drones,
+                                    snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -3096,19 +3096,19 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensGv(x = x)
+      ret$queen <- getCasteGv(x = x, caste = "queen")
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersGv(x = x, nInd = nInd$fathers)
+      ret$fathers <- getCasteGv(x = x, caste = "fathers", nInd = nInd$fathers)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensGv(x = x, nInd = nInd$virgin_queens)
+      ret$virgin_queens <- getCasteGv(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersGv(x = x, nInd = nInd$workers)
+      ret$workers <- getCasteGv(x = x, caste = "workers", nInd = nInd$workers)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesGv(x = x, nInd = nInd$drones)
+      ret$drones <- getCasteGv(x = x, caste = "drones", nInd = nInd$drones)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
   } else if (isColonies(x)) {
@@ -3342,24 +3342,24 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensBv(x = x,
-                               simParamBee = simParamBee)
+      ret$queen <- getCasteBv(x = x, caste = "queen",
+                              simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersBv(x = x, nInd = nInd$fathers,
-                                  simParamBee = simParamBee)
+      ret$fathers <- getCasteBv(x = x, caste = "fathers", nInd = nInd$fathers,
+                                simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensBv(x = x, nInd = nInd$virgin_queens,
-                                             simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteBv(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                      simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersBv(x = x, nInd = nInd$workers,
-                                  simParamBee = simParamBee)
+      ret$workers <- getCasteBv(x = x, caste = "workers", nInd = nInd$workers,
+                                simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesBv(x = x, nInd = nInd$drones,
-                                simParamBee = simParamBee)
+      ret$drones <- getCasteBv(x = x, caste = "drones", nInd = nInd$drones,
+                               simParamBee = simParamBee)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
     # we might need some theoretical development first to derive it first!
@@ -3595,24 +3595,24 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     if ("queen" %in% caste) {
-      ret$queen <- getQueensDd(x = x,
-                               simParamBee = simParamBee)
+      ret$queen <- getCasteDd(x = x, caste = "queen",
+                              simParamBee = simParamBee)
     }
     if ("fathers" %in% caste) {
-      ret$fathers <- getFathersDd(x = x, nInd = nInd$fathers,
-                                  simParamBee = simParamBee)
+      ret$fathers <- getCasteDd(x = x, caste = "fathers", nInd = nInd$fathers,
+                                simParamBee = simParamBee)
     }
     if ("virgin_queens" %in% caste) {
-      ret$virgin_queens <- getVirginQueensDd(x = x, nInd = nInd$virgin_queens,
-                                             simParamBee = simParamBee)
+      ret$virgin_queens <- getCasteDd(x = x, caste = "virgin_queens", nInd = nInd$virgin_queens,
+                                      simParamBee = simParamBee)
     }
     if ("workers" %in% caste) {
-      ret$workers <- getWorkersDd(x = x, nInd = nInd$workers,
-                                  simParamBee = simParamBee)
+      ret$workers <- getCasteDd(x = x, caste = "workers", nInd = nInd$workers,
+                                simParamBee = simParamBee)
     }
     if ("drones" %in% caste) {
-      ret$drones <- getDronesDd(x = x, nInd = nInd$drones,
-                                simParamBee = simParamBee)
+      ret$drones <- getCasteDd(x = x, caste = "drones", nInd = nInd$drones,
+                               simParamBee = simParamBee)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
     # we might need some theoretical development first to derive it first!
