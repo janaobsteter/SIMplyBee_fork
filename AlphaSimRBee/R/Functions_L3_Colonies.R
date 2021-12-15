@@ -44,22 +44,19 @@ createColonies <- function(..., n = NULL) {
   return(output)
 }
 
-#Merge createColonies and createColoniesFromaPop
-
-createColonies <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPerQueen = 100){
-  if(!is.null(n)){
+createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPerQueen = 100) {
+  if (!is.null(n)) {
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
-  } 
-  else if (!is.null(pop)){
-    if (!isPop(pop)){
-      stop ("Argument pop must be a Pop class object!")
+  } else if (!is.null(pop)) {
+    if (!isPop(pop)) {
+      stop("Argument pop must be a Pop class object!")
     }
-    if (is.null(nAvgFathers)){
+    if (is.null(nAvgFathers)) {
       virginQueens <- selectInd(pop, nInd = n, use = "rand")
       for (colony in 1:n) {
         ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
-      }}
-    else if (!is.null(nAvgFathers)){
+      }
+    } else {
       tmp <- pullInd(pop = pop, nInd = n)
       queens <- tmp$pulled
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
@@ -67,11 +64,13 @@ createColonies <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPerQ
       for (colony in 1:n) {
         ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                                fathers = fatherPackages[[colony]])
-      }}}
-  else {
-    stop ("You much provide either n or pop")
+      }
+    }
+  } else {
+    stop("You must provide either n or pop!")
   }
-  return(ret) }
+  return(ret)
+}
 
 #' @rdname addColonyToColonies
 #' @title Add a colony to colonies
