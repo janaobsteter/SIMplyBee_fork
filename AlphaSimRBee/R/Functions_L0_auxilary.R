@@ -739,31 +739,36 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' in SimParamBee and this function gives haplotypes at these loci.
 #'
 #' @param x Pop, Colony, or Colonies
-#' @param csd list with nodes chr, start, and stop
+#' @param haplo character, either "all" for all haplotypes or an integer for a
+#' single set of haplotypes, use a value of 1 for female haplotypes and a value
+#' of 2 for male haplotypes
+#' @param simParamBee SimParamBee
 #'
 #' @examples
 #' TODO
 #'
-#' @return TODO
+#' @return matrix with haplotypes when \code{x} is Pop, list of matrices with
+#' haplotypes when \code{x} is Colony (list nodes named by caste) and list of a
+#' list of matrices with haplotypes when \code{x} is Colonies, outer list is
+#' named by colony id when \code{x} is Colonies
 #'
 #' @export
-getCsdHaplo <- function(x, csd = NULL) {
-  # TODO: make use of SimParamBee once we have it
-  if (is.null(csd) | !is.list(csd)) {
-    stop("csd must be given and has to be a list with nodes chr, start, and stop")
+getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee = get("SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- pullSegSiteHaplo(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+    ret <- pullSegSiteHaplo(pop = pop, haplo = haplo, chr = simParamBee$csdChr)[, simParamBee$csdStart:simParamBee$csdStop]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdHaplo(x = getQueen(x),        csd = csd)
-    ret$fathers       <- getCsdHaplo(x = getFathers(x),      csd = csd)
-    ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), csd = csd)
-    ret$workers       <- getCsdHaplo(x = getWorkers(x),      csd = csd)
-    ret$drones        <- getCsdHaplo(x = getDrones(x),       csd = csd)
+    ret$queen         <- getCsdHaplo(x = getQueen(x),        haplo = haplo, simParam = simParamBee)
+    ret$fathers       <- getCsdHaplo(x = getFathers(x),      haplo = haplo, simParam = simParamBee)
+    ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), haplo = haplo, simParam = simParamBee)
+    ret$workers       <- getCsdHaplo(x = getWorkers(x),      haplo = haplo, simParam = simParamBee)
+    ret$drones        <- getCsdHaplo(x = getDrones(x),       haplo = haplo, simParam = simParamBee)
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdHaplo, csd = csd)
+    ret <- lapply(X = x@colonies, FUN = getCsdHaplo, haplo = haplo, simParam = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -772,7 +777,7 @@ getCsdHaplo <- function(x, csd = NULL) {
 }
 
 #' @rdname getCsdGeno
-#' @title Get genotypes from the csd locus WORK in PROGRESS
+#' @title Get genotypes from the csd locus
 #'
 #' @description Get genotypes from the csd locus. The csd locus is the
 #' complementary sex determining locus in honeybees. Heterozygous individuals
@@ -782,34 +787,36 @@ getCsdHaplo <- function(x, csd = NULL) {
 #' in SimParamBee and this function gives genotypes at these loci.
 #'
 #' @param x Pop, Colony, or Colonies
-#' @param csd list with nodes chr, start, and stop
+#' @param simParamBee SimParamBee
 #'
 #' @details
 #'
 #' @examples
 #' TODO
 #'
-#' @return TODO
+#' @return matrix with genotypes when \code{x} is Pop, list of matrices with
+#' genotypes when \code{x} is Colony (list nodes named by caste) and list of a
+#' list of matrices with genotypes when \code{x} is Colonies, outer list is
+#' named by colony id when \code{x} is Colonies
 #'
 #' @export
 
-getCsdGeno <- function(x, csd = NULL) {
-  # TODO: make use of SimParamBee once we have it
-  if (is.null(csd) | !is.list(csd)) {
-    stop("Argument csd must be given and has to be a list with nodes chr, start, and stop!")
+getCsdGeno <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee = get("SP",envir=.GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- pullSegSiteGeno(pop = pop, chr = csd$chr)[, csd$start:csd$stop]
+    ret <- pullSegSiteGeno(pop = pop, chr = simParamBee$csdChr)[, simParamBee$csdStart:simParamBee$csdStop]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdGeno(x = getQueen(x),        csd = csd)
-    ret$fathers       <- getCsdGeno(x = getFathers(x),      csd = csd)
-    ret$virgin_queens <- getCsdGeno(x = getVirginQueens(x), csd = csd)
-    ret$workers       <- getCsdGeno(x = getWorkers(x),      csd = csd)
-    ret$drones        <- getCsdGeno(x = getDrones(x),       csd = csd)
+    ret$queen         <- getCsdGeno(x = getQueen(x),        simParam = simParamBee)
+    ret$fathers       <- getCsdGeno(x = getFathers(x),      simParam = simParamBee)
+    ret$virgin_queens <- getCsdGeno(x = getVirginQueens(x), simParam = simParamBee)
+    ret$workers       <- getCsdGeno(x = getWorkers(x),      simParam = simParamBee)
+    ret$drones        <- getCsdGeno(x = getDrones(x),       simParam = simParamBee)
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdGeno, csd = csd)
+    ret <- lapply(X = x@colonies, FUN = getCsdGeno, simParam = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
