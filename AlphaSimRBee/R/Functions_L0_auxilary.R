@@ -723,8 +723,16 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                  split = split,
                                  inbred = FALSE,
                                  ploidy = 2L,
+                                 csdChr = 3,
+                                 csdPos = 0.865,
+                                 nCsdHaplo = 32,
                                  nThreads = nThreads)
-  ret$SP = SimParamBee$new(founderPop = founderGenomes)
+  ret$SP = SimParamBee$new(founderPop = ret$founderGenomes)
+  ret$SP$addCsd(csdChr = csdChr, csdPos = csdPos, nCsdHaplo = nCsdHaplo)
+  genMap <- ret$founderGenomes@genMap
+  genMap[[ret$SP$csdChr]][ret$SP$csdPosStart:ret$SP$csdPosStop] <- 0
+  ret$SP$switchGenMap(genMap)
+
   return(ret)
 }
 
