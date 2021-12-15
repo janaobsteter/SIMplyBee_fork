@@ -90,7 +90,7 @@ SimParamBee <- R6Class(
       self$nCsdSites <- ceiling(log2(self$nCsdHaplo))
       nLoci <- self$segSites[self$csdChr]
       self$csdPosStart <- floor(nLoci * self$csdPos)
-      csdPosStop <- self$csdPosStart + self$nCsdSites
+      csdPosStop <- self$csdPosStart + self$nCsdSites - 1
       if (csdPosStop > nLoci) {
         stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
       } else {
