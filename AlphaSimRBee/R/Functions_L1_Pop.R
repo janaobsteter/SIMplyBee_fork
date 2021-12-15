@@ -16,12 +16,10 @@
 #' \code{\link{getWorkers}}, and \code{\link{getDrones}}
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -363,12 +361,10 @@ createVirginQueens <- function(colony, nInd){
 #' are accessed, otherwise a random sample
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -409,10 +405,10 @@ createDCA <- function(x, nInd = NULL) {
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
+#'
 #' pullInd(basePop, nInd = 2)
 #' pullInd(basePop, nInd = 3)
 #' pullInd(basePop)
@@ -446,12 +442,10 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param avgGroupSize Numeric, average number of drones per group
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -497,12 +491,10 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -702,12 +694,10 @@ crossVirginQueen <- function(virginQueen, fathers) {
 #' @param year integer, the year of the birth of the queen
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])

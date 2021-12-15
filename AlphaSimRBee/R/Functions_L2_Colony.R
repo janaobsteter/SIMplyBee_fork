@@ -425,12 +425,10 @@ replaceDrones <- function(colony, p = 1) {
 #' @param colony Colony
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
@@ -460,12 +458,10 @@ removeQueen <- function(colony) {
 #' @param colony Colony
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
@@ -871,12 +867,10 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #' same length at there is colonies in \code{x})
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])

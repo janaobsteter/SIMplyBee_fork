@@ -15,15 +15,15 @@
 #' apiary <- createColonies(n = 10)
 #'
 #' # Create an apiary from two existing colonies
-#' # ... AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
-#' # ... Honeybees
+#'
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[1], fathers = drones)
 #' colony2 <- createColony(virgin_queens = basePop[3])
 #' apiary2 <- createColonies(colony1, colony2)
+#'
 #' # ... an alternative
 #' apiary2 <- c(colony1, colony2)
 #'
@@ -84,12 +84,10 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
 #' @return Expanded \code{\link{Colonies-class}} object
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
@@ -100,7 +98,7 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
 #' apiaryNew <- addColonyToColonies(apiary, colony3)
 #' getId(apiary)
 #' getId(apiaryNew)
-#' # ... and alternative
+#' # ... an alternative
 #' apiaryNew <- c(apiary, colony3)
 #' getId(apiaryNew)
 #'
@@ -132,12 +130,10 @@ addColonyToColonies <- function(colonies, colony) {
 #' @return Expanded \code{\link{Colonies-class}} object
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
@@ -174,12 +170,10 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' - see examples how to select by index
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybees
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 #'
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
@@ -236,12 +230,10 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param p numeric, probability of a colony being pulled
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
 #' (names <- getId(apiary))
 #'
@@ -291,12 +283,10 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param ID character, IDs of colony(ies) in \code{colonies}
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
 #' (names <- getId(apiary))
 #'
@@ -328,12 +318,10 @@ removeColonies <- function(colonies, ID) {
 #' @param nDronesPerQueen
 #'
 #' @examples
-#' # AlphaSimR
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Honeybee
 #' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
 #' nQueens(apiary)
 #' nVirginQueens(apiary)
