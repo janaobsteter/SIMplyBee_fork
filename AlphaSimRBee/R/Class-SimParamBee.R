@@ -73,33 +73,34 @@ SimParamBee <- R6Class(
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
 
-      # csd chromosome
+      # csd
       self$csdChr <- NULL
       if (!is.null(csdChr)) {
+        # csd chromosome
         if (self$nChr < csdChr) {
           self$csdChr <- self$nChr
           warning(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
         } else {
           self$csdChr <- csdChr
         }
-      }
 
-      # csd position and sites
-      self$csdPos <- csdPos
-      self$nCsdHaplo <- nCsdHaplo
-      self$nCsdSites <- ceiling(log2(self$nCsdHaplo))
-      nLoci <- self$segSites[self$csdChr]
-      self$csdPosStart <- floor(nLoci * self$csdPos)
-      csdPosStop <- self$csdPosStart + self$nCsdSites - 1
-      if (csdPosStop > nLoci) {
-        stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
-      } else {
-        self$csdPosStop <- csdPosStop
+        # csd position and sites
+        self$csdPos <- csdPos
+        self$nCsdHaplo <- nCsdHaplo
+        self$nCsdSites <- ceiling(log2(self$nCsdHaplo))
+        nLoci <- self$segSites[self$csdChr]
+        self$csdPosStart <- floor(nLoci * self$csdPos)
+        csdPosStop <- self$csdPosStart + self$nCsdSites - 1
+        if (csdPosStop > nLoci) {
+          stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
+        } else {
+          self$csdPosStop <- csdPosStop
+        }
+        genMap <- self$genMap
+        # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
+        genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+        self$switchGenMap(genMap)
       }
-      genMap <- self$genMap
-      # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
-      genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
-      self$switchGenMap(genMap)
     }
   )
 )
