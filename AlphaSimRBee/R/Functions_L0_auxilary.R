@@ -277,11 +277,12 @@ nDrones <- function(x) {
 #' @title Is the queen mated?
 #'
 #' @description When queen is mated, we store drones she mated with (fathers of
-#' future progeny) in the same object to have genetic information for generating
-#' future progeny. This function tests if queen is mated, by testing for the
-#' presence of fathers.
+#'   future progeny) in the same object to have genetic information for
+#'   generating future progeny. This function tests if queen is mated, by
+#'   testing for the presence of fathers.
 #'
-#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}}, queen or colony that will be inspected
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}}, queen or
+#'   colony that will be inspected
 #'
 #' @examples
 #' # AlphaSimR
@@ -304,7 +305,8 @@ nDrones <- function(x) {
 #' colony2 <- supersedeColony(colony2, fathers = drones[1:5])
 #' isQueenMated(colony2)
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 isQueenMated <- function(x) {
@@ -330,7 +332,8 @@ isQueenMated <- function(x) {
 #'
 #' @description Access the queen's year of birth
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' # AlphaSimR
@@ -368,8 +371,9 @@ isQueenMated <- function(x) {
 #' getQueensYearOfBirth(apiary)
 #'
 #' @return numeric, the year of birth of the queen when \code{x} is colony or
-#' queens when \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen not present, named by
-#' colony id when \code{x} is \code{\link{Colonies-class}}
+#'   queens when \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen
+#'   not present, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getQueensYearOfBirth <- getQueensYOB <- function(x) {
@@ -394,7 +398,8 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #'
 #' @description Get (calculate) the queen's age
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #' @param currentYear integer, current year
 #'
 #' @examples
@@ -420,8 +425,9 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' getQueensAge(apiary, currentYear = 2022)
 #'
 #' @return numeric, the age of the queen when \code{x} is colony or queens when
-#' \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen of year of birth not present, named
-#' by colony id when \code{x} is \code{\link{Colonies-class}}
+#'   \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen of year of
+#'   birth not present, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getQueensAge <- function(x, currentYear) {
@@ -531,9 +537,10 @@ getId <- function(x) {
 #' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 #' getLocation(tmp)
 #'
-#' @return numeric with two values when \code{x} is \code{\link{Colony-class}} and a list of numeric
-#' with two values when \code{x} is \code{\link{Colonies-class}} (list named after colonies);
-#' \code{c(NA, NA)} when location not set
+#' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
+#'   and a list of numeric with two values when \code{x} is
+#'   \code{\link{Colonies-class}} (list named after colonies); \code{c(NA, NA)}
+#'   when location not set
 #'
 #' @export
 getLocation <- function(x) {
@@ -1007,14 +1014,16 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' @rdname getCasteIbdHaplo
 #' @title Access IBD haplotype data of individuals in a caste
 #'
-#' @description Access IBD (identity by descent) haplotype data of individuals in a caste.
+#' @description Access IBD (identity by descent) haplotype data of individuals
+#'   in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
@@ -1072,9 +1081,10 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getCasteIbdHaplo(apiary, caste = "drones")
 #' getDronesIbdHaplo(apiary)
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}} and list of matrices
-#' with haplotypes when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteIbdHaplo <- function(x, caste, nInd = NULL,
@@ -1809,20 +1819,21 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 
 #' @rdname getCasteSegSiteHaplo
 #' @title Access haplotype data for all segregating sites of individuals in a
-#' caste
+#'   caste
 #'
 #' @description Access haplotype data for all segregating sites of individuals
-#' in a caste.
+#'   in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
@@ -1879,9 +1890,10 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getCasteSegSiteHaplo(apiary, caste = "drones")
 #' getDronesSegSiteHaplo(apiary)
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}} and list of matrices
-#' with haplotypes when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
@@ -1969,23 +1981,24 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySegSiteHaplo
-#' @title Access haplotype data for all segregating sites of individuals in colony
+#' @title Access haplotype data for all segregating sites of individuals in
+#'   colony
 #'
 #' @description Access haplotype data for all segregating sites of individuals
-#' in colony.
+#'   in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
@@ -2016,9 +2029,11 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' getColonySegSiteHaplo(apiary, nInd = 1)
 #' getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of matrices with haplotypes when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of matrices with haplotypes when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2077,17 +2092,18 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 
 #' @rdname getCasteSegSiteGeno
 #' @title Access genotype data for all segregating sites of individuals in a
-#' caste
+#'   caste
 #'
 #' @description Access genotype data for all segregating sites of individuals in
-#' a caste.
+#'   a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
@@ -2144,9 +2160,10 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #' getCasteSegSiteGeno(apiary, caste = "drones")
 #' getDronesSegSiteGeno(apiary)
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and list of matrices
-#' with genotypes when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#'   list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
@@ -2234,20 +2251,21 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySegSiteGeno
-#' @title Access genotype data for all segregating sites of individuals in colony
+#' @title Access genotype data for all segregating sites of individuals in
+#'   colony
 #'
-#' @description Access genotype data for all segregating sites of individuals
-#' in colony.
+#' @description Access genotype data for all segregating sites of individuals in
+#'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
@@ -2278,9 +2296,11 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' getColonySegSiteGeno(apiary, nInd = 1)
 #' getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of matrices with genotypes when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of matrices with genotypes when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2343,15 +2363,16 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' @description Access SNP array haplotype data of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
@@ -2409,9 +2430,10 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' getCasteSnpHaplo(apiary, caste = "drones")
 #' getDronesSnpHaplo(apiary)
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}} and list of matrices
-#' with haplotypes when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSnpHaplo <- function(x, caste, nInd = NULL,
@@ -2506,17 +2528,17 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
@@ -2548,9 +2570,11 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' getColonySnpHaplo(apiary, nInd = 1)
 #' getColonySnpHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of matrices with haplotypes when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of matrices with haplotypes when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2613,12 +2637,13 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @description Access SNP array genotype data of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
@@ -2676,9 +2701,10 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getCasteSnpGeno(apiary, caste = "drones")
 #' getDronesSnpGeno(apiary)
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and list of matrices
-#' with genotypes when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#'   list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSnpGeno <- function(x, caste, nInd = NULL,
@@ -2772,14 +2798,14 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
@@ -2811,9 +2837,11 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' getColonySnpGeno(apiary, nInd = 1)
 #' getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of matrices with genotypes when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of matrices with genotypes when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2876,9 +2904,10 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' @description Access genetic values of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #'
 #' @seealso \code{\link{gv}}
 #'
@@ -2935,9 +2964,10 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getCasteGv(apiary, caste = "drones")
 #' getDronesGv(apiary)
 #'
-#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}} and list of vectors
-#' of genetic values when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
+#'   and list of vectors of genetic values when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteGv <- function(x, caste, nInd = NULL) {
@@ -3015,16 +3045,15 @@ getDronesGv <- function(x, nInd = NULL) {
 #' @rdname getColonyGv
 #' @title Access genetic values of individuals in colony
 #'
-#' @description Access genetic values of individuals
-#' in colony.
+#' @description Access genetic values of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #'
 #' @seealso \code{\link{gv}}
 #'
@@ -3055,9 +3084,11 @@ getDronesGv <- function(x, nInd = NULL) {
 #' getColonyGv(apiary, nInd = 1)
 #' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of vector of genetic values when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of vectors of genetic values when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of vector of genetic values when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of genetic values when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL) {
@@ -3114,9 +3145,10 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @description Access breeding values of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{bv}}
@@ -3174,9 +3206,10 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getCasteBv(apiary, caste = "drones")
 #' getDronesBv(apiary)
 #'
-#' @return vector of breeding values when \code{x} is \code{\link{Colony-class}} and list of vectors
-#' of breeding values when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
+#'   and list of vectors of breeding values when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
@@ -3260,16 +3293,15 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @rdname getColonyBv
 #' @title Access breeding values of individuals in colony
 #'
-#' @description Access breeding values of individuals
-#' in colony.
+#' @description Access breeding values of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{bv}}
@@ -3301,9 +3333,11 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' getColonyBv(apiary, nInd = 1)
 #' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of vector of breeding values when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of vectors of breeding values when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of vector of breeding values when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of breeding values when \code{x} is
+#'   \code{\link{Colonies-class}}, outer list is named by colony id when
+#'   \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -3368,9 +3402,10 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @description Access dominance deviations of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample
+#'   individuals are accessed, otherwise a random sample
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{dd}}
@@ -3428,9 +3463,10 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getCasteDd(apiary, caste = "drones")
 #' getDronesDd(apiary)
 #'
-#' @return vector of dominance deviations when \code{x} is \code{\link{Colony-class}} and list of vectors
-#' of dominance deviations when \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#' is \code{\link{Colonies-class}}
+#' @return vector of dominance deviations when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of dominance deviations when
+#'   \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
+#'   is \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
@@ -3518,11 +3554,11 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
-#' "workers", or "drones"
+#'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#' individuals are accessed, otherwise a random sample; can be a list to access
-#' different number of different caste - when this is the case \code{nInd} takes
-#' precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @seealso \code{\link{dd}}
@@ -3554,9 +3590,11 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' getColonyDd(apiary, nInd = 1)
 #' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 #'
-#' @return list of vector of dominance deviations when \code{x} is \code{\link{Colony-class}} (list nodes
-#' named by caste) and list of a list of vectors of dominance deviations when \code{x}
-#' is \code{\link{Colonies-class}}, outer list is named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return list of vector of dominance deviations when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of dominance deviations when \code{x} is
+#'   \code{\link{Colonies-class}}, outer list is named by colony id when
+#'   \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
