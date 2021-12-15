@@ -717,8 +717,28 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @examples
-#' founderPop <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
-#' SP <- SimParamBee$new(founderPop, nCsdHaplo = 2)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#' apiary <- c(colony1, colony2)
+#'
+#' getCsdHaplo(getQueen(colony1))
+#' getCsdHaplo(getVirginQueens(colony1))
+#' getCsdHaplo(getFathers(colony1))
+#' getCsdHaplo(getWorkers(colony1))
+#' getCsdHaplo(getDrones(colony1))
+#'
+#' getCsdHaplo(colony1)
+#'
+#' getCsdHaplo(apiary)
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
@@ -735,7 +755,7 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
     stop("The csd locus has not been set!")
   }
   if (isPop(x)) {
-    ret <- pullSegSiteHaplo(pop = pop, haplo = haplo, chr = simParamBee$csdChr,
+    ret <- pullSegSiteHaplo(pop = x, haplo = haplo, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
@@ -770,7 +790,28 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @param simParamBee \code{\link{SimParamBee}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#' apiary <- c(colony1, colony2)
+#'
+#' getCsdGeno(getQueen(colony1))
+#' getCsdGeno(getVirginQueens(colony1))
+#' getCsdGeno(getFathers(colony1))
+#' getCsdGeno(getWorkers(colony1))
+#' getCsdGeno(getDrones(colony1))
+#'
+#' getCsdGeno(colony1)
+#'
+#' getCsdGeno(apiary)
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
@@ -787,7 +828,7 @@ getCsdGeno <- function(x, simParamBee = NULL) {
     stop("The csd locus has not been set!")
   }
   if (isPop(x)) {
-    ret <- pullSegSiteGeno(pop = pop, chr = simParamBee$csdChr,
+    ret <- pullSegSiteGeno(pop = x, chr = simParamBee$csdChr,
                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
