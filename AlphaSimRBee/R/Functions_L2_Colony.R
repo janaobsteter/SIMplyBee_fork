@@ -122,7 +122,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
   }
   newWorkers <- createWorkers(colony, nInd)
   if (!is.null(colony@workers)) {
-    colony@workers <- mergePops(list(colony@workers, newWorkers))
+    colony@workers <- c(colony@workers, newWorkers)
   } else {
     colony@workers <- newWorkers
   }
@@ -168,7 +168,7 @@ addDrones <- function(colony, nInd) {
   }
   newDrones <- createDrones(colony, nInd)
   if (!is.null(colony@drones)) {
-    colony@drones <- mergePops(list(colony@drones, newDrones))
+    colony@drones <- c(colony@drones, newDrones)
   } else {
     colony@drones <- newDrones
   }
