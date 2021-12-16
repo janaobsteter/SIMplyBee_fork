@@ -701,13 +701,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @rdname getCsdHaplo
 #' @title Get haplotypes from the csd locus
 #'
-#' @description Get haplotypes from the csd locus. The csd locus is the
-#'   complementary sex determining locus in honeybees. Heterozygous individuals
-#'   become workers or queens, while homozygous individuals become unviable
-#'   "drones". Hence knowledge of haplotypes at the locus is critical for
-#'   honeybee simulations. The csd locus spans a number of non-recombining loci
-#'   as defined in \code{\link{SimParamBee}} and this function gives haplotypes
-#'   at these loci.
+#' @description Get haplotypes from the csd locus. See \code{\link{SimParamBee}}
+#'   for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -777,13 +772,8 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @rdname getCsdGeno
 #' @title Get genotypes from the csd locus
 #'
-#' @description Get genotypes from the csd locus. The csd locus is the
-#'   complementary sex determining locus in honeybees. Heterozygous individuals
-#'   become workers or queens, while homozygous individuals become unviable
-#'   "drones". Hence knowledge of haplotypes at the locus is critical for
-#'   honeybee simulations. The csd locus spans a number of non-recombining loci
-#'   as defined in \code{\link{SimParamBee}} and this function gives genotypes
-#'   at these loci.
+#' @description Get genotypes from the csd locus. See \code{\link{SimParamBee}}
+#'   for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -850,8 +840,7 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' @rdname isGenoHeterozygous
 #' @title Test if a multilocus genotype is heterozygous
 #'
-#' @description Test if a multilocus genotype is heterozygous - to be used in
-#'   combination with \code{\link{getCsdGeno}}
+#' @description Test if a multilocus genotype is heterozygous
 #'
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
@@ -888,9 +877,13 @@ isGenoHeterozygous <- function(x) {
 #' @title Test if individuals are heterozygous at the csd locus
 #'
 #' @description Test if individuals of a population are heterozygous at the csd
-#'   locus
+#'   locus. See \code{\link{SimParamBee}} for more information about the csd
+#'   locus.
 #'
 #' @param pop \code{\link{Pop-class}}
+#'
+#' @details We could expand \code{isCsdHeterozygous} to work also with
+#'   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
@@ -915,7 +908,40 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
     stop("Argument pop must be a Pop class object!")
   }
   geno <- getCsdGeno(x = pop, simParamBee = simParamBee)
+  # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
+  # to test than isCsdHeterozygous()
   ret <- isGenoHeterozygous(x = geno)
+  return(ret)
+}
+
+#' @rdname nCsdAlleles
+#' @title Report the number of distinct csd alleles
+#'
+#' @description Report the number of distinct csd alleles in input. See
+#'   \code{\link{SimParamBee}} for more information about the csd locus.
+#'
+#' @param pop \code{\link{Pop-class}} TODO
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#'
+#' pop <- getQueen(colony1)
+#'
+#' @return logical
+#'
+#' @export
+nCsdAlleles <- function(pop, haplo = "all", simParamBee = NULL) {
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
+  }
+  haplo <- getCsdHaplo(x = pop, haplo = haplo, simParamBee = simParamBee)
+  haplo <- haplo[!duplicated(x = haplo), ]
   return(ret)
 }
 
