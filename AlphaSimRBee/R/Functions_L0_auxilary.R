@@ -678,38 +678,24 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     histNe = Ne, # TODO revise and citation
                                     histGen = 1, # TODO revise and citation
                                     split = NULL, # TODO revise and citation
-                                    nThreads = NULL,
-                                    csdChr = 3,
-                                    csdPos = 0.865,
-                                    nCsdHaplo = 64) {
-
-
-  ret <- vector(mode = "list", length = 2)
-  names(ret) <- c("founderGenomes", "SP")
+                                    nThreads = NULL) {
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
-  #       because runMacs2 works only with simple splits, while honenybee demography is more
-  #       "involved"
-
-  ret$founderGenomes <- runMacs2(nInd = nInd,
-                                 nChr = nChr,
-                                 segSites = nSegSites,
-                                 Ne = Ne,
-                                 bp = nBp,
-                                 genLen = genLen,
-                                 mutRate = mutRate,
-                                 histNe = histNe,
-                                 histGen = histGen,
-                                 split = split,
-                                 inbred = FALSE,
-                                 ploidy = 2L,
-                                 nThreads = nThreads)
-
-  ret$SP = SimParamBee$new(founderPop = ret$founderGenomes, csdChr = csdChr, csdPos = csdPos, nCsdHaplo = nCsdHaplo)
-  genMap <- ret$founderGenomes@genMap
-  genMap[[ret$SP$csdChr]][ret$SP$csdPosStart:ret$SP$csdPosStop] <- 0
-  ret$SP$switchGenMap(genMap)
-
-  return(ret)
+  #       because runMacs2 works only with simple splits, while honeybee demography is more
+  #       "involved"; see also see also https://github.com/HighlanderLab/AlphaSimRBee/issues/45
+  founderGenomes <- runMacs2(nInd = nInd,
+                             nChr = nChr,
+                             segSites = nSegSites,
+                             Ne = Ne,
+                             bp = nBp,
+                             genLen = genLen,
+                             mutRate = mutRate,
+                             histNe = histNe,
+                             histGen = histGen,
+                             split = split,
+                             inbred = FALSE,
+                             ploidy = 2L,
+                             nThreads = nThreads)
+  return(founderGenomes)
 }
 
 
