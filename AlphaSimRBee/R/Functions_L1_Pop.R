@@ -7,13 +7,15 @@
 #' colony.
 #'
 #' @param x Colony or Colonies
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all individuals
-#' are accessed
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#'   individuals are accessed
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
-#' @seealso \code{\link{getQueen}}, \code{\link{getFathers}}, \code{\link{getVirginQueens}},
-#' \code{\link{getWorkers}}, and \code{\link{getDrones}}
+#' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
+#'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
+#'   \code{\link{getDrones}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

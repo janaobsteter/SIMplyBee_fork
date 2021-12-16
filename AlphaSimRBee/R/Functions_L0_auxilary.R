@@ -36,7 +36,12 @@ nColonies <- function(colonies) {
 #' @description Returns the number of individuals of a caste in a colony
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers",
+#'   "drones", or "all"
+#'
+#' @return integer when \code{caste != "all"} and list when
+#'   \code{caste == "all"} with nodes named by caste; integer or list are named
+#'   by colony id when \code{x} is \code{\link{Colonies-class}};
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -55,6 +60,7 @@ nColonies <- function(colonies) {
 #' nCaste(colony1, caste = "virgin_queens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
+#' nCaste(colony1, caste = "all")
 #'
 #' apiary <- c(colony1, colony2)
 #' nCaste(apiary, caste = "queen")
@@ -62,23 +68,31 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "virgin_queens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' nCaste(apiary, caste = "all")
 #'
 #' @export
 nCaste <- function(x, caste) {
   if (isColony(x)) {
-    if (caste == "fathers") {
-      if (is.null(x@queen)) {
-        ret <- 0
-      } else {
-        ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
-      }
+    if (caste == "all") {
+     ret <- vector(mode = "list", length = 5)
+     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+     for (caste in names(ret)) {
+       ret[[caste]] <- nCaste(x = x, caste = caste)
+     }
     } else {
-      ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+      if (caste == "fathers") {
+        if (is.null(x@queen)) {
+          ret <- 0
+        } else {
+          ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
+        }
+      } else {
+        ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+      }
     }
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = nCaste, caste = caste)
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
     names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or Colonies class object!")
@@ -930,8 +944,6 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   list of a list of integer when \code{x} is \code{\link{Colonies-class}},
 #'   outer list is named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}; the integer rep
-#'
-#' @details Should we report nCsdAlleles for all individuals in a colony?
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
