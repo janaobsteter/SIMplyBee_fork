@@ -122,9 +122,11 @@ addWorkers <- function(colony, nInd = NULL, ...) {
   }
   newWorkers <- createWorkers(colony, nInd)
   if (!is.null(colony@workers)) {
-    colony@workers <- c(colony@workers, newWorkers)
+    colony@workers <- c(colony@workers, newWorkers$workers)
+    colony@nHomDrones <- colony@nHomDrones + newWorkers$nHomDrones
   } else {
-    colony@workers <- newWorkers
+    colony@workers <- newWorkers$workers
+    colony@nHomDrones <- newWorkers$nHomDrones
   }
   return(colony)
 }
@@ -365,10 +367,15 @@ replaceWorkers <- function(colony, p = 1) {
   nWorkersReplaced <- round(nWorkers * p)
   if (nWorkersReplaced < nWorkers) {
     nWorkersStay <- nWorkers - nWorkersReplaced
+    tmp <- createWorkers(colony, nInd = nWorkersReplaced)
     colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = "rand"),
-                        createWorkers(colony, nInd = nWorkersReplaced))
+                        tmp$workers)
+    # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
+    colony@nHomDrones <- round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones
   } else {
-    colony@workers <- createWorkers(colony, nWorkersReplaced)
+    tmp <- createWorkers(colony, nInd = nWorkersReplaced)
+    colony@workers <- tmp$workers
+    colony@nHomDrones <- tmp$nHomDrones
   }
   return(colony)
 }
@@ -610,7 +617,9 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers
   colony@id <- colony@queen@id
   colony@queen@misc$fathers <- fathers
   if (nWorkers != 0) {
-    colony@workers <- createWorkers(colony, nInd = nWorkers)
+    tmp <- createWorkers(colony, nInd = nWorkers)
+    colony@workers <- tmp$workers
+    colony@nHomDrones <- tmp$nHomDrones
   }
   if (nDrones != 0) {
     colony@drones <- createDrones(colony, nInd = nDrones)
@@ -700,6 +709,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
     remnantColony@queen@misc$fathers <- fathers
     remnantColony <- replaceWorkers(remnantColony, pWorkers)
     remnantColony <- replaceDrones(remnantColony, pDrones)
+    # TODO: need to address csd here too!
     remnantColony@virgin_queens <- createWorkers(remnantColony, 1)
   }
 
@@ -762,6 +772,7 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
     colony@queen@misc$fathers <- fathers
     colony <- replaceWorkers(colony, pWorkers)
     colony <- replaceDrones(colony, pDrones)
+    # TODO: need to address csd here too!
     colony@virgin_queens <- createWorkers(colony, 1)
   }
   colony@last_event <- "superseded"
@@ -838,6 +849,7 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 
   if (!is.null(splitColony@queen)) {
     splitColony <- replaceWorkers(splitColony, pWorkers)
+    # TODO: need to address csd here too!
     splitColony@virgin_queens <- createWorkers(splitColony, 1)
   }
 

@@ -74,8 +74,8 @@ nColonies <- function(colonies) {
 nCaste <- function(x, caste) {
   if (isColony(x)) {
     if (caste == "all") {
-     ret <- vector(mode = "list", length = 5)
-     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+     ret <- vector(mode = "list", length = 6)
+     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones", "homDrones")
      for (caste in names(ret)) {
        ret[[caste]] <- nCaste(x = x, caste = caste)
      }
@@ -86,6 +86,8 @@ nCaste <- function(x, caste) {
         } else {
           ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
         }
+      } else if (caste == "homDrones") {
+        ret <- x@nHomDrones
       } else {
         ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
       }
@@ -267,6 +269,42 @@ nWorkers <- function(x) {
 nDrones <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "drones")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname nHomDrones
+#' @title Number of homozygous drones in a colony
+#'
+#' @description Returns the number of homozygous drones in a colony (these are
+#'   non viable individuals and only their number is stored).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 100)
+#' colony2 <- addDrones(colony2, nInd = 200)
+#' nHomDrones(colony1)
+#' nHomDrones(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nHomDrones(apiary)
+#'
+#' @export
+nHomDrones <- function(x) {
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "homDrones")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }

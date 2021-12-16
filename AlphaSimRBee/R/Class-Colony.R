@@ -44,9 +44,10 @@ setClass("Colony",
          slots = c(id = "characterOrNULL",
                    location = "numericOrNULL",
                    queen = "PopOrNULL",
-                   drones = "PopOrNULL",
-                   workers = "PopOrNULL",
                    virgin_queens = "PopOrNULL",
+                   workers = "PopOrNULL",
+                   drones = "PopOrNULL",
+                   nHomDrones = "integerOrNULL",
                    pheno = "matrix",
                    split = "logical",
                    #remnant = "",
@@ -71,6 +72,7 @@ setMethod("show",
             cat("Virgin queens:", nVirginQueens(object),"\n")
             cat("Workers:", nWorkers(object), "\n")
             cat("Drones:", nDrones(object),"\n")
+            cat("Homozygous drones:", nHomDrones(object),"\n")
             cat("Split:", object@split, "\n")
             cat("Swarmed:", object@swarm, "\n")
             cat("Superseded:", object@supersedure, "\n")
