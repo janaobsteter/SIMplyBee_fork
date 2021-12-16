@@ -116,7 +116,7 @@ nQueens <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "queen")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -149,7 +149,7 @@ nFathers <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "fathers")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -184,7 +184,7 @@ nVirginQueens <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "virgin_queens")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -219,7 +219,7 @@ nWorkers <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "workers")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -254,7 +254,7 @@ nDrones <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "drones")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -905,7 +905,7 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
     ret <- pullIbdHaplo(pop = pop, chr = chr, simParam = simParam)
   } else {
-    stop("Argument pop must be a Pop class object")
+    stop("Argument pop must be a Pop class object!")
   }
   return(ret)
 }
@@ -1446,7 +1446,7 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
     ret <- getCasteQtlHaplo(x, caste = "fathers", nInd = nInd,
                             trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1459,7 +1459,7 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
     ret <- getCasteQtlHaplo(x, caste = "virgin_queens", nInd = nInd,
                             trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1472,7 +1472,7 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
     ret <- getCasteQtlHaplo(x, caste = "workers", nInd = nInd,
                             trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1485,7 +1485,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
     ret <- getCasteQtlHaplo(x, caste = "drones", nInd = nInd,
                             trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1699,7 +1699,7 @@ getQueensQtlGeno <- function(x,
     ret <- getCasteQtlGeno(x, caste = "queen",
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1712,7 +1712,7 @@ getFathersQtlGeno <- function(x, nInd = NULL,
     ret <- getCasteQtlGeno(x, caste = "fathers", nInd = nInd,
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1725,7 +1725,7 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
     ret <- getCasteQtlGeno(x, caste = "virgin_queens", nInd = nInd,
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1738,7 +1738,7 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
     ret <- getCasteQtlGeno(x, caste = "workers", nInd = nInd,
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -1751,7 +1751,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
     ret <- getCasteQtlGeno(x, caste = "drones", nInd = nInd,
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3019,7 +3019,7 @@ getQueensGv <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "queen")
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3030,7 +3030,7 @@ getFathersGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3041,7 +3041,7 @@ getVirginQueensGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "virgin_queens", nInd = nInd)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3052,7 +3052,7 @@ getWorkersGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "workers", nInd = nInd)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3063,7 +3063,7 @@ getDronesGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "drones", nInd = nInd)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3261,7 +3261,7 @@ getQueensBv <- function(x, simParamBee = NULL) {
     ret <- getCasteBv(x, caste = "queen",
                       simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3273,7 +3273,7 @@ getFathersBv <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- getCasteBv(x, caste = "fathers", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3285,7 +3285,7 @@ getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- getCasteBv(x, caste = "virgin_queens", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3297,7 +3297,7 @@ getWorkersBv <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- getCasteBv(x, caste = "workers", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
@@ -3309,7 +3309,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- getCasteBv(x, caste = "drones", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
-    stop("Argument x must be a Colony or Colonies class object")
+    stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }

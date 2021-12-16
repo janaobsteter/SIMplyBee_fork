@@ -143,7 +143,7 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @export
 getQueen <- function(x) {
   if (isColony(x) | isColonies(x)){
-  ret <- getCaste(x, caste = "queen")
+    ret <- getCaste(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -154,7 +154,7 @@ getQueen <- function(x) {
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
+    ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -165,7 +165,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+    ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -176,7 +176,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
+    ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -187,7 +187,7 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
+    ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -269,8 +269,8 @@ createWorkers <- function(colony, nInd){
     stop("Unmated queen!")
   }
   workerPop <- randCross2(females = colony@queen,
-                         males = colony@queen@misc$fathers,
-                         nCrosses = nInd)
+                          males = colony@queen@misc$fathers,
+                          nCrosses = nInd)
   return(workerPop)
 }
 
@@ -585,7 +585,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @export
 pullQueen <- function(x) {
   if (isColony(x) | isColonies(x)){
-  ret <- pullCaste(x, caste = "queen")
+    ret <- pullCaste(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -596,7 +596,7 @@ pullQueen <- function(x) {
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+    ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -607,7 +607,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
+    ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -618,7 +618,7 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)){
-  ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
+    ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
