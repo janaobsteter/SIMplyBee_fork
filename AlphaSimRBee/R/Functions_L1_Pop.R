@@ -218,7 +218,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' founderDrones <- createFounderDrones(pop[2:110], nDronesPerQueen = 100)
 #' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
@@ -299,7 +299,7 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
@@ -339,7 +339,7 @@ createDrones <- function(colony, nInd) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
@@ -649,7 +649,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)

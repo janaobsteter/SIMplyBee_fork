@@ -45,9 +45,9 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
                          collapse = FALSE, # rob = FALSE,
                          production = FALSE,
                          last_event = NULL, yearOfBirth = NULL, misc = NULL,
-                         simParam = NULL) {
-  if (is.null(simParam)) {
-    simParam <- get("SP", envir = .GlobalEnv)
+                         simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(id)) {
     if (!is.null(queen)) {
@@ -72,7 +72,7 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
                 workers = workers,
                 virgin_queens = virgin_queens,
                 pheno = matrix(),
-                # ncol=simParam@nTraits),
+                # ncol=simParamBee@nTraits),
                 swarm = swarm,
                 split = split,
                 supersedure = supersedure,
@@ -103,7 +103,7 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
@@ -149,7 +149,7 @@ addWorkers <- function(colony, nInd = NULL, ...) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony with queen and fathers
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
@@ -195,7 +195,7 @@ addDrones <- function(colony, nInd) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony with queen and fathers
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
@@ -245,7 +245,7 @@ addVirginQueens <- function(colony, nInd) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' base <- newPop(founderPop, simParam=SP)
+#' base <- newPop(founderPop)
 #'
 #' #Create 10 mated colonies from the base population
 #' apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
@@ -303,7 +303,7 @@ reQueenColony <- function(colony, queen) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' base <- newPop(founderPop, simParam=SP)
+#' base <- newPop(founderPop)
 #'
 #' #Create 10 mated colonies from the base population
 #' apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
@@ -349,7 +349,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
@@ -398,7 +398,7 @@ replaceWorkers <- function(colony, p = 1) {
 #' SP <- SimParamBee$new(founderPop)
 #'
 #' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
+#' pop <- newPop(founderPop)
 #'
 #' #Creates colony
 #' colony1 <- createColony(queen = base[1], fathers = base[2:15])
