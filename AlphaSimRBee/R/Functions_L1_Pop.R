@@ -24,9 +24,9 @@
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
 #'
 #' getCaste(colony1, caste = "queen")
 #' getQueen(colony1)
@@ -46,16 +46,16 @@
 #' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
 #' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
 #' getVirginQueens(colony1)
-#' getVirginQueens(colony2)@id
-#' getVirginQueens(colony2, nInd = 2)@id
-#' getVirginQueens(colony2, nInd = 2)@id
+#' getVirginQueens(colony1)@id
+#' getVirginQueens(colony1, nInd = 2)@id
+#' getVirginQueens(colony1, nInd = 2)@id
 #'
 #' getCaste(colony1, caste = "workers")
 #' getCaste(colony1, caste = "workers")@id
 #' getCaste(colony1, caste = "workers", nInd = 2)@id
 #' getCaste(colony1, caste = "workers", nInd = 2)@id
 #' getWorkers(colony1)
-#' getWorkers(colony2)@id
+#' getWorkers(colony1)@id
 #' getWorkers(colony1, nInd = 2)@id
 #' getWorkers(colony1, nInd = 2)@id
 #'
@@ -67,6 +67,9 @@
 #' getDrones(colony1)@id
 #' getDrones(colony1, nInd = 2)@id
 #' getDrones(colony1, nInd = 2)@id
+#'
+#' getCaste(colony2, caste = "drones")
+#' getDrones(colony2)
 #'
 #' apiary <- c(colony1, colony2)
 #' getCaste(apiary, caste = "queen")
@@ -84,7 +87,8 @@
 #' getVirginQueens(apiary)
 #' getVirginQueens(apiary)[[1]]@id
 #' getVirginQueens(apiary)[[2]]@id
-#' getVirginQueens(apiary, nInd = 2)
+#' getVirginQueens(apiary, nInd = 1)
+#' getVirginQueens(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
 #'
 #' getCaste(apiary, caste = "workers")
 #' getWorkers(apiary)
@@ -95,11 +99,12 @@
 #' getCaste(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
-#' getDrones(apiary)[[2]]@id
-#' getDrones(apiary, nInd = 2)
+#' getDrones(apiary)[[2]]@id # TODO: can we do anything here - just give what is available?
+#' getDrones(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
 #'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
+#' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
+#'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
+#'   is Colonies
 #'
 #' @export
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {

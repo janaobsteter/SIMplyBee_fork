@@ -698,7 +698,6 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   return(founderGenomes)
 }
 
-
 #' @rdname getCsdHaplo
 #' @title Get haplotypes from the csd locus
 #'
@@ -921,28 +920,62 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' @description Report the number of distinct csd alleles in input. See
 #'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
-#' @param pop \code{\link{Pop-class}} TODO
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return integer representing the number of distinct csd alleles when \code{x}
+#'   is \code{\link{Pop-class}} (or ), list of integer
+#'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
+#'   list of a list of integer when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}; the integer rep
+#'
+#' @details Should we report nCsdAlleles for all individuals in a colony?
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 3)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' apiary <- c(colony1, colony2)
 #'
-#' pop <- getQueen(colony1)
+#' nCsdAlleles(getQueen(colony1))
+#' nCsdAlleles(colony1)
+#' nCsdAlleles(apiary)
 #'
-#' @return logical
+#' nCsdAlleles(colony1, collapse = TRUE)
+#' nCsdAlleles(apiary, collapse = TRUE)
 #'
 #' @export
-nCsdAlleles <- function(pop, haplo = "all", simParamBee = NULL) {
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
+nCsdAlleles <- function(x, simParamBee = NULL) {
+  if (is.null(x)) {
+    ret <- NA
+  } else if (isPop(x)) {
+    haplo <- getCsdHaplo(x = x, simParamBee = simParamBee)
+    haplo <- haplo[!duplicated(x = haplo), ]
+    ret <- nrow(haplo)
+  } else if (isColony(x)) {
+    ret <- vector(mode = "list", length = 5)
+    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    ret$queen         <- nCsdAlleles(x = getQueen(x),        simParamBee = simParamBee)
+    ret$fathers       <- nCsdAlleles(x = getFathers(x),      simParamBee = simParamBee)
+    ret$virgin_queens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
+    ret$workers       <- nCsdAlleles(x = getWorkers(x),      simParamBee = simParamBee)
+    ret$drones        <- nCsdAlleles(x = getDrones(x),       simParamBee = simParamBee)
+  } else if (isColonies(x)) {
+    ret <- lapply(X = x@colonies, FUN = nCsdAlleles, simParamBee = simParamBee)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
-  haplo <- getCsdHaplo(x = pop, haplo = haplo, simParamBee = simParamBee)
-  haplo <- haplo[!duplicated(x = haplo), ]
   return(ret)
 }
 
