@@ -756,7 +756,7 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
   }
   if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = x, haplo = haplo, chr = simParamBee$csdChr,
-                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop]
+                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
@@ -829,7 +829,7 @@ getCsdGeno <- function(x, simParamBee = NULL) {
   }
   if (isPop(x)) {
     ret <- pullSegSiteGeno(pop = x, chr = simParamBee$csdChr,
-                           simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop]
+                           simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
@@ -844,6 +844,45 @@ getCsdGeno <- function(x, simParamBee = NULL) {
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
+  return(ret)
+}
+
+#' @rdname isGenoHeterozygous
+#' @title Test if a multilocus genotype is heterozygous
+#'
+#' @description Test if a multilocus genotype is heterozygous - to be used in
+#'   combination with \code{\link{getCsdGeno}}
+#'
+#' @param x integer or matrix, output from \code{\link{getCsdGeno}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addDrones(colony2, nInd = 4)
+#' apiary <- c(colony1, colony2)
+#'
+#' (tmp <- getCsdGeno(getQueen(colony1)))
+#' isGenoHeterozygous(tmp)
+#'
+#' (tmp <- getCsdGeno(getVirginQueens(colony1)))
+#' isGenoHeterozygous(tmp)
+#'
+#' (tmp <- getCsdGeno(getWorkers(colony1)))
+#' isGenoHeterozygous(tmp)
+#'
+#' @return logical
+#'
+#' @export
+isGenoHeterozygous <- function(x) {
+  ret <- apply(X = x, MARGIN = 1, FUN = function(z) any(z == 1))
   return(ret)
 }
 
