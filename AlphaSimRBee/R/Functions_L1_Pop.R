@@ -235,33 +235,29 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 }
 
 #' @rdname createWorkers
-#' @title Creates workers of the colony
+#' @title Creates workers from the colony
 #'
-#' @description Creates the specified number of workers in the colony
-#'       \by mating the current queen and the fathers in the \code{colony@queen@misc$fathers} slot.
+#' @description Creates the specified number of workers from the colony
+#'   by mating the colony queen and the fathers. If csd locus is defined, it
+#'   takes it into account and any csd homozygotes are removed and counted as
+#'   homozygous drones.
 #'
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
-#' @param nInd Integer, number of workers to create
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, number of workers to create
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return list with two nodes named \code{workers} (a \code{\link{Pop-class}})
+#'   and \code{nHomDrones} (an integer)
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop, simParam=SP)
-#'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#'
-#' #Creat workers
-#' colony1@workers <- createWorkers(colony1, nInd = 1000)
-#'
-#' @return AlphaSim population object of created workers.
-#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' createWorkers(colony, nInd = 10)
+#' nCaste(colony)
 #' @export
 createWorkers <- function(colony, nInd, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -276,10 +272,20 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   if (!isQueenMated(colony)) {
     stop("Unmated queen!")
   }
-  workerPop <- randCross2(females = colony@queen,
-                          males = colony@queen@misc$fathers,
-                          nCrosses = nInd)
-  return(workerPop)
+  ret <- vector(mode = "list", length = 2)
+  names(ret) <- c("workers", "nHomDrones")
+  workers <- randCross2(females = colony@queen,
+                        males = colony@queen@misc$fathers,
+                        nCrosses = nInd)
+  if (is.null(simParamBee$csdChr)) {
+    ret$workers <- workers
+    ret$nHomDrones <- 0
+  } else {
+    sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
+    ret$workers <- workers[sel]
+    ret$nHomDrones <- nInd - sum(sel)
+  }
+  return(ret)
 }
 
 #' @rdname createDrones
