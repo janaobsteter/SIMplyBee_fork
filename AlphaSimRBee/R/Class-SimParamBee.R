@@ -79,7 +79,7 @@ SimParamBee <- R6Class(
         # csd chromosome
         if (self$nChr < csdChr) {
           self$csdChr <- self$nChr
-          warning(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
+          message(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
         } else {
           self$csdChr <- csdChr
         }
