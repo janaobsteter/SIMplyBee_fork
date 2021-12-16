@@ -3,8 +3,24 @@
 #' @description
 #' Container for global honeybee simulation parameters. Saving this object
 #' as SP will allow it to be accessed by function defaults. SimParamBee inherits
-#' from \code{\link{SimParam}} so all of \code{\link{SimParam}} slots and
-#' methods are available. Some might have updated behaviour as documented below.
+#' from \code{\link{SimParam}} so all of its slots and functions are available
+#' in addition to SimParamBee-specific slots and functions. Some
+#' \code{\link{SimParam}} functions could have upgraded behaviour as documented
+#' below in line with honeybee biology.
+#'
+#' @details
+#' The documentation below is showing specific details and here we only
+#' highlight key points for honeybee biology.
+#'
+#' The csd locus is the complementary sex determining locus in honeybees. This
+#' locus works on top of haplo-diploidy. Heterozygous individuals become workers
+#' or queens, while homozygous individuals become unviable "drones". Hence
+#' genotypic status at the locus is critical for honeybee simulations. Here the
+#' csd locus is implemented as a series of bi-allelic SNP (haplotype) that don't
+#' recombine. In this way we can get a tunable number of csd alleles
+#' \code{nCsdHaplo}. Individuals that are homozygous at the csd locus are not
+#' viable and removed from simulation. How many are removed is recorded in each
+#' \code{\link{Colony-class}}.
 #'
 #' @export
 SimParamBee <- R6Class(
