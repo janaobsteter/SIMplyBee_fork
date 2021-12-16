@@ -749,7 +749,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @export
 getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
-    simParamBee = get("SP", envir = .GlobalEnv)
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(simParamBee$csdChr)) {
     stop("The csd locus has not been set!")
@@ -822,7 +822,7 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @export
 getCsdGeno <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
-    simParamBee = get("SP",envir=.GlobalEnv)
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(simParamBee$csdChr)) {
     stop("The csd locus has not been set!")
@@ -856,18 +856,13 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' apiary <- c(colony1, colony2)
 #'
 #' (tmp <- getCsdGeno(getQueen(colony1)))
 #' isGenoHeterozygous(tmp)
@@ -882,7 +877,45 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #'
 #' @export
 isGenoHeterozygous <- function(x) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
   ret <- apply(X = x, MARGIN = 1, FUN = function(z) any(z == 1))
+  return(ret)
+}
+
+#' @rdname isCsdHeterozygous
+#' @title Test if individuals are heterozygous at the csd locus
+#'
+#' @description Test if individuals of a population are heterozygous at the csd
+#'   locus
+#'
+#' @param pop \code{\link{Pop-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#'
+#' isCsdHeterozygous(getQueen(colony1))
+#'
+#' isCsdHeterozygous(getVirginQueens(colony1))
+#'
+#' isCsdHeterozygous(getWorkers(colony1))
+#'
+#' @return logical
+#'
+#' @export
+isCsdHeterozygous <- function(pop, simParamBee = NULL) {
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
+  }
+  geno <- getCsdGeno(x = pop, simParamBee = simParamBee)
+  ret <- isGenoHeterozygous(x = geno)
   return(ret)
 }
 
