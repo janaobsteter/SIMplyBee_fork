@@ -36,7 +36,12 @@ nColonies <- function(colonies) {
 #' @description Returns the number of individuals of a caste in a colony
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers",
+#'   "drones", or "all"
+#'
+#' @return integer when \code{caste != "all"} and list when
+#'   \code{caste == "all"} with nodes named by caste; integer or list are named
+#'   by colony id when \code{x} is \code{\link{Colonies-class}};
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -55,6 +60,7 @@ nColonies <- function(colonies) {
 #' nCaste(colony1, caste = "virgin_queens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
+#' nCaste(colony1, caste = "all")
 #'
 #' apiary <- c(colony1, colony2)
 #' nCaste(apiary, caste = "queen")
@@ -62,23 +68,33 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "virgin_queens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' nCaste(apiary, caste = "all")
 #'
 #' @export
 nCaste <- function(x, caste) {
   if (isColony(x)) {
-    if (caste == "fathers") {
-      if (is.null(x@queen)) {
-        ret <- 0
-      } else {
-        ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
-      }
+    if (caste == "all") {
+     ret <- vector(mode = "list", length = 6)
+     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones", "homDrones")
+     for (caste in names(ret)) {
+       ret[[caste]] <- nCaste(x = x, caste = caste)
+     }
     } else {
-      ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+      if (caste == "fathers") {
+        if (is.null(x@queen)) {
+          ret <- 0
+        } else {
+          ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
+        }
+      } else if (caste == "homDrones") {
+        ret <- x@nHomDrones
+      } else {
+        ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+      }
     }
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = nCaste, caste = caste)
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
     names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or Colonies class object!")
@@ -253,6 +269,42 @@ nWorkers <- function(x) {
 nDrones <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "drones")
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname nHomDrones
+#' @title Number of homozygous drones in a colony
+#'
+#' @description Returns the number of homozygous drones in a colony (these are
+#'   non viable individuals and only their number is stored).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addDrones(colony1, nInd = 100)
+#' colony2 <- addDrones(colony2, nInd = 200)
+#' nHomDrones(colony1)
+#' nHomDrones(colony2)
+#'
+#' apiary <- c(colony1, colony2)
+#' nHomDrones(apiary)
+#'
+#' @export
+nHomDrones <- function(x) {
+  if (isColony(x) | isColonies(x)) {
+    ret <- nCaste(x, caste = "homDrones")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -680,8 +732,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     split = NULL, # TODO revise and citation
                                     nThreads = NULL) {
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
-  #       because runMacs2 works only with simple splits, while honenybee demography is more
-  #       "involved"; see also https://github.com/HighlanderLab/AlphaSimRBee/issues/45
+  #       because runMacs2 works only with simple splits, while honeybee demography is more
+  #       "involved"; see also see also https://github.com/HighlanderLab/AlphaSimRBee/issues/45
   founderGenomes <- runMacs2(nInd = nInd,
                              nChr = nChr,
                              segSites = nSegSites,
@@ -701,13 +753,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @rdname getCsdHaplo
 #' @title Get haplotypes from the csd locus
 #'
-#' @description Get haplotypes from the csd locus. The csd locus is the
-#'   complementary sex determining locus in honeybees. Heterozygous individuals
-#'   become workers or queens, while homozygous individuals become unviable
-#'   "drones". Hence knowledge of haplotypes at the locus is critical for
-#'   honeybee simulations. The csd locus spans a number of non-recombining loci
-#'   as defined in \code{\link{SimParamBee}} and this function gives haplotypes
-#'   at these loci.
+#' @description Get haplotypes from the csd locus. See \code{\link{SimParamBee}}
+#'   for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -777,13 +824,8 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @rdname getCsdGeno
 #' @title Get genotypes from the csd locus
 #'
-#' @description Get genotypes from the csd locus. The csd locus is the
-#'   complementary sex determining locus in honeybees. Heterozygous individuals
-#'   become workers or queens, while homozygous individuals become unviable
-#'   "drones". Hence knowledge of haplotypes at the locus is critical for
-#'   honeybee simulations. The csd locus spans a number of non-recombining loci
-#'   as defined in \code{\link{SimParamBee}} and this function gives genotypes
-#'   at these loci.
+#' @description Get genotypes from the csd locus. See \code{\link{SimParamBee}}
+#'   for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -850,8 +892,7 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' @rdname isGenoHeterozygous
 #' @title Test if a multilocus genotype is heterozygous
 #'
-#' @description Test if a multilocus genotype is heterozygous - to be used in
-#'   combination with \code{\link{getCsdGeno}}
+#' @description Test if a multilocus genotype is heterozygous
 #'
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
@@ -888,9 +929,13 @@ isGenoHeterozygous <- function(x) {
 #' @title Test if individuals are heterozygous at the csd locus
 #'
 #' @description Test if individuals of a population are heterozygous at the csd
-#'   locus
+#'   locus. See \code{\link{SimParamBee}} for more information about the csd
+#'   locus.
 #'
 #' @param pop \code{\link{Pop-class}}
+#'
+#' @details We could expand \code{isCsdHeterozygous} to work also with
+#'   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
@@ -915,7 +960,72 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
     stop("Argument pop must be a Pop class object!")
   }
   geno <- getCsdGeno(x = pop, simParamBee = simParamBee)
+  # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
+  # to test than isCsdHeterozygous()
   ret <- isGenoHeterozygous(x = geno)
+  return(ret)
+}
+
+#' @rdname nCsdAlleles
+#' @title Report the number of distinct csd alleles
+#'
+#' @description Report the number of distinct csd alleles in input. See
+#'   \code{\link{SimParamBee}} for more information about the csd locus.
+#'
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return integer representing the number of distinct csd alleles when \code{x}
+#'   is \code{\link{Pop-class}} (or ), list of integer
+#'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
+#'   list of a list of integer when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}; the integer rep
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 3)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' apiary <- c(colony1, colony2)
+#'
+#' nCsdAlleles(getQueen(colony1))
+#' nCsdAlleles(colony1)
+#' nCsdAlleles(apiary)
+#'
+#' nCsdAlleles(colony1, collapse = TRUE)
+#' nCsdAlleles(apiary, collapse = TRUE)
+#'
+#' @export
+nCsdAlleles <- function(x, simParamBee = NULL) {
+  if (is.null(x)) {
+    ret <- NA
+  } else if (isPop(x)) {
+    haplo <- getCsdHaplo(x = x, simParamBee = simParamBee)
+    haplo <- haplo[!duplicated(x = haplo), ]
+    ret <- nrow(haplo)
+  } else if (isColony(x)) {
+    ret <- vector(mode = "list", length = 5)
+    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    ret$queen         <- nCsdAlleles(x = getQueen(x),        simParamBee = simParamBee)
+    ret$fathers       <- nCsdAlleles(x = getFathers(x),      simParamBee = simParamBee)
+    ret$virgin_queens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
+    ret$workers       <- nCsdAlleles(x = getWorkers(x),      simParamBee = simParamBee)
+    ret$drones        <- nCsdAlleles(x = getDrones(x),       simParamBee = simParamBee)
+  } else if (isColonies(x)) {
+    ret <- lapply(X = x@colonies, FUN = nCsdAlleles, simParamBee = simParamBee)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
   return(ret)
 }
 

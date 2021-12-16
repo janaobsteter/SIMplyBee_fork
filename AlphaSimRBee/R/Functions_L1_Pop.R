@@ -7,13 +7,15 @@
 #' colony.
 #'
 #' @param x Colony or Colonies
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all individuals
-#' are accessed
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#'   "drones"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#'   individuals are accessed
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
-#' @seealso \code{\link{getQueen}}, \code{\link{getFathers}}, \code{\link{getVirginQueens}},
-#' \code{\link{getWorkers}}, and \code{\link{getDrones}}
+#' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
+#'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
+#'   \code{\link{getDrones}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -24,9 +26,9 @@
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
 #'
 #' getCaste(colony1, caste = "queen")
 #' getQueen(colony1)
@@ -46,16 +48,16 @@
 #' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
 #' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
 #' getVirginQueens(colony1)
-#' getVirginQueens(colony2)@id
-#' getVirginQueens(colony2, nInd = 2)@id
-#' getVirginQueens(colony2, nInd = 2)@id
+#' getVirginQueens(colony1)@id
+#' getVirginQueens(colony1, nInd = 2)@id
+#' getVirginQueens(colony1, nInd = 2)@id
 #'
 #' getCaste(colony1, caste = "workers")
 #' getCaste(colony1, caste = "workers")@id
 #' getCaste(colony1, caste = "workers", nInd = 2)@id
 #' getCaste(colony1, caste = "workers", nInd = 2)@id
 #' getWorkers(colony1)
-#' getWorkers(colony2)@id
+#' getWorkers(colony1)@id
 #' getWorkers(colony1, nInd = 2)@id
 #' getWorkers(colony1, nInd = 2)@id
 #'
@@ -67,6 +69,9 @@
 #' getDrones(colony1)@id
 #' getDrones(colony1, nInd = 2)@id
 #' getDrones(colony1, nInd = 2)@id
+#'
+#' getCaste(colony2, caste = "drones")
+#' getDrones(colony2)
 #'
 #' apiary <- c(colony1, colony2)
 #' getCaste(apiary, caste = "queen")
@@ -84,7 +89,8 @@
 #' getVirginQueens(apiary)
 #' getVirginQueens(apiary)[[1]]@id
 #' getVirginQueens(apiary)[[2]]@id
-#' getVirginQueens(apiary, nInd = 2)
+#' getVirginQueens(apiary, nInd = 1)
+#' getVirginQueens(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
 #'
 #' getCaste(apiary, caste = "workers")
 #' getWorkers(apiary)
@@ -95,11 +101,12 @@
 #' getCaste(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
-#' getDrones(apiary)[[2]]@id
-#' getDrones(apiary, nInd = 2)
+#' getDrones(apiary)[[2]]@id # TODO: can we do anything here - just give what is available?
+#' getDrones(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
 #'
-#' @return Pop when \code{x} is Colony and list of Pop when \code{x} is Colonies,
-#' named by colony id when \code{x} is Colonies
+#' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
+#'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
+#'   is Colonies
 #'
 #' @export
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {
@@ -142,7 +149,7 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @describeIn getCaste Access the queen
 #' @export
 getQueen <- function(x) {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -153,7 +160,7 @@ getQueen <- function(x) {
 #' @describeIn getCaste Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -164,7 +171,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCaste Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -175,7 +182,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCaste Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -186,7 +193,7 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCaste Access drones
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -256,7 +263,7 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @return AlphaSim population object of created workers.
 #'
 #' @export
-createWorkers <- function(colony, nInd, simParamBee = NULL){
+createWorkers <- function(colony, nInd, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -304,7 +311,7 @@ createWorkers <- function(colony, nInd, simParamBee = NULL){
 #' @return AlphaSim population object of created drones
 #'
 #' @export
-createDrones <- function(colony, nInd){
+createDrones <- function(colony, nInd) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -344,7 +351,7 @@ createDrones <- function(colony, nInd){
 #' @return AlphaSim population object of created virgin queens
 #'
 #' @export
-createVirginQueens <- function(colony, nInd){
+createVirginQueens <- function(colony, nInd) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -585,7 +592,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @describeIn pullCaste Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -596,7 +603,7 @@ pullQueen <- function(x) {
 #' @describeIn pullCaste Pull virgin queens from a colony
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -607,7 +614,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn pullCaste Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -618,7 +625,7 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn pullCaste Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)){
+  if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
