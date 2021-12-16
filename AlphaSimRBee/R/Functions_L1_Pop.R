@@ -219,7 +219,6 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @return AlphaSim population object of created drones.
 #'
 #' @export
-
 createFounderDrones <- function(pop, nDronesPerQueen = 100) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
@@ -257,8 +256,10 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @return AlphaSim population object of created workers.
 #'
 #' @export
-
-createWorkers <- function(colony, nInd){
+createWorkers <- function(colony, nInd, simParamBee = NULL){
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
