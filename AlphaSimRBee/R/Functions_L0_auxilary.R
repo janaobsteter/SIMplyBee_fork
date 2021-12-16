@@ -60,6 +60,7 @@ nColonies <- function(colonies) {
 #' nCaste(colony1, caste = "virgin_queens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
+#' nCaste(colony1, caste = "homDrones")
 #' nCaste(colony1, caste = "all")
 #'
 #' apiary <- c(colony1, colony2)
@@ -68,10 +69,11 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "virgin_queens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
+#' nCaste(apiary, caste = "homDrones")
 #' nCaste(apiary, caste = "all")
 #'
 #' @export
-nCaste <- function(x, caste) {
+nCaste <- function(x, caste = "all") {
   if (isColony(x)) {
     if (caste == "all") {
      ret <- vector(mode = "list", length = 6)
