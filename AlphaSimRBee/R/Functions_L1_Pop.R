@@ -4,7 +4,7 @@
 #' @title Access individuals of a caste
 #'
 #' @description Access individuals of a caste. These individuals stay in the
-#' colony.
+#'   colony (compared to \code{\link{pullCaste}}).
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -201,39 +201,6 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @rdname createFounderDrones
-#' @title Creates drones from base population
-#'
-#' @description Creates population of drones from base population.
-#'       \Drones are created as double haploids. Founder drones are used when crating colonies to be used as fathers.
-#'
-#' @param pop AlphaSimRBee Colony object from the \code{createColony(...)}
-#' @param nDronesPerQueen Integer, number of drones to create
-#'
-#' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' founderDrones <- createFounderDrones(pop[2:110], nDronesPerQueen = 100)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#'
-#' @return AlphaSim population object of created drones.
-#'
-#' @export
-createFounderDrones <- function(pop, nDronesPerQueen = 100) {
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
-  }
-  drones <- makeDH(pop, nDH = nDronesPerQueen)
-  return(drones)
-}
-
 #' @rdname createWorkers
 #' @title Creates workers from the colony
 #'
@@ -257,7 +224,7 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' createWorkers(colony, nInd = 10)
-#' nCaste(colony)
+#'
 #' @export
 createWorkers <- function(colony, nInd, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -279,42 +246,83 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
                         nCrosses = nInd)
   if (is.null(simParamBee$csdChr)) {
     ret$workers <- workers
-    ret$nHomDrones <- 0
+    ret$nHomDrones <- 0L
   } else {
     sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
     ret$workers <- workers[sel]
-    ret$nHomDrones <- nInd - sum(sel)
+    ret$nHomDrones <- as.integer(nInd - sum(sel))
   }
   return(ret)
 }
 
-#' @rdname createDrones
-#' @title Creates drones of the colony as double haploids
+#' @describeIn Create virgin queens
+#' @export
+# TODO: explore options for implementing difference between workers' and queens'
+#       patrilines - see https://github.com/HighlanderLab/AlphaSimRBee/issues/78
+createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  names(ret) <- c("virgin_queens", "nHomDrones")
+  return(ret)
+}
+
+#' @rdname createFounderDrones
+#' @title Creates drones from a founding (base) population
 #'
-#' @description Creates the specified number of drones in the colony
-#'       \as double haploids from the current queen \code{colony@queen}.
+#' @description Creates drones from a founding (base) population by doubling
+#'   genomes of a founding individual - mimicking queen laying drones. Such
+#'   drones are usually used as fathers when creating colonies.
 #'
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
-#' @param nInd Integer, the umber of drones to create.
+#' @param pop \code{\link{Pop-class}}
+#' @param nDronesPerQueen integer, number of drones to create per founding
+#'   individual (a substitute for a queen).
+#'
+#' @return \code{\link{Pop-class}} with drones.
 #'
 #' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' createWorkers(colony, nInd = 10)
+#' createDrones(colony, nInd = 2)
 #'
-#' #Create population
-#' pop <- newPop(founderPop)
+#' @export
+createFounderDrones <- function(pop, nDronesPerQueen = 100) {
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
+  }
+  drones <- makeDH(pop, nDH = nDronesPerQueen)
+  return(drones)
+}
+
+#' @rdname createDrones
+#' @title Creates drones from the colony as doubled-haploids
 #'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+#' @description Creates the specified number of drones from the colony
+#'   as doubled-haploids.
 #'
-#' #Create drones
-#' colony1@drones <- createDrones(colony1, nInd = 200)
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, the number of drones to create
 #'
-#' @return AlphaSim population object of created drones
+#' @return \code{\link{Pop-class}} with drones.
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' createWorkers(colony, nInd = 10)
+#' createDrones(colony, nInd = 2)
 #'
 #' @export
 createDrones <- function(colony, nInd) {
@@ -326,43 +334,6 @@ createDrones <- function(colony, nInd) {
   }
   drones <- makeDH(pop = colony@queen, nDH = nInd)
   return(drones)
-}
-
-#' @rdname createVirginQueens
-#' @title Creates virgin queen
-#'
-#' @description Creates the specified number of virgin queens in the colony
-#'        \by mating the current queen and the fathers in the \code{colony@queen@misc$fathers} slot.
-#'
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
-#' @param nInd Integer, the number of virgin queens to create.
-#'
-#' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#'
-#' #Crate virgin queens
-#' colony1@virgin_queens <- createVirginQueens(colony1, nInd = 17)
-#'
-#' @return AlphaSim population object of created virgin queens
-#'
-#' @export
-createVirginQueens <- function(colony, nInd) {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  virginQueens <- createWorkers(colony, nInd = nInd)
-  return(virginQueens)
 }
 
 #' @rdname createDCA
@@ -493,16 +464,16 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' @title Pull individuals from a caste in a colony
 #'
 #' @description Pull individuals from a caste in a colony. These individuals are
-#' removed from the colony.
+#' removed from the colony (compared to \code{\link{getCaste}}).
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", virgin_queens", "workers", or "drones"
-#' @param nInd numeric, number of individuals to pull, if \code{NULL} all individuals
-#' are pulled
+#' @param nInd numeric, number of individuals to pull, if \code{NULL} all
+#'   individuals are pulled
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
-#' \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
+#'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

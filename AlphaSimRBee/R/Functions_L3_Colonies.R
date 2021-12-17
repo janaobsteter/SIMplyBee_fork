@@ -44,7 +44,11 @@ createColonies <- function(..., n = NULL) {
   return(output)
 }
 
-createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPerQueen = 100) {
+createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL,
+                            nDronesPerQueen = 100, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!is.null(n)) {
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
   } else if (!is.null(pop)) {
@@ -54,7 +58,8 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
     if (is.null(nAvgFathers)) {
       virginQueens <- selectInd(pop, nInd = n, use = "rand")
       for (colony in 1:n) {
-        ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
+        ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
+                                               simParamBee = simParamBee)
       }
     } else {
       tmp <- pullInd(pop = pop, nInd = n)
@@ -63,7 +68,8 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
       fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = n, avgGroupSize = nAvgFathers)
       for (colony in 1:n) {
         ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                               fathers = fatherPackages[[colony]])
+                                               fathers = fatherPackages[[colony]],
+                                               simParamBee = simParamBee)
       }
     }
   } else {
@@ -78,8 +84,8 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
 #' @description Adds a colony to a set of colonies, for example, to add a new
 #' colony to an apiary.
 #'
-#' @param colonies Colonies, set of colonies that will be expanded
-#' @param colony Colony, colony that will be added
+#' @param colonies \code{\link{Colonies-class}}, colonies that will be expanded
+#' @param colony \code{\link{Colony-class}}, colony that will be added
 #'
 #' @return Expanded \code{\link{Colonies-class}} object
 #'
@@ -101,8 +107,6 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL, nDronesPer
 #' # ... an alternative
 #' apiaryNew <- c(apiary, colony3)
 #' getId(apiaryNew)
-#'
-#' @return Expanded Colonies object
 #'
 #' @export
 addColonyToColonies <- function(colonies, colony) {
@@ -312,10 +316,10 @@ removeColonies <- function(colonies, ID) {
 #' this function takes a population, pulls out queens, creates drones from the remainder, and then
 #' mates the queens to initiate the colonies. Other caste members have to be added later!
 #'
-#' @param pop
-#' @param nColonies
-#' @param nAvgFathers
-#' @param nDronesPerQueen
+#' @param pop TODO
+#' @param nColonies TODO
+#' @param nAvgFathers TODO
+#' @param nDronesPerQueen TODO
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -332,7 +336,11 @@ removeColonies <- function(colonies, ID) {
 #' @return Colonies
 #'
 #' @export
-createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesPerQueen = 100) {
+createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,
+                                   nDronesPerQueen = 100, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
@@ -340,7 +348,8 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesP
   if (is.null(nAvgFathers)) {
     virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
     for (colony in 1:nColonies) {
-      ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony])
+      ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
+                                             simParamBee = simParamBee)
     }
   } else {
     tmp <- pullInd(pop = pop, nInd = nColonies)
@@ -349,7 +358,8 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesP
     fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
     for (colony in 1:nColonies) {
       ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                             fathers = fatherPackages[[colony]])
+                                             fathers = fatherPackages[[colony]],
+                                             simParamBee = simParamBee)
     }
   }
   return(ret)
@@ -386,12 +396,18 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,  nDronesP
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
-buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1) {
+buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
+                            new = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
                                                  nWorkers = nWorkers,
-                                                 nDrones = nDrones)
+                                                 nDrones = nDrones,
+                                                 new = new,
+                                                 simParamBee = simParamBee)
   }
   return(colonies)
 }
@@ -428,12 +444,16 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1) {
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
-replaceWorkersColonies <- function(colonies, p = 1) {
+replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     if (!is.null(colonies[[colony]]@workers)) {
       colonies@colonies[[colony]] <- replaceWorkers(colony = colonies[[colony]],
-                                                    p = p)
+                                                    p = p,
+                                                    simParamBee = simParamBee)
     }
   }
   return(colonies)
@@ -533,6 +553,64 @@ reQueenColonies <- function(colonies, queens) {
   return(colonies)
 }
 
+#' @rdname crossColonies
+#' @title TODO
+#'
+#' @description:  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
+#' \creates workers, drones and a new virgin queen and write them to the corresponding
+#' \slots of the colonies object.
+#' #IF the colonies are queen-less - select a queen from the virgin queen - if not, mate the current queen!!!
+#'
+#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param crossVirginQueen  TODO
+#' @param fathers TODO
+#' @param pWorkers TODO
+#' @param pDrones TODO
+#' @param DCA TODO
+#' @param nAvgFathers TODO
+#'
+#' @examples
+#' #Create founder haplotypes
+#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
+#'
+#' #Set simulation parameters
+#' SP <- SimParamBee$new(founderGenomes)
+#'
+#' #Create population
+#' base <- newPop(founderGenomes)
+#'
+#' #Create 10 virgin queen colonies
+#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'
+#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
+#'
+#'  TODO FINISH
+#'
+#' @return An updated AlphaSimRBee Colonies object
+#'
+#' @export
+crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  nCol <- nColonies(colonies)
+  if (nCol == 0) {
+    ret <- createColonies()
+  } else {
+    ret <- createColonies(n = nCol)
+    nFathers <- rpois(n = nCol, lambda = nAvgFathers)
+    fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol,
+                                           avgGroupSize = nAvgFathers)
+    for (colony in 1:nCol) {
+      ret@colonies[[colony]] <- crossColony(colonies[[colony]],
+                                            fathers = fatherGroups[[colony]],
+                                            simParamBee = simParamBee)
+    }
+  }
+  return(ret)
+}
+
 #' @rdname collapseColonies
 #' @title TODO
 #'
@@ -577,6 +655,63 @@ collapseColonies <- function(colonies, ID) {
   return(ret)
 }
 
+#' @rdname swarmColonies
+#' @title TODO
+#'
+#' @description: Replicates the swarming of the colonies - the process in which
+#' a part of the workers leave with the old queen and creates a new colony (the swarm),
+#' while a part of the workers stay with a new queen and the old drones.
+#' The swarming colony contains the old mated queen, a percentage (pSwarm)
+#' of the original colony's workers, no drones and a virgin queen is created from the worker population.
+#' A new location must be given to the new swarm colony.
+#' The colony that stays contains the remaining workers and drones.
+#' A virgin queen is selected from the workers and mated if fathers are present.
+#'
+#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param crossVirginQueen TODO
+#' @param fathers TODO
+#' @param pWorkers TODO
+#' @param pDrones TODO
+#'
+#' @examples
+#' #Create founder haplotypes
+#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#'
+#' #Set simulation parameters
+#' SP <- SimParamBee$new(founderGenomes)
+#'
+#' #Create population
+#' base <- newPop(founderGenomes)
+#'
+#' #Create 10 virgin queen colonies
+#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'
+#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
+#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
+#'
+#' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
+#'
+#' @export
+swarmColonies <- function(colonies, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  nCol <- nColonies(colonies)
+  if (nCol == 0) {
+    ret <- list(swarms = createColonies(n = 0),
+                remnants = createColonies(n = 0))
+  } else {
+    ret <- list(swarms = createColonies(n = nCol),
+                remnants = createColonies(n = nCol))
+    for (colony in 1:nCol) {
+      tmp <- swarmColony(colonies[[colony]], simParamBee = simParamBee)
+      ret$swarms@colonies[[colony]] <- tmp$swarm
+      ret$remnants@colonies[[colony]] <- tmp$remnant
+    }
+  }
+  return(ret)
+}
+
 #' @rdname supersedeColonies
 #' @title TODO
 #'
@@ -585,10 +720,10 @@ collapseColonies <- function(colonies, ID) {
 #' in the colonies. If no fathers are present, mating of the virgin queen does not occur.
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen
-#' @param fathers
-#' @param pWorkers
-#' @param pDrones
+#' @param crossVirginQueen TODO
+#' @param fathers TODO
+#' @param pWorkers TODO
+#' @param pDrones TODO
 #'
 #' @examples
 #' #Create founder haplotypes
@@ -618,68 +753,20 @@ collapseColonies <- function(colonies, ID) {
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
-supersedeColonies <- function(colonies) {
+supersedeColonies <- function(colonies, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     colonies <- createColonies()
   } else {
     for (colony in 1:nCol) {
-      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]])
+      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]],
+                                                     simParamBee = simParamBee)
     }
   }
   return(colonies)
-}
-
-#' @rdname swarmColonies
-#' @title TODO
-#'
-#' @description: Replicates the swarming of the colonies - the process in which
-#' a part of the workers leave with the old queen and creates a new colony (the swarm),
-#' while a part of the workers stay with a new queen and the old drones.
-#' The swarming colony contains the old mated queen, a percentage (pSwarm)
-#' of the original colony's workers, no drones and a virgin queen is created from the worker population.
-#' A new location must be given to the new swarm colony.
-#' The colony that stays contains the remaining workers and drones.
-#' A virgin queen is selected from the workers and mated if fathers are present.
-#'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen
-#' @param fathers
-#' @param pWorkers
-#' @param pDrones
-#'
-#' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderGenomes)
-#'
-#' #Create population
-#' base <- newPop(founderGenomes)
-#'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
-#'
-#' @export
-swarmColonies <- function(colonies) {
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    ret <- list(swarms = createColonies(n = 0), remnants = createColonies(n = 0))
-  } else {
-    ret <- list(swarms = createColonies(n = nCol), remnants = createColonies(n = nCol))
-    for (colony in 1:nCol) {
-      tmp <- swarmColony(colonies[[colony]])
-      ret$swarms@colonies[[colony]] <- tmp$swarm
-      ret$remnants@colonies[[colony]] <- tmp$remnant
-    }
-  }
-  return(ret)
 }
 
 #' @rdname splitColonies
@@ -694,10 +781,10 @@ swarmColonies <- function(colonies) {
 #'
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen
-#' @param fathers
-#' @param pWorkers
-#' @param pDrones
+#' @param crossVirginQueen TODO
+#' @param fathers TODO
+#' @param pWorkers TODO
+#' @param pDrones TODO
 #'
 #' @examples
 #' #Create founder haplotypes
@@ -720,69 +807,21 @@ swarmColonies <- function(colonies) {
 #' @return Two AlphaSim population objects of the split colonies and the remaining colonies
 #'
 #' @export
-splitColonies <- function(colonies) {
+splitColonies <- function(colonies, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(splits = createColonies(n = 0), remnants = createColonies(n = 0))
+    ret <- list(splits = createColonies(n = 0),?
+                  remnants = createColonies(n = 0))
   } else {
-    ret <- list(splits = createColonies(n = nCol), remnants = createColonies(n = nCol))
+    ret <- list(splits = createColonies(n = nCol),
+                remnants = createColonies(n = nCol))
     for (colony in 1:nCol) {
-      tmp <- splitColony(colonies[[colony]])
+      tmp <- splitColony(colonies[[colony]], simParamBee = simParamBee)
       ret$splits@colonies[[colony]] <- tmp$split
       ret$remnants@colonies[[colony]] <- tmp$remnant
-    }
-  }
-  return(ret)
-}
-
-#' @rdname crossColonies
-#' @title TODO
-#'
-#' @description:  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
-#' \creates workers, drones and a new virgin queen and write them to the corresponding
-#' \slots of the colonies object.
-#' #IF the colonies are queen-less - select a queen from the virgin queen - if not, mate the current queen!!!
-#'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen
-#' @param fathers
-#' @param pWorkers
-#' @param pDrones
-#' @param DCA
-#' @param nAvgFathers
-#'
-#' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
-#'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderGenomes)
-#'
-#' #Create population
-#' base <- newPop(founderGenomes)
-#'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#'  TODO FINISH
-#'
-#' @return An updated AlphaSimRBee Colonies object
-#'
-#' @export
-crossColonies <- function(colonies, DCA, nAvgFathers) {
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    ret <- createColonies()
-  } else {
-    ret <- createColonies(n = nCol)
-    nFathers <- rpois(n = nCol, lambda = nAvgFathers)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol, avgGroupSize = nAvgFathers)
-    for (colony in 1:nCol) {
-      ret@colonies[[colony]] <- crossColony(colonies[[colony]],
-                                            fathers = fatherGroups[[colony]])
     }
   }
   return(ret)
@@ -794,8 +833,8 @@ crossColonies <- function(colonies, DCA, nAvgFathers) {
 #' @description
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param FUN
-#' @param ...
+#' @param FUN TODO
+#' @param ... TODO
 #'
 #' @examples
 #' TODO

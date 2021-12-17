@@ -37,11 +37,17 @@ nColonies <- function(colonies) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers",
-#'   "drones", or "all"
+#'   "drones", "homDrones", or "all"
 #'
-#' @return integer when \code{caste != "all"} and list when
-#'   \code{caste == "all"} with nodes named by caste; integer or list are named
-#'   by colony id when \code{x} is \code{\link{Colonies-class}};
+#' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
+#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
+#'   \code{\link{nDrones}}, and \code{\link{nHomDrones}}
+#'
+#' @return when \code{x} is \code{\link{Colony-class}} return is integer for
+#'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
+#'   by caste; when \code{x} is \code{\link{Colonies-class}} return is named
+#'   integer for \code{caste != "all"} or named list of lists for
+#'   \code{caste == "all"}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -295,8 +301,10 @@ nDrones <- function(x) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony1 <- addDrones(colony1, nInd = 100)
-#' colony2 <- addDrones(colony2, nInd = 200)
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony2 <- addDrones(colony2, nInd = 20)
 #' nHomDrones(colony1)
 #' nHomDrones(colony2)
 #'

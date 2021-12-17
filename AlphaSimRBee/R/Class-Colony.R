@@ -9,7 +9,7 @@ isPop = function(x) {
 # Class Colony ----
 
 #' @rdname Colony
-#' @method createColony
+#' @method createColony TODO
 #' @title Creates a honeybee colony
 #' @usage \method{createColony}(id, location, queen, drones, workers, virgin_queen, fathers, pheno, last_event)
 #' @description List. Creates a honeybee colony as a list with the following elements:

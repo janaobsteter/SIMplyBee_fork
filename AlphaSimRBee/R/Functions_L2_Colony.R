@@ -34,18 +34,17 @@
 #'
 #' # Create two colonies
 #' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
+#' colony1
+#'
 #' colony2 <- createColony(virgin_queens = basePop[16])
+#' colony2
 #'
 #' @return Colony
 #'
 #' @export
-createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL,
-                         workers = NULL, virgin_queens = NULL, fathers = NULL,
-                         pheno = NULL, swarm = FALSE, split = FALSE, supersedure = FALSE,
-                         collapse = FALSE, # rob = FALSE,
-                         production = FALSE,
-                         last_event = NULL, yearOfBirth = NULL, misc = NULL,
-                         simParamBee = NULL) {
+createColony <- function(id = NULL, location = NULL,
+                         queen = NULL, yearOfBirth = NULL, fathers = NULL,
+                         virgin_queens = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -56,161 +55,139 @@ createColony <- function(id = NULL, location = NULL, queen = NULL, drones = NULL
       id <- NA
     }
   }
-  if (!is.null(queen) & !is.null(fathers)) {
-    virgin_queens <- randCross2(females = queen,
-                                males = fathers,
-                                nCrosses = 1)
-  }
   if (!is.null(queen)) {
-    queen@misc <- list(fathers = fathers, yearOfBirth = yearOfBirth)
+    queen@misc <- list(yearOfBirth = yearOfBirth, fathers = fathers)
   }
-  output <- new("Colony",
+  colony <- new("Colony",
                 id = as.character(id),
                 location = location,
-                queen = queen,
-                drones = drones,
-                workers = workers,
-                virgin_queens = virgin_queens,
-                pheno = matrix(),
-                # ncol=simParamBee@nTraits),
-                swarm = swarm,
-                split = split,
-                supersedure = supersedure,
-                collapse = collapse,
-                # rob=rob,
-                production = production,
-                last_event = "new_colony",
-                misc = list()
-  )
-  return(output)
+                queen = queen)
+  if (!is.null(queen) & !is.null(fathers)) {
+    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+    colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+  }
+  return(colony)
 }
 
 #' @rdname addWorkers
-#' @title Add workers to the colony
+#' @title Add (raise) workers to the colony
 #'
-#' @description Create workers and store them in the \code{colony@workers} slot. If there is
-#' already some workers present in the hive, the function will not overwrite them but instead
-#' combine the newly created and the existing workers. The function returns the updated colony.
+#' @description Adds (raises) the specified number of workers in the colony by
+#'   crossing the current queen and the fathers. If there are already some
+#'   workers present, new and present workers are combined.
 #'
-#' @param colony AlphaSimRBee Colony object from the \code{createColony(...)} call
-#' @param nInd Integer, number of workers to add.
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, number of workers to add
+#' @param new logical, should the workers be added a fresh (ignoring current
+#'   workers)
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1 <- addWorkers(colony1, nInd = 2000)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' addWorkers(colony, nInd = 20)
 #'
 #' @export
-#'
-addWorkers <- function(colony, nInd = NULL, ...) {
+addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.function(nInd)) {
-    nInd <- nInd(colony, ...)
+    nInd <- nInd(colony)
   }
-  newWorkers <- createWorkers(colony, nInd)
-  if (!is.null(colony@workers)) {
-    colony@workers <- c(colony@workers, newWorkers$workers)
-    colony@nHomDrones <- colony@nHomDrones + newWorkers$nHomDrones
-  } else {
-    colony@workers <- newWorkers$workers
-    colony@nHomDrones <- newWorkers$nHomDrones
+  if (nInd > 0) {
+    newWorkers <- createWorkers(colony, nInd, simParamBee = simParamBee)
+    if (is.null(colony@workers) | new) {
+      colony@workers <- newWorkers$workers
+      colony@nHomDrones <- newWorkers$nHomDrones
+    } else {
+      colony@workers <- c(colony@workers, newWorkers$workers)
+      colony@nHomDrones <- colony@nHomDrones + newWorkers$nHomDrones
+    }
   }
   return(colony)
 }
 
 #' @rdname addDrones
-#' @title TODO
+#' @title Add (raise) drones to the colony
 #'
-#' @description Create drones and store them in the \code{colony@drones} slot. If there is
-#' already some drones present in the hive, the function will not overwrite them but instead
-#' combine the newly created and the existing drones The function returns the updated colony.
+#' @description Adds (raises) the specified number of drones in the colony by
+#'   crossing the current queen and the fathers. If there are already some
+#'   drones present, new and present drones are combined.
 #'
-#' @param colony AlphaSimRBee Colony object
-#' @param nInd Integer, number of drones to add.
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, number of drones to add
+#' @param new logical, should the drones be added a fresh (ignoring current
+#'   drones)
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony with queen and fathers
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#'
-#' #Insert workers and drones into the colony
-#' colony1 <- addWorkers(colony1, nInd = 2000)
-#' colony1 <- addDrones(colony, nInd = 100)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' addDrones(colony, nInd = 20)
 #'
 #' @export
-addDrones <- function(colony, nInd) {
+addDrones <- function(colony, nInd, new = FALSE) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.function(nInd)) {
-    nWorkers <- nWorkers(colony, ...)
+    nInd <- nInd(colony)
   }
-  newDrones <- createDrones(colony, nInd)
-  if (!is.null(colony@drones)) {
-    colony@drones <- c(colony@drones, newDrones)
-  } else {
-    colony@drones <- newDrones
+  if (nInd > 0) {
+    newDrones <- createDrones(colony, nInd)
+    if (is.null(colony@drones) | new) {
+      colony@drones <- newDrones
+    } else {
+      colony@drones <- c(colony@drones, newDrones)
+    }
   }
   return(colony)
 }
 
 #' @rdname addVirginQueens
-#' @title Create additional virgin queens
+#' @title Add (raise) virgin queens to the colony
 #'
-#' @description Creates the specified number of virgin queens in the colony
-#'       \by crossing the current queen and the fathers and adds them in
-#'       \ the \code{colony@virgin_queens} slot.
+#' @description Adds (raises) the specified number of virgin queens in the
+#'   colony by crossing the current queen and the fathers.
 #'
-#' @param colony AlphaSimRBee Colony object
-#' @param nInd Numeric. Number of virgin queens to create
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, Number of virgin queens to add
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony with queen and fathers
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#'
-#' #Insert workers and drones into the colony
-#' colony1 <- addWorkers(colony1, nInd = 2000)
-#' colony1 <- addDrones(colony, nInd = 100)
-#'
-#' #Insert 10  virgin queens into the colony
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' addVirginQueens(colony, nInd = 10)
 #'
 #' @export
-addVirginQueens <- function(colony, nInd) {
+addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -220,10 +197,9 @@ addVirginQueens <- function(colony, nInd) {
   if (!isQueenMated(colony)) {
     stop("Unmated queen!")
   }
-  virginQueenPop <- randCross2(females = colony@queen,
-                               males = colony@queen@misc$fathers,
-                               nCrosses = nInd)
-  colony@virgin_queens <- virginQueenPop
+  tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  colony@virgin_queens <- tmp$virgin_queens
+  colony@nHomDrones <- colony@nHomDrones + tmp$nHomDrones
   return(colony)
 }
 
@@ -234,8 +210,10 @@ addVirginQueens <- function(colony, nInd) {
 #' This function allows users to insert a virgin queen or a previously mated queen
 #' into the queen-less colony.
 #'
-#' @param colony AlphaSimRBee Colony object
+#' @param colony \code{\link{Colony-class}}
 #' @param queen  Pop/number of queens to add to the queen-less colony/colonies
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
 #' Create founder haplotypes
@@ -264,102 +242,101 @@ addVirginQueens <- function(colony, nInd) {
 #' #Repopulate the split colonies with virgin queens taken from the base population
 #' apiary0 <- reQueenColonies(apiary0, queen = virginQueens)
 #'
-#' @return Colony
-#'
 #' @export
 reQueenColony <- function(colony, queen) {
   if (!isColony(colony)) {
-    stop("Argument colony must be a Colonyclass object!")
+    stop("Argument colony must be a Colony class object!")
   }
   if  (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
   }
-  if (!isQueenMated(queen)) {
-    colony@virgin_queens <- queen
-  } else {
+  if (isQueenMated(queen)) {
     colony@queen <- queen
     colony@id <- queen@id
+  } else {
+    colony@virgin_queens <- queen
   }
   return(colony)
 }
 
 #' @rdname buildUpColony
-#' @title TODO
+#' @title Build up colony by adding (raising) workers and drones
 #'
-#' @description Workers and drones are added to a colony/colonies to build it/them
-#' up to the number of desired workers and drones (nWorkers and nDrones).
-#' A user would want to build up a colony in the Period 1 and if events such as split or swarming
-#' occur.
+#' @description Build up colony by adding (raising) workers and drones, usually
+#'   in spring or after events such as split or swarming.
 #'
-#' @param colony AlphaSimRBee Colony object
-#' @param nWorkers Desired number of workers wanted in the colony
-#' @param nDrones Desired number of drones wanted in the colony
+#' @param colony \code{\link{Colony-class}}
+#' @param nWorkers integer, desired number of workers in the colony
+#' @param nDrones integer, desired number of drones in the colony
+#' @param new logical, should the workers and drones be added a fresh (ignoring
+#'   current workers and drones)
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' base <- newPop(founderPop)
-#'
-#' #Create 10 mated colonies from the base population
-#' apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build-up the colonies
-#' colonyFullSize <- 500
-#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' buildUpColony(colony, nWorkers = 100)
 #'
 #' @export
-buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1) {
+buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
+                          new = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   n <- nWorkers - nWorkers(colony)
   if (n > 0) {
-    colony <- addWorkers(colony, nInd = n)
+    colony <- addWorkers(colony, nInd = n, new = new, simParamBee = simParamBee)
   }
   n <- nDrones - nDrones(colony)
   if (n > 0) {
-    colony <- addDrones(colony, nInd = n)
+    colony <- addDrones(colony, nInd = n, new = new)
   }
   colony@production <- TRUE
   return(colony)
 }
 
 #' @rdname replaceWorkers
-#' @title Replaces a proportion workers with new workers with new genetic information
+#' @title Replaces a proportion workers with new workers
 #'
-#' @description Replace a proportion of workers in the new with new workers from the same queen and same fathers.
-#' A user would want to replace a proportion (or all) of workers after swarming and supersedure or
-#' due to the short-life span of the workers.
+#' @description Replaces a proportion workers with new workers. Useful after
+#'   events like season change, swarming, supersedure etc. due to the short-life
+#'   span of the workers.
 #'
-#' @param colony AlphaSimRBee Colony object.
-#' @param p Numeric, proportion of workers to be replaced with new ones.
+#' @param colony \code{\link{Colony-class}}
+#' @param p numeric, proportion of workers to be replaced with new ones
+#' @param simParamBee \code{\link{SimParamBee}}
+
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1 <- addWorkers(colony1, nInd = 2000)
-#' colony1 <- replaceWorkers(colony1, p = 0.2)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' colony <- addWorkers(colony, nInd = 10)
+#' colony
+#' getWorkers(colony)@id
+#' colony <- replaceWorkers(colony, p = 0.5)
+#' getWorkers(colony)@id
 #'
 #' @export
-replaceWorkers <- function(colony, p = 1) {
+replaceWorkers <- function(colony, p = 1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -367,45 +344,42 @@ replaceWorkers <- function(colony, p = 1) {
   nWorkersReplaced <- round(nWorkers * p)
   if (nWorkersReplaced < nWorkers) {
     nWorkersStay <- nWorkers - nWorkersReplaced
-    tmp <- createWorkers(colony, nInd = nWorkersReplaced)
+    tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
     colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = "rand"),
                         tmp$workers)
     # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
-    colony@nHomDrones <- round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones
+    colony@nHomDrones <- as.integer(round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones)
   } else {
-    tmp <- createWorkers(colony, nInd = nWorkersReplaced)
-    colony@workers <- tmp$workers
-    colony@nHomDrones <- tmp$nHomDrones
+    colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
   }
   return(colony)
 }
 
 #' @rdname replaceDrones
-#' @title Replaces drone with new drone with new genetic information
+#' @title Replaces a proportion drones with new workers
 #'
-#' @description Replace a proportion of drones in the new with new drones from the same queen.
-#' A user would want to replace a proportion (or all) of drones after swarming and supersedure or
-#' due to the short-life span of the drones.
+#' @description Replaces a proportion drones. with new drones. Useful after
+#'   events like season change, swarming, supersedure etc. due to the short-life
+#'   span of the drones.
 #'
-#' @param colony AlphaSimRBee Colony object.
-#' @param p Numeric, proportion of drones to be replaced with new ones.
+#' @param colony \code{\link{Colony-class}}
+#' @param p numeric, proportion of drones. to be replaced with new ones
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony
-#' colony1 <- createColony(queen = base[1], fathers = base[2:15])
-#' colony1 <- addDrones(colony1, nInd = 2000)
-#' colony1 <- replaceDrones(colony1, p = 0.2)
-#'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' colony <- addDrones(colony, nInd = 10)
+#' colony
+#' getDrones(colony)@id
+#' colony <- replaceDrones(colony, p = 0.5)
+#' getDrones(colony)@id
 #'
 #' @export
 replaceDrones <- function(colony, p = 1) {
@@ -419,7 +393,7 @@ replaceDrones <- function(colony, p = 1) {
     colony@drones <- c(selectInd(colony@drones, nInd = nDronesStay, use = "rand"),
                        createDrones(colony, nInd = nDronesReplaced))
   } else {
-    colony@drones <- createDrones(colony, nDronesReplaced)
+    colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
   }
   return(colony)
 }
@@ -429,7 +403,9 @@ replaceDrones <- function(colony, p = 1) {
 #'
 #' @description Remove queen of a colony
 #'
-#' @param colony Colony
+#' @param colony \code{\link{Colony-class}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -444,8 +420,6 @@ replaceDrones <- function(colony, p = 1) {
 #' colony <- removeQueen(colony)
 #' colony
 #' getQueen(colony)
-#'
-#' @return Colony
 #'
 #' @export
 removeQueen <- function(colony) {
@@ -462,7 +436,9 @@ removeQueen <- function(colony) {
 #'
 #' @description Remove virgin queens of a colony
 #'
-#' @param colony Colony
+#' @param colony \code{\link{Colony-class}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -478,8 +454,6 @@ removeQueen <- function(colony) {
 #' colony
 #' getVirginQueens(colony)
 #'
-#' @return Colony
-#'
 #' @export
 removeVirginQueens <- function(colony) {
   if (!isColony(colony)) {
@@ -490,17 +464,29 @@ removeVirginQueens <- function(colony) {
 }
 
 #' @rdname removeWorkers
-#' @title Remove selected percentage of workers
+#' @title Remove a proportion of workers
 #'
-#' @description To decrease the number of workers (for example, in winter)
+#' @description Remove a proportion of workers, for example, as a preparation
+#'   for winter.
 #'
-#' @param colony Colony class. AlphaSimR Colony object from the \code{createColony(...)} call
-#' @param p Numeric. 0<=p>=1 .
+#' @param colony \code{\link{Colony-class}}
+#' @param p numeric, proportion to be removed
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' colony <- addWorkers(colony, nInd = 10)
+#' colony
+#' getWorkers(colony)@id
+#' colony <- removeWorkers(colony, p = 0.5)
+#' getWorkers(colony)@id
 #'
 #' @export
 removeWorkers <- function(colony, p) {
@@ -515,23 +501,35 @@ removeWorkers <- function(colony, p) {
     colony@workers <- NULL
   } else {
     nWorkers <- nWorkers(colony)
-    nWorkesNew <- round(nWorkers * (1 - p))
+    nWorkersNew <- round(nWorkers * (1 - p))
     colony@workers <- selectInd(colony@workers, nInd = nWorkersNew, use = "rand")
   }
   return(colony)
 }
 
 #' @rdname removeDrones
-#' @title Remove selected percentage of drones
+#' @title Remove a proportion of drones
 #'
-#' @description To decrease the number of drones (for example, in winter)
+#' @description Remove a proportion of drones, for example, at the end of summer.
 #'
-#' @param colony Colony class. AlphaSimR Colony object from the \code{createColony(...)} call
-#' @param p Numeric. 0<=p>=1 .
+#' @param colony \code{\link{Colony-class}}
+#' @param p numeric, proportion to be removed
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' colony <- addDrones(colony, nInd = 10)
+#' colony
+#' getDrones(colony)@id
+#' colony <- removeDrones(colony, p = 0.5)
+#' getDrones(colony)@id
 #'
 #' @export
 removeDrones <- function(colony, p) {
@@ -559,12 +557,12 @@ removeDrones <- function(colony, p) {
 #' A user will use this function at the end of a yearly cycle to reset the events,
 #' allowing the user to track the events of the current year without overlap.
 #'
-#' @param colony AlphaSimRBee Colony object.
+#' @param colony \code{\link{Colony-class}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
 #' TODO
-#'
-#' @return Colony
 #'
 #' @export
 resetEvents <- function(colony) {
@@ -578,26 +576,42 @@ resetEvents <- function(colony) {
 }
 
 #' @rdname crossColony
-#' @title Crosses a colony with a virgin queen to a group of fathers pulled from the DCA
+#' @title Crosses a colony with a virgin queen to a group of drones
 #'
-#' @description Crosses a colony with a virgin queen to a group of fathers pulled from the DCA
-#' \creates workers, drones and a new virgin queen and write them to the corresponding
-#' \slots of the colony object.
-#' #IF the colony is queenless - select a queen from the virgin queen - if not, mate the current queen!!!
-#' @seealso \code{\link[??????]{createColony}}
+#' @description Crosses a colony with a virgin queen to a group of drones and
+#'   potentially builds up the colony.
 #'
-#' @param colony AlphaSimRBee Colony object with a non-mated virgin queen
-#' @param fathers Pop Class. Father group pulled from the DCA.
+#' @param colony \code{\link{Colony-class}}
+#' @param fathers \code{\link{Pop-class}}, drones
 #' @param nWorkers integer, number of workers to create
 #' @param nDrones integer, number of drones to create
+#' @param simParamBee \code{\link{SimParamBee}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return Colony
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#'
+#' colony <- createColony(virgin_queen = basePop[2])
+#' colony
+#' colony <- crossColony(colony, fathers = drones)
+#' colony
+#'
+#' colony <- createColony(virgin_queen = basePop[2])
+#' colony
+#' colony <- crossColony(colony, fathers = drones, nWorkers = 20)
+#' colony
 #'
 #' @export
-crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers * 0.1) {
+crossColony <- function(colony, fathers = NULL, nWorkers = 0,
+                        nDrones = nWorkers * 0.1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -616,15 +630,10 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers
   colony@queen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@id <- colony@queen@id
   colony@queen@misc$fathers <- fathers
-  if (nWorkers != 0) {
-    tmp <- createWorkers(colony, nInd = nWorkers)
-    colony@workers <- tmp$workers
-    colony@nHomDrones <- tmp$nHomDrones
-  }
-  if (nDrones != 0) {
-    colony@drones <- createDrones(colony, nInd = nDrones)
-  }
-  colony@virgin_queens <- selectInd(colony@workers, nInd = 1, use = "rand")
+  # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+  colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+  colony <- addWorkers(colony, nInd = nWorkers, new = TRUE, simParamBee = simParamBee)
+  colony <- addDrones(colony, nInd = nDrones, new = TRUE)
   return(colony)
 }
 
@@ -634,12 +643,12 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0, nDrones = nWorkers
 #' @description Replicates the collapse of a colony. This can be due to winter losses, disease or other factors.
 #' @seealso \code{\link[??????]{collapseColony}}
 #'
-#' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param colony \code{\link{Colony-class}}
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
 #' TODO
-#'
-#' @return Colony
 #'
 #' @export
 collapseColony <- function(colony) {
@@ -661,8 +670,7 @@ collapseColony <- function(colony) {
 #'  A new location must be given to the new swarm colony.
 #'  The colony that stays contains the remaining workers and drones. A virgin queen is selected from the workers and mated if fathers are present.
 #'
-#' @seealso \code{\link[??????]{createColony}}
-#' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param colony \code{\link{Colony-class}}
 #' @param pSwarm Integer. Percentage of colony that will swarm
 #' @param crossVirginQueen Logical. Whether a virgin queen is to be mated
 #' @param fathers AlphaSimR population object. Number of fathers pulled from the DCA
@@ -672,12 +680,16 @@ collapseColony <- function(colony) {
 #'
 #' @examples inst/examples/examples_swarm.R
 #'
-#' @return list with two Colony, swarm with the old queen and a proportion of workers,
+#' @return list with two \code{\link{Colony-class}}, swarm with the old queen and a proportion of workers,
 #' and remnant with a new queen and a proportion of workers
 #'
 #' @export
-swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers = NULL,
-                        pWorkers = 1, pDrones = 1, swarmLocation = NULL) {
+swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE,
+                        fathers = NULL, pWorkers = 1, pDrones = 1,
+                        swarmLocation = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
@@ -693,6 +705,7 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
   nWorkersStay <- nWorkers - nWorkersSwarm
   workersSwarmId <- sample(x = colony@workers@id, size = nWorkersSwarm, replace = FALSE)
   workersStayId <- colony@workers@id[!colony@workers@id %in% workersSwarmId]
+  # TODO: use pullWorkers() here
 
   remnantColony <- createColony()
   remnantColony@virgin_queens <- selectInd(colony@virgin_queens, 1, use = "rand")
@@ -707,15 +720,17 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
     remnantColony@queen <- remnantColony@virgin_queens
     remnantColony@id <- remnantColony@queen@id
     remnantColony@queen@misc$fathers <- fathers
-    remnantColony <- replaceWorkers(remnantColony, pWorkers)
+    # populate the remnant with virgin queens, workers, and drones from the new queen
+    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+    remnantColony <- addVirginQueens(colony = remnantColony, nInd = 1, simParamBee = simParamBee)
+    remnantColony <- replaceWorkers(remnantColony, pWorkers, simParamBee = simParamBee)
     remnantColony <- replaceDrones(remnantColony, pDrones)
-    # TODO: need to address csd here too!
-    remnantColony@virgin_queens <- createWorkers(remnantColony, 1)
   }
 
   swarm <- colony
+  # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+  swarm <- addVirginQueens(colony = swarm, nInd = 1, simParamBee = simParamBee)
   swarm@workers <- colony@workers[workersSwarmId]
-  swarm@virgin_queens <- selectInd(swarm@workers, nInd = 1, use = "rand")
   swarm@drones <- NULL
   swarm@location <- swarmLocation
 
@@ -739,20 +754,23 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE, fathers 
 #' in the colony. If no fathers are present, mating of the virgin queen does not occur.
 #' @seealso \code{\link[??????]{supersedure}}
 #'
-#' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param colony \code{\link{Colony-class}}
 #' @param crossVirginQueen Logical. Whether a virgin queen is to be mated
 #' @param fathers AlphaSimR population object. Number of fathers pulled from the DCA
 #' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen
 #' @param pDrones Numeric, proportion of drones that are replaced with the drones from the new queen
 #'
+#' @return \code{\link{Colony-class}}
+#'
 #' @examples
 #' TODO
 #'
-#' @return Colony
-#'
 #' @export
 supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
-                            pWorkers = 1, pDrones = 1) {
+                            pWorkers = 1, pDrones = 1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -770,10 +788,10 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
     }
     colony@queen <- colony@virgin_queens
     colony@queen@misc$fathers <- fathers
-    colony <- replaceWorkers(colony, pWorkers)
+    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+    colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+    colony <- replaceWorkers(colony, pWorkers, simParamBee = simParamBee)
     colony <- replaceDrones(colony, pDrones)
-    # TODO: need to address csd here too!
-    colony@virgin_queens <- createWorkers(colony, 1)
   }
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -791,7 +809,7 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #'  If no new queen is introduced, a virgin queen must be present to mate with fathers from DCA and continue colony
 #' @seealso \code{\link[??????]{splitColony}}
 #'
-#' @param colony Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call
+#' @param colony \code{\link{Colony-class}}
 #' @param pSplit Integer. Percentage of hive to split
 #' @param newQueen AlphaSimR population object. A new mated queen is brought into the colony from other source
 #' @param crossVirginQueen Logical. If no mated queen is introduced, a virgin queen must be present to mate and continue colony
@@ -802,12 +820,16 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @examples
 #' TODO
 #'
-#' @return list with two Colony, split with the old queen and a proportion of workers,
+#' @return list with two \code{\link{Colony-class}}, split with the old queen and a proportion of workers,
 #' and remnant with a ??? and a proportion of workers TODO
 #'
 #' @export
-splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen = FALSE, fathers = NULL,
-                        pWorkers = 1, splitLocation = NULL) {
+splitColony <- function(colony, pSplit = 0.30, newQueen = NULL,
+                        crossVirginQueen = FALSE, fathers = NULL,
+                        pWorkers = 1, splitLocation = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -826,6 +848,7 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   splitColony@workers <- colony@workers[workersSplitId]
   splitColony@location <- splitLocation
   colony@workers <- colony@workers[workersStayId]
+  # TODO: use pullCaste() here?
 
   if (!is.null(newQueen)) {
     if (!isQueenMated(newQueen)) {
@@ -848,9 +871,9 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
   }
 
   if (!is.null(splitColony@queen)) {
-    splitColony <- replaceWorkers(splitColony, pWorkers)
-    # TODO: need to address csd here too!
-    splitColony@virgin_queens <- createWorkers(splitColony, 1)
+    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+    splitColony <- addVirginQueens(colony = splitColony, nInd = 1, simParamBee = simParamBee)
+    splitColony <- replaceWorkers(splitColony, pWorkers, simParamBee = simParamBee)
   }
 
   # Change the status of the colony
@@ -872,11 +895,13 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #'
 #' @description Set the colony location as (x, y) coordinates.
 #'
-#' @param x Colony or Colonies
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param location numeric or list, location (x, y) to be set for the Colony
 #' (numeric) or for Colonies (numeric to set the same location for all colony or
 #' list to set different location for each colony - if list, it has to has the
 #' same length at there is colonies in \code{x})
+#'
+#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -907,8 +932,6 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL, crossVirginQueen
 #' # Assuming different locations (so tmp is not an apiary in one location!)
 #' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 #' getLocation(tmp)
-#'
-#' @return Colony or Colonies
 #'
 #' @export
 setLocation <- function(x, location) {
