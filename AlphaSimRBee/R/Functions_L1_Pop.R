@@ -211,7 +211,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of workers to create
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two nodes named \code{workers} (a \code{\link{Pop-class}})
 #'   and \code{nHomDrones} (an integer)

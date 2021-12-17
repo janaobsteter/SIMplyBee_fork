@@ -81,7 +81,7 @@ createColony <- function(id = NULL, location = NULL,
 #' @param nInd integer, number of workers to add
 #' @param new logical, should the workers be added a fresh (ignoring current
 #'   workers)
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -170,7 +170,7 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, Number of virgin queens to add
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -271,7 +271,7 @@ reQueenColony <- function(colony, queen) {
 #' @param nDrones integer, desired number of drones in the colony
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   current workers and drones)
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -315,7 +315,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers to be replaced with new ones
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 
 #' @return \code{\link{Colony-class}}
 #'
@@ -588,7 +588,7 @@ resetEvents <- function(colony) {
 #' @param fathers \code{\link{Pop-class}}, drones
 #' @param nWorkers integer, number of workers to create
 #' @param nDrones integer, number of drones to create
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}}
 #'

@@ -855,7 +855,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #'   single set of haplotypes, use a value of 1 for female haplotypes and a
 #'   value of 2 for male haplotypes
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -923,7 +923,7 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -1068,7 +1068,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return integer representing the number of distinct csd alleles when \code{x}
 #'   is \code{\link{Pop-class}} (or ), list of integer
@@ -1131,7 +1131,7 @@ nCsdAlleles <- function(x, simParamBee = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullIbdHaplo}}
 #'
@@ -1159,7 +1159,7 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
 #'
@@ -1184,7 +1184,7 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlGeno}}
 #'
@@ -1211,7 +1211,7 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
 #'
@@ -1235,7 +1235,7 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
 #'
@@ -1263,7 +1263,7 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
 #'
@@ -1288,7 +1288,7 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @param snpChip numeric, indicates which SNP array genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #' are retrieved
-#' @param simParam \code{\link{SimParam}}
+#' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
 #'
@@ -1317,7 +1317,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
@@ -1476,7 +1476,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
 #'
@@ -1582,7 +1582,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 #'
@@ -1745,7 +1745,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}
 #'
@@ -1848,7 +1848,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @param trait numeric, indicates which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
 #'
@@ -2008,7 +2008,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}
 #'
@@ -2115,7 +2115,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
 #'
@@ -2278,7 +2278,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
@@ -2381,7 +2381,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
 #'
@@ -2541,7 +2541,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
@@ -2646,7 +2646,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
 #'
@@ -2810,7 +2810,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
 #'
@@ -2913,7 +2913,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
 #'
@@ -3073,7 +3073,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
 #'
@@ -3412,7 +3412,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{bv}}
 #'
@@ -3563,7 +3563,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{bv}}
 #'
@@ -3666,7 +3666,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{dd}}
 #'
@@ -3817,7 +3817,7 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{dd}}
 #'

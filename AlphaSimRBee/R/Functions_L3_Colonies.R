@@ -10,9 +10,14 @@
 #' @param n numeric, number of colonies to create; this argument takes precedence
 #' over \code{...}
 #'
+#' @return A \code{\link{Colonies-class}} object
+#'
 #' @examples
-#' # Create 10 empty colonies
+#' # Create 10 empty (NULL) colonies
 #' apiary <- createColonies(n = 10)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' # Create an apiary from two existing colonies
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -22,12 +27,16 @@
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[1], fathers = drones)
 #' colony2 <- createColony(virgin_queens = basePop[3])
-#' apiary2 <- createColonies(colony1, colony2)
+#' apiary <- createColonies(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' # ... an alternative
-#' apiary2 <- c(colony1, colony2)
-#'
-#' @return A \code{\link{Colonies-class}} object
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' @export
 createColonies <- function(..., n = NULL) {
@@ -179,7 +188,6 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' basePop <- newPop(founderGenomes)
 #'
 #' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-#'
 #' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
 #' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
