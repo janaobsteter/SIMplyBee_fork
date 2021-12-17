@@ -530,8 +530,7 @@ getId <- function(x) {
   } else if (isColony(x)) {
     id <- ifelse(is.null(x@id), NA, x@id)
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    id <- sapply(x@colonies, FUN = function(z) ifelse(is.null(z@id), NA, z@id))
+    id <- sapply(x@colonies, FUN = getId)
   } else {
     stop("Argument x must be a NULL, Pop, Colony, or Colonies class object!")
   }
@@ -638,8 +637,7 @@ hasSplit <- function(x) {
   if (isColony(x)) {
     ret <- x@split
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    ret <- sapply(x@colonies, FUN = function(z) z@split)
+    ret <- sapply(x@colonies, FUN = hasSplit)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -688,8 +686,7 @@ hasSwarmed <- function(x) {
   if (isColony(x)) {
     ret <- x@swarm
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    ret <- sapply(x@colonies, FUN = function(z) z@swarm)
+    ret <- sapply(x@colonies, FUN = hasSwarmed)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -735,8 +732,7 @@ hasSuperseded <- function(x) {
   if (isColony(x)) {
     ret <- x@supersedure
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    ret <- sapply(x@colonies, FUN = function(z) z@supersedure)
+    ret <- sapply(x@colonies, FUN = hasSuperseded)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -778,8 +774,7 @@ isProductive <- function(x) {
   if (isColony(x)) {
     ret <- x@production
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    ret <- sapply(x@colonies, FUN = function(z) z@production)
+    ret <- sapply(x@colonies, FUN = isProductive)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be Colony or Colonies class object!")
