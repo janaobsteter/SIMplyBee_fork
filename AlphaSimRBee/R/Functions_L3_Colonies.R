@@ -53,24 +53,65 @@ createColonies <- function(..., n = NULL) {
   return(output)
 }
 
-createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL,
-                            nDronesPerQueen = 100, simParamBee = NULL) {
+#' @rdname createColonies2
+#' @title Create colonies (a version that will encompass createColonies soon) TODO
+#'
+#' @description Create a set of colonies. Usually at a start simulation.
+#'
+#' @param pop \code{\link{Pop-class}}, individuals that will be used to seed
+#'   queens and drones in colonies (these individuals are selected at random if
+#'   there are more than \code{n})
+#' @param n integer, number of colonies to create (if only \code{n} is given
+#'   then empty (\code{NULL}) colonies are created - mostly useful for
+#'   programming)
+#' @param mated logical, create mated or unmated (virgin) colonies
+#' @param nAvgFathers integer, number of drones that a queen mates with
+#'   TODO nAvgFathers default should go to simParamBee and then we set it to NULL
+#'        here and if its NULL we grab value from simParamBee, otherwise use it
+#'        from the user
+#' @param nDronesPerQueen integer, number of drones that a queen generates
+#'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
+#'        here and if its NULL we grab value from simParamBee, otherwise use it
+#'        from the user
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' # Create 2 empty (NULL) colonies
+#' apiary <- createColonies2(n = 2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
+#'
+#' # Create 2 mated colonies
+#' apiary <- createColonies2(pop = basePop, n = 2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
+#'
+#' # Create 2 unmated/virgin colonies
+#' apiary <- createColonies2(pop = basePop, n = 2, mated = FALSE)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
+#'
+#' @export
+createColonies2 <- function(pop = NULL, n, mated = TRUE,
+                            nAvgFathers = 15, nDronesPerQueen = 100, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (!is.null(n)) {
-    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
-  } else if (!is.null(pop)) {
+  if (!is.null(pop)) {
     if (!isPop(pop)) {
       stop("Argument pop must be a Pop class object!")
     }
-    if (is.null(nAvgFathers)) {
-      virginQueens <- selectInd(pop, nInd = n, use = "rand")
-      for (colony in 1:n) {
-        ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
-                                               simParamBee = simParamBee)
-      }
-    } else {
+    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
+    if (mated) {
       tmp <- pullInd(pop = pop, nInd = n)
       queens <- tmp$pulled
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
@@ -80,9 +121,17 @@ createColonies2 <- function(n = NULL, pop = NULL, nAvgFathers = NULL,
                                                fathers = fatherPackages[[colony]],
                                                simParamBee = simParamBee)
       }
+    } else {
+      virginQueens <- selectInd(pop, nInd = n, use = "rand")
+      for (colony in 1:n) {
+        ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
+                                               simParamBee = simParamBee)
+      }
     }
+  } else if (!is.null(n)) {
+    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
   } else {
-    stop("You must provide either n or pop!")
+    stop("You must provide either pop and n or at least n!")
   }
   return(ret)
 }
