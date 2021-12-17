@@ -303,10 +303,11 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 }
 
 #' @rdname createDrones
-#' @title Creates drones from the colony as doubled-haploids
+#' @title Creates drones from the colony
 #'
-#' @description Creates the specified number of drones from the colony
-#'   as doubled-haploids.
+#' @description Creates the specified number of drones from the colony.
+#'   Currently this is done by creating doubled-haploids from a queen,
+#'   but we will make them haploid!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, the number of drones to create
@@ -423,12 +424,16 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @title Pulls drone groups from a Drone Congregation Area (DCA)
 #'
 #' @description Pulls drone groups from a Drone Congregation Area (DCA) to use
-#' them later in mating. Number of drones per group is sampled from a Poisson
-#' distribution with average group size. Pulled drones are removed from the DCA.
+#'   them later in mating. Number of drones per group is sampled from a Poisson
+#'   distribution with average group size. Pulled drones are removed from the
+#'   to reflect the fact that drone dies after mating, so can't be present in a
+#'   DCA anymore.
 #'
-#' @param DCA Pop, population of drones
-#' @param nGroups Integer, number of drone groups to be created
-#' @param avgGroupSize Numeric, average number of drones per group
+#' @param DCA \code{\link{Pop-class}}, population of drones
+#' @param nGroups integer, number of drone groups to be created
+#' @param avgGroupSize numeric, average number of drones per group
+#'
+#' @return list of \code{\link{Pop-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -443,8 +448,6 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' apiary <- c(colony1, colony2)
 #' DCA <- createDCA(apiary)
 #' pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
-#'
-#' @return list of Pop
 #'
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
@@ -470,7 +473,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' @description Pull individuals from a caste in a colony. These individuals are
 #' removed from the colony (compared to \code{\link{getCaste}}).
 #'
-#' @param x Colony or Colonies
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", virgin_queens", "workers", or "drones"
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
 #'   individuals are pulled
@@ -478,6 +481,12 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
+#'
+#' @return list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
+#'   when \code{x} is \code{\link{Colony-class}} and list of (a list of
+#'   \code{\link{Pop-class}} named by colony id) and 
+#'   \code{\link{Colonies-class}} when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -535,9 +544,6 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' nDrones(apiary)
 #' nDrones(pullDrones(apiary)$colonies)
 #' nDrones(pullDrones(apiary, nInd = 5)$colonies)
-#'
-#' @return list of Pop and Colony when \code{x} is Colony and list of (a list of
-#' Pop (named by colony id) and Colonies) when \code{x} is Colonies
 #'
 #' @export
 pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
@@ -619,39 +625,18 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' @description Crosses a virgin queen to a group of drones
 #'
-#' @param virginQueen AlphaSimR population object
-#' @param fathers AlphaSimR population class.
+#' @param virginQueen \code{\link{Pop-class}}
+#' @param fathers \code{\link{Pop-class}} TODO: call this drones?
+#'
+#' @return \code{\link{Pop-class}} with a mated queen
 #'
 #' @examples
-#' # Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' pop <- newPop(founderPop)
-#'
-#' #Creates colony
-#' founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#'
-#' #Create drones that will be in DCA
-#' colony1@drones <- createDrones(colony1, nInd = 300)
-#' colony2@drones <- createDrones(colony2, nInd = 300)
-#'
-#' DCA <- createDCA(c(colony1, colony2))
-#'
-#' #pull drone packages from DCA
-#' droneGroups <- pullDroneGroupsFromDCA(DCA, nGroup = 7, avgGroupSize = 19)
-#'
-#'# Cross the virgin queen
-#'
-#' virginQueen <- colony1@virgin_queens
-#' queen <- crossVirginQueen(virginQueen, fathers = droneGroups[[1]])
-#'
-#' @return AlphaSim population object of a mated queen
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' crossVirginQueen(virginQueen = basePop[2], fathers = drones)
 #'
 #' @export
 crossVirginQueen <- function(virginQueen, fathers) {
@@ -679,8 +664,12 @@ crossVirginQueen <- function(virginQueen, fathers) {
 #'
 #' @description Set the queen's year of birth
 #'
-#' @param x Pop, Colony, or Colonies
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #' @param year integer, the year of the birth of the queen
+#'
+#' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -714,8 +703,6 @@ crossVirginQueen <- function(virginQueen, fathers) {
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)
-#'
-#' @return Pop, Colony, or Colonies
 #'
 #' @export
 setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
