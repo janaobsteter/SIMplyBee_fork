@@ -211,7 +211,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!isColony(colonies)) {
+  if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -246,7 +246,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
+#' apiary <- createColonies2(pop = basePop, n = 3)
 #' (names <- getId(apiary))
 #'
 #' tmp <- pullColonies(apiary, ID = names[1])
@@ -261,7 +261,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
-  if (!isColony(colonies)) {
+  if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
@@ -299,7 +299,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createMatedColonies(pop = basePop, nColonies = 3, nAvgFathers = 10)
+#' apiary <- createColonies2(pop = basePop, n = 3)
 #' (names <- getId(apiary))
 #'
 #' getId(removeColonies(apiary, ID = names[1]))
@@ -309,7 +309,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
-  if (!isColony(colonies)) {
+  if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   ret <- colonies[!getId(colonies) %in% ID]
