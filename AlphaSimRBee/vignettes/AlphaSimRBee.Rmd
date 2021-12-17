@@ -215,5 +215,5 @@ crossColonies; input Colonies; return Colonies; TODO merge with cross()? there i
 setPhenoColonies; TODO merge with setColonyPheno?
 
 ```{r setup}
-library(AlphaSimRBee)
+# library(AlphaSimRBee)
 ```
