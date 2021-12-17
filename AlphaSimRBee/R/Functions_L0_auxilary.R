@@ -651,14 +651,35 @@ hasSplit <- function(x) {
 #' @title Test if colony has swarmed
 #'
 #' @description Test if colony has swarmed. This will obviously have major impact
-#' on the colony and its downstream events.
+#'   on the colony and its downstream events.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' hasSwarmed(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' hasSwarmed(colony)
+#' tmp <- swarmColony(colony)
+#' tmp
+#' hasSwarmed(tmp$swarm)
+#' hasSwarmed(tmp$remnant)
+#'
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' tmp <- swarmColonies(apiary)
+#' tmp
+#' hasSwarmed(tmp$swarms)
+#' hasSwarmed(tmp$remnants)
 #'
 #' @export
 hasSwarmed <- function(x) {
