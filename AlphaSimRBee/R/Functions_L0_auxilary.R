@@ -748,14 +748,30 @@ hasSuperseded <- function(x) {
 #' @title Test if colony is currently productive
 #'
 #' @description Test if colony is currently productive. This can be used to
-#' programatically decided if colony production can be simulated.
+#'   decided if colony production can be simulated.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
-#' @examples
-#' TODO
-#'
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' isProductive(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' isProductive(colony)
+#'
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' isProductive(apiary)
 #'
 #' @export
 isProductive <- function(x) {
@@ -773,7 +789,7 @@ isProductive <- function(x) {
 
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome
-
+#'
 #' @description TODO
 #'
 #' @param nInd number of individuals to simulate
