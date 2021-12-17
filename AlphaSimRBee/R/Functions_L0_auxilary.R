@@ -605,6 +605,8 @@ getLocation <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -631,8 +633,6 @@ getLocation <- function(x) {
 #' hasSplit(tmp$splits)
 #' hasSplit(tmp$remnants)
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
-#'
 #' @export
 hasSplit <- function(x) {
   if (isColony(x)) {
@@ -650,10 +650,12 @@ hasSplit <- function(x) {
 #' @rdname hasSwarmed
 #' @title Test if colony has swarmed
 #'
-#' @description Test if colony has swarmed. This will obviously have major impact
-#'   on the colony and its downstream events.
+#' @description Test if colony has swarmed. This will obviously have major
+#'   impact on the colony and its downstream events.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -702,10 +704,31 @@ hasSwarmed <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
-#' @examples
-#' TODO
-#'
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' hasSuperseded(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' hasSuperseded(colony)
+#' tmp <- supersedeColony(colony)
+#' tmp
+#' hasSuperseded(tmp)
+#'
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' tmp <- supersedeColonies(apiary)
+#' tmp
+#' hasSuperseded(tmp)
 #'
 #' @export
 hasSuperseded <- function(x) {
