@@ -10,7 +10,8 @@
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed
+#'   individuals are accessed; if there are less individuals than requested,
+#'   we return the ones available - this can also be just \code{NULL}
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
@@ -25,10 +26,11 @@
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony1 <- addVirginQueens(colony1, nInd = 4)
-#' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
 #'
 #' getCaste(colony1, caste = "queen")
 #' getQueen(colony1)
@@ -90,7 +92,7 @@
 #' getVirginQueens(apiary)[[1]]@id
 #' getVirginQueens(apiary)[[2]]@id
 #' getVirginQueens(apiary, nInd = 1)
-#' getVirginQueens(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
+#' getVirginQueens(apiary, nInd = 2)
 #'
 #' getCaste(apiary, caste = "workers")
 #' getWorkers(apiary)
@@ -101,8 +103,8 @@
 #' getCaste(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
-#' getDrones(apiary)[[2]]@id # TODO: can we do anything here - just give what is available?
-#' getDrones(apiary, nInd = 2) # TODO: can we do anything here - just give what is available?
+#' getDrones(apiary)[[2]]
+#' getDrones(apiary, nInd = 2)
 #'
 #' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
 #'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
@@ -119,26 +121,23 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
       }
     } else {
       if (caste == "fathers") {
-        ret <- selectInd(pop = x@queen@misc$fathers, nInd = nInd, use = use)
+        pop <- x@queen@misc$fathers
       } else {
-        ret <- selectInd(pop = slot(x, caste), nInd = nInd, use = use)
+        pop <- slot(x, caste)
+      }
+      if (is.null(pop)) {
+        ret <- NULL
+      } else {
+        nIndRequested <- nInd
+        nIndAvailable <- nInd(pop)
+        if (nIndRequested > nIndAvailable) {
+          nIndRequested <- nIndAvailable
+        }
+        ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
       }
     }
   } else if (isColonies(x)) {
-    # Could have called Colony method for every colony of x, but the code below will be faster
-    if (is.null(nInd)) {
-      if (caste == "fathers") {
-        ret <- lapply(X = x@colonies, FUN = function(z) z@queen@misc$fathers)
-      } else {
-        ret <- lapply(X = x@colonies, FUN = function(z) slot(z, caste))
-      }
-    } else {
-      if (caste == "fathers") {
-        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = z@queen@misc$fathers, nInd = nInd, use = use))
-      } else {
-        ret <- lapply(X = x@colonies, FUN = function(z) selectInd(pop = slot(z, caste), nInd = nInd, use = use))
-      }
-    }
+    ret <- lapply(X = x@colonies, FUN = getCaste, caste = caste, nInd = nInd, use = use)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
