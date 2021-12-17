@@ -600,12 +600,36 @@ getLocation <- function(x) {
 #' @rdname hasSplit
 #' @title Test if colony has split
 #'
-#' @description Test if colony has split. This will obviously impact colony strength.
+#' @description Test if colony has split. This will obviously impact colony
+#'   strength.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' hasSplit(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' hasSplit(colony)
+#' tmp <- splitColony(colony)
+#' tmp
+#' hasSplit(tmp$split)
+#' hasSplit(tmp$remnant)
+#'
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' tmp <- splitColonies(apiary)
+#' tmp
+#' hasSplit(tmp$splits)
+#' hasSplit(tmp$remnants)
 #'
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'

@@ -62,6 +62,7 @@ createColony <- function(id = NULL, location = NULL,
                 id = as.character(id),
                 location = location,
                 queen = queen)
+  colony <- resetEvents(colony)
   if (!is.null(queen) & !is.null(fathers)) {
     # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
     colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
@@ -572,6 +573,8 @@ resetEvents <- function(colony) {
   colony@swarm <- FALSE
   colony@split <- FALSE
   colony@supersedure <- FALSE
+  colony@collapse <- FALSE
+  colony@production <- FALSE
   return(colony)
 }
 
