@@ -1,4 +1,3 @@
-#' @describeIn Pop Test if object is a Pop class object
 # TOOD: I have provided this as PullRequest for AlphaSimR https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
 #   once it gets incorporated there we should remove it here
 isPop = function(x) {
@@ -9,30 +8,42 @@ isPop = function(x) {
 # Class Colony ----
 
 #' @rdname Colony
-#' @method createColony TODO
-#' @title Creates a honeybee colony
-#' @usage \method{createColony}(id, location, queen, drones, workers, virgin_queen, fathers, pheno, last_event)
-#' @description List. Creates a honeybee colony as a list with the following elements:
-#'   \id location, queen, drones, workers, virgin_queens, pheno, fathers, and last event
-#'   \All elements of the list, expect for \code{last_even}, are assumed NULL if not specified
-#'   \otherwise. \code{last_event} is set to "new_colony".
-#' @slot id ID of the colony.
-#' @slot location Numeric, location of the colony (x, y).
-#' @slot queen AlphaSimR population object to become the queen of the colony (we use its misc slot for queen's age).
-#' @slot drones AlphaSimR population object to become the drones of the colony.
-#' @slot workers AlphaSimR population object to become the workers of the colony.
-#' @slot virgin_queens AlphaSimR individual or population object to become the virgin queen(s) of the colony.
-#' @slot pheno A matrix of the phenotypes of the colony
-#' @slot swarm Logical, whether the colony has swarmed
-#' @slot split Logical, whether the colony has split
-#' @slot supersedure Logical, whether the colony has superseded
-#' @slot collapse Logical, whether the colony has collapsed
-#' @slot production Logical, whether the colony produces hive products
-#' @slot last_event Character, the last event of the colony #TODO: WE probably don't need this
-#' @slot misc A list, normally empty and exists solely as an open slot available for uses to store extra information about individuals.
+#' @title Honeybee colony
 #'
-#' @example inst/examples/examples_createColony.R
-#' @return Returns a \code{Colony} object
+#' @slot id character, ID of the colony, which is equal to the ID of the queen
+#' @slot location numeric, location of the colony (x, y)
+#' @slot queen \code{\link{Pop-class}}, the queen of the colony (we use
+#'   its misc slot for queen's age and drones/fathers she mated with)
+#' @slot virgin_queens \code{\link{Pop-class}}, virgin queens of the
+#'   colony
+#' @slot drones \code{\link{Pop-class}}, drones of the colony
+#' @slot workers \code{\link{Pop-class}}, workers of the colony
+#' @slot nHomDrones integer, the number of homozygous drones in the colony
+#' @slot pheno matrix, phenotypes of the colony TODO: revise
+#' @slot split logical, has colony split
+#' @slot swarm logical, has colony swarmed
+#' @slot supersedure logical, has colony superseded
+#' @slot collapse logical, has colony collapsed TODO: revise
+#' @slot production logical, is colony productive
+#' @slot last_event character, the last event of the colony TODO: we probably don't need this
+#' @slot misc list, available for storing extra information about the colony
+#'
+#' @example
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+#'
+#' colony1
+#' colony2
+#'
+#' apiary <- c(colony1, colony2)
+#'
+#' @return \code{\link{Colony-class}}
+#'
 #' @export
 
 setClassUnion("PopOrNULL", c("Pop", "NULL"))
