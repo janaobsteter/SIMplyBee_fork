@@ -343,8 +343,8 @@ createDrones <- function(colony, nInd) {
 #'   congregation area (DCA).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param nInd numeric, number of random drones to pull from each colony, if
-#'   \code{NULL} all drones in a colony are pulled
+#' @param nInd numeric, number of random drones to pull from each colony,
+#'   if \code{NULL} all drones in a colony are pulled
 #'
 #' @return \code{\link{Pop-class}}
 #'
@@ -384,11 +384,16 @@ createDCA <- function(x, nInd = NULL) {
 #' @title Pull individuals from a population
 #'
 #' @description Pull individuals from a population and update the population
+#'   (these individuals don't stay in a population).
 #'
-#' @param pop Pop
+#' @param pop \code{\link{Pop-class}}
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
-#' individuals
+#'   individuals
 #' @param use character, all options provided by \code{\link{selectInd}}
+#'
+#' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
+#'   pulled individuals and a node \code{remainder)} holding \code{\link{Pop-class}}
+#'   of remaining individuals
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -398,8 +403,6 @@ createDCA <- function(x, nInd = NULL) {
 #' pullInd(basePop, nInd = 2)
 #' pullInd(basePop, nInd = 3)
 #' pullInd(basePop)
-#'
-#' @return Pop
 #'
 #' @export
 pullInd <- function(pop, nInd = NULL, use = "rand") {
