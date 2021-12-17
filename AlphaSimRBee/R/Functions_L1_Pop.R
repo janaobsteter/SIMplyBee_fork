@@ -338,11 +338,15 @@ createDrones <- function(colony, nInd) {
 #' @rdname createDCA
 #' @title Create a drone congregation area (DCA)
 #'
-#' @description Create a drone congregation area (DCA) from colony or colonies.
+#' @description Create a population of drones from one or multiple
+#'   colonies. Such a population is often referred to as a drone
+#'   congregation area (DCA).
 #'
-#' @param x Colony or Colonies
-#' @param nInd numeric, number of drones to access, if \code{NULL} all drones
-#' are accessed, otherwise a random sample
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param nInd numeric, number of random drones to pull from each colony, if
+#'   \code{NULL} all drones in a colony are pulled
+#'
+#' @return \code{\link{Pop-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -362,8 +366,6 @@ createDrones <- function(colony, nInd) {
 #' apiary <- c(colony1, colony2)
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
-#'
-#' @return Pop
 #'
 #' @export
 createDCA <- function(x, nInd = NULL) {
