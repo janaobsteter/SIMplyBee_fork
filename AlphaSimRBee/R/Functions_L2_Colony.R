@@ -61,9 +61,13 @@ createColony <- function(id = NULL, location = NULL,
   colony <- new("Colony",
                 id = as.character(id),
                 location = location,
-                queen = queen)
+                queen = queen,
+                virgin_queens = virgin_queens)
   colony <- resetEvents(colony)
-  if (!is.null(queen) & !is.null(fathers)) {
+  # TODO: do we really want to add virgin queen(s) automatically? Fells like
+  #       we don't want this - we should have then also added workers and drones
+  # TODO: should then buildUpColony add virginQueens?
+  if (!is.null(colony@queen) & isQueenMated(colony)) {
     # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
     colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
   }
