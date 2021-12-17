@@ -1,17 +1,44 @@
 # Class Colonies ----
 
 #' @rdname Colonies
-#' @title Colonies
+#' @title Honeybee colonies
 #'
-#' @description
-#' The Colonies represents a set of colonies. It behaves like a list object.
+#' @description An object holding a collection of honeybee colonies. It behaves
+#'   like a list.
 #'
-#' @param x Colonies, colonies
+#' @slot colonies list, a collection of \code{\link{Colony-class}} objects
+#'
+#' @param x \code{\link{Colonies-class}}
 #' @param i numeric or character, index or name to select a colony
 #'
-#' @slot colonies, a collection of \code{\link{Colony-class}} objects
+#' @return \code{\link{Colonies-class}}
 #'
-#' @seealso \code{\link{selectColonies}}, \code{\link{addColonyToColonies}}
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 15)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
+#' apiary <- c(colony1, colony2, colony3)
+#' apiary
+#' apiary[1]
+#' getId(apiary[1])
+#' getId(apiary["2"])
+#' getId(apiary[2])
+#'
+#' getId(apiary)
+#' getId(apiary[c(1, 3)])
+#' getId(apiary[c("2", "4")])
+#'
+#' apiary[[1]]
+#' apiary[["2"]]
+#' apiary[[3]]
+#' apiary[["4"]]
+#'
+#' getId(c(apiary[c(1, 3)], apiary[2]))
 #'
 #' @export
 setClass("Colonies",

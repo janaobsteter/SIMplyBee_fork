@@ -12,9 +12,9 @@
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' nColonies(apiary)
 #' nColonies(createColonies(n = 10))
@@ -624,7 +624,7 @@ getLocation <- function(x) {
 #' hasSplit(tmp$split)
 #' hasSplit(tmp$remnant)
 #'
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
@@ -674,7 +674,7 @@ hasSplit <- function(x) {
 #' hasSwarmed(tmp$swarm)
 #' hasSwarmed(tmp$remnant)
 #'
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
@@ -722,7 +722,7 @@ hasSwarmed <- function(x) {
 #' tmp
 #' hasSuperseded(tmp)
 #'
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
@@ -767,7 +767,7 @@ hasSuperseded <- function(x) {
 #' colony
 #' isProductive(colony)
 #'
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)

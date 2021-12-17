@@ -10,6 +10,8 @@ isPop = function(x) {
 #' @rdname Colony
 #' @title Honeybee colony
 #'
+#' @description An object holding honeybee colony
+#'
 #' @slot id character, ID of the colony, which is equal to the ID of the queen
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link{Pop-class}}, the queen of the colony (we use
@@ -28,21 +30,21 @@ isPop = function(x) {
 #' @slot last_event character, the last event of the colony TODO: we probably don't need this
 #' @slot misc list, available for storing extra information about the colony
 #'
-#' @example
+#' @return \code{\link{Colony-class}}
+#'
+#' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #'
 #' colony1
 #' colony2
 #'
 #' apiary <- c(colony1, colony2)
-#'
-#' @return \code{\link{Colony-class}}
 #'
 #' @export
 
