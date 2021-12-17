@@ -15,7 +15,7 @@ isPop = function(x) {
 #' @slot id character, ID of the colony, which is equal to the ID of the queen
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link{Pop-class}}, the queen of the colony (we use
-#'   its misc slot for queen's age and drones/fathers she mated with)
+#'   its misc slot for queen's age and drones (fathers) she mated with)
 #' @slot virgin_queens \code{\link{Pop-class}}, virgin queens of the
 #'   colony
 #' @slot drones \code{\link{Pop-class}}, drones of the colony
