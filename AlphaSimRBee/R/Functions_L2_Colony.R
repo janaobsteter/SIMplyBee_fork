@@ -3,8 +3,8 @@
 #' @rdname createColony
 #' @title Create a new Colony
 #'
-#' @description Creates a new \code{\link{Colony-class}} to initiate
-#'   simulations.
+#' @description Level 2 function that creates a new \code{\link{Colony-class}}
+#'   to initiate simulations.
 #'
 #' @param location numeric, location of the colony as \code{c(x, y)}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
@@ -75,8 +75,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #' @rdname reQueenColony
 #' @title Re-queen a colony
 #'
-#' @description Re-queen a colony adds a mated or a virgin queen, removes the
-#'   previous queen, and changes colony id to the new mated queen.
+#' @description Level 2 function that re-queens a colony adds a mated or a
+#'   virgin queen, removes the previous queen, and changes colony id to the new
+#'   mated queen.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
@@ -122,8 +123,8 @@ reQueenColony <- function(colony, queen) {
 #' @rdname addVirginQueens
 #' @title Add (raise) virgin queens in the colony
 #'
-#' @description Adds (raises) the specified number of virgin queens in the
-#'   colony by crossing the current queen and the fathers.
+#' @description Level 2 function that adds (raises) the specified number of
+#'   virgin queens in the colony by crossing the current queen and the fathers.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of virgin queens to add
@@ -165,9 +166,10 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #' @rdname addWorkers
 #' @title Add (raise) workers in the colony
 #'
-#' @description Adds (raises) the specified number of workers in the colony by
-#'   crossing the current queen and the fathers. If there are already some
-#'   workers present, new and present workers are combined.
+#' @description Level 2 function that adds (raises) the specified number of
+#'   workers in the colony by crossing the current queen and the fathers. If
+#'   there are already some workers present, new and present workers are
+#'   combined.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of workers to add
@@ -214,9 +216,9 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #' @rdname addDrones
 #' @title Add (raise) drones in the colony
 #'
-#' @description Adds (raises) the specified number of drones in the colony by
-#'   crossing the current queen and the fathers. If there are already some
-#'   drones present, new and present drones are combined.
+#' @description Level 2 function that adds (raises) the specified number of
+#'   drones in the colony by crossing the current queen and the fathers. If
+#'   there are already some drones present, new and present drones are combined.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of drones to add
@@ -257,8 +259,9 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' @rdname buildUpColony
 #' @title Build up colony by adding (raising) workers and drones
 #'
-#' @description Build up colony by adding (raising) workers and drones, usually
-#'   in spring or after events such as split or swarming.
+#' @description Level 2 function that builds up colony by adding (raising)
+#'   workers and drones, usually in spring or after events such as split or
+#'   swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nWorkers integer, desired number of workers in the colony (currently
@@ -323,9 +326,9 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #' @rdname replaceWorkers
 #' @title Replaces a proportion of workers with new workers
 #'
-#' @description Replaces a proportion of workers with new workers from the
-#'   colony. Useful after events like season change, swarming, supersedure, etc.
-#'   due to the short life span of the workers.
+#' @description Level 2 function that replaces a proportion of workers with new
+#'   workers from the colony. Useful after events like season change, swarming,
+#'   supersedure, etc. due to the short life span of the workers.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers to be replaced with new ones
@@ -381,9 +384,9 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
 #' @rdname replaceDrones
 #' @title Replaces a proportion drones with new drones
 #'
-#' @description Replaces a proportion drones with new drones from the colony.
-#'   Useful after events like season change, swarming, supersedure, etc. due to
-#'   the short life span of the drones.
+#' @description Level 2 function that replaces a proportion drones with new
+#'   drones from the colony. Useful after events like season change, swarming,
+#'   supersedure, etc. due to the short life span of the drones.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of drones to be replaced with new ones
@@ -432,7 +435,7 @@ replaceDrones <- function(colony, p = 1, use = "rand") {
 #' @rdname removeQueen
 #' @title Remove queen
 #'
-#' @description Remove the queen of a colony
+#' @description Level 2 function that removes the queen of a colony.
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
@@ -465,7 +468,8 @@ removeQueen <- function(colony) {
 #' @rdname removeVirginQueens
 #' @title Remove a proportion of virgin queens
 #'
-#' @description Remove a proportion of virgin queens of a colony
+#' @description Level 2 function that removes a proportion of virgin queens of a
+#'   colony.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
@@ -510,8 +514,8 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' @rdname removeWorkers
 #' @title Remove a proportion of workers
 #'
-#' @description Remove a proportion of workers, for example, as a preparation
-#'   for winter.
+#' @description Level 2 function that removes a proportion of workers, for
+#'   example, as a preparation for winter.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
@@ -565,7 +569,8 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
 #' @rdname removeDrones
 #' @title Remove a proportion of drones
 #'
-#' @description Remove a proportion of drones, for example, at the end of summer.
+#' @description Level 2 function that removes a proportion of drones, for
+#'   example, at the end of summer.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
@@ -616,9 +621,10 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' @rdname resetEvents
 #' @title Reset colony events
 #'
-#' @description Resets the slots swarm, split, supersedure, collapsed, and
-#'   production to FALSE. Useful at the end of a yearly cycle to reset the
-#'   events, allowing the user to track new events in a new year.
+#' @description Level 2 function that resets the slots swarm, split,
+#'   supersedure, collapsed, and production to FALSE. Useful at the end of a
+#'   yearly cycle to reset the events, allowing the user to track new events in
+#'   a new year.
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
@@ -774,9 +780,9 @@ collapseColony <- function(colony) {
 #' @rdname swarmColony
 #' @title Swarm colony
 #'
-#' @description Swarming is an event where the queen leaves with a proportion of
-#'   workers to create a new colony (the swarm). The remnant colony retains the
-#'   other proportion of workers and all drones.
+#' @description Level 2 function that swarms colony - an event where the queen
+#'   leaves with a proportion of workers to create a new colony (the swarm). The
+#'   remnant colony retains the other proportion of workers and all drones.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
@@ -844,9 +850,9 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
 #' @rdname supersedeColony
 #' @title Supersede colony
 #'
-#' @description Supersede colony by replacing the queen with a new virgin queen.
-#'   The queen is removed and just one virgin queen prevails. The workers and
-#'   drones stay unchanged.
+#' @description Level 2 function that supersedes colony - an event where the
+#'   queen dies and one of virgin queens prevails. The workers and drones stay
+#'   unchanged.
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
@@ -884,10 +890,10 @@ supersedeColony <- function(colony) {
 #' @rdname splitColony
 #' @title Split colony in two colonies
 #'
-#' @description Split colony into two new colonies to prevent swarming (in
-#'   managed situation). The remnant colony retains the queen and a
-#'   proportion of the workers and all drones. The split colony gets the other
-#'   part of the workers and keeps location of the original colony.
+#' @description Level 2 function that splits colony into two new colonies to
+#'   prevent swarming (in managed situation). The remnant colony retains the
+#'   queen and a proportion of the workers and all drones. The split colony gets
+#'   the other part of the workers and keeps location of the original colony.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony
@@ -944,7 +950,8 @@ splitColony <- function(colony, p = 0.3) {
 #' @rdname setLocation
 #' @title Set colony location
 #'
-#' @description Set colony location to (x, y) coordinates.
+#' @description Level 2 function that to set colony location to (x, y)
+#'   coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param location numeric or list, location to be set for the
@@ -1009,7 +1016,11 @@ setLocation <- function(x, location) {
   return(x)
 }
 
-# TODO: Document
+#' @rdname setPhenoColony
+#' @title TODO
+#'
+#' @description Level 2 function that TODO
+#'
 # TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
 #   in getColonyGv()?
 # TODO: what if caste phenos have already been set? need a sensible default!!!

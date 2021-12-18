@@ -3,8 +3,8 @@
 #' @rdname getCaste
 #' @title Access individuals of a caste
 #'
-#' @description Access individuals of a caste. These individuals stay in the
-#'   colony (compared to \code{\link{pullCaste}}).
+#' @description Level 1 function that returns individuals of a caste. These
+#'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -209,10 +209,10 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @rdname createWorkers
 #' @title Creates workers from the colony
 #'
-#' @description Creates the specified number of workers from the colony
-#'   by mating the colony queen and the fathers. If csd locus is defined, it
-#'   takes it into account and any csd homozygotes are removed and counted as
-#'   homozygous drones.
+#' @description Level 1 function that creates the specified number of workers
+#'   from the colony by mating the colony queen and the fathers. If csd locus is
+#'   defined, it takes it into account and any csd homozygotes are removed and
+#'   counted as homozygous drones.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of workers to create
@@ -279,9 +279,10 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #' @rdname createFounderDrones
 #' @title Creates drones from a founding (base) population
 #'
-#' @description Creates drones from a founding (base) population by doubling
-#'   recombined genomes of each founding individual - mimicking a queen laying
-#'   drones. Such drones are usually used as fathers when creating colonies.
+#' @description Level 1 function that creates drones from a founding (base)
+#'   population by doubling recombined genomes of each founding individual -
+#'   mimicking a queen laying drones. Such drones are usually used as fathers
+#'   when creating colonies.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param nDronesPerQueen integer, number of drones to create per founding
@@ -318,9 +319,9 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @rdname createDrones
 #' @title Creates drones from the colony
 #'
-#' @description Creates the specified number of drones from the colony.
-#'   Currently this is done by creating doubled-haploids from a queen
-#'   (generating recombinant gametes and doubling them).
+#' @description Level 1 function that creates the specified number of drones
+#'   from the colony. Currently this is done by creating doubled-haploids from a
+#'   queen (generating recombinant gametes and doubling them).
 #'   TODO The drones will eventually be made properly haploid!
 #'        Follow https://github.com/HighlanderLab/AlphaSimRBee/issues/24
 #'
@@ -354,8 +355,8 @@ createDrones <- function(colony, nInd) {
 #' @rdname createDCA
 #' @title Create a drone congregation area (DCA)
 #'
-#' @description Create a population of drones from one or multiple
-#'   colonies. Such a population is often referred to as a drone
+#' @description Level 1 function that creates a population of drones from one or
+#'   multiple colonies. Such a population is often referred to as a drone
 #'   congregation area (DCA).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
@@ -399,8 +400,8 @@ createDCA <- function(x, nInd = NULL) {
 #' @rdname pullInd
 #' @title Pull individuals from a population
 #'
-#' @description Pull individuals from a population and update the population
-#'   (these individuals don't stay in a population).
+#' @description Level 1 function that pulls individuals from a population and
+#'   update the population (these individuals don't stay in a population).
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
@@ -438,11 +439,11 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @rdname pullDroneGroupsFromDCA
 #' @title Pulls drone groups from a Drone Congregation Area (DCA)
 #'
-#' @description Pulls drone groups from a Drone Congregation Area (DCA) to use
-#'   them later in mating. Number of drones per group is sampled from a Poisson
-#'   distribution parameterised with an average group size. Drones are pulled
-#'   (removed) from the DCA to reflect the fact that drones die after mating, so
-#'   they can't be present in the DCA anymore.
+#' @description Level 1 function that pulls drone groups from a Drone
+#'   Congregation Area (DCA) to use them later in mating. Number of drones per
+#'   group is sampled from a Poisson distribution parameterised with an average
+#'   group size. Drones are pulled (removed) from the DCA to reflect the fact
+#'   that drones die after mating, so they can't be present in the DCA anymore.
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param nGroups integer, number of drone groups to be created
@@ -485,8 +486,9 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' @rdname pullCaste
 #' @title Pull individuals from a caste in a colony
 #'
-#' @description Pull individuals from a caste in a colony. These individuals are
-#' removed from the colony (compared to \code{\link{getCaste}}).
+#' @description Level 1 function that pulls individuals from a caste in a
+#'   colony. These individuals are removed from the colony (compared to
+#'   \code{\link{getCaste}}).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", virgin_queens", "workers", or "drones"
@@ -638,9 +640,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @rdname crossVirginQueen
 #' @title Cross (mate) a virgin queen to a group drones
 #'
-#' @description Cross (mate) a virgin queen to a group of drones. This function
-#'   does not create any progeny, it only stores the mated drones (fathers) so
-#'   we can later create progeny as needed.
+#' @description Level 1 function that crossses (mates) a virgin queen to a group
+#'   of drones. This function does not create any progeny, it only stores the
+#'   mated drones (fathers) so we can later create progeny as needed.
 #'
 #' @param virginQueen \code{\link{Pop-class}}
 #' @param fathers \code{\link{Pop-class}}
@@ -683,7 +685,7 @@ crossVirginQueen <- function(virginQueen, fathers) {
 #' @rdname setQueensYOB
 #' @title Set the queen's year of birth
 #'
-#' @description Set the queen's year of birth
+#' @description Level 1 function that sets the queen's year of birth.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}

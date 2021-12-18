@@ -3,7 +3,7 @@
 #' @rdname createColonies
 #' @title Create colonies
 #'
-#' @description Creates a set of colonies
+#' @description Level 3 function that creates a set of colonies.
 #'
 #' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
 #' or \code{NULL} objects
@@ -56,7 +56,8 @@ createColonies <- function(..., n = NULL) {
 #' @rdname createColonies2
 #' @title Create colonies (a version that will encompass createColonies soon) TODO
 #'
-#' @description Create a set of colonies. Usually at a start simulation.
+#' @description Level 3 function that creates a set of colonies. Usually to
+#'   start a simulation.
 #'
 #' @param pop \code{\link{Pop-class}}, individuals that will be used to seed
 #'   queens and drones in colonies (these individuals are selected at random if
@@ -139,8 +140,8 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
 #' @rdname addColonyToColonies
 #' @title Add a colony to colonies
 #'
-#' @description Adds a colony to a set of colonies, for example, to add a new
-#' colony to an apiary.
+#' @description Level 3 function that adds a colony to a set of colonies, for
+#'   example, to add a new colony to an apiary.
 #'
 #' @param colonies \code{\link{Colonies-class}}, colonies that will be expanded
 #' @param colony \code{\link{Colony-class}}, colony that will be added
@@ -168,7 +169,7 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
 #'
 #' @export
 addColonyToColonies <- function(colonies, colony) {
-  if (!isColony(colonies)) {
+  if (!isColonies(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
   if (!isColony(colony)) {
@@ -181,9 +182,10 @@ addColonyToColonies <- function(colonies, colony) {
 #' @rdname assignColonyToColonies
 #' @title Assign (replace) a colony to colonies
 #'
-#' @description Assigns (replaces) a colony among a set of colonies, for example,
-#' to replace an old colony. By defining a position, it will insert the colony to
-#' that position and with this replace the old colony at that position.
+#' @description Level 3 function that assigns (replaces) a colony among a set of
+#'   colonies, for example, to replace an old colony. By defining a position, it
+#'   will insert the colony to that position and with this replace the old
+#'   colony at that position.
 #'
 #' @param colony Colony, colony that will be added
 #' @param colonies Colonies, set of colonies that will be expanded
@@ -223,8 +225,8 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' @rdname selectColonies
 #' @title Select individual colonies from a set of colonies
 #'
-#' @description Select individual colonies from a set of colonies based on colony
-#' index or name
+#' @description Level 3 function that selects individual colonies from a set of
+#'   colonies based on colony index or name.
 #'
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
@@ -246,7 +248,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' selectColonies(apiary, ID = "4")
 #' selectColonies(apiary, ID = c(4, 5))
 #' selectColonies(apiary, ID = c("4", "5"))
-#'
+#' # ... alternative
 #' apiary[1]
 #' apiary[[1]]
 #' apiary["4"]
@@ -255,6 +257,10 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' getId(apiary[c("4", "5")])
 #' getId(apiary[c(2, 1)])
 #' getId(apiary[c("5", "4")])
+#'
+#' getId(selectColonies(apiary, p = 0.5))
+#' getId(selectColonies(apiary, p = 0.5))
+#' getId(selectColonies(apiary, p = 0.5))
 #'
 #' @return Colonies
 #'
@@ -281,9 +287,9 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @rdname pullColonies
 #' @title Pull some colonies from a larger set of colonies
 #'
-#' @description Pull the colonies from the list of all colonies based on colony
-#' IDs and return two lists: a list of selected colonies and updated original
-#' colonies.
+#' @description Level 3 function that pulls the colonies from the list of all
+#'   colonies based on colony IDs and return two lists: a list of selected
+#'   colonies and updated original colonies.
 #'
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
@@ -337,8 +343,8 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @rdname removeColonies
 #' @title Remove the colonies from the colony list based on IDs
 #'
-#' @description Remove the colonies from the list of all colonies based
-#' on colony IDs and return a list of remaining colonies.
+#' @description Level 3 function that removes the colonies from the list of all
+#'   colonies based on colony IDs and return a list of remaining colonies.
 #'
 #' @param colonies Colonies
 #' @param ID character, IDs of colony(ies) in \code{colonies}
@@ -365,67 +371,10 @@ removeColonies <- function(colonies, ID) {
   return(ret)
 }
 
-#' @rdname createColoniesFromAPop
-#' @title  A merger of the createVirginColonies and createMatedColonies
-#' @description Virgin Colonies description:  This function is intended for quickly creating multiple mated or unmated/virgin
-#' colonies, often at the start of a simulation - to seed the simulation. To create virgin colonies this
-#' function takes a population, pulls out virgin queens to initiate the colonies. To create mated colonies
-#' this function takes a population, pulls out queens, creates drones from the remainder, and then
-#' mates the queens to initiate the colonies. Other caste members have to be added later!
-#'
-#' @param pop TODO
-#' @param nColonies TODO
-#' @param nAvgFathers TODO
-#' @param nDronesPerQueen TODO
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' apiary <- createVirginColonies(pop = basePop, nColonies = 3)
-#' nQueens(apiary)
-#' nVirginQueens(apiary)
-#' nFathers(apiary)
-#' nWorkers(apiary)
-#' nDrones(apiary)
-#'
-#' @return Colonies
-#'
-#' @export
-createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,
-                                   nDronesPerQueen = 100, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
-  }
-  ret <- createColonies(n = nColonies)
-  if (is.null(nAvgFathers)) {
-    virginQueens <- selectInd(pop, nInd = nColonies, use = "rand")
-    for (colony in 1:nColonies) {
-      ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
-                                             simParamBee = simParamBee)
-    }
-  } else {
-    tmp <- pullInd(pop = pop, nInd = nColonies)
-    queens <- tmp$pulled
-    DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
-    fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nColonies, avgGroupSize = nAvgFathers)
-    for (colony in 1:nColonies) {
-      ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                             fathers = fatherPackages[[colony]],
-                                             simParamBee = simParamBee)
-    }
-  }
-  return(ret)
-}
-
 #' @rdname buildUpColonies
 #' @title  Build up Colonies by adding workers and drones
 #'
-#' @description Workers and drones are added to the colonies to build them
+#' @description Level 3 function that TODO Workers and drones are added to the colonies to build them
 #' up to the number of desired workers and drones (nWorkers and nDrones).
 #' For example: a user may build up colonies in the Period 1 and if events such as split or swarming
 #' occur.
@@ -445,7 +394,7 @@ createColoniesFromAPop <- function(pop, nColonies, nAvgFathers = NULL,
 #' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
@@ -472,7 +421,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
 #' @rdname replaceWorkersColonies
 #' @title  Replace workers in all the colonies of a Colonies object
 #'
-#' @description The function replaces a given proportion of workers in all the colonies
+#' @description Level 3 function that ... The function replaces a given proportion of workers in all the colonies
 #' of a Colonies object with new workers from the same mated queen. The default percentage
 #' is set to 1, hence replacing all workers If some colonies do not have workers, the
 #' function does not add them.
@@ -490,7 +439,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
 #' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
@@ -519,7 +468,7 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
 #' @rdname replaceDronesColonies
 #' @title  Replace drones in all the colonies of a Colonies object
 #'
-#' @description The function replaces a given proportion of drones in all the colonies
+#' @description Level 3 function that ... The function replaces a given proportion of drones in all the colonies
 #' of a Colonies object with new drones from the same queen. The default percentage
 #' is set to 1, hence replacing all drones. If some colonies do not have drones, the
 #' function does not add them.
@@ -537,7 +486,7 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
 #' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
@@ -562,7 +511,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #' @rdname reQueenColonies
 #' @title TODO
 #'
-#' @description: Add a new queen/virgin queen into the queens slot of the colonies.
+#' @description:Level 3 function that ... Add a new queen/virgin queen into the queens slot of the colonies.
 #' For example: this can be used to re-queen swarmed or split colonies where no queens are present.
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
@@ -579,7 +528,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
@@ -613,7 +562,7 @@ reQueenColonies <- function(colonies, queens) {
 #' @rdname crossColonies
 #' @title TODO
 #'
-#' @description:  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
+#' @description Level 3 function that ...  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
 #' \creates workers, drones and a new virgin queen and write them to the corresponding
 #' \slots of the colonies object.
 #' #IF the colonies are queen-less - select a queen from the virgin queen - if not, mate the current queen!!!
@@ -637,7 +586,7 @@ reQueenColonies <- function(colonies, queens) {
 #' base <- newPop(founderGenomes)
 #'
 #' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
 #'
 #' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
 #'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
@@ -671,7 +620,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 #' @rdname collapseColonies
 #' @title TODO
 #'
-#' @description TODO
+#' @description Level 3 function that TODO
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
@@ -715,7 +664,8 @@ collapseColonies <- function(colonies, ID) {
 #' @rdname swarmColonies
 #' @title Swarm colony for all given colonies
 #'
-#' @description The same as \code{\link{swarmColony}} but for all given colonies.
+#' @description Level 3 function that does the same as \code{\link{swarmColony}}
+#'   but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
@@ -778,8 +728,8 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
 #' @rdname supersedeColonies
 #' @title Supersede colony for all given colonies
 #'
-#' @description The same as \code{\link{supersedeColony}} but for all given
-#'   colonies.
+#' @description Level 3 function that does the same as
+#'   \code{\link{supersedeColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
@@ -824,7 +774,8 @@ supersedeColonies <- function(colonies) {
 #' @rdname splitColonies
 #' @title Split colony in two colonies for all given colonies
 #'
-#' @description The same as \code{\link{splitColony}} but for all given colonies.
+#' @description Level 3 function that does the same as \code{\link{splitColony}}
+#'   but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, percentage of workers that will go to the split colony
@@ -883,7 +834,7 @@ splitColonies <- function(colonies, p = 0.3) {
 #' @rdname setPhenoColonies
 #' @title TODO
 #'
-#' @description
+#' @description Level 3 function that TODO
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param FUN TODO

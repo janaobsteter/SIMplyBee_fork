@@ -3,7 +3,8 @@
 #' @rdname nColonies
 #' @title Number of colonies
 #'
-#' @description Returns the number of colonies in a colonies object
+#' @description Level 0 function that returns the number of colonies in a
+#'   colonies object.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
@@ -31,7 +32,8 @@ nColonies <- function(colonies) {
 }
 
 #' @rdname nCaste
-#' @title Number of individuals of a caste in a colony
+#' @title Level 0 function that returns the number of individuals of a caste in a
+#'   colony
 #'
 #' @description Returns the number of individuals of a caste in a colony
 #'
@@ -286,8 +288,8 @@ nDrones <- function(x) {
 #' @rdname nHomDrones
 #' @title Number of homozygous drones in a colony
 #'
-#' @description Returns the number of homozygous drones in a colony (these are
-#'   non viable individuals and only their number is stored).
+#' @description Level 0 function that returns the number of homozygous drones in
+#'   a colony (these are non viable individuals and only their number is stored).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -324,10 +326,7 @@ nHomDrones <- function(x) {
 #' @rdname isQueenMated
 #' @title Is the queen mated?
 #'
-#' @description When queen is mated, we store drones she mated with (fathers of
-#'   future progeny) in the same object to have genetic information for
-#'   generating future progeny. This function tests if queen is mated, by
-#'   testing for the presence of fathers.
+#' @description Level 0 function that returns queen's mating status.
 #'
 #' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}}, queen or
 #'   colony that will be inspected
@@ -376,7 +375,7 @@ isQueenMated <- function(x) {
 #' @rdname getQueensYOB
 #' @title Access the queen's year of birth
 #'
-#' @description Access the queen's year of birth
+#' @description Level 0 function that returns the queen's year of birth.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -440,7 +439,7 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' @rdname getQueensAge
 #' @title Get (calculate) the queen's age
 #'
-#' @description Get (calculate) the queen's age
+#' @description Level 0 function that returns the queen's age.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -497,7 +496,8 @@ getQueensAge <- function(x, currentYear) {
 #' @rdname getId
 #' @title Get the colony ID
 #'
-#' @description Get the colony ID. This is by definition the ID of the queen.
+#' @description Level 0 function that returns the colony ID. This is by
+#'   definition the ID of the queen.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}
 #'
@@ -540,7 +540,8 @@ getId <- function(x) {
 #' @rdname getLocation
 #' @title Get the colony location
 #'
-#' @description Get the colony location as (x, y) coordinates.
+#' @description Level 0 function that returns the colony location as (x, y)
+#'   coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -599,8 +600,8 @@ getLocation <- function(x) {
 #' @rdname hasSplit
 #' @title Test if colony has split
 #'
-#' @description Test if colony has split. This will obviously impact colony
-#'   strength.
+#' @description Level 0 function that returns colony split status. This will
+#'   obviously impact colony strength.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -648,8 +649,8 @@ hasSplit <- function(x) {
 #' @rdname hasSwarmed
 #' @title Test if colony has swarmed
 #'
-#' @description Test if colony has swarmed. This will obviously have major
-#'   impact on the colony and its downstream events.
+#' @description Level 0 function that returns colony swarmed status. This will
+#'   obviously have major impact on the colony and its downstream events.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -697,7 +698,7 @@ hasSwarmed <- function(x) {
 #' @rdname hasSuperseded
 #' @title Test if colony has superseded
 #'
-#' @description Test if colony has superseded.
+#' @description Level 0 function that returns colony supersedure status.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -743,8 +744,8 @@ hasSuperseded <- function(x) {
 #' @rdname isProductive
 #' @title Test if colony is currently productive
 #'
-#' @description Test if colony is currently productive. This can be used to
-#'   decided if colony production can be simulated.
+#' @description Level 0 function that returns colony production status. This can
+#'   be used to decided if colony production can be simulated.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
@@ -785,7 +786,7 @@ isProductive <- function(x) {
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome
 #'
-#' @description TODO
+#' @description Level 0 function that returns simulated honeybee genomes
 #'
 #' @param nInd number of individuals to simulate
 #' @param nChr number of chromosomes to simulate
@@ -842,8 +843,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @rdname getCsdHaplo
 #' @title Get haplotypes from the csd locus
 #'
-#' @description Get haplotypes from the csd locus. See \code{\link{SimParamBee}}
-#'   for more information about the csd locus.
+#' @description Level 0 function that returns haplotypes from the csd locus. See
+#'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -913,8 +914,8 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @rdname getCsdGeno
 #' @title Get genotypes from the csd locus
 #'
-#' @description Get genotypes from the csd locus. See \code{\link{SimParamBee}}
-#'   for more information about the csd locus.
+#' @description Level 0 function that returns genotypes from the csd locus. See
+#'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -981,7 +982,8 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' @rdname isGenoHeterozygous
 #' @title Test if a multilocus genotype is heterozygous
 #'
-#' @description Test if a multilocus genotype is heterozygous
+#' @description Level 0 function that returns heterozygote status for a
+#'   multilocus genotype.
 #'
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
@@ -1017,9 +1019,9 @@ isGenoHeterozygous <- function(x) {
 #' @rdname isCsdHeterozygous
 #' @title Test if individuals are heterozygous at the csd locus
 #'
-#' @description Test if individuals of a population are heterozygous at the csd
-#'   locus. See \code{\link{SimParamBee}} for more information about the csd
-#'   locus.
+#' @description Level 0 function that returns if individuals of a population are
+#'   heterozygous at the csd locus. See \code{\link{SimParamBee}} for more
+#'   information about the csd locus.
 #'
 #' @param pop \code{\link{Pop-class}}
 #'
@@ -1058,8 +1060,9 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' @rdname nCsdAlleles
 #' @title Report the number of distinct csd alleles
 #'
-#' @description Report the number of distinct csd alleles in input. See
-#'   \code{\link{SimParamBee}} for more information about the csd locus.
+#' @description Level 0 function that returns the number of distinct csd alleles
+#'   in input. See \code{\link{SimParamBee}} for more information about the csd
+#'   locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -1119,9 +1122,10 @@ nCsdAlleles <- function(x, simParamBee = NULL) {
 }
 
 #' @rdname getIbdHaplo
-#' @title Access IBD haplotype data
+#' @title Access IBD haplotypes
 #'
-#' @description Access IBD (identity by descent) haplotype data
+#' @description Level 0 function that returns IBD (identity by descent)
+#'   haplotypes.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
@@ -1143,9 +1147,9 @@ getIbdHaplo <- function(pop, chr = NULL, simParam = NULL) {
 }
 
 #' @rdname getQtlHaplo
-#' @title Access QTL haplotype data
+#' @title Access QTL haplotypes
 #'
-#' @description Access QTL haplotype data
+#' @description Level 0 function that returns QTL haplotypes.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
@@ -1171,9 +1175,9 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 }
 
 #' @rdname getQtlGeno
-#' @title Access QTL genotype data
+#' @title Access QTL genotypes
 #'
-#' @description Access QTL genotype data
+#' @description Level 0 function that returns QTL genotypes.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
@@ -1196,9 +1200,10 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 }
 
 #' @rdname getSegSiteHaplo
-#' @title Access haplotype data for all segregating sites
+#' @title Access haplotypes for all segregating sites
 #'
-#' @description Access haplotype data for all segregating sites
+#' @description Level 0 function that returns haplotypes for all segregating
+#'   sites.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param haplo character, either "all" for all haplotypes or an integer for a
@@ -1223,9 +1228,10 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 }
 
 #' @rdname getSegSiteGeno
-#' @title Access genotype data for all segregating sites
+#' @title Access genotypes for all segregating sites
 #'
-#' @description Access genotype data for all segregating sites
+#' @description Level 0 function that returns genotypes for all segregating
+#'   sites.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
@@ -1247,9 +1253,9 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 }
 
 #' @rdname getSnpHaplo
-#' @title Access SNP array haplotype data
+#' @title Access SNP array haplotypes
 #'
-#' @description Access SNP array haplotype data
+#' @description Level 0 function that returns SNP array haplotypes.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
@@ -1275,9 +1281,9 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 }
 
 #' @rdname getSnpGeno
-#' @title Access SNP array genotype data
+#' @title Access SNP array genotypes
 #'
-#' @description Access SNP array genotype data
+#' @description Level 0 function that returns SNP array genotypes.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param snpChip numeric, indicates which SNP array genotype to retrieve
@@ -1300,10 +1306,10 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 }
 
 #' @rdname getCasteIbdHaplo
-#' @title Access IBD haplotype data of individuals in a caste
+#' @title Access IBD haplotypes of individuals in a caste
 #'
-#' @description Access IBD (identity by descent) haplotype data of individuals
-#'   in a caste.
+#' @description Level 0 function that returns IBD (identity by descent)
+#'   haplotypes of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -1457,10 +1463,10 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonyIbdHaplo
-#' @title Access IBD haplotype data of individuals in colony
+#' @title Access IBD haplotypes of individuals in colony
 #'
-#' @description Access IBD (identity by descent) haplotype data of individuals
-#'   in colony.
+#' @description Level 0 function that returns IBD (identity by descent)
+#'   haplotypes of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -1562,9 +1568,10 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 }
 
 #' @rdname getCasteQtlHaplo
-#' @title Access QTL haplotype data of individuals in a caste
+#' @title Access QTL haplotypes of individuals in a caste
 #'
-#' @description Access QTL haplotype data of individuals in a caste.
+#' @description Level 0 function that returns QTL haplotypes of individuals in a
+#'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -1723,9 +1730,10 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonyQtlHaplo
-#' @title Access QTL haplotype data of individuals in colony
+#' @title Access QTL haplotypes of individuals in colony
 #'
-#' @description Access QTL haplotype data of individuals in colony.
+#' @description Level 0 function that returns QTL haplotypes of individuals in
+#'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -1831,9 +1839,10 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 }
 
 #' @rdname getCasteQtlGeno
-#' @title Access QTL genotype data of individuals in a caste
+#' @title Access QTL genotypes of individuals in a caste
 #'
-#' @description Access QTL genotype data of individuals in a caste.
+#' @description Level 0 function that returns QTL genotypes of individuals in a
+#'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -1989,9 +1998,10 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonyQtlGeno
-#' @title Access QTL genotype data of individuals in colony
+#' @title Access QTL genotypes of individuals in colony
 #'
-#' @description Access QTL genotype data of individuals in colony.
+#' @description Level 0 function that returns QTL genotypes of individuals in
+#'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -2094,11 +2104,11 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 }
 
 #' @rdname getCasteSegSiteHaplo
-#' @title Access haplotype data for all segregating sites of individuals in a
+#' @title Access haplotypes for all segregating sites of individuals in a
 #'   caste
 #'
-#' @description Access haplotype data for all segregating sites of individuals
-#'   in a caste.
+#' @description Level 0 function that returns haplotypes for all segregating
+#'   sites of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -2255,11 +2265,11 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySegSiteHaplo
-#' @title Access haplotype data for all segregating sites of individuals in
+#' @title Access haplotypes for all segregating sites of individuals in
 #'   colony
 #'
-#' @description Access haplotype data for all segregating sites of individuals
-#'   in colony.
+#' @description Level 0 function that returns haplotypes for all segregating
+#'   sites of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -2363,11 +2373,11 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 }
 
 #' @rdname getCasteSegSiteGeno
-#' @title Access genotype data for all segregating sites of individuals in a
+#' @title Access genotypes for all segregating sites of individuals in a
 #'   caste
 #'
-#' @description Access genotype data for all segregating sites of individuals in
-#'   a caste.
+#' @description Level 0 function that returns genotypes for all segregating
+#'   sites of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -2521,11 +2531,11 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySegSiteGeno
-#' @title Access genotype data for all segregating sites of individuals in
+#' @title Access genotypes for all segregating sites of individuals in
 #'   colony
 #'
-#' @description Access genotype data for all segregating sites of individuals in
-#'   colony.
+#' @description Level 0 function that returns genotypes for all segregating
+#'   sites of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -2626,9 +2636,10 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 }
 
 #' @rdname getCasteSnpHaplo
-#' @title Access SNP array haplotype data of individuals in a caste
+#' @title Access SNP array haplotypes of individuals in a caste
 #'
-#' @description Access SNP array haplotype data of individuals in a caste.
+#' @description Level 0 function that returns SNP array haplotypes of
+#'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -2788,9 +2799,10 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySnpHaplo
-#' @title Access SNP array haplotype data of individuals in colony
+#' @title Access SNP array haplotypes of individuals in colony
 #'
-#' @description Access SNP array haplotype data of individuals in colony.
+#' @description Level 0 function that returns SNP array haplotypes of
+#'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -2896,9 +2908,10 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 }
 
 #' @rdname getCasteSnpGeno
-#' @title Access SNP array genotype data of individuals in a caste
+#' @title Access SNP array genotypes of individuals in a caste
 #'
-#' @description Access SNP array genotype data of individuals in a caste.
+#' @description Level 0 function that returns SNP array genotypes of individuals
+#'   in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -3054,9 +3067,10 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 }
 
 #' @rdname getColonySnpGeno
-#' @title Access SNP array genotype data of individuals in colony
+#' @title Access SNP array genotypes of individuals in colony
 #'
-#' @description Access SNP array genotype data of individuals in colony.
+#' @description Level 0 function that returns SNP array genotypes of individuals
+#'   in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -3161,7 +3175,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' @rdname getCasteGv
 #' @title Access genetic values of individuals in a caste
 #'
-#' @description Access genetic values of individuals in a caste.
+#' @description Level 0 function that returns genetic values of individuals in a
+#'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -3303,7 +3318,8 @@ getDronesGv <- function(x, nInd = NULL) {
 #' @rdname getColonyGv
 #' @title Access genetic values of individuals in colony
 #'
-#' @description Access genetic values of individuals in colony.
+#' @description Level 0 function that returns genetic values of individuals in
+#'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or Colonies
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -3400,7 +3416,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @rdname getCasteBv
 #' @title Access breeding values of individuals in a caste
 #'
-#' @description Access breeding values of individuals in a caste.
+#' @description Level 0 function that returns breeding values of individuals in
+#'   a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -3549,7 +3566,8 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @rdname getColonyBv
 #' @title Access breeding values of individuals in colony
 #'
-#' @description Access breeding values of individuals in colony.
+#' @description Level 0 function that returns breeding values of individuals in
+#'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
@@ -3654,7 +3672,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' @rdname getCasteDd
 #' @title Access dominance deviations of individuals in a caste
 #'
-#' @description Access dominance deviations of individuals in a caste.
+#' @description Level 0 function that returns dominance deviations of
+#'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
@@ -3803,7 +3822,8 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @rdname getColonyDd
 #' @title Access dominance deviations of individuals in colony
 #'
-#' @description Access dominance deviations of individuals in colony.
+#' @description Level 0 function that returns dominance deviations of
+#'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, a combination of "queen", "fathers", "virgin_queens",
