@@ -72,6 +72,95 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   return(colony)
 }
 
+#' @rdname reQueenColony
+#' @title Re-queen a colony
+#'
+#' @description Re-queen a colony adds a mated or a virgin queen, removes the
+#'   previous queen, and changes colony id to the new mated queen.
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param queen \code{\link{Pop-class}} with one individual that will be the
+#'   queen of the colony; if she is not mated, then she will be added as a
+#'   virgin queen that will have to be mated later
+#'
+#' @return \code{\link{Colony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#'
+#' virginQueen <- basePop[3]
+#' reQueenColony(colony, queen = virginQueen)
+#'
+#' matedQueen <- crossVirginQueen(virginQueen = basePop[3], fathers = drones[6:10])
+#' reQueenColony(colony, queen = matedQueen)
+#'
+#' @export
+reQueenColony <- function(colony, queen) {
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  if  (!isPop(queen)) {
+    stop("Argument queen must be a Pop class object!")
+  }
+  if (isQueenMated(queen)) {
+    colony@queen <- queen
+    colony@id <- queen@id
+  } else {
+    colony@id <- NULL
+    colony@queen <- NULL
+    colony@virgin_queens <- queen
+  }
+  return(colony)
+}
+
+#' @rdname addVirginQueens
+#' @title Add (raise) virgin queens to the colony
+#'
+#' @description Adds (raises) the specified number of virgin queens in the
+#'   colony by crossing the current queen and the fathers.
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd integer, number of virgin queens to add
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Colony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' addVirginQueens(colony, nInd = 10)
+#'
+#' @export
+addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(colony@queen)) {
+    stop("Missing queen!")
+  }
+  if (!isQueenMated(colony)) {
+    stop("Unmated queen!")
+  }
+  tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  colony@virgin_queens <- tmp$virgin_queens
+  colony@nHomDrones <- colony@nHomDrones + tmp$nHomDrones
+  return(colony)
+}
+
 #' @rdname addWorkers
 #' @title Add (raise) workers to the colony
 #'
@@ -81,8 +170,8 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of workers to add
-#' @param new logical, should the workers be added a fresh (ignoring current
-#'   workers)
+#' @param new logical, should the workers be added a fresh (ignoring currently
+#'   present workers in the colony)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}}
@@ -130,8 +219,8 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, number of drones to add
-#' @param new logical, should the drones be added a fresh (ignoring current
-#'   drones)
+#' @param new logical, should the drones be added a fresh (ignoring currently
+#'   present drones)
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -160,104 +249,6 @@ addDrones <- function(colony, nInd, new = FALSE) {
     } else {
       colony@drones <- c(colony@drones, newDrones)
     }
-  }
-  return(colony)
-}
-
-#' @rdname addVirginQueens
-#' @title Add (raise) virgin queens to the colony
-#'
-#' @description Adds (raises) the specified number of virgin queens in the
-#'   colony by crossing the current queen and the fathers.
-#'
-#' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, Number of virgin queens to add
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' colony <- createColony(queen = basePop[2], fathers = drones)
-#' colony
-#' addVirginQueens(colony, nInd = 10)
-#'
-#' @export
-addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if (is.null(colony@queen)) {
-    stop("Missing queen!")
-  }
-  if (!isQueenMated(colony)) {
-    stop("Unmated queen!")
-  }
-  tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
-  colony@virgin_queens <- tmp$virgin_queens
-  colony@nHomDrones <- colony@nHomDrones + tmp$nHomDrones
-  return(colony)
-}
-
-#' @rdname reQueenColony
-#' @title TODO
-#'
-#' @description Re-queens a colony/colonies that have no queen or virgin queens present.
-#' This function allows users to insert a virgin queen or a previously mated queen
-#' into the queen-less colony.
-#'
-#' @param colony \code{\link{Colony-class}}
-#' @param queen  Pop/number of queens to add to the queen-less colony/colonies
-#'
-#' @return \code{\link{Colony-class}}
-#'
-#' @examples
-#' Create founder haplotypes
-#' founderPop <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
-#' SP <- SimParamBee$new(founderPop)
-#'
-#' #Create population
-#' base <- newPop(founderPop)
-#'
-#' #Create 10 mated colonies from the base population
-#' apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build-up the colonies
-#' apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize)
-#'
-#' #Split all the colonies
-#' tmp <- splitColonies(apiary1)
-#' apiary1 <- tmp$remnants
-#' apiary0 <- tmp$splits
-#'
-#' #Create 10 virgin queens from the base population
-#' virginQueens <- base[1]
-#'
-#' #Repopulate the split colonies with virgin queens taken from the base population
-#' apiary0 <- reQueenColonies(apiary0, queen = virginQueens)
-#'
-#' @export
-reQueenColony <- function(colony, queen) {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if  (!isPop(queen)) {
-    stop("Argument queen must be a Pop class object!")
-  }
-  if (isQueenMated(queen)) {
-    colony@queen <- queen
-    colony@id <- queen@id
-  } else {
-    colony@virgin_queens <- queen
   }
   return(colony)
 }
