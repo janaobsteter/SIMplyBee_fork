@@ -222,7 +222,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'   and \code{nHomDrones} (an integer)
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -297,7 +297,7 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -330,7 +330,7 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
