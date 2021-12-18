@@ -914,7 +914,7 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @rdname splitColony
 #' @title Split colony in two colonies
 #'
-#' @description Spit colony into two new colonies to prevent swarming (in
+#' @description Split colony into two new colonies to prevent swarming (in
 #'   managed situation). The remnant colony retains the queen and a
 #'   proportion of the workers and all drones. The split colony gets the other
 #'   part of the workers.
@@ -922,21 +922,21 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, percentage of workers that will go to the split colony
 #'
+#' @return list with two \code{\link{Colony-class}}, the \code{split} and the
+#'   \code{remnant} (see the description what each colony holds!)
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- createColony(queen = basePop[2], fathers = drones)
 #' (colony <- buildUpColony(colony, nWorkers = 100))
 #'
 #' tmp <- splitColony(colony)
 #' tmp$split
 #' tmp$remnant
-#'
-#' @return list with two \code{\link{Colony-class}}, the \code{split} and the
-#'   \code{remnant} (see the description what each colony holds!)
 #'
 #' @export
 splitColony <- function(colony, p = 0.3) {

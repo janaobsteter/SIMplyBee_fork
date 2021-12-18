@@ -827,56 +827,53 @@ supersedeColonies <- function(colonies, simParamBee = NULL) {
 }
 
 #' @rdname splitColonies
-#' @title TODO
+#' @title Split colony in two colonies for all given colonies
 #'
-#' @description: Two AlphaSim population objects of the split colonies and the remaining colonies are created.
-#' Spit the colony into two new colonies to prevent swarming (in managed populations)
-#' - one colony is with the old queen and a part of the workers and drones (this is the remaining colony)
-#' - the split colony is taken to a new location with part of the workers.
-#'  A new mated queen can be introduced to the split colony.
-#'  If no new queen is introduced, a virgin queen must be present to mate with fathers from DCA and continue colony
+#' @description The same as \code{\link{splitColony}} but for all given colonies.
 #'
+#' @param colonies \code{\link{Colonies-class}}
+#' @param p numeric, percentage of workers that will go to the split colony
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen TODO
-#' @param fathers TODO
-#' @param pWorkers TODO
-#' @param pDrones TODO
+#' @return list with two \code{\link{Colonies-class}}, the \code{splits} and the
+#'   \code{remnants} (see the description what each colony holds!)
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' (colony1 <- buildUpColony(colony1, nWorkers = 100))
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' (colony2 <- buildUpColony(colony2, nWorkers = 100))
+#' apiary <- c(colony1, colony2)
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#'  TODO FINISH EXAMPLE
-#'
-#' @return Two AlphaSim population objects of the split colonies and the remaining colonies
+#' tmp <- splitColonies(apiary)
+#' tmp$split
+#' tmp$split[[1]]
+#' tmp$split[[2]]
+#' tmp$remnant
+#' tmp$remnant[[1]]
+#' tmp$remnant[[2]]
 #'
 #' @export
-splitColonies <- function(colonies, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+splitColonies <- function(colonies, p = 0.3) {
+  if (!isColonies(colony)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
+  if (p < 0 | p > 1) {
+    stop("pSplit must be between 0 and 1!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(splits = createColonies(n = 0),?
-                  remnants = createColonies(n = 0))
+    ret <- list(splits = createColonies(n = 0),
+                remnants = createColonies(n = 0))
   } else {
     ret <- list(splits = createColonies(n = nCol),
                 remnants = createColonies(n = nCol))
     for (colony in 1:nCol) {
-      tmp <- splitColony(colonies[[colony]], simParamBee = simParamBee)
+      tmp <- splitColony(colonies[[colony]], p = p)
       ret$splits@colonies[[colony]] <- tmp$split
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }
