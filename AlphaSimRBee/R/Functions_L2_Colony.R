@@ -3,63 +3,58 @@
 #' @rdname createColony
 #' @title Create a new Colony
 #'
-#' @description Creates a new \code{\link{Colony}}.
-#' The function is intended for creating initial colonies from
-#' 'FOUNDERPOP' created by \code{\link{runMacs}}.
+#' @description Creates a new \code{\link{Colony-class}} to initiate
+#'   simulations.
 #'
-#' @param id Character, the ID of the colony, which equals the ID of the queen of not stated otherwise.
-#' @param location Numeric, location of the colony (x, y).
-#' @param queen AlphaSimR population object to become the queen of the colony.
-#' @param drones AlphaSimR population object to become the drones of the colony.
-#' @param workers AlphaSimR population object to become the workers of the colony.
-#' @param virgin_queens AlphaSimR individual or population object to become the virgin queen(s) of the colony.
-#' @param pheno A matrix of the phenotypes of the colony
-#' @param swarm Logical, whether the colony has swarmed
-#' @param split Logical, whether the colony has split
-#' @param supersedure Logical, whether the colony has superseded
-#' @param collapse Logical, whether the colony has collapsed
-#' @param production Logical, whether the colony produces hive products
-#' @param last_event Character, the last event of the colony #TODO: WE probably don't need this
-#' @param misc A list, normally empty and exists solely as an open slot available for uses to store extra information about individuals.
+#' @param location numeric, location of the colony as \code{c(x, y)}
+#' @param queen \code{\link{Pop-class}} with one individual that will be the
+#'   queen of the colony; error is thrown if more than one individual is given
+#' @param yearOfBirth numeric, year of birth of the queen
+#' @param fathers \code{\link{Pop-class}} with drones that the queen will mate
+#'   with as part of this function (if she is already mated, a warning is given
+#'   and the fathers argument is ignored)
+#' @param virgin_queens \code{\link{Pop-class}} with one or more individuals of
+#'   which one will become the queen of the colony in the future
+#'   TODO: think and explain what happens if we provide both a queen and virgin
+#'   queens (possibly of different origin)!
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details When a mated queen is given or a queen alongside with fathers, the
+#'   function also generates one virgin queen.
+#'   TODO: discuss this - see below
+#'
+#' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' # Create founder genomes
-#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
-#'
-#' # Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#'
-#' # Create a base population
 #' basePop <- newPop(founderGenomes)
 #'
-#' # Create two colonies
-#' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
+#' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:11])
 #' colony1
 #'
-#' colony2 <- createColony(virgin_queens = basePop[16])
+#' colony2 <- createColony(virgin_queens = basePop[12])
 #' colony2
 #'
-#' @return Colony
-#'
 #' @export
-createColony <- function(id = NULL, location = NULL,
-                         queen = NULL, yearOfBirth = NULL, fathers = NULL,
-                         virgin_queens = NULL, simParamBee = NULL) {
+createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
+                         fathers = NULL, virgin_queens = NULL,
+                         simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(id)) {
-    if (!is.null(queen)) {
-      id <- queen@id
+  if (!is.null(queen)) {
+    if (nInd(queen) > 1) {
+      stop("More than one individual given for a queen!")
+    }
+    if (isQueenMated(queen) & !is.null(fathers)) {
+      warning("The queen is already mated - ignoring fathers!")
+      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = queen@misc$fathers)
     } else {
-      id <- NA
+      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = fathers)
     }
   }
-  if (!is.null(queen)) {
-    queen@misc <- list(yearOfBirth = yearOfBirth, fathers = fathers)
-  }
   colony <- new("Colony",
-                id = as.character(id),
                 location = location,
                 queen = queen,
                 virgin_queens = virgin_queens)
@@ -67,9 +62,12 @@ createColony <- function(id = NULL, location = NULL,
   # TODO: do we really want to add virgin queen(s) automatically? Fells like
   #       we don't want this - we should have then also added workers and drones
   # TODO: should then buildUpColony add virginQueens?
-  if (!is.null(colony@queen) & isQueenMated(colony)) {
-    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
-    colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+  if (!is.null(colony@queen)) {
+    colony@id <- colony@queen@id
+    if (isQueenMated(colony)) {
+      # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+      colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+    }
   }
   return(colony)
 }
