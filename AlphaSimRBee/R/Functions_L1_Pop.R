@@ -45,6 +45,8 @@
 #' getFathers(colony1, nInd = 2)@id
 #' getFathers(colony1, nInd = 2)@id
 #'
+#' getFathers(getQueen(colony1))
+#'
 #' getCaste(colony1, caste = "virgin_queens")
 #' getCaste(colony1, caste = "virgin_queens")@id
 #' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
@@ -113,28 +115,23 @@
 #' @export
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {
   if (isColony(x)) {
-    if (is.null(nInd)) {
-      if (caste == "fathers") {
-        ret <- x@queen@misc$fathers
-      } else {
-        ret <- slot(x, caste)
-      }
+    if (caste == "fathers") {
+      pop <- x@queen@misc$fathers
     } else {
-      if (caste == "fathers") {
-        pop <- x@queen@misc$fathers
-      } else {
-        pop <- slot(x, caste)
+      pop <- slot(x, caste)
+    }
+    if (is.null(pop)) {
+      ret <- NULL
+    } else {
+      if (is.null(nInd)) {
+        nInd <- nInd(pop)
       }
-      if (is.null(pop)) {
-        ret <- NULL
-      } else {
-        nIndRequested <- nInd
-        nIndAvailable <- nInd(pop)
-        if (nIndRequested > nIndAvailable) {
-          nIndRequested <- nIndAvailable
-        }
-        ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+      nIndRequested <- nInd
+      nIndAvailable <- nInd(pop)
+      if (nIndRequested > nIndAvailable) {
+        nIndRequested <- nIndAvailable
       }
+      ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
     }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCaste, caste = caste, nInd = nInd, use = use)
@@ -159,10 +156,19 @@ getQueen <- function(x) {
 #' @describeIn getCaste Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)) {
+  if (isPop(x)) {
+    if (is.null(x@misc$fathers)) {
+      ret <- NULL
+    } else {
+      if (is.null(nInd)) {
+        nInd <- nInd(x@misc$fathers)
+      }
+      ret <- selectInd(pop = x@misc$fathers, nInd = nInd, use = use)
+    }
+  } else if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
