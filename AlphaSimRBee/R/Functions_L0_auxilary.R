@@ -323,13 +323,59 @@ nHomDrones <- function(x) {
   return(ret)
 }
 
+#' @rdname isQueenPresent
+#' @title Is the queen present
+#'
+#' @description Level 0 function that returns queen's present status (is she
+#'   present/alive or not).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' isQueenPresent(colony1)
+#' isQueenPresent(colony2)
+#' isQueenPresent(apiary)
+#'
+#' colony1 <- removeQueen(colony1)
+#' isQueenPresent(colony1)
+#'
+#' colony2 <- supersedeColony(colony2)
+#' isQueenPresent(colony2)
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
+#' @export
+isQueenPresent <- function(x) {
+  if (isColony(x)) {
+    ret <- !is.null(x@queen)
+  } else if (isColonies(x)) {
+    ret <- sapply(X = x@colonies, FUN = isQueenPresent)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname isQueenMated
 #' @title Is the queen mated?
 #'
 #' @description Level 0 function that returns queen's mating status.
 #'
-#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}}, queen or
-#'   colony that will be inspected
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -347,11 +393,8 @@ nHomDrones <- function(x) {
 #' colony1 <- removeQueen(colony1)
 #' isQueenMated(colony1)
 #'
-#' colony2 <- supersedeColony(colony2, fathers = drones[1:5])
+#' colony2 <- supersedeColony(colony2)
 #' isQueenMated(colony2)
-#'
-#' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 isQueenMated <- function(x) {
