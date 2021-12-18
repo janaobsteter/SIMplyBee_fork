@@ -668,16 +668,20 @@ resetEvents <- function(colony) {
 }
 
 #' @rdname crossColony
-#' @title Crosses a colony with a virgin queen to a group of drones
+#' @title Cross (mate) a virgin queen of a colony to a group of drones
 #'
-#' @description Cross a colony with a virgin queen to a group of drones. This
-#'   function creates progeny only if asked, but stores the mated drones
-#'   (fathers) so we can later create progeny as needed.
+#' @description Cross (mate) a virgin queen of colony to a group of drones. When
+#'   there are multiple virgin queen in the colony, one is selected at random,
+#'   mated and promoted to the queen of the colony. Mated drones (fathers) are
+#'   stored for producing progeny within this function or later.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones
 #' @param nWorkers integer, number of workers to create
 #' @param nDrones integer, number of drones to create
+#' @param new logical, should all the \code{nWorkers} and \code{nDrones} be from
+#'   the new queen or should we reach these numbers only by topping up workers
+#'   and drones
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -704,7 +708,8 @@ resetEvents <- function(colony) {
 #'
 #' @export
 crossColony <- function(colony, fathers = NULL, nWorkers = 0,
-                        nDrones = nWorkers * 0.1, simParamBee = NULL) {
+                        nDrones = nWorkers * 0.1, new = FALSE,
+                        simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -714,22 +719,25 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0,
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
-  if (is.null(fathers)) {
-    stop("Missing fathers!")
-  }
   if (is.null(colony@virgin_queens)) {
-    stop("No virgin queen!")
+    stop("No virgin queen(s)!")
   }
   if (!is.null(colony@queen)) {
     stop("Mated queen already present!")
   }
-  colony@queen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  if (is.null(fathers)) {
+    stop("Missing fathers!")
+  }
+  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
+  virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  colony@queen <- crossVirginQueen(virginQueen = virginQueen, fathers = fathers)
   colony@id <- colony@queen@id
-  colony@queen@misc$fathers <- fathers
+  # TODO: should we add virgin queens here by default?
   # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
   colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
-  colony <- addWorkers(colony, nInd = nWorkers, new = TRUE, simParamBee = simParamBee)
-  colony <- addDrones(colony, nInd = nDrones, new = TRUE)
+  # TODO: should we remove addWorkers() and addDrones() and leave this for buildUpColony()
+  colony <- addWorkers(colony, nInd = nWorkers, new = new, simParamBee = simParamBee)
+  colony <- addDrones(colony, nInd = nDrones, new = new)
   return(colony)
 }
 
