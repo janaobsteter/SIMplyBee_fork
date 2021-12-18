@@ -1003,15 +1003,16 @@ splitColony <- function(colony, pSplit = 0.30, newQueen = NULL,
 }
 
 #' @rdname setLocation
-#' @title Set the colony location
+#' @title Set colony location
 #'
-#' @description Set the colony location as (x, y) coordinates.
+#' @description Set colony location to (x, y) coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param location numeric or list, location (x, y) to be set for the Colony
-#' (numeric) or for Colonies (numeric to set the same location for all colony or
-#' list to set different location for each colony - if list, it has to has the
-#' same length at there is colonies in \code{x})
+#' @param location numeric or list, location to be set for the
+#'   \code{\link{Colony-class}} or for \code{\link{Colonies-class}}; when
+#'   numeric the same location will be set for all colonies; when list different
+#'   locations will be set for each colony - the list has to have the same
+#'   length at there are colonies in \code{x})
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
