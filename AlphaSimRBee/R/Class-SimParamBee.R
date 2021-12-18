@@ -27,7 +27,7 @@ SimParamBee <- R6Class(
   "SimParamBee",
   inherit = SimParam,
   public = list(
-    #### Public ----
+    # Public ----
 
     #' @field csdChr integer, chromosome of the csd locus
     csdChr = "integerOrNULL",
@@ -89,7 +89,7 @@ SimParamBee <- R6Class(
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
 
-      # csd
+      # csd ----
       self$csdChr <- NULL
       if (!is.null(csdChr)) {
         # csd chromosome

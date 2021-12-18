@@ -30,6 +30,8 @@ isPop = function(x) {
 #' @slot last_event character, the last event of the colony TODO: we probably don't need this
 #' @slot misc list, available for storing extra information about the colony
 #'
+#' @seealso \code{\link{createColony}}
+#'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples

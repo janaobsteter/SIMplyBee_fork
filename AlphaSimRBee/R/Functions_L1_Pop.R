@@ -260,7 +260,7 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn Create virgin queens
+#' @describeIn createWorkers Create virgin queens
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines - see https://github.com/HighlanderLab/AlphaSimRBee/issues/78
@@ -280,14 +280,21 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #' @title Creates drones from a founding (base) population
 #'
 #' @description Creates drones from a founding (base) population by doubling
-#'   genomes of a founding individual - mimicking queen laying drones. Such
-#'   drones are usually used as fathers when creating colonies.
+#'   recombined genomes of each founding individual - mimicking a queen laying
+#'   drones. Such drones are usually used as fathers when creating colonies.
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param nDronesPerQueen integer, number of drones to create per founding
 #'   individual (a substitute for a queen).
 #'
-#' @return \code{\link{Pop-class}} with drones.
+#' @details Note that this function creates \code{nDronesPerQueen} for each
+#'   individual in the \code{pop}, which will amount to
+#'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow, so tune both
+#'   numbers according to your needs.
+#'   TODO The drones will eventually be made properly haploid!
+#'        Follow https://github.com/HighlanderLab/AlphaSimRBee/issues/24
+#'
+#' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
@@ -312,13 +319,15 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @title Creates drones from the colony
 #'
 #' @description Creates the specified number of drones from the colony.
-#'   Currently this is done by creating doubled-haploids from a queen,
-#'   but we will make them haploid!
+#'   Currently this is done by creating doubled-haploids from a queen
+#'   (generating recombinant gametes and doubling them).
+#'   TODO The drones will eventually be made properly haploid!
+#'        Follow https://github.com/HighlanderLab/AlphaSimRBee/issues/24
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, the number of drones to create
 #'
-#' @return \code{\link{Pop-class}} with drones.
+#' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
@@ -431,9 +440,9 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'
 #' @description Pulls drone groups from a Drone Congregation Area (DCA) to use
 #'   them later in mating. Number of drones per group is sampled from a Poisson
-#'   distribution with average group size. Pulled drones are removed from the
-#'   to reflect the fact that drone dies after mating, so can't be present in a
-#'   DCA anymore.
+#'   distribution parameterised with an average group size. Drones are pulled
+#'   (removed) from the DCA to reflect the fact that drones die after mating, so
+#'   they can't be present in the DCA anymore.
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param nGroups integer, number of drone groups to be created
@@ -490,7 +499,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #'
 #' @return list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
 #'   when \code{x} is \code{\link{Colony-class}} and list of (a list of
-#'   \code{\link{Pop-class}} named by colony id) and 
+#'   \code{\link{Pop-class}} named by colony id) and
 #'   \code{\link{Colonies-class}} when \code{x} is
 #'   \code{\link{Colonies-class}}
 #'
@@ -530,8 +539,8 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #'
 #' pullCaste(apiary, caste = "queen")
 #' pullQueen(apiary)
-#' nQueen(apiary)
-#' nQueen(pullQueen(apiary)$colonies)
+#' nQueens(apiary)
+#' nQueens(pullQueen(apiary)$colonies)
 #'
 #' pullCaste(apiary, caste = "virgin_queens")
 #' pullVirginQueens(apiary)
@@ -627,12 +636,17 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 }
 
 #' @rdname crossVirginQueen
-#' @title Crosses a virgin queen to a group drones
+#' @title Cross a virgin queen to a group drones
 #'
-#' @description Crosses a virgin queen to a group of drones
+#' @description Cross a virgin queen to a group of drones. This function does
+#'   not create any progeny, but only stores the mated drones (fathers) so we
+#'   can later create progeny as needed.
 #'
 #' @param virginQueen \code{\link{Pop-class}}
-#' @param fathers \code{\link{Pop-class}} TODO: call this drones?
+#' @param fathers \code{\link{Pop-class}}
+#'
+#' @seealso \code{\link{Colony-class}} on how we store the fathers along the
+#'   queen.
 #'
 #' @return \code{\link{Pop-class}} with a mated queen
 #'
@@ -642,7 +656,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' crossVirginQueen(virginQueen = basePop[2], fathers = drones)
+#' (matedQueen <- crossVirginQueen(virginQueen = basePop[2], fathers = drones))
+#' getFathers(matedQueen)
 #'
 #' @export
 crossVirginQueen <- function(virginQueen, fathers) {

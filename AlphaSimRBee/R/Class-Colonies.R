@@ -11,6 +11,8 @@
 #' @param x \code{\link{Colonies-class}}
 #' @param i numeric or character, index or name to select a colony
 #'
+#' @seealso \code{\link{createColonies}}
+#'
 #' @return \code{\link{Colonies-class}}
 #'
 #' @examples
