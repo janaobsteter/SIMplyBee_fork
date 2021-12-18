@@ -320,20 +320,22 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 }
 
 #' @rdname replaceWorkers
-#' @title Replaces a proportion workers with new workers
+#' @title Replaces a proportion of workers with new workers
 #'
-#' @description Replaces a proportion workers with new workers. Useful after
-#'   events like season change, swarming, supersedure etc. due to the short-life
-#'   span of the workers.
+#' @description Replaces a proportion of workers with new workers. Useful after
+#'   events like season change, swarming, supersedure, etc. due to the
+#'   short life span of the workers.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers to be replaced with new ones
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   impacts selection of workers that stay when \code{p < 1}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -346,8 +348,14 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #' colony <- replaceWorkers(colony, p = 0.5)
 #' getWorkers(colony)@id
 #'
+#' colony <- replaceWorkers(colony, p = 1.0)
+#' getWorkers(colony)@id
+#'
+#' colony <- replaceWorkers(colony, p = 1.5)
+#' getWorkers(colony)@id
+#'
 #' @export
-replaceWorkers <- function(colony, p = 1, simParamBee = NULL) {
+replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -359,7 +367,7 @@ replaceWorkers <- function(colony, p = 1, simParamBee = NULL) {
   if (nWorkersReplaced < nWorkers) {
     nWorkersStay <- nWorkers - nWorkersReplaced
     tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
-    colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = "rand"),
+    colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                         tmp$workers)
     # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
     colony@nHomDrones <- as.integer(round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones)
@@ -370,14 +378,16 @@ replaceWorkers <- function(colony, p = 1, simParamBee = NULL) {
 }
 
 #' @rdname replaceDrones
-#' @title Replaces a proportion drones with new workers
+#' @title Replaces a proportion drones with new drones
 #'
-#' @description Replaces a proportion drones. with new drones. Useful after
-#'   events like season change, swarming, supersedure etc. due to the short-life
-#'   span of the drones.
+#' @description Replaces a proportion drones with new drones. Useful after
+#'   events like season change, swarming, supersedure, etc. due to the short
+#'   life span of the drones.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, proportion of drones. to be replaced with new ones
+#' @param p numeric, proportion of drones to be replaced with new ones
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   impacts selection of drones that stay when \code{p < 1}
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -395,8 +405,14 @@ replaceWorkers <- function(colony, p = 1, simParamBee = NULL) {
 #' colony <- replaceDrones(colony, p = 0.5)
 #' getDrones(colony)@id
 #'
+#' colony <- replaceDrones(colony, p = 1.0)
+#' getDrones(colony)@id
+#'
+#' colony <- replaceDrones(colony, p = 1.5)
+#' getDrones(colony)@id
+#'
 #' @export
-replaceDrones <- function(colony, p = 1) {
+replaceDrones <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -404,7 +420,7 @@ replaceDrones <- function(colony, p = 1) {
   nDronesReplaced <- round(nDrones * p)
   if (nDronesReplaced < nDrones) {
     nDronesStay <- nDrones - nDronesReplaced
-    colony@drones <- c(selectInd(colony@drones, nInd = nDronesStay, use = "rand"),
+    colony@drones <- c(selectInd(colony@drones, nInd = nDronesStay, use = use),
                        createDrones(colony, nInd = nDronesReplaced))
   } else {
     colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
@@ -415,7 +431,7 @@ replaceDrones <- function(colony, p = 1) {
 #' @rdname removeQueen
 #' @title Remove queen
 #'
-#' @description Remove queen of a colony
+#' @description Remove the queen of a colony
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
@@ -461,7 +477,7 @@ removeQueen <- function(colony) {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony
+#' colony <- addVirginQueens(colony, nInd = 10)
 #' getVirginQueens(colony)
 #'
 #' colony <- removeVirginQueens(colony)
@@ -496,11 +512,18 @@ removeVirginQueens <- function(colony) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' colony
+#'
 #' colony <- addWorkers(colony, nInd = 10)
 #' colony
 #' getWorkers(colony)@id
+#'
 #' colony <- removeWorkers(colony, p = 0.5)
+#' colony
 #' getWorkers(colony)@id
+#'
+#' colony <- removeWorkers(colony, p = 1.0)
+#' colony
+#' getWorkers(colony)
 #'
 #' @export
 removeWorkers <- function(colony, p) {
@@ -513,10 +536,12 @@ removeWorkers <- function(colony, p) {
     stop("p can not be less than 0!")
   } else if (p == 1) {
     colony@workers <- NULL
+    colony@nHomDrones <- 0
   } else {
     nWorkers <- nWorkers(colony)
     nWorkersNew <- round(nWorkers * (1 - p))
     colony@workers <- selectInd(colony@workers, nInd = nWorkersNew, use = "rand")
+    colony@nHomDrones <- round(colony@nHomDrones * (1 - p))
   }
   return(colony)
 }
@@ -542,8 +567,14 @@ removeWorkers <- function(colony, p) {
 #' colony <- addDrones(colony, nInd = 10)
 #' colony
 #' getDrones(colony)@id
+#'
 #' colony <- removeDrones(colony, p = 0.5)
+#' colony
 #' getDrones(colony)@id
+#'
+#' colony <- removeDrones(colony, p = 1.0)
+#' colony
+#' getDrones(colony)
 #'
 #' @export
 removeDrones <- function(colony, p) {
@@ -565,18 +596,45 @@ removeDrones <- function(colony, p) {
 }
 
 #' @rdname resetEvents
-#' @title Reset the swarm, split, supersedure events
+#' @title Reset colony events
 #'
-#' @description Reset the slots swarm, split and supersedure to FALSE.
-#' A user will use this function at the end of a yearly cycle to reset the events,
-#' allowing the user to track the events of the current year without overlap.
+#' @description Resets the slots swarm, split, supersedure, collapsed, and
+#'   production to FALSE. Useful at the end of a yearly cycle to reset the
+#'   events, allowing the user to track new events in a new year.
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#'
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#' resetEvents(colony)
+#'
+#' tmp <- splitColony(colony, pSplit = 0.5)
+#' (split <- tmp$split)
+#' resetEvents(split)
+#' (remnant <- tmp$remnant)
+#' resetEvents(remnant)
+#'
+#' tmp <- swarmColony(colony, pSwarm = 0.5)
+#' (swarm <- tmp$swarm)
+#' resetEvents(swarm)
+#' (remnant <- tmp$remnant)
+#' resetEvents(remnant)
+#'
+#' (tmp <- supersedeColony(colony)) # TODO: do we still get production if we have supersedure?
+#' resetEvents(tmp)
+#'
+#' (tmp <- collapseColony(colony))
+#' resetEvents(tmp)
 #'
 #' @export
 resetEvents <- function(colony) {
@@ -594,8 +652,9 @@ resetEvents <- function(colony) {
 #' @rdname crossColony
 #' @title Crosses a colony with a virgin queen to a group of drones
 #'
-#' @description Crosses a colony with a virgin queen to a group of drones and
-#'   potentially builds up the colony.
+#' @description Cross a colony with a virgin queen to a group of drones. This
+#'   function creates progeny only if asked, but stores the mated drones
+#'   (fathers) so we can later create progeny as needed.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones
@@ -603,10 +662,13 @@ resetEvents <- function(colony) {
 #' @param nDrones integer, number of drones to create
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @seealso \code{\link{Colony-class}} on how we store the fathers along the
+#'   queen.
+#'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -672,6 +734,7 @@ collapseColony <- function(colony) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@collapse <- TRUE
+  colony@production <- FALSE
   return(colony)
 }
 
