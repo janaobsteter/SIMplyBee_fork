@@ -172,7 +172,13 @@ nQueens <- function(x) {
 #'
 #' @export
 nFathers <- function(x) {
-  if (isColony(x) | isColonies(x)) {
+  if (isPop(x)) {
+    if (isQueenMated(x)) {
+      ret <- nInd(x@misc$fathers)
+    } else {
+      ret <- 0
+    }
+  } else if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "fathers")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
