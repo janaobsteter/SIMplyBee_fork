@@ -169,6 +169,7 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
 #' @return Expanded Colonies object
 #'
 #' @export
+# TODO: this should be converted to a <- method
 assignColonyToColonies <- function(colonies, colony, pos) {
   if (!isColonies(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
