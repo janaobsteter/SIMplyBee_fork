@@ -713,45 +713,51 @@ collapseColonies <- function(colonies, ID) {
 }
 
 #' @rdname swarmColonies
-#' @title TODO
+#' @title Swarm colony for all given colonies
 #'
-#' @description: Replicates the swarming of the colonies - the process in which
-#' a part of the workers leave with the old queen and creates a new colony (the swarm),
-#' while a part of the workers stay with a new queen and the old drones.
-#' The swarming colony contains the old mated queen, a percentage (pSwarm)
-#' of the original colony's workers, no drones and a virgin queen is created from the worker population.
-#' A new location must be given to the new swarm colony.
-#' The colony that stays contains the remaining workers and drones.
-#' A virgin queen is selected from the workers and mated if fathers are present.
+#' @description The same as \code{\link{swarmColony}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen TODO
-#' @param fathers TODO
-#' @param pWorkers TODO
-#' @param pDrones TODO
+#' @param colonies \code{\link{Colonies-class}}
+#' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return list with two \code{\link{Colonies-class}}, the \code{swarms} and the
+#'   \code{remnants} (see the description of \code{\link{swarmColony}} what each
+#'   node holds!)
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- buildUpColony(colony1, nWorkers = 100)
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- buildUpColony(colony2, nWorkers = 100)
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#' @return Two AlphaSim population objects of the swarmed colonies and the remaining colonies
+#' tmp <- swarmColonies(apiary)
+#' tmp$swarms
+#' tmp$swarms[[1]]
+#' tmp$swarms[[2]]
+#' tmp$remnants
+#' tmp$remnants[[1]]
+#' tmp$remnants[[2]]
 #'
 #' @export
-swarmColonies <- function(colonies, simParamBee = NULL) {
+swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
+  if (p < 0 | p > 1) {
+    stop("p must be between 0 and 1!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
@@ -761,7 +767,7 @@ swarmColonies <- function(colonies, simParamBee = NULL) {
     ret <- list(swarms = createColonies(n = nCol),
                 remnants = createColonies(n = nCol))
     for (colony in 1:nCol) {
-      tmp <- swarmColony(colonies[[colony]], simParamBee = simParamBee)
+      tmp <- swarmColony(colonies[[colony]], p = p, simParamBee = simParamBee)
       ret$swarms@colonies[[colony]] <- tmp$swarm
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }
@@ -786,9 +792,9 @@ swarmColonies <- function(colonies, simParamBee = NULL) {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' (colony1 <- buildUpColony(colony1, nWorkers = 100))
+#' colony1 <- buildUpColony(colony1, nWorkers = 100)
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' (colony2 <- buildUpColony(colony2, nWorkers = 100))
+#' colony2 <- buildUpColony(colony2, nWorkers = 100)
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
@@ -824,7 +830,8 @@ supersedeColonies <- function(colonies) {
 #' @param p numeric, percentage of workers that will go to the split colony
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{splits} and the
-#'   \code{remnants} (see the description what each colony holds!)
+#'   \code{remnants} (see the description of \code{\link{splitColony}} what each
+#'   node holds!)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -833,29 +840,29 @@ supersedeColonies <- function(colonies) {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' (colony1 <- buildUpColony(colony1, nWorkers = 100))
+#' colony1 <- buildUpColony(colony1, nWorkers = 100)
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' (colony2 <- buildUpColony(colony2, nWorkers = 100))
+#' colony2 <- buildUpColony(colony2, nWorkers = 100)
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' tmp <- splitColonies(apiary)
-#' tmp$split
-#' tmp$split[[1]]
-#' tmp$split[[2]]
-#' tmp$remnant
-#' tmp$remnant[[1]]
-#' tmp$remnant[[2]]
+#' tmp$splits
+#' tmp$splits[[1]]
+#' tmp$splits[[2]]
+#' tmp$remnants
+#' tmp$remnants[[1]]
+#' tmp$remnants[[2]]
 #'
 #' @export
 splitColonies <- function(colonies, p = 0.3) {
-  if (!isColonies(colony)) {
+  if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (p < 0 | p > 1) {
-    stop("pSplit must be between 0 and 1!")
+    stop("p must be between 0 and 1!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {

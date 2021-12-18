@@ -583,7 +583,7 @@ getId <- function(x) {
 getLocation <- function(x) {
   if (isColony(x)) {
     if(is.null(x@location)) {
-      ret <- c(NA, NA)
+      ret <- as.numeric(c(NA, NA))
     } else {
       ret <- x@location
     }

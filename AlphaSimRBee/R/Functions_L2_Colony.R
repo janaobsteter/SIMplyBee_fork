@@ -332,7 +332,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-
+#'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
@@ -772,89 +772,72 @@ collapseColony <- function(colony) {
 }
 
 #' @rdname swarmColony
-#' @title Replicates the swarming process and produces two colonies
+#' @title Swarm colony
 #'
-#' @description List. Replicates the swarming of the colony - the process in which
-#' a part of the workers leave with the old queen and creates a new colony (the swarm),
-#' while a part of the workers stay with a new queen and the old drones.
-#' The swarming colony contains the old mated queen,
-#'  a percentage (pSwarm) of the original colonies workers, no drones and a virgin queen is created from the worker population.
-#'  A new location must be given to the new swarm colony.
-#'  The colony that stays contains the remaining workers and drones. A virgin queen is selected from the workers and mated if fathers are present.
+#' @description Swarming is an event where the queen leaves with a proportion of
+#'   workers to create a new colony (the swarm). The remnant colony retains the
+#'   other proportion of workers and all drones.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param pSwarm Integer. Percentage of colony that will swarm
-#' @param crossVirginQueen Logical. Whether a virgin queen is to be mated
-#' @param fathers AlphaSimR population object. Number of fathers pulled from the DCA
-#' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen in the remnant colony
-#' @param pDrones Numeric, proportion of drones that are replaced with the drones from the new queen in the remnant colony
-#' @param swarm Location Integer. X,Y coordinates of newly made swarmed hive
+#' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @examples inst/examples/examples_swarm.R
+#' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
+#'   \code{remnant} (see the description what each colony holds!)
 #'
-#' @return list with two \code{\link{Colony-class}}, swarm with the old queen and a proportion of workers,
-#' and remnant with a new queen and a proportion of workers
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#'
+#' tmp <- swarmColony(colony)
+#' tmp$swarm
+#' tmp$remnant
 #'
 #' @export
-swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE,
-                        fathers = NULL, pWorkers = 1, pDrones = 1,
-                        swarmLocation = NULL, simParamBee = NULL) {
+swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
-  if (!is.null(fathers) && !isPop(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
-  }
-  if (is.null(colony@virgin_queens)) {
-    stop("Virgin queen not present in the colony, cannot swarm!")
-  }
 
   nWorkers <- nWorkers(colony)
-  nWorkersSwarm <- round(nWorkers * pSwarm, 0)
-  nWorkersStay <- nWorkers - nWorkersSwarm
-  workersSwarmId <- sample(x = colony@workers@id, size = nWorkersSwarm, replace = FALSE)
-  workersStayId <- colony@workers@id[!colony@workers@id %in% workersSwarmId]
-  # TODO: use pullWorkers() here
+  nWorkersSwarm <- round(nWorkers * p)
+  tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
+  currentLocation <- getLocation(colony)
+
+  swarmColony <- createColony()
+  swarmColony@queen <- colony@queen
+  swarmColony@id <- colony@queen@id
+  # TODO: should we be building virgin queens here at all? Given that this is a swarm!
+  # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+  swarmColony <- addVirginQueens(colony = swarmColony, nInd = 1, simParamBee = simParamBee)
+  swarmColony@workers <- tmp$pulled
+  swarmColony <- setLocation(x = swarmColony, location = currentLocation)
 
   remnantColony <- createColony()
-  remnantColony@virgin_queens <- selectInd(colony@virgin_queens, 1, use = "rand")
-  remnantColony@workers <- colony@workers[workersStayId]
-  remnantColony@drones <- colony@drones
-  remnantColony@location <- colony@location
-
-  if (crossVirginQueen) {
-    if (is.null(fathers)) {
-      stop("No fathers provided, cannot mate the queen!")
-    }
-    remnantColony@queen <- remnantColony@virgin_queens
-    remnantColony@id <- remnantColony@queen@id
-    remnantColony@queen@misc$fathers <- fathers
-    # populate the remnant with virgin queens, workers, and drones from the new queen
-    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
-    remnantColony <- addVirginQueens(colony = remnantColony, nInd = 1, simParamBee = simParamBee)
-    remnantColony <- replaceWorkers(remnantColony, pWorkers, simParamBee = simParamBee)
-    remnantColony <- replaceDrones(remnantColony, pDrones)
-  }
-
-  swarm <- colony
-  # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
-  swarm <- addVirginQueens(colony = swarm, nInd = 1, simParamBee = simParamBee)
-  swarm@workers <- colony@workers[workersSwarmId]
-  swarm@drones <- NULL
-  swarm@location <- swarmLocation
+  # One virgin queen prevails
+  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
+  remnantColony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  remnantColony@workers <- getWorkers(tmp$colony)
+  remnantColony@drones <- getDrones(colony)
+  remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
-  swarm@last_event <- "swarm"
+  swarmColony@last_event <- "swarm"
 
   remnantColony@swarm <- TRUE
-  swarm@swarm <- TRUE
+  swarmColony@swarm <- TRUE
   remnantColony@production <- FALSE
-  swarm@production <- FALSE
+  swarmColony@production <- FALSE
 
-  ret <- list(swarm = swarm, remnant = remnantColony)
+  ret <- list(swarm = swarmColony, remnant = remnantColony)
   return(ret)
 }
 
@@ -890,6 +873,7 @@ supersedeColony <- function(colony) {
   }
   colony@queen <- NULL
   colony@id <- NULL
+  # One virgin queen prevails
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@last_event <- "superseded"
@@ -903,10 +887,10 @@ supersedeColony <- function(colony) {
 #' @description Split colony into two new colonies to prevent swarming (in
 #'   managed situation). The remnant colony retains the queen and a
 #'   proportion of the workers and all drones. The split colony gets the other
-#'   part of the workers.
+#'   part of the workers and keeps location of the original colony.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, percentage of workers that will go to the split colony
+#' @param p numeric, proportion of workers that will go to the split colony
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{split} and the
 #'   \code{remnant} (see the description what each colony holds!)
@@ -935,9 +919,14 @@ splitColony <- function(colony, p = 0.3) {
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
+
   remnantColony <- tmp$colony
+  # TODO: should really all virgin queens go to the remnant?
+
   splitColony <- createColony()
+  # TODO: should any virgin queen go into the split, will then one prevail as in supersedure or remnant of the swarm?
   splitColony@workers <- tmp$pulled
+  splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"
   splitColony@last_event <- "split"
