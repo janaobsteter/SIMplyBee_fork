@@ -212,7 +212,7 @@ addColonyToColonies <- function(colonies, colony) {
 #'
 #' @export
 assignColonyToColonies <- function(colonies, colony, pos) {
-  if (!isColony(colonies)) {
+  if (!isColonies(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
   }
   if (!isColony(colony)) {
@@ -407,6 +407,9 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
@@ -454,6 +457,9 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     if (!is.null(colonies[[colony]]@workers)) {
@@ -498,6 +504,9 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
 #'
 #' @export
 replaceDronesColonies <- function(colonies, p = 1) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     if (!is.null(colonies[[colony]]@drones)) {
@@ -548,6 +557,9 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #'
 #' @export
 reQueenColonies <- function(colonies, queens) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   nCol <- nColonies(colonies)
   if (nInd(queens) < nCol) {
     stop("Not enough queens!")
@@ -599,6 +611,9 @@ reQueenColonies <- function(colonies, queens) {
 crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
@@ -657,6 +672,9 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 #'
 #' @export
 collapseColonies <- function(colonies, ID) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   ret <- removeColonies(colonies, ID)
   return(ret)
 }
@@ -847,6 +865,9 @@ splitColonies <- function(colonies, p = 0.3) {
 #'
 #' @export
 setPhenoColonies <- function(colonies, FUN = NULL, ...) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
