@@ -137,48 +137,6 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
   return(ret)
 }
 
-#' @rdname addColonyToColonies
-#' @title Add a colony to colonies
-#'
-#' @description Level 3 function that adds a colony to a set of colonies, for
-#'   example, to add a new colony to an apiary.
-#'
-#' @param colonies \code{\link{Colonies-class}}, colonies that will be expanded
-#' @param colony \code{\link{Colony-class}}, colony that will be added
-#'
-#' @return Expanded \code{\link{Colonies-class}} object
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
-#' apiary <- c(colony1, colony2)
-#'
-#' # Add colony to the apiary
-#' apiaryNew <- addColonyToColonies(apiary, colony3)
-#' getId(apiary)
-#' getId(apiaryNew)
-#' # ... an alternative
-#' apiaryNew <- c(apiary, colony3)
-#' getId(apiaryNew)
-#'
-#' @export
-addColonyToColonies <- function(colonies, colony) {
-  if (!isColonies(colonies)) {
-    stop("Argument Colonies must be a Colonies class object!")
-  }
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  colonies@colonies <- c(colonies@colonies, colony)
-  return(colonies)
-}
-
 #' @rdname assignColonyToColonies
 #' @title Assign (replace) a colony to colonies
 #'
