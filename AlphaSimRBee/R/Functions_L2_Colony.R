@@ -260,11 +260,15 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #'   in spring or after events such as split or swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nWorkers integer, desired number of workers in the colony
-#' @param nDrones integer, desired number of drones in the colony
+#' @param nWorkers integer, desired number of workers in the colony (currently
+#'   present workers are taken into account so only the difference is added)
+#' @param nDrones integer, desired number of drones in the colony (currently
+#'   present drones are taken into account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
-#'   current workers and drones)
+#'   currently present workers and drones)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details This function turns production of the colony to \code{TRUE}.
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -276,7 +280,15 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' colony
-#' buildUpColony(colony, nWorkers = 100)
+#' isProductive(colony)
+#'
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#' isProductive(colony)
+#'
+#' (colony <- buildUpColony(colony, nWorkers = 100)) # we are already at the target
+#' (colony <- buildUpColony(colony, nWorkers = 150)) # increasing the target
+#' (colony <- buildUpColony(colony, nWorkers = 100)) # we are already at the target
+#' (colony <- buildUpColony(colony, nWorkers = 100, new = TRUE))
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
@@ -287,11 +299,19 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  n <- nWorkers - nWorkers(colony)
+  if (new) {
+    n <- nWorkers
+  } else {
+    n <- nWorkers - nWorkers(colony)
+  }
   if (n > 0) {
     colony <- addWorkers(colony, nInd = n, new = new, simParamBee = simParamBee)
   }
-  n <- nDrones - nDrones(colony)
+  if (new) {
+    n <- nDrones
+  } else {
+    n <- nDrones - nDrones(colony)
+  }
   if (n > 0) {
     colony <- addDrones(colony, nInd = n, new = new)
   }
