@@ -741,6 +741,52 @@ hasSuperseded <- function(x) {
   return(ret)
 }
 
+#' @rdname hasCollapsed
+#' @title Test if colony has collapsed
+#'
+#' @description Level 0 function that returns colony collapse status.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' hasCollapsed(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' hasCollapsed(colony)
+#' tmp <- collapseColony(colony)
+#' tmp
+#' hasCollapsed(tmp)
+#'
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' tmp <- collapseColonies(apiary)
+#' tmp
+#' hasCollapsed(tmp)
+#'
+#' @export
+hasCollapsed <- function(x) {
+  if (isColony(x)) {
+    ret <- x@collapse
+  } else if (isColonies(x)) {
+    ret <- sapply(x@colonies, FUN = hasCollapsed)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname isProductive
 #' @title Test if colony is currently productive
 #'

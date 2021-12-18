@@ -293,7 +293,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' @param colonies Colonies, a set of colonies
 #' @param ID numeric or character, name of a colony (one or more) in
-#' \code{colonies}; note that numeric value is effectively converted to character
+#' \code{colonies}; note that numeric value is converted to character
 #' @param p numeric, probability of a colony being pulled
 #'
 #' @examples
@@ -641,42 +641,34 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 #' @param ID IDs of "colony" class objects listed in the "colonies" object
 #'
 #' @examples
-#'# Create founder haplotypes
-#'
-#' founderGenomes <- quickHaplo(nInd=300, nChr=1, segSites=100)
-#'
-#' # Set simulation parameters
-#'
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' # Create population
-#'
-#' pop <- newPop(founderGenomes)
-#'
-#' # Create colonies
-#'
-#' founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-#' colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-#' colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-#' colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-#'
-#' # Put the colonies together to the apiary
-#'
+#' founderDrones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 30)
+#' colony1 <- createColony(queen = basePop[2], fathers = founderDrones[ 1:10])
+#' colony2 <- createColony(queen = basePop[3], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[4], fathers = founderDrones[21:30])
 #' apiary <- c(colony1, colony2, colony3)
+#' apiary
 #'
-#' # Collapse colonies
-#'
-#' apiary <- collapseColonies(apiary, ID = c(1,2))
+#' tmp <- pullColonies(apiary, ID = c("2", "3"))
+#' tmp
+#' apiaryLost <- collapseColonies(tmp$pulledColonies)
+#' hasCollapsed(apiaryLost)
 #'
 #' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
-collapseColonies <- function(colonies, ID) {
+collapseColonies <- function(colonies) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  ret <- removeColonies(colonies, ID)
-  return(ret)
+  nCol <- nColonies(colonies)
+  for (colony in 1:nCol) {
+    colonies@colonies[[colony]] <- collapseColony(colonies@colonies[[colony]])
+  }
+  return(colonies)
 }
 
 #' @rdname swarmColonies
@@ -712,9 +704,11 @@ collapseColonies <- function(colonies, ID) {
 #' tmp$swarms
 #' tmp$swarms[[1]]
 #' tmp$swarms[[2]]
+#' hasSwarmed(tmp$swarms)
 #' tmp$remnants
 #' tmp$remnants[[1]]
 #' tmp$remnants[[2]]
+#' hasSwarmed(tmp$remnants)
 #'
 #' @export
 swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
@@ -772,6 +766,7 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
+#' hasSuperseded(apiary)
 #'
 #' @export
 supersedeColonies <- function(colonies) {
@@ -821,9 +816,11 @@ supersedeColonies <- function(colonies) {
 #' tmp$splits
 #' tmp$splits[[1]]
 #' tmp$splits[[2]]
+#' hasSplit(tmp$splits)
 #' tmp$remnants
 #' tmp$remnants[[1]]
 #' tmp$remnants[[2]]
+#' hasSplit(tmp$remnants)
 #'
 #' @export
 splitColonies <- function(colonies, p = 0.3) {
