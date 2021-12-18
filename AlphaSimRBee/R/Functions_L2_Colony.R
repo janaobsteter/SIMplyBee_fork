@@ -912,93 +912,57 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
 }
 
 #' @rdname splitColony
-#' @title Split the colony in two colonies
+#' @title Split colony in two colonies
 #'
-#' @description Spit the colony into two new colonies to prevent swarming (in managed populations)
-#' - one colony is with the old queen and a part of the workers and drones (this is the remaining colony)
-#' - the split colony is taken to a new location with part of the workers.
-#'  A new mated queen can be introduced to the split colony.
-#'  If no new queen is introduced, a virgin queen must be present to mate with fathers from DCA and continue colony
-#' @seealso \code{\link[??????]{splitColony}}
+#' @description Spit colony into two new colonies to prevent swarming (in
+#'   managed situation). The remnant colony retains the queen and a
+#'   proportion of the workers and all drones. The split colony gets the other
+#'   part of the workers.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param pSplit Integer. Percentage of hive to split
-#' @param newQueen AlphaSimR population object. A new mated queen is brought into the colony from other source
-#' @param crossVirginQueen Logical. If no mated queen is introduced, a virgin queen must be present to mate and continue colony
-#' @param fathers AlphaSimR population object. Number of fathers pulled from the DCA
-#' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen in the split
-#' @param splitLocation Integer. X,Y coordinates of newly made split hive
+#' @param p numeric, percentage of workers that will go to the split colony
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' @return list with two \code{\link{Colony-class}}, split with the old queen and a proportion of workers,
-#' and remnant with a ??? and a proportion of workers TODO
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#'
+#' tmp <- splitColony(colony)
+#' tmp$split
+#' tmp$remnant
+#'
+#' @return list with two \code{\link{Colony-class}}, the \code{split} and the
+#'   \code{remnant} (see the description what each colony holds!)
 #'
 #' @export
-splitColony <- function(colony, pSplit = 0.30, newQueen = NULL,
-                        crossVirginQueen = FALSE, fathers = NULL,
-                        pWorkers = 1, splitLocation = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
+splitColony <- function(colony, p = 0.3) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!is.null(newQueen) && !isPop(newQueen)) {
-    stop("Argument newQueen must be a Pop class object!")
-  }
-  if (!is.null(fathers) && !isPop(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
+  if (p < 0 | p > 1) {
+    stop("pSplit must be between 0 and 1!")
   }
   nWorkers <- nWorkers(colony)
-  nWorkersSplit <- round(nWorkers * pSplit, 0)
-  noWorkersStay <- nWorkers - nWorkersSplit
-  workersSplitId <- sample(x = colony@workers@id, size = nWorkersSplit, replace = FALSE)
-  workersStayId <- colony@workers@id[!colony@workers@id %in% workersSplitId]
+  nWorkersSplit <- round(nWorkers * p)
+  tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
+  remnantColony <- tmp$colony
   splitColony <- createColony()
-  splitColony@workers <- colony@workers[workersSplitId]
-  splitColony@location <- splitLocation
-  colony@workers <- colony@workers[workersStayId]
-  # TODO: use pullCaste() here?
+  splitColony@workers <- tmp$pulled
 
-  if (!is.null(newQueen)) {
-    if (!isQueenMated(newQueen)) {
-      splitColony@virgin_queens <- newQueen
-    }
-    if (isQueenMated(newQueen)) {
-      splitColony@queen <- newQueen
-      splitColony@id <- splitColony@queen@id
-    }
-    if (crossVirginQueen) {
-      if (is.null(fathers)) {
-        stop("No fathers provided, cannot mate the queen!")
-      }
-      splitColony@queen <- splitColony@virgin_queens
-      if (isQueenMated(splitColony)) {
-        stop("Queen already mated!")
-      }
-      splitColony@queen@misc$fathers <- fathers
-    }
-  }
-
-  if (!is.null(splitColony@queen)) {
-    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
-    splitColony <- addVirginQueens(colony = splitColony, nInd = 1, simParamBee = simParamBee)
-    splitColony <- replaceWorkers(splitColony, pWorkers, simParamBee = simParamBee)
-  }
-
-  # Change the status of the colony
-  colony@last_event <- "remnant"
+  remnantColony@last_event <- "remnant"
   splitColony@last_event <- "split"
 
-  colony@split <- TRUE
+  remnantColony@split <- TRUE
   splitColony@split <- TRUE
 
-  colony@production <- TRUE
+  remnantColony@production <- TRUE
   splitColony@production <- FALSE
 
-  ret <- list(split = splitColony, remnant = colony)
+  ret <- list(split = splitColony, remnant = remnantColony)
   return(ret)
 }
 
