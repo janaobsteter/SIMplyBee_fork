@@ -676,18 +676,13 @@ resetEvents <- function(colony) {
 #' @rdname crossColony
 #' @title Cross (mate) a virgin queen of a colony to a group of drones
 #'
-#' @description Cross (mate) a virgin queen of colony to a group of drones. When
-#'   there are multiple virgin queen in the colony, one is selected at random,
-#'   mated and promoted to the queen of the colony. Mated drones (fathers) are
-#'   stored for producing progeny within this function or later.
+#' @description Level 2 function that crosses (mates) a virgin queen of colony
+#'   to a group of drones. When there are multiple virgin queen in the colony,
+#'   one is selected at random, mated and promoted to the queen of the colony.
+#'   Mated drones (fathers) are stored for producing progeny at a later stage.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones
-#' @param nWorkers integer, number of workers to create
-#' @param nDrones integer, number of drones to create
-#' @param new logical, should all the \code{nWorkers} and \code{nDrones} be from
-#'   the new queen or should we reach these numbers only by topping up workers
-#'   and drones
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -707,51 +702,42 @@ resetEvents <- function(colony) {
 #' colony <- crossColony(colony, fathers = drones)
 #' colony
 #'
-#' colony <- createColony(virgin_queen = basePop[2])
-#' colony
-#' colony <- crossColony(colony, fathers = drones, nWorkers = 20)
-#' colony
-#'
 #' @export
-crossColony <- function(colony, fathers = NULL, nWorkers = 0,
-                        nDrones = nWorkers * 0.1, new = FALSE,
-                        simParamBee = NULL) {
+crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!isPop(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
+  if (!is.null(colony@queen)) {
+    stop("Mated queen already present!")
   }
   if (is.null(colony@virgin_queens)) {
     stop("No virgin queen(s)!")
   }
-  if (!is.null(colony@queen)) {
-    stop("Mated queen already present!")
+  if (!isPop(fathers)) {
+    stop("Argument fathers must be a Pop class object!")
   }
-  if (is.null(fathers)) {
-    stop("Missing fathers!")
-  }
+  # Pick one virgin queen that will prevail
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
-  colony@queen <- crossVirginQueen(virginQueen = virginQueen, fathers = fathers)
+  colony@queen <- crossVirginQueen(virginQueen, fathers)
   colony@id <- colony@queen@id
-  # TODO: should we add virgin queens here by default?
+  # TODO: should we really add virgin queens here by default? If we decide this, make sure to set NULL to
+  #       colony@virgin_queens since we promoted the prevailed virgin queen to the queen and the virgin
+  #       queens slot contains the queen too!
   # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
   colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
-  # TODO: should we remove addWorkers() and addDrones() and leave this for buildUpColony()
-  colony <- addWorkers(colony, nInd = nWorkers, new = new, simParamBee = simParamBee)
-  colony <- addDrones(colony, nInd = nDrones, new = new)
   return(colony)
 }
 
 #' @rdname collapseColony
 #' @title Collapses colony
 #'
-#' @description Collapses colony by setting the collapse event slot to
-#'   \code{TRUE}. The production status slot is also changed (to \code{FALSE}).
+#' @description Level 2 function that collapses colony by setting the collapse
+#'   event slot to \code{TRUE}. The production status slot is also changed (to
+#'   \code{FALSE}).
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
