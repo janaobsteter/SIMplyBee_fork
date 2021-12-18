@@ -742,17 +742,24 @@ crossColony <- function(colony, fathers = NULL, nWorkers = 0,
 }
 
 #' @rdname collapseColony
-#' @title Replicates colony collapse
+#' @title Collapses colony
 #'
-#' @description Replicates the collapse of a colony. This can be due to winter losses, disease or other factors.
-#' @seealso \code{\link[??????]{collapseColony}}
+#' @description Collapses colony by setting the collapse event slot to
+#'   \code{TRUE}. The production status slot is also changed (to \code{FALSE}).
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#' collapseColony(colony)
 #'
 #' @export
 collapseColony <- function(colony) {
