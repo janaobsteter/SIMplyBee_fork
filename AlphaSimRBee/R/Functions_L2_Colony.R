@@ -120,7 +120,7 @@ reQueenColony <- function(colony, queen) {
 }
 
 #' @rdname addVirginQueens
-#' @title Add (raise) virgin queens to the colony
+#' @title Add (raise) virgin queens in the colony
 #'
 #' @description Adds (raises) the specified number of virgin queens in the
 #'   colony by crossing the current queen and the fathers.
@@ -143,6 +143,7 @@ reQueenColony <- function(colony, queen) {
 #'
 #' @export
 addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
+  # TODO: do we need argument new here like we have it for addWorkers() and addDrones()?
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -162,7 +163,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 }
 
 #' @rdname addWorkers
-#' @title Add (raise) workers to the colony
+#' @title Add (raise) workers in the colony
 #'
 #' @description Adds (raises) the specified number of workers in the colony by
 #'   crossing the current queen and the fathers. If there are already some
@@ -211,7 +212,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 }
 
 #' @rdname addDrones
-#' @title Add (raise) drones to the colony
+#' @title Add (raise) drones in the colony
 #'
 #' @description Adds (raises) the specified number of drones in the colony by
 #'   crossing the current queen and the fathers. If there are already some
@@ -322,14 +323,14 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #' @rdname replaceWorkers
 #' @title Replaces a proportion of workers with new workers
 #'
-#' @description Replaces a proportion of workers with new workers. Useful after
-#'   events like season change, swarming, supersedure, etc. due to the
-#'   short life span of the workers.
+#' @description Replaces a proportion of workers with new workers from the
+#'   colony. Useful after events like season change, swarming, supersedure, etc.
+#'   due to the short life span of the workers.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   impacts selection of workers that stay when \code{p < 1}
+#'   guides selection of workers that stay when \code{p < 1}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 
 #' @return \code{\link{Colony-class}}
@@ -380,14 +381,14 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
 #' @rdname replaceDrones
 #' @title Replaces a proportion drones with new drones
 #'
-#' @description Replaces a proportion drones with new drones. Useful after
-#'   events like season change, swarming, supersedure, etc. due to the short
-#'   life span of the drones.
+#' @description Replaces a proportion drones with new drones from the colony.
+#'   Useful after events like season change, swarming, supersedure, etc. due to
+#'   the short life span of the drones.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of drones to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   impacts selection of drones that stay when \code{p < 1}
+#'   guides selection of drones that stay when \code{p < 1}
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -462,11 +463,14 @@ removeQueen <- function(colony) {
 }
 
 #' @rdname removeVirginQueens
-#' @title Remove virgin queens
+#' @title Remove a proportion of virgin queens
 #'
-#' @description Remove virgin queens of a colony
+#' @description Remove a proportion of virgin queens of a colony
 #'
 #' @param colony \code{\link{Colony-class}}
+#' @param p numeric, proportion to be removed
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   guides selection of virgins queens that will stay when \code{p < 1}
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -485,11 +489,21 @@ removeQueen <- function(colony) {
 #' getVirginQueens(colony)
 #'
 #' @export
-removeVirginQueens <- function(colony) {
+removeVirginQueens <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  colony@virgin_queens <- NULL
+  if (p > 1) {
+    stop("p can not be higher than 1!")
+  } else if (p < 0) {
+    stop("p can not be less than 0!")
+  } else if (p == 1) {
+    colony@virgin_queens <- NULL
+  } else {
+    n <- round(nVirginQueens(colony) * (1 - p))
+    colony@virgin_queens <- selectInd(pop = colony@virgin_queens,
+                                      nInd = n, use = use)
+  }
   return(colony)
 }
 
@@ -501,6 +515,8 @@ removeVirginQueens <- function(colony) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   guides selection of workers that will stay when \code{p < 1}
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -526,7 +542,7 @@ removeVirginQueens <- function(colony) {
 #' getWorkers(colony)
 #'
 #' @export
-removeWorkers <- function(colony, p) {
+removeWorkers <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -538,9 +554,9 @@ removeWorkers <- function(colony, p) {
     colony@workers <- NULL
     colony@nHomDrones <- 0
   } else {
-    nWorkers <- nWorkers(colony)
-    nWorkersNew <- round(nWorkers * (1 - p))
-    colony@workers <- selectInd(colony@workers, nInd = nWorkersNew, use = "rand")
+    nWorkersNew <- round(nWorkers(colony) * (1 - p))
+    colony@workers <- selectInd(pop = colony@workers,
+                                nInd = nWorkersNew, use = use)
     colony@nHomDrones <- round(colony@nHomDrones * (1 - p))
   }
   return(colony)
@@ -553,6 +569,8 @@ removeWorkers <- function(colony, p) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   guides selection of drones that will stay when \code{p < 1}
 #'
 #' @return \code{\link{Colony-class}}
 #'
@@ -577,7 +595,7 @@ removeWorkers <- function(colony, p) {
 #' getDrones(colony)
 #'
 #' @export
-removeDrones <- function(colony, p) {
+removeDrones <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -588,9 +606,9 @@ removeDrones <- function(colony, p) {
   } else if (p == 1) {
     colony@drones <- NULL
   } else {
-    nDrones <- nDrones(colony)
-    nDronesNew <- round(nDrones * (1 - p))
-    colony@drones <- selectInd(colony@drones, nInd = nDronesNew, use = "rand")
+    nDronesNew <- round(nDrones(colony) * (1 - p))
+    colony@drones <- selectInd(pop = colony@drones,
+                               nInd = nDronesNew, use = use)
   }
   return(colony)
 }
@@ -1039,6 +1057,7 @@ setLocation <- function(x, location) {
 # TODO: Document
 # TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
 #   in getColonyGv()?
+# TODO: what if caste phenos have already been set? need a sensible default!!!
 # TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
 #  it will not work for simParam - so best to add all these arguments directly?
 setPhenoColony <- function(colony, FUN = NULL, ...) {

@@ -636,11 +636,11 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 }
 
 #' @rdname crossVirginQueen
-#' @title Cross a virgin queen to a group drones
+#' @title Cross (mate) a virgin queen to a group drones
 #'
-#' @description Cross a virgin queen to a group of drones. This function does
-#'   not create any progeny, but only stores the mated drones (fathers) so we
-#'   can later create progeny as needed.
+#' @description Cross (mate) a virgin queen to a group of drones. This function
+#'   does not create any progeny, it only stores the mated drones (fathers) so
+#'   we can later create progeny as needed.
 #'
 #' @param virginQueen \code{\link{Pop-class}}
 #' @param fathers \code{\link{Pop-class}}
