@@ -770,57 +770,46 @@ swarmColonies <- function(colonies, simParamBee = NULL) {
 }
 
 #' @rdname supersedeColonies
-#' @title TODO
+#' @title Supersede colony for all given colonies
 #'
-#' @description:  Replicates the process of supersedure, where the
-#' queen is replaced by a new virgin queen. The workers and the drones stay
-#' in the colonies. If no fathers are present, mating of the virgin queen does not occur.
+#' @description The same as \code{\link{supersedeColony}} but for all given
+#'   colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen TODO
-#' @param fathers TODO
-#' @param pWorkers TODO
-#' @param pDrones TODO
+#' @param colonies \code{\link{Colonies-class}}
+#'
+#' @return \code{\link{Colonies-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
-#' TODO NOT WORKING EXAMPLE
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' (colony1 <- buildUpColony(colony1, nWorkers = 100))
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' (colony2 <- buildUpColony(colony2, nWorkers = 100))
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' # Select colonies for supersedure
-#'
-#' coloniesForSupersedure <- pullColonies(apiary1, p = 0.1)
-#'
-#' # Supersedure the colonies
-#'
-#' tmp <- supersedeColonies(coloniesForSupersedure)
-#'
-#' # Put superseded colonies back to the apiary
-#'
-#' apiary1 <- c(apiary1, tmp)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiary <- supersedeColonies(apiary)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' @export
-supersedeColonies <- function(colonies, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+supersedeColonies <- function(colonies) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     colonies <- createColonies()
   } else {
     for (colony in 1:nCol) {
-      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]],
-                                                     simParamBee = simParamBee)
+      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]])
     }
   }
   return(colonies)
@@ -848,6 +837,9 @@ supersedeColonies <- function(colonies, simParamBee = NULL) {
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' (colony2 <- buildUpColony(colony2, nWorkers = 100))
 #' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' tmp <- splitColonies(apiary)
 #' tmp$split

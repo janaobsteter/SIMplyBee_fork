@@ -859,30 +859,29 @@ swarmColony <- function(colony, pSwarm = 0.5, crossVirginQueen = FALSE,
 }
 
 #' @rdname supersedeColony
-#' @title Replicates a supersedure of the colony and replaces the queen with a virgin queen
+#' @title Supersede colony
 #'
-#' @description Replicates the process of supersedure, where the
-#' queen is replaced by a new virgin queen. The workers and the drones stay
-#' in the colony. If no fathers are present, mating of the virgin queen does not occur.
-#' @seealso \code{\link[??????]{supersedure}}
+#' @description Supersede colony by replacing the queen with a new virgin queen.
+#'   The queen is removed and just one virgin queen prevails. The workers and
+#'   drones stay unchanged.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param crossVirginQueen Logical. Whether a virgin queen is to be mated
-#' @param fathers AlphaSimR population object. Number of fathers pulled from the DCA
-#' @param pWorkers Numeric, proportion of workers that are replaced with the workers from the new queen
-#' @param pDrones Numeric, proportion of drones that are replaced with the drones from the new queen
 #'
 #' @return \code{\link{Colony-class}}
 #'
 #' @examples
-#' TODO
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' (colony <- buildUpColony(colony, nWorkers = 100))
+#'
+#' supersedeColony(colony)
 #'
 #' @export
-supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
-                            pWorkers = 1, pDrones = 1, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
+supersedeColony <- function(colony) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -890,24 +889,11 @@ supersedeColony <- function(colony, crossVirginQueen = FALSE, fathers = NULL,
     stop("No queen present in the colony!")
   }
   colony@queen <- NULL
+  colony@id <- NULL
+  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
-  if (crossVirginQueen) {
-    if (is.null(fathers)) {
-      stop("No fathers provided, cannot mate the queen!")
-    }
-    if (!isPop(fathers)) {
-      stop("Argument fathers must be a Pop class object!")
-    }
-    colony@queen <- colony@virgin_queens
-    colony@queen@misc$fathers <- fathers
-    # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
-    colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
-    colony <- replaceWorkers(colony, pWorkers, simParamBee = simParamBee)
-    colony <- replaceDrones(colony, pDrones)
-  }
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
-  colony@production <- TRUE
   return(colony)
 }
 
