@@ -421,7 +421,7 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
-    if (!is.null(colonies[[colony]]@workers)) {
+    if (!is.null(colonies[[colony]]@workers)) { # TODO: do we need this if here given what we do in replaceWorkers?
       colonies@colonies[[colony]] <- replaceWorkers(colony = colonies[[colony]],
                                                     p = p,
                                                     simParamBee = simParamBee)
@@ -468,7 +468,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
-    if (!is.null(colonies[[colony]]@drones)) {
+    if (!is.null(colonies[[colony]]@drones)) { # TODO: do we need this if here given what we do in replaceDrones?
       colonies@colonies[[colony]] <- replaceDrones(colony = colonies[[colony]],
                                                    p = p)
     }
