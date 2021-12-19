@@ -157,13 +157,20 @@ getQueen <- function(x) {
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
   if (isPop(x)) {
-    if (isQueenMated(x)) {
-      if (is.null(nInd)) {
-        nInd <- nFathers(x)
-      }
-      ret <- selectInd(pop = x@misc$fathers, nInd = nInd, use = use)
-    } else {
-      ret <- NULL
+    ret <- lapply(X = x@misc,
+                  FUN = function(z) {
+                    if (is.null(z$fathers)) {
+                      ret <- NULL
+                    } else {
+                      if (is.null(nInd)) {
+                        n <- nInd(z$fathers)
+                      }
+                      ret <- selectInd(pop = z$fathers, nInd = n, use = use)
+                    }
+                    return(ret)
+                  })
+    if (nInd(x) == 1) {
+      ret <- ret[[1]]
     }
   } else if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
