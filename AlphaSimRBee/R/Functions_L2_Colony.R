@@ -114,6 +114,7 @@ reQueenColony <- function(colony, queen) {
     colony@id <- NULL
     colony@virgin_queens <- queen
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -157,6 +158,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
   colony@virgin_queens <- tmp$virgin_queens
   colony@nHomDrones <- colony@nHomDrones + tmp$nHomDrones
+  validObject(colony)
   return(colony)
 }
 
@@ -207,6 +209,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
       colony@nHomDrones <- colony@nHomDrones + newWorkers$nHomDrones
     }
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -250,6 +253,7 @@ addDrones <- function(colony, nInd, new = FALSE) {
       colony@drones <- c(colony@drones, newDrones)
     }
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -317,6 +321,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
     colony <- addDrones(colony, nInd = n, new = new)
   }
   colony@production <- TRUE
+  validObject(colony)
   return(colony)
 }
 
@@ -375,6 +380,7 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
   } else {
     colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -426,6 +432,7 @@ replaceDrones <- function(colony, p = 1, use = "rand") {
   } else {
     colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -459,6 +466,7 @@ removeQueen <- function(colony) {
   }
   colony@queen <- NULL
   colony@id <- NULL
+  validObject(colony)
   return(colony)
 }
 
@@ -505,6 +513,7 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
     colony@virgin_queens <- selectInd(pop = colony@virgin_queens,
                                       nInd = n, use = use)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -560,6 +569,7 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
                                 nInd = nWorkersNew, use = use)
     colony@nHomDrones <- round(colony@nHomDrones * (1 - p))
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -612,6 +622,7 @@ removeDrones <- function(colony, p = 1, use = "rand") {
     colony@drones <- selectInd(pop = colony@drones,
                                nInd = nDronesNew, use = use)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -667,6 +678,7 @@ resetEvents <- function(colony) {
   colony@supersedure <- FALSE
   colony@collapse <- FALSE
   colony@production <- FALSE
+  validObject(colony)
   return(colony)
 }
 
@@ -726,6 +738,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   #       queens slot contains the queen too!
   # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
   colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
+  validObject(colony)
   return(colony)
 }
 
@@ -757,6 +770,7 @@ collapseColony <- function(colony) {
   }
   colony@collapse <- TRUE
   colony@production <- FALSE
+  validObject(colony)
   return(colony)
 }
 
@@ -826,6 +840,8 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
   remnantColony@production <- FALSE
   swarmColony@production <- FALSE
 
+  validObject(swarmColony)
+  validObject(remnantColony)
   ret <- list(swarm = swarmColony, remnant = remnantColony)
   return(ret)
 }
@@ -867,6 +883,7 @@ supersedeColony <- function(colony) {
   colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
+  validObject(colony)
   return(colony)
 }
 
@@ -926,6 +943,8 @@ splitColony <- function(colony, p = 0.3) {
   remnantColony@production <- TRUE
   splitColony@production <- FALSE
 
+  validObject(splitColony)
+  validObject(remnantColony)
   ret <- list(split = splitColony, remnant = remnantColony)
   return(ret)
 }
@@ -996,6 +1015,7 @@ setLocation <- function(x, location) {
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
+  validObject(x)
   return(x)
 }
 
@@ -1019,5 +1039,6 @@ setPhenoColony <- function(colony, FUN = NULL, ...) {
   if (!is.null(FUN)) {
     colony@pheno <- FUN(colony, ...)
   }
+  validObject(colony)
   return(colony)
 }

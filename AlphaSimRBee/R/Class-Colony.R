@@ -45,8 +45,11 @@ isPop = function(x) {
 #'
 #' colony1
 #' colony2
+#' is(colony1)
+#' is(colony2)
 #'
 #' apiary <- c(colony1, colony2)
+#' is(apiary)
 #'
 #' @export
 
@@ -74,6 +77,27 @@ setClass("Colony",
                    last_event = "character",
                    misc = "listOrNULL"
          ))
+
+setValidity(Class = "Colony", method = function(object) {
+  errors = character()
+  if (nInd(getQueen(object)) > 1) {
+    errors = c(errors, "There can be only one queen per colony!")
+  }
+  if (isQueenPresent(object) && !isQueenMated(object)) {
+    errors = c(errors, "Queen must be mated to be in the queens' slot!")
+  }
+  if (!isQueenPresent(object) && !is.na(getId(object))) {
+    errors = c(errors, "When queen is absent, the colony ID should be NA!")
+  }
+  if (isQueenPresent(object) && getId(object) != getQueen(object)@id) {
+    errors = c(errors, "Colony and queen IDs don't match!")
+  }
+  if (length(errors) == 0) {
+    return(TRUE)
+  } else {
+    return(errors)
+  }
+})
 
 #' @describeIn Colony Show colony object
 setMethod("show",
