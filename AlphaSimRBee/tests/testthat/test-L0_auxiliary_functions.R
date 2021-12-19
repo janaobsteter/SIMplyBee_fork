@@ -4,7 +4,7 @@ test_that("nColonies", {
   basePop <- newPop(founderGenomes, simParam = SP)
   drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+  colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
   apiary <- c(colony1, colony2)
   expect_equal(nColonies(apiary), 2)
   expect_equal(nColonies(createColonies()), 0)
@@ -66,6 +66,27 @@ test_that("nDrones", {
   expect_equal(nDrones(colony2), 10)
   expect_equal(nDrones(c(colony1, colony2)), c("2" = 5, "3" = 10))
   expect_error(nDrones(basePop))
+})
+
+test_that("isQueenMated", {
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+  colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+  colony3 <- createColony(virgin_queen = basePop[4])
+  apiary <- c(colony1, colony2, colony3)
+
+  expect_true(isQueenMated(getQueen(colony1)))
+  expect_true(isQueenMated(colony1))
+  expect_true(isQueenMated(colony2))
+  expect_equal(isQueenMated(apiary), c("2" = TRUE, "3" = TRUE, `NA` = FALSE))
+  expect_false(isQueenMated(removeQueen(colony1)))
+  expect_false(isQueenMated(supersedeColony(colony2)))
+  expect_equal(isQueenMated(c(getQueen(colony1), getQueen(colony2),
+                        getVirginQueens(colony3))),
+               c(TRUE, TRUE, FALSE))
 })
 
 test_that("getCsdHaploGeno", {
