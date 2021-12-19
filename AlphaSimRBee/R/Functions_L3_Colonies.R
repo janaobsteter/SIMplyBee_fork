@@ -486,7 +486,7 @@ replaceDronesColonies <- function(colonies, p = 1) {
 #' @param queens \code{\link{Pop-class}}, queens to be added to colonies, one
 #'   for each colony
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} with re-queened colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -547,7 +547,7 @@ reQueenColonies <- function(colonies, queens) {
 #'   matings (see \code{\link{crossColony}})
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} with mated colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -602,7 +602,8 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} with the collapse event set to
+#'   \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -710,7 +711,7 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} with superseded colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

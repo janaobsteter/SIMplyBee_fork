@@ -23,7 +23,7 @@
 #'   function also generates one virgin queen.
 #'   TODO: discuss this - see below
 #'
-#' @return \code{\link{Colony-class}}
+#' @return new \code{\link{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
@@ -90,7 +90,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #'   queen of the colony; if she is not mated, she will be added as a virgin
 #'   queen that will have to be mated later.
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with new queen
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -137,7 +137,7 @@ reQueenColony <- function(colony, queen) {
 #' @param nInd integer, number of virgin queens to add
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with virgin queens added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -185,7 +185,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #'   present workers in the colony)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with workers added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -234,7 +234,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #' @param new logical, should the drones be added a fresh (ignoring currently
 #'   present drones)
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with drones added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -284,7 +284,7 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #'
 #' @details This function turns production of the colony to \code{TRUE}.
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with workers and drones added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -335,7 +335,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 }
 
 #' @rdname replaceWorkers
-#' @title Replaces a proportion of workers with new workers
+#' @title Replace a proportion of workers with new ones
 #'
 #' @description Level 2 function that replaces a proportion of workers with new
 #'   workers from the colony. Useful after events like season change, swarming,
@@ -347,7 +347,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
 #'   guides selection of workers that stay when \code{p < 1}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with replaced workers
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -378,25 +378,27 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
     stop("Argument colony must be a Colony class object!")
   }
   nWorkers <- nWorkers(colony)
-  nWorkersReplaced <- round(nWorkers * p)
-  if (nWorkersReplaced < nWorkers) {
-    nWorkersStay <- nWorkers - nWorkersReplaced
-    tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
-    colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
-                        tmp$workers)
-    # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
-    colony@nHomDrones <- as.integer(round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones)
-  } else {
-    colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
+  if (nWorkers > 0) {
+    nWorkersReplaced <- round(nWorkers * p)
+    if (nWorkersReplaced < nWorkers) {
+      nWorkersStay <- nWorkers - nWorkersReplaced
+      tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
+      colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
+                          tmp$workers)
+      # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
+      colony@nHomDrones <- as.integer(round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones)
+    } else {
+      colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
+    }
+    validObject(colony)
   }
-  validObject(colony)
   return(colony)
 }
 
 #' @rdname replaceDrones
-#' @title Replaces a proportion drones with new drones
+#' @title Replace a proportion of drones with new ones
 #'
-#' @description Level 2 function that replaces a proportion drones with new
+#' @description Level 2 function that replaces a proportion of drones with new
 #'   drones from the colony. Useful after events like season change, swarming,
 #'   supersedure, etc. due to the short life span of the drones.
 #'
@@ -405,7 +407,7 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with replaced drones
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -433,15 +435,17 @@ replaceDrones <- function(colony, p = 1, use = "rand") {
     stop("Argument colony must be a Colony class object!")
   }
   nDrones <- nDrones(colony)
-  nDronesReplaced <- round(nDrones * p)
-  if (nDronesReplaced < nDrones) {
-    nDronesStay <- nDrones - nDronesReplaced
-    colony@drones <- c(selectInd(colony@drones, nInd = nDronesStay, use = use),
-                       createDrones(colony, nInd = nDronesReplaced))
-  } else {
-    colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
+  if (nDrones > 0) {
+    nDronesReplaced <- round(nDrones * p)
+    if (nDronesReplaced < nDrones) {
+      nDronesStay <- nDrones - nDronesReplaced
+      colony@drones <- c(selectInd(colony@drones, nInd = nDronesStay, use = use),
+                         createDrones(colony, nInd = nDronesReplaced))
+    } else {
+      colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
+    }
+    validObject(colony)
   }
-  validObject(colony)
   return(colony)
 }
 
@@ -452,7 +456,7 @@ replaceDrones <- function(colony, p = 1, use = "rand") {
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} without the queen
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -490,7 +494,7 @@ removeQueen <- function(colony) {
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} without virgin queens
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -537,7 +541,7 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} without workers
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -593,7 +597,7 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} without drones
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -645,7 +649,7 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with events reset
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -708,7 +712,7 @@ resetEvents <- function(colony) {
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with a mated queen
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -764,7 +768,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with the collapse event set to \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -799,7 +803,8 @@ collapseColony <- function(colony) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
-#'   \code{remnant} (see the description what each colony holds!)
+#'   \code{remnant} (see the description what each colony holds!); both colonies
+#'   have the swarm event set to \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -868,7 +873,8 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} with the supersede event set to
+#'   \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -912,7 +918,8 @@ supersedeColony <- function(colony) {
 #' @param p numeric, proportion of workers that will go to the split colony
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{split} and the
-#'   \code{remnant} (see the description what each colony holds!)
+#'   \code{remnant} (see the description what each colony holds!); both colonies
+#'   have the split even slot set do \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -975,7 +982,8 @@ splitColony <- function(colony, p = 0.3) {
 #'   locations will be set for each colony - the list has to have the same
 #'   length at there are colonies in \code{x})
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with set
+#'   location
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
