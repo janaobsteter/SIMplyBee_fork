@@ -55,9 +55,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     }
     if (isQueenMated(queen) && !is.null(fathers)) {
       warning("The queen is already mated - ignoring the fathers argument!")
-      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen))
+      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen))
     } else {
-      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = fathers)
+      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = fathers)
     }
   }
   colony <- new("Colony",
@@ -87,8 +87,8 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
-#'   queen of the colony; if she is not mated, then she will be added as a
-#'   virgin queen that will have to be mated later
+#'   queen of the colony; if she is not mated, she will be added as a virgin
+#'   queen that will have to be mated later.
 #'
 #' @return \code{\link{Colony-class}}
 #'

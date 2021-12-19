@@ -92,7 +92,7 @@ nCaste <- function(x, caste = "all") {
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x)) {
-          ret <- ifelse(!isQueenMated(x), 0, nInd(x@queen@misc$fathers))
+          ret <- ifelse(isQueenMated(x), nInd(x@queen@misc[[1]]$fathers), 0)
         } else {
           ret <- 0
         }
@@ -474,9 +474,10 @@ isQueenMated <- function(x) {
 #' @export
 getQueensYearOfBirth <- getQueensYOB <- function(x) {
   if (isPop(x)) {
-    ret <- ifelse(is.null(x@misc$yearOfBirth), NA, x@misc$yearOfBirth)
+    # TODO: expand to more than 1 queen
+    ret <- ifelse(is.null(x@misc[[1]]$yearOfBirth), NA, x@misc[[1]]$yearOfBirth)
   } else if (isColony(x)) {
-    ret <- ifelse(is.null(x@queen@misc$yearOfBirth), NA, x@queen@misc$yearOfBirth)
+    ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
   } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueensYearOfBirth)
     names(ret) <- getId(x)
@@ -523,14 +524,15 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' @export
 getQueensAge <- function(x, currentYear) {
   if (isPop(x)) {
-    if (is.null(x@misc$yearOfBirth)) {
+    # TODO: expand to more than one queen
+    if (is.null(x@misc[[1]]$yearOfBirth)) {
       ret <- NA
     } else {
-      ret <- currentYear - x@misc$yearOfBirth
+      ret <- currentYear - x@misc[[1]]$yearOfBirth
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      ret <- currentYear - x@queen@misc$yearOfBirth
+      ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
     } else {
       ret <- NA
     }

@@ -116,7 +116,7 @@
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {
   if (isColony(x)) {
     if (caste == "fathers") {
-      pop <- x@queen@misc$fathers
+      pop <- x@queen@misc[[1]]$fathers
     } else {
       pop <- slot(x, caste)
     }
@@ -758,17 +758,18 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers) {
 #' @export
 setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
   if (isPop(x)) {
-    x@misc$yearOfBirth <- year
+    # TODO: expand to more than 1 queen
+    x@misc[[1]]$yearOfBirth <- year
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      x@queen@misc$yearOfBirth <- year
+      x@queen@misc[[1]]$yearOfBirth <- year
     } else {
       stop("Missing queen!") # TODO: should this be a warning?
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in 1:nCol) {
-      x@colonies[[colony]]@queen@misc$yearOfBirth <- year
+      x@colonies[[colony]]@queen@misc[[1]]$yearOfBirth <- year
     }
   } else {
     stop("Argument x must be a Pop, Colony or Colonies class object!")
