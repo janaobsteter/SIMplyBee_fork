@@ -84,7 +84,7 @@ setValidity(Class = "Colony", method = function(object) {
     errors = c(errors, "There can be only one queen per colony!")
   }
   if (isQueenPresent(object) && !isQueenMated(object)) {
-    errors = c(errors, "Queen must be mated to be in the queens' slot!")
+    errors = c(errors, "Queen must be mated to be in the queen slot!")
   }
   if (!isQueenPresent(object) && !is.na(getId(object))) {
     errors = c(errors, "When queen is absent, the colony ID should be NA!")

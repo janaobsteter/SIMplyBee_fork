@@ -531,37 +531,38 @@ reQueenColonies <- function(colonies, queens) {
 }
 
 #' @rdname crossColonies
-#' @title TODO
+#' @title Cross colony for all given colonies
 #'
-#' @description Level 3 function that ...  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
-#' \creates workers, drones and a new virgin queen and write them to the corresponding
-#' \slots of the colonies object.
-#' #IF the colonies are queen-less - select a queen from the virgin queen - if not, mate the current queen!!!
+#' @description Level 3 function that does the same as \code{\link{crossColony}}
+#'   but for all given colonies. To ease the use, \code{crossColonies} takes in
+#'   a group of drones (Drone Congregation Area - DCA), partitions it so that
+#'   each colony virgin queen mates with one group/partition of drones.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param crossVirginQueen  TODO
-#' @param DCA TODO
-#' @param nAvgFathers TODO
+#' @param colonies \code{\link{Colonies-class}}
+#' @param DCA \code{\link{Pop-class}}, Drone Congregation Area
+#' @param nAvgFathers numeric, average number of drones (fathers) to used in
+#'   matings (see \code{\link{crossColony}})
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Colonies-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 30)
+#' colony1 <- createColony(virgin_queen = basePop[2])
+#' colony2 <- createColony(virgin_queen = basePop[3])
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#'  TODO FINISH
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiary <- crossColonies(colonies = apiary, DCA = drones, nAvgFathers = 10)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
 #' @export
 crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
@@ -571,12 +572,14 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
+  if (!isPop(DCA)) {
+    stop("Argument DCA must be a Pop class object!")
+  }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    nFathers <- rpois(n = nCol, lambda = nAvgFathers)
     fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol,
                                            avgGroupSize = nAvgFathers)
     for (colony in 1:nCol) {

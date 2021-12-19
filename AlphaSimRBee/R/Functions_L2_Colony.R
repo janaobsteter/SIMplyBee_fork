@@ -695,9 +695,11 @@ resetEvents <- function(colony) {
 #' @title Cross (mate) a virgin queen of a colony to a group of drones
 #'
 #' @description Level 2 function that crosses (mates) a virgin queen of colony
-#'   to a group of drones. When there are multiple virgin queen in the colony,
-#'   one is selected at random, mated and promoted to the queen of the colony.
-#'   Mated drones (fathers) are stored for producing progeny at a later stage.
+#'   to a group of drones. When there are multiple virgin queens in the colony,
+#'   one is selected at random, mated, and promoted to the queen of the colony.
+#'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
+#'   producing progeny at a later stage.
+#'   TODO: is this correct (about destroy)?
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones
@@ -742,9 +744,10 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   colony@queen <- crossVirginQueen(virginQueen, fathers)
   colony@id <- colony@queen@id
-  # TODO: should we really add virgin queens here by default? If we decide this, make sure to set NULL to
+  # TODO: should we really add virgin queens here by default? If we decide not to do this, make sure to set NULL to
   #       colony@virgin_queens since we promoted the prevailed virgin queen to the queen and the virgin
   #       queens slot contains the queen too!
+  #       If we decide to do this, then how will we handle the csd issue?
   # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
   colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
   validObject(colony)
