@@ -80,7 +80,7 @@ setClass("Colony",
 
 setValidity(Class = "Colony", method = function(object) {
   errors = character()
-  if (nInd(getQueen(object)) > 1) {
+  if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
     errors = c(errors, "There can be only one queen per colony!")
   }
   if (isQueenPresent(object) && !isQueenMated(object)) {

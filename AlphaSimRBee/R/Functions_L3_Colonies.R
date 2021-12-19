@@ -540,9 +540,6 @@ reQueenColonies <- function(colonies, queens) {
 #'
 #' @param colonies AlphaSimRBee Colonies object containing a list of colonies
 #' @param crossVirginQueen  TODO
-#' @param fathers TODO
-#' @param pWorkers TODO
-#' @param pDrones TODO
 #' @param DCA TODO
 #' @param nAvgFathers TODO
 #'

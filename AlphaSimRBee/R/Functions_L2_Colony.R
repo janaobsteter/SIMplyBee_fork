@@ -43,7 +43,16 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (!is.null(queen)) {
+  if (is.null(queen)) {
+    id <- as.character(NA)
+  } else {
+    if (!isPop(queen)) {
+      stop("Argument queen must be a Pop class object!")
+    }
+    id <- queen@id
+    if (!is.null(fathers) && !isPop(fathers)) {
+      stop("Argument fathers must be a Pop class object!")
+    }
     if (isQueenMated(queen) && !is.null(fathers)) {
       warning("The queen is already mated - ignoring the fathers argument!")
       queen@misc <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen))
@@ -52,6 +61,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     }
   }
   colony <- new("Colony",
+                id = id,
                 location = location,
                 queen = queen,
                 virgin_queens = virgin_queens)
@@ -60,7 +70,6 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   #       we don't want this - we should have then also added workers and drones
   # TODO: should then buildUpColony add virginQueens?
   if (isQueenPresent(colony)) {
-    colony@id <- colony@queen@id
     if (isQueenMated(colony)) {
       # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
       colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)

@@ -146,7 +146,7 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
 #' @export
 getQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "queen")
+    ret <- getCaste(x, caste = "queen", nInd = 1)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
