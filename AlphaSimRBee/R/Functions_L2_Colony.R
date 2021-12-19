@@ -75,6 +75,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
     }
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -390,8 +391,8 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
     }
-    validObject(colony)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -444,8 +445,8 @@ replaceDrones <- function(colony, p = 1, use = "rand") {
     } else {
       colony <- addDrones(colony, nInd = nDronesReplaced, new = TRUE)
     }
-    validObject(colony)
   }
+  validObject(colony)
   return(colony)
 }
 
@@ -858,9 +859,9 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
   remnantColony@production <- FALSE
   swarmColony@production <- FALSE
 
-  validObject(swarmColony)
-  validObject(remnantColony)
   ret <- list(swarm = swarmColony, remnant = remnantColony)
+  validObject(ret$swarmColony)
+  validObject(ret$remnantColony)
   return(ret)
 }
 
@@ -963,9 +964,9 @@ splitColony <- function(colony, p = 0.3) {
   remnantColony@production <- TRUE
   splitColony@production <- FALSE
 
-  validObject(splitColony)
-  validObject(remnantColony)
   ret <- list(split = splitColony, remnant = remnantColony)
+  validObject(ret$splitColony)
+  validObject(ret$remnantColony)
   return(ret)
 }
 

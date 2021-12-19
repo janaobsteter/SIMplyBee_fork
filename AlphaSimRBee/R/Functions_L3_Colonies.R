@@ -50,6 +50,7 @@ createColonies <- function(..., n = NULL) {
   } else {
     output <- new("Colonies", colonies = vector(mode = "list", length = n))
   }
+  validObject(output)
   return(output)
 }
 
@@ -134,6 +135,7 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
   } else {
     stop("You must provide either pop and n or at least n!")
   }
+  validObject(ret)
   return(ret)
 }
 
@@ -178,6 +180,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
     stop("Argument colony must be a Colony class object!")
   }
   colonies@colonies[[pos]] <- colony
+  validObject(colonies)
   return(colonies)
 }
 
@@ -240,6 +243,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
   } else {
     stop("Provide either ID or p!")
   }
+  validObject(ret)
   return(ret)
 }
 
@@ -296,6 +300,8 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     stop("You must provide either ID or p!")
   }
   ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
+  validObject(ret$pulledColonies)
+  validObject(ret$remainingColonies)
   return(ret)
 }
 
@@ -327,6 +333,7 @@ removeColonies <- function(colonies, ID) {
     stop("Argument colonies must be a Colonies class object!")
   }
   ret <- colonies[!getId(colonies) %in% ID]
+  validObject(ret)
   return(ret)
 }
 
@@ -377,6 +384,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
                                                  new = new,
                                                  simParamBee = simParamBee)
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -428,6 +436,7 @@ replaceWorkersColonies <- function(colonies, p = 1, use = "rand",
                                                   p = p, use = use,
                                                   simParamBee = simParamBee)
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -474,6 +483,7 @@ replaceDronesColonies <- function(colonies, p = 1, use = "rand") {
     colonies@colonies[[colony]] <- replaceDrones(colony = colonies[[colony]],
                                                  p = p, use = use)
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -531,6 +541,7 @@ reQueenColonies <- function(colonies, queens) {
     colonies@colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
                                                  queen = queens[colony])
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -592,6 +603,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
                                             simParamBee = simParamBee)
     }
   }
+  validObject(ret)
   return(ret)
 }
 
@@ -635,6 +647,7 @@ collapseColonies <- function(colonies) {
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- collapseColony(colonies@colonies[[colony]])
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -701,6 +714,8 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }
   }
+  validObject(ret$swarms)
+  validObject(ret$remnants)
   return(ret)
 }
 
@@ -748,6 +763,7 @@ supersedeColonies <- function(colonies) {
       colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]])
     }
   }
+  validObject(colonies)
   return(colonies)
 }
 
@@ -810,6 +826,8 @@ splitColonies <- function(colonies, p = 0.3) {
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }
   }
+  validObject(ret$splits)
+  validObject(ret$remnants)
   return(ret)
 }
 
@@ -837,5 +855,6 @@ setPhenoColonies <- function(colonies, FUN = NULL, ...) {
     colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
                                                   FUN = FUN, ...)
   }
+  validObject(colonies)
   return(colonies)
 }
