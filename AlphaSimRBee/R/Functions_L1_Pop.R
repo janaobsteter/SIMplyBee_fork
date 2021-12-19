@@ -644,42 +644,70 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   of drones. This function does not create any progeny, it only stores the
 #'   mated drones (fathers) so we can later create progeny as needed.
 #'
-#' @param virginQueen \code{\link{Pop-class}}
-#' @param fathers \code{\link{Pop-class}}
+#' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated
+#' @param fathers \code{\link{Pop-class}}, a group of drones that will be mated
+#'   with virgin queen(s); if there is more than one virgin queen, then the
+#'   \code{fathers} are partitioned into multiple groups of average size of
+#'   \code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}}
+#' @param nAvgFathers numeric, average number of drones (fathers) used in mating
+#'   the virgin queen(s) - currently active only when multiple virgin queens
+#'   provided
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
 #'
-#' @return \code{\link{Pop-class}} with a mated queen
+#' @return \code{\link{Pop-class}} with mated queen(s)
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' (matedQueen <- crossVirginQueen(virginQueen = basePop[2], fathers = drones))
-#' getFathers(matedQueen)
+#' (matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+#' isQueenMated(basePop[2])
+#' isQueenMated(matedQueen1)
+#' nFathers(matedQueen1)
+#' getFathers(matedQueen1)@id
+#' (matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[1:5]))
+#' isQueenMated(basePop[3])
+#' isQueenMated(matedQueen2)
+#' nFathers(matedQueen2)
+#' getFathers(matedQueen2)@id
+#'
+#' matedQueens <- crossVirginQueen(pop = basePop[2:3],
+#'                                 fathers = drones[1:10], nAvgFathers = 2)
+#' matedQueens
+#' isQueenMated(matedQueens)
+#' nFathers(matedQueens)
+#' getFathers(matedQueens)
 #'
 #' @export
-crossVirginQueen <- function(virginQueen, fathers) {
-  if (!isPop(virginQueen)) {
-    stop("Argument virginQueen must be a Pop class object!")
+crossVirginQueen <- function(pop, fathers, nAvgFathers) {
+  # TODO: set nAvgFathers to NULL by default and then grab the value from
+  #       SimParamBee
+  if (!isPop(pop)) {
+    stop("Argument pop must be a Pop class object!")
+  }
+  if (any(isQueenMated(pop))) {
+    stop("One of the queens in pop is already mated!")
   }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
-  if (isQueenMated(virginQueen)) {
-    stop("The queen is already mated!")
+  nVirginQueen <- nInd(pop)
+  if (nVirginQueen == 1) {
+    # TODO: do we take all provided fathers, specified nAvgFathers, or default nAvgFathers from SimParam when nAvgFathers = NULL?
+    pop@misc[[1]]$fathers <- fathers
+  } else {
+    fathers <- pullDroneGroupsFromDCA(DCA = fathers,
+                                      nGroup = nVirginQueen,
+                                      avgGroupSize = nAvgFathers)
+    for (queen in 1:nVirginQueen) {
+      pop@misc[[queen]]$fathers <- fathers[[queen]]
+    }
   }
-  if (is.null(fathers)) {
-    stop("Missing fathers!")
-  }
-  if (nInd(virginQueen) > 1) {
-    stop("#TODO: Expand the function to mate multiple virgin queens at once!")
-  }
-  virginQueen@misc$fathers <- fathers
-  return(virginQueen)
+  return(pop)
 }
 
 #' @rdname setQueensYOB

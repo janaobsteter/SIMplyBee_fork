@@ -104,7 +104,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #' virginQueen <- basePop[3]
 #' reQueenColony(colony, queen = virginQueen)
 #'
-#' matedQueen <- crossVirginQueen(virginQueen = basePop[3], fathers = drones[6:10])
+#' matedQueen <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10])
 #' reQueenColony(colony, queen = matedQueen)
 #'
 #' @export
@@ -742,7 +742,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   # Pick one virgin queen that will prevail
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
-  colony@queen <- crossVirginQueen(virginQueen, fathers)
+  # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
+  colony@queen <- crossVirginQueen(pop = virginQueen, fathers)
   colony@id <- colony@queen@id
   # TODO: should we really add virgin queens here by default? If we decide not to do this, make sure to set NULL to
   #       colony@virgin_queens since we promoted the prevailed virgin queen to the queen and the virgin
