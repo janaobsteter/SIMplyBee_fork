@@ -157,13 +157,13 @@ getQueen <- function(x) {
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
   if (isPop(x)) {
-    if (is.null(x@misc$fathers)) {
-      ret <- NULL
-    } else {
+    if (isQueenMated(x)) {
       if (is.null(nInd)) {
-        nInd <- nInd(x@misc$fathers)
+        nInd <- nFathers(x)
       }
       ret <- selectInd(pop = x@misc$fathers, nInd = nInd, use = use)
+    } else {
+      ret <- NULL
     }
   } else if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
@@ -238,7 +238,7 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (is.null(colony@queen)) {
+  if (!isQueenPresent(colony)) {
     stop("Missing queen!")
   }
   if (!isQueenMated(colony)) {
@@ -246,8 +246,8 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   }
   ret <- vector(mode = "list", length = 2)
   names(ret) <- c("workers", "nHomDrones")
-  workers <- randCross2(females = colony@queen,
-                        males = colony@queen@misc$fathers,
+  workers <- randCross2(females = getQueen(colony),
+                        males = getFathers(colony),
                         nCrosses = nInd)
   if (is.null(simParamBee$csdChr)) {
     ret$workers <- workers
@@ -345,10 +345,10 @@ createDrones <- function(colony, nInd) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (is.null(colony@queen)) {
+  if (!isQueenPresent(colony)) {
     stop("Missing queen!")
   }
-  drones <- makeDH(pop = colony@queen, nDH = nInd)
+  drones <- makeDH(pop = getQueen(colony), nDH = nInd)
   return(drones)
 }
 
@@ -670,7 +670,7 @@ crossVirginQueen <- function(virginQueen, fathers) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (isQueenMated(virginQueen)) {
-    stop("The queen is mated already!")
+    stop("The queen is already mated!")
   }
   if (is.null(fathers)) {
     stop("Missing fathers!")
@@ -732,7 +732,7 @@ setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
   if (isPop(x)) {
     x@misc$yearOfBirth <- year
   } else if (isColony(x)) {
-    if (!is.null(x@queen)) {
+    if (isQueenPresent(x)) {
       x@queen@misc$yearOfBirth <- year
     } else {
       stop("Missing queen!") # TODO: should this be a warning?

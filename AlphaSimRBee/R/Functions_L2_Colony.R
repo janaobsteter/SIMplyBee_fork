@@ -44,12 +44,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(queen)) {
-    if (nInd(queen) > 1) {
-      stop("More than one individual given for a queen!")
-    }
-    if (isQueenMated(queen) & !is.null(fathers)) {
-      warning("The queen is already mated - ignoring fathers!")
-      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = queen@misc$fathers)
+    if (isQueenMated(queen) && !is.null(fathers)) {
+      warning("The queen is already mated - ignoring the fathers argument!")
+      queen@misc <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen))
     } else {
       queen@misc <- list(yearOfBirth = yearOfBirth, fathers = fathers)
     }
@@ -62,7 +59,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   # TODO: do we really want to add virgin queen(s) automatically? Fells like
   #       we don't want this - we should have then also added workers and drones
   # TODO: should then buildUpColony add virginQueens?
-  if (!is.null(colony@queen)) {
+  if (isQueenPresent(colony)) {
     colony@id <- colony@queen@id
     if (isQueenMated(colony)) {
       # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
@@ -113,8 +110,8 @@ reQueenColony <- function(colony, queen) {
     colony@queen <- queen
     colony@id <- queen@id
   } else {
-    colony@id <- NULL
     colony@queen <- NULL
+    colony@id <- NULL
     colony@virgin_queens <- queen
   }
   return(colony)
@@ -151,7 +148,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (is.null(colony@queen)) {
+  if (!isQueenPresent(colony)) {
     stop("Missing queen!")
   }
   if (!isQueenMated(colony)) {
@@ -710,8 +707,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (!is.null(colony@queen)) {
-    stop("Mated queen already present!")
+  if (isQueenPresent(colony)) {
+    stop("Queen already present in the colony!")
   }
   if (is.null(colony@virgin_queens)) {
     stop("No virgin queen(s)!")
@@ -860,7 +857,7 @@ supersedeColony <- function(colony) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if (is.null(colony@queen)) {
+  if (!isQueenPresent(colony)) {
     stop("No queen present in the colony!")
   }
   colony@queen <- NULL

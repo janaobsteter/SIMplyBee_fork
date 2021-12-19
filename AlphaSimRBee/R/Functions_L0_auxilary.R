@@ -91,10 +91,10 @@ nCaste <- function(x, caste = "all") {
      }
     } else {
       if (caste == "fathers") {
-        if (is.null(x@queen)) {
-          ret <- 0
+        if (isQueenPresent(x)) {
+          ret <- ifelse(!isQueenMated(x), 0, nInd(x@queen@misc$fathers))
         } else {
-          ret <- ifelse(is.null(x@queen@misc$fathers), 0, nInd(x@queen@misc$fathers))
+          ret <- 0
         }
       } else if (caste == "homDrones") {
         ret <- x@nHomDrones
@@ -407,8 +407,8 @@ isQueenMated <- function(x) {
   if (isPop(x)) {
     ret <- !is.null(x@misc$fathers)
   } else if (isColony(x)) {
-    if (!is.null(x@queen)) {
-      ret <- !is.null(x@queen@misc$fathers)
+    if (isQueenPresent(x)) {
+      ret <- isQueenMated(x@queen)
     } else {
       ret <- FALSE
     }
@@ -474,10 +474,7 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc$yearOfBirth), NA, x@queen@misc$yearOfBirth)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies,
-                  FUN = function(z) {
-                    ifelse(is.null(z@queen@misc$yearOfBirth), NA, z@queen@misc$yearOfBirth)
-                  })
+    ret <- sapply(X = x@colonies, FUN = getQueensYearOfBirth)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -528,10 +525,10 @@ getQueensAge <- function(x, currentYear) {
       ret <- currentYear - x@misc$yearOfBirth
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen)) {
-      ret <- NA
-    } else {
+    if (isQueenPresent(x)) {
       ret <- currentYear - x@queen@misc$yearOfBirth
+    } else {
+      ret <- NA
     }
   } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueensAge, currentYear = currentYear)
