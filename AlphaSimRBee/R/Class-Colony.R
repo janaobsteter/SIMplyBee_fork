@@ -1,7 +1,7 @@
 # TOOD: I have provided this as PullRequest for AlphaSimR https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
 #   once it gets incorporated there we should remove it here
-isPop = function(x) {
-  ret = is(x, class = "Pop")
+isPop <- function(x) {
+  ret <- is(x, class = "Pop")
   return(ret)
 }
 
@@ -79,18 +79,18 @@ setClass("Colony",
          ))
 
 setValidity(Class = "Colony", method = function(object) {
-  errors = character()
+  errors <- character()
   if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
-    errors = c(errors, "There can be only one queen per colony!")
+    errors <- c(errors, "There can be only one queen per colony!")
   }
   if (isQueenPresent(object) && !isQueenMated(object)) {
-    errors = c(errors, "Queen must be mated to be in the queen slot!")
+    errors <- c(errors, "Queen must be mated to be in the queen slot!")
   }
   if (!isQueenPresent(object) && !is.na(getId(object))) {
-    errors = c(errors, "When queen is absent, the colony ID should be NA!")
+    errors <- c(errors, "When queen is absent, the colony ID should be NA!")
   }
   if (isQueenPresent(object) && getId(object) != getQueen(object)@id) {
-    errors = c(errors, "Colony and queen IDs don't match!")
+    errors <- c(errors, "Colony and queen IDs don't match!")
   }
   if (length(errors) == 0) {
     return(TRUE)
@@ -107,16 +107,16 @@ setMethod("show",
             cat("Id:", getId(object),"\n")
             cat("Location:", getLocation(object),"\n")
             cat("Queen:", getId(object@queen),"\n")
-            cat("Fathers:", nFathers(object), "\n")
-            cat("Virgin queens:", nVirginQueens(object),"\n")
-            cat("Workers:", nWorkers(object), "\n")
-            cat("Drones:", nDrones(object),"\n")
-            cat("Homozygous drones:", nHomDrones(object),"\n")
-            cat("Split:", object@split, "\n")
-            cat("Swarmed:", object@swarm, "\n")
-            cat("Superseded:", object@supersedure, "\n")
-            cat("Collapsed:", object@collapse, "\n")
-            cat("Production:", object@production, "\n")
+            cat("Number of fathers:", nFathers(object), "\n")
+            cat("Number of virgin queens:", nVirginQueens(object),"\n")
+            cat("Number of workers:", nWorkers(object), "\n")
+            cat("Number of drones:", nDrones(object),"\n")
+            cat("Number of homozygous drones:", nHomDrones(object),"\n")
+            cat("Has split:", object@split, "\n")
+            cat("Has swarmed:", object@swarm, "\n")
+            cat("Has superseded:", object@supersedure, "\n")
+            cat("Has collapsed:", object@collapse, "\n")
+            cat("Is productive:", object@production, "\n")
             invisible()
           }
 )
@@ -126,12 +126,13 @@ setMethod("c",
           signature(x = "Colony"),
           function(x, ...) {
             colonies <- createColonies(x, ...)
+            validObject(colonies)
             return(colonies)
           }
 )
 
 #' @describeIn Colony Test if object is a Colony class object
-isColony = function(x) {
-  ret = is(x, class2 = "Colony")
+isColony <- function(x) {
+  ret <- is(x, class2 = "Colony")
   return(ret)
 }
