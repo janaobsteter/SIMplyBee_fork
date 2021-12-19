@@ -589,12 +589,14 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 }
 
 #' @rdname collapseColonies
-#' @title TODO
+#' @title Collapse colony for all given colonies
 #'
-#' @description Level 3 function that TODO
+#' @description Level 3 function that does the same as
+#'   \code{\link{collapseColony}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param ID IDs of "colony" class objects listed in the "colonies" object
+#' @param colonies \code{\link{Colonies-class}}
+#'
+#' @return \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -607,13 +609,14 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
 #' colony3 <- createColony(queen = basePop[4], fathers = founderDrones[21:30])
 #' apiary <- c(colony1, colony2, colony3)
 #' apiary
+#' hasCollapsed(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c("2", "3"))
 #' tmp
 #' apiaryLost <- collapseColonies(tmp$pulledColonies)
 #' hasCollapsed(apiaryLost)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiaryLeft <- tmp$remainingColonies
+#' hasCollapsed(apiaryLeft)
 #'
 #' @export
 collapseColonies <- function(colonies) {

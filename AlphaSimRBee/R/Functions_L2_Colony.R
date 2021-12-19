@@ -752,7 +752,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
 }
 
 #' @rdname collapseColony
-#' @title Collapses colony
+#' @title Collapse colony
 #'
 #' @description Level 2 function that collapses colony by setting the collapse
 #'   event slot to \code{TRUE}. The production status slot is also changed (to
