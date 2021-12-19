@@ -51,6 +51,25 @@ test_that("nQueens", {
   expect_equal(nQueens(apiary), c("2" = 1, "NA" = 0))
 })
 
+test_that("nFathers", {
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+  matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5])
+  matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:9])
+
+  expect_equal(nFathers(matedQueen1), 5)
+  expect_equal(nFathers(matedQueen2), 4)
+  expect_equal(nFathers(c(basePop[2], matedQueen1, matedQueen2)), c(0, 5, 4))
+
+  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+  colony2 <- createColony(queen = basePop[3], fathers = drones[6:9])
+  expect_equal(nFathers(colony1), 5)
+  expect_equal(nFathers(colony2), 4)
+  expect_equal(nFathers(c(colony1, colony2)), c("2" = 5, "3" = 4))
+})
+
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)

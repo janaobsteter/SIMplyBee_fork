@@ -677,7 +677,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' isQueenMated(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
-#' (matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[1:5]))
+#' (matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10]))
 #' isQueenMated(basePop[3])
 #' isQueenMated(matedQueen2)
 #' nFathers(matedQueen2)
