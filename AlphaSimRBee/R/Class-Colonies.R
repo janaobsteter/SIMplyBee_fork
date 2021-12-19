@@ -46,6 +46,20 @@
 setClass("Colonies",
          slots = c(colonies = "list"))
 
+setValidity(Class = "Colonies", method = function(object) {
+  errors <- character()
+  ids <- getId(object)
+  ids <- ids[!is.na(ids)]
+  if (any(duplicated(ids))) {
+    errors = c(errors, "Some colonies are duplicated!")
+  }
+  if (length(errors) == 0) {
+    return(TRUE)
+  } else {
+    return(errors)
+  }
+})
+
 #' @describeIn Colonies Show colonies object
 setMethod("show",
           signature(object = "Colonies"),
@@ -61,6 +75,7 @@ setMethod("[",
           signature(x = "Colonies"),
           function(x, i) {
             x@colonies <- x@colonies[i]
+            validObject(x)
             return(x)
           }
 )
@@ -70,6 +85,7 @@ setMethod("[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
             ret <- x[match(x = i, table = getId(x))]
+            validObject(ret)
             return(ret)
           }
 )
@@ -83,6 +99,7 @@ setMethod("[[",
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
             ret <- x@colonies[[i[1]]]
+            validObject(ret)
             return(ret)
           }
 )
@@ -96,6 +113,7 @@ setMethod("[[",
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
             ret <- x[i[1]]@colonies
+            validObject(ret)
             return(ret)
           }
 )
@@ -116,12 +134,13 @@ setMethod("c",
                 }
               }
             }
+            validObject(x)
             return(x)
           }
 )
 
 #' @describeIn Colonies Test if object is a Colonies class object
-isColonies = function(x) {
-  ret = is(x, class2 = "Colonies")
+isColonies <- function(x) {
+  ret <- is(x, class2 = "Colonies")
   return(ret)
 }
