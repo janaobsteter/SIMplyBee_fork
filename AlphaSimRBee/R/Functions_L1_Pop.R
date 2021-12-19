@@ -448,9 +448,10 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'
 #' @description Level 1 function that pulls drone groups from a Drone
 #'   Congregation Area (DCA) to use them later in mating. Number of drones per
-#'   group is sampled from a Poisson distribution parameterised with an average
-#'   group size. Drones are pulled (removed) from the DCA to reflect the fact
-#'   that drones die after mating, so they can't be present in the DCA anymore.
+#'   group is sampled from a truncated Poisson distribution parameterised with
+#'   an average group size and truncation at zero (= zeroes are excluded).
+#'   Drones are pulled (removed) from the DCA to reflect the fact that drones
+#'   die after mating, so they can't be present in the DCA anymore.
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param nGroups integer, number of drone groups to be created
@@ -477,7 +478,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
   if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
-  nDrones <- rpois(n = nGroup, lambda = avgGroupSize)
+  nDrones <- extraDistr::rtpois(n = nGroup, lambda = avgGroupSize, a = 0)
   if (sum(nDrones) > nInd(DCA)) {
     stop("Not enough drones in the DCA!")
   }
