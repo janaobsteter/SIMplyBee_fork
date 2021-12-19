@@ -177,10 +177,12 @@ nQueens <- function(x) {
 #' @export
 nFathers <- function(x) {
   if (isPop(x)) {
-    if (isQueenMated(x)) {
-      ret <- nInd(x@misc$fathers)
-    } else {
-      ret <- 0
+    nInd <- nInd(x)
+    ret <- rep(x = 0, times = nInd)
+    for (ind in seq_len(nInd)) {
+      if (isQueenMated(x[ind])) {
+        ret[ind] <- nInd(x@misc[[ind]]$fathers)
+      }
     }
   } else if (isColony(x) | isColonies(x)) {
     ret <- nCaste(x, caste = "fathers")
@@ -388,28 +390,33 @@ isQueenPresent <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' apiary <- c(colony1, colony2)
+#' colony3 <- createColony(virgin_queen = basePop[4])
+#' apiary <- c(colony1, colony2, colony3)
 #' isQueenMated(getQueen(colony1))
 #' isQueenMated(colony1)
 #' isQueenMated(apiary)
 #'
-#' colony1 <- removeQueen(colony1)
-#' isQueenMated(colony1)
+#' isQueenMated(removeQueen(colony1))
 #'
-#' colony2 <- supersedeColony(colony2)
-#' isQueenMated(colony2)
+#' isQueenMated(supersedeColony(colony2))
+#'
+#' isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
 #'
 #' @export
 isQueenMated <- function(x) {
   if (isPop(x)) {
-    ret <- !is.null(x@misc$fathers)
+    if (nInd(x) > 0) {
+      ret <- sapply(X = x@misc, FUN = function(z) !is.null(z$fathers))
+    } else {
+      stop("No individual in x!")
+    }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
       ret <- isQueenMated(x@queen)
