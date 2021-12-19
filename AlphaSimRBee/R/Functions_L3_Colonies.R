@@ -381,38 +381,41 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
 }
 
 #' @rdname replaceWorkersColonies
-#' @title  Replace workers in all the colonies of a Colonies object
+#' @title Replace a proportion of workers with new ones for all given colonies
 #'
-#' @description Level 3 function that ... The function replaces a given proportion of workers in all the colonies
-#' of a Colonies object with new workers from the same mated queen. The default percentage
-#' is set to 1, hence replacing all workers If some colonies do not have workers, the
-#' function does not add them.
+#' @description Level 3 function that does the same as
+#'   \code{\link{replaceWorkers}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param colonies \code{\link{Colonies-class}}
+#' @param p numeric, proportion of workers to be replaced with new ones
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   guides selection of workers that stay when \code{p < 1}
+#'
+#' @return \code{\link{Colonies-class}} with replaced workers
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 10, nDrones = 10)
+#' apiary
+#' apiary[[1]]
+#' getWorkers(apiary[[1]])@id
+#' apiary[[2]]
+#' getWorkers(apiary[[2]])@id
+#' lapply(X = getWorkers(apiary), FUN = function(z) z@id)
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#' #Replace the workers
-#'   apiary1 <- replaceWorkers(apiary1)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiary <- replaceWorkersColonies(apiary)
+#' lapply(X = getWorkers(apiary), FUN = function(z) z@id)
 #'
 #' @export
-replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
+replaceWorkersColonies <- function(colonies, p = 1, use = "rand",
+                                   simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -421,57 +424,55 @@ replaceWorkersColonies <- function(colonies, p = 1, simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
-    if (!is.null(colonies[[colony]]@workers)) { # TODO: do we need this if here given what we do in replaceWorkers?
-      colonies@colonies[[colony]] <- replaceWorkers(colony = colonies[[colony]],
-                                                    p = p,
-                                                    simParamBee = simParamBee)
-    }
+    colonies@colonies[[colony]] <- replaceWorkers(colony = colonies[[colony]],
+                                                  p = p, use = use,
+                                                  simParamBee = simParamBee)
   }
   return(colonies)
 }
 
 #' @rdname replaceDronesColonies
-#' @title  Replace drones in all the colonies of a Colonies object
+#' @title Replace a proportion of drones with new ones for all given colonies
 #'
-#' @description Level 3 function that ... The function replaces a given proportion of drones in all the colonies
-#' of a Colonies object with new drones from the same queen. The default percentage
-#' is set to 1, hence replacing all drones. If some colonies do not have drones, the
-#' function does not add them.
+#' @description Level 3 function that does the same as
+#'   \code{\link{replaceDrones}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param colonies \code{\link{Colonies-class}}
+#' @param p numeric, proportion of drones to be replaced with new ones
+#' @param use character, all the options provided by \code{\link{selectInd}} -
+#'   guides selection of drones that stay when \code{p < 1}
+#'
+#' @return \code{\link{Colonies-class}} with replaced drones
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 10, nDrones = 10)
+#' apiary
+#' apiary[[1]]
+#' getDrones(apiary[[1]])@id
+#' apiary[[2]]
+#' getDrones(apiary[[2]])@id
+#' lapply(X = getDrones(apiary), FUN = function(z) z@id)
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
-#'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#' #Replace the drones
-#'   apiary1 <- replaceDrones(apiary1)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiary <- replaceDronesColonies(apiary)
+#' lapply(X = getDrones(apiary), FUN = function(z) z@id)
 #'
 #' @export
-replaceDronesColonies <- function(colonies, p = 1) {
+replaceDronesColonies <- function(colonies, p = 1, use = "rand") {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
-    if (!is.null(colonies[[colony]]@drones)) { # TODO: do we need this if here given what we do in replaceDrones?
-      colonies@colonies[[colony]] <- replaceDrones(colony = colonies[[colony]],
-                                                   p = p)
-    }
+    colonies@colonies[[colony]] <- replaceDrones(colony = colonies[[colony]],
+                                                 p = p, use = use)
   }
   return(colonies)
 }
