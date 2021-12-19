@@ -97,7 +97,11 @@ nCaste <- function(x, caste = "all") {
           ret <- 0
         }
       } else if (caste == "homDrones") {
-        ret <- x@nHomDrones
+        if (length(x@nHomDrones) == 0) {
+          ret <- 0
+        } else {
+          ret <- x@nHomDrones
+        }
       } else {
         ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
       }
