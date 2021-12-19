@@ -477,51 +477,54 @@ replaceDronesColonies <- function(colonies, p = 1) {
 }
 
 #' @rdname reQueenColonies
-#' @title TODO
+#' @title Re-queen a colony for all given colonies
 #'
-#' @description:Level 3 function that ... Add a new queen/virgin queen into the queens slot of the colonies.
-#' For example: this can be used to re-queen swarmed or split colonies where no queens are present.
+#' @description Level 3 function that does the same as
+#'   \code{\link{reQueenColony}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param queens Selected individuals to insert into the queen slot of the colony object
+#' @param colonies \code{\link{Colonies-class}}
+#' @param queens \code{\link{Pop-class}}, queens to be added to colonies, one
+#'   for each colony
+#'
+#' @return \code{\link{Colonies-class}}
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 20)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
+#' virginQueens <- basePop[4:5]
+#' apiary2 <- reQueenColonies(apiary, queen = virginQueens)
+#' apiary2
+#' apiary2[[1]]
+#' apiary2[[2]]
 #'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#'  #Split all the colonies
-#'  tmp <- splitColonies(apiary1)
-#'  apiary1 <- tmp$remnants
-#'  splitcolonies <- tmp$splits
-#'
-#'  #Create 10 virgin queens
-#'  virginQueens <- createVirginQueens(apiary1[[10]], nColonies(splitcolonies))
-#'
-#'  # Requeen the splits
-#'  splitcolonies <- reQueenColonies(splitcolonies, queens = virginQueens)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' matedQueens <- crossVirginQueen(pop = basePop[4:5],
+#'                                 fathers = drones[11:20], nAvgFathers = 2)
+#' apiary3 <- reQueenColonies(apiary, queen = matedQueens)
+#' apiary3
+#' apiary3[[1]]
+#' apiary3[[2]]
 #'
 #' @export
 reQueenColonies <- function(colonies, queens) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
+  if (!isPop(queens)) {
+    stop("Argument queens must be a Pop class object!")
+  }
   nCol <- nColonies(colonies)
   if (nInd(queens) < nCol) {
-    stop("Not enough queens!")
+    stop("Not enough queens provided!")
   }
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
