@@ -194,15 +194,17 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 }
 
 #' @rdname selectColonies
-#' @title Select individual colonies from a set of colonies
+#' @title Select individual colonies
 #'
-#' @description Level 3 function that selects individual colonies from a set of
-#'   colonies based on colony index or name.
+#' @description Level 3 function that selects individual colonies based on
+#'   colony ID or random selection.
 #'
-#' @param colonies Colonies, a set of colonies
-#' @param ID numeric or character, name of a colony (one or more) in
-#' \code{colonies}; note that numeric value is effectively converted to character
-#' - see examples how to select by index
+#' @param colonies \code{\link{Colonies-class}}
+#' @param ID numeric or character, name of a colony (one or more) to be pulled
+#'   out; note that numeric value is converted to character
+#' @param p numeric, probability of a colony being selected
+#'
+#' @return \code{\link{Colonies-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
@@ -233,8 +235,6 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #'
-#' @return Colonies
-#'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
@@ -263,7 +263,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @title Pull out some colonies
 #'
 #' @description Level 3 function that pulls out some colonies based on colony
-#'   IDs or random selection.
+#'   ID or random selection.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param ID numeric or character, name of a colony (one or more) to be pulled
