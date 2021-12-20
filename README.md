@@ -14,5 +14,5 @@ The development versions of AlphaSimRBee (potentially unstable) can be accessed 
 
 To install use:
 
-    devtools::install_github(repo="HighlanderLab/AlphaSimRBee@main")
-    devtools::install_github(repo="HighlanderLab/AlphaSimRBee@devel")
+    devtools::install_github(repo="HighlanderLab/SIMplyBee@main")
+    devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
