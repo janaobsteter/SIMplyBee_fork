@@ -674,7 +674,6 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' (tmp <- supersedeColony(colony)) # TODO: do we still get production if we have supersedure?
 #' resetEvents(tmp)
 #'
-#' (tmp <- collapseColony(colony))
 #' resetEvents(tmp)
 #'
 #' @export
@@ -685,7 +684,6 @@ resetEvents <- function(colony) {
   colony@swarm <- FALSE
   colony@split <- FALSE
   colony@supersedure <- FALSE
-  colony@collapse <- FALSE
   colony@production <- FALSE
   validObject(colony)
   return(colony)
@@ -747,38 +745,6 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   #       queens slot contains the queen too!
   # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
   colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
-  validObject(colony)
-  return(colony)
-}
-
-#' @rdname collapseColony
-#' @title Collapses colony
-#'
-#' @description Level 2 function that collapses colony by setting the collapse
-#'   event slot to \code{TRUE}. The production status slot is also changed (to
-#'   \code{FALSE}).
-#'
-#' @param colony \code{\link{Colony-class}}
-#'
-#' @return \code{\link{Colony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' colony <- createColony(queen = basePop[2], fathers = drones)
-#' (colony <- buildUpColony(colony, nWorkers = 100))
-#' collapseColony(colony)
-#'
-#' @export
-collapseColony <- function(colony) {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  colony@collapse <- TRUE
-  colony@production <- FALSE
   validObject(colony)
   return(colony)
 }

@@ -875,6 +875,49 @@ isProductive <- function(x) {
   return(ret)
 }
 
+#' @rdname getnHomDrones
+#' @title Extract the number of homozygous drones in the colony
+#'
+#' @description Level 0 function that returns the number of homozygous
+#' drones stored in the nHomDrones slot of the colony. Takes either Colony or Colonies
+#' class as the input.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony
+#' isProductive(colony)
+#' colony <- buildUpColony(colony, nWorkers = 100)
+#' colony
+#' isProductive(colony)
+#'
+#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' getNHomDrones(apiary)
+#'
+#' @export
+getnHomDrones <- function(x) {
+  if (isColony(x)) {
+    ret <- x@nHomDrones
+  } else if (isColonies(x)) {
+    ret <- sapply(x@colonies, FUN = getnHomDrones)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome
 #'
