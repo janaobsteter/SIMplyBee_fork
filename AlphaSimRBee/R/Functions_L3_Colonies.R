@@ -60,18 +60,21 @@ createColonies <- function(..., n = NULL) {
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
 #'
-#' @param pop \code{\link{Pop-class}}, individuals that will be used to seed
-#'   queens and drones in colonies (these individuals are selected at random if
+#' @param pop \code{\link{Pop-class}}, individuals that will be used as queens
+#'   of the created colonies (these individuals are selected at random if
 #'   there are more than \code{n})
 #' @param n integer, number of colonies to create (if only \code{n} is given
-#'   then empty (\code{NULL}) colonies are created - mostly useful for
-#'   programming)
-#' @param mated logical, create mated or unmated (virgin) colonies
+#'   then an empty (\code{NULL}) \code{\link{Colonies-class}} is created - this
+#'   is mostly useful for programming)
+#' @param mated logical, create mated or unmated (virgin) colonies; if mated,
+#'   then \code{nInd(pop)-n} individuals from \code{pop} are used to create
+#'   drones with which the queens will mate with
 #' @param nAvgFathers integer, number of drones that a queen mates with
 #'   TODO nAvgFathers default should go to simParamBee and then we set it to NULL
 #'        here and if its NULL we grab value from simParamBee, otherwise use it
 #'        from the user
-#' @param nDronesPerQueen integer, number of drones that a queen generates
+#' @param nDronesPerQueen integer, number of drones to generate per individual
+#'   from the pop for mating with the queens
 #'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
 #'        here and if its NULL we grab value from simParamBee, otherwise use it
 #'        from the user
@@ -112,8 +115,14 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
     if (!isPop(pop)) {
       stop("Argument pop must be a Pop class object!")
     }
+    if (nInd(pop) < n) {
+      stop("Not enough individuals in the pop to create n colonies!")
+    }
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
     if (mated) {
+      if (nInd(pop) < (n - 1)) {
+        stop("You must provide at least n+1 individuals in the pop to create n mated colonies!")
+      }
       tmp <- pullInd(pop = pop, nInd = n)
       queens <- tmp$pulled
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
