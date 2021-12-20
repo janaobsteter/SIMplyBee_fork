@@ -300,13 +300,13 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' (colony <- buildUpColony(colony, nWorkers = 100))
 #' isProductive(colony)
 #'
-#' colony <- buildUpColony(colony, nWorkers = 100))
+#' colony <- buildUpColony(colony, nWorkers = 100)
 #' colony # we are already at the target
 #' colony <- buildUpColony(colony, nWorkers = 150)
 #' colony # increasing the target
 #' colony <- buildUpColony(colony, nWorkers = 100)
 #' colony # we are already at the target
-#' colony <- buildUpColony(colony, nWorkers = 100, new = TRUE))
+#' colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
 #' colony # adding completely new workers & drones
 #'
 #' @export

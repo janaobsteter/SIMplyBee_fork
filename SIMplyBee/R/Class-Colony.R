@@ -9,7 +9,13 @@ isPop <- function(x) {
 
 # Class Colony ----
 
-#' @rdname Colony
+setClassUnion("PopOrNULL", c("Pop", "NULL"))
+setClassUnion("characterOrNULL", c("character", "NULL"))
+setClassUnion("integerOrNULL", c("integer", "NULL"))
+setClassUnion("numericOrNULL", c("numeric", "NULL"))
+setClassUnion("listOrNULL", c("list", "NULL"))
+
+#' @rdname Colony-class
 #' @title Honeybee colony
 #'
 #' @description An object holding honeybee colony
@@ -54,12 +60,6 @@ isPop <- function(x) {
 #' is(apiary)
 #'
 #' @export
-
-setClassUnion("PopOrNULL", c("Pop", "NULL"))
-setClassUnion("characterOrNULL", c("character", "NULL"))
-setClassUnion("integerOrNULL", c("integer", "NULL"))
-setClassUnion("numericOrNULL", c("numeric", "NULL"))
-setClassUnion("listOrNULL", c("list", "NULL"))
 setClass(Class = "Colony",
          slots = c(id = "characterOrNULL",
                    location = "numericOrNULL",

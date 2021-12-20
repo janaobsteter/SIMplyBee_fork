@@ -448,7 +448,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'   die after mating, so they can't be present in the DCA anymore.
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones
-#' @param nGroups integer, number of drone groups to be created
+#' @param nGroup integer, number of drone groups to be created
 #' @param avgGroupSize numeric, average number of drones per group
 #'
 #' @return list of \code{\link{Pop-class}}

@@ -9,9 +9,9 @@ pullDroneGroupsFromDCA(DCA, nGroup, avgGroupSize = 17)
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones}
 
-\item{avgGroupSize}{numeric, average number of drones per group}
+\item{nGroup}{integer, number of drone groups to be created}
 
-\item{nGroups}{integer, number of drone groups to be created}
+\item{avgGroupSize}{numeric, average number of drones per group}
 }
 \value{
 list of \code{\link{Pop-class}}

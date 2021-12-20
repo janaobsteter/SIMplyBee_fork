@@ -1172,6 +1172,7 @@ isGenoHeterozygous <- function(x) {
 #'   information about the csd locus.
 #'
 #' @param pop \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details We could expand \code{isCsdHeterozygous} to work also with
 #'   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed

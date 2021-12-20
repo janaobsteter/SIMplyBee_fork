@@ -13,6 +13,8 @@ replaceWorkersColonies(colonies, p = 1, use = "rand", simParamBee = NULL)
 
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of workers that stay when \code{p < 1}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colonies-class}} with replaced workers

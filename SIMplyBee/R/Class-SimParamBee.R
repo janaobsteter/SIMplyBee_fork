@@ -1,3 +1,4 @@
+#' @rdname SimParamBee-class
 #' @title Honeybee simulation parameters
 #'
 #' @description Container for global honeybee simulation parameters. Saving this

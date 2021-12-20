@@ -1,6 +1,8 @@
 # Class Colonies ----
 
-#' @rdname Colonies
+setClassUnion("integerOrNumeric", c("integer", "numeric"))
+
+#' @rdname Colonies-class
 #' @title Honeybee colonies
 #'
 #' @description An object holding a collection of honeybee colonies. It behaves
@@ -72,7 +74,6 @@ setMethod(f = "show",
 )
 
 # @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
-setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setMethod(f = "[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {

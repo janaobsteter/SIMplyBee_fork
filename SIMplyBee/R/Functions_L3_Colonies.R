@@ -106,8 +106,8 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
 #'   will insert the colony to that position and with this replace the old
 #'   colony at that position.
 #'
-#' @param colonies \code{\link{Colonies}}
-#' @param colony \code{\link{Colony}}, colony that will be added
+#' @param colonies \code{\link{Colonies-class}}
+#' @param colony \code{\link{Colony-class}}, colony that will be added
 #' @param pos numeric or character, index or ID of the old colony
 #'
 #' @return \code{\link{Colonies-class}} with a replaced colony
@@ -378,6 +378,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with replaced workers
 #'

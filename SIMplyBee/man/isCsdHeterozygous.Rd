@@ -8,6 +8,8 @@ isCsdHeterozygous(pop, simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical

@@ -7,9 +7,9 @@
 assignColonyToColonies(colonies, colony, pos)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies}}}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{colony}{\code{\link{Colony}}, colony that will be added}
+\item{colony}{\code{\link{Colony-class}}, colony that will be added}
 
 \item{pos}{numeric or character, index or ID of the old colony}
 }
