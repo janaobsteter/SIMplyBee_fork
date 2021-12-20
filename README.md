@@ -12,7 +12,7 @@ TODO
 
 TODO SIMplyBee is available on CRAN. You can install it with
 
-  install.packages(pkg = "SIMplyBee")
+    install.packages(pkg = "SIMplyBee")
 
 The development (and potentially unstable!) versions of SIMplyBee can be accessed from the main and devel branches using:
 
