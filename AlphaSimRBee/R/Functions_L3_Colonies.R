@@ -338,34 +338,49 @@ removeColonies <- function(colonies, ID) {
 }
 
 #' @rdname buildUpColonies
-#' @title  Build up Colonies by adding workers and drones
+#' @title Build up colony by adding (raising) workers and drones for all given
+#'   colonies
 #'
-#' @description Level 3 function that TODO Workers and drones are added to the colonies to build them
-#' up to the number of desired workers and drones (nWorkers and nDrones).
-#' For example: a user may build up colonies in the Period 1 and if events such as split or swarming
-#' occur.
+#' @description Level 3 function that does the same as
+#'   \code{\link{buildUpColony}} but for all given colonies.
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
-#' @param nWorkers Desired number of workers wanted in the colonies
-#' @param nDrones Desired number of drones wanted in the colonies
+#' @param colonies \code{\link{Colonies-class}}
+#' @param nWorkers integer, desired number of workers in the colony (currently
+#'   present workers are taken into account so only the difference is added)
+#' @param nDrones integer, desired number of drones in the colony (currently
+#'   present drones are taken into account so only the difference is added)
+#' @param new logical, should the workers and drones be added a fresh (ignoring
+#'   currently present workers and drones)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Colonies-class}} with workers and drones added
 #'
 #' @examples
-#' #Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd=200, nChr=1, segSites=100)
-#'
-#' #Set simulation parameters
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
 #'
-#' #Create population
-#' base <- newPop(founderGenomes)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' apiary <- c(colony1, colony2)
+#' isProductive(apiary)
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' #Create 10 virgin queen colonies
-#'  apiary1 <- createMultipleMatedColonies(founderGenomes = base, nColonies = 10, nAvgFathers = 15)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' isProductive(apiary)
+#' apiary[[1]]
+#' apiary[[2]]
 #'
-#' #Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
-#'  apiary1 <- buildUpColonies(apiary1, nWorkers = 1000)
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' apiary[[1]] # we are already at the target
+#' apiary <- buildUpColonies(apiary, nWorkers = 150)
+#' apiary[[1]] # increasing the target
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' apiary[[1]] # we are already at the target
+#' apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
+#' apiary[[1]] # adding completely new workers & drones
 #'
 #' @export
 buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
