@@ -1,6 +1,8 @@
-# AlphaSimRBee README
+# SIMplyBee README
 
-This is development site for AlphaSimRBee
+SIMplyBee R package extends [AlphaSimR](https://CRAN.R-project.org/package=AlphaSimR) for simulating honeybee populations and breeding programmes
+
+This is the development site of SIMplyBee
 
 ## Publication
 
@@ -8,11 +10,11 @@ TODO
 
 ## Download
 
-TODO AlphaSimRBee is available on CRAN.
+TODO SIMplyBee is available on CRAN. You can install it with
 
-The development versions of AlphaSimRBee (potentially unstable) can be accessed from the main and devel branches on GitHub.
+  install.packages(pkg = "SIMplyBee")
 
-To install use:
+The development (and potentially unstable!) versions of SIMplyBee can be accessed from the main and devel branches using:
 
-    devtools::install_github(repo="HighlanderLab/AlphaSimRBee@main")
-    devtools::install_github(repo="HighlanderLab/AlphaSimRBee@devel")
+    devtools::install_github(repo="HighlanderLab/SIMplyBee@main")
+    devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
