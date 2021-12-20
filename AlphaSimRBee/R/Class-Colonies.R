@@ -71,10 +71,11 @@ setMethod("show",
 )
 
 #' @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
+setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setMethod("[",
-          signature(x = "Colonies"),
+          signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
-            x@colonies <- x@colonies[i]
+            x@colonies <- x@colonies[as.integer(i)]
             validObject(x)
             return(x)
           }
@@ -92,13 +93,13 @@ setMethod("[",
 
 #' @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
 setMethod("[[",
-          signature(x = "Colonies"),
+          signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
             n <- length(i)
             if (n > 1) {
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
-            ret <- x@colonies[[i[1]]]
+            ret <- x@colonies[[as.integer(i[1L])]]
             validObject(ret)
             return(ret)
           }
@@ -112,7 +113,7 @@ setMethod("[[",
             if (n > 1) {
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
-            ret <- x[i[1]]@colonies
+            ret <- x[i[1L]]@colonies
             validObject(ret)
             return(ret)
           }
@@ -125,14 +126,13 @@ setMethod("c",
             for (y in list(...)) {
               if (class(y) == "NULL") {
                 # Do nothing
-              } else {
-                if (class(y) == "Colony") {
+              } else if (class(y) == "Colony") {
                   x@colonies <- c(x@colonies, y)
-                } else {
-                  stopifnot(class(y) == "Colonies")
+                } else if (class(y) == "Colonies") {
                   x@colonies <- c(x@colonies, y@colonies)
+                } else {
+                  stop("... must be a NULL, Colony or Colonies class object!")
                 }
-              }
             }
             validObject(x)
             return(x)
