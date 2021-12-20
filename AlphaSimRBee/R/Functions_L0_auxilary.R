@@ -18,7 +18,7 @@
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #' nColonies(apiary)
-#' nColonies(createColonies(n = 10))
+#' nColonies(createColonies(nCol = 10))
 #'
 #' @return integer
 #'

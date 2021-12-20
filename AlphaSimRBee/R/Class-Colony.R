@@ -121,18 +121,30 @@ setMethod("show",
           }
 )
 
-#' @describeIn Colony Combine multiple colony objects into a set of colonies \code{\link{Colonies-class}}
-setMethod("c",
-          signature(x = "Colony"),
-          function(x, ...) {
-            colonies <- createColonies(x, ...)
-            validObject(colonies)
-            return(colonies)
-          }
-)
-
 #' @describeIn Colony Test if object is a Colony class object
 isColony <- function(x) {
   ret <- is(x, class2 = "Colony")
   return(ret)
 }
+
+#' @describeIn Colonies Combine multiple colony objects
+# This setMethod() should be in Class-Colonies.R, but that file is sourced before
+# Class-Colony.R, which defines the class Colony, so we have it here as a
+# workaround
+setMethod("c",
+          signature(x = "Colony"),
+          function(x, ...) {
+            colonies <- new(Class = "Colonies", colonies = list(x))
+            for (y in list(...)) {
+              if (class(y) == "NULL") {
+                # Do nothing
+              } else if (class(y) == "Colony") {
+                colonies@colonies <- c(colonies@colonies, y)
+              } else {
+                stop("... must be a NULL or Colony class object!")
+              }
+            }
+            validObject(colonies)
+            return(colonies)
+          }
+)

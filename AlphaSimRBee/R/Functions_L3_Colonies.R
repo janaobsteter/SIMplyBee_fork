@@ -3,69 +3,15 @@
 #' @rdname createColonies
 #' @title Create colonies
 #'
-#' @description Level 3 function that creates a set of colonies.
-#'
-#' @param ... one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
-#' or \code{NULL} objects
-#' @param n numeric, number of colonies to create; this argument takes precedence
-#' over \code{...}
-#'
-#' @return A \code{\link{Colonies-class}} object
-#'
-#' @examples
-#' # Create 10 empty (NULL) colonies
-#' apiary <- createColonies(n = 10)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' # Create an apiary from two existing colonies
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[1], fathers = drones)
-#' colony2 <- createColony(virgin_queens = basePop[3])
-#' apiary <- createColonies(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' # ... an alternative
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' @export
-createColonies <- function(..., n = NULL) {
-  if (is.null(n)) {
-    input <- list(...)
-    class <- ifelse(length(input) == 0, "NULL", sapply(input, "class"))
-    if (!all("NULL" %in% class | "Colony" %in% class | "Colonies" %in% class)) {
-      stop("Arguments have to be a NULL, Colony, or Colonies class object!")
-    }
-    output <- new("Colonies", colonies = input)
-  } else {
-    output <- new("Colonies", colonies = vector(mode = "list", length = n))
-  }
-  validObject(output)
-  return(output)
-}
-
-#' @rdname createColonies2
-#' @title Create colonies (a version that will encompass createColonies soon) TODO
-#'
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
 #'
 #' @param pop \code{\link{Pop-class}}, individuals that will be used as queens
-#'   of the created colonies (these individuals are selected at random if
-#'   there are more than \code{n})
-#' @param n integer, number of colonies to create (if only \code{n} is given
-#'   then an empty (\code{NULL}) \code{\link{Colonies-class}} is created - this
-#'   is mostly useful for programming)
+#'   of the created colonies (the queens are selected at random from if there
+#'   are more than \code{n} in \code{Pop})
+#' @param nCol integer, number of colonies to create (if only \code{nCol} is
+#'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
+#'   (\code{NULL}) individual colony) - this is mostly useful for programming)
 #' @param mated logical, create mated or unmated (virgin) colonies; if mated,
 #'   then \code{nInd(pop)-n} individuals from \code{pop} are used to create
 #'   drones with which the queens will mate with
@@ -80,6 +26,9 @@ createColonies <- function(..., n = NULL) {
 #'        from the user
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
+#'   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
+#'
 #' @return \code{\link{Colonies-class}}
 #'
 #' @examples
@@ -88,26 +37,27 @@ createColonies <- function(..., n = NULL) {
 #' basePop <- newPop(founderGenomes)
 #'
 #' # Create 2 empty (NULL) colonies
-#' apiary <- createColonies2(n = 2)
+#' apiary <- createColonies(nCol = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # Create 2 mated colonies
-#' apiary <- createColonies2(pop = basePop, n = 2)
+#' apiary <- createColonies(pop = basePop, nCol = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # Create 2 unmated/virgin colonies
-#' apiary <- createColonies2(pop = basePop, n = 2, mated = FALSE)
+#' apiary <- createColonies(pop = basePop, nCol = 2, mated = FALSE)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' @export
-createColonies2 <- function(pop = NULL, n, mated = TRUE,
-                            nAvgFathers = 15, nDronesPerQueen = 100, simParamBee = NULL) {
+createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
+                           nAvgFathers = 15, nDronesPerQueen = 100,
+                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -115,34 +65,34 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
     if (!isPop(pop)) {
       stop("Argument pop must be a Pop class object!")
     }
-    if (nInd(pop) < n) {
+    if (nInd(pop) < nCol) {
       stop("Not enough individuals in the pop to create n colonies!")
     }
-    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
+    ret <- new("Colonies", colonies = vector(mode = "list", length = nCol))
     if (mated) {
-      if (nInd(pop) < (n - 1)) {
+      if (nInd(pop) < (nCol - 1)) {
         stop("You must provide at least n+1 individuals in the pop to create n mated colonies!")
       }
-      tmp <- pullInd(pop = pop, nInd = n)
+      tmp <- pullInd(pop = pop, nInd = nCol)
       queens <- tmp$pulled
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
-      fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = n, avgGroupSize = nAvgFathers)
-      for (colony in 1:n) {
+      fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nCol, avgGroupSize = nAvgFathers)
+      for (colony in 1:nCol) {
         ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                                fathers = fatherPackages[[colony]],
                                                simParamBee = simParamBee)
       }
     } else {
-      virginQueens <- selectInd(pop, nInd = n, use = "rand")
-      for (colony in 1:n) {
+      virginQueens <- selectInd(pop, nInd = nCol, use = "rand")
+      for (colony in 1:nCol) {
         ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
                                                simParamBee = simParamBee)
       }
     }
-  } else if (!is.null(n)) {
-    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
+  } else if (!is.null(nCol)) {
+    ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = nCol))
   } else {
-    stop("You must provide either pop and n or at least n!")
+    ret <- new(Class = "Colonies")
   }
   validObject(ret)
   return(ret)
@@ -275,7 +225,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createColonies2(pop = basePop, n = 3)
+#' apiary <- createColonies(pop = basePop, nCol = 3)
 #' (names <- getId(apiary))
 #'
 #' tmp <- pullColonies(apiary, ID = names[1])
@@ -336,7 +286,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createColonies2(pop = basePop, n = 3)
+#' apiary <- createColonies(pop = basePop, nCol = 3)
 #' (names <- getId(apiary))
 #'
 #' getId(removeColonies(apiary, ID = names[1]))
@@ -624,7 +574,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
   if (nCol == 0) {
     ret <- createColonies()
   } else {
-    ret <- createColonies(n = nCol)
+    ret <- createColonies(nCol = nCol)
     fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol,
                                            avgGroupSize = nAvgFathers)
     for (colony in 1:nCol) {
@@ -733,11 +683,11 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(swarms = createColonies(n = 0),
-                remnants = createColonies(n = 0))
+    ret <- list(swarms = createColonies(),
+                remnants = createColonies())
   } else {
-    ret <- list(swarms = createColonies(n = nCol),
-                remnants = createColonies(n = nCol))
+    ret <- list(swarms = createColonies(nCol = nCol),
+                remnants = createColonies(nCol = nCol))
     for (colony in 1:nCol) {
       tmp <- swarmColony(colonies[[colony]], p = p, simParamBee = simParamBee)
       ret$swarms@colonies[[colony]] <- tmp$swarm
@@ -845,11 +795,11 @@ splitColonies <- function(colonies, p = 0.3) {
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(splits = createColonies(n = 0),
-                remnants = createColonies(n = 0))
+    ret <- list(splits = createColonies(),
+                remnants = createColonies())
   } else {
-    ret <- list(splits = createColonies(n = nCol),
-                remnants = createColonies(n = nCol))
+    ret <- list(splits = createColonies(nCol = nCol),
+                remnants = createColonies(nCol = nCol))
     for (colony in 1:nCol) {
       tmp <- splitColony(colonies[[colony]], p = p)
       ret$splits@colonies[[colony]] <- tmp$split

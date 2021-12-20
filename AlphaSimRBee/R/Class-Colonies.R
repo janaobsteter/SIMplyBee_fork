@@ -26,6 +26,7 @@
 #' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2, colony3)
 #' apiary
+#' getId(apiary)
 #' apiary[1]
 #' getId(apiary[1])
 #' getId(apiary["2"])
@@ -99,7 +100,7 @@ setMethod("[[",
             if (n > 1) {
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
-            ret <- x@colonies[[as.integer(i[1L])]]
+            ret <- x@colonies[[i[1L]]]
             validObject(ret)
             return(ret)
           }
@@ -119,7 +120,7 @@ setMethod("[[",
           }
 )
 
-#' @describeIn Colonies Combine multiple colony and colonies
+#' @describeIn Colonies Combine multiple colony and colonies objects
 setMethod("c",
           signature(x = "Colonies"),
           function(x, ...) {
@@ -127,12 +128,12 @@ setMethod("c",
               if (class(y) == "NULL") {
                 # Do nothing
               } else if (class(y) == "Colony") {
-                  x@colonies <- c(x@colonies, y)
-                } else if (class(y) == "Colonies") {
-                  x@colonies <- c(x@colonies, y@colonies)
-                } else {
-                  stop("... must be a NULL, Colony or Colonies class object!")
-                }
+                x@colonies <- c(x@colonies, y)
+              } else if (class(y) == "Colonies") {
+                x@colonies <- c(x@colonies, y@colonies)
+              } else {
+                stop("... must be a NULL, Colony or Colonies class object!")
+              }
             }
             validObject(x)
             return(x)

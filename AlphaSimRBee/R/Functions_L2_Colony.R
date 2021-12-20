@@ -60,7 +60,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = fathers)
     }
   }
-  colony <- new("Colony",
+  colony <- new(Class = "Colony",
                 id = id,
                 location = location,
                 queen = queen,
