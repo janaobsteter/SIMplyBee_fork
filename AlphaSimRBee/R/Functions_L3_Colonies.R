@@ -306,13 +306,14 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 }
 
 #' @rdname removeColonies
-#' @title Remove the colonies from the colony list based on IDs
+#' @title Remove some colonies
 #'
-#' @description Level 3 function that removes the colonies from the list of all
-#'   colonies based on colony IDs and return a list of remaining colonies.
+#' @description Level 3 function that removes some colonies based on their ID.
 #'
-#' @param colonies Colonies
-#' @param ID character, IDs of colony(ies) in \code{colonies}
+#' @param colonies \code{\link{Colonies-class}}
+#' @param ID character, IDs of colony(ies) to be removed
+#'
+#' @return \code{\link{Colonies-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -324,8 +325,6 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #'
 #' getId(removeColonies(apiary, ID = names[1]))
 #' getId(removeColonies(apiary, ID = names[c(2, 3)]))
-#'
-#' @return Colonies
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
