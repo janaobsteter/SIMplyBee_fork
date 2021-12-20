@@ -20,10 +20,11 @@ nColonies; input colonies; return n
 
 nCaste; input Colony or Colonies; return n
 nQueen
+nVirginQueens
 nFathers
 nWorkers 
 nDrones 
-nVirginQueens
+nHomDrones
 
 isQueenMated; input Pop, Colony, or Colonies; return logical
 
@@ -169,10 +170,12 @@ setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or Colonies; return Pop,
 
 createColony; input Pop; return Colony
 
+reQueenColony; TODO rename to replaceQueen() to be consistent with other replace functions? Or should this be called setQueen() and it can
+  then serve as a way to set a queen for the new colony as well as to set a new queen that replaces the old one?
+addVirginQueens; TODO add external virgin queens instead of just generating them from the hive?
+
 addWorkers; input Colony, return Colony; TODO some have Colony in name, some don't!?
 addDrones
-addVirginQueens; TODO add external virgin queens instead of just generating them from the hive?
-reQueenColony; TODO rename to replaceQueen() to be consistent with other replace functions?
 buildUpColony; TODO use replace* and add* arguments? rename to buildUp()?
 replaceWorkers
 replaceDrones
@@ -181,7 +184,7 @@ removeVirginQueen
 removeWorkers
 removeDrones
 resetEvents
-crossColony; TODO rename to cross()? there is many cross() in R, so this won't work
+crossColony; TODO rename to cross()? there are many cross() in R, so this won't work
 collapseColony; TODO rename to collapse()?
 supersedeColony; TODO rename to supersede()?
 setPhenoColony; TODO rename to setColonyPheno()?
@@ -193,7 +196,7 @@ splitColony; TODO rename to split() (clash with other R func(s))?
 
 createColonies; input n or Pop; return Colonies; TODO how is this different to createColony?
 
-addColonyToTheColonies; input Colones and Colony; return Colonies; TODO rename to addColony() or just add()?
+addColonyToTheColonies; REMOVE input Colones and Colony; return Colonies; TODO rename to addColony() or just add()?
 assignColonyToColonies; TODO rename to assignColony() or just assign()?
 
 selectColonies; input Colonies; return Colonies
