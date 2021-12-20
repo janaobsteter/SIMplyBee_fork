@@ -4,30 +4,31 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(DCA, nGroup, avgGroupSize)
+pullDroneGroupsFromDCA(DCA, nGroup, avgGroupSize = 17)
 }
 \arguments{
-\item{DCA}{Pop, population of drones}
+\item{DCA}{\code{\link{Pop-class}}, population of drones}
 
-\item{avgGroupSize}{Numeric, average number of drones per group}
+\item{avgGroupSize}{numeric, average number of drones per group}
 
-\item{nGroups}{Integer, number of drone groups to be created}
+\item{nGroups}{integer, number of drone groups to be created}
 }
 \value{
-Two AlphaSim population objects of the colony and the group of pulled individuals.
+list of \code{\link{Pop-class}}
 }
 \description{
-Pulls drone groups from a Drone Congregation Area (DCA) to use them later in
-mating. Number of drones per group is sampled from a Poisson distribution with
-average group size. Pulled drones are removed from the DCA.
+Level 1 function that pulls drone groups from a Drone
+  Congregation Area (DCA) to use them later in mating. Number of drones per
+  group is sampled from a truncated Poisson distribution parameterised with
+  an average group size and truncation at zero (= zeroes are excluded).
+  Drones are pulled (removed) from the DCA to reflect the fact that drones
+  die after mating, so they can't be present in the DCA anymore.
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybee
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])

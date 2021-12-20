@@ -2,21 +2,44 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{removeWorkers}
 \alias{removeWorkers}
-\title{Remove selected percentage of workers}
+\title{Remove a proportion of workers}
 \usage{
-\method{removeWorkers}(colony, p)
+removeWorkers(colony, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimR Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{Numeric. 0<=p>=1 .}
+\item{p}{numeric, proportion to be removed}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of workers that will stay when \code{p < 1}}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} without workers
 }
 \description{
-To decrease the number of workers (for example, in winter)
+Level 2 function that removes a proportion of workers, for
+  example, as a preparation for winter.
 }
 \examples{
-inst/examples/examples_removeWorkers.R
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+
+colony <- addWorkers(colony, nInd = 10)
+colony
+getWorkers(colony)@id
+
+colony <- removeWorkers(colony, p = 0.5)
+colony
+getWorkers(colony)@id
+
+colony <- removeWorkers(colony, p = 1.0)
+colony
+getWorkers(colony)
+
 }

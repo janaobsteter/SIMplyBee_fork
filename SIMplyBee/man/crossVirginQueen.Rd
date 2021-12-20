@@ -2,48 +2,56 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{crossVirginQueen}
 \alias{crossVirginQueen}
-\title{Crosses a virgin queen to a group drones.}
+\title{Cross (mate) a virgin queen to a group drones}
 \usage{
-\method{crossVirginQueen}(virginQueen, fathers)
+crossVirginQueen(pop, fathers, nAvgFathers)
 }
 \arguments{
-\item{virginQueen}{AlphaSimR population object}
+\item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated}
 
-\item{fathers}{AlphaSimR population class.}
+\item{fathers}{\code{\link{Pop-class}}, a group of drones that will be mated
+with virgin queen(s); if there is more than one virgin queen, then the
+\code{fathers} are partitioned into multiple groups of average size of
+\code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}}}
+
+\item{nAvgFathers}{numeric, average number of drones (fathers) used in mating
+the virgin queen(s) - currently active only when multiple virgin queens
+provided}
 }
 \value{
-AlphaSim population object of a mated queen
+\code{\link{Pop-class}} with mated queen(s)
 }
 \description{
-Crosses a virgin queen to a group of drones
+Level 1 function that crossses (mates) a virgin queen to a group
+  of drones. This function does not create any progeny, it only stores the
+  mated drones (fathers) so we can later create progeny as needed.
 }
 \examples{
-# Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+(matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+isQueenMated(basePop[2])
+isQueenMated(matedQueen1)
+nFathers(matedQueen1)
+getFathers(matedQueen1)@id
+(matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10]))
+isQueenMated(basePop[3])
+isQueenMated(matedQueen2)
+nFathers(matedQueen2)
+getFathers(matedQueen2)@id
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+matedQueens <- crossVirginQueen(pop = basePop[2:3],
+                                fathers = drones[1:10], nAvgFathers = 2)
+matedQueens
+isQueenMated(matedQueens)
+nFathers(matedQueens)
+getFathers(matedQueens)
 
-#Creates colony
-founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-
-#Create drones that will be in DCA
-colony1@drones <- createDrones(colony1, nInd = 300)
-colony2@drones <- createDrones(colony2, nInd = 300)
-
-DCA <- createDCA(c(colony1, colony2))
-
-#pull drone packages from DCA
-droneGroups <- pullDroneGroupsFromDCA(DCA, nGroup = 7, avgGroupSize = 19)
-
-# Cross the virgin queen
-
-virginQueen <- colony1@virgin_queens
-queen <- crossVirginQueen(virginQueen, fathers = droneGroups[[1]])
-
+}
+\seealso{
+\code{\link{Colony-class}} on how we store the fathers along the
+  queen.
 }

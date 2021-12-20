@@ -2,41 +2,32 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addVirginQueens}
 \alias{addVirginQueens}
-\title{Create additional virgin queens}
+\title{Add (raise) virgin queens in the colony}
 \usage{
-addVirginQueens(colony, nInd)
+addVirginQueens(colony, nInd, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Numeric. Number of virgin queens to create}
+\item{nInd}{integer, number of virgin queens to add}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with virgin queens added
 }
 \description{
-Creates the specified number of virgin queens in the colony
-      \by crossing the current queen and the fathers and adds them in
-      \ the \code{colony@virgin_queens} slot.
+Level 2 function that adds (raises) the specified number of
+  virgin queens in the colony by crossing the current queen and the fathers.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
-
-#Create population
-pop <- newPop(founderPop, simParam=SP)
-
-#Creates colony with queen and fathers
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
-
-#Insert workers and drones into the colony
-colony1 <- addWorkers(colony1, nInd = 2000)
-colony1 <- addDrones(colony, nInd = 100)
-
-#Insert 10  virgin queens into the colony
-colony1 <- addVirginQueens(colony1, nInd = 10)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+addVirginQueens(colony, nInd = 10)
 
 }

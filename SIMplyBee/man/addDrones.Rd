@@ -2,38 +2,34 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addDrones}
 \alias{addDrones}
-\title{}
+\title{Add (raise) drones in the colony}
 \usage{
-\method{addDrones}(colony, nInd)
+addDrones(colony, nInd, new = FALSE)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, number of drones to add.}
+\item{nInd}{integer, number of drones to add}
+
+\item{new}{logical, should the drones be added a fresh (ignoring currently
+present drones)}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with drones added
 }
 \description{
-Create drones and store them in the \code{colony@drones} slot. If there is
-already some drones present in the hive, the function will not overwrite them but instead
-combine the newly created and the existing drones The function returns the updated colony.
+Level 2 function that adds (raises) the specified number of
+  drones in the colony by crossing the current queen and the fathers. If
+  there are already some drones present, new and present drones are combined.
 }
 \examples{
-Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
-
-#Create population
-pop <- newPop(founderPop, simParam=SP)
-
-#Creates colony with queen and fathers
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
-
-#Insert workers and drones into the colony
-colony1 <- addWorkers(colony1, nInd = 2000)
-colony1 <- addDrones(colony, nInd = 100)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+addDrones(colony, nInd = 20)
 
 }

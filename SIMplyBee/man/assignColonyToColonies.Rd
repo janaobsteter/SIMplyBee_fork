@@ -7,29 +7,26 @@
 assignColonyToColonies(colonies, colony, pos)
 }
 \arguments{
-\item{colonies}{Colonies, set of colonies that will be expanded}
+\item{colonies}{\code{\link{Colonies}}}
 
-\item{colony}{Colony, colony that will be added}
+\item{colony}{\code{\link{Colony}}, colony that will be added}
 
-\item{pos}{numeric or character, position of the old colony}
+\item{pos}{numeric or character, index or ID of the old colony}
 }
 \value{
-Expanded \code{\link{Colonies-class}} object
-
-Expanded Colonies object
+\code{\link{Colonies-class}} with a replaced colony
 }
 \description{
-Assigns (replaces) a colony among a set of colonies, for example, to replace
-an old colony. By defining a position, it will insert the colony to that position
-and with this replace the old colony at that position.
+Level 3 function that assigns (replaces) a colony among a set of
+  colonies, for example, to replace an old colony. By defining a position, it
+  will insert the colony to that position and with this replace the old
+  colony at that position.
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
@@ -37,7 +34,7 @@ colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
 apiary <- c(colony1, colony2)
 
 getId(apiary)
-apiary <- assignColonyToColonies(apiary, colony3, pos = 2)
+apiary <- assignColonyToColonies(apiary, colony3, pos = 1)
 getId(apiary)
 
 }

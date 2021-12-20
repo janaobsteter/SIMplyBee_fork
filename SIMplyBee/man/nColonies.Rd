@@ -7,26 +7,25 @@
 nColonies(colonies)
 }
 \arguments{
-\item{colonies}{Colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 }
 \value{
-Integer
+integer
 }
 \description{
-Returns the number of colonies in a colonies object
+Level 0 function that returns the number of colonies in a
+  colonies object.
 }
 \examples{
-AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
-drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-colony2 <- createColony(queen = basePop[1], fathers = drones[6:10])
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
 nColonies(apiary)
-nColonies(createColonies(n = 10))
+nColonies(createColonies(nCol = 10))
 
 }

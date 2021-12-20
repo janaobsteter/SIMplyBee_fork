@@ -120,4 +120,5 @@ SimParamBee <- R6Class(
 )
 
 # TODO: remove this once AlphaSimR exports getNumThreads (pull request accepted)
-getNumThreads = AlphaSimR:::getNumThreads()
+# https://github.com/HighlanderLab/SIMplyBee/issues/75
+getNumThreads <- AlphaSimR:::getNumThreads()

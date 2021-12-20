@@ -2,21 +2,53 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCsdHaplo}
 \alias{getCsdHaplo}
-\title{Get the Haplotypes of the csd locus}
+\title{Get haplotypes from the csd locus}
 \usage{
-\method{getCsdHaplo}(x, csd)
+getCsdHaplo(x, haplo = "all", simParamBee = NULL)
 }
 \arguments{
-\item{x}{Undefined argument. Can be a "Colony" class or "Colonies" class}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 
-\item{csd}{complementary sex determination locus- list with nodes chr, start and stop}
+\item{haplo}{character, either "all" for all haplotypes or an integer for a
+single set of haplotypes, use a value of 1 for female haplotypes and a
+value of 2 for male haplotypes}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-
+matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
+  of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
+  (list nodes named by caste) and list of a list of matrices with haplotypes
+  when \code{x} is \code{\link{Colonies-class}}, outer list is named by
+  colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
-
+Level 0 function that returns haplotypes from the csd locus. See
+  \code{\link{SimParamBee}} for more information about the csd locus.
 }
 \examples{
+founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addWorkers(colony1, nInd = 10)
+colony2 <- addWorkers(colony2, nInd = 20)
+colony1 <- addDrones(colony1, nInd = 2)
+colony2 <- addDrones(colony2, nInd = 4)
+apiary <- c(colony1, colony2)
+
+getCsdHaplo(getQueen(colony1))
+getCsdHaplo(getVirginQueens(colony1))
+getCsdHaplo(getFathers(colony1))
+getCsdHaplo(getWorkers(colony1))
+getCsdHaplo(getDrones(colony1))
+
+getCsdHaplo(colony1)
+
+getCsdHaplo(apiary)
 
 }

@@ -2,31 +2,42 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{crossColony}
 \alias{crossColony}
-\title{Crosses a colony with a virgin queen to a group of fathers pulled from the DCA.}
+\title{Cross (mate) a virgin queen of a colony to a group of drones}
 \usage{
-\method{crossColony}(colony, fathers, nWorkers, nDrones)
+crossColony(colony, fathers, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object with a non-mated virgin queen}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{fathers}{Pop Class. Father group pulled from the DCA.}
+\item{fathers}{\code{\link{Pop-class}}, drones}
 
-\item{nWorkers}{Integer.Number of workers to create}
-
-\item{nDrones}{Integer. Number of drones to create}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Single AlphaSim population object of a mated colony
+\code{\link{Colony-class}} with a mated queen
 }
 \description{
-Crosses a colony with a virgin queen to a group of fathers pulled from the DCA
-\creates workers, drones and a new virgin queen and write them to the corresponding
-\slots of the colony object.
-#IF the colony is queenless - select a queen from the virgin queen - if not, mate the current queen!!!
+Level 2 function that crosses (mates) a virgin queen of colony
+  to a group of drones. When there are multiple virgin queens in the colony,
+  one is selected at random, mated, and promoted to the queen of the colony.
+  Other virgin queens are destroyed. Mated drones (fathers) are stored for
+  producing progeny at a later stage.
+  TODO: is this correct (about destroy)?
 }
 \examples{
-inst/examples/examples_crossColony.R
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+
+colony <- createColony(virgin_queen = basePop[2])
+colony
+colony <- crossColony(colony, fathers = drones)
+colony
+
 }
 \seealso{
-\code{\link[??????]{createColony}}
+\code{\link{Colony-class}} on how we store the fathers along the
+  queen.
 }

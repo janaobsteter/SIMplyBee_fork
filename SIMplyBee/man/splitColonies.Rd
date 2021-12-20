@@ -2,42 +2,47 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{splitColonies}
 \alias{splitColonies}
-\title{splitColonies}
+\title{Split colony in two colonies for all given colonies}
 \usage{
-\method{splitColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+splitColonies(colonies, p = 0.3)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{pDrones}{}
+\item{p}{numeric, percentage of workers that will go to the split colony}
 }
 \value{
-Two AlphaSim population objects of the split colonies and the remaining colonies
+list with two \code{\link{Colonies-class}}, the \code{splits} and the
+  \code{remnants} (see the description of \code{\link{splitColony}} what each
+  node holds!)
 }
 \description{
-: Two AlphaSim population objects of the split colonies and the remaining colonies are created.
-Spit the colony into two new colonies to prevent swarming (in managed populations)
-- one colony is with the old queen and a part of the workers and drones (this is the remaining colony)
-- the split colony is taken to a new location with part of the workers.
- A new mated queen can be introduced to the split colony.
- If no new queen is introduced, a virgin queen must be present to mate with fathers from DCA and continue colony
+Level 3 function that does the same as \code{\link{splitColony}}
+  but for all given colonies.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony1 <- buildUpColony(colony1, nWorkers = 100)
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony2 <- buildUpColony(colony2, nWorkers = 100)
+apiary <- c(colony1, colony2)
+apiary
+apiary[[1]]
+apiary[[2]]
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
-
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-#Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
-
- TODO FINISH EXAMPLE
+tmp <- splitColonies(apiary)
+tmp$splits
+tmp$splits[[1]]
+tmp$splits[[2]]
+hasSplit(tmp$splits)
+tmp$remnants
+tmp$remnants[[1]]
+tmp$remnants[[2]]
+hasSplit(tmp$remnants)
 
 }

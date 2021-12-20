@@ -2,38 +2,37 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{splitColony}
 \alias{splitColony}
-\title{Split the colony in two colonies.}
+\title{Split colony in two colonies}
 \usage{
-\method{splitColony}(colony, pSplit, newQueen, crossVirginQueen, fathers, nWorkers, nDrones, splitLocation)
+splitColony(colony, p = 0.3)
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{pSplit}{Integer. Percentage of hive to split}
-
-\item{newQueen}{AlphaSimR population object. A new mated queen is brought into the colony from other source}
-
-\item{crossVirginQueen}{Logical. If no mated queen is introduced, a virgin queen must be present to mate and continue colony}
-
-\item{fathers}{AlphaSimR population object. Number of fathers pulled from the DCA}
-
-\item{pWorkers}{Numeric, proportion of workers that are replaced with the workers from the new queen in the split}
-
-\item{splitLocation}{Integer. X,Y coordinates of newly made split hive}
+\item{p}{numeric, proportion of workers that will go to the split colony}
 }
 \value{
-Two AlphaSim population objects of the split colony and the remaining colony
+list with two \code{\link{Colony-class}}, the \code{split} and the
+  \code{remnant} (see the description what each colony holds!); both colonies
+  have the split even slot set do \code{TRUE}
 }
 \description{
-Spit the colony into two new colonies to prevent swarming (in managed populations)
-- one colony is with the old queen and a part of the workers and drones (this is the remaining colony)
-- the split colony is taken to a new location with part of the workers.
- A new mated queen can be introduced to the split colony.
- If no new queen is introduced, a virgin queen must be present to mate with fathers from DCA and continue colony
+Level 2 function that splits colony into two new colonies to
+  prevent swarming (in managed situation). The remnant colony retains the
+  queen and a proportion of the workers and all drones. The split colony gets
+  the other part of the workers and keeps location of the original colony.
 }
 \examples{
-inst/examples/examples_splitColony.R
-}
-\seealso{
-\code{\link[??????]{splitColony}}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones)
+(colony <- buildUpColony(colony, nWorkers = 100))
+
+tmp <- splitColony(colony)
+tmp$split
+tmp$remnant
+
 }

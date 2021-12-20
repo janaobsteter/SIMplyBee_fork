@@ -192,7 +192,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!is.null(ID)) {
     ret <- colonies[getId(colonies) %in% ID]
   } else if (!is.null(p)) {
-    lSel <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    lSel <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
     message(paste0("Randomly selecting colonies: ", sum(lSel)))
     if (any(lSel)) {
       ret <- colonies[lSel]
@@ -251,7 +251,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     pulledColonies <- selectColonies(colonies, ID)
     remainingColonies <- removeColonies(colonies, ID)
   } else if (!is.null(p)) {
-    lPull <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    lPull <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
     message(paste0("Pulling out randomly selected colonies: ", sum(lPull)))
     if (any(lPull)) {
       ids <- getId(colonies)

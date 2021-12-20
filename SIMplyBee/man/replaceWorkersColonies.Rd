@@ -2,39 +2,43 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{replaceWorkersColonies}
 \alias{replaceWorkersColonies}
-\title{Replace workers in all the colonies of a Colonies object}
+\title{Replace a proportion of workers with new ones for all given colonies}
 \usage{
-replaceWorkersColonies(colonies)
+replaceWorkersColonies(colonies, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
+
+\item{p}{numeric, proportion of workers to be replaced with new ones}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of workers that stay when \code{p < 1}}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with replaced workers
 }
 \description{
-The function replaces a given proportion of workers in all the colonies
-of a Colonies object with new workers from the same mated queen. The default percentage
-is set to 1, hence replacing all workers If some colonies do not have workers, the
-function does not add them.
+Level 3 function that does the same as
+  \code{\link{replaceWorkers}} but for all given colonies.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+apiary <- buildUpColonies(apiary, nWorkers = 10, nDrones = 10)
+apiary
+apiary[[1]]
+getWorkers(apiary[[1]])@id
+apiary[[2]]
+getWorkers(apiary[[2]])@id
+lapply(X = getWorkers(apiary), FUN = function(z) z@id)
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
-
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-#Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
-
-#Replace the workers
-  apiary1 <- replaceWorkers(apiary1)
+apiary <- replaceWorkersColonies(apiary)
+lapply(X = getWorkers(apiary), FUN = function(z) z@id)
 
 }

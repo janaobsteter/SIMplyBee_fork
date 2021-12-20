@@ -2,40 +2,45 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{crossColonies}
 \alias{crossColonies}
-\title{crossColonies}
+\title{Cross colony for all given colonies}
 \usage{
-\method{crossColonies}(colonies, DCA, nAvgFathers, crossVirginQueen, fathers, pWorkers, pDrones)
+crossColonies(colonies, DCA, nAvgFathers, simParamBee = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{nAvgFathers}{}
+\item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area}
+
+\item{nAvgFathers}{numeric, average number of drones (fathers) to used in
+matings (see \code{\link{crossColony}})}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with mated colonies
 }
 \description{
-:  Crosses colonies with a virgin queen to a group of fathers pulled from the DCA
-\creates workers, drones and a new virgin queen and write them to the corresponding
-\slots of the colonies object.
-#IF the colonies are queen-less - select a queen from the virgin queen - if not, mate the current queen!!!
+Level 3 function that does the same as \code{\link{crossColony}}
+  but for all given colonies. To ease the use, \code{crossColonies} takes in
+  a group of drones (Drone Congregation Area - DCA), partitions it so that
+  each colony virgin queen mates with one group/partition of drones.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 30)
+colony1 <- createColony(virgin_queen = basePop[2])
+colony2 <- createColony(virgin_queen = basePop[3])
+apiary <- c(colony1, colony2)
+apiary
+apiary[[1]]
+apiary[[2]]
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
-
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-#Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
-
- TODO FINISH
+apiary <- crossColonies(colonies = apiary, DCA = drones, nAvgFathers = 10)
+apiary
+apiary[[1]]
+apiary[[2]]
 
 }

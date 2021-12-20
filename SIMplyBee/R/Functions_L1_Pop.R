@@ -142,8 +142,7 @@ getCaste <- function(x, caste, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access the queen
-#' @export
+# @describeIn getCaste Access the queen
 getQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "queen", nInd = 1)
@@ -153,8 +152,7 @@ getQueen <- function(x) {
   return(ret)
 }
 
-#' @describeIn getCaste Access fathers (drones the queen mated with)
-#' @export
+# @describeIn getCaste Access fathers (drones the queen mated with)
 getFathers <- function(x, nInd = NULL, use = "rand") {
   if (isPop(x)) {
     ret <- lapply(X = x@misc,
@@ -180,8 +178,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access virgin queens
-#' @export
+# @describeIn getCaste Access virgin queens
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
@@ -191,8 +188,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access workers
-#' @export
+# @describeIn getCaste Access workers
 getWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
@@ -202,8 +198,7 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access drones
-#' @export
+# @describeIn getCaste Access drones
 getDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
@@ -267,10 +262,9 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn createWorkers Create virgin queens
-#' @export
+# @describeIn createWorkers Create virgin queens
 # TODO: explore options for implementing difference between workers' and queens'
-#       patrilines - see https://github.com/HighlanderLab/AlphaSimRBee/issues/78
+#       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
 createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -300,7 +294,7 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow, so tune both
 #'   numbers according to your needs.
 #'   TODO The drones will eventually be made properly haploid!
-#'        Follow https://github.com/HighlanderLab/AlphaSimRBee/issues/24
+#'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 #'
 #' @return \code{\link{Pop-class}} with drones
 #'
@@ -330,7 +324,7 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #'   from the colony. Currently this is done by creating doubled-haploids from a
 #'   queen (generating recombinant gametes and doubling them).
 #'   TODO The drones will eventually be made properly haploid!
-#'        Follow https://github.com/HighlanderLab/AlphaSimRBee/issues/24
+#'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd integer, the number of drones to create
@@ -601,8 +595,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn pullCaste Pull queen from a colony
-#' @export
+# @describeIn pullCaste Pull queen from a colony
 pullQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "queen")
@@ -612,8 +605,7 @@ pullQueen <- function(x) {
   return(ret)
 }
 
-#' @describeIn pullCaste Pull virgin queens from a colony
-#' @export
+# @describeIn pullCaste Pull virgin queens from a colony
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
@@ -623,8 +615,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn pullCaste Pull workers from a colony
-#' @export
+# @describeIn pullCaste Pull workers from a colony
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
@@ -634,8 +625,7 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn pullCaste Pull drones from a colony
-#' @export
+# @describeIn pullCaste Pull drones from a colony
 pullDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
     ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)

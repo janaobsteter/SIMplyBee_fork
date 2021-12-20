@@ -1,6 +1,8 @@
-#' @importFrom methods classLabel is new show validObject
+#' @import AlphaSimR
+#' @importFrom methods classLabel is new setClass setClassUnion setValidity
+#' @importFrom methods setMethod show slot slot<- validObject
 #' @importFrom R6 R6Class
-#' @importFrom extraDistr rtpois
+# see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
 #' @description
 # SIMplyBee is an extension of the AlphaSimR package

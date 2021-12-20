@@ -2,37 +2,34 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createWorkers}
 \alias{createWorkers}
-\title{Creates workers of the colony}
+\title{Creates workers from the colony}
 \usage{
-\method{createWorkers}(colony, nInd)
+createWorkers(colony, nInd, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, number of workers to create}
+\item{nInd}{integer, number of workers to create}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-AlphaSim population object of created workers.
+list with two nodes named \code{workers} (a \code{\link{Pop-class}})
+  and \code{nHomDrones} (an integer)
 }
 \description{
-Creates the specified number of workers in the colony
-      \by mating the current queen and the fathers in the \code{colony@queen@misc$fathers} slot.
+Level 1 function that creates the specified number of workers
+  from the colony by mating the colony queen and the fathers. If csd locus is
+  defined, it takes it into account and any csd homozygotes are removed and
+  counted as homozygous drones.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
-
-#Create population
-pop <- newPop(founderPop, simParam=SP)
-
-#Creates colony
-founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-
-#Creat workers
-colony1@workers <- createWorkers(colony1, nInd = 1000)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+createWorkers(colony, nInd = 10)
 
 }

@@ -61,7 +61,7 @@ setValidity(Class = "Colonies", method = function(object) {
   }
 })
 
-#' @describeIn Colonies Show colonies object
+# @describeIn Colonies Show colonies object
 setMethod(f = "show",
           signature(object = "Colonies"),
           function (object) {
@@ -71,7 +71,7 @@ setMethod(f = "show",
           }
 )
 
-#' @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
+# @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setMethod(f = "[",
           signature(x = "Colonies", i = "integerOrNumeric"),
@@ -82,7 +82,7 @@ setMethod(f = "[",
           }
 )
 
-#' @describeIn Colonies Extract a colony (one or more!) by name (character) (return \code{\link{Colonies-class}})
+# @describeIn Colonies Extract a colony (one or more!) by name (character) (return \code{\link{Colonies-class}})
 setMethod(f = "[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
@@ -92,7 +92,7 @@ setMethod(f = "[",
           }
 )
 
-#' @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
+# @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
 setMethod(f = "[[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
@@ -106,7 +106,7 @@ setMethod(f = "[[",
           }
 )
 
-#' @describeIn Colonies Extract a colony (just one!) by name (character) (return \code{\link{Colony-class}})
+# @describeIn Colonies Extract a colony (just one!) by name (character) (return \code{\link{Colony-class}})
 setMethod(f = "[[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
@@ -120,7 +120,7 @@ setMethod(f = "[[",
           }
 )
 
-#' @describeIn Colonies Combine multiple colony and colonies objects
+# @describeIn Colonies Combine multiple colony and colonies objects
 setMethod(f = "c",
           signature(x = "Colonies"),
           function(x, ...) {
@@ -140,7 +140,7 @@ setMethod(f = "c",
           }
 )
 
-#' @describeIn Colonies Test if object is a Colonies class object
+# @describeIn Colonies Test if object is a Colonies class object
 isColonies <- function(x) {
   ret <- is(x, class2 = "Colonies")
   return(ret)

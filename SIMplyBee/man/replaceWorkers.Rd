@@ -2,36 +2,46 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{replaceWorkers}
 \alias{replaceWorkers}
-\title{Replaces a proportion workers with new workers with new genetic information}
+\title{Replace a proportion of workers with new ones}
 \usage{
-\method{replaceWorkers}(colony, p)
+replaceWorkers(colony, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object.}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{Numeric, proportion of workers to be replaced with new ones.}
+\item{p}{numeric, proportion of workers to be replaced with new ones}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of workers that stay when \code{p < 1}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with replaced workers
 }
 \description{
-Replace a proportion of workers in the new with new workers from the same queen and same fathers.
-A user would want to replace a proportion (or all) of workers after swarming and supersedure or
-due to the short-life span of the workers.
+Level 2 function that replaces a proportion of workers with new
+  workers from the colony. Useful after events like season change, swarming,
+  supersedure, etc. due to the short life span of the workers.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+colony <- addWorkers(colony, nInd = 10)
+colony
+getWorkers(colony)@id
+colony <- replaceWorkers(colony, p = 0.5)
+getWorkers(colony)@id
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+colony <- replaceWorkers(colony, p = 1.0)
+getWorkers(colony)@id
 
-#Creates colony
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
-colony1 <- addWorkers(colony1, nInd = 2000)
-colony1 <- replaceWorkers(colony1, p = 0.2)
+colony <- replaceWorkers(colony, p = 1.5)
+getWorkers(colony)@id
 
 }

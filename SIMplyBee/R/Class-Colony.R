@@ -1,7 +1,9 @@
-# TOOD: I have provided this as PullRequest for AlphaSimR https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
-#   once it gets incorporated there we should remove it here
+# TOOD: I have provided this as PullRequest for AlphaSimR
+#       https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
+#       once it gets incorporated there we should remove it here
+#       https://github.com/HighlanderLab/SIMplyBee/issues/60
 isPop <- function(x) {
-  ret <- is(x, class = "Pop")
+  ret <- is(x, class2 = "Pop")
   return(ret)
 }
 
@@ -99,7 +101,7 @@ setValidity(Class = "Colony", method = function(object) {
   }
 })
 
-#' @describeIn Colony Show colony object
+# @describeIn Colony Show colony object
 setMethod(f = "show",
           signature(object = "Colony"),
           function(object) {
@@ -121,13 +123,13 @@ setMethod(f = "show",
           }
 )
 
-#' @describeIn Colony Test if object is a Colony class object
+# @describeIn Colony Test if object is a Colony class object
 isColony <- function(x) {
   ret <- is(x, class2 = "Colony")
   return(ret)
 }
 
-#' @describeIn Colonies Combine multiple colony objects
+# @describeIn Colonies Combine multiple colony objects
 # This setMethod() should be in Class-Colonies.R, but that file is sourced before
 # Class-Colony.R, which defines the class Colony, so we have it here as a
 # workaround

@@ -4,48 +4,122 @@
 \alias{getCaste}
 \title{Access individuals of a caste}
 \usage{
-getCaste(x, caste, nInd = NULL)
+getCaste(x, caste, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{Colony or Colonies}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or "drones"}
+\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+"drones"}
 
-\item{nInd}{numeric, number of individuals to access, if NULL all individuals
-are accessed, otherwise a random sample}
+\item{nInd}{numeric, number of individuals to access, if \code{NULL} all
+individuals are accessed; if there are less individuals than requested,
+we return the ones available - this can also be just \code{NULL}}
+
+\item{use}{character, all options provided by \code{\link{selectInd}}}
 }
 \value{
-When \code{x} is Colony then return is Pop, population object with individuals
-When \code{x} is Colonies then return is a list of Pop, population objects with individuals
+Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
+  and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
+  is Colonies
 }
 \description{
-Access individuals of a caste
+Level 1 function that returns individuals of a caste. These
+  individuals stay in the colony (compared to \code{\link{pullCaste}}).
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybee
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+
 colony1 <- addWorkers(colony1, nInd = 10)
+colony1 <- addVirginQueens(colony1, nInd = 4)
+colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addWorkers(colony2, nInd = 20)
+
 getCaste(colony1, caste = "queen")
+getQueen(colony1)
+
+drones@id
 getCaste(colony1, caste = "fathers")
-getCaste(colony1, caste = "fathers", nInd = 2)
+getCaste(colony1, caste = "fathers")@id
 getCaste(colony1, caste = "fathers", nInd = 2)@id
 getCaste(colony1, caste = "fathers", nInd = 2)@id
+getFathers(colony1)
+getFathers(colony1)@id
+getFathers(colony1, nInd = 2)@id
+getFathers(colony1, nInd = 2)@id
+
+getFathers(getQueen(colony1))
+
+getCaste(colony1, caste = "virgin_queens")
+getCaste(colony1, caste = "virgin_queens")@id
+getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+getVirginQueens(colony1)
+getVirginQueens(colony1)@id
+getVirginQueens(colony1, nInd = 2)@id
+getVirginQueens(colony1, nInd = 2)@id
+
+getCaste(colony1, caste = "workers")
+getCaste(colony1, caste = "workers")@id
+getCaste(colony1, caste = "workers", nInd = 2)@id
+getCaste(colony1, caste = "workers", nInd = 2)@id
+getWorkers(colony1)
+getWorkers(colony1)@id
+getWorkers(colony1, nInd = 2)@id
+getWorkers(colony1, nInd = 2)@id
+
+getCaste(colony1, caste = "drones")
+getCaste(colony1, caste = "drones")@id
+getCaste(colony1, caste = "drones", nInd = 2)@id
+getCaste(colony1, caste = "drones", nInd = 2)@id
+getDrones(colony1)
+getDrones(colony1)@id
+getDrones(colony1, nInd = 2)@id
+getDrones(colony1, nInd = 2)@id
+
+getCaste(colony2, caste = "drones")
+getDrones(colony2)
 
 apiary <- c(colony1, colony2)
 getCaste(apiary, caste = "queen")
+getQueen(apiary)
 getCaste(apiary, caste = "queen")[[1]]@id
 getCaste(apiary, caste = "queen")[[2]]@id
 
-getWorkers(apiary, nInd = 10)
-getWorkers(apiary, nInd = 10)[[1]]@id
-getWorkers(apiary, nInd = 10)[[2]]@id
+getCaste(apiary, caste = "fathers")
+getFathers(apiary)
+getFathers(apiary)[[1]]@id
+getFathers(apiary)[[2]]@id
+getFathers(apiary, nInd = 2)
 
+getCaste(apiary, caste = "virgin_queens")
+getVirginQueens(apiary)
+getVirginQueens(apiary)[[1]]@id
+getVirginQueens(apiary)[[2]]@id
+getVirginQueens(apiary, nInd = 1)
+getVirginQueens(apiary, nInd = 2)
+
+getCaste(apiary, caste = "workers")
+getWorkers(apiary)
+getWorkers(apiary)[[1]]@id
+getWorkers(apiary)[[2]]@id
+getWorkers(apiary, nInd = 2)
+
+getCaste(apiary, caste = "drones")
+getDrones(apiary)
+getDrones(apiary)[[1]]@id
+getDrones(apiary)[[2]]
+getDrones(apiary, nInd = 2)
+
+}
+\seealso{
+\code{\link{getQueen}}, \code{\link{getFathers}},
+  \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
+  \code{\link{getDrones}}
 }

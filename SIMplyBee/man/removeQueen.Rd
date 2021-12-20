@@ -7,21 +7,19 @@
 removeQueen(colony)
 }
 \arguments{
-\item{colony}{Colony}
+\item{colony}{\code{\link{Colony-class}}}
 }
 \value{
-Colony without a queen
+\code{\link{Colony-class}} without the queen
 }
 \description{
-Remove queen of a colony
+Level 2 function that removes the queen of a colony.
 }
 \examples{
-AlphaSimR
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony

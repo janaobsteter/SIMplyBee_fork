@@ -7,24 +7,24 @@
 createDCA(x, nInd = NULL)
 }
 \arguments{
-\item{x}{Colony or Colonies}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{nInd}{numeric, number of drones to access, if NULL all drones
-are accessed, otherwise a random sample}
+\item{nInd}{numeric, number of random drones to pull from each colony,
+if \code{NULL} all drones in a colony are pulled}
 }
 \value{
-Pop, population object with drones
+\code{\link{Pop-class}}
 }
 \description{
-Create a drone congregation area (DCA) from colony or colonies.
+Level 1 function that creates a population of drones from one or
+  multiple colonies. Such a population is often referred to as a drone
+  congregation area (DCA).
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybee
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])

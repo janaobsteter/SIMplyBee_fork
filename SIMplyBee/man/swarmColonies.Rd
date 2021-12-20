@@ -2,42 +2,49 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{swarmColonies}
 \alias{swarmColonies}
-\title{swarmColonies}
+\title{Swarm colony for all given colonies}
 \usage{
-\method{swarmColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+swarmColonies(colonies, p = 0.5, simParamBee = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{pDrones}{}
+\item{p}{numeric, proportion of workers that will leave with the swarm colony}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Two AlphaSim population objects of the swarmed colonies and the remaining colonies
+list with two \code{\link{Colonies-class}}, the \code{swarms} and the
+  \code{remnants} (see the description of \code{\link{swarmColony}} what each
+  node holds!)
 }
 \description{
-: Replicates the swarming of the colonies - the process in which
-a part of the workers leave with the old queen and creates a new colony (the swarm),
-while a part of the workers stay with a new queen and the old drones.
-The swarming colony contains the old mated queen, a percentage (pSwarm)
-of the original colony's workers, no drones and a virgin queen is created from the worker population.
-A new location must be given to the new swarm colony.
-The colony that stays contains the remaining workers and drones.
-A virgin queen is selected from the workers and mated if fathers are present.
+Level 3 function that does the same as \code{\link{swarmColony}}
+  but for all given colonies.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony1 <- buildUpColony(colony1, nWorkers = 100)
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony2 <- buildUpColony(colony2, nWorkers = 100)
+apiary <- c(colony1, colony2)
+apiary
+apiary[[1]]
+apiary[[2]]
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
-
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-#Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
+tmp <- swarmColonies(apiary)
+tmp$swarms
+tmp$swarms[[1]]
+tmp$swarms[[2]]
+hasSwarmed(tmp$swarms)
+tmp$remnants
+tmp$remnants[[1]]
+tmp$remnants[[2]]
+hasSwarmed(tmp$remnants)
 
 }

@@ -7,21 +7,19 @@
 nVirginQueens(x)
 }
 \arguments{
-\item{x}{Colony or Colonies}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 }
 \value{
-Integer, named by colony id when \code{x} is Colonies
+integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
 Returns the number of virgin queens in a colony
 }
 \examples{
-AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])

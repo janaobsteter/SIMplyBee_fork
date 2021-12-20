@@ -2,35 +2,37 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addWorkers}
 \alias{addWorkers}
-\title{Add workers to the colony}
+\title{Add (raise) workers in the colony}
 \usage{
-\method{addWorkers}(colony, nInd)
+addWorkers(colony, nInd, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, number of workers to add.}
+\item{nInd}{integer, number of workers to add}
+
+\item{new}{logical, should the workers be added a fresh (ignoring currently
+present workers in the colony)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with workers added
 }
 \description{
-Create workers and store them in the \code{colony@workers} slot. If there is
-already some workers present in the hive, the function will not overwrite them but instead
-combine the newly created and the existing workers. The function returns the updated colony.
+Level 2 function that adds (raises) the specified number of
+  workers in the colony by crossing the current queen and the fathers. If
+  there are already some workers present, new and present workers are
+  combined.
 }
 \examples{
-Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
-
-#Create population
-pop <- newPop(founderPop, simParam=SP)
-
-#Creates colony
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
-colony1 <- addWorkers(colony1, nInd = 2000)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+addWorkers(colony, nInd = 20)
 
 }

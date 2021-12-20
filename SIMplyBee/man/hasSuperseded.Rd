@@ -2,19 +2,41 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{hasSuperseded}
 \alias{hasSuperseded}
-\title{Test to see if colony/colonies have superseded in the current period}
+\title{Test if colony has superseded}
 \usage{
-\method{hasSuperseded}(x)
+hasSuperseded(x)
 }
 \arguments{
-\item{x}{Undefined argument. Can be a "Colony" class or "Colonies" class}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 }
 \value{
-
+logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
-Test to see if colony/colonies have superseded in the current period
+Level 0 function that returns colony supersedure status.
 }
 \examples{
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony
+hasSuperseded(colony)
+colony <- buildUpColony(colony, nWorkers = 100)
+colony
+hasSuperseded(colony)
+tmp <- supersedeColony(colony)
+tmp
+hasSuperseded(tmp)
+
+colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+apiary <- buildUpColonies(apiary, nWorkers = 100)
+tmp <- supersedeColonies(apiary)
+tmp
+hasSuperseded(tmp)
 
 }

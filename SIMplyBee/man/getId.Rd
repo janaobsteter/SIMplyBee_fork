@@ -2,33 +2,36 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getId}
 \alias{getId}
-\title{Get the colonies IDs from the colonies}
+\title{Get the colony ID}
 \usage{
-\method{getId}(colonies)
+getId(x)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object from the \code{createColonies(...)} call}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}}
 }
 \value{
-Character. Colony IDs
+character, \code{NA} when queen not present
 }
 \description{
-Get the colony IDs from the colonies
+Level 0 function that returns the colony ID. This is by
+  definition the ID of the queen.
 }
 \examples{
- #Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+getId(getQueen(colony1))
+getId(colony1)
+getId(colony2)
+getId(apiary)
 
-#Create an apiary containing 10 colonies
-Apiary1 <- createColonies(,n = 10)
-
-#Get colony IDs from the colonies
-getId (Apiary1)
+colony2 <- removeQueen(colony2)
+getId(colony2)
 
 }

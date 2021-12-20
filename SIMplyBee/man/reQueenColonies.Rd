@@ -2,47 +2,47 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{reQueenColonies}
 \alias{reQueenColonies}
-\title{reQueen Colonies}
+\title{Re-queen a colony for all given colonies}
 \usage{
-\method{reQueenColonies}(colonies, queens)
+reQueenColonies(colonies, queens)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{queens}{Selected individuals to insert into the queen slot of the colony object}
+\item{queens}{\code{\link{Pop-class}}, queens to be added to colonies, one
+for each colony}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with re-queened colonies
 }
 \description{
-: Add a new queen/virgin queen into the queens slot of the colonies.
-For example: this can be used to re-queen swarmed or split colonies where no queens are present.
+Level 3 function that does the same as
+  \code{\link{reQueenColony}} but for all given colonies.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 20)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+apiary
+apiary[[1]]
+apiary[[2]]
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
+virginQueens <- basePop[4:5]
+apiary2 <- reQueenColonies(apiary, queen = virginQueens)
+apiary2
+apiary2[[1]]
+apiary2[[2]]
 
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-#Build up colonies by adding 1000 workers and 100 drones to each colony in the "colonies" list
- apiary1 <- buildUpColonies(apiary1, nWorkers = 1000, nDrones = 100)
-
- #Split all the colonies
- tmp <- splitColonies(apiary1)
- apiary1 <- tmp$remnants
- splitcolonies <- tmp$splits
-
- #Create 10 virgin queens
- virginQueens <- createVirginQueens(apiary1[[10]], nColonies(splitcolonies))
-
- # Requeen the splits
- splitcolonies <- reQueenColonies(splitcolonies, queens = virginQueens)
+matedQueens <- crossVirginQueen(pop = basePop[4:5],
+                                fathers = drones[11:20], nAvgFathers = 2)
+apiary3 <- reQueenColonies(apiary, queen = matedQueens)
+apiary3
+apiary3[[1]]
+apiary3[[2]]
 
 }

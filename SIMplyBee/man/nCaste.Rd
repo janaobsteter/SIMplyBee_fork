@@ -2,28 +2,32 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nCaste}
 \alias{nCaste}
-\title{Number of individuals of a caste in a colony}
+\title{Level 0 function that returns the number of individuals of a caste in a
+  colony}
 \usage{
-nCaste(x, caste)
+nCaste(x, caste = "all")
 }
 \arguments{
-\item{x}{Colony or Colonies}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or "drones"}
+\item{caste}{character, "queen", "fathers", "virgin_queens", "workers",
+"drones", "homDrones", or "all"}
 }
 \value{
-Integer, named by colony id when \code{x} is Colonies
+when \code{x} is \code{\link{Colony-class}} return is integer for
+  \code{caste != "all"} or list for \code{caste == "all"} with nodes named
+  by caste; when \code{x} is \code{\link{Colonies-class}} return is named
+  integer for \code{caste != "all"} or named list of lists for
+  \code{caste == "all"}
 }
 \description{
 Returns the number of individuals of a caste in a colony
 }
 \examples{
-AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -36,6 +40,8 @@ nCaste(colony1, caste = "fathers")
 nCaste(colony1, caste = "virgin_queens")
 nCaste(colony1, caste = "workers")
 nCaste(colony1, caste = "drones")
+nCaste(colony1, caste = "homDrones")
+nCaste(colony1, caste = "all")
 
 apiary <- c(colony1, colony2)
 nCaste(apiary, caste = "queen")
@@ -43,5 +49,12 @@ nCaste(apiary, caste = "fathers")
 nCaste(apiary, caste = "virgin_queens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
+nCaste(apiary, caste = "homDrones")
+nCaste(apiary, caste = "all")
 
+}
+\seealso{
+\code{\link{nQueens}}, \code{\link{nFathers}},
+  \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
+  \code{\link{nDrones}}, and \code{\link{nHomDrones}}
 }
