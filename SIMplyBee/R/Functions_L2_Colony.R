@@ -1046,16 +1046,33 @@ setLocation <- function(x, location) {
 }
 
 #' @rdname setPhenoColony
-#' @title TODO
+#' @title Set colony phenotype
 #'
-#' @description Level 2 function that TODO
+#' @description Level 2 function that sets phenotypes for all individuals in
+#'   the castes as well as the overall colony.
+#'   THIS FUNCTION IS UNDER DEVELOPMENT - BEST IF YOU DON'T USE IT JUST YET!
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param FUN function, any function that can be aplied on \code{colony} and
+#'   can return phenotypes for defined traits via \code{\link{SimParamBee}}
+#' @param ... all parameters of \code{\link{setPheno}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation
+#'   parameters
+#'
+#' @return \code{\link{Colony-class}} with phenotypes
+#'
+#' @examples
+#' # TODO
 #'
 # TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
 #   in getColonyGv()?
 # TODO: what if caste phenos have already been set? need a sensible default!!!
 # TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
 #  it will not work for simParam - so best to add all these arguments directly?
-setPhenoColony <- function(colony, FUN = NULL, ...) {
+setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }

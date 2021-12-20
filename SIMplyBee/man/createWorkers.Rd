@@ -2,9 +2,12 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createWorkers}
 \alias{createWorkers}
+\alias{createVirginQueens}
 \title{Creates workers from the colony}
 \usage{
 createWorkers(colony, nInd, simParamBee = NULL)
+
+createVirginQueens(colony, nInd, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -23,6 +26,11 @@ Level 1 function that creates the specified number of workers
   defined, it takes it into account and any csd homozygotes are removed and
   counted as homozygous drones.
 }
+\section{Functions}{
+\itemize{
+\item \code{createVirginQueens}: Create virgin queens
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

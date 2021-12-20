@@ -3,19 +3,64 @@
 \docType{class}
 \name{Colonies-class}
 \alias{Colonies-class}
+\alias{show,Colonies-method}
+\alias{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}
+\alias{[,Colonies,character,ANY,ANY-method}
+\alias{[[,Colonies,integerOrNumeric-method}
+\alias{[[,Colonies,character-method}
+\alias{c,Colonies-method}
+\alias{isColonies}
 \title{Honeybee colonies}
+\usage{
+\S4method{show}{Colonies}(object)
+
+\S4method{[}{Colonies,integerOrNumericOrLogical,ANY,ANY}(x, i)
+
+\S4method{[}{Colonies,character,ANY,ANY}(x, i)
+
+\S4method{[[}{Colonies,integerOrNumeric}(x, i)
+
+\S4method{[[}{Colonies,character}(x, i)
+
+\S4method{c}{Colonies}(x, ...)
+
+isColonies(x)
+}
 \arguments{
+\item{object}{\code{\link{Colonies-class}}}
+
 \item{x}{\code{\link{Colonies-class}}}
 
-\item{i}{numeric or character, index or name to select a colony}
+\item{i}{integer, numeric, logical, or character, index or ID to select
+a colony (see examples)}
+
+\item{...}{\code{NULL}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 }
 \value{
-\code{\link{Colonies-class}}
+\code{\link{Colonies-class}} or \code{\link{Colony-class}}
 }
 \description{
 An object holding a collection of honeybee colonies. It behaves
   like a list.
 }
+\section{Functions}{
+\itemize{
+\item \code{show,Colonies-method}: Show colonies object
+
+\item \code{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}: Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
+
+\item \code{[,Colonies,character,ANY,ANY-method}: Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
+
+\item \code{[[,Colonies,integerOrNumeric-method}: Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
+
+\item \code{[[,Colonies,character-method}: Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
+
+\item \code{c,Colonies-method}: Combine multiple colony and colonies objects
+
+\item \code{isColonies}: Test if x is a Colonies class object
+}}
+
 \section{Slots}{
 
 \describe{
@@ -33,6 +78,10 @@ colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 apiary <- c(colony1, colony2, colony3)
 apiary
+show(apiary)
+is(apiary)
+isColonies(apiary)
+
 getId(apiary)
 apiary[1]
 getId(apiary[1])
@@ -42,6 +91,7 @@ getId(apiary[2])
 getId(apiary)
 getId(apiary[c(1, 3)])
 getId(apiary[c("2", "4")])
+getId(apiary[c(TRUE, FALSE, TRUE)])
 
 apiary[[1]]
 apiary[["2"]]
@@ -49,6 +99,7 @@ apiary[[3]]
 apiary[["4"]]
 
 getId(c(apiary[c(1, 3)], apiary[2]))
+getId(c(apiary[2], apiary[c(1, 3)]))
 
 }
 \seealso{

@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteDd}
 \alias{getCasteDd}
+\alias{getQueensDd}
+\alias{getFathersDd}
+\alias{getVirginQueensDd}
+\alias{getWorkersDd}
+\alias{getDronesDd}
 \title{Access dominance deviations of individuals in a caste}
 \usage{
 getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
+
+getQueensDd(x, simParamBee = NULL)
+
+getFathersDd(x, nInd = NULL, simParamBee = NULL)
+
+getVirginQueensDd(x, nInd = NULL, simParamBee = NULL)
+
+getWorkersDd(x, nInd = NULL, simParamBee = NULL)
+
+getDronesDd(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -27,6 +42,19 @@ vector of dominance deviations when \code{x} is
 Level 0 function that returns dominance deviations of
   individuals in a caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensDd}: Access dominance deviation of the queen
+
+\item \code{getFathersDd}: Access dominance deviations of fathers
+
+\item \code{getVirginQueensDd}: Access dominance deviations of virgin queens
+
+\item \code{getWorkersDd}: Access dominance deviations of workers
+
+\item \code{getDronesDd}: Access dominance deviations of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

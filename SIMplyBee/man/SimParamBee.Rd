@@ -2,29 +2,44 @@
 % Please edit documentation in R/Class-SimParamBee.R
 \name{SimParamBee}
 \alias{SimParamBee}
+\alias{isSimParamBee}
 \title{Honeybee simulation parameters}
+\usage{
+isSimParamBee(x)
+}
 \description{
 Container for global honeybee simulation parameters. Saving this
-  object as SP will allow it to be accessed by function defaults. SimParamBee
-  inherits from \code{\link{SimParam}} so all of its slots and functions are
-  available in addition to SimParamBee-specific slots and functions. Some
-  \code{\link{SimParam}} functions could have upgraded behaviour as
-  documented below in line with honeybee biology.
+  object as \code{SP} will allow it to be accessed by SIMplyBee functions and
+  many defaults can be used from the \code{SP}. \code{SimParamBee} inherits
+  from AlphaSimR \code{\link{SimParam}}, so all \code{\link{SimParam}} slots
+  and functions are available in addition to \code{SimParamBee}-specific
+  slots and functions. Some \code{\link{SimParam}} functions could have
+  upgraded behaviour as documented below in line with honeybee biology.
 }
 \details{
-The documentation below is showing specific details and here we only
-  highlight key points for honeybee biology.
+This documentation shows details specific to \code{SimParamBee}. We
+  suggest you also read all the options provided by the AlphaSimR
+  \code{\link{SimParam}}. Below we show minimal usage cases for each
+  \code{SimParamBee} function and before that we highlight key points of
+  honeybee biology in relation to implementation in the SIMplyBee package.
 
-The csd locus is the complementary sex determining locus in honeybees. This
-locus works on top of haplo-diploidy. Heterozygous individuals become workers
-or queens, while homozygous individuals become unviable "drones". Hence
-genotypic status at the locus is critical for honeybee simulations. Here the
-csd locus is implemented as a series of bi-allelic SNP (haplotype) that don't
-recombine. In this way we can get a tunable number of csd alleles
-\code{nCsdHaplo}. Individuals that are homozygous at the csd locus are not
-viable and removed from simulation. How many are removed is recorded in each
-\code{\link{Colony-class}}.
+In honeybees, complementary sex determining (csd) locus impacts sex of
+individuals on top of haplo-diploidy, where diploids are queens or workers
+and haploids are drones. Heterozygous individuals at the csd locus become
+queens or workers , while homozygous individuals at the csd loucs become
+unviable "drones". Hence genotypic status at the locus is critical for
+honeybee simulations, since homozygosity at the csd locus can reduce colony
+strength. In SIMplyBee, the csd locus is implemented as a series of
+bi-allelic SNP (haplotype) that don't recombine. In this way we can get a
+tunable number of csd alleles \code{nCsdHaplo}. Individuals that are
+homozygous at the csd locus are not viable and removed from simulation. How
+many are removed is recorded in each \code{\link{Colony-class}}. TODO
 }
+\section{Functions}{
+\itemize{
+\item \code{isSimParamBee}: Test if x is a SimParamBee class object
+}}
+
 \examples{
 
 ## ------------------------------------------------

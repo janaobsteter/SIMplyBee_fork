@@ -8,3 +8,5 @@ devtools::test() # (shortcut = shit + Ctrl + T) runs the tests!
 
 devtools::document() # write/modifies the documentation
 devtools::check() # R CMD check?
+
+devtools::install()

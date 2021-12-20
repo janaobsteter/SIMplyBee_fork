@@ -2,6 +2,11 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteQtlGeno}
 \alias{getCasteQtlGeno}
+\alias{getQueensQtlGeno}
+\alias{getFathersQtlGeno}
+\alias{getVirginQueensQtlGeno}
+\alias{getWorkersQtlGeno}
+\alias{getDronesQtlGeno}
 \title{Access QTL genotypes of individuals in a caste}
 \usage{
 getCasteQtlGeno(
@@ -12,6 +17,22 @@ getCasteQtlGeno(
   chr = NULL,
   simParamBee = NULL
 )
+
+getQueensQtlGeno(x, trait = 1, chr = NULL, simParamBee = NULL)
+
+getFathersQtlGeno(x, nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL)
+
+getVirginQueensQtlGeno(
+  x,
+  nInd = NULL,
+  trait = 1,
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getWorkersQtlGeno(x, nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL)
+
+getDronesQtlGeno(x, nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -39,6 +60,19 @@ matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 Level 0 function that returns QTL genotypes of individuals in a
   caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensQtlGeno}: Access QTL genotype data of the queen
+
+\item \code{getFathersQtlGeno}: Access QTL genotype data of fathers
+
+\item \code{getVirginQueensQtlGeno}: Access QTL genotype data of virgin queens
+
+\item \code{getWorkersQtlGeno}: Access QTL genotype data of workers
+
+\item \code{getDronesQtlGeno}: Access QTL genotype data of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

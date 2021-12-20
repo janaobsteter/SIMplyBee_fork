@@ -3,13 +3,40 @@
 \docType{class}
 \name{Colony-class}
 \alias{Colony-class}
+\alias{show,Colony-method}
+\alias{isColony}
+\alias{c,Colony-method}
 \title{Honeybee colony}
+\usage{
+\S4method{show}{Colony}(object)
+
+isColony(x)
+
+\S4method{c}{Colony}(x, ...)
+}
+\arguments{
+\item{object}{\code{\link{Colony-class}}}
+
+\item{x}{\code{\link{Colony-class}}}
+
+\item{...}{\code{NULL}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
+}
 \value{
-\code{\link{Colony-class}}
+\code{\link{Colony-class}} or \code{\link{Colonies-class}}
 }
 \description{
 An object holding honeybee colony
 }
+\section{Functions}{
+\itemize{
+\item \code{show,Colony-method}: Show colony object
+
+\item \code{isColony}: Test if x is a Colony class object
+
+\item \code{c,Colony-method}: Combine multiple colony objects
+}}
+
 \section{Slots}{
 
 \describe{
@@ -47,21 +74,26 @@ colony}
 }}
 
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 15)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 
 colony1
-colony2
+show(colony1)
 is(colony1)
-is(colony2)
+isColony(colony1)
 
 apiary <- c(colony1, colony2)
 is(apiary)
+isColonies(apiary)
+
+c(apiary, colony3)
+c(colony3, apiary)
 
 }
 \seealso{

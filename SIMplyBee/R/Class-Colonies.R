@@ -1,6 +1,7 @@
 # Class Colonies ----
 
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
+setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 
 #' @rdname Colonies-class
 #' @title Honeybee colonies
@@ -10,12 +11,16 @@ setClassUnion("integerOrNumeric", c("integer", "numeric"))
 #'
 #' @slot colonies list, a collection of \code{\link{Colony-class}} objects
 #'
+#' @param object \code{\link{Colonies-class}}
 #' @param x \code{\link{Colonies-class}}
-#' @param i numeric or character, index or name to select a colony
+#' @param i integer, numeric, logical, or character, index or ID to select
+#'   a colony (see examples)
+#' @param ... \code{NULL}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
 #' @seealso \code{\link{createColonies}}
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} or \code{\link{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -28,6 +33,10 @@ setClassUnion("integerOrNumeric", c("integer", "numeric"))
 #' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2, colony3)
 #' apiary
+#' show(apiary)
+#' is(apiary)
+#' isColonies(apiary)
+#'
 #' getId(apiary)
 #' apiary[1]
 #' getId(apiary[1])
@@ -37,6 +46,7 @@ setClassUnion("integerOrNumeric", c("integer", "numeric"))
 #' getId(apiary)
 #' getId(apiary[c(1, 3)])
 #' getId(apiary[c("2", "4")])
+#' getId(apiary[c(TRUE, FALSE, TRUE)])
 #'
 #' apiary[[1]]
 #' apiary[["2"]]
@@ -44,6 +54,7 @@ setClassUnion("integerOrNumeric", c("integer", "numeric"))
 #' apiary[["4"]]
 #'
 #' getId(c(apiary[c(1, 3)], apiary[2]))
+#' getId(c(apiary[2], apiary[c(1, 3)]))
 #'
 #' @export
 setClass(Class = "Colonies",
@@ -63,7 +74,7 @@ setValidity(Class = "Colonies", method = function(object) {
   }
 })
 
-# @describeIn Colonies Show colonies object
+#' @describeIn Colonies-class Show colonies object
 setMethod(f = "show",
           signature(object = "Colonies"),
           function (object) {
@@ -73,17 +84,17 @@ setMethod(f = "show",
           }
 )
 
-# @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
+#' @describeIn Colonies-class Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
 setMethod(f = "[",
-          signature(x = "Colonies", i = "integerOrNumeric"),
+          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
           function(x, i) {
-            x@colonies <- x@colonies[as.integer(i)]
+            x@colonies <- x@colonies[i]
             validObject(x)
             return(x)
           }
 )
 
-# @describeIn Colonies Extract a colony (one or more!) by name (character) (return \code{\link{Colonies-class}})
+#' @describeIn Colonies-class Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
 setMethod(f = "[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
@@ -93,7 +104,7 @@ setMethod(f = "[",
           }
 )
 
-# @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
+#' @describeIn Colonies-class Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
 setMethod(f = "[[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
@@ -107,7 +118,7 @@ setMethod(f = "[[",
           }
 )
 
-# @describeIn Colonies Extract a colony (just one!) by name (character) (return \code{\link{Colony-class}})
+#' @describeIn Colonies-class Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
 setMethod(f = "[[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
@@ -121,7 +132,7 @@ setMethod(f = "[[",
           }
 )
 
-# @describeIn Colonies Combine multiple colony and colonies objects
+#' @describeIn Colonies-class Combine multiple colony and colonies objects
 setMethod(f = "c",
           signature(x = "Colonies"),
           function(x, ...) {
@@ -141,7 +152,8 @@ setMethod(f = "c",
           }
 )
 
-# @describeIn Colonies Test if object is a Colonies class object
+#' @describeIn Colonies-class Test if x is a Colonies class object
+#' @export
 isColonies <- function(x) {
   ret <- is(x, class2 = "Colonies")
   return(ret)
