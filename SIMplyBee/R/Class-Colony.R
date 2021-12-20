@@ -58,7 +58,7 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
 setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
-setClass("Colony",
+setClass(Class = "Colony",
          slots = c(id = "characterOrNULL",
                    location = "numericOrNULL",
                    queen = "PopOrNULL",
@@ -100,7 +100,7 @@ setValidity(Class = "Colony", method = function(object) {
 })
 
 #' @describeIn Colony Show colony object
-setMethod("show",
+setMethod(f = "show",
           signature(object = "Colony"),
           function(object) {
             cat("An object of class", classLabel(class(object)), "\n")
@@ -131,7 +131,7 @@ isColony <- function(x) {
 # This setMethod() should be in Class-Colonies.R, but that file is sourced before
 # Class-Colony.R, which defines the class Colony, so we have it here as a
 # workaround
-setMethod("c",
+setMethod(f = "c",
           signature(x = "Colony"),
           function(x, ...) {
             colonies <- new(Class = "Colonies", colonies = list(x))

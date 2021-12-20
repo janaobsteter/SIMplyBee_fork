@@ -1,5 +1,6 @@
 ---
 title: "AlphaSimRBee"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{AlphaSimRBee}
@@ -217,6 +218,3 @@ splitColonies; TODO merge with split() (clash with other R func(s))?
 crossColonies; input Colonies; return Colonies; TODO merge with cross()? there is many cross() in R, so this won't work
 setPhenoColonies; TODO merge with setColonyPheno?
 
-```{r setup}
-# library(AlphaSimRBee)
-```

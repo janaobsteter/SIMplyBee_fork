@@ -44,7 +44,7 @@
 #' getId(c(apiary[c(1, 3)], apiary[2]))
 #'
 #' @export
-setClass("Colonies",
+setClass(Class = "Colonies",
          slots = c(colonies = "list"))
 
 setValidity(Class = "Colonies", method = function(object) {
@@ -62,7 +62,7 @@ setValidity(Class = "Colonies", method = function(object) {
 })
 
 #' @describeIn Colonies Show colonies object
-setMethod("show",
+setMethod(f = "show",
           signature(object = "Colonies"),
           function (object) {
             cat("An object of class", classLabel(class(object)), "\n")
@@ -73,7 +73,7 @@ setMethod("show",
 
 #' @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
-setMethod("[",
+setMethod(f = "[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
             x@colonies <- x@colonies[as.integer(i)]
@@ -83,7 +83,7 @@ setMethod("[",
 )
 
 #' @describeIn Colonies Extract a colony (one or more!) by name (character) (return \code{\link{Colonies-class}})
-setMethod("[",
+setMethod(f = "[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
             ret <- x[match(x = i, table = getId(x))]
@@ -93,7 +93,7 @@ setMethod("[",
 )
 
 #' @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
-setMethod("[[",
+setMethod(f = "[[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
             n <- length(i)
@@ -107,7 +107,7 @@ setMethod("[[",
 )
 
 #' @describeIn Colonies Extract a colony (just one!) by name (character) (return \code{\link{Colony-class}})
-setMethod("[[",
+setMethod(f = "[[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
             n <- length(i)
@@ -121,7 +121,7 @@ setMethod("[[",
 )
 
 #' @describeIn Colonies Combine multiple colony and colonies objects
-setMethod("c",
+setMethod(f = "c",
           signature(x = "Colonies"),
           function(x, ...) {
             for (y in list(...)) {
