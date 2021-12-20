@@ -1,4 +1,4 @@
 library(testthat)
-library(AlphaSimRBee)
+library(SIMplyBee)
 
-test_check("AlphaSimRBee")
+test_check("SIMplyBee")

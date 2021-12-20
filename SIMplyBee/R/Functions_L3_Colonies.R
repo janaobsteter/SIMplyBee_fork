@@ -816,14 +816,14 @@ splitColonies <- function(colonies, p = 0.3) {
 #'
 #' @description Level 3 function that TODO
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param colonies \code{\link{Colonies-class}}
 #' @param FUN TODO
 #' @param ... TODO
 #'
+#' @return \code{\link{Colonies-class}} with phenotypes
+#'
 #' @examples
 #' TODO
-#'
-#' @return An updated AlphaSimRBee Colonies object
 #'
 #' @export
 setPhenoColonies <- function(colonies, FUN = NULL, ...) {
