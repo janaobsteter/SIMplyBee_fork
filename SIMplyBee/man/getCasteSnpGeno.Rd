@@ -2,6 +2,11 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSnpGeno}
 \alias{getCasteSnpGeno}
+\alias{getQueensSnpGeno}
+\alias{getFathersSnpGeno}
+\alias{getVirginQueensSnpGeno}
+\alias{getWorkersSnpGeno}
+\alias{getDronesSnpGeno}
 \title{Access SNP array genotypes of individuals in a caste}
 \usage{
 getCasteSnpGeno(
@@ -12,6 +17,22 @@ getCasteSnpGeno(
   chr = NULL,
   simParamBee = NULL
 )
+
+getQueensSnpGeno(x, snpChip = 1, chr = NULL, simParamBee = NULL)
+
+getFathersSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
+
+getVirginQueensSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getWorkersSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
+
+getDronesSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -39,6 +60,19 @@ matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 Level 0 function that returns SNP array genotypes of individuals
   in a caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensSnpGeno}: Access SNP array genotype data of the queen
+
+\item \code{getFathersSnpGeno}: Access SNP array genotype data of fathers
+
+\item \code{getVirginQueensSnpGeno}: Access SNP array genotype data of virgin queens
+
+\item \code{getWorkersSnpGeno}: Access SNP array genotype data of workers
+
+\item \code{getDronesSnpGeno}: Access SNP array genotype data of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

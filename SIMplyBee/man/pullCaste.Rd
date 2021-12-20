@@ -2,9 +2,21 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{pullCaste}
 \alias{pullCaste}
+\alias{pullQueen}
+\alias{pullVirginQueens}
+\alias{pullWorkers}
+\alias{pullDrones}
 \title{Pull individuals from a caste in a colony}
 \usage{
 pullCaste(x, caste, nInd = NULL, use = "rand")
+
+pullQueen(x)
+
+pullVirginQueens(x, nInd = NULL, use = "rand")
+
+pullWorkers(x, nInd = NULL, use = "rand")
+
+pullDrones(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -28,6 +40,17 @@ Level 1 function that pulls individuals from a caste in a
   colony. These individuals are removed from the colony (compared to
   \code{\link{getCaste}}).
 }
+\section{Functions}{
+\itemize{
+\item \code{pullQueen}: Pull queen from a colony
+
+\item \code{pullVirginQueens}: Pull virgin queens from a colony
+
+\item \code{pullWorkers}: Pull workers from a colony
+
+\item \code{pullDrones}: Pull drones from a colony
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

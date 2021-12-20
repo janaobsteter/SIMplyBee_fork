@@ -1547,7 +1547,8 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
+#' @export
 getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteIbdHaplo(x, caste = "queen",
@@ -1558,7 +1559,8 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteIbdHaplo Access IBD haplotype data of fathers
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of fathers
+#' @export
 getFathersIbdHaplo <- function(x, nInd = NULL,
                                chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1570,7 +1572,8 @@ getFathersIbdHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteIbdHaplo Access IBD haplotype data of virgin queens
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of virgin queens
+#' @export
 getVirginQueensIbdHaplo <- function(x, nInd = NULL,
                                     chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1582,7 +1585,8 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteIbdHaplo Access IBD haplotype data of workers
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of workers
+#' @export
 getWorkersIbdHaplo <- function(x, nInd = NULL,
                                chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1594,7 +1598,8 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteIbdHaplo Access IBD haplotype data of drones
+#' @describeIn getCasteIbdHaplo Access IBD haplotype data of drones
+#' @export
 getDronesIbdHaplo <- function(x, nInd = NULL,
                               chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1808,7 +1813,8 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
+#' @export
 getQueensQtlHaplo <- function(x,
                               trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1820,7 +1826,8 @@ getQueensQtlHaplo <- function(x,
   return(ret)
 }
 
-# @describeIn getCasteQtlHaplo Access QTL haplotype data of fathers
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of fathers
+#' @export
 getFathersQtlHaplo <- function(x, nInd = NULL,
                                trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1832,7 +1839,8 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlHaplo Access QTL haplotype data of virgin queens
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of virgin queens
+#' @export
 getVirginQueensQtlHaplo <- function(x, nInd = NULL,
                                     trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -1844,7 +1852,8 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlHaplo Access QTL haplotype of workers
+#' @describeIn getCasteQtlHaplo Access QTL haplotype of workers
+#' @export
 getWorkersQtlHaplo <- function(x, nInd = NULL,
                                trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x)| isColonies(x)) {
@@ -1856,7 +1865,8 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlHaplo Access QTL haplotype data of drones
+#' @describeIn getCasteQtlHaplo Access QTL haplotype data of drones
+#' @export
 getDronesQtlHaplo <- function(x, nInd = NULL,
                               trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2071,7 +2081,8 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlGeno Access QTL genotype data of the queen
+#' @describeIn getCasteQtlGeno Access QTL genotype data of the queen
+#' @export
 getQueensQtlGeno <- function(x,
                              trait = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2083,7 +2094,8 @@ getQueensQtlGeno <- function(x,
   return(ret)
 }
 
-# @describeIn getCasteQtlGeno Access QTL genotype data of fathers
+#' @describeIn getCasteQtlGeno Access QTL genotype data of fathers
+#' @export
 getFathersQtlGeno <- function(x, nInd = NULL,
                               trait = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2095,7 +2107,8 @@ getFathersQtlGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlGeno Access QTL genotype data of virgin queens
+#' @describeIn getCasteQtlGeno Access QTL genotype data of virgin queens
+#' @export
 getVirginQueensQtlGeno <- function(x, nInd = NULL,
                                    trait = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2107,7 +2120,8 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlGeno Access QTL genotype data of workers
+#' @describeIn getCasteQtlGeno Access QTL genotype data of workers
+#' @export
 getWorkersQtlGeno <- function(x, nInd = NULL,
                               trait = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2119,7 +2133,8 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteQtlGeno Access QTL genotype data of drones
+#' @describeIn getCasteQtlGeno Access QTL genotype data of drones
+#' @export
 getDronesQtlGeno <- function(x, nInd = NULL,
                              trait = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2333,7 +2348,8 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
+#' @export
 getQueensSegSiteHaplo <- function(x,
                                   haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2345,7 +2361,8 @@ getQueensSegSiteHaplo <- function(x,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of fathers
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of fathers
+#' @export
 getFathersSegSiteHaplo <- function(x, nInd = NULL,
                                    haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2357,7 +2374,8 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of virgin queens
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of virgin queens
+#' @export
 getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
                                         haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2369,7 +2387,8 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of workers
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of workers
+#' @export
 getWorkersSegSiteHaplo <- function(x, nInd = NULL,
                                    haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2381,7 +2400,8 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of drones
+#' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of drones
+#' @export
 getDronesSegSiteHaplo <- function(x, nInd = NULL,
                                   haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2594,7 +2614,8 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
+#' @export
 getQueensSegSiteGeno <- function(x,
                                  chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2606,7 +2627,8 @@ getQueensSegSiteGeno <- function(x,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of fathers
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of fathers
+#' @export
 getFathersSegSiteGeno <- function(x, nInd = NULL,
                                   chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2618,7 +2640,8 @@ getFathersSegSiteGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of virgin queens
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of virgin queens
+#' @export
 getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
                                        chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2630,7 +2653,8 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of workers
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of workers
+#' @export
 getWorkersSegSiteGeno <- function(x, nInd = NULL,
                                   chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2642,7 +2666,8 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of drones
+#' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of drones
+#' @export
 getDronesSegSiteGeno <- function(x, nInd = NULL,
                                  chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2856,7 +2881,8 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
+#' @export
 getQueensSnpHaplo <- function(x,
                               snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2869,7 +2895,8 @@ getQueensSnpHaplo <- function(x,
 
 }
 
-# @describeIn getCasteSnpHaplo Access SNP array haplotype data of fathers
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of fathers
+#' @export
 getFathersSnpHaplo <- function(x, nInd = NULL,
                                snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2881,7 +2908,8 @@ getFathersSnpHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpHaplo Access SNP array haplotype data of virgin queens
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of virgin queens
+#' @export
 getVirginQueensSnpHaplo <- function(x, nInd = NULL,
                                     snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2893,7 +2921,8 @@ getVirginQueensSnpHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpHaplo Access SNP array haplotype of workers
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype of workers
+#' @export
 getWorkersSnpHaplo <- function(x, nInd = NULL,
                                snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -2905,7 +2934,8 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpHaplo Access SNP array haplotype data of drones
+#' @describeIn getCasteSnpHaplo Access SNP array haplotype data of drones
+#' @export
 getDronesSnpHaplo <- function(x, nInd = NULL,
                               snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3120,7 +3150,8 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
+#' @export
 getQueensSnpGeno <- function(x,
                              snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3132,7 +3163,8 @@ getQueensSnpGeno <- function(x,
   return(ret)
 }
 
-# @describeIn getCasteSnpGeno Access SNP array genotype data of fathers
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of fathers
+#' @export
 getFathersSnpGeno <- function(x, nInd = NULL,
                               snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3144,7 +3176,8 @@ getFathersSnpGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpGeno Access SNP array genotype data of virgin queens
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of virgin queens
+#' @export
 getVirginQueensSnpGeno <- function(x, nInd = NULL,
                                    snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3156,7 +3189,8 @@ getVirginQueensSnpGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpGeno Access SNP array genotype data of workers
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of workers
+#' @export
 getWorkersSnpGeno <- function(x, nInd = NULL,
                               snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3168,7 +3202,8 @@ getWorkersSnpGeno <- function(x, nInd = NULL,
   return(ret)
 }
 
-# @describeIn getCasteSnpGeno Access SNP array genotype data of drones
+#' @describeIn getCasteSnpGeno Access SNP array genotype data of drones
+#' @export
 getDronesSnpGeno <- function(x, nInd = NULL,
                              snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
@@ -3374,7 +3409,8 @@ getCasteGv <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteGv Access genetic value of the queen
+#' @describeIn getCasteGv Access genetic value of the queen
+#' @export
 getQueensGv <- function(x) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "queen")
@@ -3384,7 +3420,8 @@ getQueensGv <- function(x) {
   return(ret)
 }
 
-# @describeIn getCasteGv Access genetic values of fathers
+#' @describeIn getCasteGv Access genetic values of fathers
+#' @export
 getFathersGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
@@ -3394,7 +3431,8 @@ getFathersGv <- function(x, nInd = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteGv Access genetic values of virgin queens
+#' @describeIn getCasteGv Access genetic values of virgin queens
+#' @export
 getVirginQueensGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "virgin_queens", nInd = nInd)
@@ -3404,7 +3442,8 @@ getVirginQueensGv <- function(x, nInd = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteGv Access genetic values of workers
+#' @describeIn getCasteGv Access genetic values of workers
+#' @export
 getWorkersGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "workers", nInd = nInd)
@@ -3414,7 +3453,8 @@ getWorkersGv <- function(x, nInd = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteGv Access genetic values of drones
+#' @describeIn getCasteGv Access genetic values of drones
+#' @export
 getDronesGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteGv(x, caste = "drones", nInd = nInd)
@@ -3612,7 +3652,8 @@ getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteBv Access breeding value of the queen
+#' @describeIn getCasteBv Access breeding value of the queen
+#' @export
 getQueensBv <- function(x, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteBv(x, caste = "queen",
@@ -3623,7 +3664,8 @@ getQueensBv <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteBv Access breeding values of fathers
+#' @describeIn getCasteBv Access breeding values of fathers
+#' @export
 getFathersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteBv(x, caste = "fathers", nInd = nInd,
@@ -3634,7 +3676,8 @@ getFathersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteBv Access breeding values of virgin queens
+#' @describeIn getCasteBv Access breeding values of virgin queens
+#' @export
 getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteBv(x, caste = "virgin_queens", nInd = nInd,
@@ -3645,7 +3688,8 @@ getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteBv Access breeding values of workers
+#' @describeIn getCasteBv Access breeding values of workers
+#' @export
 getWorkersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteBv(x, caste = "workers", nInd = nInd,
@@ -3656,7 +3700,8 @@ getWorkersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteBv Access breeding values of drones
+#' @describeIn getCasteBv Access breeding values of drones
+#' @export
 getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteBv(x, caste = "drones", nInd = nInd,
@@ -3863,7 +3908,8 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteDd Access dominance deviation of the queen
+#' @describeIn getCasteDd Access dominance deviation of the queen
+#' @export
 getQueensDd <- function(x, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteDd(x, caste = "queen",
@@ -3874,7 +3920,8 @@ getQueensDd <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteDd Access dominance deviations of fathers
+#' @describeIn getCasteDd Access dominance deviations of fathers
+#' @export
 getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteDd(x, caste = "fathers", nInd = nInd,
@@ -3885,7 +3932,8 @@ getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteDd Access dominance deviations of virgin queens
+#' @describeIn getCasteDd Access dominance deviations of virgin queens
+#' @export
 getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteDd(x, caste = "virgin_queens", nInd = nInd,
@@ -3896,7 +3944,8 @@ getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteDd Access dominance deviations of workers
+#' @describeIn getCasteDd Access dominance deviations of workers
+#' @export
 getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteDd(x, caste = "workers", nInd = nInd,
@@ -3907,7 +3956,8 @@ getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-# @describeIn getCasteDd Access dominance deviations of drones
+#' @describeIn getCasteDd Access dominance deviations of drones
+#' @export
 getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteDd(x, caste = "drones", nInd = nInd,

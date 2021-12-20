@@ -2,12 +2,51 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSegSiteHaplo}
 \alias{getCasteSegSiteHaplo}
+\alias{getQueensSegSiteHaplo}
+\alias{getFathersSegSiteHaplo}
+\alias{getVirginQueensSegSiteHaplo}
+\alias{getWorkersSegSiteHaplo}
+\alias{getDronesSegSiteHaplo}
 \title{Access haplotypes for all segregating sites of individuals in a
   caste}
 \usage{
 getCasteSegSiteHaplo(
   x,
   caste,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getQueensSegSiteHaplo(x, haplo = "all", chr = NULL, simParamBee = NULL)
+
+getFathersSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getVirginQueensSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getWorkersSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  simParamBee = NULL
+)
+
+getDronesSegSiteHaplo(
+  x,
   nInd = NULL,
   haplo = "all",
   chr = NULL,
@@ -42,6 +81,19 @@ matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 Level 0 function that returns haplotypes for all segregating
   sites of individuals in a caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensSegSiteHaplo}: Access haplotype data for all segregating sites of the queen
+
+\item \code{getFathersSegSiteHaplo}: Access haplotype data for all segregating sites of fathers
+
+\item \code{getVirginQueensSegSiteHaplo}: Access haplotype data for all segregating sites of virgin queens
+
+\item \code{getWorkersSegSiteHaplo}: Access haplotype data for all segregating sites of workers
+
+\item \code{getDronesSegSiteHaplo}: Access haplotype data for all segregating sites of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

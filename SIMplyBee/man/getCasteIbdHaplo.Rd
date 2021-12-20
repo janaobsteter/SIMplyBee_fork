@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteIbdHaplo}
 \alias{getCasteIbdHaplo}
+\alias{getQueensIbdHaplo}
+\alias{getFathersIbdHaplo}
+\alias{getVirginQueensIbdHaplo}
+\alias{getWorkersIbdHaplo}
+\alias{getDronesIbdHaplo}
 \title{Access IBD haplotypes of individuals in a caste}
 \usage{
 getCasteIbdHaplo(x, caste, nInd = NULL, chr = NULL, simParamBee = NULL)
+
+getQueensIbdHaplo(x, chr = NULL, simParamBee = NULL)
+
+getFathersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+
+getVirginQueensIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+
+getWorkersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+
+getDronesIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -30,6 +45,19 @@ matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 Level 0 function that returns IBD (identity by descent)
   haplotypes of individuals in a caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensIbdHaplo}: Access IBD haplotype data of the queen
+
+\item \code{getFathersIbdHaplo}: Access IBD haplotype data of fathers
+
+\item \code{getVirginQueensIbdHaplo}: Access IBD haplotype data of virgin queens
+
+\item \code{getWorkersIbdHaplo}: Access IBD haplotype data of workers
+
+\item \code{getDronesIbdHaplo}: Access IBD haplotype data of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

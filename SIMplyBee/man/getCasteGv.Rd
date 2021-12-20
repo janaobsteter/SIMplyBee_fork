@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteGv}
 \alias{getCasteGv}
+\alias{getQueensGv}
+\alias{getFathersGv}
+\alias{getVirginQueensGv}
+\alias{getWorkersGv}
+\alias{getDronesGv}
 \title{Access genetic values of individuals in a caste}
 \usage{
 getCasteGv(x, caste, nInd = NULL)
+
+getQueensGv(x)
+
+getFathersGv(x, nInd = NULL)
+
+getVirginQueensGv(x, nInd = NULL)
+
+getWorkersGv(x, nInd = NULL)
+
+getDronesGv(x, nInd = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -25,6 +40,19 @@ vector of genetic values when \code{x} is \code{\link{Colony-class}}
 Level 0 function that returns genetic values of individuals in a
   caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensGv}: Access genetic value of the queen
+
+\item \code{getFathersGv}: Access genetic values of fathers
+
+\item \code{getVirginQueensGv}: Access genetic values of virgin queens
+
+\item \code{getWorkersGv}: Access genetic values of workers
+
+\item \code{getDronesGv}: Access genetic values of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

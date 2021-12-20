@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteBv}
 \alias{getCasteBv}
+\alias{getQueensBv}
+\alias{getFathersBv}
+\alias{getVirginQueensBv}
+\alias{getWorkersBv}
+\alias{getDronesBv}
 \title{Access breeding values of individuals in a caste}
 \usage{
 getCasteBv(x, caste, nInd = NULL, simParamBee = NULL)
+
+getQueensBv(x, simParamBee = NULL)
+
+getFathersBv(x, nInd = NULL, simParamBee = NULL)
+
+getVirginQueensBv(x, nInd = NULL, simParamBee = NULL)
+
+getWorkersBv(x, nInd = NULL, simParamBee = NULL)
+
+getDronesBv(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -27,6 +42,19 @@ vector of breeding values when \code{x} is \code{\link{Colony-class}}
 Level 0 function that returns breeding values of individuals in
   a caste.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueensBv}: Access breeding value of the queen
+
+\item \code{getFathersBv}: Access breeding values of fathers
+
+\item \code{getVirginQueensBv}: Access breeding values of virgin queens
+
+\item \code{getWorkersBv}: Access breeding values of workers
+
+\item \code{getDronesBv}: Access breeding values of drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

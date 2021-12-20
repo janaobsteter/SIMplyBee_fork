@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{getCaste}
 \alias{getCaste}
+\alias{getQueen}
+\alias{getFathers}
+\alias{getVirginQueens}
+\alias{getWorkers}
+\alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
 getCaste(x, caste, nInd = NULL, use = "rand")
+
+getQueen(x)
+
+getFathers(x, nInd = NULL, use = "rand")
+
+getVirginQueens(x, nInd = NULL, use = "rand")
+
+getWorkers(x, nInd = NULL, use = "rand")
+
+getDrones(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{Colony or Colonies}
@@ -27,6 +42,19 @@ Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
 Level 1 function that returns individuals of a caste. These
   individuals stay in the colony (compared to \code{\link{pullCaste}}).
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueen}: Access the queen
+
+\item \code{getFathers}: Access fathers (drones the queen mated with)
+
+\item \code{getVirginQueens}: Access virgin queens
+
+\item \code{getWorkers}: Access workers
+
+\item \code{getDrones}: Access drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

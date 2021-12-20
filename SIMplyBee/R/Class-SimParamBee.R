@@ -8,6 +8,8 @@
 #'   \code{\link{SimParam}} functions could have upgraded behaviour as
 #'   documented below in line with honeybee biology.
 #'
+#' @param x \code{\link{SimParamBee-class}} global simulation parameters
+#'
 #' @details The documentation below is showing specific details and here we only
 #'   highlight key points for honeybee biology.
 #'
@@ -119,6 +121,12 @@ SimParamBee <- R6Class(
     }
   )
 )
+
+#' @describeIn SimParamBee-class Test if x is a SimParamBee class object
+isSimParamBee <- function(x) {
+  ret <- is(x, class2 = "SimParamBee")
+  return(ret)
+}
 
 # TODO: remove this once AlphaSimR exports getNumThreads (pull request accepted)
 # https://github.com/HighlanderLab/SIMplyBee/issues/75

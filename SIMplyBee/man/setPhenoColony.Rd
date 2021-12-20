@@ -2,10 +2,24 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{setPhenoColony}
 \alias{setPhenoColony}
-\title{TODO}
+\title{Set colony phenotype}
 \usage{
-setPhenoColony(colony, FUN = NULL, ...)
+setPhenoColony(colony, FUN = NULL, ..., simParamBee = NULL)
+}
+\arguments{
+\item{colony}{\code{\link{Colony-class}}}
+
+\item{FUN}{function, any function that can be aplied on \code{colony} and
+can return phenotypes for defined traits via
+\code{\link{SimParamBee-class}}}
+
+\item{...}{all parameters of \code{\link{setPheno}}}
+
+\item{simParamBee}{\code{\link{SimParamBee-class}}, global simulation
+parameters}
 }
 \description{
-Level 2 function that TODO
+Level 2 function that sets phenotypes for all individuals in
+  the castes as well as the overall colony.
+  THIS FUNCTION IS UNDER DEVELOPMENT - BEST IF YOU DON'T USE IT JUST YET!
 }

@@ -2,7 +2,11 @@
 % Please edit documentation in R/Class-SimParamBee.R
 \name{SimParamBee}
 \alias{SimParamBee}
+\alias{isSimParamBee}
 \title{Honeybee simulation parameters}
+\usage{
+isSimParamBee(x)
+}
 \description{
 Container for global honeybee simulation parameters. Saving this
   object as SP will allow it to be accessed by function defaults. SimParamBee
@@ -25,6 +29,11 @@ recombine. In this way we can get a tunable number of csd alleles
 viable and removed from simulation. How many are removed is recorded in each
 \code{\link{Colony-class}}.
 }
+\section{Functions}{
+\itemize{
+\item \code{isSimParamBee}: Test if x is a SimParamBee class object
+}}
+
 \examples{
 
 ## ------------------------------------------------
