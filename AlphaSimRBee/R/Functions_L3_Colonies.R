@@ -156,11 +156,11 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
 #'   will insert the colony to that position and with this replace the old
 #'   colony at that position.
 #'
-#' @param colony Colony, colony that will be added
-#' @param colonies Colonies, set of colonies that will be expanded
-#' @param pos numeric or character, position of the old colony
+#' @param colonies \code{\link{Colonies}}
+#' @param colony \code{\link{Colony}}, colony that will be added
+#' @param pos numeric or character, index or ID of the old colony
 #'
-#' @return Expanded \code{\link{Colonies-class}} object
+#' @return \code{\link{Colonies-class}} with a replaced colony
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
@@ -174,13 +174,10 @@ createColonies2 <- function(pop = NULL, n, mated = TRUE,
 #' apiary <- c(colony1, colony2)
 #'
 #' getId(apiary)
-#' apiary <- assignColonyToColonies(apiary, colony3, pos = 2)
+#' apiary <- assignColonyToColonies(apiary, colony3, pos = 1)
 #' getId(apiary)
 #'
-#' @return Expanded Colonies object
-#'
 #' @export
-# TODO: this should be converted to a <- method
 assignColonyToColonies <- function(colonies, colony, pos) {
   if (!isColonies(colonies)) {
     stop("Argument Colonies must be a Colonies class object!")
