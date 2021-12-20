@@ -237,15 +237,18 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #'
 #' @export
 selectColonies <- function(colonies, ID = NULL, p = NULL) {
+  # TODO: add use and trait argument to this function?
+  #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
     ret <- colonies[getId(colonies) %in% ID]
   } else if (!is.null(p)) {
-    lPull <- as.logical(rbinom(n = nColonies(colonies), size = 2, p = p))
-    if (any(lPull)) {
-      ret <- colonies[lPull]
+    lSel <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    message(paste0("Randomly selecting colonies: ", sum(lSel)))
+    if (any(lSel)) {
+      ret <- colonies[lSel]
     } else {
       ret <- NULL
     }
@@ -257,16 +260,18 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 }
 
 #' @rdname pullColonies
-#' @title Pull some colonies from a larger set of colonies
+#' @title Pull out some colonies
 #'
-#' @description Level 3 function that pulls the colonies from the list of all
-#'   colonies based on colony IDs and return two lists: a list of selected
-#'   colonies and updated original colonies.
+#' @description Level 3 function that pulls out some colonies based on colony
+#'   IDs or random selection.
 #'
-#' @param colonies Colonies, a set of colonies
-#' @param ID numeric or character, name of a colony (one or more) in
-#' \code{colonies}; note that numeric value is converted to character
-#' @param p numeric, probability of a colony being pulled
+#' @param colonies \code{\link{Colonies-class}}
+#' @param ID numeric or character, name of a colony (one or more) to be pulled
+#'   out; note that numeric value is converted to character
+#' @param p numeric, probability of a colony being pulled out
+#'
+#' @return list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
+#'   and the \code{remainingColonies}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -284,10 +289,14 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
-#' @return Colonies
+#' tmp <- pullColonies(apiary, p = 0.5)
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, p = NULL) {
+  # TODO: add use and trait argument to this function that would be passed to selectColonies()?
+  #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -295,8 +304,8 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     pulledColonies <- selectColonies(colonies, ID)
     remainingColonies <- removeColonies(colonies, ID)
   } else if (!is.null(p)) {
-    lPull <- as.logical(rbinom(n = nColonies(colonies), size = 2, p = p))
-    message(paste0("Pulling out ", sum(lPull), " colonies."))
+    lPull <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    message(paste0("Pulling out randomly selected colonies: ", sum(lPull)))
     if (any(lPull)) {
       ids <- getId(colonies)
       pulledColonies <- selectColonies(colonies, ids[lPull])
@@ -320,7 +329,8 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @description Level 3 function that removes some colonies based on their ID.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param ID character, IDs of colony(ies) to be removed
+#' @param ID numeric or character, name of a colony (one or more) to be removed;
+#'   note that numeric value is converted to character
 #'
 #' @return \code{\link{Colonies-class}} with some colonies removed
 #'
