@@ -690,7 +690,7 @@ resetEvents <- function(colony) {
   colony@swarm <- FALSE
   colony@split <- FALSE
   colony@supersedure <- FALSE
-  colony@collapse <- FALSE
+  # colony@collapse <- FALSE
   colony@production <- FALSE
   validObject(colony)
   return(colony)

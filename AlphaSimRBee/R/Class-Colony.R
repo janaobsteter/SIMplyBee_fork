@@ -25,7 +25,6 @@ isPop <- function(x) {
 #' @slot split logical, has colony split
 #' @slot swarm logical, has colony swarmed
 #' @slot supersedure logical, has colony superseded
-#' @slot collapse logical, has colony collapsed TODO: revise
 #' @slot production logical, is colony productive
 #' @slot last_event character, the last event of the colony TODO: we probably don't need this
 #' @slot misc list, available for storing extra information about the colony
@@ -71,7 +70,6 @@ setClass("Colony",
                    #remnant = "",
                    swarm = "logical",
                    supersedure = "logical",
-                   collapse = "logical",
                    #rob = "logical",
                    production = "logical",
                    last_event = "character",
