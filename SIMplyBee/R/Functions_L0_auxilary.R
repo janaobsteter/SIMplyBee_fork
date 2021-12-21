@@ -43,7 +43,7 @@ nColonies <- function(colonies) {
 #'
 #' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
 #'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
-#'   \code{\link{nDrones}}, and \code{\link{nHomDrones}}
+#'   \code{\link{nDrones}}, and \code{\link{pHomBrood}}
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is integer for
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
@@ -95,12 +95,6 @@ nCaste <- function(x, caste = "all") {
           ret <- ifelse(isQueenMated(x), nInd(x@queen@misc[[1]]$fathers), 0)
         } else {
           ret <- 0
-        }
-      } else if (caste == "homDrones") {
-        if (length(x@nHomDrones) == 0) {
-          ret <- 0
-        } else {
-          ret <- x@nHomDrones
         }
       } else {
         ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
@@ -297,10 +291,10 @@ nDrones <- function(x) {
   return(ret)
 }
 
-#' @rdname nHomDrones
-#' @title Number of homozygous drones in a colony
+#' @rdname pHomBrood
+#' @title Percentage of homozygous brood of a queen
 #'
-#' @description Level 0 function that returns the number of homozygous drones in
+#' @description Level 0 function that returns the number of homozygous brood in
 #'   a colony (these are non viable individuals and only their number is stored).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
@@ -319,17 +313,24 @@ nDrones <- function(x) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
-#' nHomDrones(colony1)
-#' nHomDrones(colony2)
+#' pHomBrood(colony1)
+#' pHomBrood(colony2)
 #'
 #' apiary <- c(colony1, colony2)
-#' nHomDrones(apiary)
+#' pHomBrood(apiary)
 #'
 #' @export
-nHomDrones <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "homDrones")
-  } else {
+pHomBrood <- function(x) {
+  if (isColony(x)) {
+    if (length(x@queen@misc[[1]]$pHomBrood) == 0) {
+      ret <- 0
+    } else {
+      ret <- x@queen@misc[[1]]$pHomBrood
+    }
+  } else if (isColonies(x)) {
+      ret <- sapply(X = x@colonies, FUN = pHomBrood)
+      names(ret) <- getId(x)
+    } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
@@ -881,49 +882,6 @@ isProductive <- function(x) {
     ret <- x@production
   } else if (isColonies(x)) {
     ret <- sapply(x@colonies, FUN = isProductive)
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be Colony or Colonies class object!")
-  }
-  return(ret)
-}
-
-#' @rdname getnHomDrones
-#' @title Extract the number of homozygous drones in the colony
-#'
-#' @description Level 0 function that returns the number of homozygous
-#' drones stored in the nHomDrones slot of the colony. Takes either Colony or Colonies
-#' class as the input.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony
-#' isProductive(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
-#' isProductive(colony)
-#'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' getNHomDrones(apiary)
-#'
-#' @export
-getnHomDrones <- function(x) {
-  if (isColony(x)) {
-    ret <- x@nHomDrones
-  } else if (isColonies(x)) {
-    ret <- sapply(x@colonies, FUN = getnHomDrones)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be Colony or Colonies class object!")

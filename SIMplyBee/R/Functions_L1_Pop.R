@@ -226,7 +226,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two nodes named \code{workers} (a \code{\link{Pop-class}})
-#'   and \code{nHomDrones} (an integer)
+#'   and \code{pHomBrood} (an integer)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -252,17 +252,17 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
     stop("Unmated queen!")
   }
   ret <- vector(mode = "list", length = 2)
-  names(ret) <- c("workers", "nHomDrones")
+  names(ret) <- c("workers", "pHomBrood")
   workers <- randCross2(females = getQueen(colony),
                         males = getFathers(colony),
                         nCrosses = nInd)
   if (is.null(simParamBee$csdChr)) {
     ret$workers <- workers
-    ret$nHomDrones <- 0L
+    ret$pHomBrood <- 0
   } else {
     sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
     ret$workers <- workers[sel]
-    ret$nHomDrones <- as.integer(nInd - sum(sel))
+    ret$pHomBrood <- as.integer(nInd - sum(sel)) / workers@nInd
   }
   return(ret)
 }
@@ -279,7 +279,7 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
     stop("Argument colony must be a Colony class object!")
   }
   ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
-  names(ret) <- c("virgin_queens", "nHomDrones")
+  names(ret) <- c("virgin_queens", "pHomBrood")
   return(ret)
 }
 
