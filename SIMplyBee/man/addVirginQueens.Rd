@@ -20,6 +20,9 @@ addVirginQueens(colony, nInd, simParamBee = NULL)
 Level 2 function that adds (raises) the specified number of
   virgin queens in the colony by crossing the current queen and the fathers.
 }
+\details{
+\code{addVirginQueens} replaces any currently present virgin queens.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

@@ -54,8 +54,6 @@ colony}
 
 \item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
 
-\item{\code{nHomDrones}}{integer, the number of homozygous drones in the colony}
-
 \item{\code{pheno}}{matrix, phenotypes of the colony TODO: revise}
 
 \item{\code{split}}{logical, has colony split}

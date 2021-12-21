@@ -39,11 +39,11 @@ nColonies <- function(colonies) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers",
-#'   "drones", "homDrones", or "all"
+#'   "drones", or "all"
 #'
 #' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
-#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
-#'   \code{\link{nDrones}}, and \code{\link{pHomBrood}}
+#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
+#'   \code{\link{nDrones}}
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is integer for
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
@@ -68,7 +68,6 @@ nColonies <- function(colonies) {
 #' nCaste(colony1, caste = "virgin_queens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
-#' nCaste(colony1, caste = "homDrones")
 #' nCaste(colony1, caste = "all")
 #'
 #' apiary <- c(colony1, colony2)
@@ -77,7 +76,6 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "virgin_queens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
-#' nCaste(apiary, caste = "homDrones")
 #' nCaste(apiary, caste = "all")
 #'
 #' @export
@@ -85,7 +83,7 @@ nCaste <- function(x, caste = "all") {
   if (isColony(x)) {
     if (caste == "all") {
      ret <- vector(mode = "list", length = 6)
-     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones", "homDrones")
+     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
      for (caste in names(ret)) {
        ret[[caste]] <- nCaste(x = x, caste = caste)
      }
@@ -294,12 +292,17 @@ nDrones <- function(x) {
 #' @rdname pHomBrood
 #' @title Percentage of homozygous brood of a queen
 #'
-#' @description Level 0 function that returns the number of homozygous brood in
-#'   a colony (these are non viable individuals and only their number is stored).
+#' @description Level 0 function that returns the percentage of homozygous brood
+#'   in a colony (these are non viable individuals and only their number is
+#'   stored).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' TODO: describe queen's and colony's pHomBrood
+#'
+#' @return numeric, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -313,24 +316,43 @@ nDrones <- function(x) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
-#' pHomBrood(colony1)
-#' pHomBrood(colony2)
 #'
+#' # Virgin queen
+#' pHomBrood(basePop[2])
+#'
+#' # Mated queen
+#' pHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+#'
+#' # Queen of the colony
+#' pHomBrood(getQueen(colony1))
+#'
+#' # Colony
+#' pHomBrood(colony1)
+#'
+#' # Colonies
 #' apiary <- c(colony1, colony2)
 #' pHomBrood(apiary)
 #'
 #' @export
 pHomBrood <- function(x) {
-  if (isColony(x)) {
-    if (length(x@queen@misc[[1]]$pHomBrood) == 0) {
-      ret <- 0
+  if (isPop(x)) {
+    ret <- rep(x = NA, times = nInd(x))
+    for (ind in seq_len(nInd(x))) {
+      if (!is.null(x@misc[[ind]]$pHomBrood)) {
+        ret[ind] <- x@misc[[ind]]$pHomBrood
+      }
+    }
+  } else if (isColony(x)) {
+    # TODO: report colony, not queen pHomBrood
+    if (is.null(x@queen@misc[[1]]$pHomBrood)) {
+      ret <- NA
     } else {
       ret <- x@queen@misc[[1]]$pHomBrood
     }
   } else if (isColonies(x)) {
-      ret <- sapply(X = x@colonies, FUN = pHomBrood)
-      names(ret) <- getId(x)
-    } else {
+    ret <- sapply(X = x@colonies, FUN = pHomBrood)
+    names(ret) <- getId(x)
+  } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)

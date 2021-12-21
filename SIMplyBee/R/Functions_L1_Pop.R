@@ -226,7 +226,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two nodes named \code{workers} (a \code{\link{Pop-class}})
-#'   and \code{pHomBrood} (an integer)
+#'   and \code{pHomBrood} (a numeric)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -258,11 +258,11 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
                         nCrosses = nInd)
   if (is.null(simParamBee$csdChr)) {
     ret$workers <- workers
-    ret$pHomBrood <- 0
+    ret$pHomBrood <- 0 # TODO: what would be a good default here (0, NA, or NULL)?
   } else {
     sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
     ret$workers <- workers[sel]
-    ret$pHomBrood <- as.integer(nInd - sum(sel)) / workers@nInd
+    ret$pHomBrood <- (nInd - sum(sel)) / nInd
   }
   return(ret)
 }
@@ -660,6 +660,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param nAvgFathers numeric, average number of drones (fathers) used in mating
 #'   the virgin queen(s) - currently active only when multiple virgin queens
 #'   provided
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
@@ -691,9 +692,12 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' getFathers(matedQueens)
 #'
 #' @export
-crossVirginQueen <- function(pop, fathers, nAvgFathers) {
+crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   # TODO: set nAvgFathers to NULL by default and then grab the value from
   #       SimParamBee
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
@@ -705,14 +709,29 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers) {
   }
   nVirginQueen <- nInd(pop)
   if (nVirginQueen == 1) {
-    # TODO: do we take all provided fathers, specified nAvgFathers, or default nAvgFathers from SimParam when nAvgFathers = NULL?
+    # TODO: do we take all provided fathers, specified nAvgFathers, or default
+    #       nAvgFathers from SimParam when nAvgFathers = NULL?
     pop@misc[[1]]$fathers <- fathers
+    if (is.null(simParamBee$csdChr)) {
+      pop@misc[[1]]$pHomBrood <- NA
+    } else {
+      # TODO: call a function that will calculate theoretical/expected pHomBrood
+      #       based on genotype of the queen and fathers
+      pop@misc[[1]]$pHomBrood <- NA
+    }
   } else {
     fathers <- pullDroneGroupsFromDCA(DCA = fathers,
                                       nGroup = nVirginQueen,
                                       avgGroupSize = nAvgFathers)
     for (queen in 1:nVirginQueen) {
       pop@misc[[queen]]$fathers <- fathers[[queen]]
+      if (is.null(simParamBee$csdChr)) {
+        pop@misc[[queen]]$pHomBrood <- NA
+      } else {
+        # TODO: call a function that will calculate theoretical/expected pHomBrood
+        #       based on genotype of the queen and fathers
+        pop@misc[[queen]]$pHomBrood <- 0
+      }
     }
   }
   return(pop)
@@ -766,7 +785,9 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers) {
 #' @export
 setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
   if (isPop(x)) {
-    # TODO: expand to more than 1 queen
+    if (nInd(x) > 1) {
+      stop("TODO: expand to more than 1 queen")
+    }
     x@misc[[1]]$yearOfBirth <- year
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {

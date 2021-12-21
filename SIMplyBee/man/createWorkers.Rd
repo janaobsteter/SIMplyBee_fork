@@ -18,7 +18,7 @@ createVirginQueens(colony, nInd, simParamBee = NULL)
 }
 \value{
 list with two nodes named \code{workers} (a \code{\link{Pop-class}})
-  and \code{nHomDrones} (an integer)
+  and \code{pHomBrood} (a numeric)
 }
 \description{
 Level 1 function that creates the specified number of workers

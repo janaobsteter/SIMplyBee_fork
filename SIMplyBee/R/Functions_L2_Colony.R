@@ -50,14 +50,23 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       stop("Argument queen must be a Pop class object!")
     }
     id <- queen@id
-    if (!is.null(fathers) && !isPop(fathers)) {
-      stop("Argument fathers must be a Pop class object!")
+    if (!is.null(yearOfBirth)) {
+      if (is.null(queen@misc[[1]]$yearOfBirth)) {
+        queen <- setQueensYearOfBirth(x = queen, year = yearOfBirth)
+      } else {
+        warning("The queen already has the year of birth set - ignoring the yearOfBirth argument!")
+      }
     }
-    if (isQueenMated(queen) && !is.null(fathers)) {
-      warning("The queen is already mated - ignoring the fathers argument!")
-      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen), pHomBrood = 0)
-    } else {
-      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = fathers, pHomBrood = 0)
+    if (!is.null(fathers)) {
+      if (!isPop(fathers)) {
+        stop("Argument fathers must be a Pop class object!")
+      }
+      if (isQueenMated(queen)) {
+        warning("The queen is already mated - ignoring the fathers argument!")
+      } else {
+        queen <- crossVirginQueen(pop = queen, fathers = fathers,
+                                  simParamBee = simParamBee)
+      }
     }
   }
   colony <- new(Class = "Colony",
@@ -72,6 +81,10 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   if (isQueenPresent(colony)) {
     if (isQueenMated(colony)) {
       # TODO: bump the number of virgin queens to ~10 or some default from simParamBee
+      # TODO: warn that if virgin queens are provided in this function but so is
+      #       the queen, then we do ... hmm, what? Kill the provided virgin queens
+      #       and replace them with virgin queens from the queen (if we will do
+      #       this going forward)?
       colony <- addVirginQueens(colony = colony, nInd = 1, simParamBee = simParamBee)
     }
   }
@@ -138,6 +151,8 @@ reQueenColony <- function(colony, queen) {
 #' @param nInd integer, number of virgin queens to add
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details \code{addVirginQueens} replaces any currently present virgin queens.
+#'
 #' @return \code{\link{Colony-class}} with virgin queens added
 #'
 #' @examples
@@ -153,6 +168,7 @@ reQueenColony <- function(colony, queen) {
 #' @export
 addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   # TODO: do we need argument new here like we have it for addWorkers() and addDrones()?
+  # TODO: make nInd = NULL and grab default value from simParamBee
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -167,7 +183,8 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   }
   tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
   colony@virgin_queens <- tmp$virgin_queens
-  colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
+  # TODO: update this logic here on queen vs colony pHomBrood
+  colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, tmp$pHomBrood))
   validObject(colony)
   return(colony)
 }
@@ -200,6 +217,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #'
 #' @export
 addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
+  # TODO: make nInd = NULL and grab default value from simParamBee
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -216,6 +234,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
       colony@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
     } else {
       colony@workers <- c(colony@workers, newWorkers$workers)
+      # TODO: update this logic here on queen vs colony pHomBrood
       colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
     }
   }
@@ -249,6 +268,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #'
 #' @export
 addDrones <- function(colony, nInd, new = FALSE) {
+  # TODO: make nInd = NULL and grab default value from simParamBee
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -312,6 +332,7 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' @export
 buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
                           new = FALSE, simParamBee = NULL) {
+  # TODO: make n* = NULL and grab default value from simParamBee
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -391,7 +412,7 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
       colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                           tmp$workers)
       # TODO: we need some scaling of the pBrood here, right? Is this OK?
-      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
+      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, tmp$pHomBrood))
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
     }
@@ -750,7 +771,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
-  colony@queen <- crossVirginQueen(pop = virginQueen, fathers)
+  colony@queen <- crossVirginQueen(pop = virginQueen, fathers,
+                                   simParamBee = simParamBee)
   colony@id <- colony@queen@id
   # TODO: should we really add virgin queens here by default? If we decide not to do this, make sure to set NULL to
   #       colony@virgin_queens since we promoted the prevailed virgin queen to the queen and the virgin

@@ -4,7 +4,7 @@
 \alias{crossVirginQueen}
 \title{Cross (mate) a virgin queen to a group drones}
 \usage{
-crossVirginQueen(pop, fathers, nAvgFathers)
+crossVirginQueen(pop, fathers, nAvgFathers, simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated}
@@ -17,6 +17,8 @@ with virgin queen(s); if there is more than one virgin queen, then the
 \item{nAvgFathers}{numeric, average number of drones (fathers) used in mating
 the virgin queen(s) - currently active only when multiple virgin queens
 provided}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}} with mated queen(s)

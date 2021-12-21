@@ -11,7 +11,7 @@ nCaste(x, caste = "all")
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{caste}{character, "queen", "fathers", "virgin_queens", "workers",
-"drones", "homDrones", or "all"}
+"drones", or "all"}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for
@@ -40,7 +40,6 @@ nCaste(colony1, caste = "fathers")
 nCaste(colony1, caste = "virgin_queens")
 nCaste(colony1, caste = "workers")
 nCaste(colony1, caste = "drones")
-nCaste(colony1, caste = "homDrones")
 nCaste(colony1, caste = "all")
 
 apiary <- c(colony1, colony2)
@@ -49,12 +48,11 @@ nCaste(apiary, caste = "fathers")
 nCaste(apiary, caste = "virgin_queens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
-nCaste(apiary, caste = "homDrones")
 nCaste(apiary, caste = "all")
 
 }
 \seealso{
 \code{\link{nQueens}}, \code{\link{nFathers}},
-  \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
-  \code{\link{nDrones}}, and \code{\link{nHomDrones}}
+  \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
+  \code{\link{nDrones}}
 }
