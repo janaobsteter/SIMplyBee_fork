@@ -25,6 +25,23 @@ Level 0 function that returns the number of distinct csd alleles
   in input. See \code{\link{SimParamBee}} for more information about the csd
   locus.
 }
+\details{
+Queen will always have 2 csd alleles, since she has to be
+  heterozygous to be viable. The same holds for individual virgin queens and
+  workers, but note that looking at csd genotypes of virgin queens or workers
+  we are looking at a sample of 1 csd allele from the queen and 1 csd allele
+  from their fathers, noting that homozygous genotypes are excluded.
+  Therefore, \code{nCsdAlleles()} from virgin queens and workers is a noisy
+  realisation of \code{nCsdAlleles()} from queens and fathers. For this
+  reason, we also report \code{nCsdAlleles()} from queens and fathers
+  combined (see the \code{queenAndFathers} list node). This last measure is
+  then the expected number of csd alleles in a colony as opposed to realised
+  number of csd alleles in a sample of virgin queens and workers. Similarly
+  as for virgin queens and workers, \code{nCsdAlleles()} from drones gives a
+  noisy realisation of \code{nCsdAlleles()} from queens. The amount of noise
+  will depend on the number of individuals, so in most cases there should be
+  minimal amount of noise.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

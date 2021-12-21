@@ -1197,6 +1197,22 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   \code{\link{Colonies-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details Queen will always have 2 csd alleles, since she has to be
+#'   heterozygous to be viable. The same holds for individual virgin queens and
+#'   workers, but note that looking at csd genotypes of virgin queens or workers
+#'   we are looking at a sample of 1 csd allele from the queen and 1 csd allele
+#'   from their fathers, noting that homozygous genotypes are excluded.
+#'   Therefore, \code{nCsdAlleles()} from virgin queens and workers is a noisy
+#'   realisation of \code{nCsdAlleles()} from queens and fathers. For this
+#'   reason, we also report \code{nCsdAlleles()} from queens and fathers
+#'   combined (see the \code{queenAndFathers} list node). This last measure is
+#'   then the expected number of csd alleles in a colony as opposed to realised
+#'   number of csd alleles in a sample of virgin queens and workers. Similarly
+#'   as for virgin queens and workers, \code{nCsdAlleles()} from drones gives a
+#'   noisy realisation of \code{nCsdAlleles()} from queens. The amount of noise
+#'   will depend on the number of individuals, so in most cases there should be
+#'   minimal amount of noise.
+#'
 #' @return integer representing the number of distinct csd alleles when \code{x}
 #'   is \code{\link{Pop-class}} (or ), list of integer
 #'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
@@ -1234,13 +1250,14 @@ nCsdAlleles <- function(x, simParamBee = NULL) {
     haplo <- haplo[!duplicated(x = haplo), ]
     ret <- nrow(haplo)
   } else if (isColony(x)) {
-    ret <- vector(mode = "list", length = 5)
-    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- nCsdAlleles(x = getQueen(x),        simParamBee = simParamBee)
-    ret$fathers       <- nCsdAlleles(x = getFathers(x),      simParamBee = simParamBee)
-    ret$virgin_queens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
-    ret$workers       <- nCsdAlleles(x = getWorkers(x),      simParamBee = simParamBee)
-    ret$drones        <- nCsdAlleles(x = getDrones(x),       simParamBee = simParamBee)
+    ret <- vector(mode = "list", length = 6)
+    names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
+    ret$queen           <- nCsdAlleles(x = getQueen(x),                   simParamBee = simParamBee)
+    ret$fathers         <- nCsdAlleles(x = getFathers(x),                 simParamBee = simParamBee)
+    ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), simParamBee = simParamBee)
+    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            simParamBee = simParamBee)
+    ret$workers         <- nCsdAlleles(x = getWorkers(x),                 simParamBee = simParamBee)
+    ret$drones          <- nCsdAlleles(x = getDrones(x),                  simParamBee = simParamBee)
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = nCsdAlleles, simParamBee = simParamBee)
     names(ret) <- getId(x)
