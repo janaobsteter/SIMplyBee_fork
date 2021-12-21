@@ -4,12 +4,14 @@
 \alias{addVirginQueens}
 \title{Add (raise) virgin queens in the colony}
 \usage{
-addVirginQueens(colony, nInd, simParamBee = NULL)
+addVirginQueens(colony, nInd, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nInd}{integer, number of virgin queens to add}
+
+\item{year}{numeric, year of birth to be set for the virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

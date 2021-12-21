@@ -4,12 +4,14 @@
 \alias{swarmColony}
 \title{Swarm colony}
 \usage{
-swarmColony(colony, p = 0.5, simParamBee = NULL)
+swarmColony(colony, p = 0.5, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony}
+
+\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
