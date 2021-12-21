@@ -10,14 +10,13 @@ getQueensYearOfBirth(x)
 getQueensYOB(x)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\item{x}{\code{\link{Pop-class}} (one or more than one queen),
+\code{\link{Colony-class}} (one colony), or
+\code{\link{Colonies-class}} (more colonies)}
 }
 \value{
-numeric, the year of birth of the queen when \code{x} is colony or
-  queens when \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen
-  not present, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+numeric, the year of birth of the queen(s); named when theres is more
+  than one queen; \code{NA} if queen not present
 }
 \description{
 Level 0 function that returns the queen's year of birth.
@@ -37,22 +36,18 @@ colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
 
-getQueensYOB(getQueen(colony1))
-getQueensYOB(colony1)
-getQueensYOB(apiary)
+getQueensYearOfBirth(getQueen(colony1))
+getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
+getQueensYearOfBirth(colony1)
+getQueensYearOfBirth(apiary)
 
-queen <- getQueen(colony1)
-queen <- setQueensYOB(queen, year = 2021)
-getQueensYOB(queen)
+queen1 <- getQueen(colony1)
+queen1 <- setQueensYearOfBirth(queen1, year = 2022)
+getQueensYearOfBirth(queen1)
 
-colony1 <- setQueensYOB(colony1, year = 2021)
-getQueensYOB(colony1)
-
-apiary <- setQueensYOB(apiary, year = 2021)
-getQueensYOB(apiary)
-
-queen <- setQueensYearOfBirth(queen, year = 2022)
-getQueensYearOfBirth(queen)
+queen2 <- getQueen(colony2)
+queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
+getQueensYearOfBirth(queens)
 
 colony1 <- setQueensYearOfBirth(colony1, year = 2022)
 getQueensYearOfBirth(colony1)

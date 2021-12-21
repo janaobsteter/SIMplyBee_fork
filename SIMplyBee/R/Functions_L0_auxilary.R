@@ -460,8 +460,12 @@ isQueenMated <- function(x) {
 #'
 #' @description Level 0 function that returns the queen's year of birth.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}} (one or more than one queen),
+#'   \code{\link{Colony-class}} (one colony), or
+#'   \code{\link{Colonies-class}} (more colonies)
+#'
+#' @return numeric, the year of birth of the queen(s); named when theres is more
+#'   than one queen; \code{NA} if queen not present
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -473,22 +477,18 @@ isQueenMated <- function(x) {
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #'
-#' getQueensYOB(getQueen(colony1))
-#' getQueensYOB(colony1)
-#' getQueensYOB(apiary)
+#' getQueensYearOfBirth(getQueen(colony1))
+#' getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
+#' getQueensYearOfBirth(colony1)
+#' getQueensYearOfBirth(apiary)
 #'
-#' queen <- getQueen(colony1)
-#' queen <- setQueensYOB(queen, year = 2021)
-#' getQueensYOB(queen)
+#' queen1 <- getQueen(colony1)
+#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
+#' getQueensYearOfBirth(queen1)
 #'
-#' colony1 <- setQueensYOB(colony1, year = 2021)
-#' getQueensYOB(colony1)
-#'
-#' apiary <- setQueensYOB(apiary, year = 2021)
-#' getQueensYOB(apiary)
-#'
-#' queen <- setQueensYearOfBirth(queen, year = 2022)
-#' getQueensYearOfBirth(queen)
+#' queen2 <- getQueen(colony2)
+#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
+#' getQueensYearOfBirth(queens)
 #'
 #' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
 #' getQueensYearOfBirth(colony1)
@@ -496,18 +496,19 @@ isQueenMated <- function(x) {
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)
 #'
-#' @return numeric, the year of birth of the queen when \code{x} is colony or
-#'   queens when \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen
-#'   not present, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
 #' @export
 getQueensYearOfBirth <- function(x) {
   if (isPop(x)) {
-    if (nInd(x) > 1) {
-      stop("TODO: expand to more than 1 queen!")
+    nInd <- nInd(x)
+    ret <- rep(x = NA, times = nInd)
+    for (ind in seq_len(nInd)) {
+      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+        ret[ind] <- x@misc[[ind]]$yearOfBirth
+      }
     }
-    ret <- ifelse(is.null(x@misc[[1]]$yearOfBirth), NA, x@misc[[1]]$yearOfBirth)
+    if (nInd > 1) {
+      names(ret) <- getId(x)
+    }
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
   } else if (isColonies(x)) {
@@ -555,19 +556,18 @@ getQueensYOB <- getQueensYearOfBirth
 #' apiary <- setQueensYOB(apiary, year = 2021)
 #' getQueensAge(apiary, currentYear = 2022)
 #'
-#' @return numeric, the age of the queen when \code{x} is colony or queens when
-#'   \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen of year of
-#'   birth not present, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
 #' @export
 getQueensAge <- function(x, currentYear) {
   if (isPop(x)) {
-    # TODO: expand to more than one queen
-    if (is.null(x@misc[[1]]$yearOfBirth)) {
-      ret <- NA
-    } else {
-      ret <- currentYear - x@misc[[1]]$yearOfBirth
+    nInd <- nInd(x)
+    ret <- rep(x = NA, times = nInd)
+    for (ind in seq_len(nInd)) {
+      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+        ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+      }
+    }
+    if (nInd > 1) {
+      names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
@@ -1151,8 +1151,8 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' (tmp <- getCsdGeno(getWorkers(colony1)))
 #' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
-#' Not exporting this function, since its just a helper and quite specific for
-#' our csd locus implementation
+# Not exporting this function, since its just a helper and quite specific for
+#   our csd locus implementation
 isGenoHeterozygous <- function(x) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")

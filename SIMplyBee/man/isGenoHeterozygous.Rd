@@ -11,9 +11,6 @@ isGenoHeterozygous(x)
 }
 \value{
 logical
-
-Not exporting this function, since its just a helper and quite specific for
-our csd locus implementation
 }
 \description{
 Level 0 function that returns heterozygote status for a

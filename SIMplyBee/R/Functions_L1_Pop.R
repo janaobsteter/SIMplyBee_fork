@@ -742,12 +742,13 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #'
 #' @description Level 1 function that sets the queen's year of birth.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}} (one or more than one queen),
+#'   \code{\link{Colony-class}} (one colony), or
+#'   \code{\link{Colonies-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
 #'
 #' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{Colonies-class}} with queens having the year of birth set
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -759,22 +760,18 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #'
-#' getQueensYOB(getQueen(colony1))
-#' getQueensYOB(colony1)
-#' getQueensYOB(apiary)
+#' getQueensYearOfBirth(getQueen(colony1))
+#' getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
+#' getQueensYearOfBirth(colony1)
+#' getQueensYearOfBirth(apiary)
 #'
-#' queen <- getQueen(colony1)
-#' queen <- setQueensYOB(queen, year = 2021)
-#' getQueensYOB(queen)
+#' queen1 <- getQueen(colony1)
+#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
+#' getQueensYearOfBirth(queen1)
 #'
-#' colony1 <- setQueensYOB(colony1, year = 2021)
-#' getQueensYOB(colony1)
-#'
-#' apiary <- setQueensYOB(apiary, year = 2021)
-#' getQueensYOB(apiary)
-#'
-#' queen <- setQueensYearOfBirth(queen, year = 2022)
-#' getQueensYearOfBirth(queen)
+#' queen2 <- getQueen(colony2)
+#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
+#' getQueensYearOfBirth(queens)
 #'
 #' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
 #' getQueensYearOfBirth(colony1)
@@ -785,10 +782,10 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' @export
 setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {
-    if (nInd(x) > 1) {
-      stop("TODO: expand to more than 1 queen")
+    nInd <- nInd(x)
+    for (ind in seq_len(nInd)) {
+      x@misc[[ind]]$yearOfBirth <- year
     }
-    x@misc[[1]]$yearOfBirth <- year
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
       x@queen@misc[[1]]$yearOfBirth <- year

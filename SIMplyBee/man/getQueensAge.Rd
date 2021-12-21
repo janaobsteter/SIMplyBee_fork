@@ -13,10 +13,8 @@ getQueensAge(x, currentYear)
 \item{currentYear}{integer, current year}
 }
 \value{
-numeric, the age of the queen when \code{x} is colony or queens when
-  \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen of year of
-  birth not present, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+numeric, the age of the queen(s); named when theres is more
+  than one queen; \code{NA} if queen not present
 }
 \description{
 Level 0 function that returns the queen's age.
