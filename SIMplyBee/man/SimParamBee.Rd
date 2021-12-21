@@ -55,22 +55,40 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{csdChr}}{integer, chromosome of the csd locus}
+\item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
+in a colony; if function, it is supposed to be passed to other functions
+and work with arguments of those functions (see
+\code{\link{SimParamBee$setNVirginQueens)}})}
 
-\item{\code{csdPos}}{numeric, starting position of the csd locus on the
-\code{csdChr} chromosome (relative at the moment, but could be in bp in
-the future)}
+\item{\code{csdChr, }}{chromosome of the csd locus}
+
+\item{\code{csdPos, }}{starting position of the csd locus on the \code{csdChr}
+chromosome (relative at the moment, but could be in bp in the future)}
+
+\item{\code{version, }}{versions of AlphaSimR and SIMplyBee packages used to
+generate this object}
+}
+\if{html}{\out{</div>}}
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{csdChr, }}{chromosome of the csd locus}
+
+\item{\code{csdPos, }}{starting position of the csd locus on the \code{csdChr}
+chromosome (relative at the moment, but could be in bp in the future)}
 
 \item{\code{nCsdAlleles}}{integer, number of possible csd alleles}
 
 \item{\code{nCsdSites}}{integer, number of segregating sites representing the
 csd locus}
 
-\item{\code{csdPosStart}}{integer, starting position of the csd locus (this is
-worked out internally based on \code{csdPos})}
+\item{\code{csdPosStart}}{integer, starting position of the csd locus}
 
-\item{\code{csdPosStop}}{integer, ending position of the csd locus (this is
-worked out internally based on \code{csdPosStart} and \code{nCsdSites})}
+\item{\code{csdPosStop}}{integer, ending position of the csd locus}
+
+\item{\code{version, }}{versions of AlphaSimR and SIMplyBee packages used to
+generate this object}
 }
 \if{html}{\out{</div>}}
 }
@@ -78,6 +96,7 @@ worked out internally based on \code{csdPosStart} and \code{nCsdSites})}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SimParamBee$new()}}
+\item \href{#method-setNVirginQueens}{\code{SimParamBee$setNVirginQueens()}}
 \item \href{#method-clone}{\code{SimParamBee$clone()}}
 }
 }
@@ -121,12 +140,13 @@ worked out internally based on \code{csdPosStart} and \code{nCsdSites})}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Starts the process of building a new simulation by creating
-  a new SimParamBee object and assigning a founder population to the
-  class. It is recommended that you save the object with the name "SP",
-  because subsequent functions will check your global environment for an
-  object of this name if their \code{simParamBee} arguments are
-  \code{NULL}. This allows you to call these functions without explicitly
-  supplying a \code{simParamBee} argument with every call.
+  a new SimParamBee object and assigning a founder population to the this
+  object. It is recommended that you save the object with the name
+  \code{SP}, because subsequent functions will check your global
+  environment for an object of this name if their \code{simParamBee}
+  arguments are \code{NULL}. This allows you to call these functions
+  without explicitly supplying a \code{simParamBee} argument with every
+  call.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(founderPop, csdChr = 3, csdPos = 0.865, nCsdAlleles = 100)}\if{html}{\out{</div>}}
 }
@@ -135,7 +155,7 @@ Starts the process of building a new simulation by creating
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{founderPop}}{\code{\link{MapPop-class}}, founder population of
-haplotypes}
+genomes}
 
 \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified
@@ -169,6 +189,15 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 }
 \if{html}{\out{</div>}}
 
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-setNVirginQueens"></a>}}
+\if{latex}{\out{\hypertarget{method-setNVirginQueens}{}}}
+\subsection{Method \code{setNVirginQueens()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$setNVirginQueens(nVirginQueens)}\if{html}{\out{</div>}}
 }
 
 }

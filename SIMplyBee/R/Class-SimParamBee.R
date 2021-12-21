@@ -1,3 +1,6 @@
+
+setClassUnion("numericOrFunction", c("numeric", "function"))
+
 #' @rdname SimParamBee
 #' @title Honeybee simulation parameters
 #'
@@ -29,44 +32,24 @@
 #'
 #' @export
 SimParamBee <- R6Class(
-  "SimParamBee",
+  classname = "SimParamBee",
   inherit = SimParam,
+
+  # Public ----
+
   public = list(
-    # Public ----
-
-    #' @field csdChr integer, chromosome of the csd locus
-    csdChr = "integerOrNULL",
-
-    #' @field csdPos numeric, starting position of the csd locus on the
-    #'   \code{csdChr} chromosome (relative at the moment, but could be in bp in
-    #'   the future)
-    csdPos = "numericOrNULL",
-
-    #' @field nCsdAlleles integer, number of possible csd alleles
-    nCsdAlleles = "integerOrNULL",
-
-    #' @field nCsdSites integer, number of segregating sites representing the
-    #'   csd locus
-    nCsdSites = "integerOrNULL",
-
-    #' @field csdPosStart integer, starting position of the csd locus (this is
-    #'   worked out internally based on \code{csdPos})
-    csdPosStart = "integerOrNULL",
-
-    #' @field csdPosStop integer, ending position of the csd locus (this is
-    #'   worked out internally based on \code{csdPosStart} and \code{nCsdSites})
-    csdPosStop = "integerOrNULL",
 
     #' @description Starts the process of building a new simulation by creating
-    #'   a new SimParamBee object and assigning a founder population to the
-    #'   class. It is recommended that you save the object with the name "SP",
-    #'   because subsequent functions will check your global environment for an
-    #'   object of this name if their \code{simParamBee} arguments are
-    #'   \code{NULL}. This allows you to call these functions without explicitly
-    #'   supplying a \code{simParamBee} argument with every call.
+    #'   a new SimParamBee object and assigning a founder population to the this
+    #'   object. It is recommended that you save the object with the name
+    #'   \code{SP}, because subsequent functions will check your global
+    #'   environment for an object of this name if their \code{simParamBee}
+    #'   arguments are \code{NULL}. This allows you to call these functions
+    #'   without explicitly supplying a \code{simParamBee} argument with every
+    #'   call.
     #'
     #' @param founderPop \code{\link{MapPop-class}}, founder population of
-    #'   haplotypes
+    #'   genomes
     #' @param csdChr integer, chromosome that will carry the csd locus, by
     #'   default 3, but if there are less chromosomes (for a simplified
     #'   simulation), the locus is put on the last available chromosome (1 or
@@ -96,38 +79,127 @@ SimParamBee <- R6Class(
     initialize = function(founderPop, csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
+      private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
 
       # csd ----
-      self$csdChr <- NULL
+      private$.csdChr <- NULL
       if (!is.null(csdChr)) {
         # csd chromosome
         if (self$nChr < csdChr) {
-          self$csdChr <- self$nChr
+          private$.csdChr <- self$nChr
           # message(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
         } else {
-          self$csdChr <- csdChr
+          private$.csdChr <- csdChr
         }
 
         # csd position and sites
-        self$csdPos <- csdPos
-        self$nCsdAlleles <- nCsdAlleles
-        self$nCsdSites <- ceiling(log2(self$nCsdAlleles))
-        nLoci <- self$segSites[self$csdChr]
-        self$csdPosStart <- floor(nLoci * self$csdPos)
-        csdPosStop <- self$csdPosStart + self$nCsdSites - 1
+        private$.csdPos <- csdPos
+        private$.nCsdAlleles <- nCsdAlleles
+        private$.nCsdSites <- ceiling(log2(private$.nCsdAlleles))
+        nLoci <- self$segSites[private$.csdChr]
+        private$.csdPosStart <- floor(nLoci * private$.csdPos)
+        csdPosStop <- private$.csdPosStart + private$.nCsdSites - 1
         if (csdPosStop > nLoci) {
-          stop(paste0("Too few segregagting sites to simulate ", self$nCsdAlleles, " csd alleles at the given position!"))
+          stop(paste0("Too few segregagting sites to simulate ", private$.nCsdAlleles, " csd alleles at the given position!"))
         } else {
-          self$csdPosStop <- csdPosStop
+          private$.csdPosStop <- csdPosStop
         }
         genMap <- self$genMap
         # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
-        genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+        genMap[[private$.csdChr]][private$.csdPosStart:private$.csdPosStop] <- 0
         self$switchGenMap(genMap)
       }
     }
+  ),
+
+  # Private ----
+
+  private = list(
+    .versionSIMplyBee = "character",
+    .csdChr = "integerOrNULL",
+    .csdPos = "numeric",
+    .nCsdAlleles = "integer",
+    .nCsdSites = "integer",
+    .csdPosStart = "integer",
+    .csdPosStop = "integer"
+  ),
+
+  # Active ----
+
+  active = list(
+
+    #' @field csdChr integer, chromosome of the csd locus
+    csdChr = function(value) {
+      if (missing(value)){
+        private$.csdChr
+      } else {
+        stop("`$csdChr` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPos numeric, starting position of the csd locus on the \code{csdChr}
+    #'   chromosome (relative at the moment, but could be in bp in the future)
+    csdPos = function(value) {
+      if (missing(value)){
+        private$.csdPos
+      } else {
+        stop("`$csdPos` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field nCsdAlleles integer, number of possible csd alleles
+    nCsdAlleles = function(value) {
+      if (missing(value)){
+        private$.nCsdAlleles
+      } else {
+        stop("`$nCsdAlleles` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field nCsdSites integer, number of segregating sites representing the
+    #'   csd locus
+    nCsdSites = function(value) {
+      if (missing(value)){
+        private$.nCsdSites
+      } else {
+        stop("`$nCsdSites` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPosStart integer, starting position of the csd locus
+    csdPosStart = function(value) {
+      if (missing(value)){
+        private$.csdPosStart
+      } else {
+        stop("`$.csdPosStart` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPosStop integer, ending position of the csd locus
+    csdPosStop = function(value) {
+      if (missing(value)){
+        private$.csdPosStop
+      } else {
+        stop("`$csdPosStop` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field version list, versions of AlphaSimR and SIMplyBee packages used to
+    #'   generate this object
+    version = function(value) {
+      if (missing(value)){
+        list("AlphaSimR" = private$.version,
+             "SIMplyBee" = private$.versionSIMplyBee)
+      } else {
+        stop("`$version` is read only", call. = FALSE)
+      }
+    }
+
   )
+
 )
+
+# isSimParamBee ----
 
 #' @rdname isSimParamBee
 #' @title Test if x is a SimParamBee class object
