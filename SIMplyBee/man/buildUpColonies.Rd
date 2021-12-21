@@ -7,8 +7,8 @@
 \usage{
 buildUpColonies(
   colonies,
-  nWorkers,
-  nDrones = nWorkers * 0.1,
+  nWorkers = NULL,
+  nDrones = NULL,
   new = FALSE,
   simParamBee = NULL
 )
@@ -16,11 +16,13 @@ buildUpColonies(
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{nWorkers}{integer, desired number of workers in the colony (currently
-present workers are taken into account so only the difference is added)}
+\item{nWorkers}{numeric or function, number of worker; if \code{NULL} then
+\code{simParamBee$nWorkers} is used (currently present workers are taken
+into account so only the difference is added)}
 
-\item{nDrones}{integer, desired number of drones in the colony (currently
-present drones are taken into account so only the difference is added)}
+\item{nDrones}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used (currently present drones are taken into
+account so only the difference is added)}
 
 \item{new}{logical, should the workers and drones be added a fresh (ignoring
 currently present workers and drones)}
@@ -47,7 +49,9 @@ isProductive(apiary)
 apiary[[1]]
 apiary[[2]]
 
-apiary <- buildUpColonies(apiary, nWorkers = 100)
+# Using defaults in SP
+# (just to have some bees - change this to your needs!)
+(apiary <- buildUpColonies(apiary))
 isProductive(apiary)
 apiary[[1]]
 apiary[[2]]
@@ -60,5 +64,27 @@ apiary <- buildUpColonies(apiary, nWorkers = 100)
 apiary[[1]] # we are already at the target
 apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
 apiary[[1]] # adding completely new workers & drones
+
+# Using functions
+nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+apiary <- c(colony1, colony2)
+tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+tmp[[1]]
+tmp[[2]]
+tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+tmp[[1]]
+tmp[[2]]
+
+# Using functions in simParamBee
+SP$nWorkers <- nWorkersFun
+SP$nDrones <- nDronesFun
+apiary <- c(colony1, colony2)
+tmp <- buildUpColonies(apiary)
+tmp[[1]]
+tmp[[2]]
+tmp <- buildUpColonies(apiary)
+tmp[[1]]
+tmp[[2]]
 
 }

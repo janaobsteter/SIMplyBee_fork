@@ -4,14 +4,14 @@
 \alias{resetEvents}
 \title{Reset colony events}
 \usage{
-resetEvents(colony, collapse = is.null(colony@collapse))
+resetEvents(colony, collapse = length(colony@collapse) == 0)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{collapse}{logical, reset the collapse event? (only sensible in setting
-up a colony, which the default caters for; otherwise, a collapsed colony
-should be left collapsed forever)}
+\item{collapse}{logical, reset the collapse event (only sensible in setting
+up a new colony, which the default caters for; otherwise, a collapsed
+colony should be left collapsed forever)}
 }
 \value{
 \code{\link{Colony-class}} with events reset

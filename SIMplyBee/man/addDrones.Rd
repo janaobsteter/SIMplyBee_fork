@@ -4,15 +4,18 @@
 \alias{addDrones}
 \title{Add (raise) drones in the colony}
 \usage{
-addDrones(colony, nInd, new = FALSE)
+addDrones(colony, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{integer, number of drones to add}
+\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used}
 
 \item{new}{logical, should the drones be added a fresh (ignoring currently
 present drones)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} with drones added
@@ -31,5 +34,22 @@ drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
 colony
 addDrones(colony, nInd = 20)
+
+# Using a default in SP$nDrones
+# (just to have some drones - change this to your needs!)
+addDrones(colony)
+addDrones(colony)
+
+SP$nDrones <- 15
+addDrones(colony)
+addDrones(colony)
+
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+addDrones(colony, nInd = nDronesFun)
+addDrones(colony, nInd = nDronesFun)
+
+SP$nDrones <- nDronesFun
+addDrones(colony)
+addDrones(colony)
 
 }

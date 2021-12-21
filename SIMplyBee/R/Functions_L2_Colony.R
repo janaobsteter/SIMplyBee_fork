@@ -168,18 +168,20 @@ reQueenColony <- function(colony, queen) {
 #' colony
 #' addVirginQueens(colony, nInd = 10)
 #'
-#' SP$nVirginQueens <- 10
-#' addVirginQueens(colony)
+#' # Using a default in SP$nVirginQueens
+#' # (just to have some virgin queens - change this to your needs!)
 #' addVirginQueens(colony)
 #' addVirginQueens(colony)
 #'
-#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 10) }
-#' addVirginQueens(colony, nInd = nVirginQueensFun)
+#' SP$nVirginQueens <- 15
+#' addVirginQueens(colony)
+#' addVirginQueens(colony)
+#'
+#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 #' addVirginQueens(colony, nInd = nVirginQueensFun)
 #' addVirginQueens(colony, nInd = nVirginQueensFun)
 #'
 #' SP$nVirginQueens <- nVirginQueensFun
-#' addVirginQueens(colony)
 #' addVirginQueens(colony)
 #' addVirginQueens(colony)
 #'
@@ -228,7 +230,8 @@ addVirginQueens <- function(colony, nInd = NULL, year = NULL,
 #'   combined.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, number of workers to add
+#' @param nInd numeric or function, number of workers; if \code{NULL} then
+#'   \code{simParamBee$nWorkers} is used
 #' @param new logical, should the workers be added a fresh (ignoring currently
 #'   present workers in the colony)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -245,14 +248,33 @@ addVirginQueens <- function(colony, nInd = NULL, year = NULL,
 #' colony
 #' addWorkers(colony, nInd = 20)
 #'
+#' # Using a default in SP$nWorkers
+#' # (just to have some workers - change this to your needs!)
+#' addWorkers(colony)
+#' addWorkers(colony)
+#'
+#' SP$nWorkers <- 15
+#' addWorkers(colony)
+#' addWorkers(colony)
+#'
+#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' addWorkers(colony, nInd = nWorkersFun)
+#' addWorkers(colony, nInd = nWorkersFun)
+#'
+#' SP$nWorkers <- nWorkersFun
+#' addWorkers(colony)
+#' addWorkers(colony)
+#'
 #' @export
-addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
-  # TODO: make nInd = NULL and grab default value from simParamBee
+addWorkers <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nWorkers
   }
   if (is.function(nInd)) {
     nInd <- nInd(colony)
@@ -280,9 +302,11 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #'   there are already some drones present, new and present drones are combined.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, number of drones to add
+#' @param nInd numeric or function, number of drones; if \code{NULL} then
+#'   \code{simParamBee$nDrones} is used
 #' @param new logical, should the drones be added a fresh (ignoring currently
 #'   present drones)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} with drones added
 #'
@@ -296,11 +320,33 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
 #' colony
 #' addDrones(colony, nInd = 20)
 #'
+#' # Using a default in SP$nDrones
+#' # (just to have some drones - change this to your needs!)
+#' addDrones(colony)
+#' addDrones(colony)
+#'
+#' SP$nDrones <- 15
+#' addDrones(colony)
+#' addDrones(colony)
+#'
+#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' addDrones(colony, nInd = nDronesFun)
+#' addDrones(colony, nInd = nDronesFun)
+#'
+#' SP$nDrones <- nDronesFun
+#' addDrones(colony)
+#' addDrones(colony)
+#'
 #' @export
-addDrones <- function(colony, nInd, new = FALSE) {
-  # TODO: make nInd = NULL and grab default value from simParamBee
+addDrones <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nDrones
   }
   if (is.function(nInd)) {
     nInd <- nInd(colony)
@@ -325,10 +371,12 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #'   swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nWorkers integer, desired number of workers in the colony (currently
-#'   present workers are taken into account so only the difference is added)
-#' @param nDrones integer, desired number of drones in the colony (currently
-#'   present drones are taken into account so only the difference is added)
+#' @param nWorkers numeric or function, number of worker; if \code{NULL} then
+#'   \code{simParamBee$nWorkers} is used (currently present workers are taken
+#'   into account so only the difference is added)
+#' @param nDrones numeric or function, number of drones; if \code{NULL} then
+#'   \code{simParamBee$nDrones} is used (currently present drones are taken into
+#'   account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -347,7 +395,9 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' colony
 #' isProductive(colony)
 #'
-#' (colony <- buildUpColony(colony, nWorkers = 100))
+#' # Using defaults in SP
+#' # (just to have some bees - change this to your needs!)
+#' (colony <- buildUpColony(colony))
 #' isProductive(colony)
 #'
 #' colony <- buildUpColony(colony, nWorkers = 100)
@@ -359,15 +409,34 @@ addDrones <- function(colony, nInd, new = FALSE) {
 #' colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
 #' colony # adding completely new workers & drones
 #'
+#' # Using functions
+#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
+#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#'
+#' # Using functions in simParamBee
+#' SP$nWorkers <- nWorkersFun
+#' SP$nDrones <- nDronesFun
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' buildUpColony(colony)
+#' buildUpColony(colony)
+#'
 #' @export
-buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
+buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
                           new = FALSE, simParamBee = NULL) {
-  # TODO: make n* = NULL and grab default value from simParamBee
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(nWorkers)) {
+    nWorkers <- simParamBee$nWorkers
+  }
+  if (is.function(nWorkers)) {
+    nWorkers <- nWorkers(colony)
   }
   if (new) {
     n <- nWorkers
@@ -377,6 +446,12 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
   if (n > 0) {
     colony <- addWorkers(colony, nInd = n, new = new, simParamBee = simParamBee)
   }
+  if (is.null(nDrones)) {
+    nDrones <- simParamBee$nDrones
+  }
+  if (is.function(nDrones)) {
+    nDrones <- nDrones(colony)
+  }
   if (new) {
     n <- nDrones
   } else {
@@ -385,6 +460,7 @@ buildUpColony <- function(colony, nWorkers, nDrones = nWorkers * 0.1,
   if (n > 0) {
     colony <- addDrones(colony, nInd = n, new = new)
   }
+  # TODO: call addVirginQueens() here instead of create/cross/swarm?
   colony@production <- TRUE
   validObject(colony)
   return(colony)
@@ -702,9 +778,9 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #'   a new year.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param collapse logical, reset the collapse event? (only sensible in setting
-#'   up a colony, which the default caters for; otherwise, a collapsed colony
-#'   should be left collapsed forever)
+#' @param collapse logical, reset the collapse event (only sensible in setting
+#'   up a new colony, which the default caters for; otherwise, a collapsed
+#'   colony should be left collapsed forever)
 #'
 #' @return \code{\link{Colony-class}} with events reset
 #'
@@ -739,7 +815,7 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' resetEvents(tmp)
 #'
 #' @export
-resetEvents <- function(colony, collapse = is.null(colony@collapse)) {
+resetEvents <- function(colony, collapse = length(colony@collapse) == 0) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }

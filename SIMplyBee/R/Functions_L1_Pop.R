@@ -227,16 +227,80 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
+#' @rdname createVirginQueens
+#' @title Creates virgin queens from the colony
+#'
+#' @description Level 1 function that creates the specified number of virgin
+#'   queens from the colony by mating the colony queen and the fathers. If csd
+#'   locus is defined, it takes it into account and any csd homozygotes are
+#'   removed and counted towards homozygous brood.
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param nInd numeric or function, number of virgin queens; if \code{NULL} then
+#'   \code{simParamBee$nVirginQueens} is used
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return list with two nodes named \code{virgin_queens} (a
+#'   \code{\link{Pop-class}}) and \code{pHomBrood} (a numeric)
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' createVirginQueens(colony, nInd = 10)
+#'
+#' # Using a default in SP$nVirginQueens
+#' # (just to have some virgin queens - change this to your needs!)
+#' createVirginQueens(colony)
+#' createVirginQueens(colony)
+#'
+#' SP$nVirginQueens <- 15
+#' createVirginQueens(colony)
+#' createVirginQueens(colony)
+#'
+#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' createVirginQueens(colony, nInd = nVirginQueensFun)
+#' createVirginQueens(colony, nInd = nVirginQueensFun)
+#'
+#' SP$nVirginQueens <- nVirginQueensFun
+#' createVirginQueens(colony)
+#' createVirginQueens(colony)
+#'
+#' @export
+# TODO: explore options for implementing difference between workers' and queens'
+#       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
+createVirginQueens <- function(colony, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nVirginQueens
+  }
+  if (is.function(nInd)) {
+    nInd <- nInd(colony)
+  }
+  ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  names(ret) <- c("virgin_queens", "pHomBrood")
+  return(ret)
+}
+
 #' @rdname createWorkers
 #' @title Creates workers from the colony
 #'
 #' @description Level 1 function that creates the specified number of workers
 #'   from the colony by mating the colony queen and the fathers. If csd locus is
 #'   defined, it takes it into account and any csd homozygotes are removed and
-#'   counted as homozygous drones.
+#'   counted towards homozygous brood.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, number of workers to create
+#' @param nInd numeric or function, number of workers; if \code{NULL} then
+#'   \code{simParamBee$nWorkers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two nodes named \code{workers} (a \code{\link{Pop-class}})
@@ -249,10 +313,27 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
-#' createWorkers(colony, nInd = 10)
+#' createWorkers(colony, nInd = 100)
+#'
+#' # Using a default in SP$nWorkers
+#' # (just to have some workers - change this to your needs!)
+#' createWorkers(colony)
+#' createWorkers(colony)
+#'
+#' SP$nWorkers <- 15
+#' createWorkers(colony)
+#' createWorkers(colony)
+#'
+#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' createWorkers(colony, nInd = nWorkersFun)
+#' createWorkers(colony, nInd = nWorkersFun)
+#'
+#' SP$nWorkers <- nWorkersFun
+#' createWorkers(colony)
+#' createWorkers(colony)
 #'
 #' @export
-createWorkers <- function(colony, nInd, simParamBee = NULL) {
+createWorkers <- function(colony, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -264,6 +345,12 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   }
   if (!isQueenMated(colony)) {
     stop("Unmated queen!")
+  }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nWorkers
+  }
+  if (is.function(nInd)) {
+    nInd <- nInd(colony)
   }
   ret <- vector(mode = "list", length = 2)
   names(ret) <- c("workers", "pHomBrood")
@@ -281,22 +368,6 @@ createWorkers <- function(colony, nInd, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn createWorkers Create virgin queens
-# TODO: explore options for implementing difference between workers' and queens'
-#       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
-#' @export
-createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
-  names(ret) <- c("virgin_queens", "pHomBrood")
-  return(ret)
-}
-
 #' @rdname createFounderDrones
 #' @title Creates drones from a founding (base) population
 #'
@@ -308,28 +379,29 @@ createVirginQueens <- function(colony, nInd, simParamBee = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param nDronesPerQueen integer, number of drones to create per founding
 #'   individual (a substitute for a queen).
+#'   TODO: rename nDronesPerQueen argument to nDrones and if NULL use simParamBee$nDrones?
 #'
 #' @details Note that this function creates \code{nDronesPerQueen} for each
 #'   individual in the \code{pop}, which will amount to
-#'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow, so tune both
-#'   numbers according to your needs.
+#'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow if either or
+#'   both of \code{c(nInd(pop), nDronesPerQueen)} is large; tune the numbers
+#'   to your needs.
 #'   TODO The drones will eventually be made properly haploid!
 #'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 #'
 #' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 1, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' colony <- createColony(queen = basePop[2], fathers = drones)
-#' createWorkers(colony, nInd = 10)
-#' createDrones(colony, nInd = 2)
+#' # TODO: expand exapmles by showing how to use SP
 #'
 #' @export
 createFounderDrones <- function(pop, nDronesPerQueen = 100) {
+  # TODO: rename nDronesPerQueen argument to nDrones and if NULL use simParamBee$nDrones?
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
@@ -347,7 +419,9 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, the number of drones to create
+#' @param nInd numeric or function, number of drones; if \code{NULL} then
+#'   \code{simParamBee$nDrones} is used
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Pop-class}} with drones
 #'
@@ -358,16 +432,41 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
-#' createWorkers(colony, nInd = 10)
-#' createDrones(colony, nInd = 2)
+#' createDrones(colony, nInd = 10)
+#'
+#' # Using a default in SP$nDrones
+#' # (just to have some drones - change this to your needs!)
+#' createDrones(colony)
+#' createDrones(colony)
+#'
+#' SP$nDrones <- 15
+#' createDrones(colony)
+#' createDrones(colony)
+#'
+#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' createDrones(colony, nInd = nDronesFun)
+#' createDrones(colony, nInd = nDronesFun)
+#'
+#' SP$nDrones <- nDronesFun
+#' createDrones(colony)
+#' createDrones(colony)
 #'
 #' @export
-createDrones <- function(colony, nInd) {
+createDrones <- function(colony, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (!isQueenPresent(colony)) {
     stop("Missing queen!")
+  }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nDrones
+  }
+  if (is.function(nInd)) {
+    nInd <- nInd(colony)
   }
   drones <- makeDH(pop = getQueen(colony), nDH = nInd)
   return(drones)

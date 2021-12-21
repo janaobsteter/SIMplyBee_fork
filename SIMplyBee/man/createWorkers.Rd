@@ -2,17 +2,15 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createWorkers}
 \alias{createWorkers}
-\alias{createVirginQueens}
 \title{Creates workers from the colony}
 \usage{
-createWorkers(colony, nInd, simParamBee = NULL)
-
-createVirginQueens(colony, nInd, simParamBee = NULL)
+createWorkers(colony, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{integer, number of workers to create}
+\item{nInd}{numeric or function, number of workers; if \code{NULL} then
+\code{simParamBee$nWorkers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -24,13 +22,8 @@ list with two nodes named \code{workers} (a \code{\link{Pop-class}})
 Level 1 function that creates the specified number of workers
   from the colony by mating the colony queen and the fathers. If csd locus is
   defined, it takes it into account and any csd homozygotes are removed and
-  counted as homozygous drones.
+  counted towards homozygous brood.
 }
-\section{Functions}{
-\itemize{
-\item \code{createVirginQueens}: Create virgin queens
-}}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -38,6 +31,23 @@ basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
-createWorkers(colony, nInd = 10)
+createWorkers(colony, nInd = 100)
+
+# Using a default in SP$nWorkers
+# (just to have some workers - change this to your needs!)
+createWorkers(colony)
+createWorkers(colony)
+
+SP$nWorkers <- 15
+createWorkers(colony)
+createWorkers(colony)
+
+nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+createWorkers(colony, nInd = nWorkersFun)
+createWorkers(colony, nInd = nWorkersFun)
+
+SP$nWorkers <- nWorkersFun
+createWorkers(colony)
+createWorkers(colony)
 
 }

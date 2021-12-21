@@ -36,18 +36,20 @@ colony <- createColony(queen = basePop[2], fathers = drones)
 colony
 addVirginQueens(colony, nInd = 10)
 
-SP$nVirginQueens <- 10
-addVirginQueens(colony)
+# Using a default in SP$nVirginQueens
+# (just to have some virgin queens - change this to your needs!)
 addVirginQueens(colony)
 addVirginQueens(colony)
 
-nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 10) }
-addVirginQueens(colony, nInd = nVirginQueensFun)
+SP$nVirginQueens <- 15
+addVirginQueens(colony)
+addVirginQueens(colony)
+
+nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 addVirginQueens(colony, nInd = nVirginQueensFun)
 addVirginQueens(colony, nInd = nVirginQueensFun)
 
 SP$nVirginQueens <- nVirginQueensFun
-addVirginQueens(colony)
 addVirginQueens(colony)
 addVirginQueens(colony)
 

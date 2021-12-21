@@ -4,12 +4,15 @@
 \alias{createDrones}
 \title{Creates drones from the colony}
 \usage{
-createDrones(colony, nInd)
+createDrones(colony, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{integer, the number of drones to create}
+\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}} with drones
@@ -28,7 +31,23 @@ basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
-createWorkers(colony, nInd = 10)
-createDrones(colony, nInd = 2)
+createDrones(colony, nInd = 10)
+
+# Using a default in SP$nDrones
+# (just to have some drones - change this to your needs!)
+createDrones(colony)
+createDrones(colony)
+
+SP$nDrones <- 15
+createDrones(colony)
+createDrones(colony)
+
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+createDrones(colony, nInd = nDronesFun)
+createDrones(colony, nInd = nDronesFun)
+
+SP$nDrones <- nDronesFun
+createDrones(colony)
+createDrones(colony)
 
 }

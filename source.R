@@ -13,3 +13,5 @@ devtools::document() # (shortcut = shit + Ctrl + D) write/modifies the documenta
 devtools::check() # (shortcut = shit + Ctrl + E) R CMD check
 
 devtools::install()
+
+library(SIMplyBee)

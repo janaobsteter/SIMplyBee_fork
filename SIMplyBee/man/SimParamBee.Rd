@@ -16,7 +16,7 @@ Container for global honeybee simulation parameters. Saving this
 This documentation shows details specific to \code{SimParamBee}. We
   suggest you also read all the options provided by the AlphaSimR
   \code{\link{SimParam}}. Below we show minimal usage cases for each
-  \code{SimParamBee} function and before that we highlight key points of
+  \code{SimParamBee} function. Before that, we highlight key points of
   honeybee biology in relation to implementation in the SIMplyBee package.
 
 In honeybees, complementary sex determining (csd) locus impacts sex of
@@ -55,9 +55,23 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
+\item{\code{nWorkers}}{numeric or function, default number of workers
+to generate in a colony; if function, it will be passed to other
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode }
+and return a single value}
+
+\item{\code{nDrones}}{numeric or function, default number of drones
+to generate in a colony; if function, it will be passed to other
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode }
+and return a single value}
+
 \item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
 to generate in a colony; if function, it will be passed to other
-functions and work with the internals of those functions}
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode }
+and return a single value}
 }
 \if{html}{\out{</div>}}
 }
@@ -138,7 +152,15 @@ Starts the process of building a new simulation by creating
   without explicitly supplying a \code{simParamBee} argument with every
   call.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(founderPop, csdChr = 3, csdPos = 0.865, nCsdAlleles = 100)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(
+  founderPop,
+  nWorkers = 100,
+  nDrones = 10,
+  nVirginQueens = 10,
+  csdChr = 3,
+  csdPos = 0.865,
+  nCsdAlleles = 100
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -146,6 +168,24 @@ Starts the process of building a new simulation by creating
 \describe{
 \item{\code{founderPop}}{\code{\link{MapPop-class}}, founder population of
 genomes}
+
+\item{\code{nWorkers}}{numeric or function, default number of workers to
+generate in a colony; the default value for this function is only to
+have some workers to work with - you will want to change this!; see
+also the \code{nWorkers} field description on using functions and their
+examples in \code{\link{createWorkers}}}
+
+\item{\code{nDrones}}{numeric or function, default number of drones to
+generate in a colony; the default value for this function is only to
+have some drones to work with - you will want to change this!; see
+also the \code{nDrones} field description on using functions and their
+examples in \code{\link{createDrones}}}
+
+\item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
+to generate in a colony; the default value for this function is only to
+have some virgin queens to work with - you will want to change this!;
+see also the \code{nVirginQueens} field description on using functions
+and their examples in \code{\link{createVirginQueens}}}
 
 \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified

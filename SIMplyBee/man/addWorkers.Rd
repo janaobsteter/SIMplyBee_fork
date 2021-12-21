@@ -4,12 +4,13 @@
 \alias{addWorkers}
 \title{Add (raise) workers in the colony}
 \usage{
-addWorkers(colony, nInd, new = FALSE, simParamBee = NULL)
+addWorkers(colony, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{integer, number of workers to add}
+\item{nInd}{numeric or function, number of workers; if \code{NULL} then
+\code{simParamBee$nWorkers} is used}
 
 \item{new}{logical, should the workers be added a fresh (ignoring currently
 present workers in the colony)}
@@ -34,5 +35,22 @@ drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
 colony
 addWorkers(colony, nInd = 20)
+
+# Using a default in SP$nWorkers
+# (just to have some workers - change this to your needs!)
+addWorkers(colony)
+addWorkers(colony)
+
+SP$nWorkers <- 15
+addWorkers(colony)
+addWorkers(colony)
+
+nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+addWorkers(colony, nInd = nWorkersFun)
+addWorkers(colony, nInd = nWorkersFun)
+
+SP$nWorkers <- nWorkersFun
+addWorkers(colony)
+addWorkers(colony)
 
 }
