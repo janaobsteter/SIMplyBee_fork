@@ -39,6 +39,11 @@ SimParamBee <- R6Class(
 
   public = list(
 
+    #' @field nVirginQueens numeric or function, default number of virgin queens
+    #'   to generate in a colony; if function, it will be passed to other
+    #'   functions and work with the internals of those functions
+    nVirginQueens = "numericOrFunction",
+
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population to the this
     #'   object. It is recommended that you save the object with the name
@@ -110,6 +115,7 @@ SimParamBee <- R6Class(
         self$switchGenMap(genMap)
       }
     }
+
   ),
 
   # Private ----

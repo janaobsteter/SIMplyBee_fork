@@ -4,12 +4,13 @@
 \alias{addVirginQueens}
 \title{Add (raise) virgin queens in the colony}
 \usage{
-addVirginQueens(colony, nInd, year = NULL, simParamBee = NULL)
+addVirginQueens(colony, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{integer, number of virgin queens to add}
+\item{nInd}{numeric or function, number of virgin queens to add; if
+\code{NULL} then \code{simParamBee$nVirginQueens} is used}
 
 \item{year}{numeric, year of birth for virgin queens}
 
@@ -34,5 +35,20 @@ drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
 colony
 addVirginQueens(colony, nInd = 10)
+
+SP$nVirginQueens <- 10
+addVirginQueens(colony)
+addVirginQueens(colony)
+addVirginQueens(colony)
+
+nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 10) }
+addVirginQueens(colony, nInd = nVirginQueensFun)
+addVirginQueens(colony, nInd = nVirginQueensFun)
+addVirginQueens(colony, nInd = nVirginQueensFun)
+
+SP$nVirginQueens <- nVirginQueensFun
+addVirginQueens(colony)
+addVirginQueens(colony)
+addVirginQueens(colony)
 
 }

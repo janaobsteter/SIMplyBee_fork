@@ -149,7 +149,8 @@ reQueenColony <- function(colony, queen) {
 #'   virgin queens in the colony by crossing the current queen and the fathers.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nInd integer, number of virgin queens to add
+#' @param nInd numeric or function, number of virgin queens to add; if
+#'   \code{NULL} then \code{simParamBee$nVirginQueens} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -167,10 +168,25 @@ reQueenColony <- function(colony, queen) {
 #' colony
 #' addVirginQueens(colony, nInd = 10)
 #'
+#' SP$nVirginQueens <- 10
+#' addVirginQueens(colony)
+#' addVirginQueens(colony)
+#' addVirginQueens(colony)
+#'
+#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 10) }
+#' addVirginQueens(colony, nInd = nVirginQueensFun)
+#' addVirginQueens(colony, nInd = nVirginQueensFun)
+#' addVirginQueens(colony, nInd = nVirginQueensFun)
+#'
+#' SP$nVirginQueens <- nVirginQueensFun
+#' addVirginQueens(colony)
+#' addVirginQueens(colony)
+#' addVirginQueens(colony)
+#'
 #' @export
-addVirginQueens <- function(colony, nInd, year = NULL, simParamBee = NULL) {
+addVirginQueens <- function(colony, nInd = NULL, year = NULL,
+                            simParamBee = NULL) {
   # TODO: do we need argument new here like we have it for addWorkers() and addDrones()?
-  # TODO: make nInd = NULL and grab default value from simParamBee
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -183,6 +199,12 @@ addVirginQueens <- function(colony, nInd, year = NULL, simParamBee = NULL) {
   if (!isQueenMated(colony)) {
     stop("Unmated queen!")
   }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nVirginQueens
+  }
+  if (is.function(nInd)) {
+    nInd <- nInd(colony)
+  }
   tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
   colony@virgin_queens <- tmp$virgin_queens
   if (!is.null(year)) {
@@ -191,7 +213,7 @@ addVirginQueens <- function(colony, nInd, year = NULL, simParamBee = NULL) {
   }
   if (!is.null(simParamBee$csdChr)) {
     # TODO: update this logic here on queen vs colony pHomBrood
-    colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, tmp$pHomBrood))
+    colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
   }
   validObject(colony)
   return(colony)
@@ -243,7 +265,7 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
     } else {
       colony@workers <- c(colony@workers, newWorkers$workers)
       # TODO: update this logic here on queen vs colony pHomBrood
-      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
+      colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + newWorkers$pHomBrood) / 2
     }
   }
   validObject(colony)
@@ -420,7 +442,7 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
       colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                           tmp$workers)
       # TODO: we need some scaling of the pBrood here, right? Is this OK?
-      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, tmp$pHomBrood))
+      colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
     }
