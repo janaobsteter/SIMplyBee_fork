@@ -18,6 +18,10 @@
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
 #'   \code{\link{getDrones}}
 #'
+#' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
+#'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
+#'   is Colonies
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -107,10 +111,6 @@
 #' getDrones(apiary)[[1]]@id
 #' getDrones(apiary)[[2]]
 #' getDrones(apiary, nInd = 2)
-#'
-#' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
-#'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
-#'   is Colonies
 #'
 #' @export
 getCaste <- function(x, caste, nInd = NULL, use = "rand") {
