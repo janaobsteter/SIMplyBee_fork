@@ -522,7 +522,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
-#' colony2 <- addVirginQueens(colony1, nInd = 5)
+#' colony2 <- addVirginQueens(colony2, nInd = 5)
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 5)
@@ -737,7 +737,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   return(pop)
 }
 
-#' @rdname setQueensYOB
+#' @rdname setQueensYearOfBirth
 #' @title Set the queen's year of birth
 #'
 #' @description Level 1 function that sets the queen's year of birth.
@@ -783,7 +783,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' getQueensYearOfBirth(apiary)
 #'
 #' @export
-setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
+setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {
     if (nInd(x) > 1) {
       stop("TODO: expand to more than 1 queen")
@@ -805,3 +805,7 @@ setQueensYearOfBirth <- setQueensYOB <- function(x, year) {
   }
   return(x)
 }
+
+#' @describeIn setQueensYearOfBirth Set the queen's year of birth
+#' @export
+setQueensYOB <- setQueensYearOfBirth

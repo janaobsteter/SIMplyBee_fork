@@ -49,16 +49,16 @@ colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addDrones(colony2, nInd = 4)
 
-getColonyDd(colony1)
-getColonyDd(colony1, caste = c("queen", "fathers"))
-getColonyDd(colony1, nInd = 1)
-getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+try(getColonyDd(colony1)) # TODO
+try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
+try(getColonyDd(colony1, nInd = 1)) # TODO
+try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 
 apiary <- c(colony1, colony2)
-getColonyDd(apiary)
-getColonyDd(apiary, caste = c("queen", "fathers"))
-getColonyDd(apiary, nInd = 1)
-getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+try(getColonyDd(apiary)) # TODO
+try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
+try(getColonyDd(apiary, nInd = 1)) # TODO
+try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 
 }
 \seealso{

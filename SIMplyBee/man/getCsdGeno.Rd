@@ -23,6 +23,11 @@ matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
 Level 0 function that returns genotypes from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
 }
+\details{
+The returned genotypes are spanning multiple bi-allelic SNP of
+  non-recombining haplotypes. In most cases you will want to use
+  \code{\link{getCsdAlleles}}.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

@@ -11,6 +11,9 @@ isGenoHeterozygous(x)
 }
 \value{
 logical
+
+Not exporting this function, since its just a helper and quite specific for
+our csd locus implementation
 }
 \description{
 Level 0 function that returns heterozygote status for a
@@ -26,12 +29,12 @@ colony1 <- createColony(queen = basePop[2], fathers = drones)
 colony1 <- addWorkers(colony1, nInd = 10)
 
 (tmp <- getCsdGeno(getQueen(colony1)))
-isGenoHeterozygous(tmp)
+SIMplyBee:::isGenoHeterozygous(tmp)
 
 (tmp <- getCsdGeno(getVirginQueens(colony1)))
-isGenoHeterozygous(tmp)
+SIMplyBee:::isGenoHeterozygous(tmp)
 
 (tmp <- getCsdGeno(getWorkers(colony1)))
-isGenoHeterozygous(tmp)
+SIMplyBee:::isGenoHeterozygous(tmp)
 
 }

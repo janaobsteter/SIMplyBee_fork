@@ -672,6 +672,9 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #'   a new year.
 #'
 #' @param colony \code{\link{Colony-class}}
+#' @param collapse logical, reset the collapse event? (only sensible in setting
+#'   up a colony, which the default caters for; otherwise, a collapsed colony
+#'   should be left collapsed forever)
 #'
 #' @return \code{\link{Colony-class}} with events reset
 #'
@@ -687,13 +690,13 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' (colony <- buildUpColony(colony, nWorkers = 100))
 #' resetEvents(colony)
 #'
-#' tmp <- splitColony(colony, pSplit = 0.5)
+#' tmp <- splitColony(colony, p = 0.5)
 #' (split <- tmp$split)
 #' resetEvents(split)
 #' (remnant <- tmp$remnant)
 #' resetEvents(remnant)
 #'
-#' tmp <- swarmColony(colony, pSwarm = 0.5)
+#' tmp <- swarmColony(colony, p = 0.5)
 #' (swarm <- tmp$swarm)
 #' resetEvents(swarm)
 #' (remnant <- tmp$remnant)
@@ -706,14 +709,16 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' resetEvents(tmp)
 #'
 #' @export
-resetEvents <- function(colony) {
+resetEvents <- function(colony, collapse = is.null(colony@collapse)) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   colony@swarm <- FALSE
   colony@split <- FALSE
   colony@supersedure <- FALSE
-  # colony@collapse <- FALSE
+  if (collapse) {
+    colony@collapse <- FALSE
+  }
   colony@production <- FALSE
   validObject(colony)
   return(colony)
@@ -1029,8 +1034,10 @@ splitColony <- function(colony, p = 0.3) {
 #' getLocation(colony1)
 #'
 #' loc2 <- c(189, 357)
-#' colony2 <- setLocation(colony1, location = loc2)
+#' colony2 <- setLocation(colony2, location = loc2)
 #' getLocation(colony2)
+#'
+#' getLocation(c(colony1, colony2))
 #'
 #' # Assuming one location (as in bringing colonies to one place!)
 #' apiary <- setLocation(apiary, location = loc1)
@@ -1085,10 +1092,15 @@ setLocation <- function(x, location) {
 #' # TODO
 #'
 # TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
-#   in getColonyGv()?
+#       in getColonyGv()?
 # TODO: what if caste phenos have already been set? need a sensible default!!!
 # TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
-#  it will not work for simParam - so best to add all these arguments directly?
+#       it will not work for simParam - so best to add all these arguments directly?
+# See
+#     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#     https://github.com/HighlanderLab/SIMplyBee/issues/44
 setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)

@@ -820,21 +820,31 @@ splitColonies <- function(colonies, p = 0.3) {
 #' @param colonies \code{\link{Colonies-class}}
 #' @param FUN TODO
 #' @param ... TODO
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with phenotypes
 #'
 #' @examples
-#' TODO
+#' # TODO
 #'
 #' @export
-setPhenoColonies <- function(colonies, FUN = NULL, ...) {
+# See setPhenoColony() and
+#     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#     https://github.com/HighlanderLab/SIMplyBee/issues/44
+setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                                  FUN = FUN, ...)
+                                                  FUN = FUN, ...,
+                                                  simParamBee = simParamBee)
   }
   validObject(colonies)
   return(colonies)

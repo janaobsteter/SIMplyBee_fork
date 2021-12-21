@@ -61,7 +61,7 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 \code{csdChr} chromosome (relative at the moment, but could be in bp in
 the future)}
 
-\item{\code{nCsdHaplo}}{integer, number of possible csd alleles}
+\item{\code{nCsdAlleles}}{integer, number of possible csd alleles}
 
 \item{\code{nCsdSites}}{integer, number of segregating sites representing the
 csd locus}
@@ -128,7 +128,7 @@ Starts the process of building a new simulation by creating
   \code{NULL}. This allows you to call these functions without explicitly
   supplying a \code{simParamBee} argument with every call.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(founderPop, csdChr = 3, csdPos = 0.865, nCsdHaplo = 100)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(founderPop, csdChr = 3, csdPos = 0.865, nCsdAlleles = 100)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -146,25 +146,26 @@ simulation), the locus is put on the last available chromosome (1 or
 \code{csdChr} chromosome (relative at the moment, but could be in bp in
 the future)}
 
-\item{\code{nCsdHaplo}}{integer, number of possible csd alleles (this determines
-how many segregating sites will be needed to represent the csd loci
-from the underlying bi-allelic SNP - \code{log2(nCsdHaplo)})}
+\item{\code{nCsdAlleles}}{integer, number of possible csd alleles (this
+determines how many segregating sites will be needed to represent the
+csd locus from the underlying bi-allelic SNP; that is the minimum
+number of bi-allelic SNP needed is \code{log2(nCsdAlleles)})}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 2)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
 
 # We need enough segregating sites
-try(SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100))
+try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 }
 \if{html}{\out{</div>}}
 

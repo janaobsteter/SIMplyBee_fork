@@ -42,8 +42,10 @@ colony1 <- setLocation(colony1, location = loc1)
 getLocation(colony1)
 
 loc2 <- c(189, 357)
-colony2 <- setLocation(colony1, location = loc2)
+colony2 <- setLocation(colony2, location = loc2)
 getLocation(colony2)
+
+getLocation(c(colony1, colony2))
 
 # Assuming one location (as in bringing colonies to one place!)
 apiary <- setLocation(apiary, location = loc1)

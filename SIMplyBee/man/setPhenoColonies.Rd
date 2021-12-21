@@ -4,7 +4,7 @@
 \alias{setPhenoColonies}
 \title{TODO}
 \usage{
-setPhenoColonies(colonies, FUN = NULL, ...)
+setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,6 +12,8 @@ setPhenoColonies(colonies, FUN = NULL, ...)
 \item{FUN}{TODO}
 
 \item{...}{TODO}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colonies-class}} with phenotypes
@@ -20,6 +22,6 @@ setPhenoColonies(colonies, FUN = NULL, ...)
 Level 3 function that TODO
 }
 \examples{
-TODO
+# TODO
 
 }

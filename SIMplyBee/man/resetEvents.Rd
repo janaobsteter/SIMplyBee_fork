@@ -4,10 +4,14 @@
 \alias{resetEvents}
 \title{Reset colony events}
 \usage{
-resetEvents(colony)
+resetEvents(colony, collapse = is.null(colony@collapse))
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
+
+\item{collapse}{logical, reset the collapse event? (only sensible in setting
+up a colony, which the default caters for; otherwise, a collapsed colony
+should be left collapsed forever)}
 }
 \value{
 \code{\link{Colony-class}} with events reset
@@ -30,13 +34,13 @@ colony
 (colony <- buildUpColony(colony, nWorkers = 100))
 resetEvents(colony)
 
-tmp <- splitColony(colony, pSplit = 0.5)
+tmp <- splitColony(colony, p = 0.5)
 (split <- tmp$split)
 resetEvents(split)
 (remnant <- tmp$remnant)
 resetEvents(remnant)
 
-tmp <- swarmColony(colony, pSwarm = 0.5)
+tmp <- swarmColony(colony, p = 0.5)
 (swarm <- tmp$swarm)
 resetEvents(swarm)
 (remnant <- tmp$remnant)

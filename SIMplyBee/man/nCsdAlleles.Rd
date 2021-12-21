@@ -57,10 +57,13 @@ colony2 <- addWorkers(colony2, nInd = 20)
 apiary <- c(colony1, colony2)
 
 nCsdAlleles(getQueen(colony1))
-nCsdAlleles(colony1)
-nCsdAlleles(apiary)
+nCsdAlleles(getFathers(colony1))
+nCsdAlleles(getVirginQueens(colony1))
+nCsdAlleles(getWorkers(colony1))
+nCsdAlleles(getDrones(colony1))
 
-nCsdAlleles(colony1, collapse = TRUE)
-nCsdAlleles(apiary, collapse = TRUE)
+nCsdAlleles(colony1)
+
+nCsdAlleles(apiary)
 
 }

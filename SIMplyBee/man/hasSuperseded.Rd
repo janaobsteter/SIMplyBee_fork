@@ -17,7 +17,7 @@ Level 0 function that returns colony supersedure status.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
