@@ -4,8 +4,8 @@
 \name{Colonies-class}
 \alias{Colonies-class}
 \alias{show,Colonies-method}
-\alias{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}
-\alias{[,Colonies,character,ANY,ANY-method}
+\alias{[,Colonies,integerOrNumericOrLogical-method}
+\alias{[,Colonies,character-method}
 \alias{[[,Colonies,integerOrNumeric-method}
 \alias{[[,Colonies,character-method}
 \alias{c,Colonies-method}
@@ -14,9 +14,9 @@
 \usage{
 \S4method{show}{Colonies}(object)
 
-\S4method{[}{Colonies,integerOrNumericOrLogical,ANY,ANY}(x, i)
+\S4method{[}{Colonies,integerOrNumericOrLogical}(x, i, j, drop)
 
-\S4method{[}{Colonies,character,ANY,ANY}(x, i)
+\S4method{[}{Colonies,character}(x, i, j, drop)
 
 \S4method{[[}{Colonies,integerOrNumeric}(x, i)
 
@@ -34,6 +34,10 @@ isColonies(x)
 \item{i}{integer, numeric, logical, or character, index or ID to select
 a colony (see examples)}
 
+\item{j}{not used}
+
+\item{drop}{not used}
+
 \item{...}{\code{NULL}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
 }
@@ -48,9 +52,9 @@ An object holding a collection of honeybee colonies. It behaves
 \itemize{
 \item \code{show,Colonies-method}: Show colonies object
 
-\item \code{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}: Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
+\item \code{[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
 
-\item \code{[,Colonies,character,ANY,ANY-method}: Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
+\item \code{[,Colonies,character-method}: Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
 
 \item \code{[[,Colonies,integerOrNumeric-method}: Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
 

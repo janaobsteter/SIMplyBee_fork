@@ -15,6 +15,8 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #' @param x \code{\link{Colonies-class}}
 #' @param i integer, numeric, logical, or character, index or ID to select
 #'   a colony (see examples)
+#' @param j not used
+#' @param drop not used
 #' @param ... \code{NULL}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #'
@@ -86,8 +88,8 @@ setMethod(f = "show",
 
 #' @describeIn Colonies-class Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
 setMethod(f = "[",
-          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
-          function(x, i) {
+          signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
+          function(x, i, j, drop) {
             x@colonies <- x@colonies[i]
             validObject(x)
             return(x)
@@ -96,8 +98,8 @@ setMethod(f = "[",
 
 #' @describeIn Colonies-class Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
 setMethod(f = "[",
-          signature(x = "Colonies", i = "character"),
-          function(x, i) {
+          signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
+          function(x, i, j, drop) {
             ret <- x[match(x = i, table = getId(x))]
             validObject(ret)
             return(ret)
