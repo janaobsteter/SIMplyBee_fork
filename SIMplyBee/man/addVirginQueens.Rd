@@ -11,7 +11,7 @@ addVirginQueens(colony, nInd, year = NULL, simParamBee = NULL)
 
 \item{nInd}{integer, number of virgin queens to add}
 
-\item{year}{numeric, year of birth to be set for the virgin queens}
+\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

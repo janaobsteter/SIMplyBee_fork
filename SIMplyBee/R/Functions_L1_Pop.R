@@ -7,8 +7,8 @@
 #'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
 #'
 #' @param x Colony or Colonies
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
-#'   "drones"
+#' @param caste character, "queen", "fathers", "virgin_queens", "workers",
+#'   "drones", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can also be just \code{NULL}
@@ -18,9 +18,12 @@
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
 #'   \code{\link{getDrones}}
 #'
-#' @return Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
-#'   and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
-#'   is Colonies
+#' @return when \code{x} is \code{\link{Colony-class}} return is
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
+#'   == "all"} with nodes named by caste; when \code{x} is
+#'   \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -112,29 +115,40 @@
 #' getDrones(apiary)[[2]]
 #' getDrones(apiary, nInd = 2)
 #'
+#' getCaste(colony1, caste = "all")
+#'
 #' @export
-getCaste <- function(x, caste, nInd = NULL, use = "rand") {
+getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
   if (isColony(x)) {
-    if (caste == "fathers") {
-      pop <- x@queen@misc[[1]]$fathers
-    } else {
-      pop <- slot(x, caste)
-    }
-    if (is.null(pop)) {
-      ret <- NULL
-    } else {
-      if (is.null(nInd)) {
-        nInd <- nInd(pop)
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+      for (caste in names(ret)) {
+        ret[[caste]] <- getCaste(x = x, caste = caste, nInd = nInd, use = use)
       }
-      nIndRequested <- nInd
-      nIndAvailable <- nInd(pop)
-      if (nIndRequested > nIndAvailable) {
-        nIndRequested <- nIndAvailable
+    } else {
+      if (caste == "fathers") {
+        pop <- x@queen@misc[[1]]$fathers
+      } else {
+        pop <- slot(x, caste)
       }
-      ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+      if (is.null(pop)) {
+        ret <- NULL
+      } else {
+        if (is.null(nInd)) {
+          nInd <- nInd(pop)
+        }
+        nIndRequested <- nInd
+        nIndAvailable <- nInd(pop)
+        if (nIndRequested > nIndAvailable) {
+          nIndRequested <- nIndAvailable
+        }
+        ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+      }
     }
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCaste, caste = caste, nInd = nInd, use = use)
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCaste, caste = caste, nInd = nInd, use = use)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")

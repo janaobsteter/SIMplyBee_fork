@@ -9,7 +9,7 @@
 \alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
-getCaste(x, caste, nInd = NULL, use = "rand")
+getCaste(x, caste = "all", nInd = NULL, use = "rand")
 
 getQueen(x)
 
@@ -24,8 +24,8 @@ getDrones(x, nInd = NULL, use = "rand")
 \arguments{
 \item{x}{Colony or Colonies}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
-"drones"}
+\item{caste}{character, "queen", "fathers", "virgin_queens", "workers",
+"drones", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,
@@ -34,9 +34,12 @@ we return the ones available - this can also be just \code{NULL}}
 \item{use}{character, all options provided by \code{\link{selectInd}}}
 }
 \value{
-Pop when \code{x} is Colony, but \code{NULL} if caste is not present,
-  and list of Pop when \code{x} is Colonies, named by colony id when \code{x}
-  is Colonies
+when \code{x} is \code{\link{Colony-class}} return is
+  \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
+  == "all"} with nodes named by caste; when \code{x} is
+  \code{\link{Colonies-class}} return is a named list of
+  \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+  \code{\link{Pop-class}} for \code{caste == "all"}
 }
 \description{
 Level 1 function that returns individuals of a caste. These
@@ -144,6 +147,8 @@ getDrones(apiary)
 getDrones(apiary)[[1]]@id
 getDrones(apiary)[[2]]
 getDrones(apiary, nInd = 2)
+
+getCaste(colony1, caste = "all")
 
 }
 \seealso{
