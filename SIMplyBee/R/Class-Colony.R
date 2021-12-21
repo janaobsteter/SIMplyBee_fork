@@ -28,7 +28,6 @@ setClassUnion("listOrNULL", c("list", "NULL"))
 #'   colony
 #' @slot drones \code{\link{Pop-class}}, drones of the colony
 #' @slot workers \code{\link{Pop-class}}, workers of the colony
-#' @slot nHomDrones integer, the number of homozygous drones in the colony
 #' @slot pheno matrix, phenotypes of the colony TODO: revise
 #' @slot split logical, has colony split
 #' @slot swarm logical, has colony swarmed
@@ -77,7 +76,6 @@ setClass(Class = "Colony",
                    virgin_queens = "PopOrNULL",
                    workers = "PopOrNULL",
                    drones = "PopOrNULL",
-                   nHomDrones = "integerOrNULL",
                    pheno = "matrix",
                    split = "logical",
                    #remnant = "",
@@ -123,7 +121,6 @@ setMethod(f = "show",
             cat("Number of virgin queens:", nVirginQueens(object),"\n")
             cat("Number of workers:", nWorkers(object), "\n")
             cat("Number of drones:", nDrones(object),"\n")
-            cat("Number of homozygous drones:", nHomDrones(object),"\n")
             cat("Has split:", object@split, "\n")
             cat("Has swarmed:", object@swarm, "\n")
             cat("Has superseded:", object@supersedure, "\n")

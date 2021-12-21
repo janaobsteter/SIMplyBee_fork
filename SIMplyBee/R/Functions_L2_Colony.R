@@ -55,9 +55,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     }
     if (isQueenMated(queen) && !is.null(fathers)) {
       warning("The queen is already mated - ignoring the fathers argument!")
-      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen))
+      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = getFathers(queen), pHomBrood = 0)
     } else {
-      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = fathers)
+      queen@misc[[1]] <- list(yearOfBirth = yearOfBirth, fathers = fathers, pHomBrood = 0)
     }
   }
   colony <- new(Class = "Colony",
@@ -167,7 +167,7 @@ addVirginQueens <- function(colony, nInd, simParamBee = NULL) {
   }
   tmp <- createVirginQueens(colony = colony, nInd = nInd, simParamBee = simParamBee)
   colony@virgin_queens <- tmp$virgin_queens
-  colony@nHomDrones <- colony@nHomDrones + tmp$nHomDrones
+  colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
   validObject(colony)
   return(colony)
 }
@@ -213,10 +213,10 @@ addWorkers <- function(colony, nInd, new = FALSE, simParamBee = NULL) {
     newWorkers <- createWorkers(colony, nInd, simParamBee = simParamBee)
     if (is.null(colony@workers) | new) {
       colony@workers <- newWorkers$workers
-      colony@nHomDrones <- newWorkers$nHomDrones
+      colony@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
     } else {
       colony@workers <- c(colony@workers, newWorkers$workers)
-      colony@nHomDrones <- colony@nHomDrones + newWorkers$nHomDrones
+      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
     }
   }
   validObject(colony)
@@ -390,8 +390,8 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
       tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
       colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                           tmp$workers)
-      # TODO: we need some scaling of the nHomDrones here, right? Is this OK?
-      colony@nHomDrones <- as.integer(round(colony@nHomDrones * nWorkersStay / nWorkers) + tmp$nHomDrones)
+      # TODO: we need some scaling of the pBrood here, right? Is this OK?
+      colony@queen@misc[[1]]$pHomBrood <- mean(c(colony@queen@misc[[1]]$pHomBrood, newWorkers$pHomBrood))
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
     }
@@ -580,12 +580,10 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
     stop("p can not be less than 0!")
   } else if (p == 1) {
     colony@workers <- NULL
-    colony@nHomDrones <- 0
   } else {
     nWorkersNew <- round(nWorkers(colony) * (1 - p))
     colony@workers <- selectInd(pop = colony@workers,
                                 nInd = nWorkersNew, use = use)
-    colony@nHomDrones <- round(colony@nHomDrones * (1 - p))
   }
   validObject(colony)
   return(colony)
