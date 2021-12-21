@@ -9,8 +9,6 @@
 #'   slots and functions. Some \code{\link{SimParam}} functions could have
 #'   upgraded behaviour as documented below in line with honeybee biology.
 #'
-#' @param x \code{\link{SimParamBee}} global simulation parameters
-#'
 #' @details This documentation shows details specific to \code{SimParamBee}. We
 #'   suggest you also read all the options provided by the AlphaSimR
 #'   \code{\link{SimParam}}. Below we show minimal usage cases for each
@@ -128,7 +126,20 @@ SimParamBee <- R6Class(
   )
 )
 
-#' @describeIn SimParamBee Test if x is a SimParamBee class object
+#' @rdname isSimParamBee
+#' @title Test if x is a SimParamBee class object
+#'
+#' @description Test if x is a \code{\link{SimParamBee}} class object
+#'
+#' @param x \code{\link{SimParamBee}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' isSimParamBee(SP)
+#'
 #' @export
 isSimParamBee <- function(x) {
   ret <- is(x, class2 = "SimParamBee")

@@ -2,11 +2,7 @@
 % Please edit documentation in R/Class-SimParamBee.R
 \name{SimParamBee}
 \alias{SimParamBee}
-\alias{isSimParamBee}
 \title{Honeybee simulation parameters}
-\usage{
-isSimParamBee(x)
-}
 \description{
 Container for global honeybee simulation parameters. Saving this
   object as \code{SP} will allow it to be accessed by SIMplyBee functions and
@@ -35,11 +31,6 @@ tunable number of csd alleles \code{nCsdHaplo}. Individuals that are
 homozygous at the csd locus are not viable and removed from simulation. How
 many are removed is recorded in each \code{\link{Colony-class}}. TODO
 }
-\section{Functions}{
-\itemize{
-\item \code{isSimParamBee}: Test if x is a SimParamBee class object
-}}
-
 \examples{
 
 ## ------------------------------------------------
