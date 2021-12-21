@@ -22,14 +22,14 @@ This documentation shows details specific to \code{SimParamBee}. We
 In honeybees, complementary sex determining (csd) locus impacts sex of
 individuals on top of haplo-diploidy, where diploids are queens or workers
 and haploids are drones. Heterozygous individuals at the csd locus become
-queens or workers , while homozygous individuals at the csd loucs become
-unviable "drones". Hence genotypic status at the locus is critical for
-honeybee simulations, since homozygosity at the csd locus can reduce colony
-strength. In SIMplyBee, the csd locus is implemented as a series of
-bi-allelic SNP (haplotype) that don't recombine. In this way we can get a
-tunable number of csd alleles \code{nCsdHaplo}. Individuals that are
-homozygous at the csd locus are not viable and removed from simulation. How
-many are removed is recorded in each \code{\link{Colony-class}}. TODO
+queens or workers, while homozygous individuals at the csd locus become
+unviable "drones". Hence genotype status at the csd locus is critical for
+honeybee simulations. In SIMplyBee, the csd locus is implemented as a series
+of bi-allelic SNP that don't recombine. Technically speaking these are
+haplotypes, but since they don't recombine, we call them alleles. By varying
+the number of SNP we can tune the number of csd alleles \code{nCsdHaplo}.
+Individuals that are homozygous at the csd locus are not viable and removed
+from simulation - see \code{\link{pHomBrood}}.
 }
 \examples{
 
@@ -38,16 +38,16 @@ many are removed is recorded in each \code{\link{Colony-class}}. TODO
 ## ------------------------------------------------
 
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 2)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
 
 # We need enough segregating sites
-try(SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100))
+try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 }
 \section{Super class}{
 \code{\link[AlphaSimR:SimParam]{AlphaSimR::SimParam}} -> \code{SimParamBee}

@@ -968,17 +968,17 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   return(founderGenomes)
 }
 
-#' @rdname getCsdHaplo
-#' @title Get haplotypes from the csd locus
+#' @rdname getCsdAlleles
+#' @title Get csd alleles
 #'
-#' @description Level 0 function that returns haplotypes from the csd locus. See
+#' @description Level 0 function that returns alleles from the csd locus. See
 #'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#' @param haplo character, either "all" for all haplotypes or an integer for a
-#'   single set of haplotypes, use a value of 1 for female haplotypes and a
-#'   value of 2 for male haplotypes
+#' @param allele character, either "all" for both alleles or an integer for a
+#'   single allele, use a value of 1 for female allele and a value of 2 for male
+#'   allele
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @examples
@@ -995,15 +995,15 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' colony2 <- addDrones(colony2, nInd = 4)
 #' apiary <- c(colony1, colony2)
 #'
-#' getCsdHaplo(getQueen(colony1))
-#' getCsdHaplo(getVirginQueens(colony1))
-#' getCsdHaplo(getFathers(colony1))
-#' getCsdHaplo(getWorkers(colony1))
-#' getCsdHaplo(getDrones(colony1))
+#' getCsdAlleles(getQueen(colony1))
+#' getCsdAlleles(getVirginQueens(colony1))
+#' getCsdAlleles(getFathers(colony1))
+#' getCsdAlleles(getWorkers(colony1))
+#' getCsdAlleles(getDrones(colony1))
 #'
-#' getCsdHaplo(colony1)
+#' getCsdAlleles(colony1)
 #'
-#' getCsdHaplo(apiary)
+#' getCsdAlleles(apiary)
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
@@ -1012,7 +1012,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
-getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
+getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1020,18 +1020,18 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
     stop("The csd locus has not been set!")
   }
   if (isPop(x)) {
-    ret <- pullSegSiteHaplo(pop = x, haplo = haplo, chr = simParamBee$csdChr,
+    ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdHaplo(x = getQueen(x),        haplo = haplo, simParamBee = simParamBee)
-    ret$fathers       <- getCsdHaplo(x = getFathers(x),      haplo = haplo, simParamBee = simParamBee)
-    ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), haplo = haplo, simParamBee = simParamBee)
-    ret$workers       <- getCsdHaplo(x = getWorkers(x),      haplo = haplo, simParamBee = simParamBee)
-    ret$drones        <- getCsdHaplo(x = getDrones(x),       haplo = haplo, simParamBee = simParamBee)
+    ret$queen         <- getCsdAlleles(x = getQueen(x),        allele = allele, simParamBee = simParamBee)
+    ret$fathers       <- getCsdAlleles(x = getFathers(x),      allele = allele, simParamBee = simParamBee)
+    ret$virgin_queens <- getCsdAlleles(x = getVirginQueens(x), allele = allele, simParamBee = simParamBee)
+    ret$workers       <- getCsdAlleles(x = getWorkers(x),      allele = allele, simParamBee = simParamBee)
+    ret$drones        <- getCsdAlleles(x = getDrones(x),       allele = allele, simParamBee = simParamBee)
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdHaplo, haplo = haplo, simParamBee = simParamBee)
+    ret <- lapply(X = x@colonies, FUN = getCsdAlleles, allele = allele, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1048,6 +1048,16 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details The returned genotypes are spanning multiple bi-allelic SNP of
+#'   non-recombining haplotypes. In most cases you will want to use
+#'   \code{\link{getCsdAlleles}}.
+#'
+#' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
+#'   (list nodes named by caste) and list of a list of matrices with genotypes
+#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -1072,12 +1082,6 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' getCsdGeno(colony1)
 #'
 #' getCsdGeno(apiary)
-#'
-#' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
-#'   (list nodes named by caste) and list of a list of matrices with genotypes
-#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 getCsdGeno <- function(x, simParamBee = NULL) {
@@ -1125,17 +1129,18 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #'
 #' (tmp <- getCsdGeno(getQueen(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
 #' (tmp <- getCsdGeno(getVirginQueens(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
 #' (tmp <- getCsdGeno(getWorkers(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
 #' @return logical
 #'
-#' @export
+#' Not exporting this function, since its just a helper and quite specific for
+#' our csd locus implementation
 isGenoHeterozygous <- function(x) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
@@ -1235,18 +1240,21 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' apiary <- c(colony1, colony2)
 #'
 #' nCsdAlleles(getQueen(colony1))
-#' nCsdAlleles(colony1)
-#' nCsdAlleles(apiary)
+#' nCsdAlleles(getFathers(colony1))
+#' nCsdAlleles(getVirginQueens(colony1))
+#' nCsdAlleles(getWorkers(colony1))
+#' nCsdAlleles(getDrones(colony1))
 #'
-#' nCsdAlleles(colony1, collapse = TRUE)
-#' nCsdAlleles(apiary, collapse = TRUE)
+#' nCsdAlleles(colony1)
+#'
+#' nCsdAlleles(apiary)
 #'
 #' @export
 nCsdAlleles <- function(x, simParamBee = NULL) {
   if (is.null(x)) {
     ret <- NA
   } else if (isPop(x)) {
-    haplo <- getCsdHaplo(x = x, simParamBee = simParamBee)
+    haplo <- getCsdAlleles(x = x, simParamBee = simParamBee)
     haplo <- haplo[!duplicated(x = haplo), ]
     ret <- nrow(haplo)
   } else if (isColony(x)) {
