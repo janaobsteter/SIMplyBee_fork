@@ -997,7 +997,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
 #'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}
+#'   colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+#'   \code{x} is \code{NULL}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -1010,7 +1011,6 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
 #' apiary <- c(colony1, colony2)
 #'
 #' getCsdAlleles(getQueen(colony1))
@@ -1020,6 +1020,9 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' getCsdAlleles(getDrones(colony1))
 #'
 #' getCsdAlleles(colony1)
+#'
+#' getCsdAlleles(getDrones(colony2))
+#' getCsdAlleles(colony2)
 #'
 #' getCsdAlleles(apiary)
 #'
@@ -1031,17 +1034,44 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
   if (is.null(simParamBee$csdChr)) {
     stop("The csd locus has not been set!")
   }
-  if (isPop(x)) {
+  if (is.null(x)) {
+    ret <- NULL
+  } else if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdAlleles(x = getQueen(x),        allele = allele, simParamBee = simParamBee)
-    ret$fathers       <- getCsdAlleles(x = getFathers(x),      allele = allele, simParamBee = simParamBee)
-    ret$virgin_queens <- getCsdAlleles(x = getVirginQueens(x), allele = allele, simParamBee = simParamBee)
-    ret$workers       <- getCsdAlleles(x = getWorkers(x),      allele = allele, simParamBee = simParamBee)
-    ret$drones        <- getCsdAlleles(x = getDrones(x),       allele = allele, simParamBee = simParamBee)
+    tmp <- getCsdAlleles(x = getQueen(x),        allele = allele, simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["queen"] <- list(NULL)
+    } else {
+      ret[["queen"]] <- tmp
+    }
+    tmp <- getCsdAlleles(x = getFathers(x),      allele = allele, simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["fathers"] <- list(NULL)
+    } else {
+      ret[["fathers"]] <- tmp
+    }
+    tmp <- getCsdAlleles(x = getVirginQueens(x), allele = allele, simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["virgin_queens"] <- list(NULL)
+    } else {
+      ret[["virgin_queens"]] <- tmp
+    }
+    tmp <- getCsdAlleles(x = getWorkers(x),      allele = allele, simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["workers"] <- list(NULL)
+    } else {
+      ret[["workers"]] <- tmp
+    }
+    tmp <- getCsdAlleles(x = getDrones(x),       allele = allele, simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["drones"] <- list(NULL)
+    } else {
+      ret[["drones"]] <- tmp
+    }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdAlleles, allele = allele, simParamBee = simParamBee)
     names(ret) <- getId(x)
@@ -1069,7 +1099,8 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
 #'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with genotypes
 #'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}
+#'   colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+#'   \code{x} is \code{NULL}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -1082,7 +1113,6 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
 #' apiary <- c(colony1, colony2)
 #'
 #' getCsdGeno(getQueen(colony1))
@@ -1092,6 +1122,9 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
 #' getCsdGeno(getDrones(colony1))
 #'
 #' getCsdGeno(colony1)
+#'
+#' getCsdAlleles(getDrones(colony2))
+#' getCsdAlleles(colony2)
 #'
 #' getCsdGeno(apiary)
 #'
@@ -1103,17 +1136,44 @@ getCsdGeno <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee$csdChr)) {
     stop("The csd locus has not been set!")
   }
-  if (isPop(x)) {
+  if (is.null(x)) {
+    ret <- NULL
+  } else if (isPop(x)) {
     ret <- pullSegSiteGeno(pop = x, chr = simParamBee$csdChr,
                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdGeno(x = getQueen(x),        simParamBee = simParamBee)
-    ret$fathers       <- getCsdGeno(x = getFathers(x),      simParamBee = simParamBee)
-    ret$virgin_queens <- getCsdGeno(x = getVirginQueens(x), simParamBee = simParamBee)
-    ret$workers       <- getCsdGeno(x = getWorkers(x),      simParamBee = simParamBee)
-    ret$drones        <- getCsdGeno(x = getDrones(x),       simParamBee = simParamBee)
+    tmp <- getCsdGeno(x = getQueen(x),        simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["queen"] <- list(NULL)
+    } else {
+      ret[["queen"]] <- tmp
+    }
+    tmp <- getCsdGeno(x = getFathers(x),      simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["fathers"] <- list(NULL)
+    } else {
+      ret[["fathers"]] <- tmp
+    }
+    tmp <- getCsdGeno(x = getVirginQueens(x), simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["virgin_queens"] <- list(NULL)
+    } else {
+      ret[["virgin_queens"]] <- tmp
+    }
+    tmp <- getCsdGeno(x = getWorkers(x),      simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["workers"] <- list(NULL)
+    } else {
+      ret[["workers"]] <- tmp
+    }
+    tmp <- getCsdGeno(x = getDrones(x),       simParamBee = simParamBee)
+    if (is.null(tmp)) {
+      ret["drones"] <- list(NULL)
+    } else {
+      ret[["drones"]] <- tmp
+    }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdGeno, simParamBee = simParamBee)
     names(ret) <- getId(x)
