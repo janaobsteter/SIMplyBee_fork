@@ -26,14 +26,15 @@
 #' @return new \code{\link{Colony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:11])
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1
 #'
-#' colony2 <- createColony(virgin_queens = basePop[12])
+#' colony2 <- createColony(virgin_queens = basePop[3])
 #' colony2
 #'
 #' @export
@@ -867,8 +868,10 @@ resetEvents <- function(x, collapse = NULL) {
     x@swarm <- FALSE
     x@split <- FALSE
     x@supersedure <- FALSE
+    # Reset collapse only if asked (!is.null(collapse)) or if it was not yet
+    #   turned on (is.null(x@collapse))
     if (is.null(collapse)) {
-      collapse <- length(x@collapse) == 0
+      collapse <- is.null(x@collapse)
     }
     if (collapse) {
       x@collapse <- FALSE

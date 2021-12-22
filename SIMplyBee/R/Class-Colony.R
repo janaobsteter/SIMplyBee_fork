@@ -13,6 +13,7 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
 setClassUnion("numericOrNULL", c("numeric", "NULL"))
+setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
 
 #' @rdname Colony-class
@@ -79,11 +80,11 @@ setClass(Class = "Colony",
                    pheno = "matrix",
                    split = "logical",
                    #remnant = "",
-                   swarm = "logical",
-                   supersedure = "logical",
+                   swarm = "logicalOrNULL",
+                   supersedure = "logicalOrNULL",
                    #rob = "logical",
-                   collapse = "logical",
-                   production = "logical",
+                   collapse = "logicalOrNULL",
+                   production = "logicalOrNULL",
                    last_event = "character",
                    misc = "listOrNULL"
          ))
