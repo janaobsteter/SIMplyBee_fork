@@ -365,6 +365,8 @@ pHomBrood <- function(x) {
 #'   present/alive or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param virginQueens logical, test for the presence of virgin queens instead
+#'   of the queen
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
@@ -382,18 +384,30 @@ pHomBrood <- function(x) {
 #' isQueenPresent(colony2)
 #' isQueenPresent(apiary)
 #'
-#' colony1 <- removeQueen(colony1)
-#' isQueenPresent(colony1)
+#' isQueenPresent(colony1, virginQueens = TRUE)
+#' isQueenPresent(colony2, virginQueens = TRUE)
+#' isQueenPresent(apiary, virginQueens = TRUE)
 #'
-#' colony2 <- supersedeColony(colony2)
-#' isQueenPresent(colony2)
+#' colony1r <- removeQueen(colony1)
+#' isQueenPresent(colony1r)
+#' isQueenPresent(colony1r, virginQueens = TRUE)
+#'
+#' colony2s <- supersedeColony(colony2)
+#' isQueenPresent(colony2s)
+#' isQueenPresent(colony2s, virginQueens = TRUE)
+#'
+#' swarmColony(buildUpColony(colony1))
 #'
 #' @export
-isQueenPresent <- function(x) {
+isQueenPresent <- function(x, virginQueens = FALSE) {
   if (isColony(x)) {
-    ret <- !is.null(x@queen)
+    if (virginQueens) {
+      ret <- !is.null(x@virgin_queens)
+    } else {
+      ret <- !is.null(x@queen)
+    }
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenPresent)
+    ret <- sapply(X = x@colonies, FUN = isQueenPresent, virginQueens = virginQueens)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")

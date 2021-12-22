@@ -50,6 +50,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     if (!isPop(queen)) {
       stop("Argument queen must be a Pop class object!")
     }
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
+    }
     id <- queen@id
     if (!is.null(yearOfBirth)) {
       if (is.null(queen@misc[[1]]$yearOfBirth)) {
@@ -74,7 +77,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
                 id = id,
                 location = location,
                 queen = queen,
-                virgin_queens = virgin_queens)
+                virgin_queens = virgin_queens) # TODO: what if a user provides more than one virgin queen?
   colony <- resetEvents(colony)
   # TODO: do we really want to add virgin queen(s) automatically? Fells like
   #       we don't want this - we should have then also added workers and drones
@@ -132,6 +135,9 @@ reQueenColony <- function(colony, queen) {
     stop("Argument queen must be a Pop class object!")
   }
   if (isQueenMated(queen)) {
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
+    }
     colony@queen <- queen
     colony@id <- queen@id
   } else {
@@ -447,9 +453,6 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   if (is.function(nWorkers)) {
     nWorkers <- nWorkers(colony)
   }
-  if (resetEvents) {
-    colony <- resetEvents(colony)
-  }
   if (new) {
     n <- nWorkers
   } else {
@@ -473,7 +476,12 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     colony <- addDrones(colony, nInd = n, new = new)
   }
   # TODO: call addVirginQueens() here instead of in create/cross/swarm?
+  if (resetEvents) {
+    colony <- resetEvents(colony)
+  }
   colony@production <- TRUE
+  # TODO: call some sort of finalise function that will guide what happens next
+  #       with the colony?
   validObject(colony)
   return(colony)
 }
@@ -944,6 +952,7 @@ crossColony <- function(colony, fathers, year = NULL, simParamBee = NULL) {
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
+  #       imagine someone providing 100 or 1000 fathers - should we just take them all?
   colony@queen <- crossVirginQueen(pop = virginQueen, fathers,
                                    simParamBee = simParamBee)
   colony@id <- colony@queen@id
@@ -1030,6 +1039,7 @@ swarmColony <- function(colony, p = 0.5, year = NULL, simParamBee = NULL) {
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
+  # TODO: pulling is random by default, should we make type of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1145,6 +1155,7 @@ splitColony <- function(colony, p = 0.3) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
+  # TODO: pulling is random by default, should we make the type of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
