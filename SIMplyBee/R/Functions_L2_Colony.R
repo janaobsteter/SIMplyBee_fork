@@ -214,7 +214,10 @@ addVirginQueens <- function(colony, nInd = NULL, year = NULL,
                                                  year = year)
   }
   if (!is.null(simParamBee$csdChr)) {
-    # TODO: update this logic here on queen vs colony pHomBrood
+    # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+    #       colony!
+    #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+    #           https://github.com/HighlanderLab/SIMplyBee/issues/80
     colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
   }
   validObject(colony)
@@ -286,7 +289,10 @@ addWorkers <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
       colony@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
     } else {
       colony@workers <- c(colony@workers, newWorkers$workers)
-      # TODO: update this logic here on queen vs colony pHomBrood
+      # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+      #       colony!
+      #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+      #           https://github.com/HighlanderLab/SIMplyBee/issues/80
       colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + newWorkers$pHomBrood) / 2
     }
   }
@@ -465,7 +471,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   if (n > 0) {
     colony <- addDrones(colony, nInd = n, new = new)
   }
-  # TODO: call addVirginQueens() here instead of create/cross/swarm?
+  # TODO: call addVirginQueens() here instead of in create/cross/swarm?
   colony@production <- TRUE
   validObject(colony)
   return(colony)
@@ -522,7 +528,10 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
       tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
       colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                           tmp$workers)
-      # TODO: we need some scaling of the pBrood here, right? Is this OK?
+      # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+      #       colony!
+      #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+      #           https://github.com/HighlanderLab/SIMplyBee/issues/80
       colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
