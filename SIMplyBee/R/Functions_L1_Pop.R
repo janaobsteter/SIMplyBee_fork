@@ -596,7 +596,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
     stop("Not enough drones in the DCA!")
   }
   ret <- vector(mode = "list", length = nGroup)
-  for (group in 1:nGroup) {
+  for (group in seq_len(nGroup)) {
     tmp <- pullInd(pop = DCA, nInd = nDrones[group])
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
@@ -703,7 +703,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
     ret$pulled <- vector(mode = "list", length = nCol)
     names(ret$pulled) <- getId(x)
     ret$colonies <- x
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       tmp = pullCaste(x = x@colonies[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
       ret$colonies@colonies[[colony]] <- tmp$colony
@@ -836,7 +836,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     fathers <- pullDroneGroupsFromDCA(DCA = fathers,
                                       nGroup = nVirginQueen,
                                       avgGroupSize = nAvgFathers)
-    for (queen in 1:nVirginQueen) {
+    for (queen in seq_len(nVirginQueen)) {
       pop@misc[[queen]]$fathers <- fathers[[queen]]
       if (is.null(simParamBee$csdChr)) {
         pop@misc[[queen]]$pHomBrood <- NA
@@ -907,7 +907,7 @@ setQueensYearOfBirth <- function(x, year) {
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       x@colonies[[colony]]@queen@misc[[1]]$yearOfBirth <- year
     }
   } else {

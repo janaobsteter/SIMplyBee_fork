@@ -77,14 +77,14 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
       queens <- tmp$pulled
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
       fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nCol, avgGroupSize = nAvgFathers)
-      for (colony in 1:nCol) {
+      for (colony in seq_len(nCol)) {
         ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                                fathers = fatherPackages[[colony]],
                                                simParamBee = simParamBee)
       }
     } else {
       virginQueens <- selectInd(pop, nInd = nCol, use = "rand")
-      for (colony in 1:nCol) {
+      for (colony in seq_len(nCol)) {
         ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
                                                simParamBee = simParamBee)
       }
@@ -386,7 +386,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
                                                  nWorkers = nWorkers,
                                                  nDrones = nDrones,
@@ -442,7 +442,7 @@ replaceWorkersColonies <- function(colonies, p = 1, use = "rand",
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- replaceWorkers(colony = colonies[[colony]],
                                                   p = p, use = use,
                                                   simParamBee = simParamBee)
@@ -490,7 +490,7 @@ replaceDronesColonies <- function(colonies, p = 1, use = "rand") {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- replaceDrones(colony = colonies[[colony]],
                                                  p = p, use = use)
   }
@@ -548,7 +548,7 @@ reQueenColonies <- function(colonies, queens) {
   if (nInd(queens) < nCol) {
     stop("Not enough queens provided!")
   }
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
                                                  queen = queens[colony])
   }
@@ -608,7 +608,7 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
     ret <- createColonies(nCol = nCol)
     fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol,
                                            avgGroupSize = nAvgFathers)
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       ret@colonies[[colony]] <- crossColony(colonies[[colony]],
                                             fathers = fatherGroups[[colony]],
                                             simParamBee = simParamBee)
@@ -655,7 +655,7 @@ collapseColonies <- function(colonies) {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- collapseColony(colonies@colonies[[colony]])
   }
   validObject(colonies)
@@ -719,7 +719,7 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
   } else {
     ret <- list(swarms = createColonies(nCol = nCol),
                 remnants = createColonies(nCol = nCol))
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       tmp <- swarmColony(colonies[[colony]], p = p, simParamBee = simParamBee)
       ret$swarms@colonies[[colony]] <- tmp$swarm
       ret$remnants@colonies[[colony]] <- tmp$remnant
@@ -770,7 +770,7 @@ supersedeColonies <- function(colonies) {
   if (nCol == 0) {
     colonies <- createColonies()
   } else {
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]])
     }
   }
@@ -831,7 +831,7 @@ splitColonies <- function(colonies, p = 0.3) {
   } else {
     ret <- list(splits = createColonies(nCol = nCol),
                 remnants = createColonies(nCol = nCol))
-    for (colony in 1:nCol) {
+    for (colony in seq_len(nCol)) {
       tmp <- splitColony(colonies[[colony]], p = p)
       ret$splits@colonies[[colony]] <- tmp$split
       ret$remnants@colonies[[colony]] <- tmp$remnant
@@ -871,7 +871,7 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
-  for (colony in 1:nCol) {
+  for (colony in seq_len(nCol)) {
     colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
                                                   FUN = FUN, ...,
                                                   simParamBee = simParamBee)
