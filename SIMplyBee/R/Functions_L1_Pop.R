@@ -116,6 +116,7 @@
 #' getDrones(apiary, nInd = 2)
 #'
 #' getCaste(colony1, caste = "all")
+#' getCaste(colony2, caste = "all")
 #'
 #' @export
 getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
@@ -124,7 +125,12 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
       for (caste in names(ret)) {
-        ret[[caste]] <- getCaste(x = x, caste = caste, nInd = nInd, use = use)
+        tmp <- getCaste(x = x, caste = caste, nInd = nInd, use = use)
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp
+        }
       }
     } else {
       if (caste == "fathers") {

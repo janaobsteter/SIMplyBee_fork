@@ -149,6 +149,7 @@ getDrones(apiary)[[2]]
 getDrones(apiary, nInd = 2)
 
 getCaste(colony1, caste = "all")
+getCaste(colony2, caste = "all")
 
 }
 \seealso{
