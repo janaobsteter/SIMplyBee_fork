@@ -1,67 +1,93 @@
+
+setClassUnion("numericOrFunction", c("numeric", "function"))
+
+#' @rdname SimParamBee
 #' @title Honeybee simulation parameters
 #'
-#' @description
-#' Container for global honeybee simulation parameters. Saving this object
-#' as SP will allow it to be accessed by function defaults. SimParamBee inherits
-#' from \code{\link{SimParam}} so all of its slots and functions are available
-#' in addition to SimParamBee-specific slots and functions. Some
-#' \code{\link{SimParam}} functions could have upgraded behaviour as documented
-#' below in line with honeybee biology.
+#' @description Container for global honeybee simulation parameters. Saving this
+#'   object as \code{SP} will allow it to be accessed by SIMplyBee functions and
+#'   many defaults can be used from the \code{SP}. \code{SimParamBee} inherits
+#'   from AlphaSimR \code{\link{SimParam}}, so all \code{\link{SimParam}} slots
+#'   and functions are available in addition to \code{SimParamBee}-specific
+#'   slots and functions. Some \code{\link{SimParam}} functions could have
+#'   upgraded behaviour as documented below in line with honeybee biology.
 #'
-#' @details
-#' The documentation below is showing specific details and here we only
-#' highlight key points for honeybee biology.
+#' @details This documentation shows details specific to \code{SimParamBee}. We
+#'   suggest you also read all the options provided by the AlphaSimR
+#'   \code{\link{SimParam}}. Below we show minimal usage cases for each
+#'   \code{SimParamBee} function. Before that, we highlight key points of
+#'   honeybee biology in relation to implementation in the SIMplyBee package.
 #'
-#' The csd locus is the complementary sex determining locus in honeybees. This
-#' locus works on top of haplo-diploidy. Heterozygous individuals become workers
-#' or queens, while homozygous individuals become unviable "drones". Hence
-#' genotypic status at the locus is critical for honeybee simulations. Here the
-#' csd locus is implemented as a series of bi-allelic SNP (haplotype) that don't
-#' recombine. In this way we can get a tunable number of csd alleles
-#' \code{nCsdHaplo}. Individuals that are homozygous at the csd locus are not
-#' viable and removed from simulation. How many are removed is recorded in each
-#' \code{\link{Colony-class}}.
+#' In honeybees, complementary sex determining (csd) locus impacts sex of
+#' individuals on top of haplo-diploidy, where diploids are queens or workers
+#' and haploids are drones. Heterozygous individuals at the csd locus become
+#' queens or workers, while homozygous individuals at the csd locus become
+#' unviable "drones". Hence genotype status at the csd locus is critical for
+#' honeybee simulations. In SIMplyBee, the csd locus is implemented as a series
+#' of bi-allelic SNP that don't recombine. Technically speaking these are
+#' haplotypes, but since they don't recombine, we call them alleles. By varying
+#' the number of SNP we can tune the number of csd alleles \code{nCsdHaplo}.
+#' Individuals that are homozygous at the csd locus are not viable and removed
+#' from simulation - see \code{\link{pHomBrood}}.
 #'
 #' @export
 SimParamBee <- R6Class(
-  "SimParamBee",
+  classname = "SimParamBee",
   inherit = SimParam,
+
+  # Public ----
+
   public = list(
-    # Public ----
 
-    #' @field csdChr integer, chromosome of the csd locus
-    csdChr = "integerOrNULL",
+    #' @field nWorkers numeric or function, default number of workers
+    #'   to generate in a colony; if function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode }
+    #'   and return a single value
+    nWorkers = "numericOrFunction",
 
-    #' @field csdPos numeric, starting position of the csd locus on the
-    #'   \code{csdChr} chromosome (relative at the moment, but could be in bp in
-    #'   the future)
-    csdPos = "numericOrNULL",
+    #' @field nDrones numeric or function, default number of drones
+    #'   to generate in a colony; if function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode }
+    #'   and return a single value
+    nDrones = "numericOrFunction",
 
-    #' @field nCsdHaplo integer, number of possible csd alleles
-    nCsdHaplo = "integerOrNULL",
-
-    #' @field nCsdSites integer, number of segregating sites representing the
-    #'   csd locus
-    nCsdSites = "integerOrNULL",
-
-    #' @field csdPosStart integer, starting position of the csd locus (this is
-    #'   worked out internally based on \code{csdPos})
-    csdPosStart = "integerOrNULL",
-
-    #' @field csdPosStop integer, ending position of the csd locus (this is
-    #'   worked out internally based on \code{csdPosStart} and \code{nCsdSites})
-    csdPosStop = "integerOrNULL",
+    #' @field nVirginQueens numeric or function, default number of virgin queens
+    #'   to generate in a colony; if function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode }
+    #'   and return a single value
+    nVirginQueens = "numericOrFunction",
 
     #' @description Starts the process of building a new simulation by creating
-    #'   a new SimParamBee object and assigning a founder population to the
-    #'   class. It is recommended that you save the object with the name "SP",
-    #'   because subsequent functions will check your global environment for an
-    #'   object of this name if their \code{simParamBee} arguments are
-    #'   \code{NULL}. This allows you to call these functions without explicitly
-    #'   supplying a \code{simParamBee} argument with every call.
+    #'   a new SimParamBee object and assigning a founder population to the this
+    #'   object. It is recommended that you save the object with the name
+    #'   \code{SP}, because subsequent functions will check your global
+    #'   environment for an object of this name if their \code{simParamBee}
+    #'   arguments are \code{NULL}. This allows you to call these functions
+    #'   without explicitly supplying a \code{simParamBee} argument with every
+    #'   call.
     #'
     #' @param founderPop \code{\link{MapPop-class}}, founder population of
-    #'   haplotypes
+    #'   genomes
+    #'
+    #' @param nWorkers numeric or function, default number of workers to
+    #'   generate in a colony; the default value for this function is only to
+    #'   have some workers to work with - you will want to change this!; see
+    #'   also the \code{nWorkers} field description on using functions and their
+    #'   examples in \code{\link{createWorkers}}
+    #' @param nDrones numeric or function, default number of drones to
+    #'   generate in a colony; the default value for this function is only to
+    #'   have some drones to work with - you will want to change this!; see
+    #'   also the \code{nDrones} field description on using functions and their
+    #'   examples in \code{\link{createDrones}}
+    #' @param nVirginQueens numeric or function, default number of virgin queens
+    #'   to generate in a colony; the default value for this function is only to
+    #'   have some virgin queens to work with - you will want to change this!;
+    #'   see also the \code{nVirginQueens} field description on using functions
+    #'   and their examples in \code{\link{createVirginQueens}}
+    #'
     #' @param csdChr integer, chromosome that will carry the csd locus, by
     #'   default 3, but if there are less chromosomes (for a simplified
     #'   simulation), the locus is put on the last available chromosome (1 or
@@ -69,57 +95,183 @@ SimParamBee <- R6Class(
     #' @param csdPos numeric, starting position of the csd locus on the
     #'   \code{csdChr} chromosome (relative at the moment, but could be in bp in
     #'   the future)
-    #' @param nCsdHaplo integer, number of possible csd alleles (this determines
-    #'   how many segregating sites will be needed to represent the csd loci
-    #'   from the underlying bi-allelic SNP - \cove{log2(nCsdHaplo)})
+    #' @param nCsdAlleles integer, number of possible csd alleles (this
+    #'   determines how many segregating sites will be needed to represent the
+    #'   csd locus from the underlying bi-allelic SNP; that is the minimum
+    #'   number of bi-allelic SNP needed is \code{log2(nCsdAlleles)})
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
-    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 2)
+    #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
     #'
     #' # We need enough segregating sites
-    #' try(SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100))
+    #' try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
-    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
+    #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
     #'
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-    #' SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 100)
-    initialize = function(founderPop, csdChr = 3, csdPos = 0.865, nCsdHaplo = 100) {
+    #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+    # TODO: use the max number of csd alleles found in literature and cite that
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/93
+    initialize = function(founderPop,
+                          nWorkers = 100, nDrones = 10,
+                          nVirginQueens = 10,
+                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
+      private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
+
+      # nWorkers, nDrones, and nVirginQueens ----
+
+      self$nWorkers <- nWorkers
+      self$nDrones <- nDrones
+      self$nVirginQueens <- nVirginQueens
 
       # csd ----
-      self$csdChr <- NULL
+
+      private$.csdChr <- NULL
       if (!is.null(csdChr)) {
         # csd chromosome
         if (self$nChr < csdChr) {
-          self$csdChr <- self$nChr
+          private$.csdChr <- self$nChr
           # message(paste0("There are less than 3 chromosomes, so putting csd locus on chromosome ", self$csdChr, "!"))
         } else {
-          self$csdChr <- csdChr
+          private$.csdChr <- csdChr
         }
 
         # csd position and sites
-        self$csdPos <- csdPos
-        self$nCsdHaplo <- nCsdHaplo
-        self$nCsdSites <- ceiling(log2(self$nCsdHaplo))
-        nLoci <- self$segSites[self$csdChr]
-        self$csdPosStart <- floor(nLoci * self$csdPos)
-        csdPosStop <- self$csdPosStart + self$nCsdSites - 1
+        private$.csdPos <- csdPos
+        private$.nCsdAlleles <- nCsdAlleles
+        private$.nCsdSites <- ceiling(log2(private$.nCsdAlleles))
+        nLoci <- self$segSites[private$.csdChr]
+        private$.csdPosStart <- floor(nLoci * private$.csdPos)
+        csdPosStop <- private$.csdPosStart + private$.nCsdSites - 1
         if (csdPosStop > nLoci) {
-          stop(paste0("Too few segregagting sites to simulate ", self$nCsdHaplo, " csd haplotypes at the given position!"))
+          stop(paste0("Too few segregagting sites to simulate ", private$.nCsdAlleles, " csd alleles at the given position!"))
         } else {
-          self$csdPosStop <- csdPosStop
+          private$.csdPosStop <- csdPosStop
         }
         genMap <- self$genMap
         # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
-        genMap[[self$csdChr]][self$csdPosStart:self$csdPosStop] <- 0
+        genMap[[private$.csdChr]][private$.csdPosStart:private$.csdPosStop] <- 0
         self$switchGenMap(genMap)
       }
+
+      invisible(self)
     }
+
+  ),
+
+  # Private ----
+
+  private = list(
+    .versionSIMplyBee = "character",
+    .csdChr = "integerOrNULL",
+    .csdPos = "numeric",
+    .nCsdAlleles = "integer",
+    .nCsdSites = "integer",
+    .csdPosStart = "integer",
+    .csdPosStop = "integer"
+  ),
+
+  # Active ----
+
+  active = list(
+
+    #' @field csdChr integer, chromosome of the csd locus
+    csdChr = function(value) {
+      if (missing(value)){
+        private$.csdChr
+      } else {
+        stop("`$csdChr` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPos numeric, starting position of the csd locus on the \code{csdChr}
+    #'   chromosome (relative at the moment, but could be in bp in the future)
+    csdPos = function(value) {
+      if (missing(value)){
+        private$.csdPos
+      } else {
+        stop("`$csdPos` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field nCsdAlleles integer, number of possible csd alleles
+    nCsdAlleles = function(value) {
+      if (missing(value)){
+        private$.nCsdAlleles
+      } else {
+        stop("`$nCsdAlleles` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field nCsdSites integer, number of segregating sites representing the
+    #'   csd locus
+    nCsdSites = function(value) {
+      if (missing(value)){
+        private$.nCsdSites
+      } else {
+        stop("`$nCsdSites` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPosStart integer, starting position of the csd locus
+    csdPosStart = function(value) {
+      if (missing(value)){
+        private$.csdPosStart
+      } else {
+        stop("`$.csdPosStart` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field csdPosStop integer, ending position of the csd locus
+    csdPosStop = function(value) {
+      if (missing(value)){
+        private$.csdPosStop
+      } else {
+        stop("`$csdPosStop` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field version list, versions of AlphaSimR and SIMplyBee packages used to
+    #'   generate this object
+    version = function(value) {
+      if (missing(value)){
+        list("AlphaSimR" = private$.version,
+             "SIMplyBee" = private$.versionSIMplyBee)
+      } else {
+        stop("`$version` is read only", call. = FALSE)
+      }
+    }
+
   )
+
 )
 
+# isSimParamBee ----
+
+#' @rdname isSimParamBee
+#' @title Test if x is a SimParamBee class object
+#'
+#' @description Test if x is a \code{\link{SimParamBee}} class object
+#'
+#' @param x \code{\link{SimParamBee}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' isSimParamBee(SP)
+#'
+#' @export
+isSimParamBee <- function(x) {
+  ret <- is(x, class2 = "SimParamBee")
+  return(ret)
+}
+
 # TODO: remove this once AlphaSimR exports getNumThreads (pull request accepted)
-getNumThreads = AlphaSimR:::getNumThreads()
+# https://github.com/HighlanderLab/SIMplyBee/issues/75
+getNumThreads <- AlphaSimR:::getNumThreads()

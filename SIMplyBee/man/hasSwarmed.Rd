@@ -2,16 +2,44 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{hasSwarmed}
 \alias{hasSwarmed}
-\title{Test to see if colony/colonies have swarmed in the current period}
+\title{Test if colony has swarmed}
 \usage{
-\method{hasSwarmed}(x)
+hasSwarmed(x)
 }
 \arguments{
-\item{x}{Undefined argument. Can be a "Colony" class or "Colonies" class}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 }
 \value{
-
+logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
-Test to see if colony/colonies have swarmed in the current period
+Level 0 function that returns colony swarmed status. This will
+  obviously have major impact on the colony and its downstream events.
+}
+\examples{
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony
+hasSwarmed(colony)
+colony <- buildUpColony(colony, nWorkers = 100)
+colony
+hasSwarmed(colony)
+tmp <- swarmColony(colony)
+tmp
+hasSwarmed(tmp$swarm)
+hasSwarmed(tmp$remnant)
+
+colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+apiary <- buildUpColonies(apiary, nWorkers = 100)
+tmp <- swarmColonies(apiary)
+tmp
+hasSwarmed(tmp$swarms)
+hasSwarmed(tmp$remnants)
+
 }

@@ -2,11 +2,21 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{simulateHoneyBeeGenomes}
 \alias{simulateHoneyBeeGenomes}
-\title{Simulate the Honey bee genome, including the csd locus}
+\title{Simulate the Honey bee genome}
 \usage{
-\method{simulateHoneyBeeGenomes}(nInd, nChr, nSegSites, Ne, nBp. genLen,
-                                        mutRate, histNe, histGen, split, csdChr,
-                                        csdPos, nCsdHaplos, nThreads)
+simulateHoneyBeeGenomes(
+  nInd = NULL,
+  nChr = 16,
+  nSegSites = 1000,
+  Ne = 157598,
+  nBp = 225200000/16,
+  genLen = 34.5/16,
+  mutRate = 9e-09,
+  histNe = Ne,
+  histGen = 1,
+  split = NULL,
+  nThreads = NULL
+)
 }
 \arguments{
 \item{nInd}{number of individuals to simulate}
@@ -25,30 +35,24 @@
 
 \item{histNe}{effective population size in previous generations}
 
-\item{histGen}{number of generations ago for effective population sizes given in histNe}
+\item{histGen}{number of generations ago for effective population sizes given
+in histNe}
 
-\item{split}{an optional historic population split in terms of generations ago}
+\item{split}{an optional historic population split in terms of generations
+ago}
 
-\item{csdChr}{which number chromosome the csd locus is located on}
-
-\item{csdPos}{vector. position of the csd locus on the chromosome}
-
-\item{nCsdHaplos}{number of possible csd haplotypes}
-
-\item{nThreads}{if OpenMP is available, this will allow for simulating chromosomes in parallel.
-If the value is NULL, the number of threads is automatically detected}
+\item{nThreads}{if OpenMP is available, this will allow for simulating
+chromosomes in parallel. If the value is NULL, the number of threads is
+automatically detected}
 }
 \value{
-
+\code{\link{MapPop-class}}
 }
 \description{
-
+Level 0 function that returns simulated honeybee genomes
 }
 \examples{
-tmp <- simulateHoneyBeeGenomes(nInd = 1000, ...)
-founderGenomes <- tmp$founderGenomes
-SP <- tmp$SP
-csd <- tmp$csd
-rm(tmp)
+founderGenomes <- simulateHoneyBeeGenomes(nInd = 10, nChr = 1,
+                                          nSegSites = 10, Ne = 10)
 
 }

@@ -2,37 +2,52 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createVirginQueens}
 \alias{createVirginQueens}
-\title{Creates virgin queen}
+\title{Creates virgin queens from the colony}
 \usage{
-\method{createVirginQueens}(colony, nInd)
+createVirginQueens(colony, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, the number of virgin queens to create.}
+\item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
+\code{simParamBee$nVirginQueens} is used}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-AlphaSim population object of created virgin queens.
+list with two nodes named \code{virgin_queens} (a
+  \code{\link{Pop-class}}) and \code{pHomBrood} (a numeric)
 }
 \description{
-Creates the specified number of virgin queens in the colony
-       \by mating the current queen and the fathers in the \code{colony@queen@misc$fathers} slot.
+Level 1 function that creates the specified number of virgin
+  queens from the colony by mating the colony queen and the fathers. If csd
+  locus is defined, it takes it into account and any csd homozygotes are
+  removed and counted towards homozygous brood.
 }
 \examples{
-# Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+createVirginQueens(colony, nInd = 10)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+# Using a default in SP$nVirginQueens
+# (just to have some virgin queens - change this to your needs!)
+createVirginQueens(colony)
+createVirginQueens(colony)
 
-#Creates colony
-founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+SP$nVirginQueens <- 15
+createVirginQueens(colony)
+createVirginQueens(colony)
 
-#Crate virgin queens
-colony1@virgin_queens <- createVirginQueens(colony1, nInd = 17)
+nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+createVirginQueens(colony, nInd = nVirginQueensFun)
+createVirginQueens(colony, nInd = nVirginQueensFun)
+
+SP$nVirginQueens <- nVirginQueensFun
+createVirginQueens(colony)
+createVirginQueens(colony)
 
 }

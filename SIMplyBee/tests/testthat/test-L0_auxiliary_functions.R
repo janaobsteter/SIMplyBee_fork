@@ -8,7 +8,7 @@ test_that("nColonies", {
   apiary <- c(colony1, colony2)
   expect_equal(nColonies(apiary), 2)
   expect_equal(nColonies(createColonies()), 0)
-  expect_equal(nColonies(createColonies(n = 10)), 10)
+  expect_equal(nColonies(createColonies(nCol = 10)), 10)
 })
 
 test_that("nCaste", {

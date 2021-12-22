@@ -2,41 +2,79 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{buildUpColony}
 \alias{buildUpColony}
-\title{buildUpColony}
+\title{Build up colony by adding (raising) workers and drones}
 \usage{
-\method{buildUpColony}(colony, nWorkers, nDrones)
+buildUpColony(
+  colony,
+  nWorkers = NULL,
+  nDrones = NULL,
+  new = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nWorkers}{Desired number of workers wanted in the colony}
+\item{nWorkers}{numeric or function, number of worker; if \code{NULL} then
+\code{simParamBee$nWorkers} is used (currently present workers are taken
+into account so only the difference is added)}
 
-\item{nDrones}{Desired number of drones wanted in the colony}
+\item{nDrones}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used (currently present drones are taken into
+account so only the difference is added)}
+
+\item{new}{logical, should the workers and drones be added a fresh (ignoring
+currently present workers and drones)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with workers and drones added
 }
 \description{
-Workers and drones are added to a colony/colonies to build it/them
-up to the number of desired workers and drones (nWorkers and nDrones).
-A user would want to build up a colony in the Period 1 and if events such as split or swarming
-occur.
+Level 2 function that builds up colony by adding (raising)
+  workers and drones, usually in spring or after events such as split or
+  swarming.
+}
+\details{
+This function turns production of the colony to \code{TRUE}.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+isProductive(colony)
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
+# Using defaults in SP
+# (just to have some bees - change this to your needs!)
+(colony <- buildUpColony(colony))
+isProductive(colony)
 
-#Create 10 mated colonies from the base population
-apiary1 <- createMultipleMatedColonies(base, nColonies = 10, nAvgFathers = 15)
+colony <- buildUpColony(colony, nWorkers = 100)
+colony # we are already at the target
+colony <- buildUpColony(colony, nWorkers = 150)
+colony # increasing the target
+colony <- buildUpColony(colony, nWorkers = 100)
+colony # we are already at the target
+colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
+colony # adding completely new workers & drones
 
-#Build-up the colonies
-colonyFullSize <- 500
-apiary1 <- buildUpColonies(apiary1, nWorkers = colonyFullSize, nDrones = colonyFullSize * 0.1)
+# Using functions
+nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+colony <- createColony(queen = basePop[2], fathers = drones)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+
+# Using functions in simParamBee
+SP$nWorkers <- nWorkersFun
+SP$nDrones <- nDronesFun
+colony <- createColony(queen = basePop[2], fathers = drones)
+buildUpColony(colony)
+buildUpColony(colony)
 
 }

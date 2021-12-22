@@ -2,46 +2,39 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{supersedeColonies}
 \alias{supersedeColonies}
-\title{supersedeColonies}
+\title{Supersede colony for all given colonies}
 \usage{
-\method{supersedeColonies}(colonies, crossVirginQueen, fathers, pWorkers, pDrones)
+supersedeColonies(colonies)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
-
-\item{pDrones}{}
+\item{colonies}{\code{\link{Colonies-class}}}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with superseded colonies
 }
 \description{
-:  Replicates the process of supersedure, where the
-queen is replaced by a new virgin queen. The workers and the drones stay
-in the colonies. If no fathers are present, mating of the virgin queen does not occur.
+Level 3 function that does the same as
+  \code{\link{supersedeColony}} but for all given colonies.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony1 <- buildUpColony(colony1, nWorkers = 100)
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony2 <- buildUpColony(colony2, nWorkers = 100)
+apiary <- c(colony1, colony2)
+apiary
+apiary[[1]]
+apiary[[2]]
 
-#Create population
-base <- newPop(founderPop, simParam=SP)
-TODO NOT WORKING EXAMPLE
-#Create 10 virgin queen colonies
- apiary1 <- createMultipleMatedColonies(founderPop = base, nColonies = 10, nAvgFathers = 15)
-
-# Select colonies for supersedure
-
-coloniesForSupersedure <- pullColonies(apiary1, p = 0.1)
-
-# Supersedure the colonies
-
-tmp <- supersedeColonies(coloniesForSupersedure)
-
-# Put superseded colonies back to the apiary
-
-apiary1 <- c(apiary1, tmp)
+apiary <- supersedeColonies(apiary)
+apiary
+apiary[[1]]
+apiary[[2]]
+hasSuperseded(apiary)
 
 }

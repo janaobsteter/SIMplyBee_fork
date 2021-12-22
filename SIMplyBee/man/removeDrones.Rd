@@ -2,19 +2,43 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{removeDrones}
 \alias{removeDrones}
-\title{Remove selected percentage of drones}
+\title{Remove a proportion of drones}
 \usage{
-\method{removeWorkers}(colony, nWorkers)
+removeDrones(colony, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimR Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{Numeric. 0<=p>=1 .}
+\item{p}{numeric, proportion to be removed}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of drones that will stay when \code{p < 1}}
+}
+\value{
+\code{\link{Colony-class}} without drones
 }
 \description{
-To decrease the number of drones (for example, in winter)
+Level 2 function that removes a proportion of drones, for
+  example, at the end of summer.
 }
 \examples{
-inst/examples/examples_removeDrones.R
-#' @return Updated AlphaSimRBee Colony object
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+colony <- addDrones(colony, nInd = 10)
+colony
+getDrones(colony)@id
+
+colony <- removeDrones(colony, p = 0.5)
+colony
+getDrones(colony)@id
+
+colony <- removeDrones(colony, p = 1.0)
+colony
+getDrones(colony)
+
 }

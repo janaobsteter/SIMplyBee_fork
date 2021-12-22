@@ -2,18 +2,54 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{resetEvents}
 \alias{resetEvents}
-\title{Reset the swarm, split, supersedure events}
+\title{Reset colony events}
 \usage{
-\method{resetEvents}(colony)
+resetEvents(colony, collapse = length(colony@collapse) == 0)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object.}
+\item{colony}{\code{\link{Colony-class}}}
+
+\item{collapse}{logical, reset the collapse event (only sensible in setting
+up a new colony, which the default caters for; otherwise, a collapsed
+colony should be left collapsed forever)}
 }
 \value{
-An updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with events reset
 }
 \description{
-Reset the slots swarm, split and supersedure to FALSE.
-A user will use this function at the end of a yearly cycle to reset the events,
-allowing the user to track the events of the current year without overlap.
+Level 2 function that resets the slots swarm, split,
+  supersedure, collapsed, and production to FALSE. Useful at the end of a
+  yearly cycle to reset the events, allowing the user to track new events in
+  a new year.
+}
+\examples{
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+
+(colony <- buildUpColony(colony, nWorkers = 100))
+resetEvents(colony)
+
+tmp <- splitColony(colony, p = 0.5)
+(split <- tmp$split)
+resetEvents(split)
+(remnant <- tmp$remnant)
+resetEvents(remnant)
+
+tmp <- swarmColony(colony, p = 0.5)
+(swarm <- tmp$swarm)
+resetEvents(swarm)
+(remnant <- tmp$remnant)
+resetEvents(remnant)
+
+(tmp <- supersedeColony(colony)) # TODO: do we still get production if we have supersedure?
+resetEvents(tmp)
+
+(tmp <- collapseColony(colony))
+resetEvents(tmp)
+
 }

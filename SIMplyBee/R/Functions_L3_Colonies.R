@@ -106,8 +106,8 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
 #'   will insert the colony to that position and with this replace the old
 #'   colony at that position.
 #'
-#' @param colonies \code{\link{Colonies}}
-#' @param colony \code{\link{Colony}}, colony that will be added
+#' @param colonies \code{\link{Colonies-class}}
+#' @param colony \code{\link{Colony-class}}, colony that will be added
 #' @param pos numeric or character, index or ID of the old colony
 #'
 #' @return \code{\link{Colonies-class}} with a replaced colony
@@ -192,7 +192,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!is.null(ID)) {
     ret <- colonies[getId(colonies) %in% ID]
   } else if (!is.null(p)) {
-    lSel <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    lSel <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
     message(paste0("Randomly selecting colonies: ", sum(lSel)))
     if (any(lSel)) {
       ret <- colonies[lSel]
@@ -251,7 +251,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
     pulledColonies <- selectColonies(colonies, ID)
     remainingColonies <- removeColonies(colonies, ID)
   } else if (!is.null(p)) {
-    lPull <- as.logical(rbinom(n = nColonies(colonies), size = 1, p = p))
+    lPull <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
     message(paste0("Pulling out randomly selected colonies: ", sum(lPull)))
     if (any(lPull)) {
       ids <- getId(colonies)
@@ -310,10 +310,12 @@ removeColonies <- function(colonies, ID) {
 #'   \code{\link{buildUpColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param nWorkers integer, desired number of workers in the colony (currently
-#'   present workers are taken into account so only the difference is added)
-#' @param nDrones integer, desired number of drones in the colony (currently
-#'   present drones are taken into account so only the difference is added)
+#' @param nWorkers numeric or function, number of worker; if \code{NULL} then
+#'   \code{simParamBee$nWorkers} is used (currently present workers are taken
+#'   into account so only the difference is added)
+#' @param nDrones numeric or function, number of drones; if \code{NULL} then
+#'   \code{simParamBee$nDrones} is used (currently present drones are taken into
+#'   account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -333,7 +335,9 @@ removeColonies <- function(colonies, ID) {
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' # Using defaults in SP
+#' # (just to have some bees - change this to your needs!)
+#' (apiary <- buildUpColonies(apiary))
 #' isProductive(apiary)
 #' apiary[[1]]
 #' apiary[[2]]
@@ -347,8 +351,30 @@ removeColonies <- function(colonies, ID) {
 #' apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
 #' apiary[[1]] # adding completely new workers & drones
 #'
+#' # Using functions
+#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
+#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' apiary <- c(colony1, colony2)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp[[1]]
+#' tmp[[2]]
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp[[1]]
+#' tmp[[2]]
+#'
+#' # Using functions in simParamBee
+#' SP$nWorkers <- nWorkersFun
+#' SP$nDrones <- nDronesFun
+#' apiary <- c(colony1, colony2)
+#' tmp <- buildUpColonies(apiary)
+#' tmp[[1]]
+#' tmp[[2]]
+#' tmp <- buildUpColonies(apiary)
+#' tmp[[1]]
+#' tmp[[2]]
+#'
 #' @export
-buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
+buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                             new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -378,6 +404,7 @@ buildUpColonies <- function(colonies, nWorkers, nDrones = nWorkers * 0.1,
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with replaced workers
 #'
@@ -816,24 +843,34 @@ splitColonies <- function(colonies, p = 0.3) {
 #'
 #' @description Level 3 function that TODO
 #'
-#' @param colonies AlphaSimRBee Colonies object containing a list of colonies
+#' @param colonies \code{\link{Colonies-class}}
 #' @param FUN TODO
 #' @param ... TODO
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Colonies-class}} with phenotypes
 #'
 #' @examples
-#' TODO
-#'
-#' @return An updated AlphaSimRBee Colonies object
+#' # TODO
 #'
 #' @export
-setPhenoColonies <- function(colonies, FUN = NULL, ...) {
+# See setPhenoColony() and
+#     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#     https://github.com/HighlanderLab/SIMplyBee/issues/44
+setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   nCol <- nColonies(colonies)
   for (colony in 1:nCol) {
     colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                                  FUN = FUN, ...)
+                                                  FUN = FUN, ...,
+                                                  simParamBee = simParamBee)
   }
   validObject(colonies)
   return(colonies)

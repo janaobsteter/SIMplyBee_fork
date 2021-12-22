@@ -4,36 +4,73 @@
 \alias{createColonies}
 \title{Create colonies}
 \usage{
-createColonies(..., n = NULL)
+createColonies(
+  pop = NULL,
+  nCol = NULL,
+  mated = TRUE,
+  nAvgFathers = 15,
+  nDronesPerQueen = 100,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{...}{one or more \code{\link{Colony-class}}, \code{\link{Colonies-class}},
-or NULL objects.}
+\item{pop}{\code{\link{Pop-class}}, individuals that will be used as queens
+of the created colonies (the queens are selected at random from if there
+are more than \code{n} in \code{Pop})}
 
-\item{n}{numeric, number of colonies to create; this argument takes precedence
-over \code{...}}
+\item{nCol}{integer, number of colonies to create (if only \code{nCol} is
+given then \code{\link{Colonies-class}} is created with \code{nCol} empty
+(\code{NULL}) individual colony) - this is mostly useful for programming)}
+
+\item{mated}{logical, create mated or unmated (virgin) colonies; if mated,
+then \code{nInd(pop)-n} individuals from \code{pop} are used to create
+drones with which the queens will mate with}
+
+\item{nAvgFathers}{integer, number of drones that a queen mates with
+TODO nAvgFathers default should go to simParamBee and then we set it to NULL
+     here and if its NULL we grab value from simParamBee, otherwise use it
+     from the user}
+
+\item{nDronesPerQueen}{integer, number of drones to generate per individual
+from the pop for mating with the queens
+TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
+     here and if its NULL we grab value from simParamBee, otherwise use it
+     from the user}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-A \code{\link{Colonies-class}} object
+\code{\link{Colonies-class}}
 }
 \description{
-Creates a set of colonies
+Level 3 function that creates a set of colonies. Usually to
+  start a simulation.
+}
+\details{
+When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
+  \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
 }
 \examples{
-# Create 10 empty colonies
-apiary <- createColonies(n = 10)
-
-# Create an apiary from two existing colonies
-# ... AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
-# ... Honeybees
-drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
-colony1 <- createColony(queen = basePop[1], fathers = drones)
-colony2 <- createColony(virgin_queens = basePop[3])
-apiary2 <- createColonies(colony1, colony2)
-# ... an alternative
-apiary2 <- c(colony1, colony2)
+
+# Create 2 empty (NULL) colonies
+apiary <- createColonies(nCol = 2)
+apiary
+apiary[[1]]
+apiary[[2]]
+
+# Create 2 mated colonies
+apiary <- createColonies(pop = basePop, nCol = 2)
+apiary
+apiary[[1]]
+apiary[[2]]
+
+# Create 2 unmated/virgin colonies
+apiary <- createColonies(pop = basePop, nCol = 2, mated = FALSE)
+apiary
+apiary[[1]]
+apiary[[2]]
 
 }

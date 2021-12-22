@@ -5,76 +5,54 @@
 \title{Create a new Colony}
 \usage{
 createColony(
-  id = NULL,
   location = NULL,
   queen = NULL,
-  drones = NULL,
-  workers = NULL,
-  virgin_queens = NULL,
-  fathers = NULL,
-  pheno = NULL,
-  swarm = FALSE,
-  split = FALSE,
-  supersedure = FALSE,
-  collapse = FALSE,
-  production = FALSE,
-  last_event = NULL,
   yearOfBirth = NULL,
-  misc = NULL,
-  simParam = NULL
+  fathers = NULL,
+  virgin_queens = NULL,
+  simParamBee = NULL
 )
 }
 \arguments{
-\item{id}{Character, the ID of the colony, which equals the ID of the queen of not stated otherwise.}
+\item{location}{numeric, location of the colony as \code{c(x, y)}}
 
-\item{location}{Numeric, location of the colony (x, y).}
+\item{queen}{\code{\link{Pop-class}} with one individual that will be the
+queen of the colony; error is thrown if more than one individual is given}
 
-\item{queen}{AlphaSimR population object to become the queen of the colony.}
+\item{yearOfBirth}{numeric, year of birth of the queen}
 
-\item{drones}{AlphaSimR population object to become the drones of the colony.}
+\item{fathers}{\code{\link{Pop-class}} with drones that the queen will mate
+with as part of this function (if she is already mated, a warning is given
+and the fathers argument is ignored)}
 
-\item{workers}{AlphaSimR population object to become the workers of the colony.}
+\item{virgin_queens}{\code{\link{Pop-class}} with one or more individuals of
+which one will become the queen of the colony in the future
+TODO: think and explain what happens if we provide both a queen and virgin
+queens (possibly of different origin)!}
 
-\item{virgin_queens}{AlphaSimR individual or population object to become the virgin queen(s) of the colony.}
-
-\item{pheno}{A matrix of the phenotypes of the colony}
-
-\item{swarm}{Logical, whether the colony has swarmed}
-
-\item{split}{Logical, whether the colony has split}
-
-\item{supersedure}{Logical, whether the colony has superseded}
-
-\item{collapse}{Logical, whether the colony has collapsed}
-
-\item{production}{Logical, whether the colony produces hive products}
-
-\item{last_event}{Character, the last event of the colony #TODO: WE probably don't need this}
-
-\item{misc}{A list, normally empty and exists solely as an open slot available for uses to store extra information about individuals.}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Returns an object of \code{\link{Colony}}
-
-AlphaSim Colony object of class "Colony"
+new \code{\link{Colony-class}}
 }
 \description{
-Creates a new \code{\link{Colony}}.
-The function is intended for creating initial colonies from
-'FOUNDERPOP' created by \code{\link{runMacs}}.
+Level 2 function that creates a new \code{\link{Colony-class}}
+  to initiate simulations.
+}
+\details{
+When a mated queen is given or a queen alongside with fathers, the
+  function also generates one virgin queen.
+  TODO: discuss this - see below
 }
 \examples{
-# Create founder genomes
-founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 10)
-
-# Set simulation parameters
-SP <- SimParam$new(founderGenomes)
-
-# Create a base population
+founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Create two colonies
-colony1 <- createColony(queen = basePop[1], fathers = basePop[2:15])
-colony2 <- createColony(virgin_queens = basePop[16])
+colony1 <- createColony(queen = basePop[1], fathers = basePop[2:11])
+colony1
+
+colony2 <- createColony(virgin_queens = basePop[12])
+colony2
 
 }

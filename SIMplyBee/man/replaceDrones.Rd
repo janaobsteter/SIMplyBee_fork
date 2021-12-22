@@ -2,36 +2,44 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{replaceDrones}
 \alias{replaceDrones}
-\title{Replaces drone with new drone with new genetic information}
+\title{Replace a proportion of drones with new ones}
 \usage{
-\method{replaceWorkers}(colony, p)
+replaceDrones(colony, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object.}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{Numeric, proportion of drones to be replaced with new ones.}
+\item{p}{numeric, proportion of drones to be replaced with new ones}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of drones that stay when \code{p < 1}}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with replaced drones
 }
 \description{
-Replace a proportion of drones in the new with new drones from the same queen.
-A user would want to replace a proportion (or all) of drones after swarming and supersedure or
-due to the short-life span of the drones.
+Level 2 function that replaces a proportion of drones with new
+  drones from the colony. Useful after events like season change, swarming,
+  supersedure, etc. due to the short life span of the drones.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+colony <- addDrones(colony, nInd = 10)
+colony
+getDrones(colony)@id
+colony <- replaceDrones(colony, p = 0.5)
+getDrones(colony)@id
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+colony <- replaceDrones(colony, p = 1.0)
+getDrones(colony)@id
 
-#Creates colony
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
-colony1 <- addDrones(colony1, nInd = 2000)
-colony1 <- replaceDrones(colony1, p = 0.2)
+colony <- replaceDrones(colony, p = 1.5)
+getDrones(colony)@id
 
 }

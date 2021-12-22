@@ -2,21 +2,54 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCsdGeno}
 \alias{getCsdGeno}
-\title{Get the Genotypes of the csd locus}
+\title{Get genotypes from the csd locus}
 \usage{
-\method{getCsdGeno}(x, csd)
+getCsdGeno(x, simParamBee = NULL)
 }
 \arguments{
-\item{x}{Undefined argument. Can be a "Colony" class or "Colonies" class}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 
-\item{csd}{complementary sex determination locus- list with nodes chr, start and stop}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-
+matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
+  of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
+  (list nodes named by caste) and list of a list of matrices with genotypes
+  when \code{x} is \code{\link{Colonies-class}}, outer list is named by
+  colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
-
+Level 0 function that returns genotypes from the csd locus. See
+  \code{\link{SimParamBee}} for more information about the csd locus.
+}
+\details{
+The returned genotypes are spanning multiple bi-allelic SNP of
+  non-recombining haplotypes. In most cases you will want to use
+  \code{\link{getCsdAlleles}}.
 }
 \examples{
+founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addWorkers(colony1, nInd = 10)
+colony2 <- addWorkers(colony2, nInd = 20)
+colony1 <- addDrones(colony1, nInd = 2)
+colony2 <- addDrones(colony2, nInd = 4)
+apiary <- c(colony1, colony2)
+
+getCsdGeno(getQueen(colony1))
+getCsdGeno(getVirginQueens(colony1))
+getCsdGeno(getFathers(colony1))
+getCsdGeno(getWorkers(colony1))
+getCsdGeno(getDrones(colony1))
+
+getCsdGeno(colony1)
+
+getCsdGeno(apiary)
 
 }

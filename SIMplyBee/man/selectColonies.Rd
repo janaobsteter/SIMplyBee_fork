@@ -2,33 +2,31 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{selectColonies}
 \alias{selectColonies}
-\title{Select individual colonies from a set of colonies}
+\title{Select individual colonies}
 \usage{
 selectColonies(colonies, ID = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{Colonies, a set of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{ID}{numeric or character, name of a colony (one or more) in
-\code{colonies}; note that numeric value is effectively converted to character
-- see examples how to select by index}
+\item{ID}{numeric or character, name of a colony (one or more) to be pulled
+out; note that numeric value is converted to character}
+
+\item{p}{numeric, probability of a colony being selected}
 }
 \value{
-Colonies, selected colonies
+\code{\link{Colonies-class}} with selected colonies
 }
 \description{
-Select individual colonies from a set of colonies based on colony
-index or name
+Level 3 function that selects individual colonies based on
+  colony ID or random selection.
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-
 colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
 colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
 colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
@@ -38,7 +36,7 @@ selectColonies(apiary, ID = 4)
 selectColonies(apiary, ID = "4")
 selectColonies(apiary, ID = c(4, 5))
 selectColonies(apiary, ID = c("4", "5"))
-
+# ... alternative
 apiary[1]
 apiary[[1]]
 apiary["4"]
@@ -47,5 +45,9 @@ getId(apiary[c(1, 2)])
 getId(apiary[c("4", "5")])
 getId(apiary[c(2, 1)])
 getId(apiary[c("5", "4")])
+
+getId(selectColonies(apiary, p = 0.5))
+getId(selectColonies(apiary, p = 0.5))
+getId(selectColonies(apiary, p = 0.5))
 
 }

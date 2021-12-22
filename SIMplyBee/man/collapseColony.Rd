@@ -2,22 +2,29 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{collapseColony}
 \alias{collapseColony}
-\title{Replicates colony collapse}
+\title{Collapse colony}
 \usage{
-\method{collapseColony}(colony)
+collapseColony(colony)
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 }
 \value{
-Single AlphaSim population object of collapsed colony
+\code{\link{Colony-class}} with the collapse event set to \code{TRUE}
 }
 \description{
-Replicates the collapse of a colony. This can be due to winter losses, disease or other factors.
+Level 2 function that collapses colony by setting the collapse
+  event slot to \code{TRUE}. The production status slot is also changed (to
+  \code{FALSE}).
 }
 \examples{
-inst/examples/examples_collapseColony.R
-}
-\seealso{
-\code{\link[??????]{collapseColony}}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+(colony <- buildUpColony(colony, nWorkers = 100))
+collapseColony(colony)
+
 }

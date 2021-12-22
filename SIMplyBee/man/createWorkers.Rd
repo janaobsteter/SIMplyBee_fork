@@ -2,37 +2,52 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createWorkers}
 \alias{createWorkers}
-\title{Creates workers of the colony}
+\title{Creates workers from the colony}
 \usage{
-\method{createWorkers}(colony, nInd)
+createWorkers(colony, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, number of workers to create}
+\item{nInd}{numeric or function, number of workers; if \code{NULL} then
+\code{simParamBee$nWorkers} is used}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-AlphaSim population object of created workers.
+list with two nodes named \code{workers} (a \code{\link{Pop-class}})
+  and \code{pHomBrood} (a numeric)
 }
 \description{
-Creates the specified number of workers in the colony
-      \by mating the current queen and the fathers in the \code{colony@queen@misc$fathers} slot.
+Level 1 function that creates the specified number of workers
+  from the colony by mating the colony queen and the fathers. If csd locus is
+  defined, it takes it into account and any csd homozygotes are removed and
+  counted towards homozygous brood.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+createWorkers(colony, nInd = 100)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+# Using a default in SP$nWorkers
+# (just to have some workers - change this to your needs!)
+createWorkers(colony)
+createWorkers(colony)
 
-#Creates colony
-founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+SP$nWorkers <- 15
+createWorkers(colony)
+createWorkers(colony)
 
-#Creat workers
-colony1@workers <- createWorkers(colony1, nInd = 1000)
+nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+createWorkers(colony, nInd = nWorkersFun)
+createWorkers(colony, nInd = nWorkersFun)
+
+SP$nWorkers <- nWorkersFun
+createWorkers(colony)
+createWorkers(colony)
 
 }

@@ -2,52 +2,114 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{pullCaste}
 \alias{pullCaste}
+\alias{pullQueen}
+\alias{pullVirginQueens}
+\alias{pullWorkers}
+\alias{pullDrones}
 \title{Pull individuals from a caste in a colony}
 \usage{
-pullCaste(x, caste, nInd = NULL)
+pullCaste(x, caste, nInd = NULL, use = "rand")
+
+pullQueen(x)
+
+pullVirginQueens(x, nInd = NULL, use = "rand")
+
+pullWorkers(x, nInd = NULL, use = "rand")
+
+pullDrones(x, nInd = NULL, use = "rand")
 }
 \arguments{
-\item{x}{Colony or Colonies}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{caste}{character, "queen", virgin_queens", "workers", or "drones"}
 
-\item{nInd}{numeric, number of individuals to pull, if NULL all individuals
-are pulled, otherwise a random sample}
+\item{nInd}{numeric, number of individuals to pull, if \code{NULL} all
+individuals are pulled}
+
+\item{use}{character, all options provided by \code{\link{selectInd}}}
 }
 \value{
-When \code{x} is Colony then return is a list with a population object (Pop) with pulled individuals and remaining colony
-When \code{x} is Colonies then return is a list with a list of population object (Pop) with pulled individuals and remaining colonies
+list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
+  when \code{x} is \code{\link{Colony-class}} and list of (a list of
+  \code{\link{Pop-class}} named by colony id) and
+  \code{\link{Colonies-class}} when \code{x} is
+  \code{\link{Colonies-class}}
 }
 \description{
-Pull individuals from a caste in a colony
+Level 1 function that pulls individuals from a caste in a
+  colony. These individuals are removed from the colony (compared to
+  \code{\link{getCaste}}).
 }
+\section{Functions}{
+\itemize{
+\item \code{pullQueen}: Pull queen from a colony
+
+\item \code{pullVirginQueens}: Pull virgin queens from a colony
+
+\item \code{pullWorkers}: Pull workers from a colony
+
+\item \code{pullDrones}: Pull drones from a colony
+}}
+
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybee
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- addVirginQueens(colony1, nInd = 10)
+colony2 <- addVirginQueens(colony2, nInd = 5)
 colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
-colony2 <- addDrones(colony2, nInd = 5)
+colony1 <- addDrones(colony1, nInd = 5)
+colony2 <- addDrones(colony2, nInd = 6)
 pullCaste(colony1, caste = "queen")
+pullQueen(colony1)
+
 pullCaste(colony1, caste = "virgin_queens")
+pullCaste(colony1, caste = "virgin_queens", nInd = 2)
+pullVirginQueens(colony1)
+pullVirginQueens(colony1, nInd = 2)
+
 pullCaste(colony1, caste = "workers")
 pullCaste(colony1, caste = "workers", nInd = 5)
+pullWorkers(colony1)
+pullWorkers(colony1, nInd = 5)
+
 pullCaste(colony1, caste = "drones")
-pullCaste(colony2, caste = "drones")
+pullCaste(colony1, caste = "drones", nInd = 5)
+pullDrones(colony1)
+pullDrones(colony1, nInd = 5)
 
 apiary <- c(colony1, colony2)
-pullCaste(apiary, caste = "queen")
-pullCaste(apiary, caste = "virgin_queens")
-pullCaste(apiary, caste = "workers")
-nWorkers(pullCaste(apiary, caste = "workers")$colonies)
-nWorkers(pullCaste(apiary, caste = "workers", nInd = 5)$colonies)
-pullCaste(apiary, caste = "drones")
-nDrones(pullCaste(apiary, caste = "drones")$colonies)
 
+pullCaste(apiary, caste = "queen")
+pullQueen(apiary)
+nQueens(apiary)
+nQueens(pullQueen(apiary)$colonies)
+
+pullCaste(apiary, caste = "virgin_queens")
+pullVirginQueens(apiary)
+nVirginQueens(apiary)
+nVirginQueens(pullVirginQueens(apiary)$colonies)
+nVirginQueens(pullVirginQueens(apiary, nInd = 5)$colonies)
+
+pullCaste(apiary, caste = "workers")
+pullWorkers(apiary)
+nWorkers(apiary)
+nWorkers(pullWorkers(apiary)$colonies)
+nWorkers(pullWorkers(apiary, nInd = 5)$colonies)
+
+pullCaste(apiary, caste = "drones")
+pullDrones(apiary)
+nDrones(apiary)
+nDrones(pullDrones(apiary)$colonies)
+nDrones(pullDrones(apiary, nInd = 5)$colonies)
+
+}
+\seealso{
+\code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
+  \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
 }

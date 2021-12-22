@@ -2,48 +2,31 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{removeColonies}
 \alias{removeColonies}
-\title{Remove the colonies from the colony list based on IDs.}
+\title{Remove some colonies}
 \usage{
-\method{removeColonies}(colonies, ID)
+removeColonies(colonies, ID)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{ID}{IDs of "colony" class objects listed in the "colonies" object}
+\item{ID}{numeric or character, name of a colony (one or more) to be removed;
+note that numeric value is converted to character}
 }
 \value{
-A list of remaining colonies. Updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with some colonies removed
 }
 \description{
-Remove the colonies from the list of all colonies based
-on colony IDs and return a list of remaining colonies.
+Level 3 function that removes some colonies based on their ID.
 }
 \examples{
-# Create founder haplotypes
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+apiary <- createColonies(pop = basePop, nCol = 3)
+(names <- getId(apiary))
 
-# Set simulation parameters
-
-SP <- SimParam$new(founderPop)
-
-# Create population
-
-pop <- newPop(founderPop, simParam=SP)
-
-# Create colonies
-
-founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-
-# Put the colonies together to the apiary
-
-apiary <- c(colony1, colony2, colony3)
-
-# Remove colonies
-
-apiary <- removeColonies(apiary, ID = c(1,2))
+getId(removeColonies(apiary, ID = names[1]))
+getId(removeColonies(apiary, ID = names[c(2, 3)]))
 
 }

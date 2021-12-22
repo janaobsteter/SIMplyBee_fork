@@ -2,19 +2,44 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{hasSplit}
 \alias{hasSplit}
-\title{Test to see if colony/colonies have split in the current period}
+\title{Test if colony has split}
 \usage{
-\method{hasSplit}(x)
+hasSplit(x)
 }
 \arguments{
-\item{x}{Undefined argument. Can be a "Colony" class or "Colonies" class}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 }
 \value{
-
+logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 }
 \description{
-Test to see if colony/colonies have split in the current period
+Level 0 function that returns colony split status. This will
+  obviously impact colony strength.
 }
 \examples{
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony
+hasSplit(colony)
+colony <- buildUpColony(colony, nWorkers = 100)
+colony
+hasSplit(colony)
+tmp <- splitColony(colony)
+tmp
+hasSplit(tmp$split)
+hasSplit(tmp$remnant)
+
+colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+apiary <- buildUpColonies(apiary, nWorkers = 100)
+tmp <- splitColonies(apiary)
+tmp
+hasSplit(tmp$splits)
+hasSplit(tmp$remnants)
 
 }

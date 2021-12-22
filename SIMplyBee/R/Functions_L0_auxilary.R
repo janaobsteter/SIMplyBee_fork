@@ -8,6 +8,8 @@
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
+#' @return integer
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -19,8 +21,6 @@
 #' apiary <- c(colony1, colony2)
 #' nColonies(apiary)
 #' nColonies(createColonies(nCol = 10))
-#'
-#' @return integer
 #'
 #' @export
 nColonies <- function(colonies) {
@@ -39,11 +39,11 @@ nColonies <- function(colonies) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virgin_queens", "workers",
-#'   "drones", "homDrones", or "all"
+#'   "drones", or "all"
 #'
 #' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
-#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}},
-#'   \code{\link{nDrones}}, and \code{\link{pHomBrood}}
+#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
+#'   \code{\link{nDrones}}
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is integer for
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
@@ -68,7 +68,6 @@ nColonies <- function(colonies) {
 #' nCaste(colony1, caste = "virgin_queens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
-#' nCaste(colony1, caste = "homDrones")
 #' nCaste(colony1, caste = "all")
 #'
 #' apiary <- c(colony1, colony2)
@@ -77,18 +76,17 @@ nColonies <- function(colonies) {
 #' nCaste(apiary, caste = "virgin_queens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
-#' nCaste(apiary, caste = "homDrones")
 #' nCaste(apiary, caste = "all")
 #'
 #' @export
 nCaste <- function(x, caste = "all") {
   if (isColony(x)) {
     if (caste == "all") {
-     ret <- vector(mode = "list", length = 6)
-     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones", "homDrones")
-     for (caste in names(ret)) {
-       ret[[caste]] <- nCaste(x = x, caste = caste)
-     }
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+      for (caste in names(ret)) {
+        ret[[caste]] <- nCaste(x = x, caste = caste)
+      }
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x)) {
@@ -117,6 +115,8 @@ nCaste <- function(x, caste = "all") {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -132,8 +132,6 @@ nCaste <- function(x, caste = "all") {
 #'
 #' apiary <- c(colony1, colony2)
 #' nQueens(apiary)
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 nQueens <- function(x) {
@@ -152,6 +150,8 @@ nQueens <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -165,8 +165,6 @@ nQueens <- function(x) {
 #'
 #' apiary <- c(colony1, colony2)
 #' nFathers(apiary)
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 nFathers <- function(x) {
@@ -193,6 +191,8 @@ nFathers <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -208,8 +208,6 @@ nFathers <- function(x) {
 #'
 #' apiary <- c(colony1, colony2)
 #' nVirginQueens(apiary)
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 nVirginQueens <- function(x) {
@@ -228,6 +226,8 @@ nVirginQueens <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -243,8 +243,6 @@ nVirginQueens <- function(x) {
 #'
 #' apiary <- c(colony1, colony2)
 #' nWorkers(apiary)
-#'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 nWorkers <- function(x) {
@@ -263,6 +261,8 @@ nWorkers <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -279,8 +279,6 @@ nWorkers <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' nDrones(apiary)
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
-#'
 #' @export
 nDrones <- function(x) {
   if (isColony(x) | isColonies(x)) {
@@ -294,12 +292,17 @@ nDrones <- function(x) {
 #' @rdname pHomBrood
 #' @title Percentage of homozygous brood of a queen
 #'
-#' @description Level 0 function that returns the number of homozygous brood in
-#'   a colony (these are non viable individuals and only their number is stored).
+#' @description Level 0 function that returns the percentage of homozygous brood
+#'   in a colony (these are non viable individuals and only their number is
+#'   stored).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' TODO: describe queen's and colony's pHomBrood
+#'
+#' @return numeric, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -313,24 +316,43 @@ nDrones <- function(x) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
-#' pHomBrood(colony1)
-#' pHomBrood(colony2)
 #'
+#' # Virgin queen
+#' pHomBrood(basePop[2])
+#'
+#' # Mated queen
+#' pHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+#'
+#' # Queen of the colony
+#' pHomBrood(getQueen(colony1))
+#'
+#' # Colony
+#' pHomBrood(colony1)
+#'
+#' # Colonies
 #' apiary <- c(colony1, colony2)
 #' pHomBrood(apiary)
 #'
 #' @export
 pHomBrood <- function(x) {
-  if (isColony(x)) {
-    if (length(x@queen@misc[[1]]$pHomBrood) == 0) {
-      ret <- 0
+  if (isPop(x)) {
+    ret <- rep(x = NA, times = nInd(x))
+    for (ind in seq_len(nInd(x))) {
+      if (!is.null(x@misc[[ind]]$pHomBrood)) {
+        ret[ind] <- x@misc[[ind]]$pHomBrood
+      }
+    }
+  } else if (isColony(x)) {
+    # TODO: report colony, not queen pHomBrood
+    if (is.null(x@queen@misc[[1]]$pHomBrood)) {
+      ret <- NA
     } else {
       ret <- x@queen@misc[[1]]$pHomBrood
     }
   } else if (isColonies(x)) {
-      ret <- sapply(X = x@colonies, FUN = pHomBrood)
-      names(ret) <- getId(x)
-    } else {
+    ret <- sapply(X = x@colonies, FUN = pHomBrood)
+    names(ret) <- getId(x)
+  } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
@@ -343,6 +365,9 @@ pHomBrood <- function(x) {
 #'   present/alive or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -362,9 +387,6 @@ pHomBrood <- function(x) {
 #'
 #' colony2 <- supersedeColony(colony2)
 #' isQueenPresent(colony2)
-#'
-#' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 isQueenPresent <- function(x) {
@@ -416,7 +438,7 @@ isQueenMated <- function(x) {
     if (nInd(x) > 0) {
       ret <- sapply(X = x@misc, FUN = function(z) !is.null(z$fathers))
     } else {
-      stop("No individual in x!")
+      ret <- FALSE
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
@@ -433,13 +455,17 @@ isQueenMated <- function(x) {
   return(ret)
 }
 
-#' @rdname getQueensYOB
+#' @rdname getQueensYearOfBirth
 #' @title Access the queen's year of birth
 #'
 #' @description Level 0 function that returns the queen's year of birth.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}} (one or more than one queen),
+#'   \code{\link{Colony-class}} (one colony), or
+#'   \code{\link{Colonies-class}} (more colonies)
+#'
+#' @return numeric, the year of birth of the queen(s); named when theres is more
+#'   than one queen; \code{NA} if queen not present
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -451,22 +477,18 @@ isQueenMated <- function(x) {
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
 #'
-#' getQueensYOB(getQueen(colony1))
-#' getQueensYOB(colony1)
-#' getQueensYOB(apiary)
+#' getQueensYearOfBirth(getQueen(colony1))
+#' getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
+#' getQueensYearOfBirth(colony1)
+#' getQueensYearOfBirth(apiary)
 #'
-#' queen <- getQueen(colony1)
-#' queen <- setQueensYOB(queen, year = 2021)
-#' getQueensYOB(queen)
+#' queen1 <- getQueen(colony1)
+#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
+#' getQueensYearOfBirth(queen1)
 #'
-#' colony1 <- setQueensYOB(colony1, year = 2021)
-#' getQueensYOB(colony1)
-#'
-#' apiary <- setQueensYOB(apiary, year = 2021)
-#' getQueensYOB(apiary)
-#'
-#' queen <- setQueensYearOfBirth(queen, year = 2022)
-#' getQueensYearOfBirth(queen)
+#' queen2 <- getQueen(colony2)
+#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
+#' getQueensYearOfBirth(queens)
 #'
 #' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
 #' getQueensYearOfBirth(colony1)
@@ -474,16 +496,19 @@ isQueenMated <- function(x) {
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)
 #'
-#' @return numeric, the year of birth of the queen when \code{x} is colony or
-#'   queens when \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen
-#'   not present, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
 #' @export
-getQueensYearOfBirth <- getQueensYOB <- function(x) {
+getQueensYearOfBirth <- function(x) {
   if (isPop(x)) {
-    # TODO: expand to more than 1 queen
-    ret <- ifelse(is.null(x@misc[[1]]$yearOfBirth), NA, x@misc[[1]]$yearOfBirth)
+    nInd <- nInd(x)
+    ret <- rep(x = NA, times = nInd)
+    for (ind in seq_len(nInd)) {
+      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+        ret[ind] <- x@misc[[ind]]$yearOfBirth
+      }
+    }
+    if (nInd > 1) {
+      names(ret) <- getId(x)
+    }
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
   } else if (isColonies(x)) {
@@ -495,6 +520,10 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
   return(ret)
 }
 
+#' @describeIn getQueensYearOfBirth Access the queen's year of birth
+#' @export
+getQueensYOB <- getQueensYearOfBirth
+
 #' @rdname getQueensAge
 #' @title Get (calculate) the queen's age
 #'
@@ -503,6 +532,9 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #' @param currentYear integer, current year
+#'
+#' @return numeric, the age of the queen(s); named when theres is more
+#'   than one queen; \code{NA} if queen not present
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -524,19 +556,18 @@ getQueensYearOfBirth <- getQueensYOB <- function(x) {
 #' apiary <- setQueensYOB(apiary, year = 2021)
 #' getQueensAge(apiary, currentYear = 2022)
 #'
-#' @return numeric, the age of the queen when \code{x} is colony or queens when
-#'   \code{x} is \code{\link{Colonies-class}}, \code{NA} if queen of year of
-#'   birth not present, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
 #' @export
 getQueensAge <- function(x, currentYear) {
   if (isPop(x)) {
-    # TODO: expand to more than one queen
-    if (is.null(x@misc[[1]]$yearOfBirth)) {
-      ret <- NA
-    } else {
-      ret <- currentYear - x@misc[[1]]$yearOfBirth
+    nInd <- nInd(x)
+    ret <- rep(x = NA, times = nInd)
+    for (ind in seq_len(nInd)) {
+      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+        ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+      }
+    }
+    if (nInd > 1) {
+      names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
@@ -561,6 +592,8 @@ getQueensAge <- function(x, currentYear) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}
 #'
+#' @return character, \code{NA} when queen not present
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -578,8 +611,6 @@ getQueensAge <- function(x, currentYear) {
 #'
 #' colony2 <- removeQueen(colony2)
 #' getId(colony2)
-#'
-#' @return character, \code{NA} when queen not present
 #'
 #' @export
 getId <- function(x) {
@@ -605,6 +636,11 @@ getId <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
+#' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
+#'   and a list of numeric with two values when \code{x} is
+#'   \code{\link{Colonies-class}} (list named after colonies); \code{c(NA, NA)}
+#'   when location not set
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -624,8 +660,10 @@ getId <- function(x) {
 #' getLocation(colony1)
 #'
 #' loc2 <- c(189, 357)
-#' colony2 <- setLocation(colony1, location = loc2)
+#' colony2 <- setLocation(colony2, location = loc2)
 #' getLocation(colony2)
+#'
+#' getLocation(c(colony1, colony2))
 #'
 #' # Assuming one location (as in bringing colonies to an apiary at a location!)
 #' apiary <- setLocation(apiary, location = loc1)
@@ -634,11 +672,6 @@ getId <- function(x) {
 #' # Assuming different locations (so tmp is not an apiary in one location!)
 #' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 #' getLocation(tmp)
-#'
-#' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
-#'   and a list of numeric with two values when \code{x} is
-#'   \code{\link{Colonies-class}} (list named after colonies); \code{c(NA, NA)}
-#'   when location not set
 #'
 #' @export
 getLocation <- function(x) {
@@ -766,7 +799,7 @@ hasSwarmed <- function(x) {
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -910,10 +943,11 @@ isProductive <- function(x) {
 #'   chromosomes in parallel. If the value is NULL, the number of threads is
 #'   automatically detected
 #'
-#' @examples
-#' founderGenomes <- simulateHoneyBeeGenomes(nInd = 2)
-#'
 #' @return \code{\link{MapPop-class}}
+#'
+#' @examples
+#' founderGenomes <- simulateHoneyBeeGenomes(nInd = 10, nChr = 1,
+#'                                           nSegSites = 10, Ne = 10)
 #'
 #' @export
 simulateHoneyBeeGenomes <- function(nInd = NULL,
@@ -929,7 +963,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     nThreads = NULL) {
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honeybee demography is more
-  #       "involved"; see also see also https://github.com/HighlanderLab/AlphaSimRBee/issues/45
+  #       "involved"; see also see also https://github.com/HighlanderLab/SIMplyBee/issues/45
   founderGenomes <- runMacs2(nInd = nInd,
                              nChr = nChr,
                              segSites = nSegSites,
@@ -946,18 +980,24 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   return(founderGenomes)
 }
 
-#' @rdname getCsdHaplo
-#' @title Get haplotypes from the csd locus
+#' @rdname getCsdAlleles
+#' @title Get csd alleles
 #'
-#' @description Level 0 function that returns haplotypes from the csd locus. See
+#' @description Level 0 function that returns alleles from the csd locus. See
 #'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#' @param haplo character, either "all" for all haplotypes or an integer for a
-#'   single set of haplotypes, use a value of 1 for female haplotypes and a
-#'   value of 2 for male haplotypes
+#' @param allele character, either "all" for both alleles or an integer for a
+#'   single allele, use a value of 1 for female allele and a value of 2 for male
+#'   allele
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   (list nodes named by caste) and list of a list of matrices with haplotypes
+#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -973,24 +1013,18 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' colony2 <- addDrones(colony2, nInd = 4)
 #' apiary <- c(colony1, colony2)
 #'
-#' getCsdHaplo(getQueen(colony1))
-#' getCsdHaplo(getVirginQueens(colony1))
-#' getCsdHaplo(getFathers(colony1))
-#' getCsdHaplo(getWorkers(colony1))
-#' getCsdHaplo(getDrones(colony1))
+#' getCsdAlleles(getQueen(colony1))
+#' getCsdAlleles(getVirginQueens(colony1))
+#' getCsdAlleles(getFathers(colony1))
+#' getCsdAlleles(getWorkers(colony1))
+#' getCsdAlleles(getDrones(colony1))
 #'
-#' getCsdHaplo(colony1)
+#' getCsdAlleles(colony1)
 #'
-#' getCsdHaplo(apiary)
-#'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
-#'   (list nodes named by caste) and list of a list of matrices with haplotypes
-#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}
+#' getCsdAlleles(apiary)
 #'
 #' @export
-getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
+getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -998,18 +1032,18 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
     stop("The csd locus has not been set!")
   }
   if (isPop(x)) {
-    ret <- pullSegSiteHaplo(pop = x, haplo = haplo, chr = simParamBee$csdChr,
+    ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- getCsdHaplo(x = getQueen(x),        haplo = haplo, simParamBee = simParamBee)
-    ret$fathers       <- getCsdHaplo(x = getFathers(x),      haplo = haplo, simParamBee = simParamBee)
-    ret$virgin_queens <- getCsdHaplo(x = getVirginQueens(x), haplo = haplo, simParamBee = simParamBee)
-    ret$workers       <- getCsdHaplo(x = getWorkers(x),      haplo = haplo, simParamBee = simParamBee)
-    ret$drones        <- getCsdHaplo(x = getDrones(x),       haplo = haplo, simParamBee = simParamBee)
+    ret$queen         <- getCsdAlleles(x = getQueen(x),        allele = allele, simParamBee = simParamBee)
+    ret$fathers       <- getCsdAlleles(x = getFathers(x),      allele = allele, simParamBee = simParamBee)
+    ret$virgin_queens <- getCsdAlleles(x = getVirginQueens(x), allele = allele, simParamBee = simParamBee)
+    ret$workers       <- getCsdAlleles(x = getWorkers(x),      allele = allele, simParamBee = simParamBee)
+    ret$drones        <- getCsdAlleles(x = getDrones(x),       allele = allele, simParamBee = simParamBee)
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdHaplo, haplo = haplo, simParamBee = simParamBee)
+    ret <- lapply(X = x@colonies, FUN = getCsdAlleles, allele = allele, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1026,6 +1060,16 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details The returned genotypes are spanning multiple bi-allelic SNP of
+#'   non-recombining haplotypes. In most cases you will want to use
+#'   \code{\link{getCsdAlleles}}.
+#'
+#' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
+#'   (list nodes named by caste) and list of a list of matrices with genotypes
+#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
@@ -1050,12 +1094,6 @@ getCsdHaplo <- function(x, haplo = "all", simParamBee = NULL) {
 #' getCsdGeno(colony1)
 #'
 #' getCsdGeno(apiary)
-#'
-#' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
-#'   (list nodes named by caste) and list of a list of matrices with genotypes
-#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @export
 getCsdGeno <- function(x, simParamBee = NULL) {
@@ -1093,6 +1131,8 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #'
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
+#' @return logical
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -1103,17 +1143,16 @@ getCsdGeno <- function(x, simParamBee = NULL) {
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #'
 #' (tmp <- getCsdGeno(getQueen(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
 #' (tmp <- getCsdGeno(getVirginQueens(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
 #' (tmp <- getCsdGeno(getWorkers(colony1)))
-#' isGenoHeterozygous(tmp)
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
-#' @return logical
-#'
-#' @export
+# Not exporting this function, since its just a helper and quite specific for
+#   our csd locus implementation
 isGenoHeterozygous <- function(x) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
@@ -1130,9 +1169,12 @@ isGenoHeterozygous <- function(x) {
 #'   information about the csd locus.
 #'
 #' @param pop \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details We could expand \code{isCsdHeterozygous} to work also with
 #'   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
+#'
+#' @return logical
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
@@ -1148,8 +1190,6 @@ isGenoHeterozygous <- function(x) {
 #' isCsdHeterozygous(getVirginQueens(colony1))
 #'
 #' isCsdHeterozygous(getWorkers(colony1))
-#'
-#' @return logical
 #'
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
@@ -1174,6 +1214,22 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   \code{\link{Colonies-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details Queen will always have 2 csd alleles, since she has to be
+#'   heterozygous to be viable. The same holds for individual virgin queens and
+#'   workers, but note that looking at csd genotypes of virgin queens or workers
+#'   we are looking at a sample of 1 csd allele from the queen and 1 csd allele
+#'   from their fathers, noting that homozygous genotypes are excluded.
+#'   Therefore, \code{nCsdAlleles()} from virgin queens and workers is a noisy
+#'   realisation of \code{nCsdAlleles()} from queens and fathers. For this
+#'   reason, we also report \code{nCsdAlleles()} from queens and fathers
+#'   combined (see the \code{queenAndFathers} list node). This last measure is
+#'   then the expected number of csd alleles in a colony as opposed to realised
+#'   number of csd alleles in a sample of virgin queens and workers. Similarly
+#'   as for virgin queens and workers, \code{nCsdAlleles()} from drones gives a
+#'   noisy realisation of \code{nCsdAlleles()} from queens. The amount of noise
+#'   will depend on the number of individuals, so in most cases there should be
+#'   minimal amount of noise.
+#'
 #' @return integer representing the number of distinct csd alleles when \code{x}
 #'   is \code{\link{Pop-class}} (or ), list of integer
 #'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
@@ -1196,28 +1252,32 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' apiary <- c(colony1, colony2)
 #'
 #' nCsdAlleles(getQueen(colony1))
-#' nCsdAlleles(colony1)
-#' nCsdAlleles(apiary)
+#' nCsdAlleles(getFathers(colony1))
+#' nCsdAlleles(getVirginQueens(colony1))
+#' nCsdAlleles(getWorkers(colony1))
+#' nCsdAlleles(getDrones(colony1))
 #'
-#' nCsdAlleles(colony1, collapse = TRUE)
-#' nCsdAlleles(apiary, collapse = TRUE)
+#' nCsdAlleles(colony1)
+#'
+#' nCsdAlleles(apiary)
 #'
 #' @export
 nCsdAlleles <- function(x, simParamBee = NULL) {
   if (is.null(x)) {
     ret <- NA
   } else if (isPop(x)) {
-    haplo <- getCsdHaplo(x = x, simParamBee = simParamBee)
+    haplo <- getCsdAlleles(x = x, simParamBee = simParamBee)
     haplo <- haplo[!duplicated(x = haplo), ]
     ret <- nrow(haplo)
   } else if (isColony(x)) {
-    ret <- vector(mode = "list", length = 5)
-    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    ret$queen         <- nCsdAlleles(x = getQueen(x),        simParamBee = simParamBee)
-    ret$fathers       <- nCsdAlleles(x = getFathers(x),      simParamBee = simParamBee)
-    ret$virgin_queens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
-    ret$workers       <- nCsdAlleles(x = getWorkers(x),      simParamBee = simParamBee)
-    ret$drones        <- nCsdAlleles(x = getDrones(x),       simParamBee = simParamBee)
+    ret <- vector(mode = "list", length = 6)
+    names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
+    ret$queen           <- nCsdAlleles(x = getQueen(x),                   simParamBee = simParamBee)
+    ret$fathers         <- nCsdAlleles(x = getFathers(x),                 simParamBee = simParamBee)
+    ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), simParamBee = simParamBee)
+    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            simParamBee = simParamBee)
+    ret$workers         <- nCsdAlleles(x = getWorkers(x),                 simParamBee = simParamBee)
+    ret$drones          <- nCsdAlleles(x = getDrones(x),                  simParamBee = simParamBee)
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = nCsdAlleles, simParamBee = simParamBee)
     names(ret) <- getId(x)
@@ -1428,6 +1488,11 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 #'
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -1478,11 +1543,6 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' getCasteIbdHaplo(apiary, caste = "drones")
 #' getDronesIbdHaplo(apiary)
-#'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
-#'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteIbdHaplo <- function(x, caste, nInd = NULL,
@@ -1587,6 +1647,12 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
 #'
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -1611,12 +1677,6 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(apiary, nInd = 1)
 #' getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -1659,7 +1719,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
       ret$drones <- getCasteIbdHaplo(x = x, caste = "drones", nInd = nInd$drones,
                                      chr = chr, simParamBee = simParamBee)
     }
-  } else if (ifColonies(x)) {
+  } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in 1:nCol) {
@@ -1693,6 +1753,11 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#'
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1744,11 +1809,6 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' getCasteQtlHaplo(apiary, caste = "drones")
 #' getDronesQtlHaplo(apiary)
-#'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
-#'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteQtlHaplo <- function(x, caste, nInd = NULL,
@@ -1858,6 +1918,12 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}
 #'
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -1882,12 +1948,6 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlHaplo(apiary, nInd = 1)
 #' getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -1962,6 +2022,11 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
 #'
+#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#'   list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2012,11 +2077,6 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' getCasteQtlGeno(apiary, caste = "drones")
 #' getDronesQtlGeno(apiary)
-#'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
-#'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteQtlGeno <- function(x, caste, nInd = NULL,
@@ -2123,6 +2183,12 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}
 #'
+#' @return list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2147,12 +2213,6 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlGeno(apiary, nInd = 1)
 #' getColonyQtlGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2230,6 +2290,11 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
 #'
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2279,11 +2344,6 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "drones")
 #' getDronesSegSiteHaplo(apiary)
-#'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
-#'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
@@ -2393,6 +2453,12 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2416,12 +2482,6 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteHaplo(apiary, nInd = 1)
 #' getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2496,6 +2556,11 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
 #'
+#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#'   list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2545,11 +2610,6 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #'
 #' getCasteSegSiteGeno(apiary, caste = "drones")
 #' getDronesSegSiteGeno(apiary)
-#'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
-#'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
@@ -2656,6 +2716,12 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
 #'
+#' @return list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2679,12 +2745,6 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteGeno(apiary, nInd = 1)
 #' getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -2762,6 +2822,11 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
 #'
+#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#'   and list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2812,11 +2877,6 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #'
 #' getCasteSnpHaplo(apiary, caste = "drones")
 #' getDronesSnpHaplo(apiary)
-#'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
-#'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSnpHaplo <- function(x, caste, nInd = NULL,
@@ -2927,6 +2987,12 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
 #'
+#' @return list of matrices with haplotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -2951,12 +3017,6 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' getColonySnpHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySnpHaplo(apiary, nInd = 1)
 #' getColonySnpHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -3031,6 +3091,11 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
 #'
+#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#'   list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3081,11 +3146,6 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'
 #' getCasteSnpGeno(apiary, caste = "drones")
 #' getDronesSnpGeno(apiary)
-#'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
-#'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteSnpGeno <- function(x, caste, nInd = NULL,
@@ -3192,6 +3252,12 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'
 #' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
 #'
+#' @return list of matrices with genotypes when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3216,12 +3282,6 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySnpGeno(apiary, nInd = 1)
 #' getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -3292,6 +3352,11 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' @seealso \code{\link{gv}}
 #'
+#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
+#'   and list of vectors of genetic values when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3342,11 +3407,6 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'
 #' getCasteGv(apiary, caste = "drones")
 #' getDronesGv(apiary)
-#'
-#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
-#'   and list of vectors of genetic values when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteGv <- function(x, caste, nInd = NULL) {
@@ -3437,6 +3497,12 @@ getDronesGv <- function(x, nInd = NULL) {
 #'
 #' @seealso \code{\link{gv}}
 #'
+#' @return list of vector of genetic values when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of genetic values when \code{x} is \code{\link{Colonies-class}},
+#'   outer list is named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3461,12 +3527,6 @@ getDronesGv <- function(x, nInd = NULL) {
 #' getColonyGv(apiary, caste = c("queen", "fathers"))
 #' getColonyGv(apiary, nInd = 1)
 #' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of vector of genetic values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of genetic values when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL) {
@@ -3504,8 +3564,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
       ret$drones <- getCasteGv(x = x, caste = "drones", nInd = nInd$drones)
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
-    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/28 (for gv)
-    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29 (for bv and dd)
+    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/28 (for gv)
+    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29 (for bv and dd)
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -3534,6 +3594,11 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'
 #' @seealso \code{\link{bv}}
 #'
+#' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
+#'   and list of vectors of breeding values when \code{x} is
+#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3548,8 +3613,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
 #'
-#' getCasteBv(colony1, caste = "queen")
-#' getQueensBv(colony1)
+#' try(getCasteBv(colony1, caste = "queen")) # TODO
+#' try(getQueensBv(colony1)) # TODO
 #'
 #' getCasteBv(colony1, caste = "fathers")
 #' getCasteBv(colony1, caste = "fathers", nInd = 2)
@@ -3557,8 +3622,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersBv(colony1)
 #' getFathersBv(colony1, nInd = 2)
 #'
-#' getCasteBv(colony1, caste = "virgin_queens")
-#' getVirginQueensBv(colony1)
+#' try(getCasteBv(colony1, caste = "virgin_queens")) # TODO
+#' try(getVirginQueensBv(colony1)) # TODO
 #'
 #' getCasteBv(colony1, caste = "workers")
 #' getWorkersBv(colony1)
@@ -3567,8 +3632,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getDronesBv(colony1)
 #'
 #' apiary <- c(colony1, colony2)
-#' getCasteBv(apiary, caste = "queen")
-#' getQueensBv(apiary)
+#' try(getCasteBv(apiary, caste = "queen")) # TODO
+#' try(getQueensBv(apiary)) # TODO
 #'
 #' getCasteBv(apiary, caste = "fathers")
 #' getCasteBv(apiary, caste = "fathers", nInd = 2)
@@ -3576,19 +3641,14 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersBv(apiary)
 #' getFathersBv(apiary, nInd = 2)
 #'
-#' getCasteBv(apiary, caste = "virgin_queens")
-#' getVirginQueensBv(apiary)
+#' try(getCasteBv(apiary, caste = "virgin_queens")) # TODO
+#' try(getVirginQueensBv(apiary)) # TODO
 #'
 #' getCasteBv(apiary, caste = "workers")
 #' getWorkersBv(apiary)
 #'
 #' getCasteBv(apiary, caste = "drones")
 #' getDronesBv(apiary)
-#'
-#' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
-#'   and list of vectors of breeding values when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
@@ -3686,6 +3746,12 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #'
 #' @seealso \code{\link{bv}}
 #'
+#' @return list of vector of breeding values when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of breeding values when \code{x} is
+#'   \code{\link{Colonies-class}}, outer list is named by colony id when
+#'   \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3700,22 +3766,16 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
 #'
-#' getColonyBv(colony1)
-#' getColonyBv(colony1, caste = c("queen", "fathers"))
-#' getColonyBv(colony1, nInd = 1)
-#' getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' try(getColonyBv(colony1)) # TODO
+#' try(getColonyBv(colony1, caste = c("queen", "fathers"))) # TODO
+#' try(getColonyBv(colony1, nInd = 1)) # TODO
+#' try(getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 #'
 #' apiary <- c(colony1, colony2)
-#' getColonyBv(apiary)
-#' getColonyBv(apiary, caste = c("queen", "fathers"))
-#' getColonyBv(apiary, nInd = 1)
-#' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of vector of breeding values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of breeding values when \code{x} is
-#'   \code{\link{Colonies-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{Colonies-class}}
+#' try(getColonyBv(apiary)) # TODO
+#' try(getColonyBv(apiary, caste = c("queen", "fathers"))) # TODO
+#' try(getColonyBv(apiary, nInd = 1)) # TODO
+#' try(getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 #'
 #' @export
 getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -3760,7 +3820,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
     #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29
+    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -3790,6 +3850,11 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'
 #' @seealso \code{\link{dd}}
 #'
+#' @return vector of dominance deviations when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of dominance deviations when
+#'   \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
+#'   is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3804,8 +3869,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
 #'
-#' getCasteDd(colony1, caste = "queen")
-#' getQueensDd(colony1)
+#' try(getCasteDd(colony1, caste = "queen")) # TODO
+#' try(getQueensDd(colony1)) # TODO
 #'
 #' getCasteDd(colony1, caste = "fathers")
 #' getCasteDd(colony1, caste = "fathers", nInd = 2)
@@ -3813,8 +3878,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersDd(colony1)
 #' getFathersDd(colony1, nInd = 2)
 #'
-#' getCasteDd(colony1, caste = "virgin_queens")
-#' getVirginQueensDd(colony1)
+#' try(getCasteDd(colony1, caste = "virgin_queens")) # TODO
+#' try(getVirginQueensDd(colony1)) # TODO
 #'
 #' getCasteDd(colony1, caste = "workers")
 #' getWorkersDd(colony1)
@@ -3823,8 +3888,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getDronesDd(colony1)
 #'
 #' apiary <- c(colony1, colony2)
-#' getCasteDd(apiary, caste = "queen")
-#' getQueensDd(apiary)
+#' try(getCasteDd(apiary, caste = "queen")) # TODO
+#' try(getQueensDd(apiary)) # TODO
 #'
 #' getCasteDd(apiary, caste = "fathers")
 #' getCasteDd(apiary, caste = "fathers", nInd = 2)
@@ -3832,19 +3897,14 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersDd(apiary)
 #' getFathersDd(apiary, nInd = 2)
 #'
-#' getCasteDd(apiary, caste = "virgin_queens")
-#' getVirginQueensDd(apiary)
+#' try(getCasteDd(apiary, caste = "virgin_queens")) # TODO
+#' try(getVirginQueensDd(apiary)) # TODO
 #'
 #' getCasteDd(apiary, caste = "workers")
 #' getWorkersDd(apiary)
 #'
 #' getCasteDd(apiary, caste = "drones")
 #' getDronesDd(apiary)
-#'
-#' @return vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of dominance deviations when
-#'   \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#'   is \code{\link{Colonies-class}}
 #'
 #' @export
 getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
@@ -3942,6 +4002,12 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #'
 #' @seealso \code{\link{dd}}
 #'
+#' @return list of vector of dominance deviations when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of dominance deviations when \code{x} is
+#'   \code{\link{Colonies-class}}, outer list is named by colony id when
+#'   \code{x} is \code{\link{Colonies-class}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -3956,22 +4022,16 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
 #'
-#' getColonyDd(colony1)
-#' getColonyDd(colony1, caste = c("queen", "fathers"))
-#' getColonyDd(colony1, nInd = 1)
-#' getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' try(getColonyDd(colony1)) # TODO
+#' try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
+#' try(getColonyDd(colony1, nInd = 1)) # TODO
+#' try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 #'
 #' apiary <- c(colony1, colony2)
-#' getColonyDd(apiary)
-#' getColonyDd(apiary, caste = c("queen", "fathers"))
-#' getColonyDd(apiary, nInd = 1)
-#' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
-#'
-#' @return list of vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of dominance deviations when \code{x} is
-#'   \code{\link{Colonies-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{Colonies-class}}
+#' try(getColonyDd(apiary)) # TODO
+#' try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
+#' try(getColonyDd(apiary, nInd = 1)) # TODO
+#' try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
 #'
 #' @export
 getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"), nInd = NULL,
@@ -4016,7 +4076,7 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
     #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/AlphaSimRBee/issues/29
+    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)

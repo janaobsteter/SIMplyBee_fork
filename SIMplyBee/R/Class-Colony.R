@@ -1,13 +1,21 @@
-# TOOD: I have provided this as PullRequest for AlphaSimR https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
-#   once it gets incorporated there we should remove it here
+# TOOD: I have provided this as PullRequest for AlphaSimR
+#       https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
+#       once it gets incorporated there we should remove it here
+#       https://github.com/HighlanderLab/SIMplyBee/issues/60
 isPop <- function(x) {
-  ret <- is(x, class = "Pop")
+  ret <- is(x, class2 = "Pop")
   return(ret)
 }
 
 # Class Colony ----
 
-#' @rdname Colony
+setClassUnion("PopOrNULL", c("Pop", "NULL"))
+setClassUnion("characterOrNULL", c("character", "NULL"))
+setClassUnion("integerOrNULL", c("integer", "NULL"))
+setClassUnion("numericOrNULL", c("numeric", "NULL"))
+setClassUnion("listOrNULL", c("list", "NULL"))
+
+#' @rdname Colony-class
 #' @title Honeybee colony
 #'
 #' @description An object holding honeybee colony
@@ -29,35 +37,39 @@ isPop <- function(x) {
 #' @slot last_event character, the last event of the colony TODO: we probably don't need this
 #' @slot misc list, available for storing extra information about the colony
 #'
+#' @param object \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}}
+#' @param ... \code{NULL}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#'
 #' @seealso \code{\link{createColony}}
 #'
-#' @return \code{\link{Colony-class}}
+#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 15)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #'
 #' colony1
-#' colony2
+#' show(colony1)
 #' is(colony1)
-#' is(colony2)
+#' isColony(colony1)
 #'
 #' apiary <- c(colony1, colony2)
 #' is(apiary)
+#' isColonies(apiary)
+#'
+#' c(apiary, colony3)
+#' c(colony3, apiary)
 #'
 #' @export
-
-setClassUnion("PopOrNULL", c("Pop", "NULL"))
-setClassUnion("characterOrNULL", c("character", "NULL"))
-setClassUnion("integerOrNULL", c("integer", "NULL"))
-setClassUnion("numericOrNULL", c("numeric", "NULL"))
-setClassUnion("listOrNULL", c("list", "NULL"))
-setClass("Colony",
+setClass(Class = "Colony",
          slots = c(id = "characterOrNULL",
                    location = "numericOrNULL",
                    queen = "PopOrNULL",
@@ -97,8 +109,8 @@ setValidity(Class = "Colony", method = function(object) {
   }
 })
 
-#' @describeIn Colony Show colony object
-setMethod("show",
+#' @describeIn Colony-class Show colony object
+setMethod(f = "show",
           signature(object = "Colony"),
           function(object) {
             cat("An object of class", classLabel(class(object)), "\n")
@@ -118,17 +130,15 @@ setMethod("show",
           }
 )
 
-#' @describeIn Colony Test if object is a Colony class object
+#' @describeIn Colony-class Test if x is a Colony class object
+#' @export
 isColony <- function(x) {
   ret <- is(x, class2 = "Colony")
   return(ret)
 }
 
-#' @describeIn Colonies Combine multiple colony objects
-# This setMethod() should be in Class-Colonies.R, but that file is sourced before
-# Class-Colony.R, which defines the class Colony, so we have it here as a
-# workaround
-setMethod("c",
+#' @describeIn Colony-class Combine multiple colony objects
+setMethod(f = "c",
           signature(x = "Colony"),
           function(x, ...) {
             colonies <- new(Class = "Colonies", colonies = list(x))
@@ -137,8 +147,10 @@ setMethod("c",
                 # Do nothing
               } else if (class(y) == "Colony") {
                 colonies@colonies <- c(colonies@colonies, y)
+              } else if (class(y) == "Colonies") {
+                colonies@colonies <- c(colonies@colonies, y@colonies)
               } else {
-                stop("... must be a NULL or Colony class object!")
+                stop("... must be a NULL, Colony, or Colonies class object!")
               }
             }
             validObject(colonies)

@@ -1,6 +1,9 @@
 # Class Colonies ----
 
-#' @rdname Colonies
+setClassUnion("integerOrNumeric", c("integer", "numeric"))
+setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
+
+#' @rdname Colonies-class
 #' @title Honeybee colonies
 #'
 #' @description An object holding a collection of honeybee colonies. It behaves
@@ -8,12 +11,18 @@
 #'
 #' @slot colonies list, a collection of \code{\link{Colony-class}} objects
 #'
+#' @param object \code{\link{Colonies-class}}
 #' @param x \code{\link{Colonies-class}}
-#' @param i numeric or character, index or name to select a colony
+#' @param i integer, numeric, logical, or character, index or ID to select
+#'   a colony (see examples)
+#' @param j not used
+#' @param drop not used
+#' @param ... \code{NULL}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
 #' @seealso \code{\link{createColonies}}
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{Colonies-class}} or \code{\link{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -26,6 +35,10 @@
 #' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2, colony3)
 #' apiary
+#' show(apiary)
+#' is(apiary)
+#' isColonies(apiary)
+#'
 #' getId(apiary)
 #' apiary[1]
 #' getId(apiary[1])
@@ -35,6 +48,7 @@
 #' getId(apiary)
 #' getId(apiary[c(1, 3)])
 #' getId(apiary[c("2", "4")])
+#' getId(apiary[c(TRUE, FALSE, TRUE)])
 #'
 #' apiary[[1]]
 #' apiary[["2"]]
@@ -42,9 +56,10 @@
 #' apiary[["4"]]
 #'
 #' getId(c(apiary[c(1, 3)], apiary[2]))
+#' getId(c(apiary[2], apiary[c(1, 3)]))
 #'
 #' @export
-setClass("Colonies",
+setClass(Class = "Colonies",
          slots = c(colonies = "list"))
 
 setValidity(Class = "Colonies", method = function(object) {
@@ -61,8 +76,8 @@ setValidity(Class = "Colonies", method = function(object) {
   }
 })
 
-#' @describeIn Colonies Show colonies object
-setMethod("show",
+#' @describeIn Colonies-class Show colonies object
+setMethod(f = "show",
           signature(object = "Colonies"),
           function (object) {
             cat("An object of class", classLabel(class(object)), "\n")
@@ -71,29 +86,28 @@ setMethod("show",
           }
 )
 
-#' @describeIn Colonies Extract a colony (one or more!) by index (return \code{\link{Colonies-class}})
-setClassUnion("integerOrNumeric", c("integer", "numeric"))
-setMethod("[",
-          signature(x = "Colonies", i = "integerOrNumeric"),
-          function(x, i) {
-            x@colonies <- x@colonies[as.integer(i)]
+#' @describeIn Colonies-class Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
+setMethod(f = "[",
+          signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
+          function(x, i, j, drop) {
+            x@colonies <- x@colonies[i]
             validObject(x)
             return(x)
           }
 )
 
-#' @describeIn Colonies Extract a colony (one or more!) by name (character) (return \code{\link{Colonies-class}})
-setMethod("[",
-          signature(x = "Colonies", i = "character"),
-          function(x, i) {
+#' @describeIn Colonies-class Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
+setMethod(f = "[",
+          signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
+          function(x, i, j, drop) {
             ret <- x[match(x = i, table = getId(x))]
             validObject(ret)
             return(ret)
           }
 )
 
-#' @describeIn Colonies Extract a colony (just one!) by index (numeric) (return \code{\link{Colony-class}})
-setMethod("[[",
+#' @describeIn Colonies-class Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
+setMethod(f = "[[",
           signature(x = "Colonies", i = "integerOrNumeric"),
           function(x, i) {
             n <- length(i)
@@ -106,8 +120,8 @@ setMethod("[[",
           }
 )
 
-#' @describeIn Colonies Extract a colony (just one!) by name (character) (return \code{\link{Colony-class}})
-setMethod("[[",
+#' @describeIn Colonies-class Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
+setMethod(f = "[[",
           signature(x = "Colonies", i = "character"),
           function(x, i) {
             n <- length(i)
@@ -120,8 +134,8 @@ setMethod("[[",
           }
 )
 
-#' @describeIn Colonies Combine multiple colony and colonies objects
-setMethod("c",
+#' @describeIn Colonies-class Combine multiple colony and colonies objects
+setMethod(f = "c",
           signature(x = "Colonies"),
           function(x, ...) {
             for (y in list(...)) {
@@ -140,7 +154,8 @@ setMethod("c",
           }
 )
 
-#' @describeIn Colonies Test if object is a Colonies class object
+#' @describeIn Colonies-class Test if x is a Colonies class object
+#' @export
 isColonies <- function(x) {
   ret <- is(x, class2 = "Colonies")
   return(ret)

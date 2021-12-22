@@ -2,54 +2,44 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{pullColonies}
 \alias{pullColonies}
-\title{Pull the colonies from the colony list based on IDs.}
+\title{Pull out some colonies}
 \usage{
-\method{pullColonies}(colonies,ID, p)
+pullColonies(colonies, ID = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{ID}{IDs of "colony" class objects listed in the "colonies" object}
+\item{ID}{numeric or character, name of a colony (one or more) to be pulled
+out; note that numeric value is converted to character}
 
-\item{p}{Percentage of colonies to pull out of the "colonies" list object}
+\item{p}{numeric, probability of a colony being pulled out}
 }
 \value{
-Two lists: a list of selected colonies and an updated input colonies
+list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
+  and the \code{remainingColonies}
 }
 \description{
-Pull the colonies from the list of all colonies based
-on colony IDs and return two lists: a list of selected colonies and
-updated original colonies
+Level 3 function that pulls out some colonies based on colony
+  ID or random selection.
 }
 \examples{
- # Create founder haplotypes
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
+apiary <- createColonies(pop = basePop, nCol = 3)
+(names <- getId(apiary))
 
-# Set simulation parameters
+tmp <- pullColonies(apiary, ID = names[1])
+getId(tmp$pulledColonies)
+getId(tmp$remainingColonies)
 
-SP <- SimParam$new(founderPop)
+tmp <- pullColonies(apiary, p = 0.5)
+getId(tmp$pulledColonies)
+getId(tmp$remainingColonies)
 
-# Create population
-
-pop <- newPop(founderPop, simParam=SP)
-
-# Create colonies
-
-founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-
-# Put the colonies together to the apiary
-
-apiary <- c(colony1, colony2, colony3)
-
-# Pull the selected colonies
-
-pulledColonies <- pullColonies(colonies = apiary, ID = c(1,2))
-
-apiary <- pulledColonies$remainingColonies
-pull <- pulledColonies$pulledColonies
+tmp <- pullColonies(apiary, p = 0.5)
+getId(tmp$pulledColonies)
+getId(tmp$remainingColonies)
 
 }

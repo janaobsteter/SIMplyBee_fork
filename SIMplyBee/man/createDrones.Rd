@@ -2,37 +2,52 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createDrones}
 \alias{createDrones}
-\title{Creates drones of the colony as double haploids}
+\title{Creates drones from the colony}
 \usage{
-\method{createDrones}(colony, nInd)
+createDrones(colony, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, the umber of drones to create.}
+\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-AlphaSim population object of created drones.
+\code{\link{Pop-class}} with drones
 }
 \description{
-Creates the specified number of drones in the colony
-      \as double haploids from the current queen \code{colony@queen}.
+Level 1 function that creates the specified number of drones
+  from the colony. Currently this is done by creating doubled-haploids from a
+  queen (generating recombinant gametes and doubling them).
+  TODO The drones will eventually be made properly haploid!
+       Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 }
 \examples{
-# Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+createDrones(colony, nInd = 10)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+# Using a default in SP$nDrones
+# (just to have some drones - change this to your needs!)
+createDrones(colony)
+createDrones(colony)
 
-#Creates colony
-founderDrones <- createFounderDrones(pop[3:200], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
+SP$nDrones <- 15
+createDrones(colony)
+createDrones(colony)
 
-#Create drones
-colony1@drones <- createDrones(colony1, nInd = 200)
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+createDrones(colony, nInd = nDronesFun)
+createDrones(colony, nInd = nDronesFun)
+
+SP$nDrones <- nDronesFun
+createDrones(colony)
+createDrones(colony)
 
 }

@@ -2,29 +2,33 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{removeVirginQueens}
 \alias{removeVirginQueens}
-\title{Remove virgin queens}
+\title{Remove a proportion of virgin queens}
 \usage{
-removeVirginQueens(colony)
+removeVirginQueens(colony, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{Colony}
+\item{colony}{\code{\link{Colony-class}}}
+
+\item{p}{numeric, proportion to be removed}
+
+\item{use}{character, all the options provided by \code{\link{selectInd}} -
+guides selection of virgins queens that will stay when \code{p < 1}}
 }
 \value{
-Colony without virgin queens
+\code{\link{Colony-class}} without virgin queens
 }
 \description{
-Remove virgin queens of a colony
+Level 2 function that removes a proportion of virgin queens of a
+  colony.
 }
 \examples{
-AlphaSimR
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony
+colony <- addVirginQueens(colony, nInd = 10)
 getVirginQueens(colony)
 
 colony <- removeVirginQueens(colony)

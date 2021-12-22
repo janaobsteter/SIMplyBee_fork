@@ -2,41 +2,55 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addVirginQueens}
 \alias{addVirginQueens}
-\title{Create additional virgin queens}
+\title{Add (raise) virgin queens in the colony}
 \usage{
-addVirginQueens(colony, nInd)
+addVirginQueens(colony, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Numeric. Number of virgin queens to create}
+\item{nInd}{numeric or function, number of virgin queens to add; if
+\code{NULL} then \code{simParamBee$nVirginQueens} is used}
+
+\item{year}{numeric, year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with virgin queens added
 }
 \description{
-Creates the specified number of virgin queens in the colony
-      \by crossing the current queen and the fathers and adds them in
-      \ the \code{colony@virgin_queens} slot.
+Level 2 function that adds (raises) the specified number of
+  virgin queens in the colony by crossing the current queen and the fathers.
+}
+\details{
+\code{addVirginQueens} replaces any currently present virgin queens.
 }
 \examples{
-#Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+addVirginQueens(colony, nInd = 10)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+# Using a default in SP$nVirginQueens
+# (just to have some virgin queens - change this to your needs!)
+addVirginQueens(colony)
+addVirginQueens(colony)
 
-#Creates colony with queen and fathers
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
+SP$nVirginQueens <- 15
+addVirginQueens(colony)
+addVirginQueens(colony)
 
-#Insert workers and drones into the colony
-colony1 <- addWorkers(colony1, nInd = 2000)
-colony1 <- addDrones(colony, nInd = 100)
+nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+addVirginQueens(colony, nInd = nVirginQueensFun)
+addVirginQueens(colony, nInd = nVirginQueensFun)
 
-#Insert 10  virgin queens into the colony
-colony1 <- addVirginQueens(colony1, nInd = 10)
+SP$nVirginQueens <- nVirginQueensFun
+addVirginQueens(colony)
+addVirginQueens(colony)
 
 }

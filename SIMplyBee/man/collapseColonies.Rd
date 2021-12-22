@@ -2,47 +2,39 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{collapseColonies}
 \alias{collapseColonies}
-\title{collapseColonies}
+\title{Collapse colony for all given colonies}
 \usage{
-\method{collapseColonies}(colonies, ID)
+collapseColonies(colonies)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
-
-\item{ID}{IDs of "colony" class objects listed in the "colonies" object}
+\item{colonies}{\code{\link{Colonies-class}}}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with the collapse event set to
+  \code{TRUE}
 }
 \description{
-:
+Level 3 function that does the same as
+  \code{\link{collapseColony}} but for all given colonies.
 }
 \examples{
-# Create founder haplotypes
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-founderPop <- quickHaplo(nInd=300, nChr=1, segSites=10)
-
-# Set simulation parameters
-
-SP <- SimParam$new(founderPop)
-
-# Create population
-
-pop <- newPop(founderPop, simParam=SP)
-
-# Create colonies
-
-founderDrones <- createFounderDrones(pop[13:300], nDronesPerQueen = 17)
-colony1 <- createColony(queen = pop[1], fathers = founderDrones[1:17])
-colony2 <- createColony(queen = pop[2], fathers = founderDrones[18:37])
-colony3 <- createColony(queen = pop[3], fathers = founderDrones[37:51])
-
-# Put the colonies together to the apiary
-
+founderDrones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 30)
+colony1 <- createColony(queen = basePop[2], fathers = founderDrones[ 1:10])
+colony2 <- createColony(queen = basePop[3], fathers = founderDrones[11:20])
+colony3 <- createColony(queen = basePop[4], fathers = founderDrones[21:30])
 apiary <- c(colony1, colony2, colony3)
+apiary
+hasCollapsed(apiary)
 
-# Collapse colonies
-
-apiary <- collapseColonies(apiary, ID = c(1,2))
+tmp <- pullColonies(apiary, ID = c("2", "3"))
+tmp
+apiaryLost <- collapseColonies(tmp$pulledColonies)
+hasCollapsed(apiaryLost)
+apiaryLeft <- tmp$remainingColonies
+hasCollapsed(apiaryLeft)
 
 }

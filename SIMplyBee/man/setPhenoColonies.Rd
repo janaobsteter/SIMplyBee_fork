@@ -2,18 +2,26 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{setPhenoColonies}
 \alias{setPhenoColonies}
-\title{setPhenoColonies}
+\title{TODO}
 \usage{
-\method{setPhenoColonies}(colonies, FUN, ...)
+setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
-\item{colonies}{AlphaSimRBee Colonies object containing a list of colonies}
+\item{colonies}{\code{\link{Colonies-class}}}
 
-\item{...}{}
+\item{FUN}{TODO}
+
+\item{...}{TODO}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-An updated AlphaSimRBee Colonies object
+\code{\link{Colonies-class}} with phenotypes
 }
 \description{
-:
+Level 3 function that TODO
+}
+\examples{
+# TODO
+
 }

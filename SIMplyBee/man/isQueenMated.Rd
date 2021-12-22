@@ -7,35 +7,34 @@
 isQueenMated(x)
 }
 \arguments{
-\item{x}{Pop or Colony, queen or colony that will be inspected}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 }
 \value{
-Logical
+logical, named by colony id when \code{x} is
+  \code{\link{Colonies-class}}
 }
 \description{
-When queen is mated, we store drones she mated with (fathers of future progeny)
-in the same object to have genetic information for generating future progeny.
-This function tests if queen is mated, by testing for the presence of fathers.
+Level 0 function that returns queen's mating status.
 }
 \examples{
-# AlphaSimR
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 10)
-SP <- SimParam$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-# Honeybees
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-apiary <- c(colony1, colony2)
+colony3 <- createColony(virgin_queen = basePop[4])
+apiary <- c(colony1, colony2, colony3)
 isQueenMated(getQueen(colony1))
 isQueenMated(colony1)
 isQueenMated(apiary)
 
-colony1 <- removeQueen(colony1)
-isQueenMated(colony1)
+isQueenMated(removeQueen(colony1))
 
-colony2 <- supersedeColony(colony2, fathers = drones[1:5])
-isQueenMated(colony2)
+isQueenMated(supersedeColony(colony2))
+
+isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
 
 }

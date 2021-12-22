@@ -2,32 +2,31 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{supersedeColony}
 \alias{supersedeColony}
-\title{Replicates a supersedure of the colony and replaces the queen with a virgin queen.}
+\title{Supersede colony}
 \usage{
-\method{supersedureColony}(colony, crossVirginQueen, fathers, nWorkers, nDrones)
+supersedeColony(colony)
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call}
-
-\item{crossVirginQueen}{Logical. Whether a virgin queen is to be mated}
-
-\item{fathers}{AlphaSimR population object. Number of fathers pulled from the DCA}
-
-\item{pWorkers}{Numeric, proportion of workers that are replaced with the workers from the new queen}
-
-\item{pDrones}{Numeric, proportion of drones that are replaced with the drones from the new queen}
+\item{colony}{\code{\link{Colony-class}}}
 }
 \value{
-Single AlphaSim population object of superseded colony
+\code{\link{Colony-class}} with the supersede event set to
+  \code{TRUE}
 }
 \description{
-Replicates the process of supersedure, where the
-queen is replaced by a new virgin queen. The workers and the drones stay
-in the colony. If no fathers are present, mating of the virgin queen does not occur.
+Level 2 function that supersedes colony - an event where the
+  queen dies and one of virgin queens prevails. The workers and drones stay
+  unchanged.
 }
 \examples{
-inst/examples/examples_supersedeColony.R
-}
-\seealso{
-\code{\link[??????]{supersedure}}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones)
+(colony <- buildUpColony(colony, nWorkers = 100))
+
+supersedeColony(colony)
+
 }

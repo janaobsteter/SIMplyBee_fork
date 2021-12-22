@@ -2,38 +2,54 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addDrones}
 \alias{addDrones}
-\title{}
+\title{Add (raise) drones in the colony}
 \usage{
-\method{addDrones}(colony, nInd)
+addDrones(colony, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{AlphaSimRBee Colony object}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{nInd}{Integer, number of drones to add.}
+\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\code{simParamBee$nDrones} is used}
+
+\item{new}{logical, should the drones be added a fresh (ignoring currently
+present drones)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Updated AlphaSimRBee Colony object
+\code{\link{Colony-class}} with drones added
 }
 \description{
-Create drones and store them in the \code{colony@drones} slot. If there is
-already some drones present in the hive, the function will not overwrite them but instead
-combine the newly created and the existing drones The function returns the updated colony.
+Level 2 function that adds (raises) the specified number of
+  drones in the colony by crossing the current queen and the fathers. If
+  there are already some drones present, new and present drones are combined.
 }
 \examples{
-Create founder haplotypes
-founderPop <- quickHaplo(nInd=200, nChr=1, segSites=10)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
 
-#Set simulation parameters
-SP <- SimParam$new(founderPop)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+colony <- createColony(queen = basePop[2], fathers = drones)
+colony
+addDrones(colony, nInd = 20)
 
-#Create population
-pop <- newPop(founderPop, simParam=SP)
+# Using a default in SP$nDrones
+# (just to have some drones - change this to your needs!)
+addDrones(colony)
+addDrones(colony)
 
-#Creates colony with queen and fathers
-colony1 <- createColony(queen = base[1], fathers = base[2:15])
+SP$nDrones <- 15
+addDrones(colony)
+addDrones(colony)
 
-#Insert workers and drones into the colony
-colony1 <- addWorkers(colony1, nInd = 2000)
-colony1 <- addDrones(colony, nInd = 100)
+nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+addDrones(colony, nInd = nDronesFun)
+addDrones(colony, nInd = nDronesFun)
+
+SP$nDrones <- nDronesFun
+addDrones(colony)
+addDrones(colony)
 
 }

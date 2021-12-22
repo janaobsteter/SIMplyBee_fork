@@ -2,41 +2,40 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{swarmColony}
 \alias{swarmColony}
-\title{Replicates the swarming process and produces two colonies.}
+\title{Swarm colony}
 \usage{
-\method{swarmColony}(colony, pSwarm, crossVirginQueen. fathers, nWorkers, nDrones, swarmLocation)
+swarmColony(colony, p = 0.5, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{Colony class. AlphaSimRBee Colony object from the \code{createColony(...)} call}
+\item{colony}{\code{\link{Colony-class}}}
 
-\item{pSwarm}{Integer. Percentage of colony that will swarm}
+\item{p}{numeric, proportion of workers that will leave with the swarm colony}
 
-\item{crossVirginQueen}{Logical. Whether a virgin queen is to be mated}
+\item{year}{numeric, year of birth for virgin queens}
 
-\item{fathers}{AlphaSimR population object. Number of fathers pulled from the DCA}
-
-\item{pWorkers}{Numeric, proportion of workers that are replaced with the workers from the new queen in the remnant colony}
-
-\item{pDrones}{Numeric, proportion of drones that are replaced with the drones from the new queen in the remnant colony}
-
-\item{swarm}{Location Integer. X,Y coordinates of newly made swarmed hive}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Two colonies, one with the new queen and proportion of workers and
-one with the old queen and proportion of workers.
+list with two \code{\link{Colony-class}}, the \code{swarm} and the
+  \code{remnant} (see the description what each colony holds!); both colonies
+  have the swarm event set to \code{TRUE}
 }
 \description{
-List. Replicates the swarming of the colony - the process in which
-a part of the workers leave with the old queen and creates a new colony (the swarm),
-while a part of the workers stay with a new queen and the old drones.
-The swarming colony contains the old mated queen,
- a percentage (pSwarm) of the original colonies workers, no drones and a virgin queen is created from the worker population.
- A new location must be given to the new swarm colony.
- The colony that stays contains the remaining workers and drones. A virgin queen is selected from the workers and mated if fathers are present.
+Level 2 function that swarms colony - an event where the queen
+  leaves with a proportion of workers to create a new colony (the swarm). The
+  remnant colony retains the other proportion of workers and all drones.
 }
 \examples{
-inst/examples/examples_swarm.R
-}
-\seealso{
-\code{\link[??????]{createColony}}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- newPop(founderGenomes)
+
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony <- createColony(queen = basePop[2], fathers = drones)
+(colony <- buildUpColony(colony, nWorkers = 100))
+
+tmp <- swarmColony(colony)
+tmp$swarm
+tmp$remnant
+
 }
