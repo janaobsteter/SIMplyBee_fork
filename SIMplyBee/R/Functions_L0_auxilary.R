@@ -988,6 +988,8 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
+#' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
+#'   are taken; this can be useful as a test of sampling individuals
 #' @param allele character, either "all" for both alleles or an integer for a
 #'   single allele, use a value of 1 for female allele and a value of 2 for male
 #'   allele
@@ -1026,8 +1028,10 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #'
 #' getCsdAlleles(apiary)
 #'
+#' getCsdAlleles(apiary, nInd = 2)
+#'
 #' @export
-getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
+getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1042,38 +1046,17 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    tmp <- getCsdAlleles(x = getQueen(x),        allele = allele, simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["queen"] <- list(NULL)
-    } else {
-      ret[["queen"]] <- tmp
-    }
-    tmp <- getCsdAlleles(x = getFathers(x),      allele = allele, simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["fathers"] <- list(NULL)
-    } else {
-      ret[["fathers"]] <- tmp
-    }
-    tmp <- getCsdAlleles(x = getVirginQueens(x), allele = allele, simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["virgin_queens"] <- list(NULL)
-    } else {
-      ret[["virgin_queens"]] <- tmp
-    }
-    tmp <- getCsdAlleles(x = getWorkers(x),      allele = allele, simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["workers"] <- list(NULL)
-    } else {
-      ret[["workers"]] <- tmp
-    }
-    tmp <- getCsdAlleles(x = getDrones(x),       allele = allele, simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["drones"] <- list(NULL)
-    } else {
-      ret[["drones"]] <- tmp
+    for (caste in names(ret)) {
+      tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+      if (is.null(tmp)) {
+        ret[caste] <- list(NULL)
+      } else {
+        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, simParamBee = simParamBee)
+      }
     }
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdAlleles, allele = allele, simParamBee = simParamBee)
+    ret <- lapply(X = x@colonies, FUN = getCsdAlleles, nInd = nInd,
+                  allele = allele, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1089,6 +1072,8 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
+#' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
+#'   are taken; this can be useful as a test of sampling individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details The returned genotypes are spanning multiple bi-allelic SNP of
@@ -1127,9 +1112,10 @@ getCsdAlleles <- function(x, allele = "all", simParamBee = NULL) {
 #' getCsdAlleles(colony2)
 #'
 #' getCsdGeno(apiary)
+#' getCsdGeno(apiary, nInd = 2)
 #'
 #' @export
-getCsdGeno <- function(x, simParamBee = NULL) {
+getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1144,38 +1130,17 @@ getCsdGeno <- function(x, simParamBee = NULL) {
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
-    tmp <- getCsdGeno(x = getQueen(x),        simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["queen"] <- list(NULL)
-    } else {
-      ret[["queen"]] <- tmp
-    }
-    tmp <- getCsdGeno(x = getFathers(x),      simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["fathers"] <- list(NULL)
-    } else {
-      ret[["fathers"]] <- tmp
-    }
-    tmp <- getCsdGeno(x = getVirginQueens(x), simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["virgin_queens"] <- list(NULL)
-    } else {
-      ret[["virgin_queens"]] <- tmp
-    }
-    tmp <- getCsdGeno(x = getWorkers(x),      simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["workers"] <- list(NULL)
-    } else {
-      ret[["workers"]] <- tmp
-    }
-    tmp <- getCsdGeno(x = getDrones(x),       simParamBee = simParamBee)
-    if (is.null(tmp)) {
-      ret["drones"] <- list(NULL)
-    } else {
-      ret[["drones"]] <- tmp
+    for (caste in names(ret)) {
+      tmp <- getCaste(x = x, caste = caste, nInd = nInd)
+      if (is.null(tmp)) {
+        ret[caste] <- list(NULL)
+      } else {
+        ret[[caste]] <- getCsdGeno(x = tmp, simParamBee = simParamBee)
+      }
     }
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCsdGeno, simParamBee = simParamBee)
+    ret <- lapply(X = x@colonies, FUN = getCsdGeno, nInd = nInd,
+                  simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")

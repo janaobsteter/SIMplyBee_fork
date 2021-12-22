@@ -4,11 +4,14 @@
 \alias{getCsdAlleles}
 \title{Get csd alleles}
 \usage{
-getCsdAlleles(x, allele = "all", simParamBee = NULL)
+getCsdAlleles(x, nInd = NULL, allele = "all", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
+
+\item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
+are taken; this can be useful as a test of sampling individuals}
 
 \item{allele}{character, either "all" for both alleles or an integer for a
 single allele, use a value of 1 for female allele and a value of 2 for male
@@ -53,5 +56,7 @@ getCsdAlleles(getDrones(colony2))
 getCsdAlleles(colony2)
 
 getCsdAlleles(apiary)
+
+getCsdAlleles(apiary, nInd = 2)
 
 }

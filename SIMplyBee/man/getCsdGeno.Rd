@@ -4,11 +4,14 @@
 \alias{getCsdGeno}
 \title{Get genotypes from the csd locus}
 \usage{
-getCsdGeno(x, simParamBee = NULL)
+getCsdGeno(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
+
+\item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
+are taken; this can be useful as a test of sampling individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -54,5 +57,6 @@ getCsdAlleles(getDrones(colony2))
 getCsdAlleles(colony2)
 
 getCsdGeno(apiary)
+getCsdGeno(apiary, nInd = 2)
 
 }
