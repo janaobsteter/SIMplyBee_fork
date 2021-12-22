@@ -379,6 +379,8 @@ addDrones <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
+#' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
+#'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function turns production of the colony to \code{TRUE}.
@@ -425,7 +427,7 @@ addDrones <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          new = FALSE, simParamBee = NULL) {
+                          new = FALSE, resetEvents = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -437,6 +439,9 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   }
   if (is.function(nWorkers)) {
     nWorkers <- nWorkers(colony)
+  }
+  if (resetEvents) {
+    colony <- resetEvents(colony)
   }
   if (new) {
     n <- nWorkers

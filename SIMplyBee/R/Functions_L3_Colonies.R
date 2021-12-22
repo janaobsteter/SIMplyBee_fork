@@ -318,6 +318,8 @@ removeColonies <- function(colonies, ID) {
 #'   account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
+#' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
+#'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with workers and drones added
@@ -375,7 +377,8 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
-                            new = FALSE, simParamBee = NULL) {
+                            new = FALSE, resetEvents = FALSE,
+                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -388,6 +391,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                                                  nWorkers = nWorkers,
                                                  nDrones = nDrones,
                                                  new = new,
+                                                 resetEvents = resetEvents,
                                                  simParamBee = simParamBee)
   }
   validObject(colonies)

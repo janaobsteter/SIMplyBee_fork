@@ -9,6 +9,7 @@ buildUpColony(
   nWorkers = NULL,
   nDrones = NULL,
   new = FALSE,
+  resetEvents = FALSE,
   simParamBee = NULL
 )
 }
@@ -25,6 +26,9 @@ account so only the difference is added)}
 
 \item{new}{logical, should the workers and drones be added a fresh (ignoring
 currently present workers and drones)}
+
+\item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
+build up}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
