@@ -4,10 +4,13 @@
 \alias{isQueenPresent}
 \title{Is the queen present}
 \usage{
-isQueenPresent(x)
+isQueenPresent(x, virginQueens = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+
+\item{virginQueens}{logical, test for the presence of virgin queens instead
+of the queen}
 }
 \value{
 logical, named by colony id when \code{x} is
@@ -30,10 +33,18 @@ isQueenPresent(colony1)
 isQueenPresent(colony2)
 isQueenPresent(apiary)
 
-colony1 <- removeQueen(colony1)
-isQueenPresent(colony1)
+isQueenPresent(colony1, virginQueens = TRUE)
+isQueenPresent(colony2, virginQueens = TRUE)
+isQueenPresent(apiary, virginQueens = TRUE)
 
-colony2 <- supersedeColony(colony2)
-isQueenPresent(colony2)
+colony1r <- removeQueen(colony1)
+isQueenPresent(colony1r)
+isQueenPresent(colony1r, virginQueens = TRUE)
+
+colony2s <- supersedeColony(colony2)
+isQueenPresent(colony2s)
+isQueenPresent(colony2s, virginQueens = TRUE)
+
+swarmColony(buildUpColony(colony1))
 
 }

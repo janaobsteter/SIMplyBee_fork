@@ -2,14 +2,16 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{buildUpColony}
 \alias{buildUpColony}
-\title{Build up colony by adding (raising) workers and drones}
+\title{Build up colony by adding (raising) workers, drones, and virgin queens}
 \usage{
 buildUpColony(
   colony,
   nWorkers = NULL,
   nDrones = NULL,
+  nVirginQueens = NULL,
   new = FALSE,
   resetEvents = FALSE,
+  year = NULL,
   simParamBee = NULL
 )
 }
@@ -17,18 +19,27 @@ buildUpColony(
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker; if \code{NULL} then
-\code{simParamBee$nWorkers} is used (currently present workers are taken
-into account so only the difference is added)}
+\code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
+present workers are taken into account and only the missing difference is
+added)}
 
 \item{nDrones}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used (currently present drones are taken into
-account so only the difference is added)}
+\code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
+present drones are taken into account so only the missing difference is
+added)}
 
-\item{new}{logical, should the workers and drones be added a fresh (ignoring
-currently present workers and drones)}
+\item{nVirginQueens}{numeric or function, number of virgin queens; if
+\code{NULL} then \code{simParamBee$nVirginQueens} is used (unless \code{new
+= TRUE}, currently present virgin queens are taken into account so only the
+missing difference is added)}
+
+\item{new}{logical, should the workers, drones, and virgin queens be added a
+fresh (ignoring currently present workers, drones, and virgin queens)}
 
 \item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
 build up}
+
+\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -37,8 +48,8 @@ build up}
 }
 \description{
 Level 2 function that builds up colony by adding (raising)
-  workers and drones, usually in spring or after events such as split or
-  swarming.
+  workers, drones, and virgin queens usually in spring or after events such
+  as split or swarming.
 }
 \details{
 This function turns production of the colony to \code{TRUE}.
@@ -70,13 +81,17 @@ colony # adding completely new workers & drones
 # Using functions
 nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
 nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 colony <- createColony(queen = basePop[2], fathers = drones)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
+              nVirginQueens = nVirginQueensFun)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
+              nVirginQueens = nVirginQueensFun)
 
 # Using functions in simParamBee
 SP$nWorkers <- nWorkersFun
 SP$nDrones <- nDronesFun
+SP$nVirginQueens <- nVirginQueensFun
 colony <- createColony(queen = basePop[2], fathers = drones)
 buildUpColony(colony)
 buildUpColony(colony)

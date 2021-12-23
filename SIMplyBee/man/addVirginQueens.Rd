@@ -4,13 +4,22 @@
 \alias{addVirginQueens}
 \title{Add (raise) virgin queens in the colony}
 \usage{
-addVirginQueens(colony, nInd = NULL, year = NULL, simParamBee = NULL)
+addVirginQueens(
+  colony,
+  nInd = NULL,
+  new = FALSE,
+  year = NULL,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens to add; if
 \code{NULL} then \code{simParamBee$nVirginQueens} is used}
+
+\item{new}{logical, should the virgin queens be added a fresh (ignoring
+currently present virgin queens in the colony)}
 
 \item{year}{numeric, year of birth for virgin queens}
 

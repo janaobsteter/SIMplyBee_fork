@@ -303,23 +303,30 @@ removeColonies <- function(colonies, ID) {
 }
 
 #' @rdname buildUpColonies
-#' @title Build up colony by adding (raising) workers and drones for all given
-#'   colonies
+#' @title Build up colony by adding (raising) workers, drones, and virgin queens
+#'   for all given colonies
 #'
 #' @description Level 3 function that does the same as
 #'   \code{\link{buildUpColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param nWorkers numeric or function, number of worker; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used (currently present workers are taken
-#'   into account so only the difference is added)
+#'   \code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
+#'   present workers are taken into account and only the missing difference is
+#'   added)
 #' @param nDrones numeric or function, number of drones; if \code{NULL} then
-#'   \code{simParamBee$nDrones} is used (currently present drones are taken into
-#'   account so only the difference is added)
-#' @param new logical, should the workers and drones be added a fresh (ignoring
-#'   currently present workers and drones)
+#'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
+#'   present drones are taken into account so only the missing difference is
+#'   added)
+#' @param nVirginQueens numeric or function, number of virgin queens; if
+#'   \code{NULL} then \code{simParamBee$nVirginQueens} is used (unless \code{new
+#'   = TRUE}, currently present virgin queens are taken into account so only the
+#'   missing difference is added)
+#' @param new logical, should the workers, drones, and virgin queens be added a
+#'   fresh (ignoring currently present workers, drones, and virgin queens)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
 #'   build up
+#' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with workers and drones added
@@ -356,17 +363,21 @@ removeColonies <- function(colonies, ID) {
 #' # Using functions
 #' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
 #' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 #' apiary <- c(colony1, colony2)
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun,
+#'                        nVirginQueens = nVirginQueensFun)
 #' tmp[[1]]
 #' tmp[[2]]
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun,
+#'                        nVirginQueens = nVirginQueens)
 #' tmp[[1]]
 #' tmp[[2]]
 #'
 #' # Using functions in simParamBee
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
+#' SP$nVirginQueens <- nVirginQueens
 #' apiary <- c(colony1, colony2)
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
@@ -377,7 +388,8 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
-                            new = FALSE, resetEvents = FALSE,
+                            nVirginQueens = NULL, new = FALSE,
+                            resetEvents = FALSE, year = NULL,
                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -390,8 +402,10 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
     colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
                                                  nWorkers = nWorkers,
                                                  nDrones = nDrones,
+                                                 nVirginQueens = nVirginQueens,
                                                  new = new,
                                                  resetEvents = resetEvents,
+                                                 year = year,
                                                  simParamBee = simParamBee)
   }
   validObject(colonies)

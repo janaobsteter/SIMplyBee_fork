@@ -4,14 +4,12 @@
 \alias{crossColony}
 \title{Cross (mate) a virgin queen of a colony to a group of drones}
 \usage{
-crossColony(colony, fathers, year = NULL, simParamBee = NULL)
+crossColony(colony, fathers, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{fathers}{\code{\link{Pop-class}}, drones}
-
-\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
