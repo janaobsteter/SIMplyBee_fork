@@ -10,6 +10,7 @@ createColonies(
   mated = TRUE,
   nAvgFathers = 15,
   nDronesPerQueen = 100,
+  yearOfBirth = NULL,
   simParamBee = NULL
 )
 }
@@ -36,6 +37,8 @@ from the pop for mating with the queens
 TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
      here and if its NULL we grab value from simParamBee, otherwise use it
      from the user}
+
+\item{yearOfBirth}{numeric, year of birth of the queen}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
