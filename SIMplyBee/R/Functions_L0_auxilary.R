@@ -397,13 +397,9 @@ pHomBrood <- function(x) {
 #' @export
 isQueenPresent <- function(x) {
   if (isColony(x)) {
-    if (virginQueens) {
-      ret <- !is.null(x@virgin_queens)
-    } else {
-      ret <- !is.null(x@queen)
-    }
+    ret <- !is.null(x@queen)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenPresent, virginQueens = virginQueens)
+    ret <- sapply(X = x@colonies, FUN = isQueenPresent)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
