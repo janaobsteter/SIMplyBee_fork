@@ -4,13 +4,15 @@
 \alias{createVirginQueens}
 \title{Creates virgin queens from the colony}
 \usage{
-createVirginQueens(colony, nInd = NULL, simParamBee = NULL)
+createVirginQueens(colony, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
 \code{simParamBee$nVirginQueens} is used}
+
+\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

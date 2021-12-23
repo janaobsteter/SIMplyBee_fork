@@ -244,6 +244,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param colony \code{\link{Colony-class}}
 #' @param nInd numeric or function, number of virgin queens; if \code{NULL} then
 #'   \code{simParamBee$nVirginQueens} is used
+#' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two nodes named \code{virgin_queens} (a
@@ -278,7 +279,8 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
-createVirginQueens <- function(colony, nInd = NULL, simParamBee = NULL) {
+createVirginQueens <- function(colony, nInd = NULL, year = NULL,
+                               simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -292,6 +294,10 @@ createVirginQueens <- function(colony, nInd = NULL, simParamBee = NULL) {
     nInd <- nInd(colony)
   }
   ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  if (!is.null(year)) {
+    ret$virgin_queens <- setQueensYearOfBirth(x = ret$virgin_queens,
+                                              year = year)
+  }
   names(ret) <- c("virgin_queens", "pHomBrood")
   return(ret)
 }
