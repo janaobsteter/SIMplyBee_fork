@@ -37,4 +37,6 @@ isQueenMated(supersedeColony(colony2))
 
 isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
 
+isQueenMated(crossVirginQueen(basePop[2], drones))
+
 }

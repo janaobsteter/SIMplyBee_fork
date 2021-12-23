@@ -361,12 +361,62 @@ pHomBrood <- function(x) {
 #' @rdname isQueenPresent
 #' @title Is the queen present
 #'
-#' @description Level 0 function that returns queen's present status (is she
+#' @description Level 0 function that returns queen's presence status (is she
 #'   present/alive or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param virginQueens logical, test for the presence of virgin queens instead
-#'   of the queen
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- buildUpColony(colony1)
+#' colony2 <- buildUpColony(colony2)
+#' apiary <- c(colony1, colony2)
+#' isQueenPresent(colony1)
+#' isQueenPresent(colony2)
+#' isQueenPresent(apiary)
+#'
+#' colony1r <- removeQueen(colony1)
+#' isQueenPresent(colony1r)
+#'
+#' colony2s <- supersedeColony(colony2)
+#' isQueenPresent(colony2s)
+#'
+#' tmp <- swarmColony(buildUpColony(colony1))
+#' isQueenPresent(tmp$swarm)
+#' isQueenPresent(tmp$remnant)
+#'
+#' @export
+isQueenPresent <- function(x) {
+  if (isColony(x)) {
+    if (virginQueens) {
+      ret <- !is.null(x@virgin_queens)
+    } else {
+      ret <- !is.null(x@queen)
+    }
+  } else if (isColonies(x)) {
+    ret <- sapply(X = x@colonies, FUN = isQueenPresent, virginQueens = virginQueens)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname areVirginQueensPresent
+#' @title Are virgin queen(s) present
+#'
+#' @description Level 0 function that returns virgin queen(s) presence status.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
@@ -380,34 +430,38 @@ pHomBrood <- function(x) {
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
-#' isQueenPresent(colony1)
-#' isQueenPresent(colony2)
-#' isQueenPresent(apiary)
+#' areVirginQueensPresent(colony1)
+#' areVirginQueensPresent(colony2)
+#' areVirginQueensPresent(apiary)
 #'
-#' isQueenPresent(colony1, virginQueens = TRUE)
-#' isQueenPresent(colony2, virginQueens = TRUE)
-#' isQueenPresent(apiary, virginQueens = TRUE)
+#' colony1 <- addVirginQueens(colony1)
+#' colony2 <- buildUpColony(colony2)
+#' apiary <- c(colony1, colony2)
+#'
+#' areVirginQueensPresent(colony1)
+#' areVirginQueensPresent(colony2)
+#' areVirginQueensPresent(apiary)
 #'
 #' colony1r <- removeQueen(colony1)
-#' isQueenPresent(colony1r)
-#' isQueenPresent(colony1r, virginQueens = TRUE)
+#' areVirginQueensPresent(colony1r)
 #'
 #' colony2s <- supersedeColony(colony2)
-#' isQueenPresent(colony2s)
-#' isQueenPresent(colony2s, virginQueens = TRUE)
+#' areVirginQueensPresent(colony2s)
 #'
-#' swarmColony(buildUpColony(colony1))
+#' tmp <- swarmColony(colony1)
+#' areVirginQueensPresent(tmp$swarm)
+#' areVirginQueensPresent(tmp$remnant)
+#'
+#' tmp <- splitColony(colony1)
+#' areVirginQueensPresent(tmp$split)
+#' areVirginQueensPresent(tmp$remnant)
 #'
 #' @export
-isQueenPresent <- function(x, virginQueens = FALSE) {
+areVirginQueensPresent <- function(x) {
   if (isColony(x)) {
-    if (virginQueens) {
-      ret <- !is.null(x@virgin_queens)
-    } else {
-      ret <- !is.null(x@queen)
-    }
+    ret <- !is.null(x@virgin_queens)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenPresent, virginQueens = virginQueens)
+    ret <- sapply(X = x@colonies, FUN = areVirginQueensPresent)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -445,6 +499,8 @@ isQueenPresent <- function(x, virginQueens = FALSE) {
 #' isQueenMated(supersedeColony(colony2))
 #'
 #' isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
+#'
+#' isQueenMated(crossVirginQueen(basePop[2], drones))
 #'
 #' @export
 isQueenMated <- function(x) {
@@ -1112,6 +1168,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #' apiary <- c(colony1, colony2)
 #'
 #' getCsdGeno(getQueen(colony1))
@@ -1180,6 +1237,7 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 10)
 #'
 #' (tmp <- getCsdGeno(getQueen(colony1)))
 #' SIMplyBee:::isGenoHeterozygous(tmp)
@@ -1223,12 +1281,13 @@ isGenoHeterozygous <- function(x) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 10)
 #'
 #' isCsdHeterozygous(getQueen(colony1))
 #'
-#' isCsdHeterozygous(getVirginQueens(colony1))
-#'
 #' isCsdHeterozygous(getWorkers(colony1))
+#'
+#' isCsdHeterozygous(getVirginQueens(colony1))
 #'
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
