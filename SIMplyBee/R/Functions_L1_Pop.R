@@ -294,11 +294,11 @@ createVirginQueens <- function(colony, nInd = NULL, year = NULL,
     nInd <- nInd(colony)
   }
   ret <- createWorkers(colony = colony, nInd = nInd, simParamBee = simParamBee)
+  names(ret) <- c("virgin_queens", "pHomBrood")
   if (!is.null(year)) {
     ret$virgin_queens <- setQueensYearOfBirth(x = ret$virgin_queens,
                                               year = year)
   }
-  names(ret) <- c("virgin_queens", "pHomBrood")
   return(ret)
 }
 

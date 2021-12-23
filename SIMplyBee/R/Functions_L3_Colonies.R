@@ -24,6 +24,7 @@
 #'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
 #'        here and if its NULL we grab value from simParamBee, otherwise use it
 #'        from the user
+#' @param yearOfBirth numeric, year of birth of the queen
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
@@ -57,7 +58,7 @@
 #' @export
 createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
                            nAvgFathers = 15, nDronesPerQueen = 100,
-                           simParamBee = NULL) {
+                           yearOfBirth = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -80,12 +81,14 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
       for (colony in seq_len(nCol)) {
         ret@colonies[[colony]] <- createColony(queen = queens[colony],
                                                fathers = fatherPackages[[colony]],
+                                               yearOfBirth = yearOfBirth,
                                                simParamBee = simParamBee)
       }
     } else {
       virginQueens <- selectInd(pop, nInd = nCol, use = "rand")
       for (colony in seq_len(nCol)) {
         ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
+                                               yearOfBirth = yearOfBirth,
                                                simParamBee = simParamBee)
       }
     }
