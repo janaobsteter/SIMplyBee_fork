@@ -149,6 +149,7 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' @param colonies \code{\link{Colonies-class}}
 #' @param ID numeric or character, name of a colony (one or more) to be pulled
 #'   out; note that numeric value is converted to character
+#' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being selected
 #'
 #' @return \code{\link{Colonies-class}} with selected colonies
@@ -183,24 +184,30 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #' getId(selectColonies(apiary, p = 0.5))
 #'
 #' @export
-selectColonies <- function(colonies, ID = NULL, p = NULL) {
+selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
+  #       this will be complicated - best to follow ideas from
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
     ret <- colonies[getId(colonies) %in% ID]
-  } else if (!is.null(p)) {
-    lSel <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
-    message(paste0("Randomly selecting colonies: ", sum(lSel)))
-    if (any(lSel)) {
+  } else if (!is.null(n) | !is.null(p)) {
+    nCol <- nColonies(colonies)
+    if (!is.null(p)) {
+      n <- round(nCol * p)
+    }
+    lSel <- sample.int(n = nCol, size = n)
+    message(paste0("Randomly selecting colonies: ", n))
+    if (length(lSel) > 0) {
       ret <- colonies[lSel]
     } else {
       ret <- NULL
     }
   } else {
-    stop("Provide either ID or p!")
+    stop("Provide either ID, n, or p!")
   }
   validObject(ret)
   return(ret)
@@ -215,6 +222,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' @param colonies \code{\link{Colonies-class}}
 #' @param ID numeric or character, name of a colony (one or more) to be pulled
 #'   out; note that numeric value is converted to character
+#' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being pulled out
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
@@ -232,7 +240,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
-#' tmp <- pullColonies(apiary, p = 0.5)
+#' tmp <- pullColonies(apiary, n = 1)
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
@@ -241,7 +249,7 @@ selectColonies <- function(colonies, ID = NULL, p = NULL) {
 #' getId(tmp$remainingColonies)
 #'
 #' @export
-pullColonies <- function(colonies, ID = NULL, p = NULL) {
+pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function that would be passed to selectColonies()?
   #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
   if (!isColonies(colonies)) {
@@ -250,10 +258,14 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
   if (!is.null(ID)) {
     pulledColonies <- selectColonies(colonies, ID)
     remainingColonies <- removeColonies(colonies, ID)
-  } else if (!is.null(p)) {
-    lPull <- as.logical(stats::rbinom(n = nColonies(colonies), size = 1, p = p))
-    message(paste0("Pulling out randomly selected colonies: ", sum(lPull)))
-    if (any(lPull)) {
+  } else if (!is.null(n) | !is.null(p)) {
+    nCol <- nColonies(colonies)
+    if (!is.null(p)) {
+      n <- round(nCol * p)
+    }
+    lPull <- sample.int(n = nCol, size = n)
+    message(paste0("Randomly pulling colonies: ", n))
+    if (length(lPull) > 0) {
       ids <- getId(colonies)
       pulledColonies <- selectColonies(colonies, ids[lPull])
       remainingColonies <- removeColonies(colonies, ids[lPull])
@@ -262,7 +274,7 @@ pullColonies <- function(colonies, ID = NULL, p = NULL) {
       remainingColonies <- colonies
     }
   } else {
-    stop("You must provide either ID or p!")
+    stop("You must provide either ID, n, or p!")
   }
   ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
   validObject(ret$pulledColonies)

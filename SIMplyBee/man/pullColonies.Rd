@@ -4,13 +4,15 @@
 \alias{pullColonies}
 \title{Pull out some colonies}
 \usage{
-pullColonies(colonies, ID = NULL, p = NULL)
+pullColonies(colonies, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
 \item{ID}{numeric or character, name of a colony (one or more) to be pulled
 out; note that numeric value is converted to character}
+
+\item{n}{numeric, number of colonies to select}
 
 \item{p}{numeric, probability of a colony being pulled out}
 }
@@ -34,7 +36,7 @@ tmp <- pullColonies(apiary, ID = names[1])
 getId(tmp$pulledColonies)
 getId(tmp$remainingColonies)
 
-tmp <- pullColonies(apiary, p = 0.5)
+tmp <- pullColonies(apiary, n = 1)
 getId(tmp$pulledColonies)
 getId(tmp$remainingColonies)
 

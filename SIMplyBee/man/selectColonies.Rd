@@ -4,13 +4,15 @@
 \alias{selectColonies}
 \title{Select individual colonies}
 \usage{
-selectColonies(colonies, ID = NULL, p = NULL)
+selectColonies(colonies, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
 \item{ID}{numeric or character, name of a colony (one or more) to be pulled
 out; note that numeric value is converted to character}
+
+\item{n}{numeric, number of colonies to select}
 
 \item{p}{numeric, probability of a colony being selected}
 }
