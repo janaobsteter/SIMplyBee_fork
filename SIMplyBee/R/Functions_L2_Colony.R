@@ -1147,7 +1147,7 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
   if (areVirginQueensPresent(colony)) {
     remnantColony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   } else {
-    warning("No virgin queen(s) present in the colony for the remnant!")
+    message("No virgin queen(s) present in the colony for the swarm remnant!")
   }
   remnantColony@workers <- getWorkers(tmp$colony)
   remnantColony@drones <- getDrones(colony)
@@ -1204,7 +1204,7 @@ supersedeColony <- function(colony) {
   if (areVirginQueensPresent(colony)) {
     colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   } else {
-    warning("No virgin queen(s) present in the colony to complete supersedure!")
+    message("No virgin queen(s) present in the colony to complete supersedure!")
   }
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
