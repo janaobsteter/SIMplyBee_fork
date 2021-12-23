@@ -1038,8 +1038,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (isQueenPresent(colony)) {
     stop("Queen already present in the colony!")
   }
-  if (is.null(colony@virgin_queens)) {
-    stop("No virgin queen(s)!")
+  if (!areVirginQueensPresent(colony)) {
+    stop("No virgin queen(s) in the colony to cross!")
   }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
@@ -1144,7 +1144,11 @@ swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
   remnantColony <- createColony()
   # One virgin queen prevails
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
-  remnantColony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  if (areVirginQueensPresent(colony)) {
+    remnantColony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  } else {
+    warning("No virgin queen(s) present in the colony for the remnant!")
+  }
   remnantColony@workers <- getWorkers(tmp$colony)
   remnantColony@drones <- getDrones(colony)
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
@@ -1197,7 +1201,11 @@ supersedeColony <- function(colony) {
   colony <- removeQueen(colony)
   # One virgin queen prevails
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
-  colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  if (areVirginQueensPresent(colony)) {
+    colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  } else {
+    warning("No virgin queen(s) present in the colony to complete supersedure!")
+  }
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
   validObject(colony)
