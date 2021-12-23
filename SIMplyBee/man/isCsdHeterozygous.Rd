@@ -31,11 +31,12 @@ basePop <- newPop(founderGenomes)
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 colony1 <- createColony(queen = basePop[2], fathers = drones)
 colony1 <- addWorkers(colony1, nInd = 10)
+colony1 <- addVirginQueens(colony1, nInd = 10)
 
 isCsdHeterozygous(getQueen(colony1))
 
-isCsdHeterozygous(getVirginQueens(colony1))
-
 isCsdHeterozygous(getWorkers(colony1))
+
+isCsdHeterozygous(getVirginQueens(colony1))
 
 }

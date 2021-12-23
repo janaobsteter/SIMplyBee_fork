@@ -43,6 +43,7 @@ colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
+colony1 <- addVirginQueens(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdGeno(getQueen(colony1))

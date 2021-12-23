@@ -132,7 +132,7 @@ getFathers(apiary, nInd = 2)
 getCaste(apiary, caste = "virgin_queens")
 getVirginQueens(apiary)
 getVirginQueens(apiary)[[1]]@id
-getVirginQueens(apiary)[[2]]@id
+getVirginQueens(apiary)[[2]]
 getVirginQueens(apiary, nInd = 1)
 getVirginQueens(apiary, nInd = 2)
 
