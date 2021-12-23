@@ -9,12 +9,12 @@ isPop <- function(x) {
 
 # Class Colony ----
 
-setClassUnion("PopOrNULL", c("Pop", "NULL"))
 setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
 setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
+setClassUnion("PopOrNULL", c("Pop", "NULL"))
 
 #' @rdname Colony-class
 #' @title Honeybee colony
@@ -138,11 +138,17 @@ isColony <- function(x) {
   return(ret)
 }
 
+setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
+
 #' @describeIn Colony-class Combine multiple colony objects
 setMethod(f = "c",
-          signature(x = "Colony"),
+          signature(x = "ColonyOrNULL"),
           function(x, ...) {
-            colonies <- new(Class = "Colonies", colonies = list(x))
+            if (is.null(x)) {
+              colonies <- new(Class = "Colonies")
+            } else {
+              colonies <- new(Class = "Colonies", colonies = list(x))
+            }
             for (y in list(...)) {
               if (class(y) == "NULL") {
                 # Do nothing

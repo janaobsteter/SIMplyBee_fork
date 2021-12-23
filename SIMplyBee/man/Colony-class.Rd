@@ -5,14 +5,14 @@
 \alias{Colony-class}
 \alias{show,Colony-method}
 \alias{isColony}
-\alias{c,Colony-method}
+\alias{c,ColonyOrNULL-method}
 \title{Honeybee colony}
 \usage{
 \S4method{show}{Colony}(object)
 
 isColony(x)
 
-\S4method{c}{Colony}(x, ...)
+\S4method{c}{ColonyOrNULL}(x, ...)
 }
 \arguments{
 \item{object}{\code{\link{Colony-class}}}
@@ -34,7 +34,7 @@ An object holding honeybee colony
 
 \item \code{isColony}: Test if x is a Colony class object
 
-\item \code{c,Colony-method}: Combine multiple colony objects
+\item \code{c,ColonyOrNULL-method}: Combine multiple colony objects
 }}
 
 \section{Slots}{

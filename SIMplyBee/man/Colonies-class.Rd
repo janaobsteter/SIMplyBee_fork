@@ -9,6 +9,7 @@
 \alias{[[,Colonies,integerOrNumeric-method}
 \alias{[[,Colonies,character-method}
 \alias{c,Colonies-method}
+\alias{c,ColoniesOrNULL-method}
 \alias{isColonies}
 \title{Honeybee colonies}
 \usage{
@@ -23,6 +24,8 @@
 \S4method{[[}{Colonies,character}(x, i)
 
 \S4method{c}{Colonies}(x, ...)
+
+\S4method{c}{ColoniesOrNULL}(x, ...)
 
 isColonies(x)
 }
@@ -61,6 +64,8 @@ An object holding a collection of honeybee colonies. It behaves
 \item \code{[[,Colonies,character-method}: Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
 
 \item \code{c,Colonies-method}: Combine multiple colony and colonies objects
+
+\item \code{c,ColoniesOrNULL-method}: Combine multiple colony and colonies objects
 
 \item \code{isColonies}: Test if x is a Colonies class object
 }}
@@ -104,6 +109,12 @@ apiary[["4"]]
 
 getId(c(apiary[c(1, 3)], apiary[2]))
 getId(c(apiary[2], apiary[c(1, 3)]))
+
+getId(c(apiary[2], apiary[0]))
+getId(c(apiary[0], apiary[2]))
+
+getId(c(apiary[2], NULL))
+getId(c(NULL, apiary[2]))
 
 }
 \seealso{

@@ -58,6 +58,12 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #' getId(c(apiary[c(1, 3)], apiary[2]))
 #' getId(c(apiary[2], apiary[c(1, 3)]))
 #'
+#' getId(c(apiary[2], apiary[0]))
+#' getId(c(apiary[0], apiary[2]))
+#'
+#' getId(c(apiary[2], NULL))
+#' getId(c(NULL, apiary[2]))
+#'
 #' @export
 setClass(Class = "Colonies",
          slots = c(colonies = "list"))
@@ -151,6 +157,33 @@ setMethod(f = "c",
             }
             validObject(x)
             return(x)
+          }
+)
+
+setClassUnion("ColoniesOrNULL", c("Colonies", "NULL"))
+
+#' @describeIn Colonies-class Combine multiple colony and colonies objects
+setMethod(f = "c",
+          signature(x = "ColoniesOrNULL"),
+          function(x, ...) {
+            if (is.null(x)) {
+              colonies <- new(Class = "Colonies")
+            } else {
+              colonies <- new(Class = "Colonies", colonies = list(x))
+            }
+            for (y in list(...)) {
+              if (class(y) == "NULL") {
+                # Do nothing
+              } else if (class(y) == "Colony") {
+                colonies@colonies <- c(colonies@colonies, y)
+              } else if (class(y) == "Colonies") {
+                colonies@colonies <- c(colonies@colonies, y@colonies)
+              } else {
+                stop("... must be a NULL, Colony, or Colonies class object!")
+              }
+            }
+            validObject(colonies)
+            return(colonies)
           }
 )
 
