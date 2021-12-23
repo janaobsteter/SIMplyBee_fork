@@ -1046,6 +1046,34 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
   return(founderGenomes)
 }
 
+#' @rdname isCsdActive
+#' @title Is csd locus activated
+#'
+#' @description Level 0 function that checks if the csd locus has been
+#'   activated. See \code{\link{SimParamBee}} for more information about the csd
+#'   locus.
+#'
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+#' isCsdActive()
+#'
+#' SP <- SimParamBee$new(founderGenomes)
+#' isCsdActive()
+#'
+#' @export
+isCsdActive <- function(simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- !is.null(simParamBee$csdChr)
+  return(ret)
+}
+
 #' @rdname getCsdAlleles
 #' @title Get csd alleles
 #'
@@ -1101,7 +1129,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(simParamBee$csdChr)) {
+  if (!isCsdActive(simParamBee = simParamBee)) {
     stop("The csd locus has not been set!")
   }
   if (is.null(x)) {
@@ -1186,7 +1214,7 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(simParamBee$csdChr)) {
+  if (!isCsdActive(simParamBee = simParamBee)) {
     stop("The csd locus has not been set!")
   }
   if (is.null(x)) {

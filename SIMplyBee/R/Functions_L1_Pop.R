@@ -369,13 +369,13 @@ createWorkers <- function(colony, nInd = NULL, simParamBee = NULL) {
   workers <- randCross2(females = getQueen(colony),
                         males = getFathers(colony),
                         nCrosses = nInd)
-  if (is.null(simParamBee$csdChr)) {
-    ret$workers <- workers
-    ret$pHomBrood <- 0 # TODO: what would be a good default here (0, NA, or NULL)?
-  } else {
+  if (isCsdActive(simParamBee = simParamBee)) {
     sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
     ret$workers <- workers[sel]
     ret$pHomBrood <- (nInd - sum(sel)) / nInd
+  } else {
+    ret$workers <- workers
+    ret$pHomBrood <- NA
   }
   return(ret)
 }
@@ -837,11 +837,11 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
     #       nAvgFathers from SimParam when nAvgFathers = NULL?
     pop@misc[[1]]$fathers <- fathers
-    if (is.null(simParamBee$csdChr)) {
-      pop@misc[[1]]$pHomBrood <- NA
-    } else {
+    if (isCsdActive(simParamBee = simParamBee)) {
       # TODO: call a function that will calculate theoretical/expected pHomBrood
       #       based on genotype of the queen and fathers
+      pop@misc[[1]]$pHomBrood <- 0
+    } else {
       pop@misc[[1]]$pHomBrood <- NA
     }
   } else {
@@ -850,12 +850,12 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
                                       avgGroupSize = nAvgFathers)
     for (queen in seq_len(nVirginQueen)) {
       pop@misc[[queen]]$fathers <- fathers[[queen]]
-      if (is.null(simParamBee$csdChr)) {
-        pop@misc[[queen]]$pHomBrood <- NA
-      } else {
+      if (isCsdActive(simParamBee = simParamBee)) {
         # TODO: call a function that will calculate theoretical/expected pHomBrood
         #       based on genotype of the queen and fathers
         pop@misc[[queen]]$pHomBrood <- 0
+      } else {
+        pop@misc[[queen]]$pHomBrood <- NA
       }
     }
   }
