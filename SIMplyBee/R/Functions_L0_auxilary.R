@@ -1007,14 +1007,16 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @param allele character, either "all" for both alleles or an integer for a
 #'   single allele, use a value of 1 for female allele and a value of 2 for male
 #'   allele
-#' @param collapse logical, if set to TRUE, the function will return a set
-#' of csd alleles in either the entire population, colony, or colonies. Set to FALSE
-#' by default.
-#' @param unique logical, return only the unique set of csd alleles. Set to FALSE by default.
-#' If both collapse and unique are set to TRUE, the function returns a unique set
-#' of csd alleles in the entire population, colony, or colonies.
+#' @param collapse logical, if set to TRUE, the function will return a set of
+#'   csd alleles in either the entire population, colony, or colonies. Set to
+#'   FALSE by default.
+#' @param unique logical, return only the unique set of csd alleles. Set to
+#'   FALSE by default.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details  If both collapse and unique are set to TRUE, the function
+#'   returns a unique set of csd alleles in the entire population, colony, or
+#'   colonies.
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
@@ -1074,16 +1076,13 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, simParamBee = simParamBee)
+        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, unique = unique, simParamBee = simParamBee)
       }
-    }
-    if (unique) {
-      ret <- lapply(ret, FUN = function(x) x[!duplicated(x), ])
     }
     if (collapse) {
       ret <- do.call("rbind", ret)
       if (unique) {
-        ret <- unique(ret)
+        ret <- ret[!duplicated(ret),]
       }
     }
   } else if (isColonies(x)) {
@@ -1092,7 +1091,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
     if (collapse) {
       ret <- do.call("rbind", ret)
       if (unique) {
-        ret <- unique(ret)
+        ret <- ret[!duplicated(ret),]
       }
     }
     names(ret) <- getId(x)
@@ -1279,8 +1278,8 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #' @param collapse logical, if set to TRUE, the function will return the number
-#' of distinct csd alleles in either the entire population, colony, or colonies.
-#' Set to FALSE #' by default.
+#'   of distinct csd alleles in either the entire population, colony, or
+#'   colonies. Set to FALSE by default.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details Queen will always have 2 csd alleles, since she has to be
