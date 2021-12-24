@@ -1007,8 +1007,16 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' @param allele character, either "all" for both alleles or an integer for a
 #'   single allele, use a value of 1 for female allele and a value of 2 for male
 #'   allele
+#' @param collapse logical, if set to TRUE, the function will return a set of
+#'   csd alleles in either the entire population, colony, or colonies. Set to
+#'   FALSE by default.
+#' @param unique logical, return only the unique set of csd alleles. Set to
+#'   FALSE by default.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details  If both collapse and unique are set to TRUE, the function
+#'   returns a unique set of csd alleles in the entire population, colony, or
+#'   colonies.
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
@@ -1045,7 +1053,7 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
 #' getCsdAlleles(apiary, nInd = 2)
 #'
 #' @export
-getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
+getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, unique = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1057,6 +1065,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
   } else if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
+    if (unique) {
+      ret = ret[!duplicated(x = ret), ]
+    }
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
@@ -1065,12 +1076,24 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, simParamBee = simParamBee)
+        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, unique = unique, simParamBee = simParamBee)
+      }
+    }
+    if (collapse) {
+      ret <- do.call("rbind", ret)
+      if (unique) {
+        ret <- ret[!duplicated(ret),]
       }
     }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdAlleles, nInd = nInd,
-                  allele = allele, simParamBee = simParamBee)
+                  allele = allele, collapse = collapse, unique = unique, simParamBee = simParamBee)
+    if (collapse) {
+      ret <- do.call("rbind", ret)
+      if (unique) {
+        ret <- ret[!duplicated(ret),]
+      }
+    }
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1254,6 +1277,9 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
+#' @param collapse logical, if set to TRUE, the function will return the number
+#'   of distinct csd alleles in either the entire population, colony, or
+#'   colonies. Set to FALSE by default.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details Queen will always have 2 csd alleles, since she has to be
@@ -1304,27 +1330,26 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' nCsdAlleles(apiary)
 #'
 #' @export
-nCsdAlleles <- function(x, simParamBee = NULL) {
+nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(x)) {
     ret <- NA
   } else if (isPop(x)) {
-    haplo <- getCsdAlleles(x = x, simParamBee = simParamBee)
-    haplo <- haplo[!duplicated(x = haplo), ]
+    haplo <- getCsdAlleles(x = x, collapse = collapse, unique = TRUE, simParamBee = simParamBee)
     ret <- nrow(haplo)
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 6)
     names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
-    ret$queen           <- nCsdAlleles(x = getQueen(x),                   simParamBee = simParamBee)
-    ret$fathers         <- nCsdAlleles(x = getFathers(x),                 simParamBee = simParamBee)
-    ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), simParamBee = simParamBee)
-    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            simParamBee = simParamBee)
-    ret$workers         <- nCsdAlleles(x = getWorkers(x),                 simParamBee = simParamBee)
-    ret$drones          <- nCsdAlleles(x = getDrones(x),                  simParamBee = simParamBee)
+    ret$queen           <- nCsdAlleles(x = getQueen(x),                   collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    ret$fathers         <- nCsdAlleles(x = getFathers(x),                 collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    ret$workers         <- nCsdAlleles(x = getWorkers(x),                 collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    ret$drones          <- nCsdAlleles(x = getDrones(x),                  collapse = collapse, unique = TRUE, simParamBee = simParamBee)
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = nCsdAlleles, simParamBee = simParamBee)
+    ret <- lapply(X = x@colonies, FUN = nCsdAlleles, collapse = collapse, unique = TRUE, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
