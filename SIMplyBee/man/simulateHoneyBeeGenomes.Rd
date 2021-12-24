@@ -53,6 +53,6 @@ Level 0 function that returns simulated honeybee genomes
 }
 \examples{
 founderGenomes <- simulateHoneyBeeGenomes(nInd = 10, nChr = 1,
-                                          nSegSites = 10, Ne = 10)
+                                          nSegSites = 2, Ne = 10)
 
 }

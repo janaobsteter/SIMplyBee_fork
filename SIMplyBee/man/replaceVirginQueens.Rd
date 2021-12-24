@@ -4,16 +4,10 @@
 \alias{replaceVirginQueens}
 \title{Replace a proportion of virgin queens with new ones}
 \usage{
-replaceVirginQueens(
-  colony,
-  p = 1,
-  use = "rand",
-  year = NULL,
-  simParamBee = NULL
-)
+replaceVirginQueens(x, p = 1, use = "rand", year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion of virgin queens to be replaced with new ones}
 
@@ -25,7 +19,8 @@ guides selection of virgin queens that stay when \code{p < 1}}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} with replaced virgin queens
+\code{\link{Colony-class}} or  or \code{\link{Colonies-class}} with
+  replaced virgin queens
 }
 \description{
 Level 2 function that replaces a proportion of virgin queens with new
@@ -33,23 +28,27 @@ Level 2 function that replaces a proportion of virgin queens with new
   supersedure, etc. due to the short life span of the virgin queens.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
-colony <- addVirginQueens(colony, nInd = 10)
-colony
-getVirginQueens(colony)@id
-colony <- replaceVirginQueens(colony, p = 0.5)
-getVirginQueens(colony)@id
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+colony1 <- addVirginQueens(colony1, nInd = 20)
+apiary <- addVirginQueens(apiary, nInd = 20)
 
-colony <- replaceVirginQueens(colony, p = 1.0)
-getVirginQueens(colony)@id
+getVirginQueens(colony1)@id
+colony1 <- replaceVirginQueens(colony1, p = 0.5)
+getVirginQueens(colony1)@id
+colony1 <- replaceVirginQueens(colony1, p = 1.5)
+getVirginQueens(colony1)@id
 
-colony <- replaceVirginQueens(colony, p = 1.5)
-getVirginQueens(colony)@id
+lapply(getVirginQueens(apiary), FUN = function(x) x@id)
+apiary <- replaceVirginQueens(apiary, p = 0.5)
+lapply(getVirginQueens(apiary), FUN = function(x) x@id)
+apiary <- replaceVirginQueens(apiary, p = 1.5)
+lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 
 }

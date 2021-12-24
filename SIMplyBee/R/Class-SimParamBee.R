@@ -40,24 +40,24 @@ SimParamBee <- R6Class(
   public = list(
 
     #' @field nWorkers numeric or function, default number of workers
-    #'   to generate in a colony; if function, it will be passed to other
+    #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
-    #'   the function must be defined like \code{function(colony) someCode }
-    #'   and return a single value
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could operate on a colony or not, and return a single value
     nWorkers = "numericOrFunction",
 
     #' @field nDrones numeric or function, default number of drones
-    #'   to generate in a colony; if function, it will be passed to other
+    #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
-    #'   the function must be defined like \code{function(colony) someCode }
-    #'   and return a single value
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could operate on a colony or not, and return a single value
     nDrones = "numericOrFunction",
 
     #' @field nVirginQueens numeric or function, default number of virgin queens
-    #'   to generate in a colony; if function, it will be passed to other
+    #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
-    #'   the function must be defined like \code{function(colony) someCode }
-    #'   and return a single value
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could operate on a colony or not, and return a single value
     nVirginQueens = "numericOrFunction",
 
     #' @description Starts the process of building a new simulation by creating

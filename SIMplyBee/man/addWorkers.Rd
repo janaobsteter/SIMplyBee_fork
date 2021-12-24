@@ -4,10 +4,10 @@
 \alias{addWorkers}
 \title{Add (raise) workers in the colony}
 \usage{
-addWorkers(colony, nInd = NULL, new = FALSE, simParamBee = NULL)
+addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers; if \code{NULL} then
 \code{simParamBee$nWorkers} is used}
@@ -18,7 +18,8 @@ present workers in the colony)}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} with workers added
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+  workers added
 }
 \description{
 Level 2 function that adds (raises) the specified number of
@@ -27,30 +28,32 @@ Level 2 function that adds (raises) the specified number of
   combined.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
-addWorkers(colony, nInd = 20)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+addWorkers(colony1, nInd = 20)
+nWorkers(addWorkers(apiary, nInd = 20))
 
 # Using a default in SP$nWorkers
 # (just to have some workers - change this to your needs!)
-addWorkers(colony)
-addWorkers(colony)
+addWorkers(colony1)
+nWorkers(addWorkers(apiary))
 
 SP$nWorkers <- 15
-addWorkers(colony)
-addWorkers(colony)
+addWorkers(colony1)
+nWorkers(addWorkers(apiary))
 
 nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
-addWorkers(colony, nInd = nWorkersFun)
-addWorkers(colony, nInd = nWorkersFun)
+addWorkers(colony1, nInd = nWorkersFun)
+nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 
 SP$nWorkers <- nWorkersFun
-addWorkers(colony)
-addWorkers(colony)
+addWorkers(colony1)
+nWorkers(addWorkers(apiary))
 
 }

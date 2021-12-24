@@ -4,10 +4,10 @@
 \alias{addDrones}
 \title{Add (raise) drones in the colony}
 \usage{
-addDrones(colony, nInd = NULL, new = FALSE, simParamBee = NULL)
+addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
 \code{simParamBee$nDrones} is used}
@@ -18,7 +18,8 @@ present drones)}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} with drones added
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+  drones added
 }
 \description{
 Level 2 function that adds (raises) the specified number of
@@ -26,30 +27,32 @@ Level 2 function that adds (raises) the specified number of
   there are already some drones present, new and present drones are combined.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
-addDrones(colony, nInd = 20)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+addDrones(colony1, nInd = 20)
+nDrones(addDrones(apiary, nInd = 20))
 
-# Using a default in SP$nDrones
-# (just to have some drones - change this to your needs!)
-addDrones(colony)
-addDrones(colony)
+# Using a default in SP$nWorkers
+# (just to have some workers - change this to your needs!)
+addDrones(colony1)
+nDrones(addDrones(apiary))
 
 SP$nDrones <- 15
-addDrones(colony)
-addDrones(colony)
+addDrones(colony1)
+nDrones(addDrones(apiary))
 
 nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
-addDrones(colony, nInd = nDronesFun)
-addDrones(colony, nInd = nDronesFun)
+addDrones(colony1, nInd = nDronesFun)
+nDrones(addDrones(apiary, nInd = nDronesFun))
 
 SP$nDrones <- nDronesFun
-addDrones(colony)
-addDrones(colony)
+addDrones(colony1)
+nDrones(addDrones(apiary))
 
 }
