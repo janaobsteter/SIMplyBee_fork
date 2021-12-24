@@ -171,8 +171,12 @@ setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or Colonies; return Pop,
 
 createColony; input Pop; return Colony
 
-reQueenColony; TODO rename to replaceQueen() to be consistent with other replace functions? Or should this be called setQueen() and it can
-  then serve as a way to set a queen for the new colony as well as to set a new queen that replaces the old one?
+reQueenColony; TODO rename to replaceQueen() to be consistent with other replace
+  functions? Or should this be called setQueen() and it can then serve as a way to
+  set a queen for the new colony as well as to set a new queen that replaces the
+  old one? This function could then also set colony id so we don't need to take
+  care of that.
+  
 addVirginQueens; TODO add external virgin queens instead of just generating them from the hive?
 
 addWorkers; input Colony, return Colony; TODO some have Colony in name, some don't!?

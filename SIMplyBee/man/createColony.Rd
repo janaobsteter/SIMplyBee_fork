@@ -45,14 +45,15 @@ When a mated queen is given or a queen alongside with fathers, the
   TODO: discuss this - see below
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-colony1 <- createColony(queen = basePop[1], fathers = basePop[2:11])
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones)
 colony1
 
-colony2 <- createColony(virgin_queens = basePop[12])
+colony2 <- createColony(virgin_queens = basePop[3])
 colony2
 
 }

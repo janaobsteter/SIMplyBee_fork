@@ -61,6 +61,8 @@ getColonySnpGeno(colony1, caste = c("queen", "fathers"))
 getColonySnpGeno(colony1, nInd = 1)
 getColonySnpGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
 
+getColonySnpGeno(colony2)
+
 apiary <- c(colony1, colony2)
 getColonySnpGeno(apiary)
 getColonySnpGeno(apiary, caste = c("queen", "fathers"))

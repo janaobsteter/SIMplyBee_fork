@@ -4,17 +4,19 @@
 \alias{resetEvents}
 \title{Reset colony events}
 \usage{
-resetEvents(colony, collapse = length(colony@collapse) == 0)
+resetEvents(x, collapse = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{collapse}{logical, reset the collapse event (only sensible in setting
-up a new colony, which the default caters for; otherwise, a collapsed
-colony should be left collapsed forever)}
+up a new colony, which the default of \code{NULL} caters for; otherwise, a
+collapsed colony should be left collapsed forever, unless you force
+resetting this event with \code{collapse = TRUE})}
 }
 \value{
-\code{\link{Colony-class}} with events reset
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+  events reset
 }
 \description{
 Level 2 function that resets the slots swarm, split,
@@ -23,33 +25,64 @@ Level 2 function that resets the slots swarm, split,
   a new year.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
+colony1 <- createColony(queen = basePop[2], fathers = drones)
+colony2 <- createColony(queen = basePop[3], fathers = drones)
+colony1
+apiary <- c(colony1, colony2)
 
-(colony <- buildUpColony(colony, nWorkers = 100))
-resetEvents(colony)
+(colony1 <- buildUpColony(colony1, nWorkers = 100))
+resetEvents(colony1)
+apiary <- buildUpColonies(apiary, nWorkers = 100)
+apiary[[1]]
+resetEvents(apiary)[[1]]
 
-tmp <- splitColony(colony, p = 0.5)
+tmp <- splitColony(colony1)
 (split <- tmp$split)
 resetEvents(split)
 (remnant <- tmp$remnant)
 resetEvents(remnant)
 
-tmp <- swarmColony(colony, p = 0.5)
+tmp <- splitColonies(apiary)
+(splits <- tmp$splits)
+splits[[1]]
+resetEvents(splits)[[1]]
+(remnants <- tmp$remnants)
+remnants[[1]]
+resetEvents(remnants)[[1]]
+
+tmp <- swarmColony(colony1)
 (swarm <- tmp$swarm)
 resetEvents(swarm)
 (remnant <- tmp$remnant)
 resetEvents(remnant)
 
-(tmp <- supersedeColony(colony)) # TODO: do we still get production if we have supersedure?
+tmp <- swarmColonies(apiary)
+(swarms <- tmp$swarms)
+swarms[[1]]
+resetEvents(swarms)[[1]]
+(remnants <- tmp$remnants)
+remnants[[1]]
+resetEvents(remnants)[[1]]
+
+(tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
 resetEvents(tmp)
 
-(tmp <- collapseColony(colony))
+(tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+tmp[[1]]
+resetEvents(tmp)[[1]]
+
+(tmp <- collapseColony(colony1))
 resetEvents(tmp)
+resetEvents(tmp, collapse = TRUE)
+
+(tmp <- collapseColonies(apiary))
+tmp[[1]]
+resetEvents(tmp)[[1]]
+resetEvents(tmp, collapse = TRUE)[[1]]
 
 }

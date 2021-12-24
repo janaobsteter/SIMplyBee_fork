@@ -59,12 +59,13 @@ colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
 
 getColonySnpHaplo(colony1)
 getColonySnpHaplo(colony1, caste = c("queen", "fathers"))
 getColonySnpHaplo(colony1, nInd = 1)
 getColonySnpHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+
+getColonySnpHaplo(colony2)
 
 apiary <- c(colony1, colony2)
 getColonySnpHaplo(apiary)

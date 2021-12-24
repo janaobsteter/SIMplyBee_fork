@@ -26,14 +26,15 @@
 #' @return new \code{\link{Colony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = basePop[2:11])
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1
 #'
-#' colony2 <- createColony(virgin_queens = basePop[12])
+#' colony2 <- createColony(virgin_queens = basePop[3])
 #' colony2
 #'
 #' @export
@@ -48,6 +49,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
   } else {
     if (!isPop(queen)) {
       stop("Argument queen must be a Pop class object!")
+    }
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
     }
     id <- queen@id
     if (!is.null(yearOfBirth)) {
@@ -73,7 +77,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
                 id = id,
                 location = location,
                 queen = queen,
-                virgin_queens = virgin_queens)
+                virgin_queens = virgin_queens) # TODO: what if a user provides more than one virgin queen?
   colony <- resetEvents(colony)
   # TODO: do we really want to add virgin queen(s) automatically? Fells like
   #       we don't want this - we should have then also added workers and drones
@@ -131,6 +135,9 @@ reQueenColony <- function(colony, queen) {
     stop("Argument queen must be a Pop class object!")
   }
   if (isQueenMated(queen)) {
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
+    }
     colony@queen <- queen
     colony@id <- queen@id
   } else {
@@ -214,7 +221,10 @@ addVirginQueens <- function(colony, nInd = NULL, year = NULL,
                                                  year = year)
   }
   if (!is.null(simParamBee$csdChr)) {
-    # TODO: update this logic here on queen vs colony pHomBrood
+    # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+    #       colony!
+    #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+    #           https://github.com/HighlanderLab/SIMplyBee/issues/80
     colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
   }
   validObject(colony)
@@ -286,7 +296,10 @@ addWorkers <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
       colony@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
     } else {
       colony@workers <- c(colony@workers, newWorkers$workers)
-      # TODO: update this logic here on queen vs colony pHomBrood
+      # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+      #       colony!
+      #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+      #           https://github.com/HighlanderLab/SIMplyBee/issues/80
       colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + newWorkers$pHomBrood) / 2
     }
   }
@@ -379,6 +392,8 @@ addDrones <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   account so only the difference is added)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
+#' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
+#'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function turns production of the colony to \code{TRUE}.
@@ -425,7 +440,7 @@ addDrones <- function(colony, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          new = FALSE, simParamBee = NULL) {
+                          new = FALSE, resetEvents = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -460,8 +475,13 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   if (n > 0) {
     colony <- addDrones(colony, nInd = n, new = new)
   }
-  # TODO: call addVirginQueens() here instead of create/cross/swarm?
+  # TODO: call addVirginQueens() here instead of in create/cross/swarm?
+  if (resetEvents) {
+    colony <- resetEvents(colony)
+  }
   colony@production <- TRUE
+  # TODO: call some sort of finalise function that will guide what happens next
+  #       with the colony?
   validObject(colony)
   return(colony)
 }
@@ -517,7 +537,10 @@ replaceWorkers <- function(colony, p = 1, use = "rand", simParamBee = NULL) {
       tmp <- createWorkers(colony, nInd = nWorkersReplaced, simParamBee = simParamBee)
       colony@workers <- c(selectInd(colony@workers, nInd = nWorkersStay, use = use),
                           tmp$workers)
-      # TODO: we need some scaling of the pBrood here, right? Is this OK?
+      # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
+      #       colony!
+      #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
+      #           https://github.com/HighlanderLab/SIMplyBee/issues/80
       colony@queen@misc[[1]]$pHomBrood <- (colony@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
     } else {
       colony <- addWorkers(colony, nInd = nWorkersReplaced, new = TRUE, simParamBee = simParamBee)
@@ -777,57 +800,103 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #'   yearly cycle to reset the events, allowing the user to track new events in
 #'   a new year.
 #'
-#' @param colony \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param collapse logical, reset the collapse event (only sensible in setting
-#'   up a new colony, which the default caters for; otherwise, a collapsed
-#'   colony should be left collapsed forever)
+#'   up a new colony, which the default of \code{NULL} caters for; otherwise, a
+#'   collapsed colony should be left collapsed forever, unless you force
+#'   resetting this event with \code{collapse = TRUE})
 #'
-#' @return \code{\link{Colony-class}} with events reset
+#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#'   events reset
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' colony <- createColony(queen = basePop[2], fathers = drones)
-#' colony
+#' colony1 <- createColony(queen = basePop[2], fathers = drones)
+#' colony2 <- createColony(queen = basePop[3], fathers = drones)
+#' colony1
+#' apiary <- c(colony1, colony2)
 #'
-#' (colony <- buildUpColony(colony, nWorkers = 100))
-#' resetEvents(colony)
+#' (colony1 <- buildUpColony(colony1, nWorkers = 100))
+#' resetEvents(colony1)
+#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' apiary[[1]]
+#' resetEvents(apiary)[[1]]
 #'
-#' tmp <- splitColony(colony, p = 0.5)
+#' tmp <- splitColony(colony1)
 #' (split <- tmp$split)
 #' resetEvents(split)
 #' (remnant <- tmp$remnant)
 #' resetEvents(remnant)
 #'
-#' tmp <- swarmColony(colony, p = 0.5)
+#' tmp <- splitColonies(apiary)
+#' (splits <- tmp$splits)
+#' splits[[1]]
+#' resetEvents(splits)[[1]]
+#' (remnants <- tmp$remnants)
+#' remnants[[1]]
+#' resetEvents(remnants)[[1]]
+#'
+#' tmp <- swarmColony(colony1)
 #' (swarm <- tmp$swarm)
 #' resetEvents(swarm)
 #' (remnant <- tmp$remnant)
 #' resetEvents(remnant)
 #'
-#' (tmp <- supersedeColony(colony)) # TODO: do we still get production if we have supersedure?
+#' tmp <- swarmColonies(apiary)
+#' (swarms <- tmp$swarms)
+#' swarms[[1]]
+#' resetEvents(swarms)[[1]]
+#' (remnants <- tmp$remnants)
+#' remnants[[1]]
+#' resetEvents(remnants)[[1]]
+#'
+#' (tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
 #' resetEvents(tmp)
 #'
-#' (tmp <- collapseColony(colony))
+#' (tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+#' tmp[[1]]
+#' resetEvents(tmp)[[1]]
+#'
+#' (tmp <- collapseColony(colony1))
 #' resetEvents(tmp)
+#' resetEvents(tmp, collapse = TRUE)
+#'
+#' (tmp <- collapseColonies(apiary))
+#' tmp[[1]]
+#' resetEvents(tmp)[[1]]
+#' resetEvents(tmp, collapse = TRUE)[[1]]
 #'
 #' @export
-resetEvents <- function(colony, collapse = length(colony@collapse) == 0) {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
+resetEvents <- function(x, collapse = NULL) {
+  if (isColony(x)) {
+    x@swarm <- FALSE
+    x@split <- FALSE
+    x@supersedure <- FALSE
+    # Reset collapse only if asked (!is.null(collapse)) or if it was not yet
+    #   turned on (is.null(x@collapse))
+    if (is.null(collapse)) {
+      collapse <- is.null(x@collapse)
+    }
+    if (collapse) {
+      x@collapse <- FALSE
+    }
+    x@production <- FALSE
+    validObject(x)
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    for (colony in seq_len(nCol)) {
+      x@colonies[[colony]] <- resetEvents(x = x@colonies[[colony]],
+                                          collapse = collapse)
+    }
+    validObject(x)
+  } else {
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  colony@swarm <- FALSE
-  colony@split <- FALSE
-  colony@supersedure <- FALSE
-  if (collapse) {
-    colony@collapse <- FALSE
-  }
-  colony@production <- FALSE
-  validObject(colony)
-  return(colony)
+  return(x)
 }
 
 #' @rdname crossColony
@@ -883,6 +952,7 @@ crossColony <- function(colony, fathers, year = NULL, simParamBee = NULL) {
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
+  #       imagine someone providing 100 or 1000 fathers - should we just take them all?
   colony@queen <- crossVirginQueen(pop = virginQueen, fathers,
                                    simParamBee = simParamBee)
   colony@id <- colony@queen@id
@@ -969,6 +1039,7 @@ swarmColony <- function(colony, p = 0.5, year = NULL, simParamBee = NULL) {
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
+  # TODO: pulling is random by default, should we make type of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1084,6 +1155,7 @@ splitColony <- function(colony, p = 0.3) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
+  # TODO: pulling is random by default, should we make the type of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
@@ -1167,11 +1239,11 @@ setLocation <- function(x, location) {
       if (length(location) != nCol) {
         stop("The length of location list and the number of colonies must match!")
       }
-      for (colony in 1:nCol) {
+      for (colony in seq_len(nCol)) {
         x@colonies[[colony]]@location <- location[[colony]]
       }
     } else {
-      for (colony in 1:nCol) {
+      for (colony in seq_len(nCol)) {
         x@colonies[[colony]]@location <- location
       }
     }

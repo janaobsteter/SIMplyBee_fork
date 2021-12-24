@@ -4,11 +4,14 @@
 \alias{getCsdAlleles}
 \title{Get csd alleles}
 \usage{
-getCsdAlleles(x, allele = "all", simParamBee = NULL)
+getCsdAlleles(x, nInd = NULL, allele = "all", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
+
+\item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
+are taken; this can be useful as a test of sampling individuals}
 
 \item{allele}{character, either "all" for both alleles or an integer for a
 single allele, use a value of 1 for female allele and a value of 2 for male
@@ -21,7 +24,8 @@ matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with haplotypes
   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{Colonies-class}}
+  colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+  \code{x} is \code{NULL}
 }
 \description{
 Level 0 function that returns alleles from the csd locus. See
@@ -38,7 +42,6 @@ colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
 apiary <- c(colony1, colony2)
 
 getCsdAlleles(getQueen(colony1))
@@ -49,6 +52,11 @@ getCsdAlleles(getDrones(colony1))
 
 getCsdAlleles(colony1)
 
+getCsdAlleles(getDrones(colony2))
+getCsdAlleles(colony2)
+
 getCsdAlleles(apiary)
+
+getCsdAlleles(apiary, nInd = 2)
 
 }

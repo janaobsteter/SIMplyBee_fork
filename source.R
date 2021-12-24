@@ -14,4 +14,10 @@ devtools::check() # (shortcut = shit + Ctrl + E) R CMD check
 
 devtools::install()
 
+devtools::install_github(repo="HighlanderLab/SIMplyBee@main",
+                         subdir = "SIMplyBee")
+
+devtools::install_github(repo="HighlanderLab/SIMplyBee@devel",
+                         subdir = "SIMplyBee")
+
 library(SIMplyBee)
