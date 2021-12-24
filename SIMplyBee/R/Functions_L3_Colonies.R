@@ -585,7 +585,7 @@ collapseColonies <- function(colonies) {
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
-    colonies@colonies[[colony]] <- collapseColony(colonies@colonies[[colony]])
+    colonies@colonies[[colony]] <- collapseColony(colonies[[colony]])
   }
   validObject(colonies)
   return(colonies)

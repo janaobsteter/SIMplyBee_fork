@@ -1689,7 +1689,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteIbdHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteIbdHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                               chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -1870,7 +1870,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyIbdHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonyIbdHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                                          chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -1974,7 +1974,7 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteQtlHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteQtlHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                               trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -2161,7 +2161,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyQtlHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonyQtlHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                                          trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -2262,7 +2262,7 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteQtlGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
                              trait = trait, chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -2446,7 +2446,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyQtlGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonyQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
                                         trait = trait, chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -2549,7 +2549,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteSegSiteHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteSegSiteHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                                   haplo = haplo, chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -2735,7 +2735,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySegSiteHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonySegSiteHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                                              haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -2835,7 +2835,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteSegSiteGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteSegSiteGeno(x = x[[colony]], caste = caste, nInd = nInd,
                                  chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -3017,7 +3017,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySegSiteGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonySegSiteGeno(x = x[[colony]], caste = caste, nInd = nInd,
                                             chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -3121,7 +3121,7 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteSnpHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteSnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                               snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -3309,7 +3309,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySnpHaplo(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonySnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
                                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -3410,7 +3410,7 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteSnpGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteSnpGeno(x = x[[colony]], caste = caste, nInd = nInd,
                              snpChip = snpChip, chr = chr, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -3595,7 +3595,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySnpGeno(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      ret[[colony]] <- getColonySnpGeno(x = x[[colony]], caste = caste, nInd = nInd,
                                         snpChip = snpChip, chr = chr, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -3689,7 +3689,7 @@ getCasteGv <- function(x, caste, nInd = NULL) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteGv(x = x@colonies[[colony]], caste = caste, nInd = nInd)
+      tmp <- getCasteGv(x = x[[colony]], caste = caste, nInd = nInd)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3842,7 +3842,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyGv(x = x@colonies[[colony]], caste = caste, nInd = nInd)
+      ret[[colony]] <- getColonyGv(x = x[[colony]], caste = caste, nInd = nInd)
     }
     names(ret) <- getId(x)
   } else {
@@ -3938,7 +3938,7 @@ getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteBv(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteBv(x = x[[colony]], caste = caste, nInd = nInd,
                         simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -4116,7 +4116,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyBv(x = x@colonies[[colony]], caste = caste,
+      ret[[colony]] <- getColonyBv(x = x[[colony]], caste = caste,
                                    nInd = nInd, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
@@ -4213,7 +4213,7 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteDd(x = x@colonies[[colony]], caste = caste, nInd = nInd,
+      tmp <- getCasteDd(x = x[[colony]], caste = caste, nInd = nInd,
                         simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
@@ -4389,7 +4389,7 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyDd(x = x@colonies[[colony]], caste = caste,
+      ret[[colony]] <- getColonyDd(x = x[[colony]], caste = caste,
                                    nInd = nInd, simParamBee = simParamBee)
     }
     names(ret) <- getId(x)

@@ -759,7 +759,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
     names(ret$pulled) <- getId(x)
     ret$colonies <- x
     for (colony in seq_len(nCol)) {
-      tmp = pullCaste(x = x@colonies[[colony]], caste = caste, nInd = nInd, use = use)
+      tmp <- pullCaste(x = x[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
       ret$colonies@colonies[[colony]] <- tmp$colony
     }
