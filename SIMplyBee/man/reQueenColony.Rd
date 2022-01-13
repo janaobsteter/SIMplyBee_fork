@@ -4,7 +4,7 @@
 \alias{reQueenColony}
 \title{Re-queen a colony}
 \usage{
-reQueenColony(colony, queen)
+reQueenColony(colony, queen, removeVirginQueens = TRUE)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -12,14 +12,24 @@ reQueenColony(colony, queen)
 \item{queen}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; if she is not mated, she will be added as a virgin
 queen that will have to be mated later.}
+
+\item{removeVirginQueens}{logical, remove existing virgin queens, default is
+\code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
+to ensure the provided queen prevails. See also details.}
 }
 \value{
-\code{\link{Colony-class}} with new queen
+\code{\link{Colony-class}} with a new queen (see also details)
 }
 \description{
 Level 2 function that re-queens a colony adds a mated or a
   virgin queen, removes the previous queen, and changes colony id to the new
   mated queen.
+}
+\details{
+If the provided queen is mated, then she is saved in the queen slot
+  of the colony. If she is not mated, then she is saved in the virgin queen
+  slot (replacing any existing virgin queens) and once she is mated will be
+  promoted to the queen of the colony.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -28,6 +38,7 @@ basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addVirginQueens(colony)
 colony
 
 virginQueen <- basePop[3]

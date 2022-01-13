@@ -98,8 +98,16 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
 #'   queen of the colony; if she is not mated, she will be added as a virgin
 #'   queen that will have to be mated later.
+#' @param removeVirginQueens logical, remove existing virgin queens, default is
+#'   \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
+#'   to ensure the provided queen prevails. See also details.
 #'
-#' @return \code{\link{Colony-class}} with new queen
+#' @details If the provided queen is mated, then she is saved in the queen slot
+#'   of the colony. If she is not mated, then she is saved in the virgin queen
+#'   slot (replacing any existing virgin queens) and once she is mated will be
+#'   promoted to the queen of the colony.
+#'
+#' @return \code{\link{Colony-class}} with a new queen (see also details)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -108,6 +116,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addVirginQueens(colony)
 #' colony
 #'
 #' virginQueen <- basePop[3]
@@ -117,7 +126,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #' reQueenColony(colony, queen = matedQueen)
 #'
 #' @export
-reQueenColony <- function(colony, queen) {
+reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -130,6 +139,9 @@ reQueenColony <- function(colony, queen) {
     }
     colony@queen <- queen
     colony@id <- queen@id
+    if (removeVirginQueens) {
+      colony <- removeVirginQueens(colony)
+    }
   } else {
     colony <- removeQueen(colony)
     colony@virgin_queens <- queen
