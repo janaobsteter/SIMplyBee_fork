@@ -31,6 +31,46 @@ nColonies <- function(colonies) {
   return(n)
 }
 
+#' @rdname nNULLColonies
+#' @title Number of NULL colonies
+#'
+#' @description Level 0 function that returns the number of colonies in a
+#'   colonies object that are in fact empty \code{NULL}.
+#'
+#' @param colonies \code{\link{Colonies-class}}
+#'
+#' @return integer
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' founderDrones <- createFounderDrones(pop = basePop[1:2], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[3], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = founderDrones[11:20])
+#' apiary <- c(colony1, colony2)
+#' getId(apiary)
+#'
+#' nColonies(apiary)
+#' nColonies(selectColonies(apiary, ID = c("3", "4")))
+#' nColonies(selectColonies(apiary, ID = c("4", "5")))
+#' nColonies(selectColonies(apiary, ID = c("5", "6")))
+#'
+#' nNULLColonies(apiary)
+#' nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
+#' nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
+#' nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
+#'
+#' @export
+nNULLColonies <- function(colonies) {
+  if (!"Colonies" %in% class(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
+  n <- sum(sapply(X = colonies@colonies, FUN = is.null))
+  return(n)
+}
+
 #' @rdname nCaste
 #' @title Level 0 function that returns the number of individuals of a caste in a
 #'   colony

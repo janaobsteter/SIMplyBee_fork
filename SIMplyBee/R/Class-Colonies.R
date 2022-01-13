@@ -88,6 +88,7 @@ setMethod(f = "show",
           function (object) {
             cat("An object of class", classLabel(class(object)), "\n")
             cat("Number of colonies:", nColonies(object), "\n")
+            cat("Number of empty (NULL) colonies:", nNULLColonies(object), "\n")
             invisible()
           }
 )
