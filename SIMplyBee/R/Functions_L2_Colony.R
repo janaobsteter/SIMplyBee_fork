@@ -1178,10 +1178,12 @@ collapseColony <- function(colony) {
 #' @description Level 2 function that swarms colony - an event where the queen
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
 #'   remnant colony retains the other proportion of workers and all drones, and
-#'   the workers raise virgin queens, of which only one prevails.
+#'   the workers raise virgin queens, of which only one prevails. Location of
+#'   the swarm is the same as for the remnant (for now).
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
 #'   \code{remnant} (see the description what each colony holds!); both colonies
@@ -1201,7 +1203,7 @@ collapseColony <- function(colony) {
 #' tmp$remnant
 #'
 #' @export
-swarmColony <- function(colony, p = 0.5) {
+swarmColony <- function(colony, p = 0.5, year = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
@@ -1228,7 +1230,8 @@ swarmColony <- function(colony, p = 0.5) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  remnantColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1)$virgin_queens
+  remnantColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
+                                                    year = year)$virgin_queens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1249,10 +1252,11 @@ swarmColony <- function(colony, p = 0.5) {
 #' @title Supersede colony
 #'
 #' @description Level 2 function that supersedes colony - an event where the
-#'   queen dies and one of virgin queens prevails. The workers and drones stay
-#'   unchanged.
+#'   queen dies. The workers and drones stay unchanged, but workers raise virgin
+#'   queens, of which only one prevails.
 #'
 #' @param colony \code{\link{Colony-class}}
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return \code{\link{Colony-class}} with the supersede event set to
 #'   \code{TRUE}
@@ -1269,7 +1273,7 @@ swarmColony <- function(colony, p = 0.5) {
 #' supersedeColony(colony)
 #'
 #' @export
-supersedeColony <- function(colony) {
+supersedeColony <- function(colony, year = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -1285,7 +1289,8 @@ supersedeColony <- function(colony) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  colony@virgin_queens <- createVirginQueens(x = colony, nInd = 1)$virgin_queens
+  colony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
+                                             year = year)$virgin_queens
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -1299,10 +1304,12 @@ supersedeColony <- function(colony) {
 #' @description Level 2 function that splits colony into two new colonies to
 #'   prevent swarming (in managed situation). The remnant colony retains the
 #'   queen and a proportion of the workers and all drones. The split colony gets
-#'   the other part of the workers and keeps location of the original colony.
+#'   the other part of the workers, which raise virgin queens, of which only one
+#'   prevails. Location of the split is the same as for the remnant.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{split} and the
 #'   \code{remnant} (see the description what each colony holds!); both colonies
@@ -1322,7 +1329,7 @@ supersedeColony <- function(colony) {
 #' tmp$remnant
 #'
 #' @export
-splitColony <- function(colony, p = 0.3) {
+splitColony <- function(colony, p = 0.3, year = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
@@ -1335,11 +1342,18 @@ splitColony <- function(colony, p = 0.3) {
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
-  # TODO: should really all virgin queens go to the remnant?
 
   splitColony <- createColony()
-  # TODO: should any virgin queen go into the split, will then one prevail as in supersedure or remnant of the swarm?
   splitColony@workers <- tmp$pulled
+  # Workers raise virgin queens from eggs laid by the queen (assuming) that
+  #   a frame of brood is also provided to the split and then one random virgin
+  #   queen prevails, so we create just one
+  # Could consider that a non-random one prevails (say the more aggressive one),
+  #   by creating many virgin queens and then picking the one with highest
+  #   gv/pheno for competition or some other criteria (patri-lineage)
+  # TODO: add the exact = 1 argument in createVirginQueens() once available
+  splitColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
+                                                  year = year)$virgin_queens
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"

@@ -4,10 +4,12 @@
 \alias{supersedeColonies}
 \title{Supersede colony for all given colonies}
 \usage{
-supersedeColonies(colonies)
+supersedeColonies(colonies, year = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
+
+\item{year}{numeric, year of birth for virgin queens}
 }
 \value{
 \code{\link{Colonies-class}} with superseded colonies

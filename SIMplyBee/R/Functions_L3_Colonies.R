@@ -599,6 +599,7 @@ collapseColonies <- function(colonies) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{swarms} and the
 #'   \code{remnants} (see the description of \code{\link{swarmColony}} what each
@@ -630,7 +631,7 @@ collapseColonies <- function(colonies) {
 #' hasSwarmed(tmp$remnants)
 #'
 #' @export
-swarmColonies <- function(colonies, p = 0.5) {
+swarmColonies <- function(colonies, p = 0.5, year = NULL) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -645,7 +646,7 @@ swarmColonies <- function(colonies, p = 0.5) {
     ret <- list(swarms = createColonies(nCol = nCol),
                 remnants = createColonies(nCol = nCol))
     for (colony in seq_len(nCol)) {
-      tmp <- swarmColony(colonies[[colony]], p = p)
+      tmp <- swarmColony(colonies[[colony]], p = p, year = year)
       ret$swarms@colonies[[colony]] <- tmp$swarm
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }
@@ -662,6 +663,7 @@ swarmColonies <- function(colonies, p = 0.5) {
 #'   \code{\link{supersedeColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return \code{\link{Colonies-class}} with superseded colonies
 #'
@@ -687,7 +689,7 @@ swarmColonies <- function(colonies, p = 0.5) {
 #' hasSuperseded(apiary)
 #'
 #' @export
-supersedeColonies <- function(colonies) {
+supersedeColonies <- function(colonies, year = NULL) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -696,7 +698,8 @@ supersedeColonies <- function(colonies) {
     colonies <- createColonies()
   } else {
     for (colony in seq_len(nCol)) {
-      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]])
+      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]],
+                                                     year = year)
     }
   }
   validObject(colonies)
@@ -711,6 +714,7 @@ supersedeColonies <- function(colonies) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, percentage of workers that will go to the split colony
+#' @param year numeric, year of birth for virgin queens
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{splits} and the
 #'   \code{remnants} (see the description of \code{\link{splitColony}} what each
@@ -742,7 +746,7 @@ supersedeColonies <- function(colonies) {
 #' hasSplit(tmp$remnants)
 #'
 #' @export
-splitColonies <- function(colonies, p = 0.3) {
+splitColonies <- function(colonies, p = 0.3, year = NULL) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -757,7 +761,7 @@ splitColonies <- function(colonies, p = 0.3) {
     ret <- list(splits = createColonies(nCol = nCol),
                 remnants = createColonies(nCol = nCol))
     for (colony in seq_len(nCol)) {
-      tmp <- splitColony(colonies[[colony]], p = p)
+      tmp <- splitColony(colonies[[colony]], p = p, year = year)
       ret$splits@colonies[[colony]] <- tmp$split
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }

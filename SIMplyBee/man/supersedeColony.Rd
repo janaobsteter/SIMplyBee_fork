@@ -4,10 +4,12 @@
 \alias{supersedeColony}
 \title{Supersede colony}
 \usage{
-supersedeColony(colony)
+supersedeColony(colony, year = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
+
+\item{year}{numeric, year of birth for virgin queens}
 }
 \value{
 \code{\link{Colony-class}} with the supersede event set to
@@ -15,8 +17,8 @@ supersedeColony(colony)
 }
 \description{
 Level 2 function that supersedes colony - an event where the
-  queen dies and one of virgin queens prevails. The workers and drones stay
-  unchanged.
+  queen dies. The workers and drones stay unchanged, but workers raise virgin
+  queens, of which only one prevails.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
