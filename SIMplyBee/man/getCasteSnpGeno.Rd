@@ -37,7 +37,7 @@ getDronesSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -96,7 +96,7 @@ getCasteSnpGeno(colony1, caste = "fathers", nInd = 2)
 getFathersSnpGeno(colony1)
 getFathersSnpGeno(colony1, nInd = 2)
 
-getCasteSnpGeno(colony1, caste = "virgin_queens")
+getCasteSnpGeno(colony1, caste = "virginQueens")
 getVirginQueensSnpGeno(colony1)
 
 getCasteSnpGeno(colony1, caste = "workers")
@@ -115,7 +115,7 @@ getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
 getFathersSnpGeno(apiary)
 getFathersSnpGeno(apiary, nInd = 2)
 
-getCasteSnpGeno(apiary, caste = "virgin_queens")
+getCasteSnpGeno(apiary, caste = "virginQueens")
 getVirginQueensSnpGeno(apiary)
 
 getCasteSnpGeno(apiary, caste = "workers")

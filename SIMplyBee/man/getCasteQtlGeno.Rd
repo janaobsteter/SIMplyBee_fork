@@ -37,7 +37,7 @@ getDronesQtlGeno(x, nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -96,7 +96,7 @@ getCasteQtlGeno(colony1, caste = "fathers", nInd = 2)
 getFathersQtlGeno(colony1)
 getFathersQtlGeno(colony1, nInd = 2)
 
-getCasteQtlGeno(colony1, caste = "virgin_queens")
+getCasteQtlGeno(colony1, caste = "virginQueens")
 getVirginQueensQtlGeno(colony1)
 
 getCasteQtlGeno(colony1, caste = "workers")
@@ -115,7 +115,7 @@ getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
 getFathersQtlGeno(apiary)
 getFathersQtlGeno(apiary, nInd = 2)
 
-getCasteQtlGeno(apiary, caste = "virgin_queens")
+getCasteQtlGeno(apiary, caste = "virginQueens")
 getVirginQueensQtlGeno(apiary)
 
 getCasteQtlGeno(apiary, caste = "workers")

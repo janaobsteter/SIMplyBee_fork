@@ -31,7 +31,7 @@ basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 
-colony <- createColony(virgin_queen = basePop[2])
+colony <- createColony(virginQueen = basePop[2])
 colony
 colony <- crossColony(colony, fathers = drones)
 colony

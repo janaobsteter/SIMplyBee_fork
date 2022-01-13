@@ -24,7 +24,7 @@ getDronesBv(x, nInd = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -78,7 +78,7 @@ getCasteBv(colony1, caste = "fathers", nInd = 2)
 getFathersBv(colony1)
 getFathersBv(colony1, nInd = 2)
 
-try(getCasteBv(colony1, caste = "virgin_queens")) # TODO
+try(getCasteBv(colony1, caste = "virginQueens")) # TODO
 try(getVirginQueensBv(colony1)) # TODO
 
 getCasteBv(colony1, caste = "workers")
@@ -97,7 +97,7 @@ getCasteBv(apiary, caste = "fathers", nInd = 2)
 getFathersBv(apiary)
 getFathersBv(apiary, nInd = 2)
 
-try(getCasteBv(apiary, caste = "virgin_queens")) # TODO
+try(getCasteBv(apiary, caste = "virginQueens")) # TODO
 try(getVirginQueensBv(apiary)) # TODO
 
 getCasteBv(apiary, caste = "workers")

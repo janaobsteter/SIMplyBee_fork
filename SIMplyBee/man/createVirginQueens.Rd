@@ -18,7 +18,7 @@ createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is a list with two
-  nodes named \code{virgin_queens} (a \code{\link{Pop-class}}) and
+  nodes named \code{virginQueens} (a \code{\link{Pop-class}}) and
   \code{pHomBrood} (a numeric); when \code{x} is \code{\link{Colonies-class}}
   return is a list of lists named by colony ID
 }

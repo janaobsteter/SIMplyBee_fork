@@ -10,7 +10,7 @@ nCaste(x, caste = "all")
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers",
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
 "drones", or "all"}
 }
 \value{
@@ -37,7 +37,7 @@ colony1 <- addVirginQueens(colony1, nInd = 3)
 colony2 <- addWorkers(colony2, nInd = 200)
 nCaste(colony1, caste = "queen")
 nCaste(colony1, caste = "fathers")
-nCaste(colony1, caste = "virgin_queens")
+nCaste(colony1, caste = "virginQueens")
 nCaste(colony1, caste = "workers")
 nCaste(colony1, caste = "drones")
 nCaste(colony1, caste = "all")
@@ -45,7 +45,7 @@ nCaste(colony1, caste = "all")
 apiary <- c(colony1, colony2)
 nCaste(apiary, caste = "queen")
 nCaste(apiary, caste = "fathers")
-nCaste(apiary, caste = "virgin_queens")
+nCaste(apiary, caste = "virginQueens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
 nCaste(apiary, caste = "all")

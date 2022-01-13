@@ -87,7 +87,7 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
     } else {
       virginQueens <- selectInd(pop, nInd = nCol, use = "rand")
       for (colony in seq_len(nCol)) {
-        ret@colonies[[colony]] <- createColony(virgin_queens = virginQueens[colony],
+        ret@colonies[[colony]] <- createColony(virginQueens = virginQueens[colony],
                                                yearOfBirth = yearOfBirth,
                                                simParamBee = simParamBee)
       }
@@ -495,8 +495,8 @@ reQueenColonies <- function(colonies, queens) {
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 30)
-#' colony1 <- createColony(virgin_queen = basePop[2])
-#' colony2 <- createColony(virgin_queen = basePop[3])
+#' colony1 <- createColony(virginQueen = basePop[2])
+#' colony2 <- createColony(virginQueen = basePop[3])
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]

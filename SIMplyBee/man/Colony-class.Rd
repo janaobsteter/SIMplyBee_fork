@@ -47,7 +47,7 @@ An object holding honeybee colony
 \item{\code{queen}}{\code{\link{Pop-class}}, the queen of the colony (we use
 its misc slot for queen's age and drones (fathers) she mated with)}
 
-\item{\code{virgin_queens}}{\code{\link{Pop-class}}, virgin queens of the
+\item{\code{virginQueens}}{\code{\link{Pop-class}}, virgin queens of the
 colony}
 
 \item{\code{drones}}{\code{\link{Pop-class}}, drones of the colony}

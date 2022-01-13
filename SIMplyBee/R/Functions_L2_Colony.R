@@ -13,7 +13,7 @@
 #' @param fathers \code{\link{Pop-class}} with drones that the queen will mate
 #'   with as part of this function (if she is already mated, a warning is given
 #'   and the fathers argument is ignored)
-#' @param virgin_queens \code{\link{Pop-class}} with one or more individuals of
+#' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
 #'   which one will become the queen of the colony in the future
 #'   TODO: think and explain what happens if we provide both a queen and virgin
 #'   queens (possibly of different origin)!
@@ -34,12 +34,12 @@
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1
 #'
-#' colony2 <- createColony(virgin_queens = basePop[3])
+#' colony2 <- createColony(virginQueens = basePop[3])
 #' colony2
 #'
 #' @export
 createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
-                         fathers = NULL, virgin_queens = NULL,
+                         fathers = NULL, virginQueens = NULL,
                          simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -72,7 +72,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
                                   simParamBee = simParamBee)
       }
     }
-    if (!is.null(virgin_queens)) {
+    if (!is.null(virginQueens)) {
       warning("You are providing the queen and virgin queen(s) at the same time.")
       warning("Are they properly related?")
     }
@@ -81,7 +81,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
                 id = id,
                 location = location,
                 queen = queen,
-                virgin_queens = virgin_queens)
+                virginQueens = virginQueens)
   colony <- resetEvents(colony)
   validObject(colony)
   return(colony)
@@ -144,7 +144,7 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
     }
   } else {
     colony <- removeQueen(colony)
-    colony@virgin_queens <- queen
+    colony@virginQueens <- queen
   }
   validObject(colony)
   return(colony)
@@ -220,11 +220,11 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
     if (nInd > 0) {
       newVirginQueens <- createVirginQueens(x = x, nInd = nInd, year = year,
                                             simParamBee = simParamBee)
-      if (is.null(x@virgin_queens) | new) {
-        x@virgin_queens <- newVirginQueens$virgin_queens
+      if (is.null(x@virginQueens) | new) {
+        x@virginQueens <- newVirginQueens$virginQueens
         x@queen@misc[[1]]$pHomBrood <- newVirginQueens$pHomBrood
       } else {
-        x@virgin_queens <- c(x@virgin_queens, newVirginQueens$virgin_queens)
+        x@virginQueens <- c(x@virginQueens, newVirginQueens$virginQueens)
         # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
         #       colony!
         #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
@@ -586,8 +586,8 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
         nVirginQueensStay <- nVirginQueens - nVirginQueensReplaced
         tmp <- createVirginQueens(x, nInd = nVirginQueensReplaced,
                                   year = year, simParamBee = simParamBee)
-        x@virgin_queens <- c(selectInd(x@virgin_queens, nInd = nVirginQueensStay, use = use),
-                                  tmp$virgin_queens)
+        x@virginQueens <- c(selectInd(x@virginQueens, nInd = nVirginQueensStay, use = use),
+                            tmp$virginQueens)
         # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
         #       colony!
         #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
@@ -825,11 +825,11 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
   } else if (p < 0) {
     stop("p can not be less than 0!")
   } else if (p == 1) {
-    colony@virgin_queens <- NULL
+    colony@virginQueens <- NULL
   } else {
     n <- round(nVirginQueens(colony) * (1 - p))
-    colony@virgin_queens <- selectInd(pop = colony@virgin_queens,
-                                      nInd = n, use = use)
+    colony@virginQueens <- selectInd(pop = colony@virginQueens,
+                                     nInd = n, use = use)
   }
   validObject(colony)
   return(colony)
@@ -1075,7 +1075,7 @@ resetEvents <- function(x, collapse = NULL) {
 #'
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
 #'
-#' colony <- createColony(virgin_queen = basePop[2])
+#' colony <- createColony(virginQueen = basePop[2])
 #' colony
 #' colony <- crossColony(colony, fathers = drones)
 #' colony
@@ -1099,7 +1099,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   }
   # Pick one virgin queen that will prevail
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
-  virginQueen <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
+  virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
   #       imagine someone providing 100 or 1000 fathers - should we just take them all?
   #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
@@ -1203,8 +1203,8 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  remnantColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
-                                                    year = year)$virgin_queens
+  remnantColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
+                                                   year = year)$virginQueens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1262,8 +1262,8 @@ supersedeColony <- function(colony, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  colony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
-                                             year = year)$virgin_queens
+  colony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
+                                            year = year)$virginQueens
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -1325,8 +1325,8 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  splitColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1,
-                                                  year = year)$virgin_queens
+  splitColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
+                                                 year = year)$virginQueens
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"

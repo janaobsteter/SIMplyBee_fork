@@ -6,14 +6,14 @@
 \usage{
 getColonyGv(
   x,
-  caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+  caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or Colonies}
 
-\item{caste}{character, a combination of "queen", "fathers", "virgin_queens",
+\item{caste}{character, a combination of "queen", "fathers", "virginQueens",
 "workers", or "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -48,7 +48,7 @@ colony1 <- addDrones(colony1, nInd = 2)
 getColonyGv(colony1)
 getColonyGv(colony1, caste = c("queen", "fathers"))
 getColonyGv(colony1, nInd = 1)
-getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 getColonyGv(colony2)
 
@@ -56,7 +56,7 @@ apiary <- c(colony1, colony2)
 getColonyGv(apiary)
 getColonyGv(apiary, caste = c("queen", "fathers"))
 getColonyGv(apiary, nInd = 1)
-getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 }
 \seealso{

@@ -60,7 +60,7 @@ getDronesQtlHaplo(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -123,7 +123,7 @@ getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
 getFathersQtlHaplo(colony1)
 getFathersQtlHaplo(colony1, nInd = 2)
 
-getCasteQtlHaplo(colony1, caste = "virgin_queens")
+getCasteQtlHaplo(colony1, caste = "virginQueens")
 getVirginQueensQtlHaplo(colony1)
 
 getCasteQtlHaplo(colony1, caste = "workers")
@@ -142,7 +142,7 @@ getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
 getFathersQtlHaplo(apiary)
 getFathersQtlHaplo(apiary, nInd = 2)
 
-getCasteQtlHaplo(apiary, caste = "virgin_queens")
+getCasteQtlHaplo(apiary, caste = "virginQueens")
 getVirginQueensQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "workers")

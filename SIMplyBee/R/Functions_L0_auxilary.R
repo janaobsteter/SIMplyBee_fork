@@ -38,7 +38,7 @@ nColonies <- function(colonies) {
 #' @description Returns the number of individuals of a caste in a colony
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers",
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
 #'   "drones", or "all"
 #'
 #' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
@@ -65,7 +65,7 @@ nColonies <- function(colonies) {
 #' colony2 <- addWorkers(colony2, nInd = 200)
 #' nCaste(colony1, caste = "queen")
 #' nCaste(colony1, caste = "fathers")
-#' nCaste(colony1, caste = "virgin_queens")
+#' nCaste(colony1, caste = "virginQueens")
 #' nCaste(colony1, caste = "workers")
 #' nCaste(colony1, caste = "drones")
 #' nCaste(colony1, caste = "all")
@@ -73,7 +73,7 @@ nColonies <- function(colonies) {
 #' apiary <- c(colony1, colony2)
 #' nCaste(apiary, caste = "queen")
 #' nCaste(apiary, caste = "fathers")
-#' nCaste(apiary, caste = "virgin_queens")
+#' nCaste(apiary, caste = "virginQueens")
 #' nCaste(apiary, caste = "workers")
 #' nCaste(apiary, caste = "drones")
 #' nCaste(apiary, caste = "all")
@@ -83,7 +83,7 @@ nCaste <- function(x, caste = "all") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
-      names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
       for (caste in names(ret)) {
         ret[[caste]] <- nCaste(x = x, caste = caste)
       }
@@ -212,7 +212,7 @@ nFathers <- function(x) {
 #' @export
 nVirginQueens <- function(x) {
   if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "virgin_queens")
+    ret <- nCaste(x, caste = "virginQueens")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -455,7 +455,7 @@ isQueenPresent <- function(x) {
 #' @export
 areVirginQueensPresent <- function(x) {
   if (isColony(x)) {
-    ret <- !is.null(x@virgin_queens)
+    ret <- !is.null(x@virginQueens)
   } else if (isColonies(x)) {
     ret <- sapply(X = x@colonies, FUN = areVirginQueensPresent)
     names(ret) <- getId(x)
@@ -484,7 +484,7 @@ areVirginQueensPresent <- function(x) {
 #' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony3 <- createColony(virgin_queen = basePop[4])
+#' colony3 <- createColony(virginQueen = basePop[4])
 #' apiary <- c(colony1, colony2, colony3)
 #' isQueenMated(getQueen(colony1))
 #' isQueenMated(colony1)
@@ -1139,7 +1139,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", simParamBee = NULL) {
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
-    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
     for (caste in names(ret)) {
       tmp <- getCaste(x = x, caste = caste, nInd = nInd)
       if (is.null(tmp)) {
@@ -1224,7 +1224,7 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
-    names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+    names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
     for (caste in names(ret)) {
       tmp <- getCaste(x = x, caste = caste, nInd = nInd)
       if (is.null(tmp)) {
@@ -1399,11 +1399,11 @@ nCsdAlleles <- function(x, simParamBee = NULL) {
     ret <- nrow(haplo)
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 6)
-    names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
+    names(ret) <- c("queen", "fathers", "queenAndFathers", "virginQueens", "workers", "drones")
     ret$queen           <- nCsdAlleles(x = getQueen(x),                   simParamBee = simParamBee)
     ret$fathers         <- nCsdAlleles(x = getFathers(x),                 simParamBee = simParamBee)
     ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), simParamBee = simParamBee)
-    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            simParamBee = simParamBee)
+    ret$virginQueens    <- nCsdAlleles(x = getVirginQueens(x),            simParamBee = simParamBee)
     ret$workers         <- nCsdAlleles(x = getWorkers(x),                 simParamBee = simParamBee)
     ret$drones          <- nCsdAlleles(x = getDrones(x),                  simParamBee = simParamBee)
   } else if (isColonies(x)) {
@@ -1606,7 +1606,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'   haplotypes of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -1644,7 +1644,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getFathersIbdHaplo(colony1)
 #' getFathersIbdHaplo(colony1, nInd = 2)
 #'
-#' getCasteIbdHaplo(colony1, caste = "virgin_queens")
+#' getCasteIbdHaplo(colony1, caste = "virginQueens")
 #' getVirginQueensIbdHaplo(colony1)
 #'
 #' getCasteIbdHaplo(colony1, caste = "workers")
@@ -1663,7 +1663,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getFathersIbdHaplo(apiary)
 #' getFathersIbdHaplo(apiary, nInd = 2)
 #'
-#' getCasteIbdHaplo(apiary, caste = "virgin_queens")
+#' getCasteIbdHaplo(apiary, caste = "virginQueens")
 #' getVirginQueensIbdHaplo(apiary)
 #'
 #' getCasteIbdHaplo(apiary, caste = "workers")
@@ -1743,7 +1743,7 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteIbdHaplo(x, caste = "virginQueens", nInd = nInd,
                             chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -1790,7 +1790,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'   haplotypes of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -1824,7 +1824,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' getColonyIbdHaplo(colony1)
 #' getColonyIbdHaplo(colony1, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(colony1, nInd = 1)
-#' getColonyIbdHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyIbdHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonyIbdHaplo(colony2)
 #'
@@ -1832,10 +1832,10 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' getColonyIbdHaplo(apiary)
 #' getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(apiary, nInd = 1)
-#' getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                               nInd = NULL, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1887,7 +1887,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -1929,7 +1929,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersQtlHaplo(colony1)
 #' getFathersQtlHaplo(colony1, nInd = 2)
 #'
-#' getCasteQtlHaplo(colony1, caste = "virgin_queens")
+#' getCasteQtlHaplo(colony1, caste = "virginQueens")
 #' getVirginQueensQtlHaplo(colony1)
 #'
 #' getCasteQtlHaplo(colony1, caste = "workers")
@@ -1948,7 +1948,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersQtlHaplo(apiary)
 #' getFathersQtlHaplo(apiary, nInd = 2)
 #'
-#' getCasteQtlHaplo(apiary, caste = "virgin_queens")
+#' getCasteQtlHaplo(apiary, caste = "virginQueens")
 #' getVirginQueensQtlHaplo(apiary)
 #'
 #' getCasteQtlHaplo(apiary, caste = "workers")
@@ -2029,7 +2029,7 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteQtlHaplo(x, caste = "virginQueens", nInd = nInd,
                             trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -2076,7 +2076,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -2114,7 +2114,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' getColonyQtlHaplo(colony1)
 #' getColonyQtlHaplo(colony1, caste = c("queen", "fathers"))
 #' getColonyQtlHaplo(colony1, nInd = 1)
-#' getColonyQtlHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyQtlHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonyQtlHaplo(colony2)
 #'
@@ -2122,10 +2122,10 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' getColonyQtlHaplo(apiary)
 #' getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlHaplo(apiary, nInd = 1)
-#' getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                               nInd = NULL, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -2178,7 +2178,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -2217,7 +2217,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersQtlGeno(colony1)
 #' getFathersQtlGeno(colony1, nInd = 2)
 #'
-#' getCasteQtlGeno(colony1, caste = "virgin_queens")
+#' getCasteQtlGeno(colony1, caste = "virginQueens")
 #' getVirginQueensQtlGeno(colony1)
 #'
 #' getCasteQtlGeno(colony1, caste = "workers")
@@ -2236,7 +2236,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersQtlGeno(apiary)
 #' getFathersQtlGeno(apiary, nInd = 2)
 #'
-#' getCasteQtlGeno(apiary, caste = "virgin_queens")
+#' getCasteQtlGeno(apiary, caste = "virginQueens")
 #' getVirginQueensQtlGeno(apiary)
 #'
 #' getCasteQtlGeno(apiary, caste = "workers")
@@ -2317,7 +2317,7 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteQtlGeno(x, caste = "virginQueens", nInd = nInd,
                            trait = trait, chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -2364,7 +2364,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -2399,7 +2399,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' getColonyQtlGeno(colony1)
 #' getColonyQtlGeno(colony1, caste = c("queen", "fathers"))
 #' getColonyQtlGeno(colony1, nInd = 1)
-#' getColonyQtlGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyQtlGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonyQtlGeno(colony2)
 #'
@@ -2407,10 +2407,10 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' getColonyQtlGeno(apiary)
 #' getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlGeno(apiary, nInd = 1)
-#' getColonyQtlGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyQtlGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                              nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -2464,7 +2464,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'   sites of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -2504,7 +2504,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getFathersSegSiteHaplo(colony1)
 #' getFathersSegSiteHaplo(colony1, nInd = 2)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "virgin_queens")
+#' getCasteSegSiteHaplo(colony1, caste = "virginQueens")
 #' getVirginQueensSegSiteHaplo(colony1)
 #'
 #' getCasteSegSiteHaplo(colony1, caste = "workers")
@@ -2523,7 +2523,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getFathersSegSiteHaplo(apiary)
 #' getFathersSegSiteHaplo(apiary, nInd = 2)
 #'
-#' getCasteSegSiteHaplo(apiary, caste = "virgin_queens")
+#' getCasteSegSiteHaplo(apiary, caste = "virginQueens")
 #' getVirginQueensSegSiteHaplo(apiary)
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "workers")
@@ -2604,7 +2604,7 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteSegSiteHaplo(x, caste = "virginQueens", nInd = nInd,
                                 haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -2652,7 +2652,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'   sites of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -2688,7 +2688,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' getColonySegSiteHaplo(colony1)
 #' getColonySegSiteHaplo(colony1, caste = c("queen", "fathers"))
 #' getColonySegSiteHaplo(colony1, nInd = 1)
-#' getColonySegSiteHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySegSiteHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonySegSiteHaplo(colony2)
 #'
@@ -2696,10 +2696,10 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' getColonySegSiteHaplo(apiary)
 #' getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteHaplo(apiary, nInd = 1)
-#' getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                                   nInd = NULL, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -2753,7 +2753,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #'   sites of individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -2790,7 +2790,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #' getFathersSegSiteGeno(colony1)
 #' getFathersSegSiteGeno(colony1, nInd = 2)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "virgin_queens")
+#' getCasteSegSiteGeno(colony1, caste = "virginQueens")
 #' getVirginQueensSegSiteGeno(colony1)
 #'
 #' getCasteSegSiteGeno(colony1, caste = "workers")
@@ -2809,7 +2809,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virgin_queen
 #' getFathersSegSiteGeno(apiary)
 #' getFathersSegSiteGeno(apiary, nInd = 2)
 #'
-#' getCasteSegSiteGeno(apiary, caste = "virgin_queens")
+#' getCasteSegSiteGeno(apiary, caste = "virginQueens")
 #' getVirginQueensSegSiteGeno(apiary)
 #'
 #' getCasteSegSiteGeno(apiary, caste = "workers")
@@ -2890,7 +2890,7 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteSegSiteGeno(x, caste = "virginQueens", nInd = nInd,
                                chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -2938,7 +2938,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'   sites of individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -2971,7 +2971,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' getColonySegSiteGeno(colony1)
 #' getColonySegSiteGeno(colony1, caste = c("queen", "fathers"))
 #' getColonySegSiteGeno(colony1, nInd = 1)
-#' getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonySegSiteGeno(colony2)
 #'
@@ -2979,10 +2979,10 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' getColonySegSiteGeno(apiary)
 #' getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteGeno(apiary, nInd = 1)
-#' getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                                  nInd = NULL, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -3034,7 +3034,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3076,7 +3076,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' getFathersSnpHaplo(colony1)
 #' getFathersSnpHaplo(colony1, nInd = 2)
 #'
-#' getCasteSnpHaplo(colony1, caste = "virgin_queens")
+#' getCasteSnpHaplo(colony1, caste = "virginQueens")
 #' getVirginQueensSnpHaplo(colony1)
 #'
 #' getCasteSnpHaplo(colony1, caste = "workers")
@@ -3095,7 +3095,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virgin_queens
 #' getFathersSnpHaplo(apiary)
 #' getFathersSnpHaplo(apiary, nInd = 2)
 #'
-#' getCasteSnpHaplo(apiary, caste = "virgin_queens")
+#' getCasteSnpHaplo(apiary, caste = "virginQueens")
 #' getVirginQueensSnpHaplo(apiary)
 #'
 #' getCasteSnpHaplo(apiary, caste = "workers")
@@ -3177,7 +3177,7 @@ getVirginQueensSnpHaplo <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteSnpHaplo(x, caste = "virginQueens", nInd = nInd,
                             snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -3224,7 +3224,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -3262,7 +3262,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' getColonySnpHaplo(colony1)
 #' getColonySnpHaplo(colony1, caste = c("queen", "fathers"))
 #' getColonySnpHaplo(colony1, nInd = 1)
-#' getColonySnpHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySnpHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonySnpHaplo(colony2)
 #'
@@ -3270,10 +3270,10 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' getColonySnpHaplo(apiary)
 #' getColonySnpHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySnpHaplo(apiary, nInd = 1)
-#' getColonySnpHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySnpHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                               nInd = NULL, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -3326,7 +3326,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #'   in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3365,7 +3365,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersSnpGeno(colony1)
 #' getFathersSnpGeno(colony1, nInd = 2)
 #'
-#' getCasteSnpGeno(colony1, caste = "virgin_queens")
+#' getCasteSnpGeno(colony1, caste = "virginQueens")
 #' getVirginQueensSnpGeno(colony1)
 #'
 #' getCasteSnpGeno(colony1, caste = "workers")
@@ -3384,7 +3384,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virgin_queens", 
 #' getFathersSnpGeno(apiary)
 #' getFathersSnpGeno(apiary, nInd = 2)
 #'
-#' getCasteSnpGeno(apiary, caste = "virgin_queens")
+#' getCasteSnpGeno(apiary, caste = "virginQueens")
 #' getVirginQueensSnpGeno(apiary)
 #'
 #' getCasteSnpGeno(apiary, caste = "workers")
@@ -3465,7 +3465,7 @@ getVirginQueensSnpGeno <- function(x, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteSnpGeno(x, caste = "virginQueens", nInd = nInd,
                            snpChip = snpChip, chr = chr, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -3512,7 +3512,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'   in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -3548,7 +3548,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' getColonySnpGeno(colony1)
 #' getColonySnpGeno(colony1, caste = c("queen", "fathers"))
 #' getColonySnpGeno(colony1, nInd = 1)
-#' getColonySnpGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySnpGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonySnpGeno(colony2)
 #'
@@ -3556,10 +3556,10 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' getColonySnpGeno(apiary)
 #' getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySnpGeno(apiary, nInd = 1)
-#' getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                              nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -3612,7 +3612,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3648,7 +3648,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getFathersGv(colony1)
 #' getFathersGv(colony1, nInd = 2)
 #'
-#' getCasteGv(colony1, caste = "virgin_queens")
+#' getCasteGv(colony1, caste = "virginQueens")
 #' getVirginQueensGv(colony1)
 #'
 #' getCasteGv(colony1, caste = "workers")
@@ -3667,7 +3667,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virgin_queens", "
 #' getFathersGv(apiary)
 #' getFathersGv(apiary, nInd = 2)
 #'
-#' getCasteGv(apiary, caste = "virgin_queens")
+#' getCasteGv(apiary, caste = "virginQueens")
 #' getVirginQueensGv(apiary)
 #'
 #' getCasteGv(apiary, caste = "workers")
@@ -3729,7 +3729,7 @@ getFathersGv <- function(x, nInd = NULL) {
 #' @export
 getVirginQueensGv <- function(x, nInd = NULL) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "virgin_queens", nInd = nInd)
+    ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3765,7 +3765,7 @@ getDronesGv <- function(x, nInd = NULL) {
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or Colonies
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -3796,7 +3796,7 @@ getDronesGv <- function(x, nInd = NULL) {
 #' getColonyGv(colony1)
 #' getColonyGv(colony1, caste = c("queen", "fathers"))
 #' getColonyGv(colony1, nInd = 1)
-#' getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonyGv(colony2)
 #'
@@ -3804,10 +3804,10 @@ getDronesGv <- function(x, nInd = NULL) {
 #' getColonyGv(apiary)
 #' getColonyGv(apiary, caste = c("queen", "fathers"))
 #' getColonyGv(apiary, nInd = 1)
-#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
-getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                         nInd = NULL) {
   if (isColony(x)) {
     if (is.list(nInd)) {
@@ -3858,7 +3858,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'   a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3894,7 +3894,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersBv(colony1)
 #' getFathersBv(colony1, nInd = 2)
 #'
-#' try(getCasteBv(colony1, caste = "virgin_queens")) # TODO
+#' try(getCasteBv(colony1, caste = "virginQueens")) # TODO
 #' try(getVirginQueensBv(colony1)) # TODO
 #'
 #' getCasteBv(colony1, caste = "workers")
@@ -3913,7 +3913,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersBv(apiary)
 #' getFathersBv(apiary, nInd = 2)
 #'
-#' try(getCasteBv(apiary, caste = "virgin_queens")) # TODO
+#' try(getCasteBv(apiary, caste = "virginQueens")) # TODO
 #' try(getVirginQueensBv(apiary)) # TODO
 #'
 #' getCasteBv(apiary, caste = "workers")
@@ -3990,7 +3990,7 @@ getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteBv(x, caste = "virginQueens", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -4035,7 +4035,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -4067,7 +4067,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' try(getColonyBv(colony1)) # TODO
 #' try(getColonyBv(colony1, caste = c("queen", "fathers"))) # TODO
 #' try(getColonyBv(colony1, nInd = 1)) # TODO
-#' try(getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+#' try(getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 #'
 #' try(getColonyBv(colony2)) # TODO
 #'
@@ -4075,10 +4075,10 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' try(getColonyBv(apiary)) # TODO
 #' try(getColonyBv(apiary, caste = c("queen", "fathers"))) # TODO
 #' try(getColonyBv(apiary, nInd = 1)) # TODO
-#' try(getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+#' try(getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 #'
 #' @export
-getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                         nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -4133,7 +4133,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers", or
+#' @param caste character, "queen", "fathers", "virginQueens", "workers", or
 #'   "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -4169,7 +4169,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersDd(colony1)
 #' getFathersDd(colony1, nInd = 2)
 #'
-#' try(getCasteDd(colony1, caste = "virgin_queens")) # TODO
+#' try(getCasteDd(colony1, caste = "virginQueens")) # TODO
 #' try(getVirginQueensDd(colony1)) # TODO
 #'
 #' getCasteDd(colony1, caste = "workers")
@@ -4188,7 +4188,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virgin_queens", "worke
 #' getFathersDd(apiary)
 #' getFathersDd(apiary, nInd = 2)
 #'
-#' try(getCasteDd(apiary, caste = "virgin_queens")) # TODO
+#' try(getCasteDd(apiary, caste = "virginQueens")) # TODO
 #' try(getVirginQueensDd(apiary)) # TODO
 #'
 #' getCasteDd(apiary, caste = "workers")
@@ -4265,7 +4265,7 @@ getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x, caste = "virgin_queens", nInd = nInd,
+    ret <- getCasteDd(x, caste = "virginQueens", nInd = nInd,
                       simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -4310,7 +4310,7 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "virgin_queens",
+#' @param caste character, a combination of "queen", "fathers", "virginQueens",
 #'   "workers", or "drones"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
@@ -4342,16 +4342,16 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' try(getColonyDd(colony1)) # TODO
 #' try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
 #' try(getColonyDd(colony1, nInd = 1)) # TODO
-#' try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+#' try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 #'
 #' apiary <- c(colony1, colony2)
 #' try(getColonyDd(apiary)) # TODO
 #' try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
 #' try(getColonyDd(apiary, nInd = 1)) # TODO
-#' try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+#' try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 #'
 #' @export
-getColonyDd <- function(x, caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+getColonyDd <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                         nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)

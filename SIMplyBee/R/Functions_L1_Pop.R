@@ -7,7 +7,7 @@
 #'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
 #'
 #' @param x Colony or Colonies
-#' @param caste character, "queen", "fathers", "virgin_queens", "workers",
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
 #'   "drones", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
@@ -54,10 +54,10 @@
 #'
 #' getFathers(getQueen(colony1))
 #'
-#' getCaste(colony1, caste = "virgin_queens")
-#' getCaste(colony1, caste = "virgin_queens")@id
-#' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
-#' getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+#' getCaste(colony1, caste = "virginQueens")
+#' getCaste(colony1, caste = "virginQueens")@id
+#' getCaste(colony1, caste = "virginQueens", nInd = 2)@id
+#' getCaste(colony1, caste = "virginQueens", nInd = 2)@id
 #' getVirginQueens(colony1)
 #' getVirginQueens(colony1)@id
 #' getVirginQueens(colony1, nInd = 2)@id
@@ -96,7 +96,7 @@
 #' getFathers(apiary)[[2]]@id
 #' getFathers(apiary, nInd = 2)
 #'
-#' getCaste(apiary, caste = "virgin_queens")
+#' getCaste(apiary, caste = "virginQueens")
 #' getVirginQueens(apiary)
 #' getVirginQueens(apiary)[[1]]@id
 #' getVirginQueens(apiary)[[2]]
@@ -123,7 +123,7 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
-      names(ret) <- c("queen", "fathers", "virgin_queens", "workers", "drones")
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
       for (caste in names(ret)) {
         tmp <- getCaste(x = x, caste = caste, nInd = nInd, use = use)
         if (is.null(tmp)) {
@@ -204,7 +204,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+    ret <- getCaste(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -248,7 +248,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a list with two
-#'   nodes named \code{virgin_queens} (a \code{\link{Pop-class}}) and
+#'   nodes named \code{virginQueens} (a \code{\link{Pop-class}}) and
 #'   \code{pHomBrood} (a numeric); when \code{x} is \code{\link{Colonies-class}}
 #'   return is a list of lists named by colony ID
 #'
@@ -297,10 +297,10 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
       nInd <- nInd(x)
     }
     ret <- createWorkers(x = x, nInd = nInd, simParamBee = simParamBee)
-    names(ret) <- c("virgin_queens", "pHomBrood")
+    names(ret) <- c("virginQueens", "pHomBrood")
     if (!is.null(year)) {
-      ret$virgin_queens <- setQueensYearOfBirth(x = ret$virgin_queens,
-                                                year = year)
+      ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
+                                               year = year)
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -667,7 +667,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #'   \code{\link{getCaste}}).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", virgin_queens", "workers", or "drones"
+#' @param caste character, "queen", virginQueens", "workers", or "drones"
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
 #'   individuals are pulled
 #' @param use character, all options provided by \code{\link{selectInd}}
@@ -698,8 +698,8 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' pullCaste(colony1, caste = "queen")
 #' pullQueen(colony1)
 #'
-#' pullCaste(colony1, caste = "virgin_queens")
-#' pullCaste(colony1, caste = "virgin_queens", nInd = 2)
+#' pullCaste(colony1, caste = "virginQueens")
+#' pullCaste(colony1, caste = "virginQueens", nInd = 2)
 #' pullVirginQueens(colony1)
 #' pullVirginQueens(colony1, nInd = 2)
 #'
@@ -720,7 +720,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' nQueens(apiary)
 #' nQueens(pullQueen(apiary)$colonies)
 #'
-#' pullCaste(apiary, caste = "virgin_queens")
+#' pullCaste(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
 #' nVirginQueens(apiary)
 #' nVirginQueens(pullVirginQueens(apiary)$colonies)
@@ -784,7 +784,7 @@ pullQueen <- function(x) {
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCaste(x, caste = "virgin_queens", nInd = nInd, use = use)
+    ret <- pullCaste(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }

@@ -24,7 +24,7 @@ getDronesDd(x, nInd = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -78,7 +78,7 @@ getCasteDd(colony1, caste = "fathers", nInd = 2)
 getFathersDd(colony1)
 getFathersDd(colony1, nInd = 2)
 
-try(getCasteDd(colony1, caste = "virgin_queens")) # TODO
+try(getCasteDd(colony1, caste = "virginQueens")) # TODO
 try(getVirginQueensDd(colony1)) # TODO
 
 getCasteDd(colony1, caste = "workers")
@@ -97,7 +97,7 @@ getCasteDd(apiary, caste = "fathers", nInd = 2)
 getFathersDd(apiary)
 getFathersDd(apiary, nInd = 2)
 
-try(getCasteDd(apiary, caste = "virgin_queens")) # TODO
+try(getCasteDd(apiary, caste = "virginQueens")) # TODO
 try(getVirginQueensDd(apiary)) # TODO
 
 getCasteDd(apiary, caste = "workers")

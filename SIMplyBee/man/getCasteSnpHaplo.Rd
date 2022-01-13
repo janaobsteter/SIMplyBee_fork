@@ -66,7 +66,7 @@ getDronesSnpHaplo(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -129,7 +129,7 @@ getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
 getFathersSnpHaplo(colony1)
 getFathersSnpHaplo(colony1, nInd = 2)
 
-getCasteSnpHaplo(colony1, caste = "virgin_queens")
+getCasteSnpHaplo(colony1, caste = "virginQueens")
 getVirginQueensSnpHaplo(colony1)
 
 getCasteSnpHaplo(colony1, caste = "workers")
@@ -148,7 +148,7 @@ getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
 getFathersSnpHaplo(apiary)
 getFathersSnpHaplo(apiary, nInd = 2)
 
-getCasteSnpHaplo(apiary, caste = "virgin_queens")
+getCasteSnpHaplo(apiary, caste = "virginQueens")
 getVirginQueensSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "workers")

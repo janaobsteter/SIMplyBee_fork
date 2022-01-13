@@ -7,7 +7,7 @@
 \usage{
 getColonySegSiteGeno(
   x,
-  caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+  caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   chr = NULL,
   simParamBee = NULL
@@ -16,7 +16,7 @@ getColonySegSiteGeno(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, a combination of "queen", "fathers", "virgin_queens",
+\item{caste}{character, a combination of "queen", "fathers", "virginQueens",
 "workers", or "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -55,7 +55,7 @@ colony1 <- addDrones(colony1, nInd = 2)
 getColonySegSiteGeno(colony1)
 getColonySegSiteGeno(colony1, caste = c("queen", "fathers"))
 getColonySegSiteGeno(colony1, nInd = 1)
-getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 getColonySegSiteGeno(colony2)
 
@@ -63,7 +63,7 @@ apiary <- c(colony1, colony2)
 getColonySegSiteGeno(apiary)
 getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
 getColonySegSiteGeno(apiary, nInd = 1)
-getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonySegSiteGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 }
 \seealso{
