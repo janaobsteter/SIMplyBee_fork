@@ -2,16 +2,14 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{buildUpColony}
 \alias{buildUpColony}
-\title{Build up colony by adding (raising) workers, drones, and virgin queens}
+\title{Build up colony by adding (raising) workers and drones}
 \usage{
 buildUpColony(
   colony,
   nWorkers = NULL,
   nDrones = NULL,
-  nVirginQueens = NULL,
   new = FALSE,
   resetEvents = FALSE,
-  year = NULL,
   simParamBee = NULL
 )
 }
@@ -28,18 +26,11 @@ added)}
 present drones are taken into account so only the missing difference is
 added)}
 
-\item{nVirginQueens}{numeric or function, number of virgin queens; if
-\code{NULL} then \code{simParamBee$nVirginQueens} is used (unless \code{new
-= TRUE}, currently present virgin queens are taken into account so only the
-missing difference is added)}
-
-\item{new}{logical, should the workers, drones, and virgin queens be added a
-fresh (ignoring currently present workers, drones, and virgin queens)}
+\item{new}{logical, should the workers and drones be added a
+fresh (ignoring currently present workers and drones)}
 
 \item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
 build up}
-
-\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -48,8 +39,8 @@ build up}
 }
 \description{
 Level 2 function that builds up colony by adding (raising)
-  workers, drones, and virgin queens usually in spring or after events such
-  as split or swarming.
+  workers and drones usually in spring or after events such as split or
+  swarming.
 }
 \details{
 This function turns production of the colony to \code{TRUE}.
@@ -81,17 +72,13 @@ colony # adding completely new workers & drones
 # Using functions
 nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
 nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
-nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 colony <- createColony(queen = basePop[2], fathers = drones)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
-              nVirginQueens = nVirginQueensFun)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
-              nVirginQueens = nVirginQueensFun)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 
 # Using functions in simParamBee
 SP$nWorkers <- nWorkersFun
 SP$nDrones <- nDronesFun
-SP$nVirginQueens <- nVirginQueensFun
 colony <- createColony(queen = basePop[2], fathers = drones)
 buildUpColony(colony)
 buildUpColony(colony)

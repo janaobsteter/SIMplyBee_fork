@@ -411,11 +411,11 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 }
 
 #' @rdname buildUpColony
-#' @title Build up colony by adding (raising) workers, drones, and virgin queens
+#' @title Build up colony by adding (raising) workers and drones
 #'
 #' @description Level 2 function that builds up colony by adding (raising)
-#'   workers, drones, and virgin queens usually in spring or after events such
-#'   as split or swarming.
+#'   workers and drones usually in spring or after events such as split or
+#'   swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nWorkers numeric or function, number of worker; if \code{NULL} then
@@ -426,15 +426,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
 #'   present drones are taken into account so only the missing difference is
 #'   added)
-#' @param nVirginQueens numeric or function, number of virgin queens; if
-#'   \code{NULL} then \code{simParamBee$nVirginQueens} is used (unless \code{new
-#'   = TRUE}, currently present virgin queens are taken into account so only the
-#'   missing difference is added)
-#' @param new logical, should the workers, drones, and virgin queens be added a
-#'   fresh (ignoring currently present workers, drones, and virgin queens)
+#' @param new logical, should the workers and drones be added a
+#'   fresh (ignoring currently present workers and drones)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
 #'   build up
-#' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function turns production of the colony to \code{TRUE}.
@@ -468,25 +463,20 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' # Using functions
 #' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
 #' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
-#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
 #' colony <- createColony(queen = basePop[2], fathers = drones)
-#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
-#'               nVirginQueens = nVirginQueensFun)
-#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun,
-#'               nVirginQueens = nVirginQueensFun)
+#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #'
 #' # Using functions in simParamBee
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
-#' SP$nVirginQueens <- nVirginQueensFun
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' buildUpColony(colony)
 #' buildUpColony(colony)
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          nVirginQueens = NULL, new = FALSE,
-                          resetEvents = FALSE, year = NULL,
+                          new = FALSE, resetEvents = FALSE,
                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -527,23 +517,6 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   if (n > 0) {
     colony <- addDrones(x = colony, nInd = n, new = new,
                         simParamBee = simParamBee)
-  }
-
-  # Virgin queens
-  if (is.null(nVirginQueens)) {
-    nVirginQueens <- simParamBee$nVirginQueens
-  }
-  if (is.function(nVirginQueens)) {
-    nVirginQueens <- nVirginQueens(colony)
-  }
-  if (new) {
-    n <- nVirginQueens
-  } else {
-    n <- nVirginQueens - nVirginQueens(colony)
-  }
-  if (n > 0) {
-    colony <- addVirginQueens(x = colony, nInd = n, new = new, year = year,
-                              simParamBee = simParamBee)
   }
 
   # Events
