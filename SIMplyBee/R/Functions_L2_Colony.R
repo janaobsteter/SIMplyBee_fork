@@ -1224,10 +1224,10 @@ swarmColony <- function(colony, p = 0.5) {
   remnantColony@drones <- getDrones(colony)
   # Workers raise virgin queens from eggs laid by the queen and one random
   #   virgin queen prevails, so we create just one
-  # TODO: add the exact = 1 argument here once available
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
+  # TODO: add the exact = 1 argument in createVirginQueens() once available
   remnantColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1)$virgin_queens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
@@ -1276,14 +1276,17 @@ supersedeColony <- function(colony) {
   if (!isQueenPresent(colony)) {
     stop("No queen present in the colony!")
   }
+  # The bilogical order is: 1) queen dies and 2) workers raise virgin queens
+  #   from laid eggs from the queen
+  # The code below does 2) and then 1) since we don't store eggs
+  # Workers raise virgin queens from eggs laid by the queen and one random
+  #   virgin queen prevails, so we create just one
+  # Could consider that a non-random one prevails (say the more aggressive one),
+  #   by creating many virgin queens and then picking the one with highest
+  #   gv/pheno for competition or some other criteria (patri-lineage)
+  # TODO: add the exact = 1 argument in createVirginQueens() once available
+  colony@virgin_queens <- createVirginQueens(x = colony, nInd = 1)$virgin_queens
   colony <- removeQueen(colony)
-  # One virgin queen prevails
-  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
-  if (areVirginQueensPresent(colony)) {
-    colony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
-  } else {
-    message("No virgin queen(s) present in the colony to complete supersedure!")
-  }
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
   validObject(colony)
