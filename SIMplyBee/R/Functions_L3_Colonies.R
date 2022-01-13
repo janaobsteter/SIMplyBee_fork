@@ -599,7 +599,6 @@ collapseColonies <- function(colonies) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{swarms} and the
 #'   \code{remnants} (see the description of \code{\link{swarmColony}} what each
@@ -631,10 +630,7 @@ collapseColonies <- function(colonies) {
 #' hasSwarmed(tmp$remnants)
 #'
 #' @export
-swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
+swarmColonies <- function(colonies, p = 0.5) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -649,7 +645,7 @@ swarmColonies <- function(colonies, p = 0.5, simParamBee = NULL) {
     ret <- list(swarms = createColonies(nCol = nCol),
                 remnants = createColonies(nCol = nCol))
     for (colony in seq_len(nCol)) {
-      tmp <- swarmColony(colonies[[colony]], p = p, simParamBee = simParamBee)
+      tmp <- swarmColony(colonies[[colony]], p = p)
       ret$swarms@colonies[[colony]] <- tmp$swarm
       ret$remnants@colonies[[colony]] <- tmp$remnant
     }

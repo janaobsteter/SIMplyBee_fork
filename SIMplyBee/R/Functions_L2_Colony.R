@@ -1177,11 +1177,11 @@ collapseColony <- function(colony) {
 #'
 #' @description Level 2 function that swarms colony - an event where the queen
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
-#'   remnant colony retains the other proportion of workers and all drones.
+#'   remnant colony retains the other proportion of workers and all drones, and
+#'   the workers raise virgin queens, of which only one prevails.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
 #'   \code{remnant} (see the description what each colony holds!); both colonies
@@ -1201,36 +1201,34 @@ collapseColony <- function(colony) {
 #' tmp$remnant
 #'
 #' @export
-swarmColony <- function(colony, p = 0.5, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
+swarmColony <- function(colony, p = 0.5) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make type of pulling an argument?
+  # TODO: pulling is random by default, should we make type/use of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
   swarmColony <- createColony()
-  swarmColony@queen <- colony@queen
-  swarmColony@id <- colony@queen@id
+  # It's not re-queening, but the function also sets the colony id
+  swarmColony <- reQueenColony(colony = swarmColony,
+                               queen = colony@queen)
   swarmColony@workers <- tmp$pulled
   swarmColony <- setLocation(x = swarmColony, location = currentLocation)
 
   remnantColony <- createColony()
-  # One virgin queen prevails
-  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
-  if (areVirginQueensPresent(colony)) {
-    remnantColony@virgin_queens <- selectInd(colony@virgin_queens, nInd = 1, use = "rand")
-  } else {
-    message("No virgin queen(s) present in the colony for the swarm remnant!")
-  }
   remnantColony@workers <- getWorkers(tmp$colony)
   remnantColony@drones <- getDrones(colony)
+  # Workers raise virgin queens from eggs laid by the queen and one random
+  #   virgin queen prevails, so we create just one
+  # TODO: add the exact = 1 argument here once available
+  # Could consider that a non-random one prevails (say the more aggressive one),
+  #   by creating many virgin queens and then picking the one with highest
+  #   gv/pheno for competition or some other criteria (patri-lineage)
+  remnantColony@virgin_queens <- createVirginQueens(x = colony, nInd = 1)$virgin_queens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1330,7 +1328,7 @@ splitColony <- function(colony, p = 0.3) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make the type of pulling an argument?
+  # TODO: pulling is random by default, should we make the type/use of pulling an argument?
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony

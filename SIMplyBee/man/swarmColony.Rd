@@ -4,14 +4,12 @@
 \alias{swarmColony}
 \title{Swarm colony}
 \usage{
-swarmColony(colony, p = 0.5, simParamBee = NULL)
+swarmColony(colony, p = 0.5)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony}
-
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with two \code{\link{Colony-class}}, the \code{swarm} and the
@@ -21,7 +19,8 @@ list with two \code{\link{Colony-class}}, the \code{swarm} and the
 \description{
 Level 2 function that swarms colony - an event where the queen
   leaves with a proportion of workers to create a new colony (the swarm). The
-  remnant colony retains the other proportion of workers and all drones.
+  remnant colony retains the other proportion of workers and all drones, and
+  the workers raise virgin queens, of which only one prevails.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
