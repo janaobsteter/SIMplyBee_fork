@@ -107,6 +107,7 @@ setMethod(f = "[",
 setMethod(f = "[",
           signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
           function(x, i, j, drop) {
+            # match returns integers, so we then call the x[integer] method
             ret <- x[match(x = i, table = getId(x))]
             validObject(ret)
             return(ret)
@@ -115,12 +116,13 @@ setMethod(f = "[",
 
 #' @describeIn Colonies-class Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
 setMethod(f = "[[",
-          signature(x = "Colonies", i = "integerOrNumeric"),
+          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
           function(x, i) {
             n <- length(i)
             if (n > 1) {
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
+            # ...@colonies[[i[1L]]] is to get just one colony
             ret <- x@colonies[[i[1L]]]
             validObject(ret)
             return(ret)
@@ -135,7 +137,9 @@ setMethod(f = "[[",
             if (n > 1) {
               warning(paste("Selecting only the first colony out of ", n, " requested\n"))
             }
-            ret <- x[i[1L]]@colonies
+            # x[i[1L]] calls x[character]
+            # ...@colonies[[1L]] is to get just one colony
+            ret <- x[i[1L]]@colonies[[1L]]
             validObject(ret)
             return(ret)
           }

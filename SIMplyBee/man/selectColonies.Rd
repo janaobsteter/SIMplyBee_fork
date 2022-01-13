@@ -9,8 +9,9 @@ selectColonies(colonies, ID = NULL, n = NULL, p = NULL)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{ID}{numeric or character, name of a colony (one or more) to be pulled
-out; note that numeric value is converted to character}
+\item{ID}{character or numeric, name of a colony (one or more) to be
+selected; if character (numeric) colonies are selected based on their name
+(position)}
 
 \item{n}{numeric, number of colonies to select}
 
@@ -24,29 +25,33 @@ Level 3 function that selects individual colonies based on
   colony ID or random selection.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
-colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
-colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
-apiary <- c(colony1, colony2, colony3)
+founderDrones <- createFounderDrones(pop = basePop[1:4], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
+colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
+colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
+colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+apiary <- c(colony1, colony2, colony3, colony4)
+getId(apiary)
 
-selectColonies(apiary, ID = 4)
-selectColonies(apiary, ID = "4")
-selectColonies(apiary, ID = c(4, 5))
-selectColonies(apiary, ID = c("4", "5"))
+getId(selectColonies(apiary, ID = 1))
+getId(selectColonies(apiary, ID = "5"))
+getId(selectColonies(apiary, ID = c(1, 2)))
+getId(selectColonies(apiary, ID = c("5", "6")))
+getId(selectColonies(apiary, ID = 5))
+getId(selectColonies(apiary, ID = "9"))
 # ... alternative
-apiary[1]
-apiary[[1]]
-apiary["4"]
-apiary[["4"]]
+getId(apiary[1])
+getId(apiary[[1]])
+getId(apiary["5"])
+getId(apiary[["5"]])
 getId(apiary[c(1, 2)])
-getId(apiary[c("4", "5")])
-getId(apiary[c(2, 1)])
-getId(apiary[c("5", "4")])
+getId(apiary[c("5", "6")])
+getId(apiary[5])
+getId(apiary["9"])
 
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))

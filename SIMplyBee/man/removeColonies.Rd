@@ -9,8 +9,9 @@ removeColonies(colonies, ID)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{ID}{numeric or character, name of a colony (one or more) to be removed;
-note that numeric value is converted to character}
+\item{ID}{character or numeric, name of a colony (one or more) to be
+removed; if character (numeric) colonies are removed based on their name
+(position)}
 }
 \value{
 \code{\link{Colonies-class}} with some colonies removed
@@ -19,14 +20,25 @@ note that numeric value is converted to character}
 Level 3 function that removes some colonies based on their ID.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-apiary <- createColonies(pop = basePop, nCol = 3)
-(names <- getId(apiary))
+founderDrones <- createFounderDrones(pop = basePop[1:4], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
+colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
+colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
+colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+apiary <- c(colony1, colony2, colony3, colony4)
+getId(apiary)
 
-getId(removeColonies(apiary, ID = names[1]))
-getId(removeColonies(apiary, ID = names[c(2, 3)]))
+getId(removeColonies(apiary, ID = 1))
+getId(removeColonies(apiary, ID = "5"))
+
+getId(removeColonies(apiary, ID = c(1, 2)))
+getId(removeColonies(apiary, ID = c("5", "6")))
+
+getId(removeColonies(apiary, ID = 5))
+getId(removeColonies(apiary, ID = "9"))
 
 }

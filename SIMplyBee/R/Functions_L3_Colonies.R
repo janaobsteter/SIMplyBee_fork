@@ -150,37 +150,42 @@ assignColonyToColonies <- function(colonies, colony, pos) {
 #'   colony ID or random selection.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param ID numeric or character, name of a colony (one or more) to be pulled
-#'   out; note that numeric value is converted to character
+#' @param ID character or numeric, name of a colony (one or more) to be
+#'   selected; if character (numeric) colonies are selected based on their name
+#'   (position)
 #' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being selected
 #'
 #' @return \code{\link{Colonies-class}} with selected colonies
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
-#' apiary <- c(colony1, colony2, colony3)
+#' founderDrones <- createFounderDrones(pop = basePop[1:4], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
+#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' apiary <- c(colony1, colony2, colony3, colony4)
+#' getId(apiary)
 #'
-#' selectColonies(apiary, ID = 4)
-#' selectColonies(apiary, ID = "4")
-#' selectColonies(apiary, ID = c(4, 5))
-#' selectColonies(apiary, ID = c("4", "5"))
+#' getId(selectColonies(apiary, ID = 1))
+#' getId(selectColonies(apiary, ID = "5"))
+#' getId(selectColonies(apiary, ID = c(1, 2)))
+#' getId(selectColonies(apiary, ID = c("5", "6")))
+#' getId(selectColonies(apiary, ID = 5))
+#' getId(selectColonies(apiary, ID = "9"))
 #' # ... alternative
-#' apiary[1]
-#' apiary[[1]]
-#' apiary["4"]
-#' apiary[["4"]]
+#' getId(apiary[1])
+#' getId(apiary[[1]])
+#' getId(apiary["5"])
+#' getId(apiary[["5"]])
 #' getId(apiary[c(1, 2)])
-#' getId(apiary[c("4", "5")])
-#' getId(apiary[c(2, 1)])
-#' getId(apiary[c("5", "4")])
+#' getId(apiary[c("5", "6")])
+#' getId(apiary[5])
+#' getId(apiary["9"])
 #'
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
@@ -196,7 +201,11 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
     stop("Argument colonies must be a Colonies class object!")
   }
   if (!is.null(ID)) {
-    ret <- colonies[getId(colonies) %in% ID]
+    # Testing because a logical vector recycles on colonies[ID]
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
+    ret <- colonies[ID]
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(colonies)
     if (!is.null(p)) {
@@ -223,8 +232,9 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'   ID or random selection.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param ID numeric or character, name of a colony (one or more) to be pulled
-#'   out; note that numeric value is converted to character
+#' @param ID character or numeric, name of a colony (one or more) to be pulled
+#'   out; if character (numeric) colonies are pulled out based on their name
+#'   (position)
 #' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being pulled out
 #'
@@ -232,29 +242,48 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'   and the \code{remainingColonies}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createColonies(pop = basePop, nCol = 3)
-#' (names <- getId(apiary))
+#' founderDrones <- createFounderDrones(pop = basePop[1:4], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
+#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' apiary <- c(colony1, colony2, colony3, colony4)
+#' getId(apiary)
 #'
-#' tmp <- pullColonies(apiary, ID = names[1])
+#' tmp <- pullColonies(apiary, ID = c(1, 2))
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
-#' tmp <- pullColonies(apiary, n = 1)
+#' tmp <- pullColonies(apiary, ID = c("5", "6"))
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
-#' tmp <- pullColonies(apiary, p = 0.5)
+#' tmp <- pullColonies(apiary, ID = 5)
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
+#'
+#' tmp <- pullColonies(apiary, ID = "9")
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
+#'
+#' tmp <- pullColonies(apiary, n = 2)
+#' getId(tmp$pulledColonies)
+#' getId(tmp$remainingColonies)
+#'
+#' tmp <- pullColonies(apiary, p = 0.75)
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #'
 #' @export
 pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
-  # TODO: add use and trait argument to this function that would be passed to selectColonies()?
+  # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
+  #       this will be complicated - best to follow ideas from
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -291,28 +320,46 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' @description Level 3 function that removes some colonies based on their ID.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param ID numeric or character, name of a colony (one or more) to be removed;
-#'   note that numeric value is converted to character
+#' @param ID character or numeric, name of a colony (one or more) to be
+#'   removed; if character (numeric) colonies are removed based on their name
+#'   (position)
 #'
 #' @return \code{\link{Colonies-class}} with some colonies removed
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' apiary <- createColonies(pop = basePop, nCol = 3)
-#' (names <- getId(apiary))
+#' founderDrones <- createFounderDrones(pop = basePop[1:4], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
+#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
+#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
+#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' apiary <- c(colony1, colony2, colony3, colony4)
+#' getId(apiary)
 #'
-#' getId(removeColonies(apiary, ID = names[1]))
-#' getId(removeColonies(apiary, ID = names[c(2, 3)]))
+#' getId(removeColonies(apiary, ID = 1))
+#' getId(removeColonies(apiary, ID = "5"))
+#'
+#' getId(removeColonies(apiary, ID = c(1, 2)))
+#' getId(removeColonies(apiary, ID = c("5", "6")))
+#'
+#' getId(removeColonies(apiary, ID = 5))
+#' getId(removeColonies(apiary, ID = "9"))
 #'
 #' @export
 removeColonies <- function(colonies, ID) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  ret <- colonies[!getId(colonies) %in% ID]
+  if (is.character(ID)) {
+    ret <- colonies[!getId(colonies) %in% ID]
+  } else if (is.numeric(ID)) {
+    ret <- colonies[-ID]
+  } else {
+    stop("ID must be character or numeric!")
+  }
   validObject(ret)
   return(ret)
 }

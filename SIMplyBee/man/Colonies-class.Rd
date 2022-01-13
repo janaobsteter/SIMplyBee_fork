@@ -6,7 +6,7 @@
 \alias{show,Colonies-method}
 \alias{[,Colonies,integerOrNumericOrLogical-method}
 \alias{[,Colonies,character-method}
-\alias{[[,Colonies,integerOrNumeric-method}
+\alias{[[,Colonies,integerOrNumericOrLogical-method}
 \alias{[[,Colonies,character-method}
 \alias{c,Colonies-method}
 \alias{c,ColoniesOrNULL-method}
@@ -19,7 +19,7 @@
 
 \S4method{[}{Colonies,character}(x, i, j, drop)
 
-\S4method{[[}{Colonies,integerOrNumeric}(x, i)
+\S4method{[[}{Colonies,integerOrNumericOrLogical}(x, i)
 
 \S4method{[[}{Colonies,character}(x, i)
 
@@ -59,7 +59,7 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{[,Colonies,character-method}: Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
 
-\item \code{[[,Colonies,integerOrNumeric-method}: Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
+\item \code{[[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
 
 \item \code{[[,Colonies,character-method}: Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
 
