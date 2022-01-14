@@ -24,7 +24,7 @@ getDronesIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -81,7 +81,7 @@ getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
 getFathersIbdHaplo(colony1)
 getFathersIbdHaplo(colony1, nInd = 2)
 
-getCasteIbdHaplo(colony1, caste = "virgin_queens")
+getCasteIbdHaplo(colony1, caste = "virginQueens")
 getVirginQueensIbdHaplo(colony1)
 
 getCasteIbdHaplo(colony1, caste = "workers")
@@ -100,7 +100,7 @@ getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
 getFathersIbdHaplo(apiary)
 getFathersIbdHaplo(apiary, nInd = 2)
 
-getCasteIbdHaplo(apiary, caste = "virgin_queens")
+getCasteIbdHaplo(apiary, caste = "virginQueens")
 getVirginQueensIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "workers")

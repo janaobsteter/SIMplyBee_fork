@@ -17,15 +17,17 @@ buildUpColony(
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker; if \code{NULL} then
-\code{simParamBee$nWorkers} is used (currently present workers are taken
-into account so only the difference is added)}
+\code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
+present workers are taken into account and only the missing difference is
+added)}
 
 \item{nDrones}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used (currently present drones are taken into
-account so only the difference is added)}
+\code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
+present drones are taken into account so only the missing difference is
+added)}
 
-\item{new}{logical, should the workers and drones be added a fresh (ignoring
-currently present workers and drones)}
+\item{new}{logical, should the workers and drones be added a
+fresh (ignoring currently present workers and drones)}
 
 \item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
 build up}
@@ -37,7 +39,7 @@ build up}
 }
 \description{
 Level 2 function that builds up colony by adding (raising)
-  workers and drones, usually in spring or after events such as split or
+  workers and drones usually in spring or after events such as split or
   swarming.
 }
 \details{

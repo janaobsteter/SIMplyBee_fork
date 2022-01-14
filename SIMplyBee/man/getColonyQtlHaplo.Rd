@@ -6,7 +6,7 @@
 \usage{
 getColonyQtlHaplo(
   x,
-  caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+  caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   trait = 1,
   haplo = "all",
@@ -17,7 +17,7 @@ getColonyQtlHaplo(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, a combination of "queen", "fathers", "virgin_queens",
+\item{caste}{character, a combination of "queen", "fathers", "virginQueens",
 "workers", or "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -63,7 +63,7 @@ colony1 <- addDrones(colony1, nInd = 2)
 getColonyQtlHaplo(colony1)
 getColonyQtlHaplo(colony1, caste = c("queen", "fathers"))
 getColonyQtlHaplo(colony1, nInd = 1)
-getColonyQtlHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonyQtlHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 getColonyQtlHaplo(colony2)
 
@@ -71,7 +71,7 @@ apiary <- c(colony1, colony2)
 getColonyQtlHaplo(apiary)
 getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 getColonyQtlHaplo(apiary, nInd = 1)
-getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))
+getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 }
 \seealso{

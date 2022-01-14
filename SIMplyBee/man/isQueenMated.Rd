@@ -25,7 +25,7 @@ basePop <- newPop(founderGenomes)
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-colony3 <- createColony(virgin_queen = basePop[4])
+colony3 <- createColony(virginQueen = basePop[4])
 apiary <- c(colony1, colony2, colony3)
 isQueenMated(getQueen(colony1))
 isQueenMated(colony1)
@@ -36,5 +36,7 @@ isQueenMated(removeQueen(colony1))
 isQueenMated(supersedeColony(colony2))
 
 isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
+
+isQueenMated(crossVirginQueen(basePop[2], drones))
 
 }

@@ -4,10 +4,10 @@
 \alias{replaceDrones}
 \title{Replace a proportion of drones with new ones}
 \usage{
-replaceDrones(colony, p = 1, use = "rand")
+replaceDrones(x, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion of drones to be replaced with new ones}
 
@@ -15,7 +15,8 @@ replaceDrones(colony, p = 1, use = "rand")
 guides selection of drones that stay when \code{p < 1}}
 }
 \value{
-\code{\link{Colony-class}} with replaced drones
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+  replaced drones
 }
 \description{
 Level 2 function that replaces a proportion of drones with new
@@ -23,23 +24,27 @@ Level 2 function that replaces a proportion of drones with new
   supersedure, etc. due to the short life span of the drones.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
-colony <- addDrones(colony, nInd = 10)
-colony
-getDrones(colony)@id
-colony <- replaceDrones(colony, p = 0.5)
-getDrones(colony)@id
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+colony1 <- addDrones(colony1, nInd = 20)
+apiary <- addDrones(apiary, nInd = 20)
 
-colony <- replaceDrones(colony, p = 1.0)
-getDrones(colony)@id
+getDrones(colony1)@id
+colony1 <- replaceDrones(colony1, p = 0.5)
+getDrones(colony1)@id
+colony1 <- replaceDrones(colony1, p = 1.5)
+getDrones(colony1)@id
 
-colony <- replaceDrones(colony, p = 1.5)
-getDrones(colony)@id
+lapply(getDrones(apiary), FUN = function(x) x@id)
+apiary <- replaceDrones(apiary, p = 0.5)
+lapply(getDrones(apiary), FUN = function(x) x@id)
+apiary <- replaceDrones(apiary, p = 1.5)
+lapply(getDrones(apiary), FUN = function(x) x@id)
 
 }

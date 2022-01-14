@@ -4,19 +4,23 @@
 \alias{createVirginQueens}
 \title{Creates virgin queens from the colony}
 \usage{
-createVirginQueens(colony, nInd = NULL, simParamBee = NULL)
+createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
 \code{simParamBee$nVirginQueens} is used}
 
+\item{year}{numeric, year of birth for virgin queens}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-list with two nodes named \code{virgin_queens} (a
-  \code{\link{Pop-class}}) and \code{pHomBrood} (a numeric)
+when \code{x} is \code{\link{Colony-class}} return is a list with two
+  nodes named \code{virginQueens} (a \code{\link{Pop-class}}) and
+  \code{pHomBrood} (a numeric); when \code{x} is \code{\link{Colonies-class}}
+  return is a list of lists named by colony ID
 }
 \description{
 Level 1 function that creates the specified number of virgin
@@ -25,29 +29,32 @@ Level 1 function that creates the specified number of virgin
   removed and counted towards homozygous brood.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-createVirginQueens(colony, nInd = 10)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+createVirginQueens(colony1, nInd = 10)
+createVirginQueens(apiary, nInd = 10)
 
 # Using a default in SP$nVirginQueens
 # (just to have some virgin queens - change this to your needs!)
-createVirginQueens(colony)
-createVirginQueens(colony)
+createVirginQueens(colony1)
+createVirginQueens(apiary)
 
 SP$nVirginQueens <- 15
-createVirginQueens(colony)
-createVirginQueens(colony)
+createVirginQueens(colony1)
+createVirginQueens(apiary)
 
 nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
-createVirginQueens(colony, nInd = nVirginQueensFun)
-createVirginQueens(colony, nInd = nVirginQueensFun)
+createVirginQueens(colony1, nInd = nVirginQueensFun)
+createVirginQueens(apiary, nInd = nVirginQueensFun)
 
 SP$nVirginQueens <- nVirginQueensFun
-createVirginQueens(colony)
-createVirginQueens(colony)
+createVirginQueens(colony1)
+createVirginQueens(apiary)
 
 }

@@ -6,7 +6,7 @@
 \usage{
 getColonyDd(
   x,
-  caste = c("queen", "fathers", "virgin_queens", "workers", "drones"),
+  caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   simParamBee = NULL
 )
@@ -14,7 +14,7 @@ getColonyDd(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, a combination of "queen", "fathers", "virgin_queens",
+\item{caste}{character, a combination of "queen", "fathers", "virginQueens",
 "workers", or "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -51,13 +51,13 @@ colony1 <- addDrones(colony1, nInd = 2)
 try(getColonyDd(colony1)) # TODO
 try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
 try(getColonyDd(colony1, nInd = 1)) # TODO
-try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 
 apiary <- c(colony1, colony2)
 try(getColonyDd(apiary)) # TODO
 try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
 try(getColonyDd(apiary, nInd = 1)) # TODO
-try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virgin_queens" = 1))) # TODO
+try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
 
 }
 \seealso{

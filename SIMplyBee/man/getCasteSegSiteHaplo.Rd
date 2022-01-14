@@ -56,7 +56,7 @@ getDronesSegSiteHaplo(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -116,7 +116,7 @@ getCasteSegSiteHaplo(colony1, caste = "fathers", nInd = 2)
 getFathersSegSiteHaplo(colony1)
 getFathersSegSiteHaplo(colony1, nInd = 2)
 
-getCasteSegSiteHaplo(colony1, caste = "virgin_queens")
+getCasteSegSiteHaplo(colony1, caste = "virginQueens")
 getVirginQueensSegSiteHaplo(colony1)
 
 getCasteSegSiteHaplo(colony1, caste = "workers")
@@ -135,7 +135,7 @@ getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
 getFathersSegSiteHaplo(apiary)
 getFathersSegSiteHaplo(apiary, nInd = 2)
 
-getCasteSegSiteHaplo(apiary, caste = "virgin_queens")
+getCasteSegSiteHaplo(apiary, caste = "virginQueens")
 getVirginQueensSegSiteHaplo(apiary)
 
 getCasteSegSiteHaplo(apiary, caste = "workers")

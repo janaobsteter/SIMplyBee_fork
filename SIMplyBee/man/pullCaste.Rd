@@ -21,7 +21,7 @@ pullDrones(x, nInd = NULL, use = "rand")
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", virgin_queens", "workers", or "drones"}
+\item{caste}{character, "queen", virginQueens", "workers", or "drones"}
 
 \item{nInd}{numeric, number of individuals to pull, if \code{NULL} all
 individuals are pulled}
@@ -68,8 +68,8 @@ colony2 <- addDrones(colony2, nInd = 6)
 pullCaste(colony1, caste = "queen")
 pullQueen(colony1)
 
-pullCaste(colony1, caste = "virgin_queens")
-pullCaste(colony1, caste = "virgin_queens", nInd = 2)
+pullCaste(colony1, caste = "virginQueens")
+pullCaste(colony1, caste = "virginQueens", nInd = 2)
 pullVirginQueens(colony1)
 pullVirginQueens(colony1, nInd = 2)
 
@@ -90,7 +90,7 @@ pullQueen(apiary)
 nQueens(apiary)
 nQueens(pullQueen(apiary)$colonies)
 
-pullCaste(apiary, caste = "virgin_queens")
+pullCaste(apiary, caste = "virginQueens")
 pullVirginQueens(apiary)
 nVirginQueens(apiary)
 nVirginQueens(pullVirginQueens(apiary)$colonies)

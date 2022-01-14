@@ -24,7 +24,7 @@ getDrones(x, nInd = NULL, use = "rand")
 \arguments{
 \item{x}{Colony or Colonies}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers",
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
 "drones", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -87,10 +87,10 @@ getFathers(colony1, nInd = 2)@id
 
 getFathers(getQueen(colony1))
 
-getCaste(colony1, caste = "virgin_queens")
-getCaste(colony1, caste = "virgin_queens")@id
-getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
-getCaste(colony1, caste = "virgin_queens", nInd = 2)@id
+getCaste(colony1, caste = "virginQueens")
+getCaste(colony1, caste = "virginQueens")@id
+getCaste(colony1, caste = "virginQueens", nInd = 2)@id
+getCaste(colony1, caste = "virginQueens", nInd = 2)@id
 getVirginQueens(colony1)
 getVirginQueens(colony1)@id
 getVirginQueens(colony1, nInd = 2)@id
@@ -129,10 +129,10 @@ getFathers(apiary)[[1]]@id
 getFathers(apiary)[[2]]@id
 getFathers(apiary, nInd = 2)
 
-getCaste(apiary, caste = "virgin_queens")
+getCaste(apiary, caste = "virginQueens")
 getVirginQueens(apiary)
 getVirginQueens(apiary)[[1]]@id
-getVirginQueens(apiary)[[2]]@id
+getVirginQueens(apiary)[[2]]
 getVirginQueens(apiary, nInd = 1)
 getVirginQueens(apiary, nInd = 2)
 

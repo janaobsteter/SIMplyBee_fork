@@ -4,12 +4,14 @@
 \alias{splitColony}
 \title{Split colony in two colonies}
 \usage{
-splitColony(colony, p = 0.3)
+splitColony(colony, p = 0.3, year = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{p}{numeric, proportion of workers that will go to the split colony}
+
+\item{year}{numeric, year of birth for virgin queens}
 }
 \value{
 list with two \code{\link{Colony-class}}, the \code{split} and the
@@ -20,7 +22,8 @@ list with two \code{\link{Colony-class}}, the \code{split} and the
 Level 2 function that splits colony into two new colonies to
   prevent swarming (in managed situation). The remnant colony retains the
   queen and a proportion of the workers and all drones. The split colony gets
-  the other part of the workers and keeps location of the original colony.
+  the other part of the workers, which raise virgin queens, of which only one
+  prevails. Location of the split is the same as for the remnant.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)

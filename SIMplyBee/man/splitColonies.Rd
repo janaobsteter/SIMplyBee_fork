@@ -4,12 +4,14 @@
 \alias{splitColonies}
 \title{Split colony in two colonies for all given colonies}
 \usage{
-splitColonies(colonies, p = 0.3)
+splitColonies(colonies, p = 0.3, year = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
 \item{p}{numeric, percentage of workers that will go to the split colony}
+
+\item{year}{numeric, year of birth for virgin queens}
 }
 \value{
 list with two \code{\link{Colonies-class}}, the \code{splits} and the

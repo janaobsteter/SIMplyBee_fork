@@ -9,12 +9,12 @@ isPop <- function(x) {
 
 # Class Colony ----
 
-setClassUnion("PopOrNULL", c("Pop", "NULL"))
 setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
 setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
+setClassUnion("PopOrNULL", c("Pop", "NULL"))
 
 #' @rdname Colony-class
 #' @title Honeybee colony
@@ -25,7 +25,7 @@ setClassUnion("listOrNULL", c("list", "NULL"))
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link{Pop-class}}, the queen of the colony (we use
 #'   its misc slot for queen's age and drones (fathers) she mated with)
-#' @slot virgin_queens \code{\link{Pop-class}}, virgin queens of the
+#' @slot virginQueens \code{\link{Pop-class}}, virgin queens of the
 #'   colony
 #' @slot drones \code{\link{Pop-class}}, drones of the colony
 #' @slot workers \code{\link{Pop-class}}, workers of the colony
@@ -74,7 +74,7 @@ setClass(Class = "Colony",
          slots = c(id = "characterOrNULL",
                    location = "numericOrNULL",
                    queen = "PopOrNULL",
-                   virgin_queens = "PopOrNULL",
+                   virginQueens = "PopOrNULL",
                    workers = "PopOrNULL",
                    drones = "PopOrNULL",
                    pheno = "matrix",
@@ -88,6 +88,15 @@ setClass(Class = "Colony",
                    last_event = "character",
                    misc = "listOrNULL"
          ))
+
+#' @describeIn Colony-class Test if x is a Colony class object
+#' @export
+isColony <- function(x) {
+  ret <- is(x, class2 = "Colony")
+  return(ret)
+}
+
+setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
@@ -113,7 +122,7 @@ setValidity(Class = "Colony", method = function(object) {
 #' @describeIn Colony-class Show colony object
 setMethod(f = "show",
           signature(object = "Colony"),
-          function(object) {
+          definition = function(object) {
             cat("An object of class", classLabel(class(object)), "\n")
             cat("Id:", getId(object),"\n")
             cat("Location:", getLocation(object),"\n")
@@ -131,18 +140,15 @@ setMethod(f = "show",
           }
 )
 
-#' @describeIn Colony-class Test if x is a Colony class object
-#' @export
-isColony <- function(x) {
-  ret <- is(x, class2 = "Colony")
-  return(ret)
-}
-
 #' @describeIn Colony-class Combine multiple colony objects
 setMethod(f = "c",
-          signature(x = "Colony"),
-          function(x, ...) {
-            colonies <- new(Class = "Colonies", colonies = list(x))
+          signature(x = "ColonyOrNULL"),
+          definition = function(x, ...) {
+            if (is.null(x)) {
+              colonies <- new(Class = "Colonies")
+            } else {
+              colonies <- new(Class = "Colonies", colonies = list(x))
+            }
             for (y in list(...)) {
               if (class(y) == "NULL") {
                 # Do nothing
@@ -158,3 +164,32 @@ setMethod(f = "c",
             return(colonies)
           }
 )
+
+#' @describeIn Colonies-class Assign colony into colonies
+setReplaceMethod(f = "[[",
+                 signature(x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
+                           j = "ANY", value = "Colony"),
+                 definition = function(x, i, j, value) {
+                   if (is.numeric(i)) {
+                     if (length(i) > 1) {
+                       stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
+                     }
+                     x@colonies[[i]] <- value
+                   } else if (is.logical(i)) {
+                     if (sum(i) != 1) {
+                       stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
+                     }
+                     x@colonies[i][[1L]] <- value
+                   } else if (is.character(i)) {
+                     if (length(i) > 1) {
+                       stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
+                     }
+                     match <- getId(x) %in% i
+                     if (sum(match) != 1) {
+                       stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
+                     }
+                     x@colonies[match][[1L]] <- value
+                   }
+                   validObject(x)
+                   x
+                 })

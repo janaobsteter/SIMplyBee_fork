@@ -56,22 +56,22 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{nWorkers}}{numeric or function, default number of workers
-to generate in a colony; if function, it will be passed to other
+to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode }
-and return a single value}
+the function must be defined like \code{function(colony) someCode },
+that is, it could operate on a colony or not, and return a single value}
 
 \item{\code{nDrones}}{numeric or function, default number of drones
-to generate in a colony; if function, it will be passed to other
+to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode }
-and return a single value}
+the function must be defined like \code{function(colony) someCode },
+that is, it could operate on a colony or not, and return a single value}
 
 \item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
-to generate in a colony; if function, it will be passed to other
+to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode }
-and return a single value}
+the function must be defined like \code{function(colony) someCode },
+that is, it could operate on a colony or not, and return a single value}
 }
 \if{html}{\out{</div>}}
 }

@@ -4,10 +4,10 @@
 \alias{replaceWorkers}
 \title{Replace a proportion of workers with new ones}
 \usage{
-replaceWorkers(colony, p = 1, use = "rand", simParamBee = NULL)
+replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion of workers to be replaced with new ones}
 
@@ -17,7 +17,8 @@ guides selection of workers that stay when \code{p < 1}}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} with replaced workers
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+  replaced workers
 }
 \description{
 Level 2 function that replaces a proportion of workers with new
@@ -25,23 +26,27 @@ Level 2 function that replaces a proportion of workers with new
   supersedure, etc. due to the short life span of the workers.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
-colony <- addWorkers(colony, nInd = 10)
-colony
-getWorkers(colony)@id
-colony <- replaceWorkers(colony, p = 0.5)
-getWorkers(colony)@id
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+colony1 <- addWorkers(colony1, nInd = 20)
+apiary <- addWorkers(apiary, nInd = 20)
 
-colony <- replaceWorkers(colony, p = 1.0)
-getWorkers(colony)@id
+getWorkers(colony1)@id
+colony1 <- replaceWorkers(colony1, p = 0.5)
+getWorkers(colony1)@id
+colony1 <- replaceWorkers(colony1, p = 1.5)
+getWorkers(colony1)@id
 
-colony <- replaceWorkers(colony, p = 1.5)
-getWorkers(colony)@id
+lapply(getWorkers(apiary), FUN = function(x) x@id)
+apiary <- replaceWorkers(apiary, p = 0.5)
+lapply(getWorkers(apiary), FUN = function(x) x@id)
+apiary <- replaceWorkers(apiary, p = 1.5)
+lapply(getWorkers(apiary), FUN = function(x) x@id)
 
 }

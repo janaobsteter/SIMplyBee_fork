@@ -4,10 +4,10 @@
 \alias{createWorkers}
 \title{Creates workers from the colony}
 \usage{
-createWorkers(colony, nInd = NULL, simParamBee = NULL)
+createWorkers(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers; if \code{NULL} then
 \code{simParamBee$nWorkers} is used}
@@ -15,8 +15,10 @@ createWorkers(colony, nInd = NULL, simParamBee = NULL)
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-list with two nodes named \code{workers} (a \code{\link{Pop-class}})
-  and \code{pHomBrood} (a numeric)
+when \code{x} is \code{\link{Colony-class}} return is a list with two
+  nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{pHomBrood}
+  (a numeric); when \code{x} is \code{\link{Colonies-class}} return is a list
+  of lists named by colony ID
 }
 \description{
 Level 1 function that creates the specified number of workers
@@ -25,29 +27,32 @@ Level 1 function that creates the specified number of workers
   counted towards homozygous brood.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
-createWorkers(colony, nInd = 100)
+drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+apiary <- c(colony1, colony2)
+createWorkers(colony1, nInd = 10)
+createWorkers(apiary, nInd = 10)
 
 # Using a default in SP$nWorkers
-# (just to have some workers - change this to your needs!)
-createWorkers(colony)
-createWorkers(colony)
+# (just to have some virgin queens - change this to your needs!)
+createWorkers(colony1)
+createWorkers(apiary)
 
 SP$nWorkers <- 15
-createWorkers(colony)
-createWorkers(colony)
+createWorkers(colony1)
+createWorkers(apiary)
 
 nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
-createWorkers(colony, nInd = nWorkersFun)
-createWorkers(colony, nInd = nWorkersFun)
+createWorkers(colony1, nInd = nWorkersFun)
+createWorkers(apiary, nInd = nWorkersFun)
 
 SP$nWorkers <- nWorkersFun
-createWorkers(colony)
-createWorkers(colony)
+createWorkers(colony1)
+createWorkers(apiary)
 
 }

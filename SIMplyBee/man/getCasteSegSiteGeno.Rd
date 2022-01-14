@@ -25,7 +25,7 @@ getDronesSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -81,7 +81,7 @@ getCasteSegSiteGeno(colony1, caste = "fathers", nInd = 2)
 getFathersSegSiteGeno(colony1)
 getFathersSegSiteGeno(colony1, nInd = 2)
 
-getCasteSegSiteGeno(colony1, caste = "virgin_queens")
+getCasteSegSiteGeno(colony1, caste = "virginQueens")
 getVirginQueensSegSiteGeno(colony1)
 
 getCasteSegSiteGeno(colony1, caste = "workers")
@@ -100,7 +100,7 @@ getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
 getFathersSegSiteGeno(apiary)
 getFathersSegSiteGeno(apiary, nInd = 2)
 
-getCasteSegSiteGeno(apiary, caste = "virgin_queens")
+getCasteSegSiteGeno(apiary, caste = "virginQueens")
 getVirginQueensSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "workers")

@@ -24,7 +24,7 @@ getDronesGv(x, nInd = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virgin_queens", "workers", or
+\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
 "drones"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -66,6 +66,7 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addDrones(colony2, nInd = 4)
+colony1 <- addVirginQueens(colony1, nInd = 10)
 
 getCasteGv(colony1, caste = "queen")
 getQueensGv(colony1)
@@ -76,7 +77,7 @@ getCasteGv(colony1, caste = "fathers", nInd = 2)
 getFathersGv(colony1)
 getFathersGv(colony1, nInd = 2)
 
-getCasteGv(colony1, caste = "virgin_queens")
+getCasteGv(colony1, caste = "virginQueens")
 getVirginQueensGv(colony1)
 
 getCasteGv(colony1, caste = "workers")
@@ -95,7 +96,7 @@ getCasteGv(apiary, caste = "fathers", nInd = 2)
 getFathersGv(apiary)
 getFathersGv(apiary, nInd = 2)
 
-getCasteGv(apiary, caste = "virgin_queens")
+getCasteGv(apiary, caste = "virginQueens")
 getVirginQueensGv(apiary)
 
 getCasteGv(apiary, caste = "workers")

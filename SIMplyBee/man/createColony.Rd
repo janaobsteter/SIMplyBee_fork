@@ -9,7 +9,7 @@ createColony(
   queen = NULL,
   yearOfBirth = NULL,
   fathers = NULL,
-  virgin_queens = NULL,
+  virginQueens = NULL,
   simParamBee = NULL
 )
 }
@@ -25,7 +25,7 @@ queen of the colony; error is thrown if more than one individual is given}
 with as part of this function (if she is already mated, a warning is given
 and the fathers argument is ignored)}
 
-\item{virgin_queens}{\code{\link{Pop-class}} with one or more individuals of
+\item{virginQueens}{\code{\link{Pop-class}} with one or more individuals of
 which one will become the queen of the colony in the future
 TODO: think and explain what happens if we provide both a queen and virgin
 queens (possibly of different origin)!}
@@ -53,7 +53,7 @@ drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones)
 colony1
 
-colony2 <- createColony(virgin_queens = basePop[3])
+colony2 <- createColony(virginQueens = basePop[3])
 colony2
 
 }
