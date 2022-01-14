@@ -22,10 +22,9 @@ when \code{x} is \code{\link{Colony-class}} return is a
 }
 \description{
 Level 1 function that creates the specified number of drones
-  from the colony. Currently this is done by creating doubled-haploids from a
-  queen (generating recombinant gametes and doubling them).
-  TODO The drones will eventually be made properly haploid!
-       Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
+  from the colony. Drones are haploid and created from the diploid genome of
+  the queen with recombination. Queen ID is stored as the father and mother
+  of drones.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

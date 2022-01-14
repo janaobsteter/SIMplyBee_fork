@@ -10,13 +10,17 @@ createFounderDrones(pop, nDronesPerQueen = 100)
 \item{pop}{\code{\link{Pop-class}}}
 
 \item{nDronesPerQueen}{integer, number of drones to create per founding
-individual (a substitute for a queen).
-TODO: rename nDronesPerQueen argument to nDrones and if NULL use simParamBee$nDrones?}
+individual (a substitute for a queen).}
 }
 \value{
 \code{\link{Pop-class}} with drones
 }
 \description{
+Level 1 function that creates the specified number of drones
+  from a founding (base) population. Drones are haploid and created from the
+  diploid genome of individuals in the population. Individuals' ID is stored
+  as the father and mother of drones.
+
 Level 1 function that creates drones from a founding (base)
   population by doubling recombined genomes of each founding individual -
   mimicking a queen laying drones. Such drones are usually used as fathers
@@ -28,11 +32,9 @@ Note that this function creates \code{nDronesPerQueen} for each
   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow if either or
   both of \code{c(nInd(pop), nDronesPerQueen)} is large; tune the numbers
   to your needs.
-  TODO The drones will eventually be made properly haploid!
-       Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 1, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 

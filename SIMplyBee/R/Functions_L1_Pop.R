@@ -383,9 +383,8 @@ createWorkers <- function(x, nInd = NULL, simParamBee = NULL) {
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "pHomBrood")
-    workers <- randCross2(females = getQueen(x),
-                          males = getFathers(x),
-                          nCrosses = nInd)
+    workers <- beeCross(queen = getQueen(x), drones = getFathers(x),
+                        nProgeny = nInd, simParamBee = simParamBee)
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
@@ -408,8 +407,61 @@ createWorkers <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
+#' @rdname beeCross
+#' @title Cross a queen and drones
+#'
+#' @description Level 1 function that crosses a queen and drones. Drones are
+#'   haploid, while the queen is diploid, so we first generate gametes (with
+#'   recombination) from her and merge them with drone genomes (=gametes), where
+#'   we randomly re-sample drones to get the desired number of progeny. This is
+#'   an utility function, and you most likely want to use
+#'   \code{\link{crossColony}} function.
+#'
+#' @param queen \code{\link{Pop-class}}, with a single diploid individual
+#' @param drones \code{\link{Pop-class}}, with one or more haploid individual(s)
+#' @param nProgeny integer, number of progeny to create per cross
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters;
+#'   passed to \code{\link{reduceGenome}} in generating queen gametes and
+#'   \code{\link{mergeGenome}} in merging queen and drone gametes
+#'
+#' @return \code{\link{Pop-class}} with diploid individuals
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' queen <- basePop[1]
+#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
+#' beeCross(queen, drones, nProgeny = )
+#'
+#' @export
+beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (nInd(queen) > 1) {
+    stop("At the moment we only cater for crosses with a single queen!")
+  }
+  # Recombination of queen's genomes to generate gametes from the queen
+  gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
+                                      keepParents = TRUE, simRecomb = TRUE,
+                                      simParam = simParamBee)
+  # Drones are already haploid so we just merge both sets of gametes
+  pairs <- cbind(gametesFromTheQueen@id,
+                 sample(x = drones@id, size = nProgeny, replace = TRUE))
+  ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
+                     crossPlan = pairs, simParam = simParamBee)
+  return(ret)
+}
+
 #' @rdname createFounderDrones
 #' @title Creates drones from a founding (base) population
+#'
+#' @description Level 1 function that creates the specified number of drones
+#'   from a founding (base) population. Drones are haploid and created from the
+#'   diploid genome of individuals in the population. Individuals' ID is stored
+#'   as the father and mother of drones.
 #'
 #' @description Level 1 function that creates drones from a founding (base)
 #'   population by doubling recombined genomes of each founding individual -
@@ -419,20 +471,17 @@ createWorkers <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param nDronesPerQueen integer, number of drones to create per founding
 #'   individual (a substitute for a queen).
-#'   TODO: rename nDronesPerQueen argument to nDrones and if NULL use simParamBee$nDrones?
 #'
 #' @details Note that this function creates \code{nDronesPerQueen} for each
 #'   individual in the \code{pop}, which will amount to
 #'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow if either or
 #'   both of \code{c(nInd(pop), nDronesPerQueen)} is large; tune the numbers
 #'   to your needs.
-#'   TODO The drones will eventually be made properly haploid!
-#'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
 #'
 #' @return \code{\link{Pop-class}} with drones
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 1, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
@@ -445,7 +494,10 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  drones <- makeDH(pop, nDH = nDronesPerQueen)
+  drones <- reduceGenome(pop, nProgeny = nDronesPerQueen, keepParents = FALSE,
+                         simRecomb = TRUE)
+  # keepParents = FALSE means that the queen will be stored as drones' parent,
+  #   instead of storing queen's parents
   return(drones)
 }
 
@@ -453,10 +505,9 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' @title Creates drones from the colony
 #'
 #' @description Level 1 function that creates the specified number of drones
-#'   from the colony. Currently this is done by creating doubled-haploids from a
-#'   queen (generating recombinant gametes and doubling them).
-#'   TODO The drones will eventually be made properly haploid!
-#'        Follow https://github.com/HighlanderLab/SIMplyBee/issues/24
+#'   from the colony. Drones are haploid and created from the diploid genome of
+#'   the queen with recombination. Queen ID is stored as the father and mother
+#'   of drones.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of drones; if \code{NULL} then
@@ -512,7 +563,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     if (is.function(nInd)) {
       nInd <- nInd(x)
     }
-    ret <- makeDH(pop = getQueen(x), nDH = nInd)
+    ret <- reduceGenome(pop = getQueen(x), nProgeny = nInd, keepParents = FALSE,
+                        simRecomb = TRUE, simParam = simParamBee)
+    # keepParents = FALSE means that the queen will be stored as drones' parent,
+    #   instead of storing queen's parents
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
