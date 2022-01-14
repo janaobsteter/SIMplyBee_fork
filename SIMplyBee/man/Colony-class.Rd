@@ -3,21 +3,21 @@
 \docType{class}
 \name{Colony-class}
 \alias{Colony-class}
-\alias{show,Colony-method}
 \alias{isColony}
+\alias{show,Colony-method}
 \alias{c,ColonyOrNULL-method}
 \title{Honeybee colony}
 \usage{
-\S4method{show}{Colony}(object)
-
 isColony(x)
+
+\S4method{show}{Colony}(object)
 
 \S4method{c}{ColonyOrNULL}(x, ...)
 }
 \arguments{
-\item{object}{\code{\link{Colony-class}}}
-
 \item{x}{\code{\link{Colony-class}}}
+
+\item{object}{\code{\link{Colony-class}}}
 
 \item{...}{\code{NULL}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
@@ -30,9 +30,9 @@ An object holding honeybee colony
 }
 \section{Functions}{
 \itemize{
-\item \code{show,Colony-method}: Show colony object
-
 \item \code{isColony}: Test if x is a Colony class object
+
+\item \code{show,Colony-method}: Show colony object
 
 \item \code{c,ColonyOrNULL-method}: Combine multiple colony objects
 }}

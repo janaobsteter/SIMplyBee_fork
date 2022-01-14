@@ -2,6 +2,7 @@
 
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
+setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
 
 #' @rdname Colonies-class
 #' @title Honeybee colonies
@@ -17,6 +18,8 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #'   a colony (see examples)
 #' @param j not used
 #' @param drop not used
+#' @param value \code{\link{Colony-class}} or \code{\link{Colonies-class}} to
+#'   assign into \code{x} based on colony index or name \code{i}
 #' @param ... \code{NULL}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #'
@@ -25,15 +28,17 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #' @return \code{\link{Colonies-class}} or \code{\link{Colony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 15)
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 25)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
-#' apiary <- c(colony1, colony2, colony3)
+#' colony4 <- createColony(queen = basePop[5], fathers = drones[16:20])
+#' colony5 <- createColony(queen = basePop[6], fathers = drones[21:25])
+#' apiary <- c(colony1, colony2, colony3, colony4, colony5)
 #' apiary
 #' show(apiary)
 #' is(apiary)
@@ -44,16 +49,23 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #' getId(apiary[1])
 #' getId(apiary["2"])
 #' getId(apiary[2])
+#' getId(apiary[-1])
+#' getId(apiary[5])
 #'
 #' getId(apiary)
 #' getId(apiary[c(1, 3)])
 #' getId(apiary[c("2", "4")])
-#' getId(apiary[c(TRUE, FALSE, TRUE)])
+#' getId(apiary[c(TRUE, FALSE, TRUE, FALSE)])
+#' getId(apiary[c(TRUE, FALSE)]) # beware of recycling!
+#' getId(apiary[c(5, 6)])
+#' getId(apiary[c("6", "7")])
 #'
 #' apiary[[1]]
 #' apiary[["2"]]
 #' apiary[[3]]
 #' apiary[["4"]]
+#' try(apiary[[6]])
+#' apiary[["7"]]
 #'
 #' getId(c(apiary[c(1, 3)], apiary[2]))
 #' getId(c(apiary[2], apiary[c(1, 3)]))
@@ -64,9 +76,44 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 #' getId(c(apiary[2], NULL))
 #' getId(c(NULL, apiary[2]))
 #'
+#' apiary1 <- apiary[1:2]
+#' apiary2 <- apiary[3:4]
+#' getId(apiary1)
+#' getId(apiary2)
+#' apiary1[[1]] <- apiary2[[1]]
+#' getId(apiary1)
+#' apiary1[["4"]] <- apiary2[["5"]]
+#' getId(apiary1)
+#' try(apiary2[[1]] <- apiary2[[2]])
+#'
+#' apiary1 <- apiary[1:2]
+#' apiary2 <- apiary[3:5]
+#' getId(apiary1)
+#' getId(apiary2)
+#' apiary2[1:2] <- apiary1
+#' getId(apiary2)
+#' try(apiary2[1] <- apiary1)
+#' try(apiary2[1:3] <- apiary1)
+#' try(apiary2[1:2] <- apiary1[[1]])
+#'
+#' apiary2 <- apiary[3:5]
+#' getId(apiary2)
+#' apiary2[c("4", "5")] <- apiary1
+#' getId(apiary2)
+#' try(apiary2[c("4", "5")] <- apiary1)
+#'
 #' @export
 setClass(Class = "Colonies",
          slots = c(colonies = "list"))
+
+#' @describeIn Colonies-class Test if x is a Colonies class object
+#' @export
+isColonies <- function(x) {
+  ret <- is(x, class2 = "Colonies")
+  return(ret)
+}
+
+setClassUnion("ColoniesOrNULL", c("Colonies", "NULL"))
 
 setValidity(Class = "Colonies", method = function(object) {
   errors <- character()
@@ -85,7 +132,7 @@ setValidity(Class = "Colonies", method = function(object) {
 #' @describeIn Colonies-class Show colonies object
 setMethod(f = "show",
           signature(object = "Colonies"),
-          function (object) {
+          definition = function (object) {
             cat("An object of class", classLabel(class(object)), "\n")
             cat("Number of colonies:", nColonies(object), "\n")
             cat("Number of empty (NULL) colonies:", nNULLColonies(object), "\n")
@@ -93,62 +140,10 @@ setMethod(f = "show",
           }
 )
 
-#' @describeIn Colonies-class Extract a colony (one or more!) by integer/numeric/logical index (return \code{\link{Colonies-class}})
-setMethod(f = "[",
-          signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
-          function(x, i, j, drop) {
-            x@colonies <- x@colonies[i]
-            validObject(x)
-            return(x)
-          }
-)
-
-#' @describeIn Colonies-class Extract a colony (one or more!) by character ID (return \code{\link{Colonies-class}})
-setMethod(f = "[",
-          signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
-          function(x, i, j, drop) {
-            # match returns integers, so we then call the x[integer] method
-            ret <- x[match(x = i, table = getId(x))]
-            validObject(ret)
-            return(ret)
-          }
-)
-
-#' @describeIn Colonies-class Extract a colony (just one!) by integer/numeric index (return \code{\link{Colony-class}})
-setMethod(f = "[[",
-          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
-          function(x, i) {
-            n <- length(i)
-            if (n > 1) {
-              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
-            }
-            # ...@colonies[[i[1L]]] is to get just one colony
-            ret <- x@colonies[[i[1L]]]
-            validObject(ret)
-            return(ret)
-          }
-)
-
-#' @describeIn Colonies-class Extract a colony (just one!) by character ID (return \code{\link{Colony-class}})
-setMethod(f = "[[",
-          signature(x = "Colonies", i = "character"),
-          function(x, i) {
-            n <- length(i)
-            if (n > 1) {
-              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
-            }
-            # x[i[1L]] calls x[character]
-            # ...@colonies[[1L]] is to get just one colony
-            ret <- x[i[1L]]@colonies[[1L]]
-            validObject(ret)
-            return(ret)
-          }
-)
-
 #' @describeIn Colonies-class Combine multiple colony and colonies objects
 setMethod(f = "c",
           signature(x = "Colonies"),
-          function(x, ...) {
+          definition = function(x, ...) {
             for (y in list(...)) {
               if (class(y) == "NULL") {
                 # Do nothing
@@ -165,12 +160,10 @@ setMethod(f = "c",
           }
 )
 
-setClassUnion("ColoniesOrNULL", c("Colonies", "NULL"))
-
 #' @describeIn Colonies-class Combine multiple colony and colonies objects
 setMethod(f = "c",
           signature(x = "ColoniesOrNULL"),
-          function(x, ...) {
+          definition = function(x, ...) {
             if (is.null(x)) {
               colonies <- new(Class = "Colonies")
             } else {
@@ -192,9 +185,82 @@ setMethod(f = "c",
           }
 )
 
-#' @describeIn Colonies-class Test if x is a Colonies class object
-#' @export
-isColonies <- function(x) {
-  ret <- is(x, class2 = "Colonies")
-  return(ret)
-}
+#' @describeIn Colonies-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
+setMethod(f = "[",
+          signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
+          definition = function(x, i, j, drop) {
+            x@colonies <- x@colonies[i]
+            validObject(x)
+            return(x)
+          }
+)
+
+#' @describeIn Colonies-class Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
+setMethod(f = "[",
+          signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
+          definition = function(x, i, j, drop) {
+            # match returns integers, so we then call the x[integer] method
+            ret <- x[match(x = i, table = getId(x))]
+            validObject(ret)
+            return(ret)
+          }
+)
+
+#' @describeIn Colonies-class Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
+setMethod(f = "[[",
+          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
+          definition = function(x, i) {
+            n <- length(i)
+            if (n > 1) {
+              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+            }
+            # ...@colonies[[i[1L]]] is to get just one colony
+            ret <- x@colonies[[i[1L]]]
+            validObject(ret)
+            return(ret)
+          }
+)
+
+#' @describeIn Colonies-class Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
+setMethod(f = "[[",
+          signature(x = "Colonies", i = "character"),
+          definition = function(x, i) {
+            n <- length(i)
+            if (n > 1) {
+              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+            }
+            # x[i[1L]] calls x[character]
+            # ...@colonies[[1L]] is to get just one colony
+            ret <- x[i[1L]]@colonies[[1L]]
+            validObject(ret)
+            return(ret)
+          }
+)
+
+#' @describeIn Colonies-class Assign colonies into colonies
+# There is also [[<- method for colony in Class-Colony.R
+setReplaceMethod(f = "[",
+                 signature(x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
+                           j = "ANY", value = "Colonies"),
+                 definition = function(x, i, j, value) {
+                   nCol <- nColonies(value)
+                   if (is.numeric(i)) {
+                     if (length(i) != nCol) {
+                       stop("Length of i (position index) does not match the number of assigned colonies!")
+                     }
+                     x@colonies[i] <- value@colonies
+                   } else if (is.logical(i)) {
+                     if (sum(i) != nCol) {
+                       stop("Number of TRUE values in i (position index) does not match the number of assigned colonies!")
+                     }
+                     x@colonies[i] <- value@colonies
+                   } else if (is.character(i)) {
+                     matches <- getId(x) %in% i
+                     if (sum(matches) != nCol) {
+                       stop("Number of matched colony names in x from i (name index) does not match the number of assigned colonies!")
+                     }
+                     x@colonies[matches] <- value@colonies
+                   }
+                   validObject(x)
+                   x
+                 })

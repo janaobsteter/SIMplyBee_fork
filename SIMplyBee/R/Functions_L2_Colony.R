@@ -235,8 +235,8 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- addVirginQueens(x = x[[colony]], nInd = nInd, new = new,
-                                              year = year, simParamBee = simParamBee)
+      x[[colony]] <- addVirginQueens(x = x[[colony]], nInd = nInd, new = new,
+                                     year = year, simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -321,8 +321,8 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- addWorkers(x = x[[colony]], nInd = nInd, new = new,
-                                         simParamBee = simParamBee)
+      x[[colony]] <- addWorkers(x = x[[colony]], nInd = nInd, new = new,
+                                simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -400,8 +400,8 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- addDrones(x = x[[colony]], nInd = nInd, new = new,
-                                        simParamBee = simParamBee)
+      x[[colony]] <- addDrones(x = x[[colony]], nInd = nInd, new = new,
+                               simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -601,9 +601,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- replaceVirginQueens(x = x[[colony]], p = p,
-                                                  use = use, year = year,
-                                                  simParamBee = simParamBee)
+      x[[colony]] <- replaceVirginQueens(x = x[[colony]], p = p,
+                                         use = use, year = year,
+                                         simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -679,8 +679,8 @@ replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- replaceWorkers(x = x[[colony]], p = p, use = use,
-                                             simParamBee = simParamBee)
+      x[[colony]] <- replaceWorkers(x = x[[colony]], p = p, use = use,
+                                    simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -745,7 +745,7 @@ replaceDrones <- function(x, p = 1, use = "rand") {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- replaceDrones(x = x[[colony]], p = p, use = use)
+      x[[colony]] <- replaceDrones(x = x[[colony]], p = p, use = use)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -1039,8 +1039,8 @@ resetEvents <- function(x, collapse = NULL) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]] <- resetEvents(x = x@colonies[[colony]],
-                                          collapse = collapse)
+      x[[colony]] <- resetEvents(x = x[[colony]],
+                                 collapse = collapse)
     }
     validObject(x)
   } else {
@@ -1403,11 +1403,11 @@ setLocation <- function(x, location) {
         stop("The length of location list and the number of colonies must match!")
       }
       for (colony in seq_len(nCol)) {
-        x@colonies[[colony]]@location <- location[[colony]]
+        x[[colony]]@location <- location[[colony]]
       }
     } else {
       for (colony in seq_len(nCol)) {
-        x@colonies[[colony]]@location <- location
+        x[[colony]]@location <- location
       }
     }
   } else {

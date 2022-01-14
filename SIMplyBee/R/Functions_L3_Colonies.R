@@ -79,17 +79,17 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
       DCA <- createFounderDrones(pop = tmp$remainder, nDronesPerQueen = nDronesPerQueen)
       fatherPackages <- pullDroneGroupsFromDCA(DCA, nGroup = nCol, avgGroupSize = nAvgFathers)
       for (colony in seq_len(nCol)) {
-        ret@colonies[[colony]] <- createColony(queen = queens[colony],
-                                               fathers = fatherPackages[[colony]],
-                                               yearOfBirth = yearOfBirth,
-                                               simParamBee = simParamBee)
+        ret[[colony]] <- createColony(queen = queens[colony],
+                                      fathers = fatherPackages[[colony]],
+                                      yearOfBirth = yearOfBirth,
+                                      simParamBee = simParamBee)
       }
     } else {
       virginQueens <- selectInd(pop, nInd = nCol, use = "rand")
       for (colony in seq_len(nCol)) {
-        ret@colonies[[colony]] <- createColony(virginQueens = virginQueens[colony],
-                                               yearOfBirth = yearOfBirth,
-                                               simParamBee = simParamBee)
+        ret[[colony]] <- createColony(virginQueens = virginQueens[colony],
+                                      yearOfBirth = yearOfBirth,
+                                      simParamBee = simParamBee)
       }
     }
   } else if (!is.null(nCol)) {
@@ -99,48 +99,6 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
   }
   validObject(ret)
   return(ret)
-}
-
-#' @rdname assignColonyToColonies
-#' @title Assign (replace) a colony to colonies
-#'
-#' @description Level 3 function that assigns (replaces) a colony among a set of
-#'   colonies, for example, to replace an old colony. By defining a position, it
-#'   will insert the colony to that position and with this replace the old
-#'   colony at that position.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param colony \code{\link{Colony-class}}, colony that will be added
-#' @param pos numeric or character, index or ID of the old colony
-#'
-#' @return \code{\link{Colonies-class}} with a replaced colony
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' founderDrones <- createFounderDrones(pop = basePop[1:3], nDronesPerQueen = 10)
-#' colony1 <- createColony(queen = basePop[4], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[5], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[6], fathers = founderDrones[21:30])
-#' apiary <- c(colony1, colony2)
-#'
-#' getId(apiary)
-#' apiary <- assignColonyToColonies(apiary, colony3, pos = 1)
-#' getId(apiary)
-#'
-#' @export
-assignColonyToColonies <- function(colonies, colony, pos) {
-  if (!isColonies(colonies)) {
-    stop("Argument Colonies must be a Colonies class object!")
-  }
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  colonies@colonies[[pos]] <- colony
-  validObject(colonies)
-  return(colonies)
 }
 
 #' @rdname selectColonies
@@ -451,12 +409,12 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
-    colonies@colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
-                                                 nWorkers = nWorkers,
-                                                 nDrones = nDrones,
-                                                 new = new,
-                                                 resetEvents = resetEvents,
-                                                 simParamBee = simParamBee)
+    colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
+                                        nWorkers = nWorkers,
+                                        nDrones = nDrones,
+                                        new = new,
+                                        resetEvents = resetEvents,
+                                        simParamBee = simParamBee)
   }
   validObject(colonies)
   return(colonies)
@@ -513,8 +471,8 @@ reQueenColonies <- function(colonies, queens) {
     stop("Not enough queens provided!")
   }
   for (colony in seq_len(nCol)) {
-    colonies@colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
-                                                 queen = queens[colony])
+    colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
+                                        queen = queens[colony])
   }
   validObject(colonies)
   return(colonies)
@@ -573,9 +531,9 @@ crossColonies <- function(colonies, DCA, nAvgFathers, simParamBee = NULL) {
     fatherGroups <- pullDroneGroupsFromDCA(DCA, nGroup = nCol,
                                            avgGroupSize = nAvgFathers)
     for (colony in seq_len(nCol)) {
-      ret@colonies[[colony]] <- crossColony(colonies[[colony]],
-                                            fathers = fatherGroups[[colony]],
-                                            simParamBee = simParamBee)
+      ret[[colony]] <- crossColony(colonies[[colony]],
+                                   fathers = fatherGroups[[colony]],
+                                   simParamBee = simParamBee)
     }
   }
   validObject(ret)
@@ -620,7 +578,7 @@ collapseColonies <- function(colonies) {
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
-    colonies@colonies[[colony]] <- collapseColony(colonies[[colony]])
+    colonies[[colony]] <- collapseColony(colonies[[colony]])
   }
   validObject(colonies)
   return(colonies)
@@ -682,8 +640,8 @@ swarmColonies <- function(colonies, p = 0.5, year = NULL) {
                 remnants = createColonies(nCol = nCol))
     for (colony in seq_len(nCol)) {
       tmp <- swarmColony(colonies[[colony]], p = p, year = year)
-      ret$swarms@colonies[[colony]] <- tmp$swarm
-      ret$remnants@colonies[[colony]] <- tmp$remnant
+      ret$swarms[[colony]] <- tmp$swarm
+      ret$remnants[[colony]] <- tmp$remnant
     }
   }
   validObject(ret$swarms)
@@ -733,8 +691,8 @@ supersedeColonies <- function(colonies, year = NULL) {
     colonies <- createColonies()
   } else {
     for (colony in seq_len(nCol)) {
-      colonies@colonies[[colony]] <- supersedeColony(colonies[[colony]],
-                                                     year = year)
+      colonies[[colony]] <- supersedeColony(colonies[[colony]],
+                                            year = year)
     }
   }
   validObject(colonies)
@@ -797,8 +755,8 @@ splitColonies <- function(colonies, p = 0.3, year = NULL) {
                 remnants = createColonies(nCol = nCol))
     for (colony in seq_len(nCol)) {
       tmp <- splitColony(colonies[[colony]], p = p, year = year)
-      ret$splits@colonies[[colony]] <- tmp$split
-      ret$remnants@colonies[[colony]] <- tmp$remnant
+      ret$splits[[colony]] <- tmp$split
+      ret$remnants[[colony]] <- tmp$remnant
     }
   }
   validObject(ret$splits)
@@ -836,9 +794,9 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
-    colonies@colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                                  FUN = FUN, ...,
-                                                  simParamBee = simParamBee)
+    colonies[[colony]] <- setPhenoColony(colonies[[colony]],
+                                         FUN = FUN, ...,
+                                         simParamBee = simParamBee)
   }
   validObject(colonies)
   return(colonies)

@@ -761,7 +761,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
     for (colony in seq_len(nCol)) {
       tmp <- pullCaste(x = x[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
-      ret$colonies@colonies[[colony]] <- tmp$colony
+      ret$colonies[[colony]] <- tmp$colony
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -963,7 +963,7 @@ setQueensYearOfBirth <- function(x, year) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x@colonies[[colony]]@queen@misc[[1]]$yearOfBirth <- year
+      x[[colony]]@queen@misc[[1]]$yearOfBirth <- year
     }
   } else {
     stop("Argument x must be a Pop, Colony or Colonies class object!")
