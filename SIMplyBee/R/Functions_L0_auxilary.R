@@ -1461,7 +1461,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(x)) {
     ret <- NA
   } else if (isPop(x)) {
-    haplo <- getCsdAlleles(x = x, collapse = collapse, unique = TRUE, simParamBee = simParamBee)
+    haplo <- getCsdAlleles(x = x, unique = TRUE, simParamBee = simParamBee)
     ret <- nrow(haplo)
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 6)
