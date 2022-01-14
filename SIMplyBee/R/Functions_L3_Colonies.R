@@ -112,7 +112,8 @@ createColonies <- function(pop = NULL, nCol = NULL, mated = TRUE,
 #'   selected; if character (numeric) colonies are selected based on their name
 #'   (position)
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being selected
+#' @param p numeric, probability of a colony being selected (takes precedence
+#'   over \code{n})
 #'
 #' @return \code{\link{Colonies-class}} with selected colonies
 #'
@@ -194,7 +195,8 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'   out; if character (numeric) colonies are pulled out based on their name
 #'   (position)
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being pulled out
+#' @param p numeric, probability of a colony being pulled out (takes precedence
+#'   over \code{n})
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
 #'   and the \code{remainingColonies}
