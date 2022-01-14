@@ -1164,11 +1164,15 @@ isCsdActive <- function(simParamBee = NULL) {
 #' getCsdAlleles(getDrones(colony1))
 #'
 #' getCsdAlleles(colony1)
+#' getCsdAlleles(colony1, collapse = TRUE)
+#' getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
 #'
 #' getCsdAlleles(getDrones(colony2))
 #' getCsdAlleles(colony2)
 #'
 #' getCsdAlleles(apiary)
+#' getCsdAlleles(apiary, collapse = TRUE)
+#' getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 #'
 #' getCsdAlleles(apiary, nInd = 2)
 #'
@@ -1186,7 +1190,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
     ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
     if (unique) {
-      ret = ret[!duplicated(x = ret), ]
+      ret <- ret[!duplicated(x = ret), ]
     }
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
@@ -1213,8 +1217,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
       if (unique) {
         ret <- ret[!duplicated(ret),]
       }
+    } else {
+      names(ret) <- getId(x)
     }
-    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
@@ -1450,8 +1455,10 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' nCsdAlleles(getDrones(colony1))
 #'
 #' nCsdAlleles(colony1)
+#' nCsdAlleles(colony1, collapse = TRUE)
 #'
 #' nCsdAlleles(apiary)
+#' nCsdAlleles(apiary, collapse = TRUE)
 #'
 #' @export
 nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
@@ -1464,17 +1471,32 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
     haplo <- getCsdAlleles(x = x, unique = TRUE, simParamBee = simParamBee)
     ret <- nrow(haplo)
   } else if (isColony(x)) {
-    ret <- vector(mode = "list", length = 6)
-    names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
-    ret$queen           <- nCsdAlleles(x = getQueen(x),                   collapse = collapse, simParamBee = simParamBee)
-    ret$fathers         <- nCsdAlleles(x = getFathers(x),                 collapse = collapse, simParamBee = simParamBee)
-    ret$queenAndFathers <- nCsdAlleles(x = c(getQueen(x), getFathers(x)), collapse = collapse, simParamBee = simParamBee)
-    ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x),            collapse = collapse, simParamBee = simParamBee)
-    ret$workers         <- nCsdAlleles(x = getWorkers(x),                 collapse = collapse, simParamBee = simParamBee)
-    ret$drones          <- nCsdAlleles(x = getDrones(x),                  collapse = collapse, simParamBee = simParamBee)
+    if (collapse) {
+      haplo <- getCsdAlleles(x = x, collapse = TRUE, unique = TRUE, simParamBee = simParamBee)
+      ret <- nrow(haplo)
+    } else {
+      ret <- vector(mode = "list", length = 6)
+      names(ret) <- c("queen", "fathers", "queenAndFathers", "virgin_queens", "workers", "drones")
+      ret$queen           <- nCsdAlleles(x = getQueen(x),        simParamBee = simParamBee)
+      ret$fathers         <- nCsdAlleles(x = getFathers(x),      simParamBee = simParamBee)
+      ret$virgin_queens   <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
+      ret$workers         <- nCsdAlleles(x = getWorkers(x),      simParamBee = simParamBee)
+      ret$drones          <- nCsdAlleles(x = getDrones(x),       simParamBee = simParamBee)
+      # Can't combine queen (diploid) and fathers (haploid) using c(getQueen(x), getFathers(x)),
+      #   so we will get their alleles and count them
+      tmp <- rbind(getCsdAlleles(x = getQueen(x),   simParamBee = simParamBee),
+                   getCsdAlleles(x = getFathers(x), simParamBee = simParamBee))
+      tmp <- tmp[!duplicated(tmp), ]
+      ret$queenAndFathers <- nrow(tmp)
+    }
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = nCsdAlleles, collapse = collapse, simParamBee = simParamBee)
-    names(ret) <- getId(x)
+    if (collapse) {
+      haplo <- getCsdAlleles(x = x, collapse = TRUE, unique = TRUE, simParamBee = simParamBee)
+      ret <- nrow(haplo)
+    } else {
+      ret <- lapply(X = x@colonies, FUN = nCsdAlleles, collapse = collapse, simParamBee = simParamBee)
+      names(ret) <- getId(x)
+    }
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
