@@ -4,7 +4,14 @@
 \alias{getCsdAlleles}
 \title{Get csd alleles}
 \usage{
-getCsdAlleles(x, nInd = NULL, allele = "all", simParamBee = NULL)
+getCsdAlleles(
+  x,
+  nInd = NULL,
+  allele = "all",
+  collapse = FALSE,
+  unique = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -16,6 +23,13 @@ are taken; this can be useful as a test of sampling individuals}
 \item{allele}{character, either "all" for both alleles or an integer for a
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
+
+\item{collapse}{logical, if \code{TRUE}, the function will return a set of
+csd alleles in either the entire population, colony, or colonies. Default
+is \code{FALSE}.}
+
+\item{unique}{logical, return only the unique set of csd alleles. Default
+is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -30,6 +44,11 @@ matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 \description{
 Level 0 function that returns alleles from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
+}
+\details{
+If both collapse and unique are \code{TRUE}, the function
+  returns a unique set of csd alleles in the entire population, colony, or
+  colonies.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
