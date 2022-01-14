@@ -338,6 +338,9 @@ removeColonies <- function(colonies, ID) {
 #'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
 #'   present drones are taken into account so only the missing difference is
 #'   added)
+#' @param exact logical, if the csd locus is turned on and exact is TRUE,
+#' create the exact specified number of only
+#' viable workers (heterozygous on the csd locus)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
@@ -399,8 +402,8 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
-                            new = FALSE, resetEvents = FALSE,
-                            simParamBee = NULL) {
+                            new = FALSE, exact = exact,
+                            resetEvents = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -413,6 +416,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                                         nWorkers = nWorkers,
                                         nDrones = nDrones,
                                         new = new,
+                                        exact = exact,
                                         resetEvents = resetEvents,
                                         simParamBee = simParamBee)
   }

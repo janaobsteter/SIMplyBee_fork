@@ -296,7 +296,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     if (is.function(nInd)) {
       nInd <- nInd(x)
     }
-    ret <- createWorkers(x = x, nInd = nInd, simParamBee = simParamBee)
+    ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)
     names(ret) <- c("virginQueens", "pHomBrood")
     if (!is.null(year)) {
       ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
@@ -327,6 +327,9 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of workers; if \code{NULL} then
 #'   \code{simParamBee$nWorkers} is used
+#' @param exact logical, if the csd locus is turned on and exact is TRUE,
+#' replace the workers with the exact specified number of only
+#' viable workers (heterozygous on the csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a list with two
@@ -364,7 +367,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' createWorkers(apiary)
 #'
 #' @export
-createWorkers <- function(x, nInd = NULL, simParamBee = NULL) {
+createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -382,14 +385,32 @@ createWorkers <- function(x, nInd = NULL, simParamBee = NULL) {
       nInd <- nInd(x)
     }
     ret <- vector(mode = "list", length = 2)
-    names(ret) <- c("workers", "pHomBrood")
+    names(ret) <- c("workers", "pHomBrood") #DO we want to return pHomBrood even if the csd is turned off???
     workers <- randCross2(females = getQueen(x),
                           males = getFathers(x),
                           nCrosses = nInd)
+
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
       ret$pHomBrood <- (nInd - sum(sel)) / nInd
+      if (exact) {
+        # if (x@queen$pHomBrood > 0.5) {
+        #   message(paste("Percentage of homozgous brood is ", x@queen$pHomBrood, ",
+        #                 might take a long time to create viable individuals."))
+        # }
+        if (nInd(ret$workers) < nInd) {
+          missingWorkers <- nInd - nInd(ret$workers)
+          while (nInd(ret$workers) != nInd) {
+            worker <- randCross2(females = getQueen(x),
+                                 males = getFathers(x),
+                                 nCrosses = 1)
+            if (isCsdHeterozygous(worker)) {
+              ret$workers <- c(ret$workers, worker)
+            }
+          }
+        }
+      }
     } else {
       ret$workers <- workers
       ret$pHomBrood <- NA

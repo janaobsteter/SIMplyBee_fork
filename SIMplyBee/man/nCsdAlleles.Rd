@@ -4,11 +4,15 @@
 \alias{nCsdAlleles}
 \title{Report the number of distinct csd alleles}
 \usage{
-nCsdAlleles(x, simParamBee = NULL)
+nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
+
+\item{collapse}{logical, if set to TRUE, the function will return the number
+of distinct csd alleles in either the entire population, colony, or
+colonies. Set to FALSE by default.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

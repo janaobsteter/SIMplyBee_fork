@@ -4,7 +4,7 @@
 \alias{replaceWorkers}
 \title{Replace a proportion of workers with new ones}
 \usage{
-replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL)
+replaceWorkers(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -13,6 +13,10 @@ replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of workers that stay when \code{p < 1}}
+
+\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
+replace the workers with the exact specified number of only
+viable workers (heterozygous on the csd locus)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

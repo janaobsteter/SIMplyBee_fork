@@ -4,7 +4,7 @@
 \alias{addWorkers}
 \title{Add (raise) workers in the colony}
 \usage{
-addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL)
+addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -15,19 +15,16 @@ addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 \item{new}{logical, should the workers be added a fresh (ignoring currently
 present workers in the colony)}
 
+\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
+add the exact specified number of only
+viable workers (heterozygous on the csd locus)}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
   workers added
-}
-\description{
-Level 2 function that adds (raises) the specified number of
-  workers in the colony by crossing the current queen and the fathers. If
-  there are already some workers present, new and present workers are
-  combined.
-}
-\examples{
+
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
@@ -55,5 +52,10 @@ nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 SP$nWorkers <- nWorkersFun
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
-
+}
+\description{
+Level 2 function that adds (raises) the specified number of
+  workers in the colony by crossing the current queen and the fathers. If
+  there are already some workers present, new and present workers are
+  combined.
 }
