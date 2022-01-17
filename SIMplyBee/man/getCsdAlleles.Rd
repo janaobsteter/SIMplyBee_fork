@@ -24,12 +24,13 @@ are taken; this can be useful as a test of sampling individuals}
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
 
-\item{collapse}{logical, if set to TRUE, the function will return a set of
-csd alleles in either the entire population, colony, or colonies. Set to
-FALSE by default.}
 
-\item{unique}{logical, return only the unique set of csd alleles. Set to
-FALSE by default.}
+\item{collapse}{logical, if \code{TRUE}, the function will return a set of
+csd alleles in either the entire population, colony, or colonies. Default
+is \code{FALSE}.}
+
+\item{unique}{logical, return only the unique set of csd alleles. Default
+is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -46,7 +47,7 @@ Level 0 function that returns alleles from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
 }
 \details{
-If both collapse and unique are set to TRUE, the function
+If both collapse and unique are \code{TRUE}, the function
   returns a unique set of csd alleles in the entire population, colony, or
   colonies.
 }

@@ -15,7 +15,8 @@ selected; if character (numeric) colonies are selected based on their name
 
 \item{n}{numeric, number of colonies to select}
 
-\item{p}{numeric, probability of a colony being selected}
+\item{p}{numeric, probability of a colony being selected (takes precedence
+over \code{n})}
 }
 \value{
 \code{\link{Colonies-class}} with selected colonies
