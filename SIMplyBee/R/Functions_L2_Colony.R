@@ -666,6 +666,9 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = 
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x)) {
+    if (!(p > 0)) {
+      stop("p must be greater than 0")
+    }
     nWorkers <- nWorkers(x)
     if (nWorkers > 0) {
       nWorkersReplaced <- round(nWorkers * p)
@@ -739,6 +742,9 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = 
 #' @export
 replaceDrones <- function(x, p = 1, use = "rand") {
   if (isColony(x)) {
+    if (!(p > 0)) {
+      stop("p must be greater than 0")
+    }
     nDrones <- nDrones(x)
     if (nDrones > 0) {
       nDronesReplaced <- round(nDrones * p)
@@ -829,9 +835,9 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
     stop("Argument colony must be a Colony class object!")
   }
   if (p > 1) {
-    stop("p can not be higher than 1!")
+    stop("p must not be higher than 1!")
   } else if (p < 0) {
-    stop("p can not be less than 0!")
+    stop("p must not be less than 0!")
   } else if (p == 1) {
     colony@virginQueens <- NULL
   } else {
@@ -883,9 +889,9 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
     stop("Argument colony must be a Colony class object!")
   }
   if (p > 1) {
-    stop("p can not be higher than 1!")
+    stop("p must not be higher than 1!")
   } else if (p < 0) {
-    stop("p can not be less than 0!")
+    stop("p must not be less than 0!")
   } else if (p == 1) {
     colony@workers <- NULL
   } else {
@@ -936,9 +942,9 @@ removeDrones <- function(colony, p = 1, use = "rand") {
     stop("Argument colony must be a Colony class object!")
   }
   if (p > 1) {
-    stop("p can not be higher than 1!")
+    stop("p must not be higher than 1!")
   } else if (p < 0) {
-    stop("p can not be less than 0!")
+    stop("p must not be less than 0!")
   } else if (p == 1) {
     colony@drones <- NULL
   } else {
@@ -1188,6 +1194,9 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
   }
+  if (p < 0 | p > 1) {
+    stop("p must be between 0 and 1 (inclusive)!")
+  }
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
@@ -1315,7 +1324,7 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
     stop("Argument colony must be a Colony class object!")
   }
   if (p < 0 | p > 1) {
-    stop("pSplit must be between 0 and 1!")
+    stop("p must be between 0 and 1 (inclusive)!")
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)

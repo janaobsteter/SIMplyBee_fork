@@ -15,7 +15,8 @@ out; if character (numeric) colonies are pulled out based on their name
 
 \item{n}{numeric, number of colonies to select}
 
-\item{p}{numeric, probability of a colony being pulled out}
+\item{p}{numeric, probability of a colony being pulled out (takes precedence
+over \code{n})}
 }
 \value{
 list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
