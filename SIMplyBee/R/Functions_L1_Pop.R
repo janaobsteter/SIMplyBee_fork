@@ -386,9 +386,10 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "pHomBrood")
-    workers <- randCross2(females = getQueen(x),
-                          males = getFathers(x),
-                          nCrosses = nInd)
+    workers <- beeCross(queen = getQueen(x),
+                        drones = getFathers(x),
+                        nProgeny = nInd,
+                        simParamBee = simParamBee)
 
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
@@ -402,9 +403,10 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
         if (nInd(ret$workers) < nInd) {
           missingWorkers <- nInd - nInd(ret$workers)
           while (nInd(ret$workers) != nInd) {
-            worker <- randCross2(females = getQueen(x),
-                                 males = getFathers(x),
-                                 nCrosses = 1)
+            worker <- beeCross(queen = getQueen(x),
+                               drones = getFathers(x),
+                               nProgeny = 1,
+                               simParamBee = simParamBee)
             if (isCsdHeterozygous(worker)) {
               ret$workers <- c(ret$workers, worker)
             }
