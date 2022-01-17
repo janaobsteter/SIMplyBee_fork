@@ -258,14 +258,15 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'   \code{simParamBee$nWorkers} is used
 #' @param new logical, should the workers be added a fresh (ignoring currently
 #'   present workers in the colony)
-#' @param exact logical, if the csd locus is turned on and exact is TRUE,
-#' add the exact specified number of only
-#' viable workers (heterozygous on the csd locus)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   add the exact specified number of only viable workers (heterozygous on the csd
+#'   locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
 #'   workers added
 #'
+#' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
@@ -430,9 +431,9 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   added)
 #' @param new logical, should the workers and drones be added a
 #'   fresh (ignoring currently present workers and drones)
-#' @param exact logical, if the csd locus is turned on and exact is TRUE,
-#' create the exact specified number of only
-#' viable workers (heterozygous on the csd locus)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   create the exact specified number of only viable workers (heterozygous on
+#'   the csd locus)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -628,9 +629,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
-#' @param exact logical, if the csd locus is turned on and exact is TRUE,
-#' replace the workers with the exact specified number of only
-#' viable workers (heterozygous on the csd locus)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   replace the workers with the exact specified number of only viable workers
+#'   (heterozygous on the csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -1100,7 +1101,6 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
     stop("Queen already present in the colony!")
   }
   if (!areVirginQueensPresent(colony)) {
-    stop("No virgin queen(s) in the colony to cross!")
   }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")

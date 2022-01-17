@@ -327,9 +327,9 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of workers; if \code{NULL} then
 #'   \code{simParamBee$nWorkers} is used
-#' @param exact logical, if the csd locus is turned on and exact is TRUE,
-#' replace the workers with the exact specified number of only
-#' viable workers (heterozygous on the csd locus)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   replace the workers with the exact specified number of only viable workers
+#'   (heterozygous on the csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a list with two
@@ -385,7 +385,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       nInd <- nInd(x)
     }
     ret <- vector(mode = "list", length = 2)
-    names(ret) <- c("workers", "pHomBrood") #DO we want to return pHomBrood even if the csd is turned off???
+    names(ret) <- c("workers", "pHomBrood")
     workers <- randCross2(females = getQueen(x),
                           males = getFathers(x),
                           nCrosses = nInd)

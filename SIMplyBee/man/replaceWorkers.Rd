@@ -14,9 +14,9 @@ replaceWorkers(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL)
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of workers that stay when \code{p < 1}}
 
-\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
-replace the workers with the exact specified number of only
-viable workers (heterozygous on the csd locus)}
+\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+replace the workers with the exact specified number of only viable workers
+(heterozygous on the csd locus)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

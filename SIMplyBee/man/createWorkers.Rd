@@ -12,9 +12,9 @@ createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
 \item{nInd}{numeric or function, number of workers; if \code{NULL} then
 \code{simParamBee$nWorkers} is used}
 
-\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
-replace the workers with the exact specified number of only
-viable workers (heterozygous on the csd locus)}
+\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+replace the workers with the exact specified number of only viable workers
+(heterozygous on the csd locus)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

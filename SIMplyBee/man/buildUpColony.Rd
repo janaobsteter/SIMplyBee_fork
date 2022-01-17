@@ -30,9 +30,9 @@ added)}
 \item{new}{logical, should the workers and drones be added a
 fresh (ignoring currently present workers and drones)}
 
-\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
-create the exact specified number of only
-viable workers (heterozygous on the csd locus)}
+\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+create the exact specified number of only viable workers (heterozygous on
+the csd locus)}
 
 \item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
 build up}
