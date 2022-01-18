@@ -68,7 +68,9 @@ nCsdAlleles(getWorkers(colony1))
 nCsdAlleles(getDrones(colony1))
 
 nCsdAlleles(colony1)
+nCsdAlleles(colony1, collapse = TRUE)
 
 nCsdAlleles(apiary)
+nCsdAlleles(apiary, collapse = TRUE)
 
 }

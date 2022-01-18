@@ -40,6 +40,7 @@ Level 0 function that returns IBD (identity by descent)
   haplotypes of individuals in colony.
 }
 \examples{
+if (FALSE) {
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
@@ -64,7 +65,7 @@ getColonyIbdHaplo(apiary)
 getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 getColonyIbdHaplo(apiary, nInd = 1)
 getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
+}
 }
 \seealso{
 \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
