@@ -258,6 +258,9 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'   \code{simParamBee$nWorkers} is used
 #' @param new logical, should the workers be added a fresh (ignoring currently
 #'   present workers in the colony)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   add the exact specified number of only viable workers (heterozygous on the csd
+#'   locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -293,7 +296,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' nWorkers(addWorkers(apiary))
 #'
 #' @export
-addWorkers <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
+addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -305,7 +308,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       nInd <- nInd(x)
     }
     if (nInd > 0) {
-      newWorkers <- createWorkers(x, nInd, simParamBee = simParamBee)
+      newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
         x@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
@@ -322,7 +325,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- addWorkers(x = x[[colony]], nInd = nInd, new = new,
-                                simParamBee = simParamBee)
+                                exact = exact, simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -428,6 +431,9 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   added)
 #' @param new logical, should the workers and drones be added a
 #'   fresh (ignoring currently present workers and drones)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   create the exact specified number of only viable workers (heterozygous on
+#'   the csd locus)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -476,7 +482,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          new = FALSE, resetEvents = FALSE,
+                          new = FALSE, exact = FALSE, resetEvents = FALSE,
                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -499,7 +505,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   }
   if (n > 0) {
     colony <- addWorkers(x = colony, nInd = n, new = new,
-                         simParamBee = simParamBee)
+                         exact = exact, simParamBee = simParamBee)
   }
 
   # Drones
@@ -623,6 +629,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   replace the workers with the exact specified number of only viable workers
+#'   (heterozygous on the csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -653,7 +662,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #'
 #' @export
-replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -666,7 +675,7 @@ replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
       nWorkersReplaced <- round(nWorkers * p)
       if (nWorkersReplaced < nWorkers) {
         nWorkersStay <- nWorkers - nWorkersReplaced
-        tmp <- createWorkers(x, nInd = nWorkersReplaced, simParamBee = simParamBee)
+        tmp <- createWorkers(x, nInd = nWorkersReplaced, exact = exact, simParamBee = simParamBee)
         x@workers <- c(selectInd(x@workers, nInd = nWorkersStay, use = use),
                             tmp$workers)
         # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
@@ -676,14 +685,14 @@ replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
         x@queen@misc[[1]]$pHomBrood <- (x@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
       } else {
         x <- addWorkers(x = x, nInd = nWorkersReplaced, new = TRUE,
-                        simParamBee = simParamBee)
+                        exact = exact, simParamBee = simParamBee)
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- replaceWorkers(x = x[[colony]], p = p, use = use,
-                                    simParamBee = simParamBee)
+                                    exact = exact, simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
