@@ -71,11 +71,15 @@ getCsdAlleles(getWorkers(colony1))
 getCsdAlleles(getDrones(colony1))
 
 getCsdAlleles(colony1)
+getCsdAlleles(colony1, collapse = TRUE)
+getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
 
 getCsdAlleles(getDrones(colony2))
 getCsdAlleles(colony2)
 
 getCsdAlleles(apiary)
+getCsdAlleles(apiary, collapse = TRUE)
+getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 
 getCsdAlleles(apiary, nInd = 2)
 
