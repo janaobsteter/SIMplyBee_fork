@@ -1107,6 +1107,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
     stop("Queen already present in the colony!")
   }
   if (!areVirginQueensPresent(colony)) {
+    stop("No virgin queen(s) in the colony to cross!")
   }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
