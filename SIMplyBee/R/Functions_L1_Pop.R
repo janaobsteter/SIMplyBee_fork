@@ -465,10 +465,16 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
   # Recombination of queen's genomes to generate gametes from the queen
+  if (queen@ploidy != 2) {
+    stop("Queen must be diploid!")
+  }
   gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
                                       keepParents = TRUE, simRecomb = TRUE,
                                       simParam = simParamBee)
   # Drones are already haploid so we just merge both sets of gametes
+  if (drones@ploidy != 1) {
+    stop("Drones must be haploid!")
+  }
   pairs <- cbind(gametesFromTheQueen@id,
                  sample(x = drones@id, size = nProgeny, replace = TRUE))
   ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
