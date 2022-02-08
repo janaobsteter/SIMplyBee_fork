@@ -435,7 +435,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'   haploid, while the queen is diploid, so we first generate gametes (with
 #'   recombination) from her and merge them with drone genomes (=gametes), where
 #'   we randomly re-sample drones to get the desired number of progeny. This is
-#'   an utility function, and you most likely want to use
+#'   an utility function, and you most likely want to use the
 #'   \code{\link{crossColony}} function.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
@@ -454,7 +454,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'
 #' queen <- basePop[1]
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
-#' beeCross(queen, drones, nProgeny = )
+#' beeCross(queen, drones, nProgeny = 10)
 #'
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
