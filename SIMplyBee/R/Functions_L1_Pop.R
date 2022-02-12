@@ -233,6 +233,82 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
+#' @rdname getCasteId
+#' @title Access ID of individuals of a caste, or ID of all members of colony
+#'
+#' @description Level 1 function that returns the ID individuals of a caste. These
+#'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
+#'
+#' @param x Pop, Colony or Colonies class objects
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
+#'   "drones", or "all"
+#'
+#' @seealso \code{\link{getCaste}}
+#'
+#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#'  or list for \code{caste == "all"} with ID nodes named by caste;
+#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'   or named list for \code{caste == "all"} indluding caste members IDs;
+#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#'
+#' apiary1 = c(colony1, colony2)
+#'
+#' getCasteId(x = drones)
+#' getCasteId(x = colony1)
+#' getCasteId(x = colony1, caste = "workers")
+#' getCasteId(x = apiary1)
+#' getCasteId(x = apiary1, caste = "virginQueens")
+#'
+#' #' @export
+
+getCasteId <- function(x, caste = "all") {
+  if (isPop(x)) {
+    ret <- x@id
+  } else if (isColony(x)) {
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      for (caste in names(ret)) {
+        tmp <- getCaste(x = x, caste = caste)
+        if (is.null(tmp)) {
+          ret[[caste]] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp@id
+        }}
+    } else {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret <- NULL
+      } else {
+        ret <- tmp@id
+      }
+    }
+  } else if (isColonies(x)) {
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCasteID, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony or Colonies class object!")
+  }
+  return(ret)
+}
 #' @rdname createVirginQueens
 #' @title Creates virgin queens from the colony
 #'
