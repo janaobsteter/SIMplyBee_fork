@@ -276,9 +276,26 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' getCasteId(x = apiary1)
 #' getCasteId(x = apiary1, caste = "virginQueens")
 #'
+#' #creating a data.frame from the Ids
+#' tmp = getCasteId(x = apiary1)
+#' tmp2 = unlist(tmp)
+#' df = data.frame(tmp2)
+#' names(df)[1] = "Id"
+#'
+#' #ungroup the ColonyId and caste members in the dataframe
+#' caste = as.character(map(strsplit(row.names(df), ".", TRUE),2))
+#' colonyId = as.character(map(strsplit(row.names(df), ".", TRUE),1))
+#' df$caste = caste
+#' df$colonyId = colonyId
+#' df
+#'
+#' #remove the digits from the caste members
+#' df$caste = gsub(pattern = "[[:digit:]]", replacement = "", x = df$caste)
+#' df
+#'
 #' #' @export
 
-getCasteId <- function(x, caste = "all") {
+ getCasteId <- function(x, caste = "all") {
   if (isPop(x)) {
     ret <- x@id
   } else if (isColony(x)) {
@@ -302,7 +319,7 @@ getCasteId <- function(x, caste = "all") {
     }
   } else if (isColonies(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = getCasteID, caste = caste)
+    ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony or Colonies class object!")
