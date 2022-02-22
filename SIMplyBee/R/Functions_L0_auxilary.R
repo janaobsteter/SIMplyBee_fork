@@ -3703,6 +3703,113 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
   return(ret)
 }
 
+#' @rdname calcBeeGRMIbs
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#'   Identical By State genomic data
+#'
+#' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
+#'   for honey bees from Identical By State genomic data (bi-allelic SNP
+#'   represented as allele dosages) following the method of Druet and Legarra
+#'   (2020)
+#'
+#' @param x \code{\link{matrix}} of genotypes represented as allele dosage coded
+#'   as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
+#'   (drones); individuals are in rows and sites are in columns; no missing
+#'   values are allowed (this is not checked!)
+#' @param sex character vector denoting sex for individuals with genotypes in
+#'   \code{x} - \code{"F"} for female and \code{"M"} for male
+#'
+#' @return matrix of genomic relatedness coefficients
+#'
+#' @references Druet and Legarra (2020) Theoretical and empirical comparisons of
+#'   expected and realized relationships for the X-chromosome. Genetics
+#'   Selection Evolution, 52:50 \url{https://doi.org/10.1186/s12711-020-00570-6}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#'
+#' genoQ <- getQueensSegSiteGeno(colony1)
+#' genoF <- getFathersSegSiteGeno(colony1)
+#' genoW <- getWorkersSegSiteGeno(colony1)
+#' genoD <- getDronesSegSiteGeno(colony1)
+#' genoV <- getVirginQueensSegSiteGeno(colony1)
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
+#' sex <- c("F",
+#'          rep("M", times = nrow(genoF)),
+#'          rep("F", times = nrow(genoW)),
+#'          rep("M", times = nrow(genoD)),
+#'          rep("F", times = nrow(genoV)))
+#'
+#' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
+#'
+#' library("Matrix")
+#' image(as(GRM, "Matrix"),
+#'       xlab = "Individual", ylab = "Individual")
+#'
+#' x <- diag(GRM)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRM[lower.tri(x = GRM, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' q <- rownames(genoQ)
+#' f <- rownames(genoF)
+#' w <- rownames(genoW)
+#' d <- rownames(genoD)
+#' v <- rownames(genoV)
+#'
+#' # Queen vs others
+#' GRM[q, f]
+#' GRM[q, w]
+#' GRM[q, d]
+#' GRM[q, v]
+#'
+#' # Fathers vs others
+#' GRM[f, f]
+#' GRM[f, w]
+#' GRM[f, d]
+#' GRM[f, v]
+#'
+#' # Workers vs others
+#' GRM[w, w]
+#' GRM[w, d]
+#' GRM[w, v]
+#'
+#' @export
+calcBeeGRMIbs <- function(x, sex) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  if (!is.character(sex)) {
+    stop("Argument sex must be a character class object!")
+  }
+  if (any(!sex %in% c("F", "M"))) {
+    print(table(sex, useNA = "ifany"))
+    stop("Entries in sex should be either F (for females) or M (for males)!")
+  }
+  if (nrow(x) != length(sex)) {
+    stop("Dimensions of x (number of rows) and sex (length) must match!")
+  }
+  alleleSum <- apply(X = x, FUN = sum, MARGIN = 2)
+  ploidy <- (sex == "F") + 1
+  alleleFreq <- alleleSum / sum(ploidy)
+  for (site in 1:ncol(x)) {
+    x[, site] <- x[, site] - ploidy * alleleFreq[site]
+  }
+  G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
+  return(G)
+}
+
 #' @rdname getCasteGv
 #' @title Access genetic values of individuals in a caste
 #'
