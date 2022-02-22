@@ -24,7 +24,6 @@ are taken; this can be useful as a test of sampling individuals}
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
 
-
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
 csd alleles in either the entire population, colony, or colonies. Default
 is \code{FALSE}.}

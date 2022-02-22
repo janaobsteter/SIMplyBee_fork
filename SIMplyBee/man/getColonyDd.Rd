@@ -38,7 +38,7 @@ Level 0 function that returns dominance deviations of
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10)
+SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -48,16 +48,16 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 
-try(getColonyDd(colony1)) # TODO
-try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
-try(getColonyDd(colony1, nInd = 1)) # TODO
-try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+getColonyDd(colony1)
+getColonyDd(colony1, caste = c("queen", "fathers"))
+getColonyDd(colony1, nInd = 1)
+getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 apiary <- c(colony1, colony2)
-try(getColonyDd(apiary)) # TODO
-try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
-try(getColonyDd(apiary, nInd = 1)) # TODO
-try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+getColonyDd(apiary)
+getColonyDd(apiary, caste = c("queen", "fathers"))
+getColonyDd(apiary, nInd = 1)
+getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 }
 \seealso{

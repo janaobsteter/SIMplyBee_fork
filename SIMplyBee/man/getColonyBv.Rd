@@ -38,7 +38,7 @@ Level 0 function that returns breeding values of individuals in
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10)
+SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -48,18 +48,18 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 
-try(getColonyBv(colony1)) # TODO
-try(getColonyBv(colony1, caste = c("queen", "fathers"))) # TODO
-try(getColonyBv(colony1, nInd = 1)) # TODO
-try(getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+getColonyBv(colony1)
+getColonyBv(colony1, caste = c("queen", "fathers"))
+getColonyBv(colony1, nInd = 1)
+getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
-try(getColonyBv(colony2)) # TODO
+getColonyBv(colony2)
 
 apiary <- c(colony1, colony2)
-try(getColonyBv(apiary)) # TODO
-try(getColonyBv(apiary, caste = c("queen", "fathers"))) # TODO
-try(getColonyBv(apiary, nInd = 1)) # TODO
-try(getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+getColonyBv(apiary)
+getColonyBv(apiary, caste = c("queen", "fathers"))
+getColonyBv(apiary, nInd = 1)
+getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 
 }
 \seealso{
