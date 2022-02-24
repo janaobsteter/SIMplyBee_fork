@@ -3741,12 +3741,15 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' genoW <- getWorkersSegSiteGeno(colony1)
 #' genoD <- getDronesSegSiteGeno(colony1)
 #' genoV <- getVirginQueensSegSiteGeno(colony1)
-#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
+#' genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
+#' rownames(geno)[length(rownames(geno))] <- "M"
 #' sex <- c("F",
 #'          rep("M", times = nrow(genoF)),
 #'          rep("F", times = nrow(genoW)),
 #'          rep("M", times = nrow(genoD)),
-#'          rep("F", times = nrow(genoV)))
+#'          rep("F", times = nrow(genoV)),
+#'          "F")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
@@ -3768,23 +3771,27 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' w <- rownames(genoW)
 #' d <- rownames(genoD)
 #' v <- rownames(genoV)
+#' m <- "M"
 #'
 #' # Queen vs others
 #' GRM[q, f]
 #' GRM[q, w]
 #' GRM[q, d]
 #' GRM[q, v]
+#' GRM[q, m]
 #'
 #' # Fathers vs others
 #' GRM[f, f]
 #' GRM[f, w]
 #' GRM[f, d]
 #' GRM[f, v]
+#' GRM[f, m]
 #'
 #' # Workers vs others
 #' GRM[w, w]
 #' GRM[w, d]
 #' GRM[w, v]
+#' GRM[w, m]
 #'
 #' @export
 calcBeeGRMIbs <- function(x, sex) {
