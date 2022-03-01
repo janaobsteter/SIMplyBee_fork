@@ -435,7 +435,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'   haploid, while the queen is diploid, so we first generate gametes (with
 #'   recombination) from her and merge them with drone genomes (=gametes), where
 #'   we randomly re-sample drones to get the desired number of progeny. This is
-#'   an utility function, and you most likely want to use
+#'   an utility function, and you most likely want to use the
 #'   \code{\link{crossColony}} function.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
@@ -454,7 +454,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'
 #' queen <- basePop[1]
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
-#' beeCross(queen, drones, nProgeny = )
+#' beeCross(queen, drones, nProgeny = 10)
 #'
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
@@ -465,10 +465,16 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
   # Recombination of queen's genomes to generate gametes from the queen
+  if (queen@ploidy != 2) {
+    stop("Queen must be diploid!")
+  }
   gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
                                       keepParents = TRUE, simRecomb = TRUE,
                                       simParam = simParamBee)
   # Drones are already haploid so we just merge both sets of gametes
+  if (drones@ploidy != 1) {
+    stop("Drones must be haploid!")
+  }
   pairs <- cbind(gametesFromTheQueen@id,
                  sample(x = drones@id, size = nProgeny, replace = TRUE))
   ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
