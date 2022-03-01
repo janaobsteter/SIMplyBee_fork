@@ -58,7 +58,7 @@ Level 0 function that returns breeding values of individuals in
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10)
+SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -68,9 +68,10 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addDrones(colony2, nInd = 4)
+colony1 <- addVirginQueens(colony1, nInd = 2)
 
-try(getCasteBv(colony1, caste = "queen")) # TODO
-try(getQueensBv(colony1)) # TODO
+getCasteBv(colony1, caste = "queen")
+getQueensBv(colony1)
 
 getCasteBv(colony1, caste = "fathers")
 getCasteBv(colony1, caste = "fathers", nInd = 2)
@@ -78,8 +79,8 @@ getCasteBv(colony1, caste = "fathers", nInd = 2)
 getFathersBv(colony1)
 getFathersBv(colony1, nInd = 2)
 
-try(getCasteBv(colony1, caste = "virginQueens")) # TODO
-try(getVirginQueensBv(colony1)) # TODO
+getCasteBv(colony1, caste = "virginQueens")
+getVirginQueensBv(colony1)
 
 getCasteBv(colony1, caste = "workers")
 getWorkersBv(colony1)
@@ -88,8 +89,8 @@ getCasteBv(colony1, caste = "drones")
 getDronesBv(colony1)
 
 apiary <- c(colony1, colony2)
-try(getCasteBv(apiary, caste = "queen")) # TODO
-try(getQueensBv(apiary)) # TODO
+getCasteBv(apiary, caste = "queen")
+getQueensBv(apiary)
 
 getCasteBv(apiary, caste = "fathers")
 getCasteBv(apiary, caste = "fathers", nInd = 2)
@@ -97,8 +98,8 @@ getCasteBv(apiary, caste = "fathers", nInd = 2)
 getFathersBv(apiary)
 getFathersBv(apiary, nInd = 2)
 
-try(getCasteBv(apiary, caste = "virginQueens")) # TODO
-try(getVirginQueensBv(apiary)) # TODO
+getCasteBv(apiary, caste = "virginQueens")
+getVirginQueensBv(apiary)
 
 getCasteBv(apiary, caste = "workers")
 getWorkersBv(apiary)

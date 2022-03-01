@@ -76,7 +76,7 @@ Level 0 function that returns QTL genotypes of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10)
+SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- newPop(founderGenomes)
 
 drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -86,6 +86,7 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addDrones(colony2, nInd = 4)
+colony1 <- addVirginQueens(colony1, nInd = 2)
 
 getCasteQtlGeno(colony1, caste = "queen")
 getQueensQtlGeno(colony1)
