@@ -465,8 +465,12 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
   # Recombination of queen's genomes to generate gametes from the queen
+  # (keepParents = FALSE means that the queen will be the parent of the
+  #  gamete(s), not queen's parents; but we don't want reduceGenome() because it
+  #  creates additional individual, but we only want gametes here; see
+  #  https://github.com/HighlanderLab/SIMplyBee/issues/126)
   gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
-                                      keepParents = TRUE, simRecomb = TRUE,
+                                      keepParents = FALSE, simRecomb = TRUE,
                                       simParam = simParamBee)
   # Drones are already haploid so we just merge both sets of gametes
   pairs <- cbind(gametesFromTheQueen@id,
