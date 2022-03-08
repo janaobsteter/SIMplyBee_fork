@@ -553,8 +553,12 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (queen@ploidy != 2) {
     stop("Queen must be diploid!")
   }
+  # (keepParents = FALSE means that the queen will be the parent of the
+  #  gamete(s), not queen's parents; but we don't want reduceGenome() because it
+  #  creates additional individual, but we only want gametes here; see
+  #  https://github.com/HighlanderLab/SIMplyBee/issues/126)
   gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
-                                      keepParents = TRUE, simRecomb = TRUE,
+                                      keepParents = FALSE, simRecomb = TRUE,
                                       simParam = simParamBee)
   # Drones are already haploid so we just merge both sets of gametes
   if (drones@ploidy != 1) {
