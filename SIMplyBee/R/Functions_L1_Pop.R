@@ -233,6 +233,91 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
+#' @rdname getCasteId
+#' @title Access ID of individuals of a caste, or ID of all members of colony
+#'
+#' @description Level 1 function that returns the ID individuals of a caste. These
+#'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
+#'
+#' @param x Pop, Colony or Colonies class objects
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
+#'   "drones", or "all"
+#'
+#' @seealso \code{\link{getCaste}}
+#'
+#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#'  or list for \code{caste == "all"} with ID nodes named by caste;
+#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'   or named list for \code{caste == "all"} indluding caste members IDs;
+#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#'
+#' apiary1 = c(colony1, colony2)
+#'
+#' getCasteId(x = drones)
+#' getCasteId(x = colony1)
+#' getCasteId(x = colony1, caste = "workers")
+#' getCasteId(x = apiary1)
+#' getCasteId(x = apiary1, caste = "virginQueens")
+#'
+#' #Creating a data.frame from the lists of ids
+#' tmp <- getCasteId(x = apiary1)
+#' df <- data.frame(unlist(tmp2))
+#' names(df)[1] <- "id"
+#' df$caste <- as.character(map(strsplit(row.names(df), ".", TRUE), 2))
+#' df$caste <- gsub(pattern = "[[:digit:]]", replacement = "", x = df$caste)
+#' df$colony <- as.character(map(strsplit(row.names(df), ".", TRUE), 1))
+#' df
+#'
+#' #' @export
+
+getCasteId <- function(x, caste = "all") {
+  if (isPop(x)) {
+    ret <- x@id
+  } else if (isColony(x)) {
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      for (caste in names(ret)) {
+        tmp <- getCaste(x = x, caste = caste)
+        if (is.null(tmp)) {
+          ret[[caste]] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp@id
+        }}
+    } else {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret <- NULL
+      } else {
+        ret <- tmp@id
+      }
+    }
+  } else if (isColonies(x)) {
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony or Colonies class object!")
+  }
+  return(ret)
+}
 #' @rdname createVirginQueens
 #' @title Creates virgin queens from the colony
 #'
@@ -435,7 +520,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'   haploid, while the queen is diploid, so we first generate gametes (with
 #'   recombination) from her and merge them with drone genomes (=gametes), where
 #'   we randomly re-sample drones to get the desired number of progeny. This is
-#'   an utility function, and you most likely want to use
+#'   an utility function, and you most likely want to use the
 #'   \code{\link{crossColony}} function.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
@@ -454,7 +539,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'
 #' queen <- basePop[1]
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
-#' beeCross(queen, drones, nProgeny = )
+#' beeCross(queen, drones, nProgeny = 10)
 #'
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
@@ -465,6 +550,9 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
   # Recombination of queen's genomes to generate gametes from the queen
+  if (queen@ploidy != 2) {
+    stop("Queen must be diploid!")
+  }
   # (keepParents = FALSE means that the queen will be the parent of the
   #  gamete(s), not queen's parents; but we don't want reduceGenome() because it
   #  creates additional individual, but we only want gametes here; see
@@ -473,6 +561,9 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
                                       keepParents = FALSE, simRecomb = TRUE,
                                       simParam = simParamBee)
   # Drones are already haploid so we just merge both sets of gametes
+  if (drones@ploidy != 1) {
+    stop("Drones must be haploid!")
+  }
   pairs <- cbind(gametesFromTheQueen@id,
                  sample(x = drones@id, size = nProgeny, replace = TRUE))
   ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
