@@ -25,7 +25,7 @@ Level 1 function that crosses a queen and drones. Drones are
   haploid, while the queen is diploid, so we first generate gametes (with
   recombination) from her and merge them with drone genomes (=gametes), where
   we randomly re-sample drones to get the desired number of progeny. This is
-  an utility function, and you most likely want to use
+  an utility function, and you most likely want to use the
   \code{\link{crossColony}} function.
 }
 \examples{
@@ -34,7 +34,6 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
 queen <- basePop[1]
-drones <- createDrones(x = basePop[2], nDronesPerQueen = 5)
-beeCross(queen, drones, nProgeny = )
-
+drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
+beeCross(queen, drones, nProgeny = 10)
 }

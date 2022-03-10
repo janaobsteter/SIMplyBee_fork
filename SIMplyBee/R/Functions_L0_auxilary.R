@@ -1063,9 +1063,9 @@ simulateHoneyBeeGenomes <- function(nInd = NULL,
                                     nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
                                     genLen = 34.5 / 16, # Hunt&Page (1995)
                                     mutRate = 9.0e-9, # Yang et al. (2015)
-                                    histNe = Ne, # TODO revise and citation
-                                    histGen = 1, # TODO revise and citation
-                                    split = NULL, # TODO revise and citation
+                                    histNe = Ne, # TODO revise and cite
+                                    histGen = 1, # TODO revise and cite
+                                    split = NULL, # TODO revise and cite
                                     nThreads = NULL) {
   # TODO: we will need to use runMacs(manualCommand = ...) to accomodate the honeybee demography,
   #       because runMacs2 works only with simple splits, while honeybee demography is more
@@ -1723,6 +1723,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteIbdHaplo(colony1, caste = "queen")
 #' getQueensIbdHaplo(colony1)
@@ -1999,7 +2000,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -2009,6 +2010,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteQtlHaplo(colony1, caste = "queen")
 #' getQueensQtlHaplo(colony1)
@@ -2191,7 +2193,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -2287,7 +2289,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -2297,6 +2299,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteQtlGeno(colony1, caste = "queen")
 #' getQueensQtlGeno(colony1)
@@ -2476,7 +2479,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -2584,6 +2587,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteSegSiteHaplo(colony1, caste = "queen")
 #' getQueensSegSiteHaplo(colony1)
@@ -2870,6 +2874,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteSegSiteGeno(colony1, caste = "queen")
 #' getQueensSegSiteGeno(colony1)
@@ -3156,6 +3161,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteSnpHaplo(colony1, caste = "queen")
 #' getQueensSnpHaplo(colony1)
@@ -3445,6 +3451,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getCasteSnpGeno(colony1, caste = "queen")
 #' getQueensSnpGeno(colony1)
@@ -3634,6 +3641,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
 #' getColonySnpGeno(colony1)
 #' getColonySnpGeno(colony1, caste = c("queen", "fathers"))
@@ -3695,6 +3703,121 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
   return(ret)
 }
 
+#' @rdname calcBeeGRMIbs
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#'   Identical By State genomic data
+#'
+#' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
+#'   for honey bees from Identical By State genomic data (bi-allelic SNP
+#'   represented as allele dosages) following the method of Druet and Legarra
+#'   (2020)
+#'
+#' @param x \code{\link{matrix}} of genotypes represented as allele dosage coded
+#'   as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
+#'   (drones); individuals are in rows and sites are in columns; no missing
+#'   values are allowed (this is not checked!)
+#' @param sex character vector denoting sex for individuals with genotypes in
+#'   \code{x} - \code{"F"} for female and \code{"M"} for male
+#'
+#' @return matrix of genomic relatedness coefficients
+#'
+#' @references Druet and Legarra (2020) Theoretical and empirical comparisons of
+#'   expected and realized relationships for the X-chromosome. Genetics
+#'   Selection Evolution, 52:50 \url{https://doi.org/10.1186/s12711-020-00570-6}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#'
+#' genoQ <- getQueensSegSiteGeno(colony1)
+#' genoF <- getFathersSegSiteGeno(colony1)
+#' genoW <- getWorkersSegSiteGeno(colony1)
+#' genoD <- getDronesSegSiteGeno(colony1)
+#' genoV <- getVirginQueensSegSiteGeno(colony1)
+#' genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
+#' rownames(geno)[length(rownames(geno))] <- "M"
+#' sex <- c("F",
+#'          rep("M", times = nrow(genoF)),
+#'          rep("F", times = nrow(genoW)),
+#'          rep("M", times = nrow(genoD)),
+#'          rep("F", times = nrow(genoV)),
+#'          "F")
+#'
+#' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
+#'
+#' if (require("Matrix")) {
+#'   image(as(GRM, "Matrix"),
+#'         xlab = "Individual", ylab = "Individual")
+#' }
+#'
+#' x <- diag(GRM)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRM[lower.tri(x = GRM, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' q <- rownames(genoQ)
+#' f <- rownames(genoF)
+#' w <- rownames(genoW)
+#' d <- rownames(genoD)
+#' v <- rownames(genoV)
+#' m <- "M"
+#'
+#' # Queen vs others
+#' GRM[q, f]
+#' GRM[q, w]
+#' GRM[q, d]
+#' GRM[q, v]
+#' GRM[q, m]
+#'
+#' # Fathers vs others
+#' GRM[f, f]
+#' GRM[f, w]
+#' GRM[f, d]
+#' GRM[f, v]
+#' GRM[f, m]
+#'
+#' # Workers vs others
+#' GRM[w, w]
+#' GRM[w, d]
+#' GRM[w, v]
+#' GRM[w, m]
+#'
+#' @export
+calcBeeGRMIbs <- function(x, sex) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  if (!is.character(sex)) {
+    stop("Argument sex must be a character class object!")
+  }
+  if (any(!sex %in% c("F", "M"))) {
+    print(table(sex, useNA = "ifany"))
+    stop("Entries in sex should be either F (for females) or M (for males)!")
+  }
+  if (nrow(x) != length(sex)) {
+    stop("Dimensions of x (number of rows) and sex (length) must match!")
+  }
+  alleleSum <- apply(X = x, FUN = sum, MARGIN = 2)
+  ploidy <- (sex == "F") + 1
+  alleleFreq <- alleleSum / sum(ploidy)
+  for (site in 1:ncol(x)) {
+    x[, site] <- x[, site] - ploidy * alleleFreq[site]
+  }
+  G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
+  return(G)
+}
+
 #' @rdname getCasteGv
 #' @title Access genetic values of individuals in a caste
 #'
@@ -3717,7 +3840,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -3873,7 +3996,7 @@ getDronesGv <- function(x, nInd = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -3964,7 +4087,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -3974,9 +4097,10 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
-#' try(getCasteBv(colony1, caste = "queen")) # TODO
-#' try(getQueensBv(colony1)) # TODO
+#' getCasteBv(colony1, caste = "queen")
+#' getQueensBv(colony1)
 #'
 #' getCasteBv(colony1, caste = "fathers")
 #' getCasteBv(colony1, caste = "fathers", nInd = 2)
@@ -3984,8 +4108,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getFathersBv(colony1)
 #' getFathersBv(colony1, nInd = 2)
 #'
-#' try(getCasteBv(colony1, caste = "virginQueens")) # TODO
-#' try(getVirginQueensBv(colony1)) # TODO
+#' getCasteBv(colony1, caste = "virginQueens")
+#' getVirginQueensBv(colony1)
 #'
 #' getCasteBv(colony1, caste = "workers")
 #' getWorkersBv(colony1)
@@ -3994,8 +4118,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getDronesBv(colony1)
 #'
 #' apiary <- c(colony1, colony2)
-#' try(getCasteBv(apiary, caste = "queen")) # TODO
-#' try(getQueensBv(apiary)) # TODO
+#' getCasteBv(apiary, caste = "queen")
+#' getQueensBv(apiary)
 #'
 #' getCasteBv(apiary, caste = "fathers")
 #' getCasteBv(apiary, caste = "fathers", nInd = 2)
@@ -4003,8 +4127,8 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getFathersBv(apiary)
 #' getFathersBv(apiary, nInd = 2)
 #'
-#' try(getCasteBv(apiary, caste = "virginQueens")) # TODO
-#' try(getVirginQueensBv(apiary)) # TODO
+#' getCasteBv(apiary, caste = "virginQueens")
+#' getVirginQueensBv(apiary)
 #'
 #' getCasteBv(apiary, caste = "workers")
 #' getWorkersBv(apiary)
@@ -4144,7 +4268,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -4154,18 +4278,18 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #'
-#' try(getColonyBv(colony1)) # TODO
-#' try(getColonyBv(colony1, caste = c("queen", "fathers"))) # TODO
-#' try(getColonyBv(colony1, nInd = 1)) # TODO
-#' try(getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+#' getColonyBv(colony1)
+#' getColonyBv(colony1, caste = c("queen", "fathers"))
+#' getColonyBv(colony1, nInd = 1)
+#' getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
-#' try(getColonyBv(colony2)) # TODO
+#' getColonyBv(colony2)
 #'
 #' apiary <- c(colony1, colony2)
-#' try(getColonyBv(apiary)) # TODO
-#' try(getColonyBv(apiary, caste = c("queen", "fathers"))) # TODO
-#' try(getColonyBv(apiary, nInd = 1)) # TODO
-#' try(getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+#' getColonyBv(apiary)
+#' getColonyBv(apiary, caste = c("queen", "fathers"))
+#' getColonyBv(apiary, nInd = 1)
+#' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
 getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
@@ -4239,7 +4363,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -4249,9 +4373,10 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addDrones(colony2, nInd = 4)
+#' colony1 <- addVirginQueens(colony1, nInd = 2)
 #'
-#' try(getCasteDd(colony1, caste = "queen")) # TODO
-#' try(getQueensDd(colony1)) # TODO
+#' getCasteDd(colony1, caste = "queen")
+#' getQueensDd(colony1)
 #'
 #' getCasteDd(colony1, caste = "fathers")
 #' getCasteDd(colony1, caste = "fathers", nInd = 2)
@@ -4259,8 +4384,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getFathersDd(colony1)
 #' getFathersDd(colony1, nInd = 2)
 #'
-#' try(getCasteDd(colony1, caste = "virginQueens")) # TODO
-#' try(getVirginQueensDd(colony1)) # TODO
+#' getCasteDd(colony1, caste = "virginQueens")
+#' getVirginQueensDd(colony1)
 #'
 #' getCasteDd(colony1, caste = "workers")
 #' getWorkersDd(colony1)
@@ -4269,8 +4394,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getDronesDd(colony1)
 #'
 #' apiary <- c(colony1, colony2)
-#' try(getCasteDd(apiary, caste = "queen")) # TODO
-#' try(getQueensDd(apiary)) # TODO
+#' getCasteDd(apiary, caste = "queen")
+#' getQueensDd(apiary)
 #'
 #' getCasteDd(apiary, caste = "fathers")
 #' getCasteDd(apiary, caste = "fathers", nInd = 2)
@@ -4278,8 +4403,8 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' getFathersDd(apiary)
 #' getFathersDd(apiary, nInd = 2)
 #'
-#' try(getCasteDd(apiary, caste = "virginQueens")) # TODO
-#' try(getVirginQueensDd(apiary)) # TODO
+#' getCasteDd(apiary, caste = "virginQueens")
+#' getVirginQueensDd(apiary)
 #'
 #' getCasteDd(apiary, caste = "workers")
 #' getWorkersDd(apiary)
@@ -4419,7 +4544,7 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10)
+#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
@@ -4429,16 +4554,16 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 2)
 #'
-#' try(getColonyDd(colony1)) # TODO
-#' try(getColonyDd(colony1, caste = c("queen", "fathers"))) # TODO
-#' try(getColonyDd(colony1, nInd = 1)) # TODO
-#' try(getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+#' getColonyDd(colony1)
+#' getColonyDd(colony1, caste = c("queen", "fathers"))
+#' getColonyDd(colony1, nInd = 1)
+#' getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' apiary <- c(colony1, colony2)
-#' try(getColonyDd(apiary)) # TODO
-#' try(getColonyDd(apiary, caste = c("queen", "fathers"))) # TODO
-#' try(getColonyDd(apiary, nInd = 1)) # TODO
-#' try(getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))) # TODO
+#' getColonyDd(apiary)
+#' getColonyDd(apiary, caste = c("queen", "fathers"))
+#' getColonyDd(apiary, nInd = 1)
+#' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' @export
 getColonyDd <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),

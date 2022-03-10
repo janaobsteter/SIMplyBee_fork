@@ -198,8 +198,9 @@ the future)}
 
 \item{\code{nCsdAlleles}}{integer, number of possible csd alleles (this
 determines how many segregating sites will be needed to represent the
-csd locus from the underlying bi-allelic SNP; that is the minimum
-number of bi-allelic SNP needed is \code{log2(nCsdAlleles)})}
+csd locus from the underlying bi-allelic SNP; the minimum number of
+bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
+then \code{csdChr=NULL} is triggered}
 }
 \if{html}{\out{</div>}}
 }

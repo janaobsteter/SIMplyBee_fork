@@ -404,7 +404,7 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
-                            new = FALSE, exact = exact,
+                            new = FALSE, exact = FALSE,
                             resetEvents = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)

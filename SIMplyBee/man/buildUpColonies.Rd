@@ -10,7 +10,7 @@ buildUpColonies(
   nWorkers = NULL,
   nDrones = NULL,
   new = FALSE,
-  exact = exact,
+  exact = FALSE,
   resetEvents = FALSE,
   simParamBee = NULL
 )

@@ -56,7 +56,7 @@ Level 0 function that returns genetic values of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10)
+SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- newPop(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)

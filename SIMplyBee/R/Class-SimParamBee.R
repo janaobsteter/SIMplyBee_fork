@@ -97,8 +97,9 @@ SimParamBee <- R6Class(
     #'   the future)
     #' @param nCsdAlleles integer, number of possible csd alleles (this
     #'   determines how many segregating sites will be needed to represent the
-    #'   csd locus from the underlying bi-allelic SNP; that is the minimum
-    #'   number of bi-allelic SNP needed is \code{log2(nCsdAlleles)})
+    #'   csd locus from the underlying bi-allelic SNP; the minimum number of
+    #'   bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
+    #'   then \code{csdChr=NULL} is triggered
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -131,6 +132,9 @@ SimParamBee <- R6Class(
       # csd ----
 
       private$.csdChr <- NULL
+      if (nCsdAlleles == 0) {
+        csdChr <- NULL
+      }
       if (!is.null(csdChr)) {
         # csd chromosome
         if (self$nChr < csdChr) {
