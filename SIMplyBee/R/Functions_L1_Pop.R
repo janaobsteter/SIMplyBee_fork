@@ -476,52 +476,6 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname createFounderDrones
-#' @title Creates drones from a founding (base) population
-#'
-#' @description Level 1 function that creates the specified number of drones
-#'   from a founding (base) population. Drones are haploid and created from the
-#'   diploid genome of individuals in the population. Individuals' ID is stored
-#'   as the father and mother of drones.
-#'
-#' @description Level 1 function that creates drones from a founding (base)
-#'   population by doubling recombined genomes of each founding individual -
-#'   mimicking a queen laying drones. Such drones are usually used as fathers
-#'   when creating colonies.
-#'
-#' @param pop \code{\link{Pop-class}}
-#' @param nDronesPerQueen integer, number of drones to create per founding
-#'   individual (a substitute for a queen).
-#'
-#' @details Note that this function creates \code{nDronesPerQueen} for each
-#'   individual in the \code{pop}, which will amount to
-#'   \code{nInd(pop) * nDronesPerQueen} drones - this can be slow if either or
-#'   both of \code{c(nInd(pop), nDronesPerQueen)} is large; tune the numbers
-#'   to your needs.
-#'
-#' @return \code{\link{Pop-class}} with drones
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
-#' # TODO: expand exapmles by showing how to use SP
-#'
-#' @export
-createFounderDrones <- function(pop, nDronesPerQueen = 100) {
-  # TODO: rename nDronesPerQueen argument to nDrones and if NULL use simParamBee$nDrones?
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
-  }
-  drones <- reduceGenome(pop, nProgeny = nDronesPerQueen, keepParents = FALSE,
-                         simRecomb = TRUE)
-  # keepParents = FALSE means that the queen will be stored as drones' parent,
-  #   instead of storing queen's parents
-  return(drones)
-}
-
 #' @rdname createDrones
 #' @title Creates drones from the colony
 #'
@@ -570,9 +524,19 @@ createFounderDrones <- function(pop, nDronesPerQueen = 100) {
 #' createDrones(apiary)
 #'
 #' @export
-createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
+createDrones <- function(x, nInd = NULL, nDronesPerQueen = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isPop(x) & !isColony(x) & isColonies(x)) {
+    stop("Argument x must be a Pop or Colony or Colonies class object!")
+  }
+  if (isPop(x)) {
+    if (is.null(nDronesPerQueen)) {
+      stop("Must specify the number of drones per female")
+    }
+    ret <- reduceGenome(pop = x, nProgeny = nDronesPerQueen, keepParents = FALSE,
+                           simRecomb = TRUE)
   }
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
