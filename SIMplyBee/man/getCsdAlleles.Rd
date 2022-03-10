@@ -24,7 +24,6 @@ are taken; this can be useful as a test of sampling individuals}
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
 
-
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
 csd alleles in either the entire population, colony, or colonies. Default
 is \code{FALSE}.}
@@ -56,7 +55,7 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)

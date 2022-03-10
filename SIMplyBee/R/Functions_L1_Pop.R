@@ -30,7 +30,7 @@
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #'
@@ -257,7 +257,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -342,7 +342,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -453,7 +453,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' basePop <- newPop(founderGenomes)
 #'
 #' queen <- basePop[1]
-#' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
+#' drones <- createDrones(x = basePop[2], nDronesPerQueen = 5)
 #' beeCross(queen, drones, nProgeny = )
 #'
 #' @export
@@ -480,13 +480,15 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' @title Creates drones from the colony
 #'
 #' @description Level 1 function that creates the specified number of drones
-#'   from the colony. Drones are haploid and created from the diploid genome of
-#'   the queen with recombination. Queen ID is stored as the father and mother
-#'   of drones.
+#'   from a population of queens (females) or from the colony. Drones are haploid and
+#'   created from the diploid genome of the queen with recombination. Queen ID
+#'   is stored as the father and mother of drones.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of drones; if \code{NULL} then
 #'   \code{simParamBee$nDrones} is used
+#' @param nDronesPerQueen numeric, if x is \code{\link{Pop-class}}, the user has
+#' to specify the number of drones per queen (female)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a
@@ -499,7 +501,7 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -584,7 +586,7 @@ createDrones <- function(x, nInd = NULL, nDronesPerQueen = NULL, simParamBee = N
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addDrones(colony1, nInd = 10)
@@ -671,7 +673,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addDrones(colony1, nInd = 10)
@@ -725,7 +727,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
@@ -879,7 +881,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' (matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
 #' isQueenMated(basePop[2])
 #' isQueenMated(matedQueen1)
@@ -962,7 +964,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)

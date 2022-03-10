@@ -4,13 +4,16 @@
 \alias{createDrones}
 \title{Creates drones from the colony}
 \usage{
-createDrones(x, nInd = NULL, simParamBee = NULL)
+createDrones(x, nInd = NULL, nDronesPerQueen = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
 \code{simParamBee$nDrones} is used}
+
+\item{nDronesPerQueen}{numeric, if x is \code{\link{Pop-class}}, the user has
+to specify the number of drones per queen (female)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -22,16 +25,16 @@ when \code{x} is \code{\link{Colony-class}} return is a
 }
 \description{
 Level 1 function that creates the specified number of drones
-  from the colony. Drones are haploid and created from the diploid genome of
-  the queen with recombination. Queen ID is stored as the father and mother
-  of drones.
+  from a population of queens (females) or from the colony. Drones are haploid and
+  created from the diploid genome of the queen with recombination. Queen ID
+  is stored as the father and mother of drones.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
