@@ -285,8 +285,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' df$colony <- as.character(map(strsplit(row.names(df), ".", TRUE), 1))
 #' df
 #'
-#' #' @export
-
+#' @export
 getCasteId <- function(x, caste = "all") {
   if (isPop(x)) {
     ret <- x@id
