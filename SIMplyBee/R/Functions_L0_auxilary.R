@@ -845,6 +845,52 @@ hasSplit <- function(x) {
   return(ret)
 }
 
+#' @rdname getEvents
+
+#' @title Test which colony/colonies events have occurred
+#'
+#' @description Level 0 function that returns matrix of logicals confirming the status of the colony/colonies events.
+#' The events will be a split, swarm, supersedure or collapse. This will impact colony strength.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return matrix of logicals, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#'
+#' getEvents(colony1)
+#'
+#' #Test with colonies object
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' apiary1 <- c(colony1, colony2)
+#' getEvents(apiary1)
+#'
+#' @export
+#'
+getEvents <- function(x) {
+  if (!isColony(x) & !isColonies(x)) {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  ret <- cbind(hasSplit(x), hasSwarmed(x), hasSuperseded(x), hasCollapsed(x), isProductive(x))
+  colnames(ret) <- c("Split", "Swarmed", "Superseded", "Collapsed", "Productive")
+  if ("Colonies" %in% class(x)) {
+    rownames(ret) <- getId(x)
+  }
+  return(ret)
+}
+
+
 #' @rdname hasSwarmed
 #' @title Test if colony has swarmed
 #'
