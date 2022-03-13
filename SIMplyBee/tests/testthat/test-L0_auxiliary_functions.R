@@ -14,7 +14,7 @@ test_that("nColonies", {
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -24,14 +24,14 @@ test_that("nCaste", {
   colony2 <- addWorkers(colony2, nInd = 20)
   expect_equal(nCaste(colony1, caste = "queen"), 1)
   expect_equal(nCaste(colony1, caste = "fathers"), 5)
-  expect_equal(nCaste(colony1, caste = "virgin_queens"), 3)
+  expect_equal(nCaste(colony1, caste = "virginQueens"), 3)
   expect_equal(nCaste(colony1, caste = "workers"), 10)
   expect_equal(nCaste(colony1, caste = "drones"), 15)
 
   apiary <- c(colony1, colony2)
   expect_equal(nCaste(apiary, caste = "queen"), c("2" = 1, "3" = 1))
   expect_equal(nCaste(apiary, caste = "fathers"), c("2" = 5, "3" = 5))
-  expect_equal(nCaste(apiary, caste = "virgin_queens"), c("2" = 3, "3" = 1))
+  expect_equal(nCaste(apiary, caste = "virginQueens"), c("2" = 3, "3" = 0))
   expect_equal(nCaste(apiary, caste = "workers"), c("2" = 10, "3" = 20))
   expect_equal(nCaste(apiary, caste = "drones"), c("2" = 15, "3" = 0))
 })
@@ -39,7 +39,7 @@ test_that("nCaste", {
 test_that("nQueens", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
@@ -54,7 +54,7 @@ test_that("nQueens", {
 test_that("nFathers", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5])
   matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:9])
@@ -73,7 +73,7 @@ test_that("nFathers", {
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -90,11 +90,11 @@ test_that("nDrones", {
 test_that("isQueenMated", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-  colony3 <- createColony(virgin_queen = basePop[4])
+  colony3 <- createColony(virginQueens = basePop[4])
   apiary <- c(colony1, colony2, colony3)
 
   expect_true(isQueenMated(getQueen(colony1)))
@@ -108,10 +108,10 @@ test_that("isQueenMated", {
                c(TRUE, TRUE, FALSE))
 })
 
-test_that("getCsdHaploGeno", {
+test_that("getCsd", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes, nCsdHaplo = 4)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
+  basePop <- newPop(founderGenomes)
 
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -122,19 +122,19 @@ test_that("getCsdHaploGeno", {
   colony2 <- addDrones(colony2, nInd = 4)
   apiary <- c(colony1, colony2)
 
-  haplo <- getCsdHaplo(getQueen(colony1), simParamBee = SP)
-  geno  <- getCsdGeno(getQueen(colony1), simParamBee = SP)
+  haplo <- getCsdAlleles(getQueen(colony1))
+  geno  <- getCsdGeno(getQueen(colony1))
   expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
   # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
 
-  haplo <- getCsdHaplo(colony1, simParamBee = SP)$queen
-  geno  <- getCsdGeno(colony1, simParamBee = SP)$queen
+  haplo <- getCsdAlleles(colony1)$queen
+  geno  <- getCsdGeno(colony1)$queen
   expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
   # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
 
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  basePop <- newPop(founderGenomes, simParam = SP)
-  expect_error(getCsdHaplo(basePop))
+  basePop <- newPop(founderGenomes)
+  expect_error(getCsdAlleles(basePop))
   expect_error(getCsdGeno(basePop))
 })
 
