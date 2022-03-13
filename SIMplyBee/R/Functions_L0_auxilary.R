@@ -1710,7 +1710,6 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' if (FALSE) {
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParam$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
@@ -1761,7 +1760,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' getCasteIbdHaplo(apiary, caste = "drones")
 #' getDronesIbdHaplo(apiary)
-#' }
+#'
 #' @export
 getCasteIbdHaplo <- function(x, caste, nInd = NULL,
                              chr = NULL, simParamBee = NULL) {
