@@ -441,20 +441,25 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
 #' @param drones \code{\link{Pop-class}}, with one or more haploid individual(s)
 #' @param nProgeny integer, number of progeny to create per cross
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters;
-#'   passed to \code{\link{reduceGenome}} in generating queen gametes and
-#'   \code{\link{mergeGenome}} in merging queen and drone gametes
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
 #' queen <- basePop[1]
 #' drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
-#' beeCross(queen, drones, nProgeny = )
+#' workers <- beeCross(queen, drones, nProgeny = 4)
+#' workers@id
+#' workers@mother
+#' workers@father
+#' SP$pedigree
+#' SP$recHist
 #'
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
@@ -464,20 +469,72 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (nInd(queen) > 1) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
-  # Recombination of queen's genomes to generate gametes from the queen
-  # (keepParents = FALSE means that the queen will be the parent of the
-  #  gamete(s), not queen's parents; but we don't want reduceGenome() because it
-  #  creates additional individual, but we only want gametes here; see
-  #  https://github.com/HighlanderLab/SIMplyBee/issues/126)
-  gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
-                                      keepParents = FALSE, simRecomb = TRUE,
-                                      simParam = simParamBee)
-  # Drones are already haploid so we just merge both sets of gametes
-  pairs <- cbind(gametesFromTheQueen@id,
-                 sample(x = drones@id, size = nProgeny, replace = TRUE))
-  ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
-                     crossPlan = pairs, simParam = simParamBee)
-  return(ret)
+
+  # Closely following AlphaSimR:::reduceGenome() and AlphaSimR:::mergeGenome()
+
+  crossPlan <- cbind(match(x = queen@id, table = queen@id), # this handles more than one queen!
+                     match(x = sample(x = drones@id, size = nProgeny, replace = TRUE),
+                           table = drones@id))
+
+  # Meiosis on the queen's side
+  createReducedGenome <- utils::getFromNamespace(x = "createReducedGenome",
+                                                 ns = "AlphaSimR")
+  queenGametes <- createReducedGenome(queen@geno, # this handles more than one queen!
+                                      nProgeny,
+                                      simParamBee$femaleMap,
+                                      simParamBee$v,
+                                      simParamBee$p,
+                                      simParamBee$isTrackRec,
+                                      queen@ploidy,
+                                      simParamBee$femaleCentromere,
+                                      simParamBee$quadProb,
+                                      simParamBee$nThreads)
+  dim(queenGametes$geno) <- NULL
+
+  # Merge queen's gametes and drones (drones are haploid anyway)
+  geno <- vector(mode = "list", length = simParamBee$nChr)
+  for (chr in 1:simParamBee$nChr) {
+    geno[[chr]] <- array(data = as.raw(0),
+                       dim = c(dim(queen@geno[[chr]])[1], 2, nProgeny))
+    for (prog in 1:nProgeny) {
+      geno[[chr]][, 1, prog] <- queenGametes$geno[[chr]][, , crossPlan[prog, 1]]  # this handles more than one queen!
+      geno[[chr]][, 2, prog] <- drones@geno[[chr]][, , crossPlan[prog, 2]]
+    }
+  }
+
+  rPop <- new(Class = "RawPop",
+              nInd = as.integer(nProgeny),
+              nChr = simParamBee$nChr,
+              ploidy = 2L,
+              nLoci = queen@nLoci,
+              geno = geno)
+
+  if (simParamBee$isTrackRec) {
+    # Create history for haplotypes
+    hist <- vector(mode = "list", length = 2L)
+    hist[[1]] <- cbind(1L, 1L) # queen's contribution (will be rewritten below)
+    hist[[2]] <- cbind(1L, 1L) # drones' contribution (just one chrom and no recomb)
+    hist <- rep(list(hist), times = rPop@nChr) # replicate for chromosomes
+    hist <- rep(list(hist), times = rPop@nInd) # replicate for individuals
+    # Add queen's gamete recombinations
+    for (prog in 1:nProgeny) {
+      for (chr in 1:simParamBee$nChr) {
+        hist[[prog]][[chr]][[1L]] <- queenGametes$recHist[[prog]][[chr]][[1L]]
+      }
+    }
+  } else {
+    hist <- NULL
+  }
+
+  return(newPop(rawPop = rPop,
+                mother = queen@id[crossPlan[, 1]],
+                father = drones@id[crossPlan[, 2]],
+                simParam = simParamBee,
+                iMother = queen@iid[crossPlan[, 1]],
+                iFather = drones@iid[crossPlan[, 2]],
+                femaleParentPop = queen,
+                maleParentPop = drones,
+                hist = hist))
 }
 
 #' @rdname createFounderDrones

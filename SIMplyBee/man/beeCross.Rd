@@ -13,9 +13,7 @@ beeCross(queen, drones, nProgeny = 1, simParamBee = NULL)
 
 \item{nProgeny}{integer, number of progeny to create per cross}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters;
-passed to \code{\link{reduceGenome}} in generating queen gametes and
-\code{\link{mergeGenome}} in merging queen and drone gametes}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}} with diploid individuals
@@ -29,12 +27,19 @@ Level 1 function that crosses a queen and drones. Drones are
   \code{\link{crossColony}} function.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
 basePop <- newPop(founderGenomes)
 
 queen <- basePop[1]
 drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
-beeCross(queen, drones, nProgeny = )
+workers <- beeCross(queen, drones, nProgeny = 4)
+workers@id
+workers@mother
+workers@father
+SP$pedigree
+SP$recHist
 
 }
