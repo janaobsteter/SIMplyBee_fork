@@ -32,13 +32,15 @@ isQueenMated; input Pop, Colony, or Colonies; return logical
 getQueensYearOfBirth & getQueensYOB; input Pop, Colony or Colonies; return numeric
 getQueensAge
 
-getId; input Colony or Colonies; return character
+getId; input Colony or Colonies; return character or list of characters
+getCasteId; input Pop, Colony or Colonies; return character or list of characters
 getLocation; input Colony or Colonies; return numeric or list of numeric
 
 hasSplit; input Colony or Colonies; return logical
 hasSwarmed
 hasSuperseded
 isProductive
+getEvents
 
 SimParamBee
 simulateHoneyBeeGenomes TODO
@@ -142,8 +144,6 @@ getFathers
 getVirginQueens
 getWorkers
 getDrones
-
-createFounderDrones; input Pop; return Pop; TODO merge with createDrones?
 
 createWorkers; input Colony; return Pop; TODO work also with Colonies?
 createDrones

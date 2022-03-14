@@ -65,7 +65,7 @@ SP <- SimParam$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)
