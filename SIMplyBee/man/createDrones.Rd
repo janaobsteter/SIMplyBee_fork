@@ -4,37 +4,45 @@
 \alias{createDrones}
 \title{Creates drones from the colony}
 \usage{
-createDrones(x, nInd = NULL, nDronesPerQueen = NULL, simParamBee = NULL)
+createDrones(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used}
-
-\item{nDronesPerQueen}{numeric, if x is \code{\link{Pop-class}}, the user has
-to specify the number of drones per queen (female)}
+\code{simParamBee$nDrones} is used; when \code{x} is
+\code{\link{Pop-class}} the \code{nInd} is applied to every individual in
+the \code{x} (here population individuals serve as a queen, for example
+to initiate population from founding queens; see details)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Colony-class}} return is a
+when \code{x} is \code{\link{Pop-class}} or
+  \code{\link{Colony-class}} return is a
   \code{\link{Pop-class}} with drones; when \code{x} is
   \code{\link{Colonies-class}} return is a list of \code{\link{Pop-class}}
-  with drones named by colony ID
+  with drones - list nodes are named by colony ID
 }
 \description{
-Level 1 function that creates the specified number of drones
-  from a population of queens (females) or from the colony. Drones are haploid and
-  created from the diploid genome of the queen with recombination. Queen ID
-  is stored as the father and mother of drones.
+Level 1 function that creates drones from a population, colony,
+  or colonies. Drones are haploid and created from the diploid genome of
+  the queen with recombination. Queen ID is stored as the father and mother
+  of drones.
+}
+\details{
+When \code{x} is \code{\link{Pop-class}} this function creates
+  \code{nInd} drones for each individual in \code{x}, which will amount to
+  \code{nInd(x) * nInd} drones - this can be slow if either or both of
+  \code{c(nInd(x), nInd)} is large; tune the numbers to your needs.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
@@ -42,7 +50,8 @@ createDrones(colony1, nInd = 10)
 createDrones(apiary, nInd = 10)
 
 # Using a default in SP$nDrones
-# (just to have some virgin queens - change this to your needs!)
+# (just to have some drones - change this to your needs!)
+SP$nDrones
 createDrones(colony1)
 createDrones(apiary)
 

@@ -25,7 +25,7 @@ founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones)
 (colony <- buildUpColony(colony, nWorkers = 100))
 

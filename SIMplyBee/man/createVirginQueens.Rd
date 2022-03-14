@@ -33,7 +33,7 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)

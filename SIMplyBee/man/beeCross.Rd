@@ -34,6 +34,7 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
 queen <- basePop[1]
-drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
+drones <- createDrones(x = basePop[2], nInd = 5)
 beeCross(queen, drones, nProgeny = 10)
+
 }

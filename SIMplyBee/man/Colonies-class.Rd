@@ -7,8 +7,8 @@
 \alias{show,Colonies-method}
 \alias{c,Colonies-method}
 \alias{c,ColoniesOrNULL-method}
-\alias{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}
-\alias{[,Colonies,character,ANY,ANY-method}
+\alias{[,Colonies,integerOrNumericOrLogical-method}
+\alias{[,Colonies,character-method}
 \alias{[[,Colonies,integerOrNumericOrLogical-method}
 \alias{[[,Colonies,character-method}
 \alias{[<-,Colonies,integerOrNumericOrLogicalOrCharacter,ANY,Colonies-method}
@@ -23,9 +23,9 @@ isColonies(x)
 
 \S4method{c}{ColoniesOrNULL}(x, ...)
 
-\S4method{[}{Colonies,integerOrNumericOrLogical,ANY,ANY}(x, i, j, drop)
+\S4method{[}{Colonies,integerOrNumericOrLogical}(x, i, j, drop)
 
-\S4method{[}{Colonies,character,ANY,ANY}(x, i, j, drop)
+\S4method{[}{Colonies,character}(x, i, j, drop)
 
 \S4method{[[}{Colonies,integerOrNumericOrLogical}(x, i)
 
@@ -70,9 +70,9 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{c,ColoniesOrNULL-method}: Combine multiple colony and colonies objects
 
-\item \code{[,Colonies,integerOrNumericOrLogical,ANY,ANY-method}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
+\item \code{[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
 
-\item \code{[,Colonies,character,ANY,ANY-method}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
+\item \code{[,Colonies,character-method}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
 
 \item \code{[[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
 
@@ -94,7 +94,7 @@ founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 25)
+drones <- createDrones(x = basePop[1], nInd = 25)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])

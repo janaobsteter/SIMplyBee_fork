@@ -33,7 +33,7 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 (matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
 isQueenMated(basePop[2])
 isQueenMated(matedQueen1)
