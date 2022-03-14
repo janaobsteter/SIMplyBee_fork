@@ -15,7 +15,7 @@
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -46,7 +46,7 @@ nColonies <- function(colonies) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' founderDrones <- createFounderDrones(pop = basePop[1:2], nDronesPerQueen = 10)
+#' founderDrones <- createDrones(x = basePop[1:2], nInd = 10)
 #' colony1 <- createColony(queen = basePop[3], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[4], fathers = founderDrones[11:20])
 #' apiary <- c(colony1, colony2)
@@ -96,7 +96,7 @@ nNULLColonies <- function(colonies) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 100)
@@ -162,7 +162,7 @@ nCaste <- function(x, caste = "all") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
 #' nQueens(colony1)
@@ -197,7 +197,7 @@ nQueens <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
 #' nFathers(colony1)
@@ -238,7 +238,7 @@ nFathers <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addVirginQueens(colony1, nInd = 3)
@@ -273,7 +273,7 @@ nVirginQueens <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 100)
@@ -308,7 +308,7 @@ nWorkers <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addDrones(colony1, nInd = 100)
@@ -349,7 +349,7 @@ nDrones <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -414,7 +414,7 @@ pHomBrood <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- buildUpColony(colony1)
@@ -462,7 +462,7 @@ isQueenPresent <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -521,7 +521,7 @@ areVirginQueensPresent <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony3 <- createColony(virginQueen = basePop[4])
@@ -578,7 +578,7 @@ isQueenMated <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -647,7 +647,7 @@ getQueensYOB <- getQueensYearOfBirth
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -705,7 +705,7 @@ getQueensAge <- function(x, currentYear) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -734,6 +734,97 @@ getId <- function(x) {
   return(id)
 }
 
+#' @rdname getCasteId
+#'
+#' @title Get IDs of individuals of a caste, or ID of all members of colony
+#'
+#' @description Level 0 function that returns the ID individuals of a caste. To
+#'   get the individuals, use \code{\link{getCaste}}.
+#'
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}} class objects
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
+#'   "drones", or "all"
+#'
+#' @seealso \code{\link{getCaste}}
+#'
+#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#'  or list for \code{caste == "all"} with ID nodes named by caste;
+#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'   or named list for \code{caste == "all"} indluding caste members IDs;
+#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#'
+#' apiary1 = c(colony1, colony2)
+#'
+#' getCasteId(x = drones)
+#' getCasteId(x = colony1)
+#' getCasteId(x = colony1, caste = "workers")
+#' getCasteId(x = apiary1)
+#' getCasteId(x = apiary1, caste = "virginQueens")
+#'
+#' # Create a data.frame from the lists of ids
+#' tmp <- getCasteId(x = apiary1)
+#' df <- data.frame(unlist(tmp))
+#' head(df)
+#' colnames(df)[1] <- "id"
+#' head(df)
+#' tmp <- strsplit(row.names(df), split = ".", fixed = TRUE)
+#' colony <- sapply(tmp, FUN = function(z) z[1])
+#' caste <- sapply(tmp, FUN = function(z) z[2])
+#' df$colony <- colony
+#' df$caste <- gsub(x = caste, pattern = "[[:digit:]]", replacement = "")
+#' head(df)
+#'
+#' @export
+getCasteId <- function(x, caste = "all") {
+  if (isPop(x)) {
+    ret <- x@id
+  } else if (isColony(x)) {
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      for (caste in names(ret)) {
+        tmp <- getCaste(x = x, caste = caste)
+        if (is.null(tmp)) {
+          ret[[caste]] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp@id
+        }}
+    } else {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret <- NULL
+      } else {
+        ret <- tmp@id
+      }
+    }
+  } else if (isColonies(x)) {
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname getLocation
 #' @title Get the colony location
 #'
@@ -752,7 +843,7 @@ getId <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
@@ -811,7 +902,7 @@ getLocation <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSplit(colony)
@@ -845,6 +936,55 @@ hasSplit <- function(x) {
   return(ret)
 }
 
+#' @rdname getEvents
+#'
+#' @title Report which colony events have occurred
+#'
+#' @description Level 0 function that returns a matrix of logicals reporting the
+#'   status of the colony events. The events are: split, swarm, supersedure,
+#'   collapse, and production. These events impact colony status, strength, and
+#'   could also impact downstream phenotypes.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return matrix of logicals, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' getEvents(colony1)
+#'
+#' colony1 <- supersedeColony(colony1)
+#' getEvents(colony1)
+#'
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' apiary <- c(colony1, colony2)
+#' getEvents(apiary)
+#'
+#' @export
+#'
+getEvents <- function(x) {
+  if (!isColony(x) & !isColonies(x)) {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  ret <- cbind(hasSplit(x), hasSwarmed(x), hasSuperseded(x), hasCollapsed(x), isProductive(x))
+  colnames(ret) <- c("split", "swarmed", "superseded", "collapsed", "productive")
+  if (isColonies(x)) {
+    rownames(ret) <- getId(x)
+  }
+  return(ret)
+}
+
 #' @rdname hasSwarmed
 #' @title Test if colony has swarmed
 #'
@@ -860,7 +1000,7 @@ hasSplit <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSwarmed(colony)
@@ -908,7 +1048,7 @@ hasSwarmed <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSuperseded(colony)
@@ -954,7 +1094,7 @@ hasSuperseded <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasCollapsed(colony)
@@ -1001,7 +1141,7 @@ hasCollapsed <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' isProductive(colony)
@@ -1149,7 +1289,7 @@ isCsdActive <- function(simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -1254,7 +1394,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -1326,7 +1466,7 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
@@ -1370,7 +1510,7 @@ isGenoHeterozygous <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
@@ -1439,7 +1579,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -1715,7 +1855,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -1904,7 +2044,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2002,7 +2142,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2195,7 +2335,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2291,7 +2431,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2481,7 +2621,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2579,7 +2719,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2771,7 +2911,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -2866,7 +3006,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3055,7 +3195,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3153,7 +3293,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3347,7 +3487,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3443,7 +3583,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3633,7 +3773,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' SP$addSnpChip(nSnpPerChr = 10)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3729,7 +3869,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony1 <- addDrones(colony1, nInd = 2)
@@ -3842,7 +3982,7 @@ calcBeeGRMIbs <- function(x, sex) {
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -3998,7 +4138,7 @@ getDronesGv <- function(x, nInd = NULL) {
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -4089,7 +4229,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -4270,7 +4410,7 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -4365,7 +4505,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "virginQueens", "worker
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -4546,7 +4686,7 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- newPop(founderGenomes)
 #'
-#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)

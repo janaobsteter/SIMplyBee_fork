@@ -34,7 +34,7 @@ SP$setTrackRec(isTrackRec = TRUE)
 basePop <- newPop(founderGenomes)
 
 queen <- basePop[1]
-drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 5)
+drones <- createDrones(x = basePop[2], nInd = 5)
 workers <- beeCross(queen, drones, nProgeny = 4)
 workers@id
 workers@mother

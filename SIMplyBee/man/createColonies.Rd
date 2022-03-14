@@ -16,7 +16,7 @@ createColonies(
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, individuals that will be used as queens
-of the created colonies (the queens are selected at random from if there
+of the created colonies (the queens are selected at random if there
 are more than \code{n} in \code{Pop})}
 
 \item{nCol}{integer, number of colonies to create (if only \code{nCol} is
@@ -33,7 +33,7 @@ TODO nAvgFathers default should go to simParamBee and then we set it to NULL
      from the user}
 
 \item{nDronesPerQueen}{integer, number of drones to generate per individual
-from the pop for mating with the queens
+in the \code{pop} for mating with the queens
 TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
      here and if its NULL we grab value from simParamBee, otherwise use it
      from the user}
