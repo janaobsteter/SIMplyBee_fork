@@ -47,7 +47,6 @@ colony1 <- addVirginQueens(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdGeno(getQueen(colony1))
-getCsdGeno(getVirginQueens(colony1))
 getCsdGeno(getFathers(colony1))
 getCsdGeno(getWorkers(colony1))
 getCsdGeno(getDrones(colony1))

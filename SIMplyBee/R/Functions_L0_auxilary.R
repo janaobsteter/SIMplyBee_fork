@@ -1298,12 +1298,12 @@ isCsdActive <- function(simParamBee = NULL) {
 #' apiary <- c(colony1, colony2)
 #'
 #' getCsdAlleles(getQueen(colony1))
-#' getCsdAlleles(getVirginQueens(colony1))
 #' getCsdAlleles(getFathers(colony1))
 #' getCsdAlleles(getWorkers(colony1))
 #' getCsdAlleles(getDrones(colony1))
 #'
 #' getCsdAlleles(colony1)
+#' getCsdAlleles(colony1, unique = TRUE)
 #' getCsdAlleles(colony1, collapse = TRUE)
 #' getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
 #'
@@ -1311,13 +1311,15 @@ isCsdActive <- function(simParamBee = NULL) {
 #' getCsdAlleles(colony2)
 #'
 #' getCsdAlleles(apiary)
+#' getCsdAlleles(apiary, unique = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 #'
 #' getCsdAlleles(apiary, nInd = 2)
 #'
 #' @export
-getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, unique = FALSE, simParamBee = NULL) {
+getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
+                          unique = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1330,7 +1332,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
     ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
     if (unique) {
-      ret <- ret[!duplicated(x = ret), ]
+      ret <- ret[!duplicated(x = ret), , drop = FALSE]
     }
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
@@ -1340,22 +1342,24 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, unique = unique, simParamBee = simParamBee)
+        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, unique = unique,
+                                      simParamBee = simParamBee)
       }
     }
     if (collapse) {
       ret <- do.call("rbind", ret)
       if (unique) {
-        ret <- ret[!duplicated(ret),]
+        ret <- ret[!duplicated(ret), , drop = FALSE]
       }
     }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdAlleles, nInd = nInd,
-                  allele = allele, collapse = collapse, unique = unique, simParamBee = simParamBee)
+                  allele = allele, collapse = collapse, unique = unique,
+                  simParamBee = simParamBee)
     if (collapse) {
       ret <- do.call("rbind", ret)
       if (unique) {
-        ret <- ret[!duplicated(ret),]
+        ret <- ret[!duplicated(ret), , drop = FALSE]
       }
     } else {
       names(ret) <- getId(x)
@@ -1404,7 +1408,6 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE, uniq
 #' apiary <- c(colony1, colony2)
 #'
 #' getCsdGeno(getQueen(colony1))
-#' getCsdGeno(getVirginQueens(colony1))
 #' getCsdGeno(getFathers(colony1))
 #' getCsdGeno(getWorkers(colony1))
 #' getCsdGeno(getDrones(colony1))
@@ -1626,7 +1629,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
       #   so we will get their alleles and count them
       tmp <- rbind(getCsdAlleles(x = getQueen(x),   simParamBee = simParamBee),
                    getCsdAlleles(x = getFathers(x), simParamBee = simParamBee))
-      tmp <- tmp[!duplicated(tmp), ]
+      tmp <- tmp[!duplicated(tmp), , drop = FALSE]
       ret$queenAndFathers <- nrow(tmp)
     }
   } else if (isColonies(x)) {
