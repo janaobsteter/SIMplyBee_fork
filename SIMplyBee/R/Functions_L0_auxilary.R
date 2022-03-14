@@ -1383,7 +1383,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details The returned genotypes are spanning multiple bi-allelic SNP of
-#'   non-recombining haplotypes. In most cases you will want to use
+#'   a non-recombining csd locus / haplotype. In most cases you will want to use
 #'   \code{\link{getCsdAlleles}}.
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list

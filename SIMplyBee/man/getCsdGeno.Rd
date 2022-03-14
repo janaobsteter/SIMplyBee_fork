@@ -29,7 +29,7 @@ Level 0 function that returns genotypes from the csd locus. See
 }
 \details{
 The returned genotypes are spanning multiple bi-allelic SNP of
-  non-recombining haplotypes. In most cases you will want to use
+  a non-recombining csd locus / haplotype. In most cases you will want to use
   \code{\link{getCsdAlleles}}.
 }
 \examples{
