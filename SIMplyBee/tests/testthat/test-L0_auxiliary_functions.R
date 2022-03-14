@@ -1,7 +1,7 @@
 test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes, simParam = SP)
+  basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
@@ -110,7 +110,7 @@ test_that("isQueenMated", {
 
 test_that("getCsd", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
+  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 4)
   basePop <- newPop(founderGenomes)
 
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
@@ -143,8 +143,9 @@ test_that("isGenoHeterozygous", {
                           0, 0, 0,
                           2, 2, 2),
                  nrow = 3, byrow = TRUE)
-  expect_true(isGenoHeterozygous(geno[1, , drop = FALSE]))
-  expect_false(isGenoHeterozygous(geno[2, , drop = FALSE]))
-  expect_false(isGenoHeterozygous(geno[3, , drop = FALSE]))
-  expect_equal(isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
+  expect_true(SIMplyBee:::isGenoHeterozygous(geno[1, , drop = FALSE]))
+  expect_false(SIMplyBee:::isGenoHeterozygous(geno[2, , drop = FALSE]))
+  expect_false(SIMplyBee:::isGenoHeterozygous(geno[3, , drop = FALSE]))
+  expect_equal(SIMplyBee:::isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
 })
+
