@@ -734,6 +734,97 @@ getId <- function(x) {
   return(id)
 }
 
+#' @rdname getCasteId
+#'
+#' @title Get IDs of individuals of a caste, or ID of all members of colony
+#'
+#' @description Level 0 function that returns the ID individuals of a caste. To
+#'   get the individuals, use \code{\link{getCaste}}.
+#'
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}} class objects
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
+#'   "drones", or "all"
+#'
+#' @seealso \code{\link{getCaste}}
+#'
+#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#'  or list for \code{caste == "all"} with ID nodes named by caste;
+#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'   or named list for \code{caste == "all"} indluding caste members IDs;
+#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#'
+#' apiary1 = c(colony1, colony2)
+#'
+#' getCasteId(x = drones)
+#' getCasteId(x = colony1)
+#' getCasteId(x = colony1, caste = "workers")
+#' getCasteId(x = apiary1)
+#' getCasteId(x = apiary1, caste = "virginQueens")
+#'
+#' # Create a data.frame from the lists of ids
+#' tmp <- getCasteId(x = apiary1)
+#' df <- data.frame(unlist(tmp))
+#' head(df)
+#' colnames(df)[1] <- "id"
+#' head(df)
+#' tmp <- strsplit(row.names(df), split = ".", fixed = TRUE)
+#' colony <- sapply(tmp, FUN = function(z) z[1])
+#' caste <- sapply(tmp, FUN = function(z) z[2])
+#' df$colony <- colony
+#' df$caste <- gsub(x = caste, pattern = "[[:digit:]]", replacement = "")
+#' head(df)
+#'
+#' @export
+getCasteId <- function(x, caste = "all") {
+  if (isPop(x)) {
+    ret <- x@id
+  } else if (isColony(x)) {
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      for (caste in names(ret)) {
+        tmp <- getCaste(x = x, caste = caste)
+        if (is.null(tmp)) {
+          ret[[caste]] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp@id
+        }}
+    } else {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret <- NULL
+      } else {
+        ret <- tmp@id
+      }
+    }
+  } else if (isColonies(x)) {
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname getLocation
 #' @title Get the colony location
 #'
@@ -841,6 +932,55 @@ hasSplit <- function(x) {
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname getEvents
+#'
+#' @title Report which colony events have occurred
+#'
+#' @description Level 0 function that returns a matrix of logicals reporting the
+#'   status of the colony events. The events are: split, swarm, supersedure,
+#'   collapse, and production. These events impact colony status, strength, and
+#'   could also impact downstream phenotypes.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return matrix of logicals, named by colony id when \code{x} is
+#'   \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' getEvents(colony1)
+#'
+#' colony1 <- supersedeColony(colony1)
+#' getEvents(colony1)
+#'
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' apiary <- c(colony1, colony2)
+#' getEvents(apiary)
+#'
+#' @export
+#'
+getEvents <- function(x) {
+  if (!isColony(x) & !isColonies(x)) {
+    stop("Argument x must be a Colony or Colonies class object!")
+  }
+  ret <- cbind(hasSplit(x), hasSwarmed(x), hasSuperseded(x), hasCollapsed(x), isProductive(x))
+  colnames(ret) <- c("split", "swarmed", "superseded", "collapsed", "productive")
+  if (isColonies(x)) {
+    rownames(ret) <- getId(x)
   }
   return(ret)
 }
