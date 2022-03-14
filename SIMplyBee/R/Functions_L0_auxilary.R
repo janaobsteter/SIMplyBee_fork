@@ -726,6 +726,9 @@ areVirginQueensPresent <- function(x) {
 isQueenMated <- function(x) {
   if (isPop(x)) {
     if (nInd(x) > 0) {
+      # if (!all(isQueen(x) | isVirginQueen(x))) {
+      #   stop("Individuals in x must be virgin queens or queens!")
+      # }
       ret <- sapply(X = x@misc, FUN = function(z) !is.null(z$fathers))
     } else {
       ret <- FALSE

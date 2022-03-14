@@ -311,9 +311,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)
     names(ret) <- c("virginQueens", "pHomBrood")
     ret$virginQueens@sex[] <- "F"
-    for (ind in seq_len(nInd(ret$virginQueens))) {
-      ret$virginQueens@misc[[ind]]$caste <- "V"
-    }
+    ret$virginQueens <- setMisc(x = ret$virginQueens, slot = "caste", value = "V")
     if (!is.null(year)) {
       ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
                                                year = year)
@@ -330,6 +328,39 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
+}
+
+#' @rdname asVirginQueen
+#'
+#' @title Converts individuals into virgin queens
+#'
+#' @description Level 1 function that takes individuals from a population and
+#'   makes them virgin queens. These individuals are diploid.
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return \code{\link{Pop-class}} with sex set to \code{"F"} and
+#'   \code{@misc[[*]]$caste} set to \code{"V"}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' isVirginQueen(basePop)
+#'
+#' basePop <- asVirginQueen(basePop)
+#' isVirginQueen(basePop)
+#'
+#' @export
+asVirginQueen <- function(x) {
+  if (isPop(x)) {
+    x@sex[] <- "F"
+    x <- setMisc(x = x, slot = "caste", value = "V")
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
 }
 
 #' @rdname createWorkers
@@ -443,9 +474,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       ret$pHomBrood <- NA
     }
     ret$workers@sex[] <- "F"
-    for (ind in seq_len(nInd(ret$workers))) {
-      ret$workers@misc[[ind]]$caste <- "W"
-    }
+    ret$workers <- setMisc(x = ret$workers, slot = "caste", value = "W")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -458,6 +487,39 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
+}
+
+#' @rdname asWorker
+#'
+#' @title Converts individuals into workers
+#'
+#' @description Level 1 function that takes individuals from a population and
+#'   makes them workers. These individuals are diploid.
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return \code{\link{Pop-class}} with sex set to \code{"F"} and
+#'   \code{@misc[[*]]$caste} set to \code{"W"}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' isWorker(basePop)
+#'
+#' basePop <- asWorker(basePop)
+#' isWorker(basePop)
+#'
+#' @export
+asWorker <- function(x) {
+  if (isPop(x)) {
+    x@sex[] <- "F"
+    x <- setMisc(x = x, slot = "caste", value = "W")
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
 }
 
 #' @rdname beeCross
@@ -723,9 +785,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
-    for (ind in seq_len(nInd(ret))) {
-      ret@misc[[ind]]$caste <- "D"
-    }
+    ret <- setMisc(x = ret, slot = "caste", value = "D")
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -744,9 +804,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
-    for (ind in seq_len(nInd(ret))) {
-      ret@misc[[ind]]$caste <- "D"
-    }
+    ret <- setMisc(x = ret, slot = "caste", value = "D")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -1103,11 +1161,14 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  if (any(isQueenMated(pop))) {
-    stop("One of the queens in pop is already mated!")
-  }
+  # if (any(!isVirginQueen(pop))) {
+  #   stop("Individuals in pop must be virgin queens!")
+  # }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
+  }
+  if (any(!isDrone(fathers))) {
+    stop("Individuals in fathers must be drones!")
   }
   nVirginQueen <- nInd(pop)
   if (nVirginQueen == 1) {
@@ -1187,19 +1248,18 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {
     nInd <- nInd(x)
-    for (ind in seq_len(nInd)) {
-      x@misc[[ind]]$yearOfBirth <- year
-    }
+    x <- setMisc(x = x, slot = "yearOfBirth", value = year)
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      x@queen@misc[[1]]$yearOfBirth <- year
+      x@queen <- setMisc(x = x@queen, slot = "yearOfBirth", value = year)
     } else {
       stop("Missing queen!") # TODO: should this be a warning?
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]]@queen@misc[[1]]$yearOfBirth <- year
+      x[[colony]]@queen <- setMisc(x = x[[colony]]@queen, slot = "yearOfBirth",
+                                   value = year)
     }
   } else {
     stop("Argument x must be a Pop, Colony or Colonies class object!")
@@ -1210,3 +1270,48 @@ setQueensYearOfBirth <- function(x, year) {
 #' @describeIn setQueensYearOfBirth Set the queen's year of birth
 #' @export
 setQueensYOB <- setQueensYearOfBirth
+
+#' @rdname setMisc
+#' @title Set miscelaneous information in a population
+#'
+#' @description Level 1 function that sets the queen's year of birth.
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param slot character, name of the node to set within the \code{x@misc} slot
+#' @param value, value to be saved into \code{x@misc[[*]][[slot]]}; length of
+#'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
+#'   it is repeated using \code{rep}
+#'
+#' @return \code{\link{Pop-class}} with \code{x@misc[[*]][[slot]]} set
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info", value = c("A", "B", "C"))
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info", value = c("B", "C", "A"))
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info2", value = "A")
+#' basePop@misc
+#'
+#' @export
+# TODO: move to AlphaSimR
+setMisc <- function(x, slot, value) {
+  if (isPop(x)) {
+    n <- nInd(x)
+    if (length(value) == 1 && n > 1) {
+      value <- rep(x = value, times = n)
+    }
+    for (ind in seq_len(n)) {
+      x@misc[[ind]][[slot]] <- value[ind]
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
+}
