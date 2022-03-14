@@ -45,6 +45,8 @@ apiary <- c(colony1, colony2)
 (tmp <- createWorkers(colony1, nInd = 10))
 colony1@queen@id
 tmp$workers@id
+tmp$workers@sex
+tmp$workers@misc
 tmp$workers@mother
 tmp$workers@father
 SP$pedigree

@@ -43,6 +43,8 @@ apiary <- c(colony1, colony2)
 (tmp <- createVirginQueens(colony1, nInd = 10))
 colony1@queen@id
 tmp$virginQueens@id
+tmp$virginQueens@sex
+tmp$virginQueens@misc
 tmp$virginQueens@mother
 tmp$virginQueens@father
 SP$pedigree

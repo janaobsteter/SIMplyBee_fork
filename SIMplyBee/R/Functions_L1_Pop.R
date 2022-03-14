@@ -267,6 +267,8 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' (tmp <- createVirginQueens(colony1, nInd = 10))
 #' colony1@queen@id
 #' tmp$virginQueens@id
+#' tmp$virginQueens@sex
+#' tmp$virginQueens@misc
 #' tmp$virginQueens@mother
 #' tmp$virginQueens@father
 #' SP$pedigree
@@ -308,6 +310,10 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     }
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)
     names(ret) <- c("virginQueens", "pHomBrood")
+    ret$virginQueens@sex[] <- "F"
+    for (ind in seq_len(nInd(ret$virginQueens))) {
+      ret$virginQueens@misc[[ind]]$caste <- "V"
+    }
     if (!is.null(year)) {
       ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
                                                year = year)
@@ -362,6 +368,8 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' (tmp <- createWorkers(colony1, nInd = 10))
 #' colony1@queen@id
 #' tmp$workers@id
+#' tmp$workers@sex
+#' tmp$workers@misc
 #' tmp$workers@mother
 #' tmp$workers@father
 #' SP$pedigree
@@ -433,6 +441,10 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     } else {
       ret$workers <- workers
       ret$pHomBrood <- NA
+    }
+    ret$workers@sex[] <- "F"
+    for (ind in seq_len(nInd(ret$workers))) {
+      ret$workers@misc[[ind]]$caste <- "W"
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -650,6 +662,8 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' basePop[1]@id
 #' drones@id
+#' drones@sex
+#' drones@misc
 #' drones@mother
 #' drones@father
 #' SP$pedigree
@@ -662,6 +676,8 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' (tmp <- createDrones(colony1, nInd = 10))
 #' colony1@queen@id
 #' tmp@id
+#' tmp@sex
+#' tmp@misc
 #' tmp@mother
 #' tmp@father
 #' SP$pedigree
@@ -706,6 +722,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     #   instead of storing queen's parents
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    ret@sex[] <- "M"
+    for (ind in seq_len(nInd(ret))) {
+      ret@misc[[ind]]$caste <- "D"
+    }
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -723,6 +743,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     #   instead of storing queen's parents
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    ret@sex[] <- "M"
+    for (ind in seq_len(nInd(ret))) {
+      ret@misc[[ind]]$caste <- "D"
+    }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -1097,6 +1121,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     } else {
       pop@misc[[1]]$pHomBrood <- NA
     }
+    pop@misc[[1]]$caste <- "Q"
   } else {
     fathers <- pullDroneGroupsFromDCA(DCA = fathers,
                                       nGroup = nVirginQueen,
@@ -1110,6 +1135,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
       } else {
         pop@misc[[queen]]$pHomBrood <- NA
       }
+      pop@misc[[queen]]$caste <- "Q"
     }
   }
   return(pop)
