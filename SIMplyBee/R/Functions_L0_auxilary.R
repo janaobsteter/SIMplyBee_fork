@@ -2041,7 +2041,6 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' if (FALSE) {
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
@@ -2066,7 +2065,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #' getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(apiary, nInd = 1)
 #' getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#' }
+#'
 #' @export
 getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
                               nInd = NULL, chr = NULL, simParamBee = NULL) {
