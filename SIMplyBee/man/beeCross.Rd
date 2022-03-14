@@ -9,7 +9,8 @@ beeCross(queen, drones, nProgeny = 1, simParamBee = NULL)
 \arguments{
 \item{queen}{\code{\link{Pop-class}}, with a single diploid individual}
 
-\item{drones}{\code{\link{Pop-class}}, with one or more haploid individual(s)}
+\item{drones}{\code{\link{Pop-class}}, with one or more diploid (double
+haploid) individual(s)}
 
 \item{nProgeny}{integer, number of progeny to create per cross}
 
@@ -19,12 +20,11 @@ beeCross(queen, drones, nProgeny = 1, simParamBee = NULL)
 \code{\link{Pop-class}} with diploid individuals
 }
 \description{
-Level 1 function that crosses a queen and drones. Drones are
-  haploid, while the queen is diploid, so we first generate gametes (with
-  recombination) from her and merge them with drone genomes (=gametes), where
-  we randomly re-sample drones to get the desired number of progeny. This is
-  an utility function, and you most likely want to use the
-  \code{\link{crossColony}} function.
+Level 1 function that crosses a queen and drones. Queen is
+  diploid, while drones are double haploids so we use AlphaSimR diploid
+  functionality to make this cross, but since drones are double haploids we
+  get the desired outcome. This is an utility function, and you most likely
+  want to use the \code{\link{crossColony}} function.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)

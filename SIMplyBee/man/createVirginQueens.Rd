@@ -31,13 +31,23 @@ Level 1 function that creates the specified number of virgin
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
 basePop <- newPop(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
-createVirginQueens(colony1, nInd = 10)
+
+(tmp <- createVirginQueens(colony1, nInd = 10))
+colony1@queen@id
+tmp$virginQueens@id
+tmp$virginQueens@mother
+tmp$virginQueens@father
+SP$pedigree
+SP$recHist
+
 createVirginQueens(apiary, nInd = 10)
 
 # Using a default in SP$nVirginQueens
