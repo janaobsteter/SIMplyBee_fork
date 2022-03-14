@@ -398,6 +398,190 @@ pHomBrood <- function(x) {
   return(ret)
 }
 
+#' @rdname isQueen
+#' @title Is individual a queen
+#'
+#' @description Level 0 function that tests if individuals are queens
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isQueen(getQueen(colony))
+#' isQueen(getWorkers(colony, nInd = 2))
+#' isQueen(getDrones(colony, nInd = 2))
+#' isQueen(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(getQueen(colony),
+#'           getWorkers(colony, nInd = 2),
+#'           getDrones(colony, nInd = 2),
+#'           getVirginQueens(colony, nInd = 2))
+#' isQueen(bees)
+#'
+#' @export
+isQueen <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = FALSE,
+                           no = z$caste == "Q")
+                  })
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
+#' @rdname isDrone
+#' @title Is individual a drone
+#'
+#' @description Level 0 function that tests if individuals are drones
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isDrone(getQueen(colony))
+#' isDrone(getWorkers(colony, nInd = 2))
+#' isDrone(getDrones(colony, nInd = 2))
+#' isDrone(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(getQueen(colony),
+#'           getWorkers(colony, nInd = 2),
+#'           getDrones(colony, nInd = 2),
+#'           getVirginQueens(colony, nInd = 2))
+#' isDrone(bees)
+#'
+#' @export
+isDrone <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = FALSE,
+                           no = z$caste == "D")
+                  })
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
+#' @rdname isWorker
+#' @title Is individual a worker
+#'
+#' @description Level 0 function that tests if individuals are workers
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isWorker(getQueen(colony))
+#' isWorker(getWorkers(colony, nInd = 2))
+#' isWorker(getDrones(colony, nInd = 2))
+#' isWorker(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(getQueen(colony),
+#'           getWorkers(colony, nInd = 2),
+#'           getDrones(colony, nInd = 2),
+#'           getVirginQueens(colony, nInd = 2))
+#' isWorker(bees)
+#'
+#' @export
+isWorker <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = FALSE,
+                           no = z$caste == "W")
+                  })
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
+#' @rdname isVirginQueen
+#' @title Is individual a virgin queen
+#'
+#' @description Level 0 function that tests if individuals are virgin queens
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isVirginQueen(getQueen(colony))
+#' isVirginQueen(getWorkers(colony, nInd = 2))
+#' isVirginQueen(getDrones(colony, nInd = 2))
+#' isVirginQueen(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(getQueen(colony),
+#'           getWorkers(colony, nInd = 2),
+#'           getDrones(colony, nInd = 2),
+#'           getVirginQueens(colony, nInd = 2))
+#' isVirginQueen(bees)
+#'
+#' @export
+isVirginQueen <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = FALSE,
+                           no = z$caste == "V")
+                  })
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
 #' @rdname isQueenPresent
 #' @title Is the queen present
 #'
