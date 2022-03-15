@@ -588,6 +588,57 @@ isVirginQueen <- function(x) {
   return(ret)
 }
 
+#' @rdname caste
+#' @title Report caste of an individual
+#'
+#' @description Level 0 function that reports caste of an individual
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return character with entries \code{"queen"}, \code{"workers"},
+#'   \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
+#'   this is not supposed to happen
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' caste(getQueen(colony))
+#' caste(getWorkers(colony, nInd = 2))
+#' caste(getDrones(colony, nInd = 2))
+#' caste(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(getQueen(colony),
+#'           getWorkers(colony, nInd = 2),
+#'           getDrones(colony, nInd = 2),
+#'           getVirginQueens(colony, nInd = 2))
+#' caste(bees)
+#'
+#' @export
+caste <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = NA,
+                           no = z$caste)
+                  })
+    ret <- factor(x = ret, levels = c("Q", "W", "D", "V"),
+                  labels = list("queen", "workers", "drones", "virginQueens"))
+    ret <- as.character(ret)
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
 #' @rdname isQueenPresent
 #' @title Is the queen present
 #'
