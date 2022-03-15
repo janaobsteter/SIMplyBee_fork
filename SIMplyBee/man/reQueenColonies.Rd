@@ -10,7 +10,8 @@ reQueenColonies(colonies, queens)
 \item{colonies}{\code{\link{Colonies-class}}}
 
 \item{queens}{\code{\link{Pop-class}}, queens to be added to colonies, one
-for each colony}
+for each colony; \code{\link{isVirginQueen}} and \code{\link{isQueen}} test
+will be run on to ensure these are proper queens}
 }
 \value{
 \code{\link{Colonies-class}} with re-queened colonies
@@ -22,7 +23,7 @@ Level 3 function that does the same as
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 20)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

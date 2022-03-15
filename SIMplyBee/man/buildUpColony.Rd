@@ -53,7 +53,7 @@ This function turns production of the colony to \code{TRUE}.
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)

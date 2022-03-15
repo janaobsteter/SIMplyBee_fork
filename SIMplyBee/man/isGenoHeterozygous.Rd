@@ -19,7 +19,7 @@ Level 0 function that returns heterozygote status for a
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony1 <- createColony(queen = basePop[2], fathers = drones)

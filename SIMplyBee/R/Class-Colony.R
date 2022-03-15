@@ -50,7 +50,7 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

@@ -9,7 +9,8 @@ crossColony(colony, fathers, simParamBee = NULL)
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{fathers}{\code{\link{Pop-class}}, drones}
+\item{fathers}{\code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
+will be run on these individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -27,7 +28,7 @@ Level 2 function that crosses (mates) a virgin queen of colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 
