@@ -59,11 +59,10 @@ Level 0 function that returns IBD (identity by descent)
 }}
 
 \examples{
-if (FALSE) {
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParam$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -110,7 +109,7 @@ getWorkersIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "drones")
 getDronesIbdHaplo(apiary)
-}
+
 }
 \seealso{
 \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}

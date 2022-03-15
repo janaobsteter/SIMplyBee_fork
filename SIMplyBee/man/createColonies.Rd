@@ -15,9 +15,10 @@ createColonies(
 )
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}, individuals that will be used as queens
-of the created colonies (the queens are selected at random if there
-are more than \code{n} in \code{Pop})}
+\item{pop}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
+(selected at random if there are more than \code{n} in \code{Pop});
+\code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
+individuals}
 
 \item{nCol}{integer, number of colonies to create (if only \code{nCol} is
 given then \code{\link{Colonies-class}} is created with \code{nCol} empty
@@ -56,7 +57,7 @@ When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 # Create 2 empty (NULL) colonies
 apiary <- createColonies(nCol = 2)

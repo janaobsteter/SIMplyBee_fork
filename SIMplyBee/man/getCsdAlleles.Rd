@@ -53,7 +53,7 @@ If both collapse and unique are \code{TRUE}, the function
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -64,12 +64,12 @@ colony1 <- addDrones(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdAlleles(getQueen(colony1))
-getCsdAlleles(getVirginQueens(colony1))
 getCsdAlleles(getFathers(colony1))
 getCsdAlleles(getWorkers(colony1))
 getCsdAlleles(getDrones(colony1))
 
 getCsdAlleles(colony1)
+getCsdAlleles(colony1, unique = TRUE)
 getCsdAlleles(colony1, collapse = TRUE)
 getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
 
@@ -77,6 +77,7 @@ getCsdAlleles(getDrones(colony2))
 getCsdAlleles(colony2)
 
 getCsdAlleles(apiary)
+getCsdAlleles(apiary, unique = TRUE)
 getCsdAlleles(apiary, collapse = TRUE)
 getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 

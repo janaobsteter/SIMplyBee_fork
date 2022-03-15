@@ -8,7 +8,8 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
+must be virgin queens or queens (see \code{\link{asVirginQueen}})}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
 \code{simParamBee$nDrones} is used; when \code{x} is
@@ -27,9 +28,9 @@ when \code{x} is \code{\link{Pop-class}} or
 }
 \description{
 Level 1 function that creates drones from a population, colony,
-  or colonies. Drones are haploid and created from the diploid genome of
-  the queen with recombination. Queen ID is stored as the father and mother
-  of drones.
+  or colonies. Drones are double haploid and created from the diploid genome
+  of a queen with recombination. Queen ID is stored as the father and
+  mother of drones.
 }
 \details{
 When \code{x} is \code{\link{Pop-class}} this function creates
@@ -40,13 +41,34 @@ When \code{x} is \code{\link{Pop-class}} this function creates
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
+basePop[1]@id
+drones@id
+drones@sex
+drones@misc
+drones@mother
+drones@father
+SP$pedigree
+SP$recHist
+
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
-createDrones(colony1, nInd = 10)
+
+(tmp <- createDrones(colony1, nInd = 10))
+colony1@queen@id
+tmp@id
+tmp@sex
+tmp@misc
+tmp@mother
+tmp@father
+SP$pedigree
+SP$recHist
+
 createDrones(apiary, nInd = 10)
 
 # Using a default in SP$nDrones

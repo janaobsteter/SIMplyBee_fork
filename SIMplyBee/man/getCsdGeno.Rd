@@ -29,13 +29,13 @@ Level 0 function that returns genotypes from the csd locus. See
 }
 \details{
 The returned genotypes are spanning multiple bi-allelic SNP of
-  non-recombining haplotypes. In most cases you will want to use
+  a non-recombining csd locus / haplotype. In most cases you will want to use
   \code{\link{getCsdAlleles}}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -47,7 +47,6 @@ colony1 <- addVirginQueens(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdGeno(getQueen(colony1))
-getCsdGeno(getVirginQueens(colony1))
 getCsdGeno(getFathers(colony1))
 getCsdGeno(getWorkers(colony1))
 getCsdGeno(getDrones(colony1))

@@ -11,14 +11,15 @@ reQueenColony(colony, queen, removeVirginQueens = TRUE)
 
 \item{queen}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; if she is not mated, she will be added as a virgin
-queen that will have to be mated later.}
+queen that will have to be mated later; test will be run if the individual
+\code{\link{isVirginQueen}} or \code{\link{isQueen}}}
 
 \item{removeVirginQueens}{logical, remove existing virgin queens, default is
 \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
-to ensure the provided queen prevails. See also details.}
+to ensure the provided queen prevails (see details)}
 }
 \value{
-\code{\link{Colony-class}} with a new queen (see also details)
+\code{\link{Colony-class}} with a new queen (see details)
 }
 \description{
 Level 2 function that re-queens a colony adds a mated or a
@@ -34,7 +35,7 @@ If the provided queen is mated, then she is saved in the queen slot
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])

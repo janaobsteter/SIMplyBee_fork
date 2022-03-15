@@ -28,7 +28,7 @@
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -255,13 +255,25 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
-#' createVirginQueens(colony1, nInd = 10)
+#'
+#' (tmp <- createVirginQueens(colony1, nInd = 10))
+#' colony1@queen@id
+#' tmp$virginQueens@id
+#' tmp$virginQueens@sex
+#' tmp$virginQueens@misc
+#' tmp$virginQueens@mother
+#' tmp$virginQueens@father
+#' SP$pedigree
+#' SP$recHist
+#'
 #' createVirginQueens(apiary, nInd = 10)
 #'
 #' # Using a default in SP$nVirginQueens
@@ -298,6 +310,8 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     }
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)
     names(ret) <- c("virginQueens", "pHomBrood")
+    ret$virginQueens@sex[] <- "F"
+    ret$virginQueens <- setMisc(x = ret$virginQueens, slot = "caste", value = "V")
     if (!is.null(year)) {
       ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
                                                year = year)
@@ -314,6 +328,39 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
+}
+
+#' @rdname asVirginQueen
+#'
+#' @title Converts individuals into virgin queens
+#'
+#' @description Level 1 function that takes individuals from a population and
+#'   makes them virgin queens. These individuals are diploid.
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return \code{\link{Pop-class}} with sex set to \code{"F"} and
+#'   \code{@misc[[*]]$caste} set to \code{"V"}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' isVirginQueen(basePop)
+#'
+#' basePop <- asVirginQueen(basePop)
+#' isVirginQueen(basePop)
+#'
+#' @export
+asVirginQueen <- function(x) {
+  if (isPop(x)) {
+    x@sex[] <- "F"
+    x <- setMisc(x = x, slot = "caste", value = "V")
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
 }
 
 #' @rdname createWorkers
@@ -340,13 +387,25 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
-#' createWorkers(colony1, nInd = 10)
+#'
+#' (tmp <- createWorkers(colony1, nInd = 10))
+#' colony1@queen@id
+#' tmp$workers@id
+#' tmp$workers@sex
+#' tmp$workers@misc
+#' tmp$workers@mother
+#' tmp$workers@father
+#' SP$pedigree
+#' SP$recHist
+#'
 #' createWorkers(apiary, nInd = 10)
 #'
 #' # Using a default in SP$nWorkers
@@ -414,6 +473,8 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       ret$workers <- workers
       ret$pHomBrood <- NA
     }
+    ret$workers@sex[] <- "F"
+    ret$workers <- setMisc(x = ret$workers, slot = "caste", value = "W")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -428,7 +489,88 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   return(ret)
 }
 
+#' @rdname asWorker
+#'
+#' @title Converts individuals into workers
+#'
+#' @description Level 1 function that takes individuals from a population and
+#'   makes them workers. These individuals are diploid.
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return \code{\link{Pop-class}} with sex set to \code{"F"} and
+#'   \code{@misc[[*]]$caste} set to \code{"W"}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' isWorker(basePop)
+#'
+#' basePop <- asWorker(basePop)
+#' isWorker(basePop)
+#'
+#' @export
+asWorker <- function(x) {
+  if (isPop(x)) {
+    x@sex[] <- "F"
+    x <- setMisc(x = x, slot = "caste", value = "W")
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
+}
+
 #' @rdname beeCross
+#' @title Cross a queen and drones
+#'
+#' @description Level 1 function that crosses a queen and drones. Queen is
+#'   diploid, while drones are double haploids so we use AlphaSimR diploid
+#'   functionality to make this cross, but since drones are double haploids we
+#'   get the desired outcome. This is an utility function, and you most likely
+#'   want to use the \code{\link{crossColony}} or \code{\link{crossVirginQueen}}
+#'   functions.
+#'
+#' @param queen \code{\link{Pop-class}}, with a single diploid individual
+#' @param drones \code{\link{Pop-class}}, with one or more diploid (double
+#'   haploid) individual(s)
+#' @param nProgeny integer, number of progeny to create per cross
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return \code{\link{Pop-class}} with diploid individuals
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' queen <- basePop[1]
+#' drones <- createDrones(x = basePop[2], nInd = 5)
+#' workers <- beeCross(queen, drones, nProgeny = 4)
+#' workers@id
+#' workers@mother
+#' workers@father
+#' SP$pedigree
+#' SP$recHist
+#'
+#' @export
+beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (nInd(queen) > 1) {
+    stop("At the moment we only cater for crosses with a single queen!")
+  }
+  ret <- randCross2(females = queen, males = drones,
+                    nCrosses = nProgeny, nProgeny = 1, balance = FALSE,
+                    simParam = simParamBee)
+  return(ret)
+}
+
+#' @rdname beeCrossHaploDiploid
 #' @title Cross a queen and drones
 #'
 #' @description Level 1 function that crosses a queen and drones. Drones are
@@ -441,61 +583,121 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
 #' @param drones \code{\link{Pop-class}}, with one or more haploid individual(s)
 #' @param nProgeny integer, number of progeny to create per cross
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters;
-#'   passed to \code{\link{reduceGenome}} in generating queen gametes and
-#'   \code{\link{mergeGenome}} in merging queen and drone gametes
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details This would be the right approach to handle haplo-diploid inheritance
+#'   in bees, but it causes a raft of downstream issues, since AlphaSimR assumes
+#'   that individuals have the same ploidy. Hence, we don't use this function.
 #'
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' queen <- basePop[1]
-#' drones <- createDrones(x = basePop[2], nInd = 5)
-#' beeCross(queen, drones, nProgeny = 10)
+#' drones <- reduceGenome(pop = basePop[2], nProgeny = 5, keepParents = FALSE,
+#'                        simRecomb = TRUE)
+#' workers <- SIMplyBee:::beeCrossHaploDiploid(queen, drones, nProgeny = 4)
+#' workers@id
+#' workers@mother
+#' workers@father
+#' SP$pedigree
+#' SP$recHist
 #'
-#' @export
-beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+  # An attempt to have drones properly haploid, but have hit AlphaSimR limits
+  #   since a lot of the underlying C++ code assumes the same ploidy for all/most
+  #   individuals, particularly for IBD tracking. Keeping the function here for
+  #   future, but not exporting it.
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (nInd(queen) > 1) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
-  # Recombination of queen's genomes to generate gametes from the queen
-  if (queen@ploidy != 2) {
-    stop("Queen must be diploid!")
+
+  # Closely following AlphaSimR:::reduceGenome() and AlphaSimR:::mergeGenome()
+
+  crossPlan <- cbind(match(x = queen@id, table = queen@id), # this handles more than one queen!
+                     match(x = sample(x = drones@id, size = nProgeny, replace = TRUE),
+                           table = drones@id))
+
+  # Meiosis on the queen's side
+  createReducedGenome <- utils::getFromNamespace(x = "createReducedGenome",
+                                                 ns = "AlphaSimR")
+  queenGametes <- createReducedGenome(queen@geno, # this handles more than one queen!
+                                      nProgeny,
+                                      simParamBee$femaleMap,
+                                      simParamBee$v,
+                                      simParamBee$p,
+                                      simParamBee$isTrackRec,
+                                      queen@ploidy,
+                                      simParamBee$femaleCentromere,
+                                      simParamBee$quadProb,
+                                      simParamBee$nThreads)
+  dim(queenGametes$geno) <- NULL
+
+  # Merge queen's gametes and drones (drones are haploid anyway)
+  geno <- vector(mode = "list", length = simParamBee$nChr)
+  for (chr in 1:simParamBee$nChr) {
+    geno[[chr]] <- array(data = as.raw(0),
+                       dim = c(dim(queen@geno[[chr]])[1], 2, nProgeny))
+    for (prog in 1:nProgeny) {
+      geno[[chr]][, 1, prog] <- queenGametes$geno[[chr]][, , crossPlan[prog, 1]]  # this handles more than one queen!
+      geno[[chr]][, 2, prog] <- drones@geno[[chr]][, , crossPlan[prog, 2]]
+    }
   }
-  # (keepParents = FALSE means that the queen will be the parent of the
-  #  gamete(s), not queen's parents; but we don't want reduceGenome() because it
-  #  creates additional individual, but we only want gametes here; see
-  #  https://github.com/HighlanderLab/SIMplyBee/issues/126)
-  gametesFromTheQueen <- reduceGenome(pop = queen, nProgeny = nProgeny,
-                                      keepParents = FALSE, simRecomb = TRUE,
-                                      simParam = simParamBee)
-  # Drones are already haploid so we just merge both sets of gametes
-  if (drones@ploidy != 1) {
-    stop("Drones must be haploid!")
+
+  rPop <- new(Class = "RawPop",
+              nInd = as.integer(nProgeny),
+              nChr = simParamBee$nChr,
+              ploidy = 2L,
+              nLoci = queen@nLoci,
+              geno = geno)
+
+  if (simParamBee$isTrackRec) {
+    # Create history for haplotypes
+    hist <- vector(mode = "list", length = 2L)
+    hist[[1]] <- cbind(1L, 1L) # queen's contribution (will be rewritten below)
+    hist[[2]] <- cbind(1L, 1L) # drones' contribution (just one chrom and no recomb)
+    hist <- rep(list(hist), times = rPop@nChr) # replicate for chromosomes
+    hist <- rep(list(hist), times = rPop@nInd) # replicate for individuals
+    # Add queen's gamete recombinations
+    for (prog in 1:nProgeny) {
+      for (chr in 1:simParamBee$nChr) {
+        hist[[prog]][[chr]][[1L]] <- queenGametes$recHist[[prog]][[chr]][[1L]]
+      }
+    }
+  } else {
+    hist <- NULL
   }
-  pairs <- cbind(gametesFromTheQueen@id,
-                 sample(x = drones@id, size = nProgeny, replace = TRUE))
-  ret <- mergeGenome(females = gametesFromTheQueen, males = drones,
-                     crossPlan = pairs, simParam = simParamBee)
-  return(ret)
+
+  return(newPop(rawPop = rPop,
+                mother = queen@id[crossPlan[, 1]],
+                father = drones@id[crossPlan[, 2]],
+                simParam = simParamBee,
+                iMother = queen@iid[crossPlan[, 1]],
+                iFather = drones@iid[crossPlan[, 2]],
+                femaleParentPop = queen,
+                maleParentPop = drones,
+                hist = hist))
 }
 
 #' @rdname createDrones
 #' @title Creates drones from the colony
 #'
 #' @description Level 1 function that creates drones from a population, colony,
-#'   or colonies. Drones are haploid and created from the diploid genome of
-#'   the queen with recombination. Queen ID is stored as the father and mother
-#'   of drones.
+#'   or colonies. Drones are double haploid and created from the diploid genome
+#'   of a queen with recombination. Queen ID is stored as the father and
+#'   mother of drones.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
+#'   must be virgin queens or queens (see \code{\link{asVirginQueen}})
 #' @param nInd numeric or function, number of drones; if \code{NULL} then
 #'   \code{simParamBee$nDrones} is used; when \code{x} is
 #'   \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
@@ -517,13 +719,34 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
+#' basePop[1]@id
+#' drones@id
+#' drones@sex
+#' drones@misc
+#' drones@mother
+#' drones@father
+#' SP$pedigree
+#' SP$recHist
+#'
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' apiary <- c(colony1, colony2)
-#' createDrones(colony1, nInd = 10)
+#'
+#' (tmp <- createDrones(colony1, nInd = 10))
+#' colony1@queen@id
+#' tmp@id
+#' tmp@sex
+#' tmp@misc
+#' tmp@mother
+#' tmp@father
+#' SP$pedigree
+#' SP$recHist
+#'
 #' createDrones(apiary, nInd = 10)
 #'
 #' # Using a default in SP$nDrones
@@ -550,16 +773,24 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
+    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+      stop("Individuals in x must be virgin queens or queens!")
+    }
     if (is.null(nInd)) {
       nInd <- simParamBee$nDrones
     }
     if (is.function(nInd)) {
       nInd <- nInd(x)
     }
-    ret <- reduceGenome(pop = x, nProgeny = nInd, keepParents = FALSE,
-                        simRecomb = TRUE, simParam = simParamBee)
+    # Haploid version - causes all sorts of issues downstream
+    # ret <- reduceGenome(pop = x, nProgeny = nInd, keepParents = FALSE,
+    #                     simRecomb = TRUE, simParam = simParamBee)
     # keepParents = FALSE means that the queen will be stored as drones' parent,
     #   instead of storing queen's parents
+    # Diploid version - a hack, but it works
+    ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    ret@sex[] <- "M"
+    ret <- setMisc(x = ret, slot = "caste", value = "D")
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -570,10 +801,15 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     if (is.function(nInd)) {
       nInd <- nInd(x)
     }
-    ret <- reduceGenome(pop = getQueen(x), nProgeny = nInd, keepParents = FALSE,
-                        simRecomb = TRUE, simParam = simParamBee)
+    # Haploid version - causes all sorts of issues downstream
+    # ret <- reduceGenome(pop = getQueen(x), nProgeny = nInd, keepParents = FALSE,
+    #                     simRecomb = TRUE, simParam = simParamBee)
     # keepParents = FALSE means that the queen will be stored as drones' parent,
     #   instead of storing queen's parents
+    # Diploid version - a hack, but it works
+    ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    ret@sex[] <- "M"
+    ret <- setMisc(x = ret, slot = "caste", value = "D")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -583,7 +819,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
@@ -604,7 +840,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -650,7 +886,7 @@ createDCA <- function(x, nInd = NULL) {
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' SP <- SimParam$new(founderGenomes)
 #' basePop <- newPop(founderGenomes)
 #'
 #' pullInd(basePop, nInd = 2)
@@ -682,7 +918,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'   Drones are pulled (removed) from the DCA to reflect the fact that drones
 #'   die after mating, so they can't be present in the DCA anymore.
 #'
-#' @param DCA \code{\link{Pop-class}}, population of drones
+#' @param DCA \code{\link{Pop-class}}, population of drones;
+#'   \code{\link{isDrone}} test will be run on these individuals
 #' @param nGroup integer, number of drone groups to be created
 #' @param avgGroupSize numeric, average number of drones per group
 #'
@@ -691,7 +928,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -706,6 +943,9 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
   if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
+  }
+  if (any(!isDrone(DCA))) {
+    stop("Individuals in DCA must be drones!")
   }
   nDrones <- extraDistr::rtpois(n = nGroup, lambda = avgGroupSize, a = 0)
   if (sum(nDrones) > nInd(DCA)) {
@@ -745,7 +985,7 @@ pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -881,11 +1121,13 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   of drones. This function does not create any progeny, it only stores the
 #'   mated drones (fathers) so we can later create progeny as needed.
 #'
-#' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated
+#' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated;
+#'   \code{\link{isVirginQueen}} test will be run on these individuals
 #' @param fathers \code{\link{Pop-class}}, a group of drones that will be mated
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of average size of
-#'   \code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}}
+#'   \code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}};
+#'   \code{\link{isDrone}} test will be run on these individuals
 #' @param nAvgFathers numeric, average number of drones (fathers) used in mating
 #'   the virgin queen(s) - currently active only when multiple virgin queens
 #'   provided
@@ -899,21 +1141,27 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' (matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
-#' isQueenMated(basePop[2])
+#'
+#' virginQueen1 <- basePop[2]
+#' (matedQueen1 <- crossVirginQueen(pop = virginQueen1,
+#'                                  fathers = drones[1:5]))
+#' isQueenMated(virginQueen1)
 #' isQueenMated(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
-#' (matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10]))
-#' isQueenMated(basePop[3])
+#'
+#' virginQueen2 <- basePop[3]
+#' (matedQueen2 <- crossVirginQueen(pop = virginQueen2,
+#'                                  fathers = drones[6:10]))
+#' isQueenMated(virginQueen2)
 #' isQueenMated(matedQueen2)
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
-#' matedQueens <- crossVirginQueen(pop = basePop[2:3],
+#' matedQueens <- crossVirginQueen(pop = c(virginQueen1, virginQueen2),
 #'                                 fathers = drones[1:10], nAvgFathers = 2)
 #' matedQueens
 #' isQueenMated(matedQueens)
@@ -930,11 +1178,14 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  if (any(isQueenMated(pop))) {
-    stop("One of the queens in pop is already mated!")
+  if (any(!isVirginQueen(pop))) {
+    stop("Individuals in pop must be virgin queens!")
   }
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
+  }
+  if (any(!isDrone(fathers))) {
+    stop("Individuals in fathers must be drones!")
   }
   nVirginQueen <- nInd(pop)
   if (nVirginQueen == 1) {
@@ -948,6 +1199,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     } else {
       pop@misc[[1]]$pHomBrood <- NA
     }
+    pop@misc[[1]]$caste <- "Q"
   } else {
     fathers <- pullDroneGroupsFromDCA(DCA = fathers,
                                       nGroup = nVirginQueen,
@@ -961,6 +1213,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
       } else {
         pop@misc[[queen]]$pHomBrood <- NA
       }
+      pop@misc[[queen]]$caste <- "Q"
     }
   }
   return(pop)
@@ -982,7 +1235,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -1011,20 +1264,22 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
 #' @export
 setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {
-    nInd <- nInd(x)
-    for (ind in seq_len(nInd)) {
-      x@misc[[ind]]$yearOfBirth <- year
+    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+      stop("Individuals in x must be virgin queens or queens!")
     }
+    nInd <- nInd(x)
+    x <- setMisc(x = x, slot = "yearOfBirth", value = year)
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      x@queen@misc[[1]]$yearOfBirth <- year
+      x@queen <- setMisc(x = x@queen, slot = "yearOfBirth", value = year)
     } else {
       stop("Missing queen!") # TODO: should this be a warning?
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]]@queen@misc[[1]]$yearOfBirth <- year
+      x[[colony]]@queen <- setMisc(x = x[[colony]]@queen, slot = "yearOfBirth",
+                                   value = year)
     }
   } else {
     stop("Argument x must be a Pop, Colony or Colonies class object!")
@@ -1035,3 +1290,48 @@ setQueensYearOfBirth <- function(x, year) {
 #' @describeIn setQueensYearOfBirth Set the queen's year of birth
 #' @export
 setQueensYOB <- setQueensYearOfBirth
+
+#' @rdname setMisc
+#' @title Set miscelaneous information in a population
+#'
+#' @description Level 1 function that sets the queen's year of birth.
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param slot character, name of the node to set within the \code{x@misc} slot
+#' @param value, value to be saved into \code{x@misc[[*]][[slot]]}; length of
+#'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
+#'   it is repeated using \code{rep}
+#'
+#' @return \code{\link{Pop-class}} with \code{x@misc[[*]][[slot]]} set
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info", value = c("A", "B", "C"))
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info", value = c("B", "C", "A"))
+#' basePop@misc
+#'
+#' basePop <- setMisc(basePop, slot = "info2", value = "A")
+#' basePop@misc
+#'
+#' @export
+# TODO: move to AlphaSimR
+setMisc <- function(x, slot, value) {
+  if (isPop(x)) {
+    n <- nInd(x)
+    if (length(value) == 1 && n > 1) {
+      value <- rep(x = value, times = n)
+    }
+    for (ind in seq_len(n)) {
+      x@misc[[ind]][[slot]] <- value[ind]
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(x)
+}
