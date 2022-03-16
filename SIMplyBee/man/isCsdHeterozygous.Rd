@@ -38,5 +38,4 @@ isCsdHeterozygous(getQueen(colony1))
 isCsdHeterozygous(getWorkers(colony1))
 
 isCsdHeterozygous(getVirginQueens(colony1))
-
 }

@@ -26,5 +26,4 @@ drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
 (colony <- buildUpColony(colony, nWorkers = 100))
 collapseColony(colony)
-
 }

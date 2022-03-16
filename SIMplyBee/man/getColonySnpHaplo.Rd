@@ -72,7 +72,6 @@ getColonySnpHaplo(apiary)
 getColonySnpHaplo(apiary, caste = c("queen", "fathers"))
 getColonySnpHaplo(apiary, nInd = 1)
 getColonySnpHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}

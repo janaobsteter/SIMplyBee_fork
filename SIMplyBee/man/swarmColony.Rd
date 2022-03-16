@@ -37,5 +37,4 @@ colony <- createColony(queen = basePop[2], fathers = drones)
 tmp <- swarmColony(colony)
 tmp$swarm
 tmp$remnant
-
 }

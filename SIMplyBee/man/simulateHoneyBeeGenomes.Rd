@@ -5,22 +5,22 @@
 \title{Simulate the Honey bee genome}
 \usage{
 simulateHoneyBeeGenomes(
-  nInd = NULL,
-  nChr = 16,
-  nSegSites = 1000,
-  Ne = 157598,
+  nMelN = 0L,
+  nMelS = 0L,
+  nCar = 0L,
+  nLig = 0L,
+  ploidy = 2L,
+  nChr = 16L,
+  nSegSites = 100000L,
+  Ne = 170000L,
   nBp = 225200000/16,
-  genLen = 34.5/16,
-  mutRate = 9e-09,
-  histNe = Ne,
-  histGen = 1,
-  split = NULL,
+  genLen = 3.199121,
+  mutRate = 3.4e-09,
+  recRate = 2.3e-07,
   nThreads = NULL
 )
 }
 \arguments{
-\item{nInd}{number of individuals to simulate}
-
 \item{nChr}{number of chromosomes to simulate}
 
 \item{nSegSites}{number of segregating sites to keep per chromosome}
@@ -33,6 +33,12 @@ simulateHoneyBeeGenomes(
 
 \item{mutRate}{per base pair mutation rate}
 
+\item{nThreads}{if OpenMP is available, this will allow for simulating
+chromosomes in parallel. If the value is NULL, the number of threads is
+automatically detected}
+
+\item{nInd}{number of individuals to simulate}
+
 \item{histNe}{effective population size in previous generations}
 
 \item{histGen}{number of generations ago for effective population sizes given
@@ -40,10 +46,6 @@ in histNe}
 
 \item{split}{an optional historic population split in terms of generations
 ago}
-
-\item{nThreads}{if OpenMP is available, this will allow for simulating
-chromosomes in parallel. If the value is NULL, the number of threads is
-automatically detected}
 }
 \value{
 \code{\link{MapPop-class}}
@@ -52,7 +54,8 @@ automatically detected}
 Level 0 function that returns simulated honeybee genomes
 }
 \examples{
-founderGenomes <- simulateHoneyBeeGenomes(nInd = 10, nChr = 1,
-                                          nSegSites = 2, Ne = 10)
-
+founderGenomes <- simulateHoneyBeeGenomes(
+  nInd = 10, nChr = 1,
+  nSegSites = 2, Ne = 10
+)
 }

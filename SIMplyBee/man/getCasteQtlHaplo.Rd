@@ -151,7 +151,6 @@ getWorkersQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "drones")
 getDronesQtlHaplo(apiary)
-
 }
 \seealso{
 \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}

@@ -84,5 +84,4 @@ resetEvents(tmp, collapse = TRUE)
 tmp[[1]]
 resetEvents(tmp)[[1]]
 resetEvents(tmp, collapse = TRUE)[[1]]
-
 }

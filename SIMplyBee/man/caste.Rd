@@ -33,10 +33,11 @@ caste(getWorkers(colony, nInd = 2))
 caste(getDrones(colony, nInd = 2))
 caste(getVirginQueens(colony, nInd = 2))
 
-bees <- c(getQueen(colony),
-          getWorkers(colony, nInd = 2),
-          getDrones(colony, nInd = 2),
-          getVirginQueens(colony, nInd = 2))
+bees <- c(
+  getQueen(colony),
+  getWorkers(colony, nInd = 2),
+  getDrones(colony, nInd = 2),
+  getVirginQueens(colony, nInd = 2)
+)
 caste(bees)
-
 }

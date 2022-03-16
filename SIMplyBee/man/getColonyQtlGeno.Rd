@@ -67,7 +67,6 @@ getColonyQtlGeno(apiary)
 getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
 getColonyQtlGeno(apiary, nInd = 1)
 getColonyQtlGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}

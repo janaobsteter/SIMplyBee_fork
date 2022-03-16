@@ -47,12 +47,13 @@ SP$nDrones <- 15
 addDrones(colony1)
 nDrones(addDrones(apiary))
 
-nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nDronesFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 addDrones(colony1, nInd = nDronesFun)
 nDrones(addDrones(apiary, nInd = nDronesFun))
 
 SP$nDrones <- nDronesFun
 addDrones(colony1)
 nDrones(addDrones(apiary))
-
 }

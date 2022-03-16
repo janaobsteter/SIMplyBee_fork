@@ -41,5 +41,4 @@ getWorkers(colony)@id
 colony <- removeWorkers(colony, p = 1.0)
 colony
 getWorkers(colony)
-
 }

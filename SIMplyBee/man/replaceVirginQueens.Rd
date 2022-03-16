@@ -50,5 +50,4 @@ apiary <- replaceVirginQueens(apiary, p = 0.5)
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 apiary <- replaceVirginQueens(apiary, p = 1.5)
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-
 }

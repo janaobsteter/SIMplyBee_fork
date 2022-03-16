@@ -41,7 +41,7 @@ colony1 <- addVirginQueens(colony1, nInd = 4)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addWorkers(colony2, nInd = 20)
 
-apiary1 = c(colony1, colony2)
+apiary1 <- c(colony1, colony2)
 
 getCasteId(x = drones)
 getCasteId(x = colony1)
@@ -61,7 +61,6 @@ caste <- sapply(tmp, FUN = function(z) z[2])
 df$colony <- colony
 df$caste <- gsub(x = caste, pattern = "[[:digit:]]", replacement = "")
 head(df)
-
 }
 \seealso{
 \code{\link{getCaste}}

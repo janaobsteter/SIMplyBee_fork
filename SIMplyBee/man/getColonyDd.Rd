@@ -58,7 +58,6 @@ getColonyDd(apiary)
 getColonyDd(apiary, caste = c("queen", "fathers"))
 getColonyDd(apiary, nInd = 1)
 getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{dd}}

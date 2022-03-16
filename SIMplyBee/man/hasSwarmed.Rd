@@ -41,5 +41,4 @@ tmp <- swarmColonies(apiary)
 tmp
 hasSwarmed(tmp$swarms)
 hasSwarmed(tmp$remnants)
-
 }

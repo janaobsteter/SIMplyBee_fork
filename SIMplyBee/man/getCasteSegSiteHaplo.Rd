@@ -144,7 +144,6 @@ getWorkersSegSiteHaplo(apiary)
 
 getCasteSegSiteHaplo(apiary, caste = "drones")
 getDronesSegSiteHaplo(apiary)
-
 }
 \seealso{
 \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}

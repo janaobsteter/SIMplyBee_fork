@@ -26,5 +26,4 @@ isWorker(basePop)
 
 basePop <- asWorker(basePop)
 isWorker(basePop)
-
 }

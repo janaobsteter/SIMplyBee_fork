@@ -109,7 +109,6 @@ getWorkersIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "drones")
 getDronesIbdHaplo(apiary)
-
 }
 \seealso{
 \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}

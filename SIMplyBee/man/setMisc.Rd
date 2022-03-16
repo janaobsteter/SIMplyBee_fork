@@ -35,5 +35,4 @@ basePop@misc
 
 basePop <- setMisc(basePop, slot = "info2", value = "A")
 basePop@misc
-
 }

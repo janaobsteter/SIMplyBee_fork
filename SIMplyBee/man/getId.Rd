@@ -33,5 +33,4 @@ getId(apiary)
 
 colony2 <- removeQueen(colony2)
 getId(colony2)
-
 }

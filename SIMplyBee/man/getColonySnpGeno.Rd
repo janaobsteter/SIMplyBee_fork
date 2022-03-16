@@ -69,7 +69,6 @@ getColonySnpGeno(apiary)
 getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 getColonySnpGeno(apiary, nInd = 1)
 getColonySnpGeno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}

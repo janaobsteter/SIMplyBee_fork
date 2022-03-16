@@ -40,5 +40,4 @@ getDrones(colony)@id
 colony <- removeDrones(colony, p = 1.0)
 colony
 getDrones(colony)
-
 }

@@ -44,18 +44,21 @@ genoV <- getVirginQueensSegSiteGeno(colony1)
 genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
 geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
 rownames(geno)[length(rownames(geno))] <- "M"
-sex <- c("F",
-         rep("M", times = nrow(genoF)),
-         rep("F", times = nrow(genoW)),
-         rep("M", times = nrow(genoD)),
-         rep("F", times = nrow(genoV)),
-         "F")
+sex <- c(
+  "F",
+  rep("M", times = nrow(genoF)),
+  rep("F", times = nrow(genoW)),
+  rep("M", times = nrow(genoD)),
+  rep("F", times = nrow(genoV)),
+  "F"
+)
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
 if (require("Matrix")) {
   image(as(GRM, "Matrix"),
-        xlab = "Individual", ylab = "Individual")
+    xlab = "Individual", ylab = "Individual"
+  )
 }
 
 x <- diag(GRM)
@@ -92,7 +95,6 @@ GRM[w, w]
 GRM[w, d]
 GRM[w, v]
 GRM[w, m]
-
 }
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of

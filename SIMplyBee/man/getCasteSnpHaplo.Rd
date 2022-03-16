@@ -157,7 +157,6 @@ getWorkersSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "drones")
 getDronesSnpHaplo(apiary)
-
 }
 \seealso{
 \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}

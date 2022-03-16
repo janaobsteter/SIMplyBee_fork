@@ -34,5 +34,4 @@ getVirginQueens(colony)
 colony <- removeVirginQueens(colony)
 colony
 getVirginQueens(colony)
-
 }

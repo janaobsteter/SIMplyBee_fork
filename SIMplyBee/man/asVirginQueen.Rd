@@ -26,5 +26,4 @@ isVirginQueen(basePop)
 
 basePop <- asVirginQueen(basePop)
 isVirginQueen(basePop)
-
 }

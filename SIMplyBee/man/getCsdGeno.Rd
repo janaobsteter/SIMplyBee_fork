@@ -58,5 +58,4 @@ getCsdAlleles(colony2)
 
 getCsdGeno(apiary)
 getCsdGeno(apiary, nInd = 2)
-
 }
