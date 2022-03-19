@@ -23,20 +23,36 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony <- addWorkers(colony)
-colony <- addDrones(colony)
-colony <- addVirginQueens(colony)
+colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[1:5])
+colony1 <- addWorkers(colony1)
+colony2 <- addWorkers(colony2)
+colony1 <- addDrones(colony1)
+colony2 <- addDrones(colony2)
+colony1 <- addVirginQueens(colony1)
+apiary <- c(colony1, colony2)
 
-caste(getQueen(colony))
-caste(getWorkers(colony, nInd = 2))
-caste(getDrones(colony, nInd = 2))
-caste(getVirginQueens(colony, nInd = 2))
+caste(getQueen(colony1))
+caste(getWorkers(colony1, nInd = 2))
+caste(getDrones(colony1, nInd = 2))
+caste(getVirginQueens(colony1, nInd = 2))
 
-bees <- c(getQueen(colony),
-          getWorkers(colony, nInd = 2),
-          getDrones(colony, nInd = 2),
-          getVirginQueens(colony, nInd = 2))
+bees <- c(getQueen(colony1),
+          getWorkers(colony1, nInd = 2),
+          getDrones(colony1, nInd = 2),
+          getVirginQueens(colony1, nInd = 2))
 caste(bees)
+
+(tmpC <- caste(colony1))
+(tmpI <- getCasteId(colony1))
+(tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+
+(tmpC <- caste(apiary))
+(tmpI <- getCasteId(apiary))
+(tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
+                                  fixed = TRUE),
+                     FUN = function(z) z[[1]])
+tmp
 
 }

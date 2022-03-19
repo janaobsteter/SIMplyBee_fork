@@ -390,6 +390,8 @@ pHomBrood <- function(x) {
     }
   } else if (isColony(x)) {
     # TODO: report colony, not queen pHomBrood
+    # https://github.com/HighlanderLab/SIMplyBee/issues/80
+    # https://github.com/HighlanderLab/SIMplyBee/issues/104
     if (is.null(x@queen@misc[[1]]$pHomBrood)) {
       ret <- NA
     } else {
@@ -582,57 +584,6 @@ isVirginQueen <- function(x) {
                            yes = FALSE,
                            no = z$caste == "V")
                   })
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
-  return(ret)
-}
-
-#' @rdname caste
-#' @title Report caste of an individual
-#'
-#' @description Level 0 function that reports caste of an individual
-#'
-#' @param x \code{\link{Pop-class}}
-#'
-#' @return character with entries \code{"queen"}, \code{"workers"},
-#'   \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
-#'   this is not supposed to happen
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- asVirginQueen(newPop(founderGenomes))
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
-#'
-#' caste(getQueen(colony))
-#' caste(getWorkers(colony, nInd = 2))
-#' caste(getDrones(colony, nInd = 2))
-#' caste(getVirginQueens(colony, nInd = 2))
-#'
-#' bees <- c(getQueen(colony),
-#'           getWorkers(colony, nInd = 2),
-#'           getDrones(colony, nInd = 2),
-#'           getVirginQueens(colony, nInd = 2))
-#' caste(bees)
-#'
-#' @export
-caste <- function(x) {
-  if (isPop(x)) {
-    ret <- sapply(X = x@misc,
-                  FUN = function(z) {
-                    ifelse(test = is.null(z$caste),
-                           yes = NA,
-                           no = z$caste)
-                  })
-    ret <- factor(x = ret, levels = c("Q", "W", "D", "V"),
-                  labels = list("queen", "workers", "drones", "virginQueens"))
-    ret <- as.character(ret)
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -1053,10 +1004,11 @@ getCasteId <- function(x, caste = "all") {
       for (caste in names(ret)) {
         tmp <- getCaste(x = x, caste = caste)
         if (is.null(tmp)) {
-          ret[[caste]] <- list(NULL)
+          ret[caste] <- list(NULL)
         } else {
           ret[[caste]] <- tmp@id
-        }}
+        }
+      }
     } else {
       tmp <- getCaste(x = x, caste = caste)
       if (is.null(tmp)) {
@@ -1068,6 +1020,89 @@ getCasteId <- function(x, caste = "all") {
   } else if (isColonies(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
     ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname caste
+#' @title Report caste of an individual
+#'
+#' @description Level 0 function that reports caste of an individual
+#'
+#' @param x \code{\link{Pop-class}}
+#'
+#' @return character with entries \code{"queen"}, \code{"workers"},
+#'   \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
+#'   this is not supposed to happen
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[1:5])
+#' colony1 <- addWorkers(colony1)
+#' colony2 <- addWorkers(colony2)
+#' colony1 <- addDrones(colony1)
+#' colony2 <- addDrones(colony2)
+#' colony1 <- addVirginQueens(colony1)
+#' apiary <- c(colony1, colony2)
+#'
+#' caste(getQueen(colony1))
+#' caste(getFathers(colony1))
+#' caste(getWorkers(colony1))
+#' caste(getDrones(colony1))
+#' caste(getVirginQueens(colony1))
+#'
+#' bees <- c(getQueen(colony1),
+#'           getFathers(colony1, nInd = 2),
+#'           getWorkers(colony1, nInd = 2),
+#'           getDrones(colony1, nInd = 2),
+#'           getVirginQueens(colony1, nInd = 2))
+#' caste(bees)
+#'
+#' (tmpC <- caste(colony1))
+#' (tmpI <- getCasteId(colony1))
+#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#'
+#' (tmpC <- caste(apiary))
+#' (tmpI <- getCasteId(apiary))
+#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#' tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
+#'                                   fixed = TRUE),
+#'                      FUN = function(z) z[[1]])
+#' tmp
+#'
+#' @export
+caste <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = NA,
+                           no = z$caste)
+                  })
+    ret <- factor(x = ret, levels = c("Q", "F", "W", "D", "V"),
+                  labels = list("queen", "fathers", "workers", "drones", "virginQueens"))
+    ret <- as.character(ret)
+  } else if (isColony(x)) {
+    ret <- vector(mode = "list", length = 5)
+    names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+    for (caste in names(ret)) {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret[caste] <- list(NULL)
+      } else {
+        ret[[caste]] <- caste(tmp)
+      }
+    }
+  } else if (isColonies(x)) {
+    ret <- lapply(X = x@colonies, FUN = caste)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
