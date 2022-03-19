@@ -2803,6 +2803,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' @param trait numeric, indicates which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
@@ -2866,7 +2867,8 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #'
 #' @export
 getCasteQtlGeno <- function(x, caste, nInd = NULL,
-                            trait = 1, chr = NULL, simParamBee = NULL) {
+                            trait = 1, chr = NULL, dronesHaploid = TRUE,
+                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2876,13 +2878,18 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getQtlGeno(pop = tmp, trait = trait, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneGeno(geno = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                             trait = trait, chr = chr, simParamBee = simParamBee)
+                             trait = trait, chr = chr,
+                             dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -2915,13 +2922,16 @@ getQueensQtlGeno <- function(x,
 #' @describeIn getCasteQtlGeno Access QTL genotype data of fathers
 #' @export
 getFathersQtlGeno <- function(x, nInd = NULL,
-                              trait = 1, chr = NULL, simParamBee = NULL) {
+                              trait = 1, chr = NULL, dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlGeno(x, caste = "fathers", nInd = nInd,
-                           trait = trait, chr = chr, simParamBee = simParamBee)
+                           trait = trait, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2963,13 +2973,16 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
 #' @describeIn getCasteQtlGeno Access QTL genotype data of drones
 #' @export
 getDronesQtlGeno <- function(x, nInd = NULL,
-                             trait = 1, chr = NULL, simParamBee = NULL) {
+                             trait = 1, chr = NULL, dronesHaploid = TRUE,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlGeno(x, caste = "drones", nInd = nInd,
-                           trait = trait, chr = chr, simParamBee = simParamBee)
+                           trait = trait, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2992,6 +3005,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}
@@ -3030,7 +3044,8 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'
 #' @export
 getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                             nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL) {
+                             nInd = NULL, trait = 1, chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3059,6 +3074,9 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
       } else {
         ret[[caste]] <- getQtlGeno(pop = tmp, trait = trait,
                                    chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneGeno(geno = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -3066,7 +3084,9 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonyQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                                        trait = trait, chr = chr, simParamBee = simParamBee)
+                                        trait = trait, chr = chr,
+                                        dronesHaploid = dronesHaploid,
+                                        simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
