@@ -27,7 +27,8 @@ matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
 }
 \description{
 Level 0 function that returns genotypes from the csd locus. See
-  \code{\link{SimParamBee}} for more information about the csd locus.
+  \code{\link{SimParamBee}} for more information about the csd locus and how
+  we have implemented it.
 }
 \details{
 The returned genotypes are spanning multiple bi-allelic SNP of

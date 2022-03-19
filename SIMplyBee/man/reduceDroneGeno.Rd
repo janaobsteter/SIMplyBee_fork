@@ -26,8 +26,8 @@ basePop <- asVirginQueen(newPop(founderGenomes))
 drones <- createDrones(x = basePop[1], nInd = 2)
 
 (tmp <- getSegSiteGeno(drones))
-reduceDroneGeno(geno = tmp, pop = drones)
+SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
 
 (tmp <- getSegSiteGeno(c(basePop, drones)))
-reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
 }
