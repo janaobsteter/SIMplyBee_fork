@@ -30,4 +30,5 @@ SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
 
 (tmp <- getSegSiteHaplo(c(basePop, drones)))
 SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+
 }

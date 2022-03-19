@@ -30,4 +30,5 @@ SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
 
 (tmp <- getSegSiteGeno(c(basePop, drones)))
 SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+
 }
