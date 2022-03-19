@@ -3709,6 +3709,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
@@ -3772,7 +3773,8 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #'
 #' @export
 getCasteSnpHaplo <- function(x, caste, nInd = NULL,
-                             snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                             snpChip = 1, haplo = "all", chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3782,13 +3784,18 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getSnpHaplo(pop = tmp, haplo = haplo, snpChip = snpChip, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteSnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                              snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                              snpChip = snpChip, haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3822,13 +3829,16 @@ getQueensSnpHaplo <- function(x,
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of fathers
 #' @export
 getFathersSnpHaplo <- function(x, nInd = NULL,
-                               snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                               snpChip = 1, haplo = "all", chr = NULL,
+                               dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpHaplo(x, caste = "fathers", nInd = nInd,
-                            snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            snpChip = snpChip, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3870,13 +3880,16 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of drones
 #' @export
 getDronesSnpHaplo <- function(x, nInd = NULL,
-                              snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              snpChip = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpHaplo(x, caste = "drones", nInd = nInd,
-                            snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            snpChip = snpChip, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3902,6 +3915,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
@@ -3940,7 +3954,8 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'
 #' @export
 getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                              nInd = NULL, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              nInd = NULL, snpChip = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3969,14 +3984,20 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
       } else {
         ret[[caste]] <- getSnpHaplo(pop = tmp, snpChip = snpChip, haplo = haplo,
                                     chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                         snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret[[colony]] <- getColonySnpHaplo(x = x[[colony]], caste = caste,
+                                         nInd = nInd, snpChip = snpChip,
+                                         haplo = haplo, chr = chr,
+                                         dronesHaploid = dronesHaploid,
+                                         simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
