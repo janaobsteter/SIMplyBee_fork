@@ -4400,32 +4400,34 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony1, nInd = 5)
+#' colony <- addDrones(colony1, nInd = 5)
+#' colony <- addVirginQueens(colony1, nInd = 2)
 #'
-#' genoQ <- getQueensSegSiteGeno(colony1)
-#' genoF <- getFathersSegSiteGeno(colony1)
-#' genoW <- getWorkersSegSiteGeno(colony1)
-#' genoD <- getDronesSegSiteGeno(colony1)
-#' genoV <- getVirginQueensSegSiteGeno(colony1)
-#' genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
-#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
-#' rownames(geno)[length(rownames(geno))] <- "M"
-#' sex <- c("F",
-#'          rep("M", times = nrow(genoF)),
-#'          rep("F", times = nrow(genoW)),
-#'          rep("M", times = nrow(genoD)),
-#'          rep("F", times = nrow(genoV)),
-#'          "F")
+#' genoQ <- getQueensSegSiteGeno(colony)
+#' genoF <- getFathersSegSiteGeno(colony)
+#' genoW <- getWorkersSegSiteGeno(colony)
+#' genoD <- getDronesSegSiteGeno(colony)
+#' genoV <- getVirginQueensSegSiteGeno(colony)
+#' genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
+#' genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
+#'
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
+#' n <- length(rownames(geno))
+#' rownames(geno)[c(n-1, n)] <- c("mw", "md")
+#'
+#' sex <- c(getQueen(colony)@sex,
+#'          getFathers(colony)@sex,
+#'          getWorkers(colony)@sex,
+#'          getDrones(colony)@sex,
+#'          getVirginQueens(colony)@sex,
+#'          "F",
+#'          "M")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
-#' if (require("Matrix")) {
-#'   image(as(GRM, "Matrix"),
-#'         xlab = "Individual", ylab = "Individual")
-#' }
+#' image(GRM)
 #'
 #' x <- diag(GRM)
 #' hist(x)
@@ -4440,27 +4442,31 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' w <- rownames(genoW)
 #' d <- rownames(genoD)
 #' v <- rownames(genoV)
-#' m <- "M"
+#' mw <- "mw"
+#' md <- "md"
 #'
 #' # Queen vs others
 #' GRM[q, f]
 #' GRM[q, w]
 #' GRM[q, d]
 #' GRM[q, v]
-#' GRM[q, m]
+#' GRM[q, mw]
+#' GRM[q, md]
 #'
 #' # Fathers vs others
 #' GRM[f, f]
 #' GRM[f, w]
 #' GRM[f, d]
 #' GRM[f, v]
-#' GRM[f, m]
+#' GRM[f, mw]
+#' GRM[f, md]
 #'
 #' # Workers vs others
 #' GRM[w, w]
 #' GRM[w, d]
 #' GRM[w, v]
-#' GRM[w, m]
+#' GRM[w, mw]
+#' GRM[w, md]
 #'
 #' @export
 calcBeeGRMIbs <- function(x, sex) {
