@@ -7,12 +7,15 @@
 caste(x)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{Colonies-class}}}
 }
 \value{
-character with entries \code{"queen"}, \code{"workers"},
-  \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
-  this is not supposed to happen
+When x is \code{\link{Pop-class}}, character of caste status; if you
+  get \code{NA} note that this is not supposed to happen. When x is
+  \code{\link{Colony-class}}, list with character vectors (list is named with
+  caste). When x is \code{\link{Colonies-class}}, list of lists with
+  character vectors (list is named with colony id).
 }
 \description{
 Level 0 function that reports caste of an individual
@@ -33,19 +36,23 @@ colony1 <- addVirginQueens(colony1)
 apiary <- c(colony1, colony2)
 
 caste(getQueen(colony1))
-caste(getWorkers(colony1, nInd = 2))
-caste(getDrones(colony1, nInd = 2))
-caste(getVirginQueens(colony1, nInd = 2))
+caste(getFathers(colony1))
+caste(getWorkers(colony1))
+caste(getDrones(colony1))
+caste(getVirginQueens(colony1))
 
 bees <- c(getQueen(colony1),
+          getFathers(colony1, nInd = 2),
           getWorkers(colony1, nInd = 2),
           getDrones(colony1, nInd = 2),
           getVirginQueens(colony1, nInd = 2))
 caste(bees)
 
+# Create a data.frame with id, colony, and caste information
 (tmpC <- caste(colony1))
 (tmpI <- getCasteId(colony1))
-(tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
+head(tmp);tail(tmp)
 
 (tmpC <- caste(apiary))
 (tmpI <- getCasteId(apiary))
@@ -53,6 +60,9 @@ caste(bees)
 tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
                                   fixed = TRUE),
                      FUN = function(z) z[[1]])
-tmp
+head(tmp);tail(tmp)
 
+}
+\seealso{
+\code{\link{getCaste}} and \code{\link{getCasteId}}
 }

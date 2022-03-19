@@ -25,6 +25,8 @@
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"}
 #'
+#' @seealso \code{\link{getCasteId}} and \code{\link{caste}}
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
@@ -1188,9 +1190,11 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     stop("Individuals in fathers must be drones!")
   }
   nVirginQueen <- nInd(pop)
+  pop <- setMisc(x = pop, slot = "caste", value = "Q")
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
     #       nAvgFathers from SimParam when nAvgFathers = NULL?
+    fathers <- setMisc(x = fathers, slot = "caste", value = "F")
     pop@misc[[1]]$fathers <- fathers
     if (isCsdActive(simParamBee = simParamBee)) {
       # TODO: call a function that will calculate theoretical/expected pHomBrood
@@ -1199,12 +1203,12 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     } else {
       pop@misc[[1]]$pHomBrood <- NA
     }
-    pop@misc[[1]]$caste <- "Q"
   } else {
     fathers <- pullDroneGroupsFromDCA(DCA = fathers,
                                       nGroup = nVirginQueen,
                                       avgGroupSize = nAvgFathers)
     for (queen in seq_len(nVirginQueen)) {
+      fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")
       pop@misc[[queen]]$fathers <- fathers[[queen]]
       if (isCsdActive(simParamBee = simParamBee)) {
         # TODO: call a function that will calculate theoretical/expected pHomBrood
@@ -1213,7 +1217,6 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
       } else {
         pop@misc[[queen]]$pHomBrood <- NA
       }
-      pop@misc[[queen]]$caste <- "Q"
     }
   }
   return(pop)

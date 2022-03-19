@@ -943,20 +943,18 @@ getId <- function(x) {
 #'   get the individuals, use \code{\link{getCaste}}.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}} class objects
+#'   \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virginQueens", "workers",
 #'   "drones", or "all"
 #'
 #' @seealso \code{\link{getCaste}}
 #'
-#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
-#'  or list for \code{caste == "all"} with ID nodes named by caste;
-#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"}
-#'   or named list for \code{caste == "all"} indluding caste members IDs;
-#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#' @return When x is \code{\link{Pop-class}}, character of individual ID. When x
+#'   is \code{\link{Colony-class}}, list with character vectors (list is named
+#'   with caste). When x is \code{\link{Colonies-class}}, list of lists with
+#'   character vectors (list is named with colony id).
+#'
+#' @seealso \code{\link{getCaste}} and \code{\link{caste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -972,26 +970,27 @@ getId <- function(x) {
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #'
-#' apiary1 = c(colony1, colony2)
+#' apiary = c(colony1, colony2)
 #'
 #' getCasteId(x = drones)
 #' getCasteId(x = colony1)
 #' getCasteId(x = colony1, caste = "workers")
-#' getCasteId(x = apiary1)
-#' getCasteId(x = apiary1, caste = "virginQueens")
+#' getCasteId(x = apiary)
+#' getCasteId(x = apiary, caste = "virginQueens")
 #'
-#' # Create a data.frame from the lists of ids
-#' tmp <- getCasteId(x = apiary1)
-#' df <- data.frame(unlist(tmp))
-#' head(df)
-#' colnames(df)[1] <- "id"
-#' head(df)
-#' tmp <- strsplit(row.names(df), split = ".", fixed = TRUE)
-#' colony <- sapply(tmp, FUN = function(z) z[1])
-#' caste <- sapply(tmp, FUN = function(z) z[2])
-#' df$colony <- colony
-#' df$caste <- gsub(x = caste, pattern = "[[:digit:]]", replacement = "")
-#' head(df)
+#' # Create a data.frame with id, colony, and caste information
+#' (tmpC <- caste(colony1))
+#' (tmpI <- getCasteId(colony1))
+#' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
+#' head(tmp);tail(tmp)
+#'
+#' (tmpC <- caste(apiary))
+#' (tmpI <- getCasteId(apiary))
+#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#' tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
+#'                                   fixed = TRUE),
+#'                      FUN = function(z) z[[1]])
+#' head(tmp);tail(tmp)
 #'
 #' @export
 getCasteId <- function(x, caste = "all") {
@@ -1032,11 +1031,16 @@ getCasteId <- function(x, caste = "all") {
 #'
 #' @description Level 0 function that reports caste of an individual
 #'
-#' @param x \code{\link{Pop-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
 #'
-#' @return character with entries \code{"queen"}, \code{"workers"},
-#'   \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
-#'   this is not supposed to happen
+#' @return When x is \code{\link{Pop-class}}, character of caste status; if you
+#'   get \code{NA} note that this is not supposed to happen. When x is
+#'   \code{\link{Colony-class}}, list with character vectors (list is named with
+#'   caste). When x is \code{\link{Colonies-class}}, list of lists with
+#'   character vectors (list is named with colony id).
+#'
+#' @seealso \code{\link{getCaste}} and \code{\link{getCasteId}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1066,9 +1070,11 @@ getCasteId <- function(x, caste = "all") {
 #'           getVirginQueens(colony1, nInd = 2))
 #' caste(bees)
 #'
+#' # Create a data.frame with id, colony, and caste information
 #' (tmpC <- caste(colony1))
 #' (tmpI <- getCasteId(colony1))
-#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
+#' head(tmp);tail(tmp)
 #'
 #' (tmpC <- caste(apiary))
 #' (tmpI <- getCasteId(apiary))
@@ -1076,7 +1082,7 @@ getCasteId <- function(x, caste = "all") {
 #' tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
 #'                                   fixed = TRUE),
 #'                      FUN = function(z) z[[1]])
-#' tmp
+#' head(tmp);tail(tmp)
 #'
 #' @export
 caste <- function(x) {

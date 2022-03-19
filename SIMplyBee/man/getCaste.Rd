@@ -156,4 +156,6 @@ getCaste(colony2, caste = "all")
 \code{\link{getQueen}}, \code{\link{getFathers}},
   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
   \code{\link{getDrones}}
+
+\code{\link{getCasteId}} and \code{\link{caste}}
 }
