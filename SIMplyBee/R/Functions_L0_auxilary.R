@@ -4383,8 +4383,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' @param x \code{\link{matrix}} of genotypes represented as allele dosage coded
 #'   as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
-#'   (drones); individuals are in rows and sites are in columns; no missing
-#'   values are allowed (this is not checked!)
+#'   (fathers or drones); individuals are in rows and sites are in columns; no
+#'   missing values are allowed (this is not checked - you will get NAs!)
 #' @param sex character vector denoting sex for individuals with genotypes in
 #'   \code{x} - \code{"F"} for female and \code{"M"} for male
 #'
@@ -4401,9 +4401,9 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony <- addWorkers(colony1, nInd = 5)
-#' colony <- addDrones(colony1, nInd = 5)
-#' colony <- addVirginQueens(colony1, nInd = 2)
+#' colony <- addWorkers(colony, nInd = 5)
+#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addVirginQueens(colony, nInd = 2)
 #'
 #' genoQ <- getQueensSegSiteGeno(colony)
 #' genoF <- getFathersSegSiteGeno(colony)
@@ -4427,7 +4427,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
-#' image(GRM)
+#' # library("Matrix"); image(as(GRM, "Matrix"))
 #'
 #' x <- diag(GRM)
 #' hist(x)
@@ -4490,6 +4490,107 @@ calcBeeGRMIbs <- function(x, sex) {
     x[, site] <- x[, site] - ploidy * alleleFreq[site]
   }
   G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
+  return(G)
+}
+
+#' @rdname calcBeeGRMIbd
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#'   Identical By Descent genomic data
+#'
+#' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
+#'   for honey bees from Identical By Descent genomic data (tracked alleles
+#'   since the founders)
+#'
+#' @param x \code{\link{matrix}} of haplotypes representing allele indicators
+#'   of the founders as 1, 2, ... Individuals are in rows and sites are in
+#'   columns; no missing values are allowed (this is not checked!)
+#' @param id character vector indicating to which individual the ????
+#'
+#' @return matrix of genomic relatedness coefficients
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony, nInd = 5)
+#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addVirginQueens(colony, nInd = 2)
+#'
+#' genoQ <- getQueensIbdHaplo(colony)
+#' genoF <- getFathersIbdHaplo(colony)
+#' genoW <- getWorkersIbdHaplo(colony)
+#' genoD <- getDronesIbdHaplo(colony)
+#' genoV <- getVirginQueensIbdHaplo(colony)
+#' SP$pedigree
+#'
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
+#'
+#' sex <- c(getQueen(colony)@sex,
+#'          getFathers(colony)@sex,
+#'          getWorkers(colony)@sex,
+#'          getDrones(colony)@sex,
+#'          getVirginQueens(colony)@sex,
+#'          "F",
+#'          "M")
+#'
+#' GRM <- calcBeeGRMIbd(x = geno)
+#'
+#' # library("Matrix"); image(as(GRM, "Matrix"))
+#'
+#' x <- diag(GRM)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRM[lower.tri(x = GRM, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' q <- rownames(genoQ)
+#' f <- rownames(genoF)
+#' w <- rownames(genoW)
+#' d <- rownames(genoD)
+#' v <- rownames(genoV)
+#'
+#' # Queen vs others
+#' GRM[q, q]
+#' GRM[f, q]
+#' GRM[w, q]
+#' GRM[d, q]
+#' GRM[v, q]
+#'
+#' # Fathers vs others
+#' GRM[f, f]
+#' GRM[w, f]
+#' GRM[d, f]
+#' GRM[v, f]
+#'
+#' # Workers vs others
+#' GRM[w, w]
+#' GRM[d, w]
+#' GRM[v, w]
+#'
+#' @export
+calcBeeGRMIbd <- function(x) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  nHap <- nrow(x)
+  nSit <- ncol(x)
+  hapId <- rownames(x)
+  G <- matrix(data = numeric(), nrow = nHap, ncol = nHap)
+  x <- t(x) # orient for faster retrieval (R is column major) - not sure it helps!
+  for (ind1 in 1:nHap) {
+    tmp <- x[, ind1]
+    for (ind2 in ind1:nHap) {
+      G[ind2, ind1] <- sum(tmp == x[, ind2])
+    }
+  }
+  dimnames(G) <- list(hapId, hapId)
+  G <- G / nSit
   return(G)
 }
 

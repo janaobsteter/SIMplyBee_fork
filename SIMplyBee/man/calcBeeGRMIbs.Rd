@@ -10,8 +10,8 @@ calcBeeGRMIbs(x, sex)
 \arguments{
 \item{x}{\code{\link{matrix}} of genotypes represented as allele dosage coded
 as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
-(drones); individuals are in rows and sites are in columns; no missing
-values are allowed (this is not checked!)}
+(fathers or drones); individuals are in rows and sites are in columns; no
+missing values are allowed (this is not checked - you will get NAs!)}
 
 \item{sex}{character vector denoting sex for individuals with genotypes in
 \code{x} - \code{"F"} for female and \code{"M"} for male}
@@ -32,9 +32,9 @@ basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony <- addWorkers(colony1, nInd = 5)
-colony <- addDrones(colony1, nInd = 5)
-colony <- addVirginQueens(colony1, nInd = 2)
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
 
 genoQ <- getQueensSegSiteGeno(colony)
 genoF <- getFathersSegSiteGeno(colony)
@@ -58,7 +58,7 @@ sex <- c(getQueen(colony)@sex,
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
-image(GRM)
+# library("Matrix"); image(as(GRM, "Matrix"))
 
 x <- diag(GRM)
 hist(x)
