@@ -8,6 +8,7 @@ getCsdAlleles(
   x,
   nInd = NULL,
   allele = "all",
+  dronesHaploid = TRUE,
   collapse = FALSE,
   unique = FALSE,
   simParamBee = NULL
@@ -23,6 +24,8 @@ are taken; this can be useful as a test of sampling individuals}
 \item{allele}{character, either "all" for both alleles or an integer for a
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
 csd alleles in either the entire population, colony, or colonies. Default

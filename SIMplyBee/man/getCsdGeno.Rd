@@ -4,7 +4,7 @@
 \alias{getCsdGeno}
 \title{Get genotypes from the csd locus}
 \usage{
-getCsdGeno(x, nInd = NULL, simParamBee = NULL)
+getCsdGeno(x, nInd = NULL, dronesHaploid = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -12,6 +12,8 @@ getCsdGeno(x, nInd = NULL, simParamBee = NULL)
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
