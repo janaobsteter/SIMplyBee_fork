@@ -8,19 +8,20 @@
 calcBeeGRMIbd(x)
 }
 \arguments{
-\item{x}{\code{\link{matrix}} of haplotypes representing allele indicators
-of the founders as 1, 2, ... Individuals are in rows and sites are in
-columns; no missing values are allowed (this is not checked!)}
-
-\item{id}{character vector indicating to which individual the ????}
+\item{x}{\code{\link{matrix}} of haplotypes/genomes with allele indicators
+for the founders coded as 1, 2, ... Haplotypes/genome are in rows and sites
+are in columns; no missing values are allowed (this is not checked!). Row
+names are essential (formated as ind_genome as returned by AlphaSimR IBD
+functions) to infer the individual and their ploidy (see examples)!}
 }
 \value{
-matrix of genomic relatedness coefficients
+a list with a matrix of gametic relatedness coefficients (genome) and
+  a matrix of individual relatedness coefficients (indiv)
 }
 \description{
 Level 0 function that returns Genomic Relatedness Matrix (GRM)
   for honey bees from Identical By Descent genomic data (tracked alleles
-  since the founders)
+  since the founders) - see references on the background theory.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -43,48 +44,81 @@ SP$pedigree
 
 geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
 
-sex <- c(getQueen(colony)@sex,
-         getFathers(colony)@sex,
-         getWorkers(colony)@sex,
-         getDrones(colony)@sex,
-         getVirginQueens(colony)@sex,
-         "F",
-         "M")
+GRMs <- calcBeeGRMIbd(x = geno)
 
-GRM <- calcBeeGRMIbd(x = geno)
+# library("Matrix"); image(as(GRMs$genome, "Matrix"))
+# library("Matrix"); image(as(GRMs$indiv, "Matrix"))
 
-# library("Matrix"); image(as(GRM, "Matrix"))
+GRMs
 
-x <- diag(GRM)
+x <- diag(GRMs$genome)
 hist(x)
 summary(x)
 
-x <- GRM[lower.tri(x = GRM, diag = FALSE)]
+x <- GRMs$genome[lower.tri(x = GRMs$genome, diag = FALSE)]
 hist(x)
 summary(x)
 
-q <- rownames(genoQ)
-f <- rownames(genoF)
-w <- rownames(genoW)
-d <- rownames(genoD)
-v <- rownames(genoV)
+x <- diag(GRMs$indiv)
+hist(x)
+summary(x)
+
+x <- GRMs$GRMindiv[lower.tri(x = GRMs$GRMIndiv, diag = FALSE)]
+hist(x)
+summary(x)
+
+qI <- getQueen(colony)@id
+fI <- sort(getFathers(colony)@id)
+wI <- sort(getWorkers(colony)@id)
+dI <- sort(getDrones(colony)@id)
+vI <- sort(getVirginQueens(colony)@id)
+
+qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
+fG <- paste(fI, 1, sep = "_")
+wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
+dG <- paste(dI, 1, sep = "_")
+vG <- c(t(outer(X = vI, Y = 1:2, FUN = paste, sep = "_")))
 
 # Queen vs others
-GRM[q, q]
-GRM[f, q]
-GRM[w, q]
-GRM[d, q]
-GRM[v, q]
+GRMs$genome[qG, qG]
+GRMs$indiv[qI, qI]
+
+GRMs$genome[fG, qG]
+GRMs$indiv[fI, qI]
+
+GRMs$genome[wG, qG]
+GRMs$indiv[wI, qI]
+
+GRMs$genome[dG, qG]
+GRMs$indiv[dI, qI]
+
+GRMs$genome[vG, qG]
+GRMs$indiv[vI, qI]
 
 # Fathers vs others
-GRM[f, f]
-GRM[w, f]
-GRM[d, f]
-GRM[v, f]
+GRMs$genome[fG, fG]
+GRMs$indiv[fI, fI]
+
+GRMs$genome[wG, fG]
+GRMs$indiv[wI, fI]
+
+GRMs$genome[dG, fG]
+GRMs$indiv[dI, fI]
+
+GRMs$genome[vG, fG]
+GRMs$indiv[vI, fI]
 
 # Workers vs others
-GRM[w, w]
-GRM[d, w]
-GRM[v, w]
+GRMs$genome[wG, wG]
+GRMs$indiv[wI, wI]
+
+GRMs$genome[dG, wG]
+GRMs$indiv[dI, wI]
+
+GRMs$genome[vG, wG]
+GRMs$indiv[vI, wI]
+
+}
+\references{
 
 }

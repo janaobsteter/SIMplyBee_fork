@@ -4499,14 +4499,37 @@ calcBeeGRMIbs <- function(x, sex) {
 #'
 #' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
 #'   for honey bees from Identical By Descent genomic data (tracked alleles
-#'   since the founders)
+#'   since the founders) - see references on the background theory.
 #'
-#' @param x \code{\link{matrix}} of haplotypes representing allele indicators
-#'   of the founders as 1, 2, ... Individuals are in rows and sites are in
-#'   columns; no missing values are allowed (this is not checked!)
-#' @param id character vector indicating to which individual the ????
+#' @param x \code{\link{matrix}} of haplotypes/genomes with allele indicators
+#'   for the founders coded as 1, 2, ... Haplotypes/genome are in rows and sites
+#'   are in columns; no missing values are allowed (this is not checked!). Row
+#'   names are essential (formated as ind_genome as returned by AlphaSimR IBD
+#'   functions) to infer the individual and their ploidy (see examples)!
 #'
-#' @return matrix of genomic relatedness coefficients
+#' @return a list with a matrix of gametic relatedness coefficients (genome) and
+#'   a matrix of individual relatedness coefficients (indiv)
+#'
+#' @references
+#' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
+#'   relatives for X-chromosomal loci}. The Journal of Heredity,
+#'   \url{ https://doi.org/10.1093/oxfordjournals.jhered.a110812}
+#'
+#' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
+#'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
+#'   \url{https://doi.org/10.1007/bf00305821}
+#'
+#' Fernando and Grossman (1990) Genetic evaluation with autosomal
+#'   and X-chromosomal inheritance. Theoretical and Applied Genetics,
+#'   \url{https://doi.org/10.1007/bf00224018}
+#'
+#' Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
+#'   prediction of breeding values. Genetics,
+#'   \url{https://doi.org/10.1093/genetics/137.1.319}
+#'
+#' Hill and Weir (2011) Variation in actual relationship as a consequence of
+#'   Mendelian sampling and linkage. Genetics Research,
+#'   \url{https://doi.org/10.1017/s0016672310000480}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -4529,49 +4552,79 @@ calcBeeGRMIbs <- function(x, sex) {
 #'
 #' geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
 #'
-#' sex <- c(getQueen(colony)@sex,
-#'          getFathers(colony)@sex,
-#'          getWorkers(colony)@sex,
-#'          getDrones(colony)@sex,
-#'          getVirginQueens(colony)@sex,
-#'          "F",
-#'          "M")
+#' GRMs <- calcBeeGRMIbd(x = geno)
 #'
-#' GRM <- calcBeeGRMIbd(x = geno)
+#' # library("Matrix"); image(as(GRMs$genome, "Matrix"))
+#' # library("Matrix"); image(as(GRMs$indiv, "Matrix"))
 #'
-#' # library("Matrix"); image(as(GRM, "Matrix"))
+#' GRMs
 #'
-#' x <- diag(GRM)
+#' x <- diag(GRMs$genome)
 #' hist(x)
 #' summary(x)
 #'
-#' x <- GRM[lower.tri(x = GRM, diag = FALSE)]
+#' x <- GRMs$genome[lower.tri(x = GRMs$genome, diag = FALSE)]
 #' hist(x)
 #' summary(x)
 #'
-#' q <- rownames(genoQ)
-#' f <- rownames(genoF)
-#' w <- rownames(genoW)
-#' d <- rownames(genoD)
-#' v <- rownames(genoV)
+#' x <- diag(GRMs$indiv)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRMs$GRMindiv[lower.tri(x = GRMs$GRMIndiv, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' qI <- getQueen(colony)@id
+#' fI <- sort(getFathers(colony)@id)
+#' wI <- sort(getWorkers(colony)@id)
+#' dI <- sort(getDrones(colony)@id)
+#' vI <- sort(getVirginQueens(colony)@id)
+#'
+#' qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
+#' fG <- paste(fI, 1, sep = "_")
+#' wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
+#' dG <- paste(dI, 1, sep = "_")
+#' vG <- c(t(outer(X = vI, Y = 1:2, FUN = paste, sep = "_")))
 #'
 #' # Queen vs others
-#' GRM[q, q]
-#' GRM[f, q]
-#' GRM[w, q]
-#' GRM[d, q]
-#' GRM[v, q]
+#' GRMs$genome[qG, qG]
+#' GRMs$indiv[qI, qI]
+#'
+#' GRMs$genome[fG, qG]
+#' GRMs$indiv[fI, qI]
+#'
+#' GRMs$genome[wG, qG]
+#' GRMs$indiv[wI, qI]
+#'
+#' GRMs$genome[dG, qG]
+#' GRMs$indiv[dI, qI]
+#'
+#' GRMs$genome[vG, qG]
+#' GRMs$indiv[vI, qI]
 #'
 #' # Fathers vs others
-#' GRM[f, f]
-#' GRM[w, f]
-#' GRM[d, f]
-#' GRM[v, f]
+#' GRMs$genome[fG, fG]
+#' GRMs$indiv[fI, fI]
+#'
+#' GRMs$genome[wG, fG]
+#' GRMs$indiv[wI, fI]
+#'
+#' GRMs$genome[dG, fG]
+#' GRMs$indiv[dI, fI]
+#'
+#' GRMs$genome[vG, fG]
+#' GRMs$indiv[vI, fI]
 #'
 #' # Workers vs others
-#' GRM[w, w]
-#' GRM[d, w]
-#' GRM[v, w]
+#' GRMs$genome[wG, wG]
+#' GRMs$indiv[wI, wI]
+#'
+#' GRMs$genome[dG, wG]
+#' GRMs$indiv[dI, wI]
+#'
+#' GRMs$genome[vG, wG]
+#' GRMs$indiv[vI, wI]
 #'
 #' @export
 calcBeeGRMIbd <- function(x) {
@@ -4581,17 +4634,41 @@ calcBeeGRMIbd <- function(x) {
   nHap <- nrow(x)
   nSit <- ncol(x)
   hapId <- rownames(x)
-  G <- matrix(data = numeric(), nrow = nHap, ncol = nHap)
-  x <- t(x) # orient for faster retrieval (R is column major) - not sure it helps!
-  for (ind1 in 1:nHap) {
-    tmp <- x[, ind1]
-    for (ind2 in ind1:nHap) {
-      G[ind2, ind1] <- sum(tmp == x[, ind2])
+  id <- sapply(X = strsplit(x = hapId, split = "_"), FUN = function(z) z[[1]])
+  idUnique <- unique(id)
+  nInd <- length(idUnique)
+  ploidy <- table(id)[idUnique]
+
+  # IBD matching
+  G <- matrix(data = numeric(), nrow = nHap, ncol = nHap,
+              dimnames = list(hapId, hapId))
+  x <- t(x) # orient for faster access (R is column major); unsure it speeds-up!
+  for (hap1 in 1:nHap) {
+    tmp <- x[, hap1]
+    for (hap2 in 1:hap1) {
+      G[hap2, hap1] <- sum(tmp == x[, hap2])
+    }
+    G[hap1, 1:(hap1 - 1)] <- G[1:(hap1 - 1), hap1]
+  }
+  G <- G / nSit
+
+  # Using the Van Arendonk et al. (1994) "trick" of A=1/2KGK^T, but adapted to
+  #   haplo-diploids
+  K <- matrix(data = 0.0, nrow = nInd, ncol = nHap,
+              dimnames = list(idUnique, hapId))
+  lastCol <- 0
+  ones <- c(1, 1)
+  for (ind in 1:nInd) {
+    if (ploidy[ind] == 2) {
+      cols <- lastCol + c(1, 2)
+      lastCol <- cols[2]
+      K[ind, cols] <- ones
+    } else {
+      lastCol <- lastCol + 1
+      K[ind, lastCol] <- 1
     }
   }
-  dimnames(G) <- list(hapId, hapId)
-  G <- G / nSit
-  return(G)
+  return(list(genome = G, indiv = 0.5 * K %*% G %*% t(K)))
 }
 
 #' @rdname getCasteGv
