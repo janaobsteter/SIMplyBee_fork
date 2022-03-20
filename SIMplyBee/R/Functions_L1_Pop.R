@@ -12,7 +12,8 @@
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can also be just \code{NULL}
-#' @param use character, all options provided by \code{\link{selectInd}}
+#' @param use character, all options provided by \code{\link{selectInd}} and
+#'   \code{"order"} that selects \code{1:nInd} individuals
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -121,7 +122,7 @@
 #' getCaste(colony2, caste = "all")
 #'
 #' @export
-getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
+getCaste <- function(x, caste = "all", nInd = NULL, use = "order") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
@@ -151,7 +152,11 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
         if (nIndRequested > nIndAvailable) {
           nIndRequested <- nIndAvailable
         }
-        ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+        if (use == "order") {
+          ret <- pop[1:nIndRequested]
+        } else {
+          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+        }
       }
     }
   } else if (isColonies(x)) {

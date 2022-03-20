@@ -9,7 +9,7 @@
 \alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
-getCaste(x, caste = "all", nInd = NULL, use = "rand")
+getCaste(x, caste = "all", nInd = NULL, use = "order")
 
 getQueen(x)
 
@@ -31,7 +31,8 @@ getDrones(x, nInd = NULL, use = "rand")
 individuals are accessed; if there are less individuals than requested,
 we return the ones available - this can also be just \code{NULL}}
 
-\item{use}{character, all options provided by \code{\link{selectInd}}}
+\item{use}{character, all options provided by \code{\link{selectInd}} and
+\code{"order"} that selects \code{1:nInd} individuals}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is
