@@ -1202,7 +1202,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @export
 crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   # TODO: set nAvgFathers to NULL by default and then grab the value from
-  #       SimParamBee
+  #       SimParamBee: https://github.com/HighlanderLab/SIMplyBee/issues/98
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1222,7 +1222,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   nVirginQueen <- nInd(pop)
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
-    #       nAvgFathers from SimParam when nAvgFathers = NULL?
+    #       nAvgFathers from SimParam when nAvgFathers = NULL?: https://github.com/HighlanderLab/SIMplyBee/issues/98
     pop@misc[[1]]$fathers <- fathers
     pop@misc[[1]]$caste <- "Q"
   } else {
@@ -1303,7 +1303,7 @@ setQueensYearOfBirth <- function(x, year) {
     if (isQueenPresent(x)) {
       x@queen <- setMisc(x = x@queen, slot = "yearOfBirth", value = year)
     } else {
-      stop("Missing queen!") # TODO: should this be a warning?
+      stop("Missing queen!") # TODO: should this be a warning?: https://github.com/HighlanderLab/SIMplyBee/issues/159
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -1351,7 +1351,7 @@ setQueensYOB <- setQueensYearOfBirth
 #' basePop <- setMisc(basePop, slot = "info2", value = "A")
 #' basePop@misc
 #' @export
-# TODO: move to AlphaSimR
+# TODO: move to AlphaSimR: https://github.com/HighlanderLab/SIMplyBee/issues/144
 setMisc <- function(x, slot, value) {
   if (isPop(x)) {
     n <- nInd(x)
