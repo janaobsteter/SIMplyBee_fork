@@ -7,9 +7,7 @@
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
-
-\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}
 \code{simParamBee$nDrones} is used}
 
 \item{new}{logical, should the drones be added a fresh (ignoring currently

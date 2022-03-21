@@ -11,7 +11,7 @@ simulateHoneyBeeGenomes(
   nLig = 0L,
   ploidy = 2L,
   nChr = 16L,
-  nSegSites = 100000L,
+  nSegSites = 100L,
   Ne = 170000L,
   nBp = 225200000/16,
   genLen = 3.199121,

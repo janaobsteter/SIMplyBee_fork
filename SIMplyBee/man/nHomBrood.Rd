@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nHomBrood}
 \alias{nHomBrood}
-\title{Total number of homozygous brood produced by a queen.}
+\title{Total realised number of homozygous brood produced by a queen.}
 \usage{
 nHomBrood(x)
 }
