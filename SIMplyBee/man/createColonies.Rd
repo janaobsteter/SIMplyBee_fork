@@ -15,9 +15,10 @@ createColonies(
 )
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}, individuals that will be used as queens
-of the created colonies (the queens are selected at random if there
-are more than \code{n} in \code{Pop})}
+\item{pop}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
+(selected at random if there are more than \code{n} in \code{Pop});
+\code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
+individuals}
 
 \item{nCol}{integer, number of colonies to create (if only \code{nCol} is
 given then \code{\link{Colonies-class}} is created with \code{nCol} empty
@@ -30,13 +31,15 @@ drones with which the queens will mate with}
 \item{nAvgFathers}{integer, number of drones that a queen mates with
 TODO nAvgFathers default should go to simParamBee and then we set it to NULL
      here and if its NULL we grab value from simParamBee, otherwise use it
-     from the user}
+     from the user
+     https://github.com/HighlanderLab/SIMplyBee/issues/98}
 
 \item{nDronesPerQueen}{integer, number of drones to generate per individual
 in the \code{pop} for mating with the queens
 TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
      here and if its NULL we grab value from simParamBee, otherwise use it
-     from the user}
+     from the user
+     ttps://github.com/HighlanderLab/SIMplyBee/issues/26}
 
 \item{yearOfBirth}{numeric, year of birth of the queen}
 
@@ -56,7 +59,7 @@ When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 # Create 2 empty (NULL) colonies
 apiary <- createColonies(nCol = 2)

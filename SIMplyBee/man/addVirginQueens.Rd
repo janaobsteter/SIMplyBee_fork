@@ -33,7 +33,7 @@ Level 2 function that adds (raises) the specified number of
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -51,12 +51,13 @@ SP$nVirginQueens <- 15
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
 
-nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nVirginQueensFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 addVirginQueens(colony1, nInd = nVirginQueensFun)
 nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
 
 SP$nVirginQueens <- nVirginQueensFun
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
-
 }

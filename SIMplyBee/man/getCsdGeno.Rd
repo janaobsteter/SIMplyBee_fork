@@ -4,7 +4,7 @@
 \alias{getCsdGeno}
 \title{Get genotypes from the csd locus}
 \usage{
-getCsdGeno(x, nInd = NULL, simParamBee = NULL)
+getCsdGeno(x, nInd = NULL, dronesHaploid = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -12,6 +12,8 @@ getCsdGeno(x, nInd = NULL, simParamBee = NULL)
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -25,17 +27,18 @@ matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
 }
 \description{
 Level 0 function that returns genotypes from the csd locus. See
-  \code{\link{SimParamBee}} for more information about the csd locus.
+  \code{\link{SimParamBee}} for more information about the csd locus and how
+  we have implemented it.
 }
 \details{
 The returned genotypes are spanning multiple bi-allelic SNP of
-  non-recombining haplotypes. In most cases you will want to use
+  a non-recombining csd locus / haplotype. In most cases you will want to use
   \code{\link{getCsdAlleles}}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -47,7 +50,6 @@ colony1 <- addVirginQueens(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdGeno(getQueen(colony1))
-getCsdGeno(getVirginQueens(colony1))
 getCsdGeno(getFathers(colony1))
 getCsdGeno(getWorkers(colony1))
 getCsdGeno(getDrones(colony1))
@@ -59,5 +61,4 @@ getCsdAlleles(colony2)
 
 getCsdGeno(apiary)
 getCsdGeno(apiary, nInd = 2)
-
 }

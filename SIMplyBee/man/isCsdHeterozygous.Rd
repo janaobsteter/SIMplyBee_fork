@@ -26,7 +26,7 @@ We could expand \code{isCsdHeterozygous} to work also with
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony1 <- createColony(queen = basePop[2], fathers = drones)
@@ -38,5 +38,4 @@ isCsdHeterozygous(getQueen(colony1))
 isCsdHeterozygous(getWorkers(colony1))
 
 isCsdHeterozygous(getVirginQueens(colony1))
-
 }

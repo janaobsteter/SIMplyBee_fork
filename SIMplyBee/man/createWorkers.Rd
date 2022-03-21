@@ -20,7 +20,7 @@ replace the workers with the exact specified number of only viable workers
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is a list with two
-  nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{pHomBrood}
+  nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{nHomBrood}
   (a numeric); when \code{x} is \code{\link{Colonies-class}} return is a list
   of lists named by colony ID
 }
@@ -33,13 +33,25 @@ Level 1 function that creates the specified number of workers
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
-createWorkers(colony1, nInd = 10)
+
+(tmp <- createWorkers(colony1, nInd = 10))
+colony1@queen@id
+tmp$workers@id
+tmp$workers@sex
+tmp$workers@misc
+tmp$workers@mother
+tmp$workers@father
+SP$pedigree
+SP$recHist
+
 createWorkers(apiary, nInd = 10)
 
 # Using a default in SP$nWorkers
@@ -51,12 +63,13 @@ SP$nWorkers <- 15
 createWorkers(colony1)
 createWorkers(apiary)
 
-nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nWorkersFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 createWorkers(colony1, nInd = nWorkersFun)
 createWorkers(apiary, nInd = nWorkersFun)
 
 SP$nWorkers <- nWorkersFun
 createWorkers(colony1)
 createWorkers(apiary)
-
 }

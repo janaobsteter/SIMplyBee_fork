@@ -19,7 +19,7 @@ Level 0 function that returns the number of colonies in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 founderDrones <- createDrones(x = basePop[1:2], nInd = 10)
 colony1 <- createColony(queen = basePop[3], fathers = founderDrones[1:10])
@@ -36,5 +36,4 @@ nNULLColonies(apiary)
 nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
 nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
 nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
-
 }

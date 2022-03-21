@@ -11,6 +11,7 @@ getColonyQtlHaplo(
   trait = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -34,6 +35,8 @@ value of 2 for male haplotypes}
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
@@ -51,7 +54,7 @@ Level 0 function that returns QTL haplotypes of individuals in
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -72,7 +75,6 @@ getColonyQtlHaplo(apiary)
 getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 getColonyQtlHaplo(apiary, nInd = 1)
 getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}

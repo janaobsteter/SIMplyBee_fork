@@ -9,32 +9,37 @@ beeCross(queen, drones, nProgeny = 1, simParamBee = NULL)
 \arguments{
 \item{queen}{\code{\link{Pop-class}}, with a single diploid individual}
 
-\item{drones}{\code{\link{Pop-class}}, with one or more haploid individual(s)}
+\item{drones}{\code{\link{Pop-class}}, with one or more diploid (double
+haploid) individual(s)}
 
 \item{nProgeny}{integer, number of progeny to create per cross}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters;
-passed to \code{\link{reduceGenome}} in generating queen gametes and
-\code{\link{mergeGenome}} in merging queen and drone gametes}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}} with diploid individuals
 }
 \description{
-Level 1 function that crosses a queen and drones. Drones are
-  haploid, while the queen is diploid, so we first generate gametes (with
-  recombination) from her and merge them with drone genomes (=gametes), where
-  we randomly re-sample drones to get the desired number of progeny. This is
-  an utility function, and you most likely want to use the
-  \code{\link{crossColony}} function.
+Level 1 function that crosses a queen and drones. Queen is
+  diploid, while drones are double haploids so we use AlphaSimR diploid
+  functionality to make this cross, but since drones are double haploids we
+  get the desired outcome. This is an utility function, and you most likely
+  want to use the \code{\link{crossColony}} or \code{\link{crossVirginQueen}}
+  functions.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 queen <- basePop[1]
 drones <- createDrones(x = basePop[2], nInd = 5)
-beeCross(queen, drones, nProgeny = 10)
-
+workers <- beeCross(queen, drones, nProgeny = 4)
+workers@id
+workers@mother
+workers@father
+SP$pedigree
+SP$recHist
 }

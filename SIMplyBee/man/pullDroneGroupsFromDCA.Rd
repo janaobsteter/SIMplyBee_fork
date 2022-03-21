@@ -7,7 +7,8 @@
 pullDroneGroupsFromDCA(DCA, nGroup, avgGroupSize = 17)
 }
 \arguments{
-\item{DCA}{\code{\link{Pop-class}}, population of drones}
+\item{DCA}{\code{\link{Pop-class}}, population of drones;
+\code{\link{isDrone}} test will be run on these individuals}
 
 \item{nGroup}{integer, number of drone groups to be created}
 
@@ -27,7 +28,7 @@ Level 1 function that pulls drone groups from a Drone
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -37,5 +38,4 @@ colony2 <- addDrones(colony2, nInd = 20)
 apiary <- c(colony1, colony2)
 DCA <- createDCA(apiary)
 pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
-
 }

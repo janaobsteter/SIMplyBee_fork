@@ -28,7 +28,7 @@
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
@@ -36,7 +36,6 @@
 #'
 #' colony2 <- createColony(virginQueens = basePop[3])
 #' colony2
-#'
 #' @export
 createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
                          fathers = NULL, virginQueens = NULL,
@@ -53,6 +52,9 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     if (nInd(queen) > 1) {
       stop("You must provide just one queen for the colony!")
     }
+    if (!(isVirginQueen(queen) | isQueen(queen))) {
+      stop("Individual in queen must be a virgin queen or a queen!")
+    }
     id <- queen@id
     if (!is.null(yearOfBirth)) {
       if (is.null(queen@misc[[1]]$yearOfBirth)) {
@@ -65,11 +67,16 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       if (!isPop(fathers)) {
         stop("Argument fathers must be a Pop class object!")
       }
+      if (any(!isDrone(fathers))) {
+        stop("Individuals in fathers must be drones!")
+      }
       if (isQueenMated(queen)) {
         warning("The queen is already mated - ignoring the fathers argument!")
       } else {
-        queen <- crossVirginQueen(pop = queen, fathers = fathers,
-                                  simParamBee = simParamBee)
+        queen <- crossVirginQueen(
+          pop = queen, fathers = fathers,
+          simParamBee = simParamBee
+        )
       }
     }
     if (!is.null(virginQueens)) {
@@ -77,11 +84,13 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       warning("Are they properly related?")
     }
   }
-  colony <- new(Class = "Colony",
-                id = id,
-                location = location,
-                queen = queen,
-                virginQueens = virginQueens)
+  colony <- new(
+    Class = "Colony",
+    id = id,
+    location = location,
+    queen = queen,
+    virginQueens = virginQueens
+  )
   colony <- resetEvents(colony)
   validObject(colony)
   return(colony)
@@ -97,22 +106,23 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #' @param colony \code{\link{Colony-class}}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
 #'   queen of the colony; if she is not mated, she will be added as a virgin
-#'   queen that will have to be mated later.
+#'   queen that will have to be mated later; test will be run if the individual
+#'   \code{\link{isVirginQueen}} or \code{\link{isQueen}}
 #' @param removeVirginQueens logical, remove existing virgin queens, default is
 #'   \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
-#'   to ensure the provided queen prevails. See also details.
+#'   to ensure the provided queen prevails (see details)
 #'
 #' @details If the provided queen is mated, then she is saved in the queen slot
 #'   of the colony. If she is not mated, then she is saved in the virgin queen
 #'   slot (replacing any existing virgin queens) and once she is mated will be
 #'   promoted to the queen of the colony.
 #'
-#' @return \code{\link{Colony-class}} with a new queen (see also details)
+#' @return \code{\link{Colony-class}} with a new queen (see details)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -124,14 +134,16 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
 #'
 #' matedQueen <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10])
 #' reQueenColony(colony, queen = matedQueen)
-#'
 #' @export
 reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  if  (!isPop(queen)) {
+  if (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
+  }
+  if (!(isVirginQueen(queen) | isQueen(queen))) {
+    stop("Individual in queen must be a virgin queen or a queen!")
   }
   if (isQueenMated(queen)) {
     if (nInd(queen) > 1) {
@@ -172,7 +184,7 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -190,14 +202,15 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
 #' addVirginQueens(colony1)
 #' nVirginQueens(addVirginQueens(apiary))
 #'
-#' nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nVirginQueensFun <- function(colony) {
+#'   rpois(n = 1, lambda = 15)
+#' }
 #' addVirginQueens(colony1, nInd = nVirginQueensFun)
 #' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
 #'
 #' SP$nVirginQueens <- nVirginQueensFun
 #' addVirginQueens(colony1)
 #' nVirginQueens(addVirginQueens(apiary))
-#'
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
                             simParamBee = NULL) {
@@ -218,25 +231,23 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
       nInd <- nInd(x)
     }
     if (nInd > 0) {
-      newVirginQueens <- createVirginQueens(x = x, nInd = nInd, year = year,
-                                            simParamBee = simParamBee)
+      newVirginQueens <- createVirginQueens(
+        x = x, nInd = nInd, year = year,
+        simParamBee = simParamBee
+      )
       if (is.null(x@virginQueens) | new) {
-        x@virginQueens <- newVirginQueens$virginQueens
-        x@queen@misc[[1]]$pHomBrood <- newVirginQueens$pHomBrood
+        x@virginQueens <- newVirginQueens
       } else {
-        x@virginQueens <- c(x@virginQueens, newVirginQueens$virginQueens)
-        # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
-        #       colony!
-        #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
-        #           https://github.com/HighlanderLab/SIMplyBee/issues/80
-        x@queen@misc[[1]]$pHomBrood <- (x@queen@misc[[1]]$pHomBrood + newVirginQueens$pHomBrood) / 2
+        x@virginQueens <- c(x@virginQueens, newVirginQueens)
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- addVirginQueens(x = x[[colony]], nInd = nInd, new = new,
-                                     year = year, simParamBee = simParamBee)
+      x[[colony]] <- addVirginQueens(
+        x = x[[colony]], nInd = nInd, new = new,
+        year = year, simParamBee = simParamBee
+      )
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -269,7 +280,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -287,14 +298,15 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #'
-#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nWorkersFun <- function(colony) {
+#'   rpois(n = 1, lambda = 15)
+#' }
 #' addWorkers(colony1, nInd = nWorkersFun)
 #' nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 #'
 #' SP$nWorkers <- nWorkersFun
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
-#'
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -311,21 +323,21 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
       newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
-        x@queen@misc[[1]]$pHomBrood <- newWorkers$pHomBrood
+        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood
+        x@queen@misc[[1]]$nWorkers <- nInd
       } else {
         x@workers <- c(x@workers, newWorkers$workers)
-        # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
-        #       colony!
-        #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
-        #           https://github.com/HighlanderLab/SIMplyBee/issues/80
-        x@queen@misc[[1]]$pHomBrood <- (x@queen@misc[[1]]$pHomBrood + newWorkers$pHomBrood) / 2
+        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd
+        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- addWorkers(x = x[[colony]], nInd = nInd, new = new,
-                                exact = exact, simParamBee = simParamBee)
+      x[[colony]] <- addWorkers(
+        x = x[[colony]], nInd = nInd, new = new,
+        exact = exact, simParamBee = simParamBee
+      )
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -342,7 +354,6 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #'   there are already some drones present, new and present drones are combined.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param nInd numeric or function, number of drones; if \code{NULL} then
 #'   \code{simParamBee$nDrones} is used
 #' @param new logical, should the drones be added a fresh (ignoring currently
 #'   present drones)
@@ -354,7 +365,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -372,14 +383,15 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #'
-#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nDronesFun <- function(colony) {
+#'   rpois(n = 1, lambda = 15)
+#' }
 #' addDrones(colony1, nInd = nDronesFun)
 #' nDrones(addDrones(apiary, nInd = nDronesFun))
 #'
 #' SP$nDrones <- nDronesFun
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
-#'
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -396,15 +408,19 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       newDrones <- createDrones(x, nInd)
       if (is.null(x@drones) | new) {
         x@drones <- newDrones
+        x@queen@misc[[1]]$nDrones <- nInd
       } else {
         x@drones <- c(x@drones, newDrones)
+        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- addDrones(x = x[[colony]], nInd = nInd, new = new,
-                               simParamBee = simParamBee)
+      x[[colony]] <- addDrones(
+        x = x[[colony]], nInd = nInd, new = new,
+        simParamBee = simParamBee
+      )
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -445,7 +461,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -467,8 +483,12 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' colony # adding completely new workers & drones
 #'
 #' # Using functions
-#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
-#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nWorkersFun <- function(colony) {
+#'   rpois(n = 1, lambda = 100)
+#' }
+#' nDronesFun <- function(colony) {
+#'   rpois(n = 1, lambda = 15)
+#' }
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
@@ -479,7 +499,6 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' buildUpColony(colony)
 #' buildUpColony(colony)
-#'
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
                           new = FALSE, exact = FALSE, resetEvents = FALSE,
@@ -504,8 +523,10 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     n <- nWorkers - nWorkers(colony)
   }
   if (n > 0) {
-    colony <- addWorkers(x = colony, nInd = n, new = new,
-                         exact = exact, simParamBee = simParamBee)
+    colony <- addWorkers(
+      x = colony, nInd = n, new = new,
+      exact = exact, simParamBee = simParamBee
+    )
   }
 
   # Drones
@@ -521,8 +542,10 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     n <- nDrones - nDrones(colony)
   }
   if (n > 0) {
-    colony <- addDrones(x = colony, nInd = n, new = new,
-                        simParamBee = simParamBee)
+    colony <- addDrones(
+      x = colony, nInd = n, new = new,
+      simParamBee = simParamBee
+    )
   }
 
   # Events
@@ -557,7 +580,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -577,7 +600,6 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 #' apiary <- replaceVirginQueens(apiary, p = 1.5)
 #' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-#'
 #' @export
 replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
                                 simParamBee = NULL) {
@@ -590,26 +612,29 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
       nVirginQueensReplaced <- round(nVirginQueens * p)
       if (nVirginQueensReplaced < nVirginQueens) {
         nVirginQueensStay <- nVirginQueens - nVirginQueensReplaced
-        tmp <- createVirginQueens(x, nInd = nVirginQueensReplaced,
-                                  year = year, simParamBee = simParamBee)
-        x@virginQueens <- c(selectInd(x@virginQueens, nInd = nVirginQueensStay, use = use),
-                            tmp$virginQueens)
-        # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
-        #       colony!
-        #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
-        #           https://github.com/HighlanderLab/SIMplyBee/issues/80
-        x@queen@misc[[1]]$pHomBrood <- (x@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
+        tmp <- createVirginQueens(x,
+          nInd = nVirginQueensReplaced,
+          year = year, simParamBee = simParamBee
+        )
+        x@virginQueens <- c(
+          selectInd(x@virginQueens, nInd = nVirginQueensStay, use = use),
+          tmp
+        )
       } else {
-        x <- addVirginQueens(x = x, nInd = nVirginQueensReplaced, new = TRUE,
-                             year = year, simParamBee = simParamBee)
+        x <- addVirginQueens(
+          x = x, nInd = nVirginQueensReplaced, new = TRUE,
+          year = year, simParamBee = simParamBee
+        )
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- replaceVirginQueens(x = x[[colony]], p = p,
-                                         use = use, year = year,
-                                         simParamBee = simParamBee)
+      x[[colony]] <- replaceVirginQueens(
+        x = x[[colony]], p = p,
+        use = use, year = year,
+        simParamBee = simParamBee
+      )
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -640,7 +665,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -660,7 +685,6 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #' apiary <- replaceWorkers(apiary, p = 1.5)
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
-#'
 #' @export
 replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -676,23 +700,26 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = 
       if (nWorkersReplaced < nWorkers) {
         nWorkersStay <- nWorkers - nWorkersReplaced
         tmp <- createWorkers(x, nInd = nWorkersReplaced, exact = exact, simParamBee = simParamBee)
-        x@workers <- c(selectInd(x@workers, nInd = nWorkersStay, use = use),
-                            tmp$workers)
-        # TODO: we need some scaling of the pHomBrood here and sticking pHomBrood into
-        #       colony!
-        #       see https://github.com/HighlanderLab/SIMplyBee/issues/104
-        #           https://github.com/HighlanderLab/SIMplyBee/issues/80
-        x@queen@misc[[1]]$pHomBrood <- (x@queen@misc[[1]]$pHomBrood + tmp$pHomBrood) / 2
+        x@workers <- c(
+          selectInd(x@workers, nInd = nWorkersStay, use = use),
+          tmp$workers
+        )
+        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nWorkersReplaced
+        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
       } else {
-        x <- addWorkers(x = x, nInd = nWorkersReplaced, new = TRUE,
-                        exact = exact, simParamBee = simParamBee)
+        x <- addWorkers(
+          x = x, nInd = nWorkersReplaced, new = TRUE,
+          exact = exact, simParamBee = simParamBee
+        )
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- replaceWorkers(x = x[[colony]], p = p, use = use,
-                                    exact = exact, simParamBee = simParamBee)
+      x[[colony]] <- replaceWorkers(
+        x = x[[colony]], p = p, use = use,
+        exact = exact, simParamBee = simParamBee
+      )
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -719,7 +746,7 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = 
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -739,7 +766,6 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = 
 #' lapply(getDrones(apiary), FUN = function(x) x@id)
 #' apiary <- replaceDrones(apiary, p = 1.5)
 #' lapply(getDrones(apiary), FUN = function(x) x@id)
-#'
 #' @export
 replaceDrones <- function(x, p = 1, use = "rand") {
   if (isColony(x)) {
@@ -751,8 +777,11 @@ replaceDrones <- function(x, p = 1, use = "rand") {
       nDronesReplaced <- round(nDrones * p)
       if (nDronesReplaced < nDrones) {
         nDronesStay <- nDrones - nDronesReplaced
-        x@drones <- c(selectInd(x@drones, nInd = nDronesStay, use = use),
-                           createDrones(x, nInd = nDronesReplaced))
+        x@drones <- c(
+          selectInd(x@drones, nInd = nDronesStay, use = use),
+          createDrones(x, nInd = nDronesReplaced)
+        )
+        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nDronesReplaced
       } else {
         x <- addDrones(x = x, nInd = nDronesReplaced, new = TRUE)
       }
@@ -781,7 +810,7 @@ replaceDrones <- function(x, p = 1, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -791,7 +820,6 @@ replaceDrones <- function(x, p = 1, use = "rand") {
 #' colony <- removeQueen(colony)
 #' colony
 #' getQueen(colony)
-#'
 #' @export
 removeQueen <- function(colony) {
   if (!isColony(colony)) {
@@ -819,7 +847,7 @@ removeQueen <- function(colony) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -829,7 +857,6 @@ removeQueen <- function(colony) {
 #' colony <- removeVirginQueens(colony)
 #' colony
 #' getVirginQueens(colony)
-#'
 #' @export
 removeVirginQueens <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
@@ -843,8 +870,10 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
     colony@virginQueens <- NULL
   } else {
     n <- round(nVirginQueens(colony) * (1 - p))
-    colony@virginQueens <- selectInd(pop = colony@virginQueens,
-                                     nInd = n, use = use)
+    colony@virginQueens <- selectInd(
+      pop = colony@virginQueens,
+      nInd = n, use = use
+    )
   }
   validObject(colony)
   return(colony)
@@ -866,7 +895,7 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -883,7 +912,6 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' colony <- removeWorkers(colony, p = 1.0)
 #' colony
 #' getWorkers(colony)
-#'
 #' @export
 removeWorkers <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
@@ -897,8 +925,10 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
     colony@workers <- NULL
   } else {
     nWorkersNew <- round(nWorkers(colony) * (1 - p))
-    colony@workers <- selectInd(pop = colony@workers,
-                                nInd = nWorkersNew, use = use)
+    colony@workers <- selectInd(
+      pop = colony@workers,
+      nInd = nWorkersNew, use = use
+    )
   }
   validObject(colony)
   return(colony)
@@ -920,7 +950,7 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -936,7 +966,6 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
 #' colony <- removeDrones(colony, p = 1.0)
 #' colony
 #' getDrones(colony)
-#'
 #' @export
 removeDrones <- function(colony, p = 1, use = "rand") {
   if (!isColony(colony)) {
@@ -950,8 +979,10 @@ removeDrones <- function(colony, p = 1, use = "rand") {
     colony@drones <- NULL
   } else {
     nDronesNew <- round(nDrones(colony) * (1 - p))
-    colony@drones <- selectInd(pop = colony@drones,
-                               nInd = nDronesNew, use = use)
+    colony@drones <- selectInd(
+      pop = colony@drones,
+      nInd = nDronesNew, use = use
+    )
   }
   validObject(colony)
   return(colony)
@@ -977,7 +1008,7 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones)
@@ -1034,7 +1065,6 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' tmp[[1]]
 #' resetEvents(tmp)[[1]]
 #' resetEvents(tmp, collapse = TRUE)[[1]]
-#'
 #' @export
 resetEvents <- function(x, collapse = NULL) {
   if (isColony(x)) {
@@ -1054,8 +1084,10 @@ resetEvents <- function(x, collapse = NULL) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- resetEvents(x = x[[colony]],
-                                 collapse = collapse)
+      x[[colony]] <- resetEvents(
+        x = x[[colony]],
+        collapse = collapse
+      )
     }
     validObject(x)
   } else {
@@ -1075,7 +1107,8 @@ resetEvents <- function(x, collapse = NULL) {
 #'   TODO: is this correct (about destroy)?
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param fathers \code{\link{Pop-class}}, drones
+#' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
+#'   will be run on these individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1086,7 +1119,7 @@ resetEvents <- function(x, collapse = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #'
@@ -1094,7 +1127,6 @@ resetEvents <- function(x, collapse = NULL) {
 #' colony
 #' colony <- crossColony(colony, fathers = drones)
 #' colony
-#'
 #' @export
 crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1112,6 +1144,9 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (!isPop(fathers)) {
     stop("Argument fathers must be a Pop class object!")
   }
+  if (any(!isDrone(fathers))) {
+    stop("Individuals in fathers must be drones!")
+  }
   # Pick one virgin queen that will prevail
   # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
@@ -1120,8 +1155,10 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
   #       but throw a warning if a user provided more fathers? If the user specifies
   #       nAvgFathers, then we take as many as he/she wants
-  queen <- crossVirginQueen(pop = virginQueen, fathers,
-                            simParamBee = simParamBee)
+  queen <- crossVirginQueen(
+    pop = virginQueen, fathers,
+    simParamBee = simParamBee
+  )
   colony <- reQueenColony(colony, queen)
   colony <- removeVirginQueens(colony)
   validObject(colony)
@@ -1142,13 +1179,12 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' (colony <- buildUpColony(colony, nWorkers = 100))
 #' collapseColony(colony)
-#'
 #' @export
 collapseColony <- function(colony) {
   if (!isColony(colony)) {
@@ -1180,7 +1216,7 @@ collapseColony <- function(colony) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -1189,7 +1225,6 @@ collapseColony <- function(colony) {
 #' tmp <- swarmColony(colony)
 #' tmp$swarm
 #' tmp$remnant
-#'
 #' @export
 swarmColony <- function(colony, p = 0.5, year = NULL) {
   if (!isColony(colony)) {
@@ -1207,8 +1242,10 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
 
   swarmColony <- createColony()
   # It's not re-queening, but the function also sets the colony id
-  swarmColony <- reQueenColony(colony = swarmColony,
-                               queen = colony@queen)
+  swarmColony <- reQueenColony(
+    colony = swarmColony,
+    queen = colony@queen
+  )
   swarmColony@workers <- tmp$pulled
   swarmColony <- setLocation(x = swarmColony, location = currentLocation)
 
@@ -1221,8 +1258,10 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  remnantColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
-                                                   year = year)$virginQueens
+  remnantColony@virginQueens <- createVirginQueens(
+    x = colony, nInd = 1,
+    year = year
+  )$virginQueens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1255,14 +1294,13 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
 #' (colony <- buildUpColony(colony, nWorkers = 100))
 #'
 #' supersedeColony(colony)
-#'
 #' @export
 supersedeColony <- function(colony, year = NULL) {
   if (!isColony(colony)) {
@@ -1280,8 +1318,10 @@ supersedeColony <- function(colony, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  colony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
-                                            year = year)$virginQueens
+  colony@virginQueens <- createVirginQueens(
+    x = colony, nInd = 1,
+    year = year
+  )$virginQueens
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -1309,7 +1349,7 @@ supersedeColony <- function(colony, year = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -1318,7 +1358,6 @@ supersedeColony <- function(colony, year = NULL) {
 #' tmp <- splitColony(colony)
 #' tmp$split
 #' tmp$remnant
-#'
 #' @export
 splitColony <- function(colony, p = 0.3, year = NULL) {
   if (!isColony(colony)) {
@@ -1343,8 +1382,10 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
   # TODO: add the exact = 1 argument in createVirginQueens() once available
-  splitColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
-                                                 year = year)$virginQueens
+  splitColony@virginQueens <- createVirginQueens(
+    x = colony, nInd = 1,
+    year = year
+  )$virginQueens
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"
@@ -1381,7 +1422,7 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -1409,7 +1450,6 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
 #' # Assuming different locations (so tmp is not an apiary in one location!)
 #' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 #' getLocation(tmp)
-#'
 #' @export
 setLocation <- function(x, location) {
   if (isColony(x)) {

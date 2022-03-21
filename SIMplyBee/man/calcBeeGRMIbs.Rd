@@ -10,8 +10,8 @@ calcBeeGRMIbs(x, sex)
 \arguments{
 \item{x}{\code{\link{matrix}} of genotypes represented as allele dosage coded
 as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
-(drones); individuals are in rows and sites are in columns; no missing
-values are allowed (this is not checked!)}
+(fathers or drones); individuals are in rows and sites are in columns; no
+missing values are allowed (this is not checked - you will get NAs!)}
 
 \item{sex}{character vector denoting sex for individuals with genotypes in
 \code{x} - \code{"F"} for female and \code{"M"} for male}
@@ -28,35 +28,37 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addDrones(colony1, nInd = 2)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
 
-genoQ <- getQueensSegSiteGeno(colony1)
-genoF <- getFathersSegSiteGeno(colony1)
-genoW <- getWorkersSegSiteGeno(colony1)
-genoD <- getDronesSegSiteGeno(colony1)
-genoV <- getVirginQueensSegSiteGeno(colony1)
-genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
-geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
-rownames(geno)[length(rownames(geno))] <- "M"
-sex <- c("F",
-         rep("M", times = nrow(genoF)),
-         rep("F", times = nrow(genoW)),
-         rep("M", times = nrow(genoD)),
-         rep("F", times = nrow(genoV)),
-         "F")
+genoQ <- getQueensSegSiteGeno(colony)
+genoF <- getFathersSegSiteGeno(colony)
+genoW <- getWorkersSegSiteGeno(colony)
+genoD <- getDronesSegSiteGeno(colony)
+genoV <- getVirginQueensSegSiteGeno(colony)
+genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
+genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
+
+geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
+n <- length(rownames(geno))
+rownames(geno)[c(n-1, n)] <- c("mw", "md")
+
+sex <- c(getQueen(colony)@sex,
+         getFathers(colony)@sex,
+         getWorkers(colony)@sex,
+         getDrones(colony)@sex,
+         getVirginQueens(colony)@sex,
+         "F",
+         "M")
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
-if (require("Matrix")) {
-  image(as(GRM, "Matrix"),
-        xlab = "Individual", ylab = "Individual")
-}
+# library("Matrix"); image(as(GRM, "Matrix"))
 
 x <- diag(GRM)
 hist(x)
@@ -71,21 +73,24 @@ f <- rownames(genoF)
 w <- rownames(genoW)
 d <- rownames(genoD)
 v <- rownames(genoV)
-m <- "M"
+mw <- "mw"
+md <- "md"
 
 # Queen vs others
 GRM[q, f]
 GRM[q, w]
 GRM[q, d]
 GRM[q, v]
-GRM[q, m]
+GRM[q, mw]
+GRM[q, md]
 
 # Fathers vs others
 GRM[f, f]
 GRM[f, w]
 GRM[f, d]
 GRM[f, v]
-GRM[f, m]
+GRM[f, mw]
+GRM[f, md]
 
 # Workers vs others
 GRM[w, w]

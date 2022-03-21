@@ -16,6 +16,7 @@ getCasteSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
@@ -33,6 +34,7 @@ getFathersSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
@@ -60,6 +62,7 @@ getDronesSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -80,6 +83,8 @@ value of 2 for male haplotypes}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -110,7 +115,7 @@ Level 0 function that returns SNP array haplotypes of
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addSnpChip(nSnpPerChr = 10)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -157,7 +162,6 @@ getWorkersSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "drones")
 getDronesSnpHaplo(apiary)
-
 }
 \seealso{
 \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}

@@ -9,7 +9,8 @@ crossColonies(colonies, DCA, nAvgFathers, simParamBee = NULL)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area}
+\item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area;
+\code{\link{isDrone}} test will be run on these to ensure these are drones}
 
 \item{nAvgFathers}{numeric, average number of drones (fathers) to used in
 matings (see \code{\link{crossColony}})}
@@ -28,7 +29,7 @@ Level 3 function that does the same as \code{\link{crossColony}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 30)
 colony1 <- createColony(virginQueen = basePop[2])

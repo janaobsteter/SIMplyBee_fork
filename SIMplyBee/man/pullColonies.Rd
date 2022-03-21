@@ -29,7 +29,7 @@ Level 3 function that pulls out some colonies based on colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 founderDrones <- createDrones(x = basePop[1:4], nInd = 10)
 colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])

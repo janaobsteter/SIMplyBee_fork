@@ -2,7 +2,8 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{setPhenoColonies}
 \alias{setPhenoColonies}
-\title{TODO}
+\title{TODO
+https://github.com/HighlanderLab/SIMplyBee/issues/158}
 \usage{
 setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
 }

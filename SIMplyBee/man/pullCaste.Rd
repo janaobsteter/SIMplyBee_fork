@@ -54,7 +54,7 @@ Level 1 function that pulls individuals from a caste in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -107,7 +107,6 @@ pullDrones(apiary)
 nDrones(apiary)
 nDrones(pullDrones(apiary)$colonies)
 nDrones(pullDrones(apiary, nInd = 5)$colonies)
-
 }
 \seealso{
 \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},

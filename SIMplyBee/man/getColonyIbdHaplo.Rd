@@ -9,6 +9,7 @@ getColonyIbdHaplo(
   caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -26,6 +27,8 @@ access different number of different caste - when this is the case
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
@@ -40,11 +43,10 @@ Level 0 function that returns IBD (identity by descent)
   haplotypes of individuals in colony.
 }
 \examples{
-if (FALSE) {
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -65,7 +67,6 @@ getColonyIbdHaplo(apiary)
 getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 getColonyIbdHaplo(apiary, nInd = 1)
 getColonyIbdHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-}
 }
 \seealso{
 \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}

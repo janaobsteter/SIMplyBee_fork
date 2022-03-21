@@ -2,29 +2,30 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{pHomBrood}
 \alias{pHomBrood}
-\title{Percentage of homozygous brood of a queen}
+\title{Theoretical percentage of homozygous brood of a queen}
 \usage{
 pHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-  \code{\link{Colonies-class}}
 
-TODO: describe queen's and colony's pHomBrood}
+  \code{\link{Colonies-class}}
+TODO: describe queen's and colony's pHomBrood
+  https://github.com/HighlanderLab/SIMplyBee/issues/80
+  https://github.com/HighlanderLab/SIMplyBee/issues/104}
 }
 \value{
 numeric, named by colony id when \code{x} is
   \code{\link{Colonies-class}}
 }
 \description{
-Level 0 function that returns the percentage of homozygous brood
-  in a colony (these are non viable individuals and only their number is
-  stored).
+Level 0 function that returns the theoretical percentage of
+homozygous brood of a queen in a colony.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -35,7 +36,7 @@ colony1 <- addDrones(colony1, nInd = 10)
 colony2 <- addDrones(colony2, nInd = 20)
 
 # Virgin queen
-pHomBrood(basePop[2])
+try(pHomBrood(basePop[2]))
 
 # Mated queen
 pHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
@@ -49,5 +50,4 @@ pHomBrood(colony1)
 # Colonies
 apiary <- c(colony1, colony2)
 pHomBrood(apiary)
-
 }

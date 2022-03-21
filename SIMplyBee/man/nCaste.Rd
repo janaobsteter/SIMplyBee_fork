@@ -26,7 +26,7 @@ Returns the number of individuals of a caste in a colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -49,7 +49,6 @@ nCaste(apiary, caste = "virginQueens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
 nCaste(apiary, caste = "all")
-
 }
 \seealso{
 \code{\link{nQueens}}, \code{\link{nFathers}},

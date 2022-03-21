@@ -25,11 +25,10 @@ Level 1 function that pulls individuals from a population and
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+SP <- SimParam$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 
 pullInd(basePop, nInd = 2)
 pullInd(basePop, nInd = 3)
 pullInd(basePop)
-
 }

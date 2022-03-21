@@ -26,7 +26,7 @@ Level 2 function that to set colony location to (x, y)
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -54,5 +54,4 @@ getLocation(apiary)
 # Assuming different locations (so tmp is not an apiary in one location!)
 tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 getLocation(tmp)
-
 }

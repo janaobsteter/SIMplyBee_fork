@@ -19,7 +19,7 @@ Level 0 function that returns colony swarmed status. This will
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -41,5 +41,4 @@ tmp <- swarmColonies(apiary)
 tmp
 hasSwarmed(tmp$swarms)
 hasSwarmed(tmp$remnants)
-
 }

@@ -10,17 +10,36 @@
 \title{Access genotypes for all segregating sites of individuals in a
   caste}
 \usage{
-getCasteSegSiteGeno(x, caste, nInd = NULL, chr = NULL, simParamBee = NULL)
+getCasteSegSiteGeno(
+  x,
+  caste,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getQueensSegSiteGeno(x, chr = NULL, simParamBee = NULL)
 
-getFathersSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getFathersSegSiteGeno(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getVirginQueensSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
 getWorkersSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
-getDronesSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getDronesSegSiteGeno(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -33,6 +52,8 @@ individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -62,7 +83,7 @@ Level 0 function that returns genotypes for all segregating
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -109,7 +130,6 @@ getWorkersSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "drones")
 getDronesSegSiteGeno(apiary)
-
 }
 \seealso{
 \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}

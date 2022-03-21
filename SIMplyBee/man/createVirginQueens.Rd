@@ -17,9 +17,9 @@ createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Colony-class}} return is a list with two
-  nodes named \code{virginQueens} (a \code{\link{Pop-class}}) and
-  \code{pHomBrood} (a numeric); when \code{x} is \code{\link{Colonies-class}}
+when \code{x} is \code{\link{Colony-class}} returns
+  \code{virginQueens} (a \code{\link{Pop-class}});
+  when \code{x} is \code{\link{Colonies-class}}
   return is a list of lists named by colony ID
 }
 \description{
@@ -31,13 +31,25 @@ Level 1 function that creates the specified number of virgin
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
-createVirginQueens(colony1, nInd = 10)
+
+(virginQueens <- createVirginQueens(colony1, nInd = 10))
+colony1@queen@id
+virginQueens@id
+virginQueens@sex
+virginQueens@misc
+virginQueens@mother
+virginQueens@father
+SP$pedigree
+SP$recHist
+
 createVirginQueens(apiary, nInd = 10)
 
 # Using a default in SP$nVirginQueens
@@ -49,12 +61,13 @@ SP$nVirginQueens <- 15
 createVirginQueens(colony1)
 createVirginQueens(apiary)
 
-nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nVirginQueensFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 createVirginQueens(colony1, nInd = nVirginQueensFun)
 createVirginQueens(apiary, nInd = nVirginQueensFun)
 
 SP$nVirginQueens <- nVirginQueensFun
 createVirginQueens(colony1)
 createVirginQueens(apiary)
-
 }

@@ -8,6 +8,7 @@ getCsdAlleles(
   x,
   nInd = NULL,
   allele = "all",
+  dronesHaploid = TRUE,
   collapse = FALSE,
   unique = FALSE,
   simParamBee = NULL
@@ -23,6 +24,8 @@ are taken; this can be useful as a test of sampling individuals}
 \item{allele}{character, either "all" for both alleles or an integer for a
 single allele, use a value of 1 for female allele and a value of 2 for male
 allele}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
 csd alleles in either the entire population, colony, or colonies. Default
@@ -53,7 +56,7 @@ If both collapse and unique are \code{TRUE}, the function
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -64,12 +67,12 @@ colony1 <- addDrones(colony1, nInd = 2)
 apiary <- c(colony1, colony2)
 
 getCsdAlleles(getQueen(colony1))
-getCsdAlleles(getVirginQueens(colony1))
 getCsdAlleles(getFathers(colony1))
 getCsdAlleles(getWorkers(colony1))
 getCsdAlleles(getDrones(colony1))
 
 getCsdAlleles(colony1)
+getCsdAlleles(colony1, unique = TRUE)
 getCsdAlleles(colony1, collapse = TRUE)
 getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
 
@@ -77,9 +80,9 @@ getCsdAlleles(getDrones(colony2))
 getCsdAlleles(colony2)
 
 getCsdAlleles(apiary)
+getCsdAlleles(apiary, unique = TRUE)
 getCsdAlleles(apiary, collapse = TRUE)
 getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 
 getCsdAlleles(apiary, nInd = 2)
-
 }

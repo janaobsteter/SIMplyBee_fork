@@ -19,7 +19,7 @@ Level 0 function that returns the colony ID. This is by
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -33,5 +33,4 @@ getId(apiary)
 
 colony2 <- removeQueen(colony2)
 getId(colony2)
-
 }

@@ -24,7 +24,7 @@ Level 2 function that removes a proportion of drones, for
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)
@@ -40,5 +40,4 @@ getDrones(colony)@id
 colony <- removeDrones(colony, p = 1.0)
 colony
 getDrones(colony)
-
 }

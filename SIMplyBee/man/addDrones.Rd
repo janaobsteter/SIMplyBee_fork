@@ -7,9 +7,7 @@
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
-
-\item{nInd}{numeric or function, number of drones; if \code{NULL} then
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}
 \code{simParamBee$nDrones} is used}
 
 \item{new}{logical, should the drones be added a fresh (ignoring currently
@@ -29,7 +27,7 @@ Level 2 function that adds (raises) the specified number of
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -47,12 +45,13 @@ SP$nDrones <- 15
 addDrones(colony1)
 nDrones(addDrones(apiary))
 
-nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nDronesFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 addDrones(colony1, nInd = nDronesFun)
 nDrones(addDrones(apiary, nInd = nDronesFun))
 
 SP$nDrones <- nDronesFun
 addDrones(colony1)
 nDrones(addDrones(apiary))
-
 }

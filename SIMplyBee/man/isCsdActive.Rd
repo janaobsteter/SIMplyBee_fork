@@ -24,5 +24,4 @@ isCsdActive()
 
 SP <- SimParamBee$new(founderGenomes)
 isCsdActive()
-
 }

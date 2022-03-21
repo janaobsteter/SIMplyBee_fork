@@ -9,17 +9,36 @@
 \alias{getDronesIbdHaplo}
 \title{Access IBD haplotypes of individuals in a caste}
 \usage{
-getCasteIbdHaplo(x, caste, nInd = NULL, chr = NULL, simParamBee = NULL)
+getCasteIbdHaplo(
+  x,
+  caste,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getQueensIbdHaplo(x, chr = NULL, simParamBee = NULL)
 
-getFathersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getFathersIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getVirginQueensIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
 getWorkersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
-getDronesIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getDronesIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -32,6 +51,8 @@ individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -59,11 +80,10 @@ Level 0 function that returns IBD (identity by descent)
 }}
 
 \examples{
-if (FALSE) {
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParam$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -110,7 +130,6 @@ getWorkersIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "drones")
 getDronesIbdHaplo(apiary)
-}
 }
 \seealso{
 \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}

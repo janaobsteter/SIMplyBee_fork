@@ -1,4 +1,11 @@
-
+# TOOD: I have provided this as PullRequest for AlphaSimR
+#       https://github.com/gaynorr/AlphaSimR/pull/52
+#       once it gets incorporated there we should remove it here
+#       https://github.com/HighlanderLab/SIMplyBee/issues/60
+isPop <- function(x) {
+  ret <- is(x, class2 = "Pop")
+  return(ret)
+}
 setClassUnion("numericOrFunction", c("numeric", "function"))
 
 #' @rdname SimParamBee
@@ -275,7 +282,3 @@ isSimParamBee <- function(x) {
   ret <- is(x, class2 = "SimParamBee")
   return(ret)
 }
-
-# TODO: remove this once AlphaSimR exports getNumThreads (pull request accepted)
-# https://github.com/HighlanderLab/SIMplyBee/issues/75
-getNumThreads <- AlphaSimR:::getNumThreads()

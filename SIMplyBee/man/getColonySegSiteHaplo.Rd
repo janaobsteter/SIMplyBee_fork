@@ -11,6 +11,7 @@ getColonySegSiteHaplo(
   nInd = NULL,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -32,6 +33,8 @@ value of 2 for male haplotypes}
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
@@ -48,7 +51,7 @@ Level 0 function that returns haplotypes for all segregating
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -69,7 +72,6 @@ getColonySegSiteHaplo(apiary)
 getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
 getColonySegSiteHaplo(apiary, nInd = 1)
 getColonySegSiteHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}

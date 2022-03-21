@@ -9,7 +9,7 @@
 \alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
-getCaste(x, caste = "all", nInd = NULL, use = "rand")
+getCaste(x, caste = "all", nInd = NULL, use = "order")
 
 getQueen(x)
 
@@ -31,7 +31,8 @@ getDrones(x, nInd = NULL, use = "rand")
 individuals are accessed; if there are less individuals than requested,
 we return the ones available - this can also be just \code{NULL}}
 
-\item{use}{character, all options provided by \code{\link{selectInd}}}
+\item{use}{character, all options provided by \code{\link{selectInd}} and
+\code{"order"} that selects \code{1:nInd} individuals}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is
@@ -61,7 +62,7 @@ Level 1 function that returns individuals of a caste. These
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -150,10 +151,11 @@ getDrones(apiary, nInd = 2)
 
 getCaste(colony1, caste = "all")
 getCaste(colony2, caste = "all")
-
 }
 \seealso{
 \code{\link{getQueen}}, \code{\link{getFathers}},
   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
   \code{\link{getDrones}}
+
+\code{\link{getCasteId}} and \code{\link{caste}}
 }

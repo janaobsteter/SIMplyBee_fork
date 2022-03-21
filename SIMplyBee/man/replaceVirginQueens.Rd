@@ -30,7 +30,7 @@ Level 2 function that replaces a proportion of virgin queens with new
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -50,5 +50,4 @@ apiary <- replaceVirginQueens(apiary, p = 0.5)
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 apiary <- replaceVirginQueens(apiary, p = 1.5)
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-
 }

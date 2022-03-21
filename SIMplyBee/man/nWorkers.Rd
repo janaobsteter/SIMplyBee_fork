@@ -18,7 +18,7 @@ Returns the number of workers in a colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- newPop(founderGenomes)
+basePop <- asVirginQueen(newPop(founderGenomes))
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -30,5 +30,4 @@ nWorkers(colony2)
 
 apiary <- c(colony1, colony2)
 nWorkers(apiary)
-
 }
