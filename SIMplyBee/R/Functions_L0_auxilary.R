@@ -343,6 +343,9 @@ nDrones <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' TODO: describe queen's and colony's pHomBrood
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/80
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/104
+#'
 #'
 #' @return numeric, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
