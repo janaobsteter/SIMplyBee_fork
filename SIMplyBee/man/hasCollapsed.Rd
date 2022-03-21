@@ -38,5 +38,4 @@ apiary <- buildUpColonies(apiary, nWorkers = 100)
 tmp <- collapseColonies(apiary)
 tmp
 hasCollapsed(tmp)
-
 }

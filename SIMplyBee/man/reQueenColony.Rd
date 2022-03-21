@@ -47,5 +47,4 @@ reQueenColony(colony, queen = virginQueen)
 
 matedQueen <- crossVirginQueen(pop = basePop[3], fathers = drones[6:10])
 reQueenColony(colony, queen = matedQueen)
-
 }

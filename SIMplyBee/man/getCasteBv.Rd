@@ -106,7 +106,6 @@ getWorkersBv(apiary)
 
 getCasteBv(apiary, caste = "drones")
 getDronesBv(apiary)
-
 }
 \seealso{
 \code{\link{bv}}

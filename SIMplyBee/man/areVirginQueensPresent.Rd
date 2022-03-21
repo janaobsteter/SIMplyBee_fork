@@ -50,5 +50,4 @@ areVirginQueensPresent(tmp$remnant)
 tmp <- splitColony(colony1)
 areVirginQueensPresent(tmp$split)
 areVirginQueensPresent(tmp$remnant)
-
 }

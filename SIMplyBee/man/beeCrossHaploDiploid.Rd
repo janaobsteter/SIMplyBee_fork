@@ -39,13 +39,14 @@ SP$setTrackRec(isTrackRec = TRUE)
 basePop <- asVirginQueen(newPop(founderGenomes))
 
 queen <- basePop[1]
-drones <- reduceGenome(pop = basePop[2], nProgeny = 5, keepParents = FALSE,
-                       simRecomb = TRUE)
+drones <- reduceGenome(
+  pop = basePop[2], nProgeny = 5, keepParents = FALSE,
+  simRecomb = TRUE
+)
 workers <- SIMplyBee:::beeCrossHaploDiploid(queen, drones, nProgeny = 4)
 workers@id
 workers@mother
 workers@father
 SP$pedigree
 SP$recHist
-
 }

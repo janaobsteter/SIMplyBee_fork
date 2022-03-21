@@ -30,5 +30,4 @@ nVirginQueens(colony2)
 
 apiary <- c(colony1, colony2)
 nVirginQueens(apiary)
-
 }

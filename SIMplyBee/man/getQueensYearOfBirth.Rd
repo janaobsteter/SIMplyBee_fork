@@ -54,5 +54,4 @@ getQueensYearOfBirth(colony1)
 
 apiary <- setQueensYearOfBirth(apiary, year = 2022)
 getQueensYearOfBirth(apiary)
-
 }

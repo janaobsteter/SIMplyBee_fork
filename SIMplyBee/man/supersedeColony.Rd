@@ -30,5 +30,4 @@ colony <- createColony(queen = basePop[2], fathers = drones)
 (colony <- buildUpColony(colony, nWorkers = 100))
 
 supersedeColony(colony)
-
 }

@@ -75,8 +75,12 @@ colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
 colony # adding completely new workers & drones
 
 # Using functions
-nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
-nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nWorkersFun <- function(colony) {
+  rpois(n = 1, lambda = 100)
+}
+nDronesFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 colony <- createColony(queen = basePop[2], fathers = drones)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
@@ -87,5 +91,4 @@ SP$nDrones <- nDronesFun
 colony <- createColony(queen = basePop[2], fathers = drones)
 buildUpColony(colony)
 buildUpColony(colony)
-
 }

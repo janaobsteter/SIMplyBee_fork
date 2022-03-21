@@ -38,5 +38,4 @@ createDCA(colony2, nInd = 10)@id
 apiary <- c(colony1, colony2)
 createDCA(apiary)
 createDCA(apiary, nInd = 10)
-
 }

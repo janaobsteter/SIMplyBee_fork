@@ -96,8 +96,7 @@ GRM[f, md]
 GRM[w, w]
 GRM[w, d]
 GRM[w, v]
-GRM[w, mw]
-GRM[w, md]
+GRM[w, m]
 
 }
 \references{

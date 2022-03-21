@@ -130,7 +130,6 @@ getWorkersSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "drones")
 getDronesSegSiteGeno(apiary)
-
 }
 \seealso{
 \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}

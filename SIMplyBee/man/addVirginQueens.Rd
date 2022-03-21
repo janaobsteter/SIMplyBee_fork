@@ -51,12 +51,13 @@ SP$nVirginQueens <- 15
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
 
-nVirginQueensFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nVirginQueensFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 addVirginQueens(colony1, nInd = nVirginQueensFun)
 nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
 
 SP$nVirginQueens <- nVirginQueensFun
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
-
 }

@@ -41,5 +41,4 @@ tmp <- splitColonies(apiary)
 tmp
 hasSplit(tmp$splits)
 hasSplit(tmp$remnants)
-
 }

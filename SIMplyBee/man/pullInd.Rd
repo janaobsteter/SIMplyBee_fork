@@ -31,5 +31,4 @@ basePop <- newPop(founderGenomes)
 pullInd(basePop, nInd = 2)
 pullInd(basePop, nInd = 3)
 pullInd(basePop)
-
 }
