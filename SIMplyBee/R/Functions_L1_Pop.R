@@ -454,6 +454,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     names(ret) <- c("workers", "pHomBrood")
     workers <- beeCross(queen = getQueen(x), drones = getFathers(x),
                         nProgeny = nInd, simParamBee = simParamBee)
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
@@ -798,6 +799,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -817,6 +819,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)

@@ -35,16 +35,16 @@ colony <- addWorkers(colony, nInd = 5)
 colony <- addDrones(colony, nInd = 5)
 colony <- addVirginQueens(colony, nInd = 2)
 
-genoQ <- getQueensIbdHaplo(colony)
-genoF <- getFathersIbdHaplo(colony)
-genoW <- getWorkersIbdHaplo(colony)
-genoD <- getDronesIbdHaplo(colony)
-genoV <- getVirginQueensIbdHaplo(colony)
+haploQ <- getQueensIbdHaplo(colony)
+haploF <- getFathersIbdHaplo(colony)
+haploW <- getWorkersIbdHaplo(colony)
+haploD <- getDronesIbdHaplo(colony)
+haploV <- getVirginQueensIbdHaplo(colony)
 SP$pedigree
 
-geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
+haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
 
-GRMs <- calcBeeGRMIbd(x = geno)
+GRMs <- calcBeeGRMIbd(x = haplo)
 
 # library("Matrix"); image(as(GRMs$genome, "Matrix"))
 # library("Matrix"); image(as(GRMs$indiv, "Matrix"))
@@ -63,7 +63,7 @@ x <- diag(GRMs$indiv)
 hist(x)
 summary(x)
 
-x <- GRMs$GRMindiv[lower.tri(x = GRMs$GRMIndiv, diag = FALSE)]
+x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 hist(x)
 summary(x)
 
@@ -120,5 +120,23 @@ GRMs$indiv[vI, wI]
 
 }
 \references{
+Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
+  relatives for X-chromosomal loci. The Journal of Heredity,
+  \url{https://doi.org/10.1093/oxfordjournals.jhered.a110812}
 
+Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
+  loci in a population in disequilibrium. Theoretical and Applied Genetics,
+  \url{https://doi.org/10.1007/bf00305821}
+
+Fernando and Grossman (1990) Genetic evaluation with autosomal
+  and X-chromosomal inheritance. Theoretical and Applied Genetics,
+  \url{https://doi.org/10.1007/bf00224018}
+
+Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
+  prediction of breeding values. Genetics,
+  \url{https://doi.org/10.1093/genetics/137.1.319}
+
+Hill and Weir (2011) Variation in actual relationship as a consequence of
+  Mendelian sampling and linkage. Genetics Research,
+  \url{https://doi.org/10.1017/s0016672310000480}
 }

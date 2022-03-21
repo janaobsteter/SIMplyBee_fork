@@ -4512,8 +4512,8 @@ calcBeeGRMIbs <- function(x, sex) {
 #'
 #' @references
 #' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
-#'   relatives for X-chromosomal loci}. The Journal of Heredity,
-#'   \url{ https://doi.org/10.1093/oxfordjournals.jhered.a110812}
+#'   relatives for X-chromosomal loci. The Journal of Heredity,
+#'   \url{https://doi.org/10.1093/oxfordjournals.jhered.a110812}
 #'
 #' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
 #'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
@@ -4543,16 +4543,16 @@ calcBeeGRMIbs <- function(x, sex) {
 #' colony <- addDrones(colony, nInd = 5)
 #' colony <- addVirginQueens(colony, nInd = 2)
 #'
-#' genoQ <- getQueensIbdHaplo(colony)
-#' genoF <- getFathersIbdHaplo(colony)
-#' genoW <- getWorkersIbdHaplo(colony)
-#' genoD <- getDronesIbdHaplo(colony)
-#' genoV <- getVirginQueensIbdHaplo(colony)
+#' haploQ <- getQueensIbdHaplo(colony)
+#' haploF <- getFathersIbdHaplo(colony)
+#' haploW <- getWorkersIbdHaplo(colony)
+#' haploD <- getDronesIbdHaplo(colony)
+#' haploV <- getVirginQueensIbdHaplo(colony)
 #' SP$pedigree
 #'
-#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV)
+#' haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
 #'
-#' GRMs <- calcBeeGRMIbd(x = geno)
+#' GRMs <- calcBeeGRMIbd(x = haplo)
 #'
 #' # library("Matrix"); image(as(GRMs$genome, "Matrix"))
 #' # library("Matrix"); image(as(GRMs$indiv, "Matrix"))
@@ -4571,7 +4571,7 @@ calcBeeGRMIbs <- function(x, sex) {
 #' hist(x)
 #' summary(x)
 #'
-#' x <- GRMs$GRMindiv[lower.tri(x = GRMs$GRMIndiv, diag = FALSE)]
+#' x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 #' hist(x)
 #' summary(x)
 #'
