@@ -923,7 +923,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @export
 crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   # TODO: set nAvgFathers to NULL by default and then grab the value from
-  #       SimParamBee
+  #       SimParamBee: https://github.com/HighlanderLab/SIMplyBee/issues/157
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -939,11 +939,9 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   nVirginQueen <- nInd(pop)
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
-    #       nAvgFathers from SimParam when nAvgFathers = NULL?
+    #       nAvgFathers from SimParam when nAvgFathers = NULL? https://github.com/HighlanderLab/SIMplyBee/issues/157
     pop@misc[[1]]$fathers <- fathers
     if (isCsdActive(simParamBee = simParamBee)) {
-      # TODO: call a function that will calculate theoretical/expected pHomBrood
-      #       based on genotype of the queen and fathers
       pop@misc[[1]]$pHomBrood <- 0
     } else {
       pop@misc[[1]]$pHomBrood <- NA
@@ -955,8 +953,6 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     for (queen in seq_len(nVirginQueen)) {
       pop@misc[[queen]]$fathers <- fathers[[queen]]
       if (isCsdActive(simParamBee = simParamBee)) {
-        # TODO: call a function that will calculate theoretical/expected pHomBrood
-        #       based on genotype of the queen and fathers
         pop@misc[[queen]]$pHomBrood <- 0
       } else {
         pop@misc[[queen]]$pHomBrood <- NA
@@ -1019,7 +1015,7 @@ setQueensYearOfBirth <- function(x, year) {
     if (isQueenPresent(x)) {
       x@queen@misc[[1]]$yearOfBirth <- year
     } else {
-      stop("Missing queen!") # TODO: should this be a warning?
+      stop("Missing queen!") # TODO: should this be a warning?: : https://github.com/HighlanderLab/SIMplyBee/issues/159
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
