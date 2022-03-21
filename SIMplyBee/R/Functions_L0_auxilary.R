@@ -324,7 +324,7 @@ nDrones <- function(x) {
   return(ret)
 }
 
-#' @rdname computeTheoreticalpHomBrood
+#' @rdname computeQueenPHomBrood
 #' @title Theoretical percentage of homozygous brood of a queen
 #'
 #' @description Level 0 function that returns the theoretical or
@@ -352,17 +352,17 @@ nDrones <- function(x) {
 #' colony2 <- addDrones(colony2, nInd = 20)
 #'
 #' # Mated queen
-#' computeTheoreticalpHomBrood(colony1@queen)
+#' computeQueenPHomBrood(colony1@queen)
 #'
 #' # Colony
-#' computeTheoreticalpHomBrood(colony1)
+#' computeQueenPHomBrood(colony1)
 #'
 #' # Colonies
 #' apiary <- c(colony1, colony2)
-#' computeTheoreticalpHomBrood(apiary)
+#' computeQueenPHomBrood(apiary)
 #' @export
 
-computeTheoreticalpHomBrood <- function(x) {
+computeQueenPHomBrood <- function(x) {
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
@@ -375,9 +375,9 @@ computeTheoreticalpHomBrood <- function(x) {
       }
     }
   } else if (isColony(x)) {
-    ret <- computeTheoreticalpHomBrood(x = x@queen)
+    ret <- computeQueenPHomBrood(x = x@queen)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = computeTheoreticalpHomBrood)
+    ret <- sapply(X = x@colonies, FUN = computeQueenPHomBrood)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop or Colony or Colonies class object!")
@@ -453,7 +453,7 @@ pHomBrood <- function(x) {
 }
 
 #' @rdname nHomBrood
-#' @title Total number of homozygous brood produced by a queen.
+#' @title Total realised number of homozygous brood produced by a queen.
 #'
 #' @description Level 0 function that returns the total number of
 #' homozygous brood of a queen in a colony (these are non viable

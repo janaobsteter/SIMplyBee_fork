@@ -1242,7 +1242,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   pop <- setMisc(x = pop, slot = "nHomBrood", value = 0)
 
   if (isCsdActive(simParamBee = simParamBee)) {
-    pop <- setMisc(x = pop, slot = "pHomBrood", value = computeTheoreticalpHomBrood(pop))
+    pop <- setMisc(x = pop, slot = "pHomBrood", value = computeQueenPHomBrood(pop))
   } else {
     pop <- setMisc(x = pop, slot = "pHomBrood", value = NA)
   }
