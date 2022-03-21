@@ -1,12 +1,3 @@
-# TOOD: I have provided this as PullRequest for AlphaSimR
-#       https://github.com/gaynorr/AlphaSimR/pull/31/commits/ecfa286a05f7e2f3f54ec5bc3a741b1786d183c4
-#       once it gets incorporated there we should remove it here
-#       https://github.com/HighlanderLab/SIMplyBee/issues/60
-isPop <- function(x) {
-  ret <- is(x, class2 = "Pop")
-  return(ret)
-}
-
 # Class Colony ----
 
 setClassUnion("characterOrNULL", c("character", "NULL"))
@@ -29,13 +20,13 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #'   colony
 #' @slot drones \code{\link{Pop-class}}, drones of the colony
 #' @slot workers \code{\link{Pop-class}}, workers of the colony
-#' @slot pheno matrix, phenotypes of the colony TODO: revise
+#' @slot pheno matrix, phenotypes of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/156
 #' @slot split logical, has colony split
 #' @slot swarm logical, has colony swarmed
 #' @slot supersedure logical, has colony superseded
-#' @slot collapse logical, has colony collapsed TODO: revise
+#' @slot collapse logical, has colony collapsed
 #' @slot production logical, is colony productive
-#' @slot last_event character, the last event of the colony TODO: we probably don't need this
+#' @slot last_event character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10
 #' @slot misc list, available for storing extra information about the colony
 #'
 #' @param object \code{\link{Colony-class}}

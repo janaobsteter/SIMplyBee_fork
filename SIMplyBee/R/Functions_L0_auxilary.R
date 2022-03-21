@@ -343,6 +343,9 @@ nDrones <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' TODO: describe queen's and colony's pHomBrood
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/80
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/104
+#'
 #'
 #' @return numeric, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
@@ -390,6 +393,8 @@ pHomBrood <- function(x) {
     }
   } else if (isColony(x)) {
     # TODO: report colony, not queen pHomBrood
+    # https://github.com/HighlanderLab/SIMplyBee/issues/80
+    # https://github.com/HighlanderLab/SIMplyBee/issues/104
     if (is.null(x@queen@misc[[1]]$pHomBrood)) {
       ret <- NA
     } else {
@@ -582,57 +587,6 @@ isVirginQueen <- function(x) {
                            yes = FALSE,
                            no = z$caste == "V")
                   })
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
-  return(ret)
-}
-
-#' @rdname caste
-#' @title Report caste of an individual
-#'
-#' @description Level 0 function that reports caste of an individual
-#'
-#' @param x \code{\link{Pop-class}}
-#'
-#' @return character with entries \code{"queen"}, \code{"workers"},
-#'   \code{"drones"}, and \code{"virginQueens"}; if you get \code{NA} note that
-#'   this is not supposed to happen
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- asVirginQueen(newPop(founderGenomes))
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
-#'
-#' caste(getQueen(colony))
-#' caste(getWorkers(colony, nInd = 2))
-#' caste(getDrones(colony, nInd = 2))
-#' caste(getVirginQueens(colony, nInd = 2))
-#'
-#' bees <- c(getQueen(colony),
-#'           getWorkers(colony, nInd = 2),
-#'           getDrones(colony, nInd = 2),
-#'           getVirginQueens(colony, nInd = 2))
-#' caste(bees)
-#'
-#' @export
-caste <- function(x) {
-  if (isPop(x)) {
-    ret <- sapply(X = x@misc,
-                  FUN = function(z) {
-                    ifelse(test = is.null(z$caste),
-                           yes = NA,
-                           no = z$caste)
-                  })
-    ret <- factor(x = ret, levels = c("Q", "W", "D", "V"),
-                  labels = list("queen", "workers", "drones", "virginQueens"))
-    ret <- as.character(ret)
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -992,20 +946,18 @@ getId <- function(x) {
 #'   get the individuals, use \code{\link{getCaste}}.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}} class objects
+#'   \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virginQueens", "workers",
 #'   "drones", or "all"
 #'
 #' @seealso \code{\link{getCaste}}
 #'
-#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
-#'  or list for \code{caste == "all"} with ID nodes named by caste;
-#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"}
-#'   or named list for \code{caste == "all"} indluding caste members IDs;
-#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#' @return When x is \code{\link{Pop-class}}, character of individual ID. When x
+#'   is \code{\link{Colony-class}}, list with character vectors (list is named
+#'   with caste). When x is \code{\link{Colonies-class}}, list of lists with
+#'   character vectors (list is named with colony id).
+#'
+#' @seealso \code{\link{getCaste}} and \code{\link{caste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1021,26 +973,27 @@ getId <- function(x) {
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #'
-#' apiary1 = c(colony1, colony2)
+#' apiary = c(colony1, colony2)
 #'
 #' getCasteId(x = drones)
 #' getCasteId(x = colony1)
 #' getCasteId(x = colony1, caste = "workers")
-#' getCasteId(x = apiary1)
-#' getCasteId(x = apiary1, caste = "virginQueens")
+#' getCasteId(x = apiary)
+#' getCasteId(x = apiary, caste = "virginQueens")
 #'
-#' # Create a data.frame from the lists of ids
-#' tmp <- getCasteId(x = apiary1)
-#' df <- data.frame(unlist(tmp))
-#' head(df)
-#' colnames(df)[1] <- "id"
-#' head(df)
-#' tmp <- strsplit(row.names(df), split = ".", fixed = TRUE)
-#' colony <- sapply(tmp, FUN = function(z) z[1])
-#' caste <- sapply(tmp, FUN = function(z) z[2])
-#' df$colony <- colony
-#' df$caste <- gsub(x = caste, pattern = "[[:digit:]]", replacement = "")
-#' head(df)
+#' # Create a data.frame with id, colony, and caste information
+#' (tmpC <- caste(colony1))
+#' (tmpI <- getCasteId(colony1))
+#' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
+#' head(tmp);tail(tmp)
+#'
+#' (tmpC <- caste(apiary))
+#' (tmpI <- getCasteId(apiary))
+#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#' tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
+#'                                   fixed = TRUE),
+#'                      FUN = function(z) z[[1]])
+#' head(tmp);tail(tmp)
 #'
 #' @export
 getCasteId <- function(x, caste = "all") {
@@ -1053,10 +1006,11 @@ getCasteId <- function(x, caste = "all") {
       for (caste in names(ret)) {
         tmp <- getCaste(x = x, caste = caste)
         if (is.null(tmp)) {
-          ret[[caste]] <- list(NULL)
+          ret[caste] <- list(NULL)
         } else {
           ret[[caste]] <- tmp@id
-        }}
+        }
+      }
     } else {
       tmp <- getCaste(x = x, caste = caste)
       if (is.null(tmp)) {
@@ -1068,6 +1022,96 @@ getCasteId <- function(x, caste = "all") {
   } else if (isColonies(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
     ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname caste
+#' @title Report caste of an individual
+#'
+#' @description Level 0 function that reports caste of an individual
+#'
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#'
+#' @return When x is \code{\link{Pop-class}}, character of caste status; if you
+#'   get \code{NA} note that this is not supposed to happen. When x is
+#'   \code{\link{Colony-class}}, list with character vectors (list is named with
+#'   caste). When x is \code{\link{Colonies-class}}, list of lists with
+#'   character vectors (list is named with colony id).
+#'
+#' @seealso \code{\link{getCaste}} and \code{\link{getCasteId}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[1:5])
+#' colony1 <- addWorkers(colony1)
+#' colony2 <- addWorkers(colony2)
+#' colony1 <- addDrones(colony1)
+#' colony2 <- addDrones(colony2)
+#' colony1 <- addVirginQueens(colony1)
+#' apiary <- c(colony1, colony2)
+#'
+#' caste(getQueen(colony1))
+#' caste(getFathers(colony1))
+#' caste(getWorkers(colony1))
+#' caste(getDrones(colony1))
+#' caste(getVirginQueens(colony1))
+#'
+#' bees <- c(getQueen(colony1),
+#'           getFathers(colony1, nInd = 2),
+#'           getWorkers(colony1, nInd = 2),
+#'           getDrones(colony1, nInd = 2),
+#'           getVirginQueens(colony1, nInd = 2))
+#' caste(bees)
+#'
+#' # Create a data.frame with id, colony, and caste information
+#' (tmpC <- caste(colony1))
+#' (tmpI <- getCasteId(colony1))
+#' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
+#' head(tmp);tail(tmp)
+#'
+#' (tmpC <- caste(apiary))
+#' (tmpI <- getCasteId(apiary))
+#' (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
+#' tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
+#'                                   fixed = TRUE),
+#'                      FUN = function(z) z[[1]])
+#' head(tmp);tail(tmp)
+#'
+#' @export
+caste <- function(x) {
+  if (isPop(x)) {
+    ret <- sapply(X = x@misc,
+                  FUN = function(z) {
+                    ifelse(test = is.null(z$caste),
+                           yes = NA,
+                           no = z$caste)
+                  })
+    ret <- factor(x = ret, levels = c("Q", "F", "W", "D", "V"),
+                  labels = list("queen", "fathers", "workers", "drones", "virginQueens"))
+    ret <- as.character(ret)
+  } else if (isColony(x)) {
+    ret <- vector(mode = "list", length = 5)
+    names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+    for (caste in names(ret)) {
+      tmp <- getCaste(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret[caste] <- list(NULL)
+      } else {
+        ret[[caste]] <- caste(tmp)
+      }
+    }
+  } else if (isColonies(x)) {
+    ret <- lapply(X = x@colonies, FUN = caste)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1504,6 +1548,92 @@ isCsdActive <- function(simParamBee = NULL) {
   return(ret)
 }
 
+#' @rdname reduceDroneHaplo
+#' @title Reduce drone's double haplotypes to a single haplotype
+#'
+#' @description Level 0 function that returns one haplotype of drones, because
+#'   we internally simulate them as diploid (doubled haploid). This is a utility
+#'   function that you likely don't need to use.
+#'
+#' @param haplo \code{\link{matrix-class}}
+#' @param pop \code{\link{Pop-class}}
+#'
+#' @details While this function is meant to work on male (drone) haplotypes, we
+#'   handle cases where the \code{haplo} matrix contains male and female
+#'   haplotypes, which is why you need to provide \code{pop}. We only reduce
+#'   haplotypes for males though.
+#'
+#' @return matrix with one haplotype per drone instead of two
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#' drones <- createDrones(x = basePop[1], nInd = 2)
+#'
+#' (tmp <- getSegSiteHaplo(drones))
+#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
+#'
+#' (tmp <- getSegSiteHaplo(c(basePop, drones)))
+#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+#'
+#' @export
+reduceDroneHaplo <- function(haplo, pop) {
+  if (!is.matrix(haplo)) {
+    stop("Argument haplo must be a matrix class object!")
+  }
+  if (!isPop(pop)) {
+    stop("Argument pop must be a matrix class object!")
+  }
+  idHap <- rownames(haplo)
+  id <- sapply(X = strsplit(x = idHap, split = "_"), FUN = function(z) z[[1]])
+  idSelF <- id %in% pop@id[pop@sex == "F"]
+  idSelM <- id %in% pop@id[pop@sex == "M"]
+  sel <- idSelF | (idSelM & grepl(x = idHap, pattern = "_1"))
+  ret <- haplo[sel, ]
+  return(ret)
+}
+
+#' @rdname reduceDroneGeno
+#' @title Reduce drones' genotype to a single haplotype
+#'
+#' @description Level 0 function that reduces drone's genotype to a single
+#'   haplotype, because we internally simulate them as diploid (doubled
+#'   haploid). This is a utility function that you likely don't need to use.
+#'
+#' @param geno \code{\link{matrix-class}}
+#' @param pop \code{\link{Pop-class}}
+#'
+#' @return matrix with genotype as one haplotype per drone instead of two
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#' drones <- createDrones(x = basePop[1], nInd = 2)
+#'
+#' (tmp <- getSegSiteGeno(drones))
+#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
+#'
+#' (tmp <- getSegSiteGeno(c(basePop, drones)))
+#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+#'
+#' @export
+reduceDroneGeno <- function(geno, pop) {
+  if (!is.matrix(geno)) {
+    stop("Argument geno must be a matrix class object!")
+  }
+  if (!isPop(pop)) {
+    stop("Argument pop must be a matrix class object!")
+  }
+  id <- rownames(geno)
+  sel <- id %in% pop@id[pop@sex == "M"]
+  if (any(sel)) {
+    geno[sel, ] <- geno[sel, ] / 2
+  }
+  return(geno)
+}
+
 #' @rdname getCsdAlleles
 #' @title Get csd alleles
 #'
@@ -1517,6 +1647,7 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @param allele character, either "all" for both alleles or an integer for a
 #'   single allele, use a value of 1 for female allele and a value of 2 for male
 #'   allele
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if \code{TRUE}, the function will return a set of
 #'   csd alleles in either the entire population, colony, or colonies. Default
 #'   is \code{FALSE}.
@@ -1568,8 +1699,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #' getCsdAlleles(apiary, nInd = 2)
 #'
 #' @export
-getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
-                          unique = FALSE, simParamBee = NULL) {
+getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
+                          collapse = FALSE, unique = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1581,6 +1712,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
   } else if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = x, haplo = allele, chr = simParamBee$csdChr,
                             simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneHaplo(haplo = ret, pop = x)
+    }
     if (unique) {
       ret <- ret[!duplicated(x = ret), , drop = FALSE]
     }
@@ -1592,7 +1726,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele, unique = unique,
+        ret[[caste]] <- getCsdAlleles(x = tmp, allele = allele,
+                                      dronesHaploid = dronesHaploid,
+                                      unique = unique,
                                       simParamBee = simParamBee)
       }
     }
@@ -1604,7 +1740,8 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
     }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdAlleles, nInd = nInd,
-                  allele = allele, collapse = collapse, unique = unique,
+                  allele = allele, dronesHaploid = dronesHaploid,
+                  collapse = collapse, unique = unique,
                   simParamBee = simParamBee)
     if (collapse) {
       ret <- do.call("rbind", ret)
@@ -1624,12 +1761,14 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
 #' @title Get genotypes from the csd locus
 #'
 #' @description Level 0 function that returns genotypes from the csd locus. See
-#'   \code{\link{SimParamBee}} for more information about the csd locus.
+#'   \code{\link{SimParamBee}} for more information about the csd locus and how
+#'   we have implemented it.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
 #'   are taken; this can be useful as a test of sampling individuals
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details The returned genotypes are spanning multiple bi-allelic SNP of
@@ -1671,7 +1810,8 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", collapse = FALSE,
 #' getCsdGeno(apiary, nInd = 2)
 #'
 #' @export
-getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
+getCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
+                       simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1683,6 +1823,9 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
   } else if (isPop(x)) {
     ret <- pullSegSiteGeno(pop = x, chr = simParamBee$csdChr,
                            simParam = simParamBee)[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneGeno(geno = ret, pop = x)
+    }
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
@@ -1691,12 +1834,13 @@ getCsdGeno <- function(x, nInd = NULL, simParamBee = NULL) {
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCsdGeno(x = tmp, simParamBee = simParamBee)
+        ret[[caste]] <- getCsdGeno(x = tmp, dronesHaploid = dronesHaploid,
+                                   simParamBee = simParamBee)
       }
     }
   } else if (isColonies(x)) {
     ret <- lapply(X = x@colonies, FUN = getCsdGeno, nInd = nInd,
-                  simParamBee = simParamBee)
+                  dronesHaploid = dronesHaploid, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -2093,6 +2237,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
@@ -2155,8 +2300,8 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getDronesIbdHaplo(apiary)
 #'
 #' @export
-getCasteIbdHaplo <- function(x, caste, nInd = NULL,
-                             chr = NULL, simParamBee = NULL) {
+getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2166,13 +2311,17 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getIbdHaplo(pop = tmp, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteIbdHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                              chr = chr, simParamBee = simParamBee)
+                              chr = chr, dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -2203,14 +2352,15 @@ getQueensIbdHaplo <- function(x, chr = NULL, simParamBee = NULL) {
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of fathers
 #' @export
-getFathersIbdHaplo <- function(x, nInd = NULL,
-                               chr = NULL, simParamBee = NULL) {
+getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, dronesHaploid = TRUE,
+                               simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd,
-                            chr = chr, simParamBee = simParamBee)
+    ret <- getCasteIbdHaplo(x, caste = "fathers", nInd = nInd, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2219,8 +2369,8 @@ getFathersIbdHaplo <- function(x, nInd = NULL,
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of virgin queens
 #' @export
-getVirginQueensIbdHaplo <- function(x, nInd = NULL,
-                                    chr = NULL, simParamBee = NULL) {
+getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL,
+                                    simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2251,14 +2401,15 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of drones
 #' @export
-getDronesIbdHaplo <- function(x, nInd = NULL,
-                              chr = NULL, simParamBee = NULL) {
+getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd,
-                            chr = chr, simParamBee = simParamBee)
+    ret <- getCasteIbdHaplo(x, caste = "drones", nInd = nInd, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2280,6 +2431,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteIbdHaplo}} and \code{\link{getIbdHaplo}}
@@ -2318,7 +2470,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL,
 #'
 #' @export
 getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                              nInd = NULL, chr = NULL, simParamBee = NULL) {
+                              nInd = NULL, chr = NULL, dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2345,15 +2498,21 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getIbdHaplo(pop = tmp, chr = chr, simParam = simParamBee)
+        ret[[caste]] <- getIbdHaplo(pop = tmp, chr = chr,
+                                    simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyIbdHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                         chr = chr, simParamBee = simParamBee)
+      ret[[colony]] <- getColonyIbdHaplo(x = x[[colony]], caste = caste,
+                                         nInd = nInd, chr = chr,
+                                         dronesHaploid = dronesHaploid,
+                                         simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -2379,6 +2538,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
@@ -2442,7 +2602,8 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #'
 #' @export
 getCasteQtlHaplo <- function(x, caste, nInd = NULL,
-                             trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                             trait = 1, haplo = "all", chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2452,13 +2613,18 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getQtlHaplo(pop = tmp, haplo = haplo, trait = trait, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteQtlHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                              trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                              trait = trait, haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -2475,13 +2641,15 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
 #' @export
 getQueensQtlHaplo <- function(x,
-                              trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              trait = 1, haplo = "all", chr = NULL,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlHaplo(x, caste = "queen",
-                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            trait = trait, haplo = haplo, chr = chr,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object")
   }
@@ -2491,13 +2659,17 @@ getQueensQtlHaplo <- function(x,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of fathers
 #' @export
 getFathersQtlHaplo <- function(x, nInd = NULL,
-                               trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                               trait = 1, haplo = "all", chr = NULL,
+                               dronesHaploid = TRUE,
+                               simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlHaplo(x, caste = "fathers", nInd = nInd,
-                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            trait = trait, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2507,13 +2679,15 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of virgin queens
 #' @export
 getVirginQueensQtlHaplo <- function(x, nInd = NULL,
-                                    trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                                    trait = 1, haplo = "all", chr = NULL,
+                                    simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlHaplo(x, caste = "virginQueens", nInd = nInd,
-                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            trait = trait, haplo = haplo, chr = chr,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2523,13 +2697,15 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype of workers
 #' @export
 getWorkersQtlHaplo <- function(x, nInd = NULL,
-                               trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                               trait = 1, haplo = "all", chr = NULL,
+                               simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x)| isColonies(x)) {
     ret <- getCasteQtlHaplo(x, caste = "workers", nInd = nInd,
-                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            trait = trait, haplo = haplo, chr = chr,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2539,13 +2715,17 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of drones
 #' @export
 getDronesQtlHaplo <- function(x, nInd = NULL,
-                              trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              trait = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlHaplo(x, caste = "drones", nInd = nInd,
-                            trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            trait = trait, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2571,6 +2751,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}
@@ -2609,7 +2790,9 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'
 #' @export
 getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                              nInd = NULL, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              nInd = NULL, trait = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2638,6 +2821,9 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
       } else {
         ret[[caste]] <- getQtlHaplo(pop = tmp, trait = trait, haplo = haplo,
                                     chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -2645,7 +2831,9 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonyQtlHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                         trait = trait, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                                         trait = trait, haplo = haplo, chr = chr,
+                                         dronesHaploid = dronesHaploid,
+                                         simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -2668,6 +2856,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' @param trait numeric, indicates which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
@@ -2731,7 +2920,8 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #'
 #' @export
 getCasteQtlGeno <- function(x, caste, nInd = NULL,
-                            trait = 1, chr = NULL, simParamBee = NULL) {
+                            trait = 1, chr = NULL, dronesHaploid = TRUE,
+                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2741,13 +2931,18 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getQtlGeno(pop = tmp, trait = trait, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneGeno(geno = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                             trait = trait, chr = chr, simParamBee = simParamBee)
+                             trait = trait, chr = chr,
+                             dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -2780,13 +2975,16 @@ getQueensQtlGeno <- function(x,
 #' @describeIn getCasteQtlGeno Access QTL genotype data of fathers
 #' @export
 getFathersQtlGeno <- function(x, nInd = NULL,
-                              trait = 1, chr = NULL, simParamBee = NULL) {
+                              trait = 1, chr = NULL, dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlGeno(x, caste = "fathers", nInd = nInd,
-                           trait = trait, chr = chr, simParamBee = simParamBee)
+                           trait = trait, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2828,13 +3026,16 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
 #' @describeIn getCasteQtlGeno Access QTL genotype data of drones
 #' @export
 getDronesQtlGeno <- function(x, nInd = NULL,
-                             trait = 1, chr = NULL, simParamBee = NULL) {
+                             trait = 1, chr = NULL, dronesHaploid = TRUE,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteQtlGeno(x, caste = "drones", nInd = nInd,
-                           trait = trait, chr = chr, simParamBee = simParamBee)
+                           trait = trait, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2857,6 +3058,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteQtlGeno}} and \code{\link{getQtlGeno}}
@@ -2895,7 +3097,8 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'
 #' @export
 getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                             nInd = NULL, trait = 1, chr = NULL, simParamBee = NULL) {
+                             nInd = NULL, trait = 1, chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2924,6 +3127,9 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
       } else {
         ret[[caste]] <- getQtlGeno(pop = tmp, trait = trait,
                                    chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneGeno(geno = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -2931,7 +3137,9 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonyQtlGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                                        trait = trait, chr = chr, simParamBee = simParamBee)
+                                        trait = trait, chr = chr,
+                                        dronesHaploid = dronesHaploid,
+                                        simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -2957,6 +3165,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
@@ -3019,7 +3228,8 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' @export
 getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
-                                 haplo = "all", chr = NULL, simParamBee = NULL) {
+                                 haplo = "all", chr = NULL,
+                                 dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3029,13 +3239,18 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getSegSiteHaplo(pop = tmp, haplo = haplo, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteSegSiteHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                  haplo = haplo, chr = chr, simParamBee = simParamBee)
+                                  haplo = haplo, chr = chr,
+                                  dronesHaploid = dronesHaploid,
+                                  simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3068,13 +3283,16 @@ getQueensSegSiteHaplo <- function(x,
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of fathers
 #' @export
 getFathersSegSiteHaplo <- function(x, nInd = NULL,
-                                   haplo = "all", chr = NULL, simParamBee = NULL) {
+                                   haplo = "all", chr = NULL,
+                                   dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSegSiteHaplo(x, caste = "fathers", nInd = nInd,
-                                haplo = haplo, chr = chr, simParamBee = simParamBee)
+                                haplo = haplo, chr = chr,
+                                dronesHaploid = dronesHaploid,
+                                simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3116,13 +3334,16 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of drones
 #' @export
 getDronesSegSiteHaplo <- function(x, nInd = NULL,
-                                  haplo = "all", chr = NULL, simParamBee = NULL) {
+                                  haplo = "all", chr = NULL,
+                                  dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSegSiteHaplo(x, caste = "drones", nInd = nInd,
-                                haplo = haplo, chr = chr, simParamBee = simParamBee)
+                                haplo = haplo, chr = chr,
+                                dronesHaploid = dronesHaploid,
+                                simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3148,6 +3369,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
@@ -3185,7 +3407,8 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'
 #' @export
 getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                                  nInd = NULL, haplo = "all", chr = NULL, simParamBee = NULL) {
+                                  nInd = NULL, haplo = "all", chr = NULL,
+                                  dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3214,6 +3437,9 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
       } else {
         ret[[caste]] <- getSegSiteHaplo(pop = tmp, haplo = haplo,
                                         chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -3221,7 +3447,9 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonySegSiteHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                             haplo = haplo, chr = chr, simParamBee = simParamBee)
+                                             haplo = haplo, chr = chr,
+                                             dronesHaploid = dronesHaploid,
+                                             simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -3244,6 +3472,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
 #'   individuals are accessed, otherwise a random sample
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
@@ -3306,7 +3535,8 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "virginQueens
 #'
 #' @export
 getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
-                                chr = NULL, simParamBee = NULL) {
+                                chr = NULL, dronesHaploid = TRUE,
+                                simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3316,13 +3546,17 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getSegSiteGeno(pop = tmp, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneGeno(geno = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteSegSiteGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                                 chr = chr, simParamBee = simParamBee)
+                                 chr = chr, dronesHaploid = dronesHaploid,
+                                 simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3355,13 +3589,15 @@ getQueensSegSiteGeno <- function(x,
 #' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of fathers
 #' @export
 getFathersSegSiteGeno <- function(x, nInd = NULL,
-                                  chr = NULL, simParamBee = NULL) {
+                                  chr = NULL, dronesHaploid = TRUE,
+                                  simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSegSiteGeno(x, caste = "fathers", nInd = nInd,
-                               chr = chr, simParamBee = simParamBee)
+                               chr = chr, dronesHaploid = dronesHaploid,
+                               simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3403,13 +3639,15 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL,
 #' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of drones
 #' @export
 getDronesSegSiteGeno <- function(x, nInd = NULL,
-                                 chr = NULL, simParamBee = NULL) {
+                                 chr = NULL, dronesHaploid = TRUE,
+                                 simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSegSiteGeno(x, caste = "drones", nInd = nInd,
-                               chr = chr, simParamBee = simParamBee)
+                               chr = chr, dronesHaploid = dronesHaploid,
+                               simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3432,6 +3670,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'   \code{nInd} takes precedence over \code{caste} (see examples)
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSegSiteHaplo}} and \code{\link{getSegSiteHaplo}}
@@ -3469,7 +3708,8 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'
 #' @export
 getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                                 nInd = NULL, chr = NULL, simParamBee = NULL) {
+                                 nInd = NULL, chr = NULL,
+                                 dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3497,14 +3737,19 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
         ret[caste] <- list(NULL)
       } else {
         ret[[caste]] <- getSegSiteGeno(pop = tmp, chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneGeno(geno = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySegSiteGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                                            chr = chr, simParamBee = simParamBee)
+      ret[[colony]] <- getColonySegSiteGeno(x = x[[colony]], caste = caste,
+                                            nInd = nInd, chr = chr,
+                                            dronesHaploid = dronesHaploid,
+                                            simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -3530,6 +3775,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
@@ -3593,7 +3839,8 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "virginQueens"
 #'
 #' @export
 getCasteSnpHaplo <- function(x, caste, nInd = NULL,
-                             snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                             snpChip = 1, haplo = "all", chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3603,13 +3850,18 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getSnpHaplo(pop = tmp, haplo = haplo, snpChip = snpChip, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteSnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                              snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                              snpChip = snpChip, haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3643,13 +3895,16 @@ getQueensSnpHaplo <- function(x,
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of fathers
 #' @export
 getFathersSnpHaplo <- function(x, nInd = NULL,
-                               snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                               snpChip = 1, haplo = "all", chr = NULL,
+                               dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpHaplo(x, caste = "fathers", nInd = nInd,
-                            snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            snpChip = snpChip, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3691,13 +3946,16 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of drones
 #' @export
 getDronesSnpHaplo <- function(x, nInd = NULL,
-                              snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              snpChip = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpHaplo(x, caste = "drones", nInd = nInd,
-                            snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+                            snpChip = snpChip, haplo = haplo, chr = chr,
+                            dronesHaploid = dronesHaploid,
+                            simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3723,6 +3981,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSnpHaplo}} and \code{\link{getSnpHaplo}}
@@ -3761,7 +4020,8 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'
 #' @export
 getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                              nInd = NULL, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                              nInd = NULL, snpChip = 1, haplo = "all", chr = NULL,
+                              dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3790,14 +4050,20 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
       } else {
         ret[[caste]] <- getSnpHaplo(pop = tmp, snpChip = snpChip, haplo = haplo,
                                     chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonySnpHaplo(x = x[[colony]], caste = caste, nInd = nInd,
-                                         snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee)
+      ret[[colony]] <- getColonySnpHaplo(x = x[[colony]], caste = caste,
+                                         nInd = nInd, snpChip = snpChip,
+                                         haplo = haplo, chr = chr,
+                                         dronesHaploid = dronesHaploid,
+                                         simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -3820,6 +4086,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
@@ -3883,7 +4150,8 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
 #'
 #' @export
 getCasteSnpGeno <- function(x, caste, nInd = NULL,
-                            snpChip = 1, chr = NULL, simParamBee = NULL) {
+                            snpChip = 1, chr = NULL, dronesHaploid = TRUE,
+                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3893,13 +4161,18 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
       ret <- NULL
     } else {
       ret <- getSnpGeno(pop = tmp, snpChip = snpChip, chr = chr, simParam = simParamBee)
+      if (dronesHaploid && any(tmp@sex == "M")) {
+        ret <- reduceDroneGeno(geno = ret, pop = tmp)
+      }
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       tmp <- getCasteSnpGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                             snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+                             snpChip = snpChip, chr = chr,
+                             dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -3932,13 +4205,16 @@ getQueensSnpGeno <- function(x,
 #' @describeIn getCasteSnpGeno Access SNP array genotype data of fathers
 #' @export
 getFathersSnpGeno <- function(x, nInd = NULL,
-                              snpChip = 1, chr = NULL, simParamBee = NULL) {
+                              snpChip = 1, chr = NULL, dronesHaploid = TRUE,
+                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpGeno(x, caste = "fathers", nInd = nInd,
-                           snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+                           snpChip = snpChip, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -3980,13 +4256,16 @@ getWorkersSnpGeno <- function(x, nInd = NULL,
 #' @describeIn getCasteSnpGeno Access SNP array genotype data of drones
 #' @export
 getDronesSnpGeno <- function(x, nInd = NULL,
-                             snpChip = 1, chr = NULL, simParamBee = NULL) {
+                             snpChip = 1, chr = NULL, dronesHaploid = TRUE,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isColonies(x)) {
     ret <- getCasteSnpGeno(x, caste = "drones", nInd = nInd,
-                           snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+                           snpChip = snpChip, chr = chr,
+                           dronesHaploid = dronesHaploid,
+                           simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -4009,6 +4288,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @param snpChip numeric, indicates which SNP array genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
+#' @param dronesHaploid logical, return haploid result for drones?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCasteSnpGeno}} and \code{\link{getSnpGeno}}
@@ -4049,7 +4329,8 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'
 #' @export
 getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
-                             nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL) {
+                             nInd = NULL, snpChip = 1, chr = NULL,
+                             dronesHaploid = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -4078,6 +4359,9 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
       } else {
         ret[[caste]] <- getSnpGeno(pop = tmp, snpChip = snpChip,
                                    chr = chr, simParam = simParamBee)
+        if (dronesHaploid && any(tmp@sex == "M")) {
+          ret[[caste]] <- reduceDroneGeno(geno = ret[[caste]], pop = tmp)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -4085,7 +4369,9 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonySnpGeno(x = x[[colony]], caste = caste, nInd = nInd,
-                                        snpChip = snpChip, chr = chr, simParamBee = simParamBee)
+                                        snpChip = snpChip, chr = chr,
+                                        dronesHaploid = dronesHaploid,
+                                        simParamBee = simParamBee)
     }
     names(ret) <- getId(x)
   } else {
@@ -4105,8 +4391,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' @param x \code{\link{matrix}} of genotypes represented as allele dosage coded
 #'   as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
-#'   (drones); individuals are in rows and sites are in columns; no missing
-#'   values are allowed (this is not checked!)
+#'   (fathers or drones); individuals are in rows and sites are in columns; no
+#'   missing values are allowed (this is not checked - you will get NAs!)
 #' @param sex character vector denoting sex for individuals with genotypes in
 #'   \code{x} - \code{"F"} for female and \code{"M"} for male
 #'
@@ -4122,32 +4408,34 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony, nInd = 5)
+#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addVirginQueens(colony, nInd = 2)
 #'
-#' genoQ <- getQueensSegSiteGeno(colony1)
-#' genoF <- getFathersSegSiteGeno(colony1)
-#' genoW <- getWorkersSegSiteGeno(colony1)
-#' genoD <- getDronesSegSiteGeno(colony1)
-#' genoV <- getVirginQueensSegSiteGeno(colony1)
-#' genoM <- apply(X = genoW, MARGIN = 2, FUN = mean)
-#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoM)
-#' rownames(geno)[length(rownames(geno))] <- "M"
-#' sex <- c("F",
-#'          rep("M", times = nrow(genoF)),
-#'          rep("F", times = nrow(genoW)),
-#'          rep("M", times = nrow(genoD)),
-#'          rep("F", times = nrow(genoV)),
-#'          "F")
+#' genoQ <- getQueensSegSiteGeno(colony)
+#' genoF <- getFathersSegSiteGeno(colony)
+#' genoW <- getWorkersSegSiteGeno(colony)
+#' genoD <- getDronesSegSiteGeno(colony)
+#' genoV <- getVirginQueensSegSiteGeno(colony)
+#' genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
+#' genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
+#'
+#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
+#' n <- length(rownames(geno))
+#' rownames(geno)[c(n-1, n)] <- c("mw", "md")
+#'
+#' sex <- c(getQueen(colony)@sex,
+#'          getFathers(colony)@sex,
+#'          getWorkers(colony)@sex,
+#'          getDrones(colony)@sex,
+#'          getVirginQueens(colony)@sex,
+#'          "F",
+#'          "M")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
-#' if (require("Matrix")) {
-#'   image(as(GRM, "Matrix"),
-#'         xlab = "Individual", ylab = "Individual")
-#' }
+#' # library("Matrix"); image(as(GRM, "Matrix"))
 #'
 #' x <- diag(GRM)
 #' hist(x)
@@ -4162,27 +4450,31 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' w <- rownames(genoW)
 #' d <- rownames(genoD)
 #' v <- rownames(genoV)
-#' m <- "M"
+#' mw <- "mw"
+#' md <- "md"
 #'
 #' # Queen vs others
 #' GRM[q, f]
 #' GRM[q, w]
 #' GRM[q, d]
 #' GRM[q, v]
-#' GRM[q, m]
+#' GRM[q, mw]
+#' GRM[q, md]
 #'
 #' # Fathers vs others
 #' GRM[f, f]
 #' GRM[f, w]
 #' GRM[f, d]
 #' GRM[f, v]
-#' GRM[f, m]
+#' GRM[f, mw]
+#' GRM[f, md]
 #'
 #' # Workers vs others
 #' GRM[w, w]
 #' GRM[w, d]
 #' GRM[w, v]
-#' GRM[w, m]
+#' GRM[w, mw]
+#' GRM[w, md]
 #'
 #' @export
 calcBeeGRMIbs <- function(x, sex) {
@@ -4207,6 +4499,184 @@ calcBeeGRMIbs <- function(x, sex) {
   }
   G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
   return(G)
+}
+
+#' @rdname calcBeeGRMIbd
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#'   Identical By Descent genomic data
+#'
+#' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
+#'   for honey bees from Identical By Descent genomic data (tracked alleles
+#'   since the founders) - see references on the background theory.
+#'
+#' @param x \code{\link{matrix}} of haplotypes/genomes with allele indicators
+#'   for the founders coded as 1, 2, ... Haplotypes/genome are in rows and sites
+#'   are in columns; no missing values are allowed (this is not checked!). Row
+#'   names are essential (formated as ind_genome as returned by AlphaSimR IBD
+#'   functions) to infer the individual and their ploidy (see examples)!
+#'
+#' @return a list with a matrix of gametic relatedness coefficients (genome) and
+#'   a matrix of individual relatedness coefficients (indiv)
+#'
+#' @references
+#' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
+#'   relatives for X-chromosomal loci. The Journal of Heredity,
+#'   \url{https://doi.org/10.1093/oxfordjournals.jhered.a110812}
+#'
+#' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
+#'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
+#'   \url{https://doi.org/10.1007/bf00305821}
+#'
+#' Fernando and Grossman (1990) Genetic evaluation with autosomal
+#'   and X-chromosomal inheritance. Theoretical and Applied Genetics,
+#'   \url{https://doi.org/10.1007/bf00224018}
+#'
+#' Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
+#'   prediction of breeding values. Genetics,
+#'   \url{https://doi.org/10.1093/genetics/137.1.319}
+#'
+#' Hill and Weir (2011) Variation in actual relationship as a consequence of
+#'   Mendelian sampling and linkage. Genetics Research,
+#'   \url{https://doi.org/10.1017/s0016672310000480}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(isTrackRec = TRUE)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony <- addWorkers(colony, nInd = 5)
+#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addVirginQueens(colony, nInd = 2)
+#'
+#' haploQ <- getQueensIbdHaplo(colony)
+#' haploF <- getFathersIbdHaplo(colony)
+#' haploW <- getWorkersIbdHaplo(colony)
+#' haploD <- getDronesIbdHaplo(colony)
+#' haploV <- getVirginQueensIbdHaplo(colony)
+#' SP$pedigree
+#'
+#' haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
+#'
+#' GRMs <- calcBeeGRMIbd(x = haplo)
+#'
+#' # library("Matrix"); image(as(GRMs$genome, "Matrix"))
+#' # library("Matrix"); image(as(GRMs$indiv, "Matrix"))
+#'
+#' GRMs
+#'
+#' x <- diag(GRMs$genome)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRMs$genome[lower.tri(x = GRMs$genome, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' x <- diag(GRMs$indiv)
+#' hist(x)
+#' summary(x)
+#'
+#' x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
+#' hist(x)
+#' summary(x)
+#'
+#' qI <- getQueen(colony)@id
+#' fI <- sort(getFathers(colony)@id)
+#' wI <- sort(getWorkers(colony)@id)
+#' dI <- sort(getDrones(colony)@id)
+#' vI <- sort(getVirginQueens(colony)@id)
+#'
+#' qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
+#' fG <- paste(fI, 1, sep = "_")
+#' wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
+#' dG <- paste(dI, 1, sep = "_")
+#' vG <- c(t(outer(X = vI, Y = 1:2, FUN = paste, sep = "_")))
+#'
+#' # Queen vs others
+#' GRMs$genome[qG, qG]
+#' GRMs$indiv[qI, qI]
+#'
+#' GRMs$genome[fG, qG]
+#' GRMs$indiv[fI, qI]
+#'
+#' GRMs$genome[wG, qG]
+#' GRMs$indiv[wI, qI]
+#'
+#' GRMs$genome[dG, qG]
+#' GRMs$indiv[dI, qI]
+#'
+#' GRMs$genome[vG, qG]
+#' GRMs$indiv[vI, qI]
+#'
+#' # Fathers vs others
+#' GRMs$genome[fG, fG]
+#' GRMs$indiv[fI, fI]
+#'
+#' GRMs$genome[wG, fG]
+#' GRMs$indiv[wI, fI]
+#'
+#' GRMs$genome[dG, fG]
+#' GRMs$indiv[dI, fI]
+#'
+#' GRMs$genome[vG, fG]
+#' GRMs$indiv[vI, fI]
+#'
+#' # Workers vs others
+#' GRMs$genome[wG, wG]
+#' GRMs$indiv[wI, wI]
+#'
+#' GRMs$genome[dG, wG]
+#' GRMs$indiv[dI, wI]
+#'
+#' GRMs$genome[vG, wG]
+#' GRMs$indiv[vI, wI]
+#'
+#' @export
+calcBeeGRMIbd <- function(x) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  nHap <- nrow(x)
+  nSit <- ncol(x)
+  hapId <- rownames(x)
+  id <- sapply(X = strsplit(x = hapId, split = "_"), FUN = function(z) z[[1]])
+  idUnique <- unique(id)
+  nInd <- length(idUnique)
+  ploidy <- table(id)[idUnique]
+
+  # IBD matching
+  G <- matrix(data = numeric(), nrow = nHap, ncol = nHap,
+              dimnames = list(hapId, hapId))
+  x <- t(x) # orient for faster access (R is column major); unsure it speeds-up!
+  for (hap1 in 1:nHap) {
+    tmp <- x[, hap1]
+    for (hap2 in 1:hap1) {
+      G[hap2, hap1] <- sum(tmp == x[, hap2])
+    }
+    G[hap1, 1:(hap1 - 1)] <- G[1:(hap1 - 1), hap1]
+  }
+  G <- G / nSit
+
+  # Using the Van Arendonk et al. (1994) "trick" of A=1/2KGK^T, but adapted to
+  #   haplo-diploids
+  K <- matrix(data = 0.0, nrow = nInd, ncol = nHap,
+              dimnames = list(idUnique, hapId))
+  lastCol <- 0
+  ones <- c(1, 1)
+  for (ind in 1:nInd) {
+    if (ploidy[ind] == 2) {
+      cols <- lastCol + c(1, 2)
+      lastCol <- cols[2]
+      K[ind, cols] <- ones
+    } else {
+      lastCol <- lastCol + 1
+      K[ind, lastCol] <- 1
+    }
+  }
+  return(list(genome = G, indiv = 0.5 * K %*% G %*% t(K)))
 }
 
 #' @rdname getCasteGv
