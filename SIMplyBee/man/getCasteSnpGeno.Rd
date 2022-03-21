@@ -15,12 +15,20 @@ getCasteSnpGeno(
   nInd = NULL,
   snpChip = 1,
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
 getQueensSnpGeno(x, snpChip = 1, chr = NULL, simParamBee = NULL)
 
-getFathersSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
+getFathersSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getVirginQueensSnpGeno(
   x,
@@ -32,7 +40,14 @@ getVirginQueensSnpGeno(
 
 getWorkersSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
 
-getDronesSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
+getDronesSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -47,6 +62,8 @@ individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

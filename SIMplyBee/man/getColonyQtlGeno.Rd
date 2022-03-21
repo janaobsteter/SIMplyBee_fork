@@ -10,6 +10,7 @@ getColonyQtlGeno(
   nInd = NULL,
   trait = 1,
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -28,6 +29,8 @@ access different number of different caste - when this is the case
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

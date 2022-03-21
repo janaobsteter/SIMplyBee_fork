@@ -9,17 +9,36 @@
 \alias{getDronesIbdHaplo}
 \title{Access IBD haplotypes of individuals in a caste}
 \usage{
-getCasteIbdHaplo(x, caste, nInd = NULL, chr = NULL, simParamBee = NULL)
+getCasteIbdHaplo(
+  x,
+  caste,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getQueensIbdHaplo(x, chr = NULL, simParamBee = NULL)
 
-getFathersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getFathersIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 
 getVirginQueensIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
 getWorkersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
 
-getDronesIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getDronesIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
@@ -32,6 +51,8 @@ individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

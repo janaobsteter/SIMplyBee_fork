@@ -54,7 +54,7 @@ colony}
 
 \item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
 
-\item{\code{pheno}}{matrix, phenotypes of the colony TODO: revise}
+\item{\code{pheno}}{matrix, phenotypes of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/156}
 
 \item{\code{split}}{logical, has colony split}
 
@@ -62,11 +62,11 @@ colony}
 
 \item{\code{supersedure}}{logical, has colony superseded}
 
-\item{\code{collapse}}{logical, has colony collapsed TODO: revise}
+\item{\code{collapse}}{logical, has colony collapsed}
 
 \item{\code{production}}{logical, is colony productive}
 
-\item{\code{last_event}}{character, the last event of the colony TODO: we probably don't need this}
+\item{\code{last_event}}{character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10}
 
 \item{\code{misc}}{list, available for storing extra information about the colony}
 }}

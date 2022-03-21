@@ -16,6 +16,7 @@ getCasteSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
@@ -33,6 +34,7 @@ getFathersSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
@@ -60,6 +62,7 @@ getDronesSnpHaplo(
   snpChip = 1,
   haplo = "all",
   chr = NULL,
+  dronesHaploid = TRUE,
   simParamBee = NULL
 )
 }
@@ -80,6 +83,8 @@ value of 2 for male haplotypes}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

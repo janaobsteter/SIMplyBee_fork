@@ -12,7 +12,8 @@
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can also be just \code{NULL}
-#' @param use character, all options provided by \code{\link{selectInd}}
+#' @param use character, all options provided by \code{\link{selectInd}} and
+#'   \code{"order"} that selects \code{1:nInd} individuals
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -24,6 +25,8 @@
 #'   \code{\link{Colonies-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"}
+#'
+#' @seealso \code{\link{getCasteId}} and \code{\link{caste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -118,7 +121,7 @@
 #' getCaste(colony1, caste = "all")
 #' getCaste(colony2, caste = "all")
 #' @export
-getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
+getCaste <- function(x, caste = "all", nInd = NULL, use = "order") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
@@ -148,7 +151,11 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "rand") {
         if (nIndRequested > nIndAvailable) {
           nIndRequested <- nIndAvailable
         }
-        ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+        if (use == "order") {
+          ret <- pop[1:nIndRequested]
+        } else {
+          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+        }
       }
     }
   } else if (isColonies(x)) {
@@ -447,10 +454,9 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "nHomBrood")
-    workers <- beeCross(
-      queen = getQueen(x), drones = getFathers(x),
-      nProgeny = nInd, simParamBee = simParamBee
-    )
+    workers <- beeCross(queen = getQueen(x), drones = getFathers(x),
+                        nProgeny = nInd, simParamBee = simParamBee)
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
@@ -817,6 +823,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -836,6 +843,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
+    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -1220,11 +1228,19 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   }
 
   nVirginQueen <- nInd(pop)
+  pop <- setMisc(x = pop, slot = "caste", value = "Q")
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
-    #       nAvgFathers from SimParam when nAvgFathers = NULL?: https://github.com/HighlanderLab/SIMplyBee/issues/98
+    #      nAvgFathers from SimParam when nAvgFathers = NULL?
+    fathers <- setMisc(x = fathers, slot = "caste", value = "F")
     pop@misc[[1]]$fathers <- fathers
-    pop@misc[[1]]$caste <- "Q"
+    if (isCsdActive(simParamBee = simParamBee)) {
+      # TODO: call a function that will calculate theoretical/expected pHomBrood
+      #       based on genotype of the queen and fathers
+      pop@misc[[1]]$pHomBrood <- 0
+    } else {
+      pop@misc[[1]]$pHomBrood <- NA
+    }
   } else {
     fathers <- pullDroneGroupsFromDCA(
       DCA = fathers,
@@ -1232,8 +1248,15 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
       avgGroupSize = nAvgFathers
     )
     for (queen in seq_len(nVirginQueen)) {
+      fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")
       pop@misc[[queen]]$fathers <- fathers[[queen]]
-      pop@misc[[queen]]$caste <- "Q"
+      if (isCsdActive(simParamBee = simParamBee)) {
+        # TODO: call a function that will calculate theoretical/expected pHomBrood
+        #       based on genotype of the queen and fathers
+        pop@misc[[queen]]$pHomBrood <- 0
+      } else {
+        pop@misc[[queen]]$pHomBrood <- NA
+      }
     }
   }
 
