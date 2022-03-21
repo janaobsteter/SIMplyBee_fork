@@ -15,13 +15,12 @@
 #'   and the fathers argument is ignored)
 #' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
 #'   which one will become the queen of the colony in the future
-#'   TODO: think and explain what happens if we provide both a queen and virgin
-#'   queens (possibly of different origin)!
+#'   TODO: https://github.com/HighlanderLab/SIMplyBee/issues/161
+#'
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When a mated queen is given or a queen alongside with fathers, the
 #'   function also generates one virgin queen.
-#'   TODO: discuss this - see below
 #'
 #' @return new \code{\link{Colony-class}}
 #'
@@ -79,8 +78,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       }
     }
     if (!is.null(virginQueens)) {
-      warning("You are providing the queen and virgin queen(s) at the same time.")
-      warning("Are they properly related?")
+      stop("You are providing the queen and virgin queen(s) at the same time.")
     }
   }
   colony <- new(Class = "Colony",
@@ -540,8 +538,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     colony <- resetEvents(colony)
   }
   colony@production <- TRUE
-  # TODO: call some sort of finalise function that will guide what happens next
-  #       with the colony?
+  #
 
   validObject(colony)
   return(colony)
@@ -1029,10 +1026,10 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' remnants[[1]]
 #' resetEvents(remnants)[[1]]
 #'
-#' (tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
+#' (tmp <- supersedeColony(colony1))
 #' resetEvents(tmp)
 #'
-#' (tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+#' (tmp <- supersedeColonies(apiary))
 #' tmp[[1]]
 #' resetEvents(tmp)[[1]]
 #'
@@ -1082,7 +1079,7 @@ resetEvents <- function(x, collapse = NULL) {
 #'   one is selected at random, mated, and promoted to the queen of the colony.
 #'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
 #'   producing progeny at a later stage.
-#'   TODO: is this correct (about destroy)?
+#'
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
@@ -1127,13 +1124,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
     stop("Individuals in fathers must be drones!")
   }
   # Pick one virgin queen that will prevail
-  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
-  # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
-  #       imagine someone providing 100 or 1000 fathers - should we just take them all?
-  #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
-  #       but throw a warning if a user provided more fathers? If the user specifies
-  #       nAvgFathers, then we take as many as he/she wants
+  # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/157
   queen <- crossVirginQueen(pop = virginQueen, fathers,
                             simParamBee = simParamBee)
   colony <- reQueenColony(colony, queen)
@@ -1215,7 +1207,7 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make type/use of pulling an argument?
+  # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/160
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1234,7 +1226,6 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   remnantColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
                                                    year = year)$virginQueens
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
@@ -1293,12 +1284,12 @@ supersedeColony <- function(colony, year = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   colony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
                                             year = year)$virginQueens
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
+  colony@production <- TRUE
   validObject(colony)
   return(colony)
 }
@@ -1343,7 +1334,7 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make the type/use of pulling an argument?
+
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
@@ -1356,7 +1347,6 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   splitColony@virginQueens <- createVirginQueens(x = colony, nInd = 1,
                                                  year = year)$virginQueens
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
@@ -1468,11 +1458,7 @@ setLocation <- function(x, location) {
 #' @examples
 #' # TODO
 #'
-# TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
-#       in getColonyGv()?
-# TODO: what if caste phenos have already been set? need a sensible default!!!
-# TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
-#       it will not work for simParam - so best to add all these arguments directly?
+# TODO:
 # See
 #     https://github.com/HighlanderLab/SIMplyBee/issues/26
 #     https://github.com/HighlanderLab/SIMplyBee/issues/28
