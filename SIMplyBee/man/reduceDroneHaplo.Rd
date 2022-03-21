@@ -19,6 +19,12 @@ Level 0 function that returns one haplotype of drones, because
   we internally simulate them as diploid (doubled haploid). This is a utility
   function that you likely don't need to use.
 }
+\details{
+While this function is meant to work on male (drone) haplotypes, we
+  handle cases where the \code{haplo} matrix contains male and female
+  haplotypes, which is why you need to provide \code{pop}. We only reduce
+  haplotypes for males though.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

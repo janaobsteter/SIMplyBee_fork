@@ -1558,6 +1558,11 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @param haplo \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
 #'
+#' @details While this function is meant to work on male (drone) haplotypes, we
+#'   handle cases where the \code{haplo} matrix contains male and female
+#'   haplotypes, which is why you need to provide \code{pop}. We only reduce
+#'   haplotypes for males though.
+#'
 #' @return matrix with one haplotype per drone instead of two
 #'
 #' @examples
