@@ -42,5 +42,7 @@ workers@mother
 workers@father
 SP$pedigree
 SP$recHist
+SP$recHist[[11]][[1]][1]
+SP$recHist[[11]][[1]][2]
 
 }

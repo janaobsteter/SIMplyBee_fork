@@ -280,6 +280,9 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' tmp$virginQueens@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
+#' SP$caste
 #'
 #' createVirginQueens(apiary, nInd = 10)
 #'
@@ -319,6 +322,9 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     names(ret) <- c("virginQueens", "pHomBrood")
     ret$virginQueens@sex[] <- "F"
     ret$virginQueens <- setMisc(x = ret$virginQueens, slot = "caste", value = "V")
+    if (simParamBee$isTrackPed) {
+      simParamBee$changeCaste(id = ret$virginQueens@id, caste = "V")
+    }
     if (!is.null(year)) {
       ret$virginQueens <- setQueensYearOfBirth(x = ret$virginQueens,
                                                year = year)
@@ -412,6 +418,9 @@ asVirginQueen <- function(x) {
 #' tmp$workers@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
+#' SP$caste
 #'
 #' createWorkers(apiary, nInd = 10)
 #'
@@ -454,7 +463,6 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     names(ret) <- c("workers", "pHomBrood")
     workers <- beeCross(queen = getQueen(x), drones = getFathers(x),
                         nProgeny = nInd, simParamBee = simParamBee)
-    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
@@ -483,6 +491,9 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret$workers@sex[] <- "F"
     ret$workers <- setMisc(x = ret$workers, slot = "caste", value = "W")
+    if (simParamBee$isTrackPed) {
+      simParamBee$addToCaste(id = ret$workers@id, caste = "W")
+    }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -563,6 +574,8 @@ asWorker <- function(x) {
 #' workers@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[11]][[1]][1]
+#' SP$recHist[[11]][[1]][2]
 #'
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
@@ -615,7 +628,8 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' workers@father
 #' SP$pedigree
 #' SP$recHist
-#'
+#' SP$recHist[[11]][[1]][1]
+#' SP$recHist[[11]][[1]][2]
 beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   # An attempt to have drones properly haploid, but have hit AlphaSimR limits
   #   since a lot of the underlying C++ code assumes the same ploidy for all/most
@@ -740,6 +754,9 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' drones@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[13]][[1]][1]
+#' SP$recHist[[13]][[1]][2]
+#' SP$caste
 #'
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -754,6 +771,8 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' tmp@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
 #'
 #' createDrones(apiary, nInd = 10)
 #'
@@ -799,7 +818,9 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
-    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
+    if (simParamBee$isTrackPed) {
+      simParamBee$addToCaste(id = ret@id, caste = "D")
+    }
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -816,10 +837,13 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # keepParents = FALSE means that the queen will be stored as drones' parent,
     #   instead of storing queen's parents
     # Diploid version - a hack, but it works
-    ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE,
+                  simParam = simParamBee)
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, slot = "caste", value = "D")
-    # TDOO: SP$caste https://github.com/HighlanderLab/SIMplyBee/issues/152
+    if (simParamBee$isTrackPed) {
+      simParamBee$addToCaste(id = ret@id, caste = "D")
+    }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -1199,10 +1223,16 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   }
   nVirginQueen <- nInd(pop)
   pop <- setMisc(x = pop, slot = "caste", value = "Q")
+  if (simParamBee$isTrackPed) {
+    simParamBee$changeCaste(id = pop@id, caste = "Q")
+  }
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
     #       nAvgFathers from SimParam when nAvgFathers = NULL?
     fathers <- setMisc(x = fathers, slot = "caste", value = "F")
+    if (simParamBee$isTrackPed) {
+      simParamBee$changeCaste(id = fathers@id, caste = "F")
+    }
     pop@misc[[1]]$fathers <- fathers
     if (isCsdActive(simParamBee = simParamBee)) {
       # TODO: call a function that will calculate theoretical/expected pHomBrood
@@ -1217,6 +1247,9 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
                                       avgGroupSize = nAvgFathers)
     for (queen in seq_len(nVirginQueen)) {
       fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")
+      if (simParamBee$isTrackPed) {
+        simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
+      }
       pop@misc[[queen]]$fathers <- fathers[[queen]]
       if (isCsdActive(simParamBee = simParamBee)) {
         # TODO: call a function that will calculate theoretical/expected pHomBrood
@@ -1331,7 +1364,9 @@ setQueensYOB <- setQueensYearOfBirth
 #' basePop@misc
 #'
 #' @export
-# TODO: move to AlphaSimR
+# TODO: move to AlphaSimR - track
+#   https://github.com/gaynorr/AlphaSimR/pull/51
+#   https://github.com/HighlanderLab/SIMplyBee/issues/144
 setMisc <- function(x, slot, value) {
   if (isPop(x)) {
     n <- nInd(x)
@@ -1345,4 +1380,73 @@ setMisc <- function(x, slot, value) {
     stop("Argument x must be a Pop class object!")
   }
   return(x)
+}
+
+#' @rdname getMisc
+#' @title Get miscelaneous information in a population
+#'
+#' @description Get miscelaneous information in a population
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param node character, name of the node to get from the \code{x@misc} slot;
+#'   if \code{NULL} the whole \code{x@misc} slot is returned
+#'
+#' @return The \code{x@misc} slot or its nodes \code{x@misc[[*]][[node]]}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParam$new(founderGenomes)
+#' basePop <- newPop(founderGenomes)
+#'
+#' basePop <- setMisc(basePop, node = "info", value = 1)
+#' basePop@misc
+#' getMisc(x = basePop, node = "info")
+#'
+#' basePop <- setMisc(basePop, node = "info2", value = c("A", "B", "C"))
+#' basePop@misc
+#' getMisc(x = basePop, node = "info2")
+#'
+#' n <- nInd(basePop)
+#' location <- vector(mode = "list", length = n)
+#' for (ind in seq_len(n)) {
+#'   location[[ind]] <- runif(n = 2, min = 0, max = 100)
+#' }
+#' location
+#' basePop <- setMisc(basePop, node = "location", value = location)
+#' basePop@misc
+#' getMisc(x = basePop, node = "location")
+#'
+#' n <- nInd(basePop)
+#' location <- vector(mode = "list", length = n)
+#' for (ind in c(1, 3)) {
+#'   location[[ind]] <- runif(n = 2, min = 0, max = 100)
+#' }
+#' location
+#' basePop <- setMisc(basePop, node = "location", value = location)
+#' basePop@misc
+#' getMisc(x = basePop, node = "location")
+#'
+#' getMisc(x = basePop)
+#'
+#' @export
+# TODO: move to AlphaSimR - track
+#   https://github.com/gaynorr/AlphaSimR/pull/51
+#   https://github.com/HighlanderLab/SIMplyBee/issues/144
+getMisc <- function(x, node = NULL) {
+  if (isPop(x)) {
+    if (is.null(node)) {
+      ret <- x@misc
+    } else {
+      nInd <- nInd(x)
+      ret <- vector(mode = "list", length = nInd)
+      for (ind in seq_len(nInd)) {
+        if (!is.null(x@misc[[ind]][[node]])) {
+          ret[ind] <- x@misc[[ind]][node]
+        }
+      }
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
 }
