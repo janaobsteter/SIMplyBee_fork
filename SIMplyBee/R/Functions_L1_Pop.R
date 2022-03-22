@@ -1207,6 +1207,13 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' isQueenMated(matedQueens)
 #' nFathers(matedQueens)
 #' getFathers(matedQueens)
+#'
+#' # Inbred mated queen (mated with her own sons)
+#' matedQueen3 <- crossVirginQueen(pop = basePop[1],
+#'                                 fathers = drones[1:6])
+#' # Check the theretical homozygosity
+#' matedQueen3@misc[[1]]$pHomBrood
+#'
 #' @export
 crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   # TODO: set nAvgFathers to NULL by default and then grab the value from
@@ -1234,13 +1241,6 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     #      nAvgFathers from SimParam when nAvgFathers = NULL?
     fathers <- setMisc(x = fathers, slot = "caste", value = "F")
     pop@misc[[1]]$fathers <- fathers
-    if (isCsdActive(simParamBee = simParamBee)) {
-      # TODO: call a function that will calculate theoretical/expected pHomBrood
-      #       based on genotype of the queen and fathers
-      pop@misc[[1]]$pHomBrood <- 0
-    } else {
-      pop@misc[[1]]$pHomBrood <- NA
-    }
   } else {
     fathers <- pullDroneGroupsFromDCA(
       DCA = fathers,
@@ -1250,13 +1250,6 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     for (queen in seq_len(nVirginQueen)) {
       fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")
       pop@misc[[queen]]$fathers <- fathers[[queen]]
-      if (isCsdActive(simParamBee = simParamBee)) {
-        # TODO: call a function that will calculate theoretical/expected pHomBrood
-        #       based on genotype of the queen and fathers
-        pop@misc[[queen]]$pHomBrood <- 0
-      } else {
-        pop@misc[[queen]]$pHomBrood <- NA
-      }
     }
   }
 
