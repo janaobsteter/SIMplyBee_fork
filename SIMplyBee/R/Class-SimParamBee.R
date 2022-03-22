@@ -99,22 +99,28 @@ SimParamBee <- R6Class(
     #'   determines how many segregating sites will be needed to represent the
     #'   csd locus from the underlying bi-allelic SNP; the minimum number of
     #'   bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
-    #'   then \code{csdChr=NULL} is triggered
-    #'   
-    #'   @references Bovo, S., Ribani, A.et al (2021). 
+    #'   then \code{csdChr=NULL} is triggered.
+    #'   By default we set \code{nCsdAlleles} to 128,
+    #'    which is at the upper end of the reported number of csd alleles
+    #'   @references 
+    #'   Bovo, Ribani et al (2021). 
     #'   Application of Next Generation Semiconductor-Based Sequencing for
-    #'    the Identification of Apis mellifera Complementary Sex Determiner 
+    #'  the Identification of Apis mellifera Complementary Sex Determiner 
     #'    (csd) Alleles from Honey DNA. Insects, 12(10), 868.
+    #'    \url{https://www.mdpi.com/2075-4450/12/10/868/htm}
     #'    
-    #'   Zareba, J., Blazej, P., Laszkiewicz, A. et al (2017).
+    #'   Zareba, Blazej et al (2017).
     #'   Uneven distribution of complementary sex determiner (csd) alleles 
     #'   in Apis mellifera population. 
-    #'   Sci Rep 7, 2317. https://doi.org/10.1038/s41598-017-02629-9
+    #'   Sci Rep 7, 2317.
+    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
     #'   
-    #'   Lechner, S., Ferretti L.et al(2014) 
+    #'   Lechner, Ferretti et al(2014) 
     #'   Nucleotide variability at its limit? 
     #'   Insights into the number and evolutionary dynamics of the sex-determining 
     #'   specificities of the honey bee Apis mellifera Mol. Biol. Evol.. 31, 272-287.
+    #'   \url{https://academic.oup.com/mbe/article/31/2/272/998263?login=true}
+    #'   
     #'   
     #'
     #' @examples
