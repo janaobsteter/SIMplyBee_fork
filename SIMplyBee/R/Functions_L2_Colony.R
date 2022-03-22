@@ -15,11 +15,7 @@
 #'   and the fathers argument is ignored)
 #' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
 #'   which one will become the queen of the colony in the future
-#'
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @details When a mated queen is given or a queen alongside with fathers, the
-#'   function also generates one virgin queen.
 #'
 #' @return new \code{\link{Colony-class}}
 #'
@@ -550,8 +546,6 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     colony <- resetEvents(colony)
   }
   colony@production <- TRUE
-  # https://github.com/HighlanderLab/SIMplyBee/issues/177
-
   validObject(colony)
   return(colony)
 }
@@ -1101,7 +1095,6 @@ resetEvents <- function(x, collapse = NULL) {
 #'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
 #'   producing progeny at a later stage.
 #'
-#'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
 #'   will be run on these individuals
@@ -1143,7 +1136,8 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (any(!isDrone(fathers))) {
     stop("Individuals in fathers must be drones!")
   }
-  # https://github.com/HighlanderLab/SIMplyBee/issues/178
+  # TODO: Choosing the queen in supersedure: at random or something else
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
   #       imagine someone providing 100 or 1000 fathers - should we just take them all?
@@ -1234,9 +1228,8 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
 
-  # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/160
-  #pulling is random by default, should we make type/use of pulling an argument?
-
+  # TODO: Add use="something" to select pWorkers that swarm
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/160
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1366,7 +1359,8 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-  #https://github.com/HighlanderLab/SIMplyBee/issues/179
+  # TODO: Split colony splits at random by default, but we could make it as a function of some parameters
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/179
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
@@ -1515,16 +1509,18 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 }
 
 #' @rdname combineColony
-#' @title Combine colony
+#' @title Combine two colony
 #'
-#' @description Level 2 function that combines two colonies. Workers and drones of "weak"
-#' are added to the strong. User should remove the weak colony.
+#' @description Level 2 function that combines two colony objects into one.
+#'   For example, to combine a weak and a strong colony. Workers and drones
+#'   of the weak colony are added to the strong. User has to remove the weak
+#'.  colony.
 #'
 #' @param strong \code{\link{Colony-class}}
 #' @param weak \code{\link{Colony-class}}
 #'
-#' @return a colony \code{\link{Colony-class}}, that combines workers of both
-#' colonies and a queen of the strong one.
+#' @return a colony \code{\link{Colony-class}} that combines workers and drones
+#'   of both colony.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1536,7 +1532,7 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 #' col2 <- createColony(queen = base[3], fathers = drones[16:30])
 #'
 #' col2 <- combineColony(strong = col1, weak = col2)
-#'
+#' rm(col1)
 #' @export
 combineColony <- function(strong, weak) {
   if (!isColony(strong)) {
@@ -1549,9 +1545,3 @@ combineColony <- function(strong, weak) {
   strong@drones <- c(strong@drones, weak@drones)
   return(strong)
 }
-
-
-
-
-
-
