@@ -1,6 +1,6 @@
 # Level 1 Pop Functions
 
-#' @rdname getCaste
+#' @rdname getCastePop
 #' @title Access individuals of a caste
 #'
 #' @description Level 1 function that returns individuals of a caste. These
@@ -42,14 +42,14 @@
 #' colony1 <- addDrones(colony1, nInd = 2)
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #'
-#' getCaste(colony1, caste = "queen")
+#' getCastePop(colony1, caste = "queen")
 #' getQueen(colony1)
 #'
 #' drones@id
-#' getCaste(colony1, caste = "fathers")
-#' getCaste(colony1, caste = "fathers")@id
-#' getCaste(colony1, caste = "fathers", nInd = 2)@id
-#' getCaste(colony1, caste = "fathers", nInd = 2)@id
+#' getCastePop(colony1, caste = "fathers")
+#' getCastePop(colony1, caste = "fathers")@id
+#' getCastePop(colony1, caste = "fathers", nInd = 2)@id
+#' getCastePop(colony1, caste = "fathers", nInd = 2)@id
 #' getFathers(colony1)
 #' getFathers(colony1)@id
 #' getFathers(colony1, nInd = 2)@id
@@ -57,77 +57,77 @@
 #'
 #' getFathers(getQueen(colony1))
 #'
-#' getCaste(colony1, caste = "virginQueens")
-#' getCaste(colony1, caste = "virginQueens")@id
-#' getCaste(colony1, caste = "virginQueens", nInd = 2)@id
-#' getCaste(colony1, caste = "virginQueens", nInd = 2)@id
+#' getCastePop(colony1, caste = "virginQueens")
+#' getCastePop(colony1, caste = "virginQueens")@id
+#' getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
+#' getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
 #' getVirginQueens(colony1)
 #' getVirginQueens(colony1)@id
 #' getVirginQueens(colony1, nInd = 2)@id
 #' getVirginQueens(colony1, nInd = 2)@id
 #'
-#' getCaste(colony1, caste = "workers")
-#' getCaste(colony1, caste = "workers")@id
-#' getCaste(colony1, caste = "workers", nInd = 2)@id
-#' getCaste(colony1, caste = "workers", nInd = 2)@id
+#' getCastePop(colony1, caste = "workers")
+#' getCastePop(colony1, caste = "workers")@id
+#' getCastePop(colony1, caste = "workers", nInd = 2)@id
+#' getCastePop(colony1, caste = "workers", nInd = 2)@id
 #' getWorkers(colony1)
 #' getWorkers(colony1)@id
 #' getWorkers(colony1, nInd = 2)@id
 #' getWorkers(colony1, nInd = 2)@id
 #'
-#' getCaste(colony1, caste = "drones")
-#' getCaste(colony1, caste = "drones")@id
-#' getCaste(colony1, caste = "drones", nInd = 2)@id
-#' getCaste(colony1, caste = "drones", nInd = 2)@id
+#' getCastePop(colony1, caste = "drones")
+#' getCastePop(colony1, caste = "drones")@id
+#' getCastePop(colony1, caste = "drones", nInd = 2)@id
+#' getCastePop(colony1, caste = "drones", nInd = 2)@id
 #' getDrones(colony1)
 #' getDrones(colony1)@id
 #' getDrones(colony1, nInd = 2)@id
 #' getDrones(colony1, nInd = 2)@id
 #'
-#' getCaste(colony2, caste = "drones")
+#' getCastePop(colony2, caste = "drones")
 #' getDrones(colony2)
 #'
 #' apiary <- c(colony1, colony2)
-#' getCaste(apiary, caste = "queen")
+#' getCastePop(apiary, caste = "queen")
 #' getQueen(apiary)
-#' getCaste(apiary, caste = "queen")[[1]]@id
-#' getCaste(apiary, caste = "queen")[[2]]@id
+#' getCastePop(apiary, caste = "queen")[[1]]@id
+#' getCastePop(apiary, caste = "queen")[[2]]@id
 #'
-#' getCaste(apiary, caste = "fathers")
+#' getCastePop(apiary, caste = "fathers")
 #' getFathers(apiary)
 #' getFathers(apiary)[[1]]@id
 #' getFathers(apiary)[[2]]@id
 #' getFathers(apiary, nInd = 2)
 #'
-#' getCaste(apiary, caste = "virginQueens")
+#' getCastePop(apiary, caste = "virginQueens")
 #' getVirginQueens(apiary)
 #' getVirginQueens(apiary)[[1]]@id
 #' getVirginQueens(apiary)[[2]]
 #' getVirginQueens(apiary, nInd = 1)
 #' getVirginQueens(apiary, nInd = 2)
 #'
-#' getCaste(apiary, caste = "workers")
+#' getCastePop(apiary, caste = "workers")
 #' getWorkers(apiary)
 #' getWorkers(apiary)[[1]]@id
 #' getWorkers(apiary)[[2]]@id
 #' getWorkers(apiary, nInd = 2)
 #'
-#' getCaste(apiary, caste = "drones")
+#' getCastePop(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
 #' getDrones(apiary)[[2]]
 #' getDrones(apiary, nInd = 2)
 #'
-#' getCaste(colony1, caste = "all")
-#' getCaste(colony2, caste = "all")
+#' getCastePop(colony1, caste = "all")
+#' getCastePop(colony2, caste = "all")
 #' @export
-getCaste <- function(x, caste = "all", nInd = NULL, use = "order") {
+getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
       for (caste in names(ret)) {
-        tmp <- getCaste(x = x, caste = caste, nInd = nInd, use = use)
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -160,7 +160,7 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "order") {
     }
   } else if (isColonies(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = getCaste, caste = caste, nInd = nInd, use = use)
+    ret <- fun(X = x@colonies, FUN = getCastePop, caste = caste, nInd = nInd, use = use)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
@@ -172,7 +172,7 @@ getCaste <- function(x, caste = "all", nInd = NULL, use = "order") {
 #' @export
 getQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "queen", nInd = 1)
+    ret <- getCastePop(x, caste = "queen", nInd = 1)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -201,7 +201,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
       ret <- ret[[1]]
     }
   } else if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "fathers", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
@@ -212,7 +212,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "virginQueens", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -223,7 +223,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "workers", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -234,7 +234,7 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCaste(x, caste = "drones", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -1258,7 +1258,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   pop <- setMisc(x = pop, slot = "nHomBrood", value = 0)
 
   if (isCsdActive(simParamBee = simParamBee)) {
-    pop <- setMisc(x = pop, slot = "pHomBrood", value = computeQueenPHomBrood(pop))
+    pop <- setMisc(x = pop, slot = "pHomBrood", value = computeQueensPHomBrood(pop))
   } else {
     pop <- setMisc(x = pop, slot = "pHomBrood", value = NA)
   }
