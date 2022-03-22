@@ -10,8 +10,11 @@ addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}
 \code{simParamBee$nDrones} is used}
 
-\item{new}{logical, should the drones be added a fresh (ignoring currently
-present drones)}
+\item{nInd}{numeric or function, number of drones to be added, but see
+\code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used}
+
+\item{new}{logical, should the number of drones be added anew or should we
+only top-up the existing number of drones to \code{nInd}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -36,21 +39,24 @@ apiary <- c(colony1, colony2)
 addDrones(colony1, nInd = 20)
 nDrones(addDrones(apiary, nInd = 20))
 
-# Using a default in SP$nWorkers
+# Using defaults in SP$nWorkers
 # (just to have some workers - change this to your needs!)
 addDrones(colony1)
 nDrones(addDrones(apiary))
 
+# Specifying own number
 SP$nDrones <- 15
 addDrones(colony1)
 nDrones(addDrones(apiary))
 
+# Specify a function that will give a number
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
 addDrones(colony1, nInd = nDronesFun)
 nDrones(addDrones(apiary, nInd = nDronesFun))
 
+# Store a function or a value in the SP object
 SP$nDrones <- nDronesFun
 addDrones(colony1)
 nDrones(addDrones(apiary))

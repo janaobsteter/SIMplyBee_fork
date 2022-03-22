@@ -265,13 +265,13 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'   combined.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param nInd numeric or function, number of workers; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used
-#' @param new logical, should the workers be added a fresh (ignoring currently
-#'   present workers in the colony)
+#' @param nInd numeric or function, number of workers to be added, but see
+#'   \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#' @param new logical, should the number of workers be added anew or should we
+#'   only top-up the existing number of workers to \code{nInd}
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   add the exact specified number of only viable workers (heterozygous on the csd
-#'   locus)
+#'   we add the exact specified number of viable workers (heterozygous at the
+#'   csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -294,16 +294,19 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #'
+#' # Specify own number
 #' SP$nWorkers <- 15
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #'
+#' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' addWorkers(colony1, nInd = nWorkersFun)
 #' nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 #'
+#' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
@@ -323,8 +326,8 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
       newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
-        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood
         x@queen@misc[[1]]$nWorkers <- nInd
+        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood
       } else {
         x@workers <- c(x@workers, newWorkers$workers)
         x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd
@@ -355,8 +358,10 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'   \code{simParamBee$nDrones} is used
-#' @param new logical, should the drones be added a fresh (ignoring currently
-#'   present drones)
+#' @param nInd numeric or function, number of drones to be added, but see
+#'   \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#' @param new logical, should the number of drones be added anew or should we
+#'   only top-up the existing number of drones to \code{nInd}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -374,21 +379,24 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #' addDrones(colony1, nInd = 20)
 #' nDrones(addDrones(apiary, nInd = 20))
 #'
-#' # Using a default in SP$nWorkers
+#' # Using defaults in SP$nWorkers
 #' # (just to have some workers - change this to your needs!)
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #'
+#' # Specifying own number
 #' SP$nDrones <- 15
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #'
+#' # Specify a function that will give a number
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' addDrones(colony1, nInd = nDronesFun)
 #' nDrones(addDrones(apiary, nInd = nDronesFun))
 #'
+#' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesFun
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
@@ -437,16 +445,13 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nWorkers numeric or function, number of worker; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
-#'   present workers are taken into account and only the missing difference is
-#'   added)
-#' @param nDrones numeric or function, number of drones; if \code{NULL} then
-#'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
-#'   present drones are taken into account so only the missing difference is
-#'   added)
-#' @param new logical, should the workers and drones be added a
-#'   fresh (ignoring currently present workers and drones)
+#' @param nWorkers numeric or function, number of worker to add to the colony,
+#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#' @param nDrones numeric or function, number of drones to add to the colony,
+#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#' @param new logical, should the number of workers and drones be added anew or
+#'   should we only top-up the existing number of workers and drones to
+#'   \code{nWorkers} and \code{nDrones} (see details)
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
 #'   create the exact specified number of only viable workers (heterozygous on
 #'   the csd locus)
@@ -454,9 +459,23 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details This function turns production of the colony to \code{TRUE}.
+#' @details Argument \code{new} enables simulation of two common cases. First,
+#'   if you are modelling year-to-year cycle, you will likely want
+#'   \code{new = TRUE}, so that, say, in spring you will replace old (from last
+#'   year) workers and drones with the new ones. This is the case that we are
+#'   targeting and hence \code{new = TRUE} is default. Second, if you are
+#'   modelling shorter period cycles, you will likely want \code{new = FALSE} to
+#'   just top up the current workers and drones - you might also want to look at
+#'   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
 #'
-#' @return \code{\link{Colony-class}} with workers and drones added
+#' TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
+#'   We are not sure this is easy to achieve with current implementation just
+#'   now, but could be expanded.
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/176
+#'
+#' This function turns on production in the colony.
+#'
+#' @return \code{\link{Colony-class}} with workers and drones replaced or added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -468,21 +487,25 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' colony
 #' isProductive(colony)
 #'
-#' # Using defaults in SP
-#' # (just to have some bees - change this to your needs!)
+#' # Using defaults in SP$nWorkers & SP$nDrones
 #' (colony <- buildUpColony(colony))
 #' isProductive(colony)
+#' getWorkers(colony)@id
 #'
+#' # Specifying own number
 #' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony # we are already at the target
-#' colony <- buildUpColony(colony, nWorkers = 150)
-#' colony # increasing the target
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony # we are already at the target
-#' colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
-#' colony # adding completely new workers & drones
+#' getWorkers(colony)@id
+#' # we got new workers since new = TRUE
 #'
-#' # Using functions
+#' colony <- buildUpColony(colony, nWorkers = 100, new = FALSE)
+#' getWorkers(colony)@id
+#' # we did NOT get new workers since new = FALSE and we were at the target of 100
+#'
+#' colony <- buildUpColony(colony, nWorkers = 150, new = FALSE)
+#' getWorkers(colony)@id
+#' # we got additional workers since new = FALSE and we were NOT at the target of 150
+#'
+#' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 100)
 #' }
@@ -493,7 +516,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #'
-#' # Using functions in simParamBee
+#' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -501,7 +524,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUpColony(colony)
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          new = FALSE, exact = FALSE, resetEvents = FALSE,
+                          new = TRUE, exact = FALSE, resetEvents = FALSE,
                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
