@@ -1480,3 +1480,45 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   validObject(colony)
   return(colony)
 }
+
+#' @rdname combineColony
+#' @title Combine colony
+#'
+#' @description Level 2 function that combines two colonies. Workers and drones of "weak"
+#' are added to the strong. User should remove the weak colony.
+#'
+#' @param strong \code{\link{Colony-class}}
+#' @param weak \code{\link{Colony-class}}
+#'
+#' @return a colony \code{\link{Colony-class}}, that combines workers of both
+#' colonies and a queen of the strong one.
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = base[1], nInd = 30)
+#' col1 <- createColony(queen = base[2], fathers = drones[1:15] )
+#' col2 <- createColony(queen = base[3], fathers = drones[16:30])
+#'
+#' col2 <- combineColony(strong = col1, weak = col2)
+#'
+#' @export
+combineColony <- function(strong, weak) {
+  if (!isColony(strong)) {
+    stop("Argument strong must be a Colony class object!")
+  }
+  if (!isColony(weak)) {
+    stop("Argument weak must be a Colony class object!")
+  }
+  strong@workers <- c(strong@workers, weak@workers)
+  strong@drones <- c(strong@drones, weak@drones)
+  return(strong)
+}
+
+
+
+
+
+
