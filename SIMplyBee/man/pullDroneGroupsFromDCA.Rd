@@ -38,5 +38,4 @@ colony2 <- addDrones(colony2, nInd = 20)
 apiary <- c(colony1, colony2)
 DCA <- createDCA(apiary)
 pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
-
 }

@@ -38,5 +38,4 @@ apiary <- buildUpColonies(apiary, nWorkers = 100)
 tmp <- supersedeColonies(apiary)
 tmp
 hasSuperseded(tmp)
-
 }

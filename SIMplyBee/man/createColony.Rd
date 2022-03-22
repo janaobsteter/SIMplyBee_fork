@@ -55,5 +55,4 @@ colony1
 
 colony2 <- createColony(virginQueens = basePop[3])
 colony2
-
 }

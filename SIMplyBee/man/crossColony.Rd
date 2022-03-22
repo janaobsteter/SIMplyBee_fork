@@ -36,7 +36,6 @@ colony <- createColony(virginQueen = basePop[2])
 colony
 colony <- crossColony(colony, fathers = drones)
 colony
-
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

@@ -75,7 +75,6 @@ getColonyQtlHaplo(apiary)
 getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 getColonyQtlHaplo(apiary, nInd = 1)
 getColonyQtlHaplo(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{getCasteQtlHaplo}} and \code{\link{getQtlHaplo}}

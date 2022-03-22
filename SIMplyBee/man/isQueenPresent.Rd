@@ -41,5 +41,4 @@ isQueenPresent(colony2s)
 tmp <- swarmColony(buildUpColony(colony1))
 isQueenPresent(tmp$swarm)
 isQueenPresent(tmp$remnant)
-
 }

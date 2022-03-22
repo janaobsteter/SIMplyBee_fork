@@ -15,7 +15,9 @@ must be virgin queens or queens (see \code{\link{asVirginQueen}})}
 \code{simParamBee$nDrones} is used; when \code{x} is
 \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 the \code{x} (here population individuals serve as a queen, for example
-to initiate population from founding queens; see details)}
+to initiate population from founding queens; see details). If \code{x}
+is a \code{\link{Colony-class}} or \code{\link{Colonies-class}}, then the
+\code{nInd} means the number of drones per colony.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -81,12 +83,13 @@ SP$nDrones <- 15
 createDrones(colony1)
 createDrones(apiary)
 
-nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nDronesFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 createDrones(colony1, nInd = nDronesFun)
 createDrones(apiary, nInd = nDronesFun)
 
 SP$nDrones <- nDronesFun
 createDrones(colony1)
 createDrones(apiary)
-
 }

@@ -37,5 +37,4 @@ colony <- createColony(queen = basePop[2], fathers = drones)
 tmp <- splitColony(colony)
 tmp$split
 tmp$remnant
-
 }

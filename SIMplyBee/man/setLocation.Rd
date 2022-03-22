@@ -54,5 +54,4 @@ getLocation(apiary)
 # Assuming different locations (so tmp is not an apiary in one location!)
 tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 getLocation(tmp)
-
 }

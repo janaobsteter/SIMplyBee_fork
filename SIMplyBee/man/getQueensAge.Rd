@@ -38,5 +38,4 @@ getQueensAge(colony1, currentYear = 2022)
 
 apiary <- setQueensYOB(apiary, year = 2021)
 getQueensAge(apiary, currentYear = 2022)
-
 }

@@ -141,7 +141,6 @@ getWorkersSnpGeno(apiary)
 
 getCasteSnpGeno(apiary, caste = "drones")
 getDronesSnpGeno(apiary)
-
 }
 \seealso{
 \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}

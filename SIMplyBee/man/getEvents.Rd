@@ -39,5 +39,4 @@ getEvents(colony1)
 colony2 <- addWorkers(colony2, nInd = 20)
 apiary <- c(colony1, colony2)
 getEvents(apiary)
-
 }

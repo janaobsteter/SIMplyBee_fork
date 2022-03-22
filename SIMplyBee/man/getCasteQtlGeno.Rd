@@ -141,7 +141,6 @@ getWorkersQtlGeno(apiary)
 
 getCasteQtlGeno(apiary, caste = "drones")
 getDronesQtlGeno(apiary)
-
 }
 \seealso{
 \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}

@@ -1,8 +1,13 @@
 test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[2], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[2], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
   apiary <- c(colony1, colony2)
@@ -14,8 +19,13 @@ test_that("nColonies", {
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
   colony1 <- addWorkers(colony1, nInd = 10)
@@ -39,8 +49,13 @@ test_that("nCaste", {
 test_that("nQueens", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
   expect_equal(nQueens(colony1), 1)
@@ -54,8 +69,13 @@ test_that("nQueens", {
 test_that("nFathers", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5])
   matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:9])
 
@@ -73,8 +93,13 @@ test_that("nFathers", {
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 
@@ -90,8 +115,13 @@ test_that("nDrones", {
 test_that("isQueenMated", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+<<<<<<< Updated upstream
   basePop <- newPop(founderGenomes)
   drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+=======
+  basePop <- newPop(founderGenomes, simParam = SP)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
+>>>>>>> Stashed changes
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
   colony3 <- createColony(virginQueens = basePop[4])
@@ -113,7 +143,7 @@ test_that("getCsd", {
   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 4)
   basePop <- newPop(founderGenomes)
 
-  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
+  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
   colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
   colony1 <- addWorkers(colony1, nInd = 10)

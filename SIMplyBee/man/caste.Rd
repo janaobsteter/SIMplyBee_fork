@@ -41,6 +41,7 @@ caste(getWorkers(colony1))
 caste(getDrones(colony1))
 caste(getVirginQueens(colony1))
 
+
 bees <- c(getQueen(colony1),
           getFathers(colony1, nInd = 2),
           getWorkers(colony1, nInd = 2),

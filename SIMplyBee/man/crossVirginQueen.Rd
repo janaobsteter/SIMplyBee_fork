@@ -23,7 +23,9 @@ provided}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with mated queen(s)
+\code{\link{Pop-class}} with mated queen(s). The misc slot of the queens
+contains additional information about the number of workers, drones and homozygous
+brood produced and the theoretical percentage of homozygous brood.
 }
 \description{
 Level 1 function that crossses (mates) a virgin queen to a group
@@ -38,28 +40,33 @@ basePop <- asVirginQueen(newPop(founderGenomes))
 drones <- createDrones(x = basePop[1], nInd = 10)
 
 virginQueen1 <- basePop[2]
-(matedQueen1 <- crossVirginQueen(pop = virginQueen1,
-                                 fathers = drones[1:5]))
+(matedQueen1 <- crossVirginQueen(
+  pop = virginQueen1,
+  fathers = drones[1:5]
+))
 isQueenMated(virginQueen1)
 isQueenMated(matedQueen1)
 nFathers(matedQueen1)
 getFathers(matedQueen1)@id
 
 virginQueen2 <- basePop[3]
-(matedQueen2 <- crossVirginQueen(pop = virginQueen2,
-                                 fathers = drones[6:10]))
+(matedQueen2 <- crossVirginQueen(
+  pop = virginQueen2,
+  fathers = drones[6:10]
+))
 isQueenMated(virginQueen2)
 isQueenMated(matedQueen2)
 nFathers(matedQueen2)
 getFathers(matedQueen2)@id
 
-matedQueens <- crossVirginQueen(pop = c(virginQueen1, virginQueen2),
-                                fathers = drones[1:10], nAvgFathers = 2)
+matedQueens <- crossVirginQueen(
+  pop = c(virginQueen1, virginQueen2),
+  fathers = drones[1:10], nAvgFathers = 2
+)
 matedQueens
 isQueenMated(matedQueens)
 nFathers(matedQueens)
 getFathers(matedQueens)
-
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

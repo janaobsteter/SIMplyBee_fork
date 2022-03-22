@@ -31,10 +31,11 @@ isWorker(getWorkers(colony, nInd = 2))
 isWorker(getDrones(colony, nInd = 2))
 isWorker(getVirginQueens(colony, nInd = 2))
 
-bees <- c(getQueen(colony),
-          getWorkers(colony, nInd = 2),
-          getDrones(colony, nInd = 2),
-          getVirginQueens(colony, nInd = 2))
+bees <- c(
+  getQueen(colony),
+  getWorkers(colony, nInd = 2),
+  getDrones(colony, nInd = 2),
+  getVirginQueens(colony, nInd = 2)
+)
 isWorker(bees)
-
 }

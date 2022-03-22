@@ -52,5 +52,4 @@ apiary <- replaceWorkers(apiary, p = 0.5)
 lapply(getWorkers(apiary), FUN = function(x) x@id)
 apiary <- replaceWorkers(apiary, p = 1.5)
 lapply(getWorkers(apiary), FUN = function(x) x@id)
-
 }

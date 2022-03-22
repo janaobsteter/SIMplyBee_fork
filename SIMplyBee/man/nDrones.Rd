@@ -30,5 +30,4 @@ nDrones(colony2)
 
 apiary <- c(colony1, colony2)
 nDrones(apiary)
-
 }
