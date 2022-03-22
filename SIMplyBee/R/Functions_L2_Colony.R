@@ -1284,7 +1284,7 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
   remnantColony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1344,7 +1344,7 @@ supersedeColony <- function(colony, year = NULL) {
   colony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -1408,7 +1408,7 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   splitColony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"

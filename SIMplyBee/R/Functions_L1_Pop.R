@@ -26,7 +26,7 @@
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"}
 #'
-#' @seealso \code{\link{getCasteId}} and \code{\link{caste}}
+#' @seealso \code{\link{getCasteId}} and \code{\link{getCaste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -340,7 +340,6 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 }
 
 #' @rdname asVirginQueen
-#'
 #' @title Converts individuals into virgin queens
 #'
 #' @description Level 1 function that takes individuals from a population and
@@ -504,7 +503,6 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 }
 
 #' @rdname asWorker
-#'
 #' @title Converts individuals into workers
 #'
 #' @description Level 1 function that takes individuals from a population and
@@ -1256,13 +1254,12 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   pop <- setMisc(x = pop, slot = "nWorkers", value = 0)
   pop <- setMisc(x = pop, slot = "nDrones", value = 0)
   pop <- setMisc(x = pop, slot = "nHomBrood", value = 0)
-
   if (isCsdActive(simParamBee = simParamBee)) {
-    pop <- setMisc(x = pop, slot = "pHomBrood", value = computeQueensPHomBrood(pop))
+    val <- computeQueensPHomBrood(x = pop)
   } else {
-    pop <- setMisc(x = pop, slot = "pHomBrood", value = NA)
+    val <- NA
   }
-
+  pop <- setMisc(x = pop, slot = "pHomBrood", value = val)
   return(pop)
 }
 

@@ -10,9 +10,10 @@ setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{FUN}{TODO}
+\item{FUN}{function, any function that can be applied on \code{colony} and
+can return phenotypes for defined traits via \code{\link{SimParamBee}}}
 
-\item{...}{TODO}
+\item{...}{all parameters of \code{\link{setPheno}}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

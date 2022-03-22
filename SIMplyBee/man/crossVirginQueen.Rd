@@ -67,6 +67,13 @@ matedQueens
 isQueenMated(matedQueens)
 nFathers(matedQueens)
 getFathers(matedQueens)
+
+# Inbred mated queen (mated with her own sons)
+matedQueen3 <- crossVirginQueen(pop = basePop[1],
+                                fathers = drones[1:6])
+# Check the theretical homozygosity
+matedQueen3@misc[[1]]$pHomBrood
+
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the
