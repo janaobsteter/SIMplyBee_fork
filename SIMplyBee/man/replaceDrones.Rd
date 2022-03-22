@@ -46,5 +46,4 @@ apiary <- replaceDrones(apiary, p = 0.5)
 lapply(getDrones(apiary), FUN = function(x) x@id)
 apiary <- replaceDrones(apiary, p = 1.5)
 lapply(getDrones(apiary), FUN = function(x) x@id)
-
 }

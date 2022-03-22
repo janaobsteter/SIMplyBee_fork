@@ -104,7 +104,6 @@ getWorkersGv(apiary)
 
 getCasteGv(apiary, caste = "drones")
 getDronesGv(apiary)
-
 }
 \seealso{
 \code{\link{gv}}

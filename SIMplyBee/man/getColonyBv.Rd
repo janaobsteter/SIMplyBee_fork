@@ -60,7 +60,6 @@ getColonyBv(apiary)
 getColonyBv(apiary, caste = c("queen", "fathers"))
 getColonyBv(apiary, nInd = 1)
 getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 }
 \seealso{
 \code{\link{bv}}

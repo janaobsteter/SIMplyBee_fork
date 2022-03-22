@@ -49,7 +49,6 @@ nCaste(apiary, caste = "virginQueens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
 nCaste(apiary, caste = "all")
-
 }
 \seealso{
 \code{\link{nQueens}}, \code{\link{nFathers}},

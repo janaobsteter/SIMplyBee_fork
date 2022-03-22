@@ -52,12 +52,13 @@ SP$nWorkers <- 15
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
 
-nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nWorkersFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 addWorkers(colony1, nInd = nWorkersFun)
 nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 
 SP$nWorkers <- nWorkersFun
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
-
 }

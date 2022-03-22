@@ -85,5 +85,4 @@ getCsdAlleles(apiary, collapse = TRUE)
 getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 
 getCsdAlleles(apiary, nInd = 2)
-
 }

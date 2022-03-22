@@ -72,5 +72,4 @@ nCsdAlleles(colony1, collapse = TRUE)
 
 nCsdAlleles(apiary)
 nCsdAlleles(apiary, collapse = TRUE)
-
 }

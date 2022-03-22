@@ -34,5 +34,4 @@ colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
 apiary <- c(colony1, colony2)
 apiary <- buildUpColonies(apiary, nWorkers = 100)
 isProductive(apiary)
-
 }

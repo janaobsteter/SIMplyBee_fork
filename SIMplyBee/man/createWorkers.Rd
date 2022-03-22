@@ -20,7 +20,7 @@ replace the workers with the exact specified number of only viable workers
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is a list with two
-  nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{pHomBrood}
+  nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{nHomBrood}
   (a numeric); when \code{x} is \code{\link{Colonies-class}} return is a list
   of lists named by colony ID
 }
@@ -63,12 +63,13 @@ SP$nWorkers <- 15
 createWorkers(colony1)
 createWorkers(apiary)
 
-nWorkersFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nWorkersFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 createWorkers(colony1, nInd = nWorkersFun)
 createWorkers(apiary, nInd = nWorkersFun)
 
 SP$nWorkers <- nWorkersFun
 createWorkers(colony1)
 createWorkers(apiary)
-
 }

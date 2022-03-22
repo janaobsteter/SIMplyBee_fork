@@ -28,5 +28,4 @@ getQueen(colony)
 colony <- removeQueen(colony)
 colony
 getQueen(colony)
-
 }

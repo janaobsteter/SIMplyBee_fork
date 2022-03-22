@@ -106,7 +106,6 @@ getWorkersDd(apiary)
 
 getCasteDd(apiary, caste = "drones")
 getDronesDd(apiary)
-
 }
 \seealso{
 \code{\link{dd}}

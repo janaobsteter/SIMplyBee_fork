@@ -36,5 +36,4 @@ nNULLColonies(apiary)
 nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
 nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
 nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
-
 }

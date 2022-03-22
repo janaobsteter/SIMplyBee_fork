@@ -107,7 +107,6 @@ pullDrones(apiary)
 nDrones(apiary)
 nDrones(pullDrones(apiary)$colonies)
 nDrones(pullDrones(apiary, nInd = 5)$colonies)
-
 }
 \seealso{
 \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
