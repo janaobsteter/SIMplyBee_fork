@@ -15,7 +15,6 @@
 #'   and the fathers argument is ignored)
 #' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
 #'   which one will become the queen of the colony in the future
-#'   TODO: https://github.com/HighlanderLab/SIMplyBee/issues/161
 #'
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -79,7 +78,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       }
     }
     if (!is.null(virginQueens)) {
-      stop("You are providing the queen and virgin queen(s) at the same time.")
+      stop("You can provide only queen or virgin queen(s).")
     }
   }
   colony <- new(
@@ -551,7 +550,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     colony <- resetEvents(colony)
   }
   colony@production <- TRUE
-  #
+  # https://github.com/HighlanderLab/SIMplyBee/issues/177
 
   validObject(colony)
   return(colony)
@@ -1144,7 +1143,7 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (any(!isDrone(fathers))) {
     stop("Individuals in fathers must be drones!")
   }
-  # Pick one virgin queen that will prevail
+  # https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
   #       imagine someone providing 100 or 1000 fathers - should we just take them all?
@@ -1234,7 +1233,10 @@ swarmColony <- function(colony, p = 0.5, year = NULL) {
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
+
   # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/160
+  #pulling is random by default, should we make type/use of pulling an argument?
+
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1321,7 +1323,6 @@ supersedeColony <- function(colony, year = NULL) {
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
-  colony@production <- TRUE
   validObject(colony)
   return(colony)
 }
@@ -1365,7 +1366,7 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-
+  #https://github.com/HighlanderLab/SIMplyBee/issues/179
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
