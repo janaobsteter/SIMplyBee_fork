@@ -106,8 +106,25 @@ SimParamBee <- R6Class(
     #'   determines how many segregating sites will be needed to represent the
     #'   csd locus from the underlying bi-allelic SNP; the minimum number of
     #'   bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
-    #'   then \code{csdChr=NULL} is triggered
+    #'   then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
+    #'   to 128, which is at the upper end of the reported number of csd alleles
+    #'   (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).
     #'
+    #' @references 
+    #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
+    #'   Sequencing for the Identification of Apis mellifera Complementary Sex
+    #'   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
+    #'   \url{https://www.mdpi.com/2075-4450/12/10/868}
+    #'    
+    #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
+    #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
+    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
+    #'   
+    #' Lechner et al. (2014) Nucleotide variability at its limit? Insights into
+    #'  the number and evolutionary dynamics of the sex-determining specificities
+    #'  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
+    #'  272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
+    #'   
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
@@ -120,12 +137,11 @@ SimParamBee <- R6Class(
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
-    # TODO: use the max number of csd alleles found in literature and cite that
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/93
+
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 10,
                           nVirginQueens = 10,
-                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
+                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 128) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
       private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
