@@ -100,6 +100,22 @@ SimParamBee <- R6Class(
     #'   csd locus from the underlying bi-allelic SNP; the minimum number of
     #'   bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
     #'   then \code{csdChr=NULL} is triggered
+    #'   
+    #'   @references Bovo, S., Ribani, A.et al (2021). 
+    #'   Application of Next Generation Semiconductor-Based Sequencing for
+    #'    the Identification of Apis mellifera Complementary Sex Determiner 
+    #'    (csd) Alleles from Honey DNA. Insects, 12(10), 868.
+    #'    
+    #'   Zareba, J., Blazej, P., Laszkiewicz, A. et al (2017).
+    #'   Uneven distribution of complementary sex determiner (csd) alleles 
+    #'   in Apis mellifera population. 
+    #'   Sci Rep 7, 2317. https://doi.org/10.1038/s41598-017-02629-9
+    #'   
+    #'   Lechner, S., Ferretti L.et al(2014) 
+    #'   Nucleotide variability at its limit? 
+    #'   Insights into the number and evolutionary dynamics of the sex-determining 
+    #'   specificities of the honey bee Apis mellifera Mol. Biol. Evol.. 31, 272-287.
+    #'   
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -113,12 +129,11 @@ SimParamBee <- R6Class(
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
-    # TODO: use the max number of csd alleles found in literature and cite that
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/93
+
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 10,
                           nVirginQueens = 10,
-                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
+                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 128) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
       private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
