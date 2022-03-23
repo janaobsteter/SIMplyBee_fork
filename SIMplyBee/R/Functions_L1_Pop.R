@@ -952,8 +952,10 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones;
 #'   \code{\link{isDrone}} test will be run on these individuals
-#' @param nGroup integer, number of drone groups to be created
-#' @param avgGroupSize numeric, average number of drones per group
+#' @param n integer, number of drone groups to be created
+#' @param nFathers numeric, average number of drones/fathers per group,
+#'   the actual number is sampled from a truncated Poisson with lambda of
+#'   nFathers
 #'
 #' @return list of \code{\link{Pop-class}}
 #'
@@ -969,21 +971,27 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' colony2 <- addDrones(colony2, nInd = 20)
 #' apiary <- c(colony1, colony2)
 #' DCA <- createDCA(apiary)
-#' pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
+#' pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
 #' @export
-pullDroneGroupsFromDCA <- function(DCA, nGroup, avgGroupSize = 17) {
+pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
   if (any(!isDrone(DCA))) {
     stop("Individuals in DCA must be drones!")
   }
-  nDrones <- extraDistr::rtpois(n = nGroup, lambda = avgGroupSize, a = 0)
+  if (is.null(nFathers)) {
+    nFathers <- simParamBee$nFathers
+  }
+  nDrones <- extraDistr::rtpois(n = n, lambda = nFathers, a = 0)
   if (sum(nDrones) > nInd(DCA)) {
     stop("Not enough drones in the DCA!")
   }
-  ret <- vector(mode = "list", length = nGroup)
-  for (group in seq_len(nGroup)) {
+  ret <- vector(mode = "list", length = n)
+  for (group in seq_len(n)) {
     tmp <- pullInd(pop = DCA, nInd = nDrones[group])
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
@@ -1156,9 +1164,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param fathers \code{\link{Pop-class}}, a group of drones that will be mated
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of average size of
-#'   \code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}};
+#'   \code{nFathers} using \code{\link{pullDroneGroupsFromDCA}};
 #'   \code{\link{isDrone}} test will be run on these individuals
-#' @param nAvgFathers numeric, average number of drones (fathers) used in mating
+#' @param nFathers numeric, average number of drones (fathers) used in mating
 #'   the virgin queen(s) - currently active only when multiple virgin queens
 #'   provided
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -1199,7 +1207,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' matedQueens <- crossVirginQueen(
 #'   pop = c(virginQueen1, virginQueen2),
-#'   fathers = drones[1:10], nAvgFathers = 2
+#'   fathers = drones[1:10], nFathers = 2
 #' )
 #' matedQueens
 #' isQueenMated(matedQueens)
@@ -1213,8 +1221,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' matedQueen3@misc[[1]]$pHomBrood
 #'
 #' @export
-crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
-  # TODO: set nAvgFathers to NULL by default and then grab the value from
+crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) {
+  # TODO: set nFathers to NULL by default and then grab the value from
   #       SimParamBee: https://github.com/HighlanderLab/SIMplyBee/issues/98
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1231,19 +1239,22 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   if (any(!isDrone(fathers))) {
     stop("Individuals in fathers must be drones!")
   }
+  if (is.null(nFathers)) {
+    nFathers <- simParamBee$nFathers
+  }
 
   nVirginQueen <- nInd(pop)
   pop <- setMisc(x = pop, slot = "caste", value = "Q")
   if (nVirginQueen == 1) {
-    # TODO: do we take all provided fathers, specified nAvgFathers, or default
-    #      nAvgFathers from SimParam when nAvgFathers = NULL?
+    # TODO: do we take all provided fathers, specified nFathers, or default
+    #      nFathers from SimParam when nFathers = NULL?
     fathers <- setMisc(x = fathers, slot = "caste", value = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
     fathers <- pullDroneGroupsFromDCA(
       DCA = fathers,
-      nGroup = nVirginQueen,
-      avgGroupSize = nAvgFathers
+      n = nVirginQueen,
+      nFathers = nFathers
     )
     for (queen in seq_len(nVirginQueen)) {
       fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")

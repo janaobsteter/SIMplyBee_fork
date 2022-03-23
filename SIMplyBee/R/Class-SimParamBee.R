@@ -50,22 +50,49 @@ SimParamBee <- R6Class(
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
     nWorkers = "numericOrFunction",
 
     #' @field nDrones numeric or function, default number of drones
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
     nDrones = "numericOrFunction",
 
     #' @field nVirginQueens numeric or function, default number of virgin queens
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
     nVirginQueens = "numericOrFunction",
+
+    #' @field nFathers numeric or function, default number of drones
+    #'   a queen mates with; if a function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
+    nFathers = "numericOrFunction",
+
+    #' @field pSwarm numeric or a function, the percentage of workers that leave
+    #'   with the old queen when the colony swarms; if a function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
+    pSwarm = "numericOrFunction",
+
+    #' @field pSplit numeric or a function, the percentage of workers that we remove
+    #'   in a managed split; if a function, it will be passed to other
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value
+    pSplit = "numericOrFunction",
 
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population to the this

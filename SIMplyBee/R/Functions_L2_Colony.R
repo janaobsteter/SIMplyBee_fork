@@ -1162,11 +1162,11 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   # TODO: Choosing the queen in supersedure: at random or something else
   #   https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
-  # TODO: do we take all fathers or just a 'default/nAvgFathers' or some other number?
+  # TODO: do we take all fathers or just a 'default/nFathers' or some other number?
   #       imagine someone providing 100 or 1000 fathers - should we just take them all?
   #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
   #       but throw a warning if a user provided more fathers? If the user specifies
-  #       nAvgFathers, then we take as many as he/she wants
+  #       nFathers, then we take as many as he/she wants
   #       https://github.com/HighlanderLab/SIMplyBee/issues/157
   #       https://github.com/HighlanderLab/SIMplyBee/issues/98
   queen <- crossVirginQueen(
@@ -1240,9 +1240,15 @@ collapseColony <- function(colony) {
 #' tmp$swarm
 #' tmp$remnant
 #' @export
-swarmColony <- function(colony, p = 0.5, year = NULL) {
+swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!!")
+  }
+  if (is.null(p)) {
+    p <- simParamBee$pSwarm
   }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")
@@ -1373,9 +1379,15 @@ supersedeColony <- function(colony, year = NULL) {
 #' tmp$split
 #' tmp$remnant
 #' @export
-splitColony <- function(colony, p = 0.3, year = NULL) {
+splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(p)) {
+    p <- simParamBee$pSplit
   }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")
