@@ -147,6 +147,7 @@ SimParamBee <- R6Class(
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 10,
                           nVirginQueens = 10,
+                          pSwarm = 0.5, pSplit = 0.3,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
@@ -157,6 +158,8 @@ SimParamBee <- R6Class(
       self$nWorkers <- nWorkers
       self$nDrones <- nDrones
       self$nVirginQueens <- nVirginQueens
+      self$pSwarm <- 0.5
+      self$pSplit <- 0.3
 
       # csd ----
 
@@ -173,7 +176,7 @@ SimParamBee <- R6Class(
           private$.csdChr <- csdChr
         }
 
-        # csd position and sites
+        # csd position and sitess
         private$.csdPos <- csdPos
         private$.nCsdAlleles <- nCsdAlleles
         private$.nCsdSites <- ceiling(log2(private$.nCsdAlleles))

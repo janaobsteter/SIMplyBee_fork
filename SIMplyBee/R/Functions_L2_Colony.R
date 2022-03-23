@@ -1236,6 +1236,9 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(p)) {
     p <- simParamBee$pSwarm
   }
+  if (is.function(p)) {
+    p <- p(colony)
+  }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")
   }
@@ -1374,6 +1377,9 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   if (is.null(p)) {
     p <- simParamBee$pSplit
+  }
+  if (is.function(p)) {
+    p <- p(colony)
   }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")

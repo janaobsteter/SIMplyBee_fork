@@ -663,9 +663,6 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(p)) {
     p <- simParamBee$pSwarm
   }
-  if (p < 0 | p > 1) {
-    stop("p must be between 0 and 1!")
-  }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- list(swarms = createColonies(),
@@ -783,9 +780,6 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   }
   if (is.null(p)) {
     p <- simParamBee$pSplit
-  }
-  if (p < 0 | p > 1) {
-    stop("p must be between 0 and 1!")
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
