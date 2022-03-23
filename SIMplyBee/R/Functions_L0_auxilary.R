@@ -2384,7 +2384,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParam$new(founderGenomes)
+#' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(isTrackRec = TRUE)
 #' basePop <- asVirginQueen(newPop(founderGenomes))
 #'

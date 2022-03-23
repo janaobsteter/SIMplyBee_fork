@@ -168,7 +168,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
   return(ret)
 }
 
-#' @describeIn getCaste Access the queen
+#' @describeIn getCastePop Access the queen
 #' @export
 getQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
@@ -179,7 +179,7 @@ getQueen <- function(x) {
   return(ret)
 }
 
-#' @describeIn getCaste Access fathers (drones the queen mated with)
+#' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
   if (isPop(x)) {
@@ -208,7 +208,7 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access virgin queens
+#' @describeIn getCastePop Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
@@ -219,7 +219,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access workers
+#' @describeIn getCastePop Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
@@ -230,7 +230,7 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCaste Access drones
+#' @describeIn getCastePop Access drones
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
@@ -323,7 +323,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     }
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
     ret@sex[] <- "F"
-    ret <- setMisc(x = ret, slot = "caste", value = "V")
+    ret <- setMisc(x = ret, node = "caste", value = "V")
     if (simParamBee$isTrackPed) {
       simParamBee$changeCaste(id = ret@id, caste = "V")
     }
@@ -369,7 +369,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 asVirginQueen <- function(x) {
   if (isPop(x)) {
     x@sex[] <- "F"
-    x <- setMisc(x = x, slot = "caste", value = "V")
+    x <- setMisc(x = x, node = "caste", value = "V")
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -493,7 +493,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       ret$nHomBrood <- NA
     }
     ret$workers@sex[] <- "F"
-    ret$workers <- setMisc(x = ret$workers, slot = "caste", value = "W")
+    ret$workers <- setMisc(x = ret$workers, node = "caste", value = "W")
     if (simParamBee$isTrackPed) {
       simParamBee$addToCaste(id = ret$workers@id, caste = "W")
     }
@@ -537,7 +537,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 asWorker <- function(x) {
   if (isPop(x)) {
     x@sex[] <- "F"
-    x <- setMisc(x = x, slot = "caste", value = "W")
+    x <- setMisc(x = x, node = "caste", value = "W")
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -840,7 +840,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
-    ret <- setMisc(x = ret, slot = "caste", value = "D")
+    ret <- setMisc(x = ret, node = "caste", value = "D")
     if (simParamBee$isTrackPed) {
       simParamBee$addToCaste(id = ret@id, caste = "D")
     }
@@ -863,7 +863,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE,
                   simParam = simParamBee)
     ret@sex[] <- "M"
-    ret <- setMisc(x = ret, slot = "caste", value = "D")
+    ret <- setMisc(x = ret, node = "caste", value = "D")
     if (simParamBee$isTrackPed) {
       simParamBee$addToCaste(id = ret@id, caste = "D")
     }
@@ -1258,14 +1258,14 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
   }
 
   nVirginQueen <- nInd(pop)
-  pop <- setMisc(x = pop, slot = "caste", value = "Q")
+  pop <- setMisc(x = pop, node = "caste", value = "Q")
   if (simParamBee$isTrackPed) {
     simParamBee$changeCaste(id = pop@id, caste = "Q")
   }
   if (nVirginQueen == 1) {
     # TODO: do we take all provided fathers, specified nAvgFathers, or default
     #      nAvgFathers from SimParam when nAvgFathers = NULL?
-    fathers <- setMisc(x = fathers, slot = "caste", value = "F")
+    fathers <- setMisc(x = fathers, node = "caste", value = "F")
     if (simParamBee$isTrackPed) {
       simParamBee$changeCaste(id = fathers@id, caste = "F")
     }
@@ -1277,7 +1277,7 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
       avgGroupSize = nAvgFathers
     )
     for (queen in seq_len(nVirginQueen)) {
-      fathers[[queen]] <- setMisc(x = fathers[[queen]], slot = "caste", value = "F")
+      fathers[[queen]] <- setMisc(x = fathers[[queen]], node = "caste", value = "F")
       if (simParamBee$isTrackPed) {
         simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
       }
@@ -1285,15 +1285,15 @@ crossVirginQueen <- function(pop, fathers, nAvgFathers, simParamBee = NULL) {
     }
   }
 
-  pop <- setMisc(x = pop, slot = "nWorkers", value = 0)
-  pop <- setMisc(x = pop, slot = "nDrones", value = 0)
-  pop <- setMisc(x = pop, slot = "nHomBrood", value = 0)
+  pop <- setMisc(x = pop, node = "nWorkers", value = 0)
+  pop <- setMisc(x = pop, node = "nDrones", value = 0)
+  pop <- setMisc(x = pop, node = "nHomBrood", value = 0)
   if (isCsdActive(simParamBee = simParamBee)) {
     val <- computeQueensPHomBrood(x = pop)
   } else {
     val <- NA
   }
-  pop <- setMisc(x = pop, slot = "pHomBrood", value = val)
+  pop <- setMisc(x = pop, node = "pHomBrood", value = val)
   return(pop)
 }
 
@@ -1345,18 +1345,17 @@ setQueensYearOfBirth <- function(x, year) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)
-    x <- setMisc(x = x, slot = "yearOfBirth", value = year)
+    x <- setMisc(x = x, node = "yearOfBirth", value = year)
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      x@queen <- setMisc(x = x@queen, slot = "yearOfBirth", value = year)
+      x@queen <- setMisc(x = x@queen, node = "yearOfBirth", value = year)
     } else {
       stop("Missing queen!") # TODO: should this be a warning?: https://github.com/HighlanderLab/SIMplyBee/issues/159
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]]@queen <- setMisc(
-        x = x[[colony]]@queen, slot = "yearOfBirth",
+      x[[colony]]@queen <- setMisc(x = x[[colony]]@queen, node = "yearOfBirth",
         value = year
       )
     }
@@ -1376,7 +1375,7 @@ setQueensYOB <- setQueensYearOfBirth
 #' @description Level 1 function that sets the queen's year of birth.
 #'
 #' @param x \code{\link{Pop-class}}
-#' @param slot character, name of the node to set within the \code{x@misc} slot
+#' @param node character, name of the node to set within the \code{x@misc} slot
 #' @param value, value to be saved into \code{x@misc[[*]][[slot]]}; length of
 #'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
 #'   it is repeated using \code{rep}
@@ -1389,26 +1388,26 @@ setQueensYOB <- setQueensYearOfBirth
 #' basePop <- newPop(founderGenomes)
 #' basePop@misc
 #'
-#' basePop <- setMisc(basePop, slot = "info", value = c("A", "B", "C"))
+#' basePop <- setMisc(basePop, node = "info", value = c("A", "B", "C"))
 #' basePop@misc
 #'
-#' basePop <- setMisc(basePop, slot = "info", value = c("B", "C", "A"))
+#' basePop <- setMisc(basePop, node = "info", value = c("B", "C", "A"))
 #' basePop@misc
 #'
-#' basePop <- setMisc(basePop, slot = "info2", value = "A")
+#' basePop <- setMisc(basePop, node = "info2", value = "A")
 #' basePop@misc
 #' @export
 # TODO: move to AlphaSimR - track
 #   https://github.com/gaynorr/AlphaSimR/pull/51
 #   https://github.com/HighlanderLab/SIMplyBee/issues/144
-setMisc <- function(x, slot, value) {
+setMisc <- function(x, node, value) {
   if (isPop(x)) {
     n <- nInd(x)
     if (length(value) == 1 && n > 1) {
       value <- rep(x = value, times = n)
     }
     for (ind in seq_len(n)) {
-      x@misc[[ind]][[slot]] <- value[ind]
+      x@misc[[ind]][[node]] <- value[ind]
     }
   } else {
     stop("Argument x must be a Pop class object!")
