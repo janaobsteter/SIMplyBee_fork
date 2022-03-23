@@ -258,7 +258,8 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @return when \code{x} is \code{\link{Colony-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
 #'   when \code{x} is \code{\link{Colonies-class}}
-#'   return is a list of lists named by colony ID
+#'   return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
+#'   named by colony ID
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -281,6 +282,9 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' virginQueens@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
+#' SP$caste
 #'
 #' createVirginQueens(apiary, nInd = 10)
 #'
@@ -412,6 +416,9 @@ asVirginQueen <- function(x) {
 #' tmp$workers@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
+#' SP$caste
 #'
 #' createWorkers(apiary, nInd = 10)
 #'
@@ -566,6 +573,8 @@ asWorker <- function(x) {
 #' workers@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[11]][[1]][1]
+#' SP$recHist[[11]][[1]][2]
 #' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -621,6 +630,8 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' workers@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[11]][[1]][1]
+#' SP$recHist[[11]][[1]][2]
 beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   # An attempt to have drones properly haploid, but have hit AlphaSimR limits
   #   since a lot of the underlying C++ code assumes the same ploidy for all/most
@@ -761,6 +772,9 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' drones@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[13]][[1]][1]
+#' SP$recHist[[13]][[1]][2]
+#' SP$caste
 #'
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -775,6 +789,8 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' tmp@father
 #' SP$pedigree
 #' SP$recHist
+#' SP$recHist[[23]][[1]][1]
+#' SP$recHist[[23]][[1]][2]
 #'
 #' createDrones(apiary, nInd = 10)
 #'
@@ -1364,7 +1380,9 @@ setQueensYOB <- setQueensYearOfBirth
 #' basePop <- setMisc(basePop, slot = "info2", value = "A")
 #' basePop@misc
 #' @export
-# TODO: move to AlphaSimR: https://github.com/HighlanderLab/SIMplyBee/issues/144
+# TODO: move to AlphaSimR - track
+#   https://github.com/gaynorr/AlphaSimR/pull/51
+#   https://github.com/HighlanderLab/SIMplyBee/issues/144
 setMisc <- function(x, slot, value) {
   if (isPop(x)) {
     n <- nInd(x)

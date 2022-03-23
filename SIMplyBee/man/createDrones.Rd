@@ -56,6 +56,9 @@ drones@mother
 drones@father
 SP$pedigree
 SP$recHist
+SP$recHist[[13]][[1]][1]
+SP$recHist[[13]][[1]][2]
+SP$caste
 
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -70,6 +73,8 @@ tmp@mother
 tmp@father
 SP$pedigree
 SP$recHist
+SP$recHist[[23]][[1]][1]
+SP$recHist[[23]][[1]][2]
 
 createDrones(apiary, nInd = 10)
 

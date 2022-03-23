@@ -20,7 +20,8 @@ createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 when \code{x} is \code{\link{Colony-class}} returns
   \code{virginQueens} (a \code{\link{Pop-class}});
   when \code{x} is \code{\link{Colonies-class}}
-  return is a list of lists named by colony ID
+  return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
+  named by colony ID
 }
 \description{
 Level 1 function that creates the specified number of virgin
@@ -49,6 +50,9 @@ virginQueens@mother
 virginQueens@father
 SP$pedigree
 SP$recHist
+SP$recHist[[23]][[1]][1]
+SP$recHist[[23]][[1]][2]
+SP$caste
 
 createVirginQueens(apiary, nInd = 10)
 
