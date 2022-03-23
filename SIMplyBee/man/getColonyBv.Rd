@@ -39,7 +39,7 @@ Level 0 function that returns breeding values of individuals in
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

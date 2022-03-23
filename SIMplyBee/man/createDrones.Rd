@@ -9,7 +9,7 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
-must be virgin queens or queens (see \code{\link{asVirginQueen}})}
+must be virgin queens or queens (see \code{\link{createVirginQueens}})}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
 \code{simParamBee$nDrones} is used; when \code{x} is
@@ -45,7 +45,7 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 basePop[1]@id
@@ -56,6 +56,9 @@ drones@mother
 drones@father
 SP$pedigree
 SP$recHist
+SP$recHist[[13]][[1]][1]
+SP$recHist[[13]][[1]][2]
+SP$caste
 
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
@@ -70,6 +73,8 @@ tmp@mother
 tmp@father
 SP$pedigree
 SP$recHist
+SP$recHist[[23]][[1]][1]
+SP$recHist[[23]][[1]][2]
 
 createDrones(apiary, nInd = 10)
 
@@ -79,16 +84,19 @@ SP$nDrones
 createDrones(colony1)
 createDrones(apiary)
 
+# Specify own number
 SP$nDrones <- 15
 createDrones(colony1)
 createDrones(apiary)
 
+# Specify a function that will give a number
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
 createDrones(colony1, nInd = nDronesFun)
 createDrones(apiary, nInd = nDronesFun)
 
+# Store a function or a value in the SP object
 SP$nDrones <- nDronesFun
 createDrones(colony1)
 createDrones(apiary)

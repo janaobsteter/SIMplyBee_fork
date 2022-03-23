@@ -4,7 +4,7 @@
 \alias{crossColonies}
 \title{Cross colony for all given colonies}
 \usage{
-crossColonies(colonies, DCA, nAvgFathers, simParamBee = NULL)
+crossColonies(colonies, DCA, nFathers, simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,7 +12,7 @@ crossColonies(colonies, DCA, nAvgFathers, simParamBee = NULL)
 \item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area;
 \code{\link{isDrone}} test will be run on these to ensure these are drones}
 
-\item{nAvgFathers}{numeric, average number of drones (fathers) to used in
+\item{nFathers}{numeric, average number of drones (fathers) to used in
 matings (see \code{\link{crossColony}})}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
@@ -29,7 +29,7 @@ Level 3 function that does the same as \code{\link{crossColony}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 30)
 colony1 <- createColony(virginQueen = basePop[2])
@@ -39,7 +39,7 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-apiary <- crossColonies(colonies = apiary, DCA = drones, nAvgFathers = 10)
+apiary <- crossColonies(colonies = apiary, DCA = drones, nFathers = 10)
 apiary
 apiary[[1]]
 apiary[[2]]

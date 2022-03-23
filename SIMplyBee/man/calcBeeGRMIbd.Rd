@@ -27,7 +27,7 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])

@@ -23,12 +23,11 @@ Level 2 function that crosses (mates) a virgin queen of colony
   one is selected at random, mated, and promoted to the queen of the colony.
   Other virgin queens are destroyed. Mated drones (fathers) are stored for
   producing progeny at a later stage.
-  TODO: is this correct (about destroy)?
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 

@@ -27,7 +27,7 @@ Level 2 function that resets the slots swarm, split,
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony1 <- createColony(queen = basePop[2], fathers = drones)
@@ -69,10 +69,10 @@ resetEvents(swarms)[[1]]
 remnants[[1]]
 resetEvents(remnants)[[1]]
 
-(tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
+(tmp <- supersedeColony(colony1))
 resetEvents(tmp)
 
-(tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+(tmp <- supersedeColonies(apiary))
 tmp[[1]]
 resetEvents(tmp)[[1]]
 

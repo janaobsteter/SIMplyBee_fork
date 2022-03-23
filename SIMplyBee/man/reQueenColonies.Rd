@@ -23,7 +23,7 @@ Level 3 function that does the same as
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 20)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -40,7 +40,7 @@ apiary2[[1]]
 apiary2[[2]]
 
 matedQueens <- crossVirginQueen(pop = basePop[4:5],
-                                fathers = drones[11:20], nAvgFathers = 2)
+                                fathers = drones[11:20], nFathers = 2)
 apiary3 <- reQueenColonies(apiary, queen = matedQueens)
 apiary3
 apiary3[[1]]

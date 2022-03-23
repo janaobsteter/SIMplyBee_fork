@@ -4,7 +4,7 @@
 \alias{swarmColonies}
 \title{Swarm colony for all given colonies}
 \usage{
-swarmColonies(colonies, p = 0.5, year = NULL)
+swarmColonies(colonies, p = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,6 +12,8 @@ swarmColonies(colonies, p = 0.5, year = NULL)
 \item{p}{numeric, proportion of workers that will leave with the swarm colony}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with two \code{\link{Colonies-class}}, the \code{swarms} and the
@@ -25,7 +27,7 @@ Level 3 function that does the same as \code{\link{swarmColony}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

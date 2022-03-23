@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{getCastePop}
 \alias{getCastePop}
+\alias{getQueen}
+\alias{getFathers}
+\alias{getVirginQueens}
+\alias{getWorkers}
+\alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
 getCastePop(x, caste = "all", nInd = NULL, use = "order")
+
+getQueen(x)
+
+getFathers(x, nInd = NULL, use = "rand")
+
+getVirginQueens(x, nInd = NULL, use = "rand")
+
+getWorkers(x, nInd = NULL, use = "rand")
+
+getDrones(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{Colony or Colonies}
@@ -31,10 +46,23 @@ when \code{x} is \code{\link{Colony-class}} return is
 Level 1 function that returns individuals of a caste. These
   individuals stay in the colony (compared to \code{\link{pullCaste}}).
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueen}: Access the queen
+
+\item \code{getFathers}: Access fathers (drones the queen mated with)
+
+\item \code{getVirginQueens}: Access virgin queens
+
+\item \code{getWorkers}: Access workers
+
+\item \code{getDrones}: Access drones
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

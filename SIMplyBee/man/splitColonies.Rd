@@ -4,7 +4,7 @@
 \alias{splitColonies}
 \title{Split colony in two colonies for all given colonies}
 \usage{
-splitColonies(colonies, p = 0.3, year = NULL)
+splitColonies(colonies, p = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,6 +12,8 @@ splitColonies(colonies, p = 0.3, year = NULL)
 \item{p}{numeric, percentage of workers that will go to the split colony}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with two \code{\link{Colonies-class}}, the \code{splits} and the
@@ -25,7 +27,7 @@ Level 3 function that does the same as \code{\link{splitColony}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

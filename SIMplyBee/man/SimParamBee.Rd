@@ -48,17 +48,51 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+
+## ------------------------------------------------
+## Method `SimParamBee$addToCaste`
+## ------------------------------------------------
+
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
+
+SP$pedigree
+SP$caste
+
+## ------------------------------------------------
+## Method `SimParamBee$changeCaste`
+## ------------------------------------------------
+
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- createVirginQueens(founderGenomes)
+SP$pedigree
+SP$caste
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+SP$pedigree
+SP$caste
 }
 \references{
 Bovo et al. (2021) Application of Next Generation Semiconductor-Based
   Sequencing for the Identification of Apis mellifera Complementary Sex
   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
   \url{https://www.mdpi.com/2075-4450/12/10/868}
-   
+
 Zareba et al. (2017) Uneven distribution of complementary sex determiner
   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
   \url{https://doi.org/10.1038/s41598-017-02629-9}
-  
+
 Lechner et al. (2014) Nucleotide variability at its limit? Insights into
  the number and evolutionary dynamics of the sex-determining specificities
  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
@@ -74,25 +108,58 @@ Lechner et al. (2014) Nucleotide variability at its limit? Insights into
 to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
 the function must be defined like \code{function(colony) someCode },
-that is, it could operate on a colony or not, and return a single value}
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to have some workers to work
+with - you will want to change this!}
 
 \item{\code{nDrones}}{numeric or function, default number of drones
 to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
 the function must be defined like \code{function(colony) someCode },
-that is, it could operate on a colony or not, and return a single value}
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to
+have some drones to work with - you will want to change this!}
 
 \item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
 to generate in a colony; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
 the function must be defined like \code{function(colony) someCode },
-that is, it could operate on a colony or not, and return a single value}
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to have some virgin queens
+to work with - you will want to change this!}
+
+\item{\code{nFathers}}{numeric or function, default number of drones
+a queen mates with; if a function, it will be passed to other
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode },
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to have some fathers to work with -
+you will want to change this!}
+
+\item{\code{pSwarm}}{numeric or a function, the percentage of workers that leave
+with the old queen when the colony swarms; if a function, it will be passed to other
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode },
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to have some percentage to work with -
+you will want to change this!}
+
+\item{\code{pSplit}}{numeric or a function, the percentage of workers that we remove
+in a managed split; if a function, it will be passed to other
+functions and work with the internals of those functions - therefore
+the function must be defined like \code{function(colony) someCode },
+that is, it could work with colony internals or not, and return a
+single value. The default value is only to have some percentage to work with -
+you will want to change this!}
 }
 \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{caste}}{character, caste information for every individual ever
+created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}}
+
 \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
 \item{\code{csdPos}}{numeric, starting position of the csd locus on the \code{csdChr}
@@ -116,6 +183,8 @@ generate this object}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SimParamBee$new()}}
+\item \href{#method-addToCaste}{\code{SimParamBee$addToCaste()}}
+\item \href{#method-changeCaste}{\code{SimParamBee$changeCaste()}}
 \item \href{#method-clone}{\code{SimParamBee$clone()}}
 }
 }
@@ -172,6 +241,9 @@ Starts the process of building a new simulation by creating
   nWorkers = 100,
   nDrones = 10,
   nVirginQueens = 10,
+  nFathers = 15,
+  pSwarm = 0.5,
+  pSplit = 0.3,
   csdChr = 3,
   csdPos = 0.865,
   nCsdAlleles = 128
@@ -184,23 +256,17 @@ Starts the process of building a new simulation by creating
 \item{\code{founderPop}}{\code{\link{MapPop-class}}, founder population of
 genomes}
 
-\item{\code{nWorkers}}{numeric or function, default number of workers to
-generate in a colony; the default value for this function is only to
-have some workers to work with - you will want to change this!; see
-also the \code{nWorkers} field description on using functions and their
-examples in \code{\link{createWorkers}}}
+\item{\code{nWorkers}}{see \code{\link{SimParamBee}} field \code{nWorkers}}
 
-\item{\code{nDrones}}{numeric or function, default number of drones to
-generate in a colony; the default value for this function is only to
-have some drones to work with - you will want to change this!; see
-also the \code{nDrones} field description on using functions and their
-examples in \code{\link{createDrones}}}
+\item{\code{nDrones}}{see \code{\link{SimParamBee}} field \code{nDrones}}
 
-\item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
-to generate in a colony; the default value for this function is only to
-have some virgin queens to work with - you will want to change this!;
-see also the \code{nVirginQueens} field description on using functions
-and their examples in \code{\link{createVirginQueens}}}
+\item{\code{nVirginQueens}}{see \code{\link{SimParamBee}} field \code{nVirginQueens}}
+
+\item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nVirginQueens}}
+
+\item{\code{pSwarm}}{see \code{\link{SimParamBee}} field \code{pSwarm}}
+
+\item{\code{pSplit}}{see \code{\link{SimParamBee}} field \code{pSplit}}
 
 \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified
@@ -234,6 +300,84 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addToCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-addToCaste}{}}}
+\subsection{Method \code{addToCaste()}}{
+Store caste information (for internal use only!)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$addToCaste(id, caste)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{character, individuals whose caste will be stored}
+
+\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+drones, "V" for virgin queens, and "F" for fathers}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
+
+SP$pedigree
+SP$caste
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-changeCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-changeCaste}{}}}
+\subsection{Method \code{changeCaste()}}{
+Change caste information (for internal use only!)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$changeCaste(id, caste)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{character, individuals whose caste will be changed}
+
+\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+drones, "V" for virgin queens, and "F" for fathers}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- createVirginQueens(founderGenomes)
+SP$pedigree
+SP$caste
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+SP$pedigree
+SP$caste
 }
 \if{html}{\out{</div>}}
 

@@ -26,9 +26,7 @@ with as part of this function (if she is already mated, a warning is given
 and the fathers argument is ignored)}
 
 \item{virginQueens}{\code{\link{Pop-class}} with one or more individuals of
-which one will become the queen of the colony in the future
-TODO: think and explain what happens if we provide both a queen and virgin
-queens (possibly of different origin)!}
+which one will become the queen of the colony in the future}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -39,15 +37,10 @@ new \code{\link{Colony-class}}
 Level 2 function that creates a new \code{\link{Colony-class}}
   to initiate simulations.
 }
-\details{
-When a mated queen is given or a queen alongside with fathers, the
-  function also generates one virgin queen.
-  TODO: discuss this - see below
-}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones)
