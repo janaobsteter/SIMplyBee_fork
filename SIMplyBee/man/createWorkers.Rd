@@ -9,12 +9,12 @@ createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{nInd}{numeric or function, number of workers; if \code{NULL} then
-\code{simParamBee$nWorkers} is used}
+\item{nInd}{numeric or function, number of workers created; if \code{NULL}
+then \code{simParamBee$nWorkers} is used}
 
 \item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
-replace the workers with the exact specified number of only viable workers
-(heterozygous on the csd locus)}
+create the exactly specified number of viable workers (heterozygous on the
+csd locus)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -62,16 +62,19 @@ createWorkers(apiary, nInd = 10)
 createWorkers(colony1)
 createWorkers(apiary)
 
+# Specify own number
 SP$nWorkers <- 15
 createWorkers(colony1)
 createWorkers(apiary)
 
+# Specify a function that will give a number
 nWorkersFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
 createWorkers(colony1, nInd = nWorkersFun)
 createWorkers(apiary, nInd = nWorkersFun)
 
+# Store a function or a value in the SP object
 SP$nWorkers <- nWorkersFun
 createWorkers(colony1)
 createWorkers(apiary)

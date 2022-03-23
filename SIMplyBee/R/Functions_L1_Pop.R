@@ -293,16 +293,19 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' createVirginQueens(colony1)
 #' createVirginQueens(apiary)
 #'
+#' # Specify own number
 #' SP$nVirginQueens <- 15
 #' createVirginQueens(colony1)
 #' createVirginQueens(apiary)
 #'
+#' # Specify a function that will give a number
 #' nVirginQueensFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' createVirginQueens(colony1, nInd = nVirginQueensFun)
 #' createVirginQueens(apiary, nInd = nVirginQueensFun)
 #'
+#' # Store a function or a value in the SP object
 #' SP$nVirginQueens <- nVirginQueensFun
 #' createVirginQueens(colony1)
 #' createVirginQueens(apiary)
@@ -385,11 +388,11 @@ asVirginQueen <- function(x) {
 #'   counted towards homozygous brood.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param nInd numeric or function, number of workers; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used
+#' @param nInd numeric or function, number of workers created; if \code{NULL}
+#'   then \code{simParamBee$nWorkers} is used
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   replace the workers with the exact specified number of only viable workers
-#'   (heterozygous on the csd locus)
+#'   create the exactly specified number of viable workers (heterozygous on the
+#'   csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a list with two
@@ -429,16 +432,19 @@ asVirginQueen <- function(x) {
 #' createWorkers(colony1)
 #' createWorkers(apiary)
 #'
+#' # Specify own number
 #' SP$nWorkers <- 15
 #' createWorkers(colony1)
 #' createWorkers(apiary)
 #'
+#' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' createWorkers(colony1, nInd = nWorkersFun)
 #' createWorkers(apiary, nInd = nWorkersFun)
 #'
+#' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' createWorkers(colony1)
 #' createWorkers(apiary)
@@ -804,16 +810,19 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' createDrones(colony1)
 #' createDrones(apiary)
 #'
+#' # Specify own number
 #' SP$nDrones <- 15
 #' createDrones(colony1)
 #' createDrones(apiary)
 #'
+#' # Specify a function that will give a number
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' createDrones(colony1, nInd = nDronesFun)
 #' createDrones(apiary, nInd = nDronesFun)
 #'
+#' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesFun
 #' createDrones(colony1)
 #' createDrones(apiary)

@@ -61,16 +61,19 @@ createVirginQueens(apiary, nInd = 10)
 createVirginQueens(colony1)
 createVirginQueens(apiary)
 
+# Specify own number
 SP$nVirginQueens <- 15
 createVirginQueens(colony1)
 createVirginQueens(apiary)
 
+# Specify a function that will give a number
 nVirginQueensFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
 createVirginQueens(colony1, nInd = nVirginQueensFun)
 createVirginQueens(apiary, nInd = nVirginQueensFun)
 
+# Store a function or a value in the SP object
 SP$nVirginQueens <- nVirginQueensFun
 createVirginQueens(colony1)
 createVirginQueens(apiary)

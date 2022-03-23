@@ -84,16 +84,19 @@ SP$nDrones
 createDrones(colony1)
 createDrones(apiary)
 
+# Specify own number
 SP$nDrones <- 15
 createDrones(colony1)
 createDrones(apiary)
 
+# Specify a function that will give a number
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
 createDrones(colony1, nInd = nDronesFun)
 createDrones(apiary, nInd = nDronesFun)
 
+# Store a function or a value in the SP object
 SP$nDrones <- nDronesFun
 createDrones(colony1)
 createDrones(apiary)
