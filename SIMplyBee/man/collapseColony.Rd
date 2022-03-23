@@ -20,7 +20,7 @@ Level 2 function that collapses colony by setting the collapse
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(queen = basePop[2], fathers = drones)

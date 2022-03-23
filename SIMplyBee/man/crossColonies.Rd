@@ -29,7 +29,7 @@ Level 3 function that does the same as \code{\link{crossColony}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 30)
 colony1 <- createColony(virginQueen = basePop[2])

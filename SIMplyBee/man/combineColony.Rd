@@ -24,7 +24,7 @@ Level 2 function that combines two colony objects into one.
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 30)
 col1 <- createColony(queen = basePop[2], fathers = drones[1:15] )

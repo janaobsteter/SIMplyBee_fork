@@ -27,7 +27,7 @@ Level 2 function that crosses (mates) a virgin queen of colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
 

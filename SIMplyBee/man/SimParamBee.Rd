@@ -56,7 +56,7 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -74,7 +74,7 @@ SP$caste
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 SP$pedigree
 SP$caste
 
@@ -330,7 +330,7 @@ drones, "V" for virgin queens, and "F" for fathers}
 \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -370,7 +370,7 @@ drones, "V" for virgin queens, and "F" for fathers}
 \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 SP$pedigree
 SP$caste
 

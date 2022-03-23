@@ -22,7 +22,7 @@ Level 0 function that reduces drone's genotype to a single
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 
 (tmp <- getSegSiteGeno(drones))

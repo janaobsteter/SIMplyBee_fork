@@ -22,7 +22,7 @@ Level 3 function that removes some colonies based on their ID.
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 founderDrones <- createDrones(x = basePop[1:4], nInd = 10)
 colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])

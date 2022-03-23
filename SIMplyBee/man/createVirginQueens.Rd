@@ -7,7 +7,7 @@
 createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
 \code{simParamBee$nVirginQueens} is used}
@@ -17,7 +17,9 @@ createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Colony-class}} returns
+when \code{x} is \code{link{MapPop-class}} returns
+  \code{virginQueens} (a \code{\link{Pop-class}});
+  when \code{x} is \code{\link{Colony-class}} returns
   \code{virginQueens} (a \code{\link{Pop-class}});
   when \code{x} is \code{\link{Colonies-class}}
   return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
@@ -34,7 +36,8 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackPed(isTrackPed = TRUE)
 SP$setTrackRec(isTrackRec = TRUE)
-basePop <- asVirginQueen(newPop(founderGenomes))
+# Create virgin queens from the founder population (Map-Pop object)
+basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])

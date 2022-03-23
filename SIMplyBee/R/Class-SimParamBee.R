@@ -6,6 +6,14 @@ isPop <- function(x) {
   ret <- is(x, class2 = "Pop")
   return(ret)
 }
+
+# TODO: This should go to AlphaSimR too
+# https://github.com/HighlanderLab/SIMplyBee/issues/196
+isMapPop <- function(x) {
+  ret <- is(x, class2 = "MapPop")
+  return(ret)
+}
+
 setClassUnion("numericOrFunction", c("numeric", "function"))
 
 #' @rdname SimParamBee
@@ -230,7 +238,7 @@ SimParamBee <- R6Class(
     #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes)
     #' SP$setTrackPed(isTrackPed = TRUE)
-    #' basePop <- asVirginQueen(newPop(founderGenomes))
+    #' basePop <- createVirginQueens(founderGenomes)
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
     #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -257,7 +265,7 @@ SimParamBee <- R6Class(
     #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes)
     #' SP$setTrackPed(isTrackPed = TRUE)
-    #' basePop <- asVirginQueen(newPop(founderGenomes))
+    #' basePop <- createVirginQueens(founderGenomes)
     #' SP$pedigree
     #' SP$caste
     #'
