@@ -48,6 +48,40 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+
+## ------------------------------------------------
+## Method `SimParamBee$addToCaste`
+## ------------------------------------------------
+
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
+
+SP$pedigree
+SP$caste
+
+## ------------------------------------------------
+## Method `SimParamBee$changeCaste`
+## ------------------------------------------------
+
+founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
+SP$pedigree
+SP$caste
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+SP$pedigree
+SP$caste
 }
 \references{
 Bovo et al. (2021) Application of Next Generation Semiconductor-Based
@@ -123,6 +157,9 @@ you will want to change this!}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{caste}}{character, caste information for every individual ever
+created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}}
+
 \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
 \item{\code{csdPos}}{numeric, starting position of the csd locus on the \code{csdChr}
@@ -146,6 +183,8 @@ generate this object}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SimParamBee$new()}}
+\item \href{#method-addToCaste}{\code{SimParamBee$addToCaste()}}
+\item \href{#method-changeCaste}{\code{SimParamBee$changeCaste()}}
 \item \href{#method-clone}{\code{SimParamBee$clone()}}
 }
 }
@@ -261,6 +300,84 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-addToCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-addToCaste}{}}}
+\subsection{Method \code{addToCaste()}}{
+Store caste information (for internal use only!)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$addToCaste(id, caste)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{character, individuals whose caste will be stored}
+
+\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+drones, "V" for virgin queens, and "F" for fathers}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- addWorkers(colony, nInd = 5)
+colony <- addDrones(colony, nInd = 5)
+colony <- addVirginQueens(colony, nInd = 2)
+
+SP$pedigree
+SP$caste
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-changeCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-changeCaste}{}}}
+\subsection{Method \code{changeCaste()}}{
+Change caste information (for internal use only!)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$changeCaste(id, caste)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{character, individuals whose caste will be changed}
+
+\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+drones, "V" for virgin queens, and "F" for fathers}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackPed(isTrackPed = TRUE)
+basePop <- asVirginQueen(newPop(founderGenomes))
+SP$pedigree
+SP$caste
+
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+SP$pedigree
+SP$caste
 }
 \if{html}{\out{</div>}}
 

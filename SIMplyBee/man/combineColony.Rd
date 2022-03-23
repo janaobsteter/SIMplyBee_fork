@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{combineColony}
 \alias{combineColony}
-\title{Combine two colony}
+\title{Combine two colony objects into one}
 \usage{
 combineColony(strong, weak)
 }
@@ -26,10 +26,11 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- asVirginQueen(newPop(founderGenomes))
 
-drones <- createDrones(x = base[1], nInd = 30)
-col1 <- createColony(queen = base[2], fathers = drones[1:15] )
-col2 <- createColony(queen = base[3], fathers = drones[16:30])
-
-col2 <- combineColony(strong = col1, weak = col2)
+drones <- createDrones(x = basePop[1], nInd = 30)
+col1 <- createColony(queen = basePop[2], fathers = drones[1:15] )
+col2 <- createColony(queen = basePop[3], fathers = drones[16:30])
+(col1 <- buildUpColony(col1, nWorkers = 100, nDrones = 10))
+(col2 <- buildUpColony(col2, nWorkers =  20, nDrones =  2))
+(col2 <- combineColony(strong = col1, weak = col2))
 rm(col1)
 }

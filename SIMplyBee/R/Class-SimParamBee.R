@@ -177,6 +177,10 @@ SimParamBee <- R6Class(
       self$pSwarm <- 0.5
       self$pSplit <- 0.3
 
+      # caste ----
+
+      private$.caste <- NULL
+
       # csd ----
 
       private$.csdChr <- NULL
@@ -211,6 +215,61 @@ SimParamBee <- R6Class(
       }
 
       invisible(self)
+    },
+
+    # Internal (public) ----
+
+    #' @description Store caste information (for internal use only!)
+    #'
+    #' @param id character, individuals whose caste will be stored
+    #' @param caste character, single "Q" for queens, "W" for workers, "D" for
+    #'   drones, "V" for virgin queens, and "F" for fathers
+    #'
+    #' @examples
+    #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+    #' SP <- SimParamBee$new(founderGenomes)
+    #' SP$setTrackPed(isTrackPed = TRUE)
+    #' basePop <- asVirginQueen(newPop(founderGenomes))
+    #'
+    #' drones <- createDrones(x = basePop[1], nInd = 10)
+    #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+    #' colony <- addWorkers(colony, nInd = 5)
+    #' colony <- addDrones(colony, nInd = 5)
+    #' colony <- addVirginQueens(colony, nInd = 2)
+    #'
+    #' SP$pedigree
+    #' SP$caste
+    addToCaste = function(id, caste) {
+      tmp <- rep(x = caste[1], times = length(id))
+      names(tmp) <- id
+      private$.caste = c(private$.caste, tmp)
+      invisible(self)
+    },
+
+    #' @description Change caste information (for internal use only!)
+    #'
+    #' @param id character, individuals whose caste will be changed
+    #' @param caste character, single "Q" for queens, "W" for workers, "D" for
+    #'   drones, "V" for virgin queens, and "F" for fathers
+    #'
+    #' @examples
+    #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+    #' SP <- SimParamBee$new(founderGenomes)
+    #' SP$setTrackPed(isTrackPed = TRUE)
+    #' basePop <- asVirginQueen(newPop(founderGenomes))
+    #' SP$pedigree
+    #' SP$caste
+    #'
+    #' drones <- createDrones(x = basePop[1], nInd = 10)
+    #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+    #' SP$pedigree
+    #' SP$caste
+    changeCaste = function(id, caste) {
+      if (!is.character(id)) {
+        stop("Argument id must be a character!")
+      }
+      private$.caste[id] = caste[1]
+      invisible(self)
     }
 
   ),
@@ -219,6 +278,7 @@ SimParamBee <- R6Class(
 
   private = list(
     .versionSIMplyBee = "character",
+    .caste = "character",
     .csdChr = "integerOrNULL",
     .csdPos = "numeric",
     .nCsdAlleles = "integer",
@@ -231,9 +291,20 @@ SimParamBee <- R6Class(
 
   active = list(
 
+    #' @field caste character, caste information for every individual ever
+    #'   created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}
+    caste = function(value) {
+      if (missing(value)) {
+        factor(x = private$.caste, levels = c("Q", "F", "W", "D", "V"),
+               labels = list("queen", "fathers", "workers", "drones", "virginQueens"))
+      } else {
+        stop("`$caste` is read only", call. = FALSE)
+      }
+    },
+
     #' @field csdChr integer, chromosome of the csd locus
     csdChr = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.csdChr
       } else {
         stop("`$csdChr` is read only", call. = FALSE)
@@ -243,7 +314,7 @@ SimParamBee <- R6Class(
     #' @field csdPos numeric, starting position of the csd locus on the \code{csdChr}
     #'   chromosome (relative at the moment, but could be in bp in the future)
     csdPos = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.csdPos
       } else {
         stop("`$csdPos` is read only", call. = FALSE)
@@ -252,7 +323,7 @@ SimParamBee <- R6Class(
 
     #' @field nCsdAlleles integer, number of possible csd alleles
     nCsdAlleles = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.nCsdAlleles
       } else {
         stop("`$nCsdAlleles` is read only", call. = FALSE)
@@ -262,7 +333,7 @@ SimParamBee <- R6Class(
     #' @field nCsdSites integer, number of segregating sites representing the
     #'   csd locus
     nCsdSites = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.nCsdSites
       } else {
         stop("`$nCsdSites` is read only", call. = FALSE)
@@ -271,7 +342,7 @@ SimParamBee <- R6Class(
 
     #' @field csdPosStart integer, starting position of the csd locus
     csdPosStart = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.csdPosStart
       } else {
         stop("`$.csdPosStart` is read only", call. = FALSE)
@@ -280,7 +351,7 @@ SimParamBee <- R6Class(
 
     #' @field csdPosStop integer, ending position of the csd locus
     csdPosStop = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         private$.csdPosStop
       } else {
         stop("`$csdPosStop` is read only", call. = FALSE)
@@ -290,7 +361,7 @@ SimParamBee <- R6Class(
     #' @field version list, versions of AlphaSimR and SIMplyBee packages used to
     #'   generate this object
     version = function(value) {
-      if (missing(value)){
+      if (missing(value)) {
         list("AlphaSimR" = private$.version,
              "SIMplyBee" = private$.versionSIMplyBee)
       } else {

@@ -4,12 +4,12 @@
 \alias{setMisc}
 \title{Set miscelaneous information in a population}
 \usage{
-setMisc(x, slot, value)
+setMisc(x, node, value)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}}
 
-\item{slot}{character, name of the node to set within the \code{x@misc} slot}
+\item{node}{character, name of the node to set within the \code{x@misc} slot}
 
 \item{value, }{value to be saved into \code{x@misc[[*]][[slot]]}; length of
 \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
@@ -27,12 +27,12 @@ SP <- SimParam$new(founderGenomes)
 basePop <- newPop(founderGenomes)
 basePop@misc
 
-basePop <- setMisc(basePop, slot = "info", value = c("A", "B", "C"))
+basePop <- setMisc(basePop, node = "info", value = c("A", "B", "C"))
 basePop@misc
 
-basePop <- setMisc(basePop, slot = "info", value = c("B", "C", "A"))
+basePop <- setMisc(basePop, node = "info", value = c("B", "C", "A"))
 basePop@misc
 
-basePop <- setMisc(basePop, slot = "info2", value = "A")
+basePop <- setMisc(basePop, node = "info2", value = "A")
 basePop@misc
 }

@@ -1552,7 +1552,7 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 }
 
 #' @rdname combineColony
-#' @title Combine two colony
+#' @title Combine two colony objects into one
 #'
 #' @description Level 2 function that combines two colony objects into one.
 #'   For example, to combine a weak and a strong colony. Workers and drones
@@ -1570,11 +1570,13 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
-#' drones <- createDrones(x = base[1], nInd = 30)
-#' col1 <- createColony(queen = base[2], fathers = drones[1:15] )
-#' col2 <- createColony(queen = base[3], fathers = drones[16:30])
+#' drones <- createDrones(x = basePop[1], nInd = 30)
+#' col1 <- createColony(queen = basePop[2], fathers = drones[1:15] )
+#' col2 <- createColony(queen = basePop[3], fathers = drones[16:30])
+#' (col1 <- buildUpColony(col1, nWorkers = 100, nDrones = 10))
+#' (col2 <- buildUpColony(col2, nWorkers =  20, nDrones =  2))
 #'
-#' col2 <- combineColony(strong = col1, weak = col2)
+#' (col2 <- combineColony(strong = col1, weak = col2))
 #' rm(col1)
 #' @export
 combineColony <- function(strong, weak) {
