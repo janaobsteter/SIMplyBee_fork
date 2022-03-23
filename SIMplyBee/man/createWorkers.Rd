@@ -51,6 +51,9 @@ tmp$workers@mother
 tmp$workers@father
 SP$pedigree
 SP$recHist
+SP$recHist[[23]][[1]][1]
+SP$recHist[[23]][[1]][2]
+SP$caste
 
 createWorkers(apiary, nInd = 10)
 
