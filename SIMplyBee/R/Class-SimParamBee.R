@@ -174,8 +174,9 @@ SimParamBee <- R6Class(
       self$nWorkers <- nWorkers
       self$nDrones <- nDrones
       self$nVirginQueens <- nVirginQueens
-      self$pSwarm <- 0.5
-      self$pSplit <- 0.3
+      self$nFathers <- nFathers
+      self$pSwarm <- pSwarm
+      self$pSplit <- pSplit
 
       # caste ----
 
