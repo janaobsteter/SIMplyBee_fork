@@ -31,7 +31,6 @@ col1 <- createColony(queen = basePop[2], fathers = drones[1:15] )
 col2 <- createColony(queen = basePop[3], fathers = drones[16:30])
 (col1 <- buildUpColony(col1, nWorkers = 100, nDrones = 10))
 (col2 <- buildUpColony(col2, nWorkers =  20, nDrones =  2))
-
 (col2 <- combineColony(strong = col1, weak = col2))
 rm(col1)
 }

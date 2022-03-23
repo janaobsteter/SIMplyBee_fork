@@ -1592,19 +1592,19 @@ isProductive <- function(x) {
 #'
 #' @description Level 0 function that returns simulated honeybee genomes
 #'
-#' @param nInd number of individuals to simulate
-#' @param nChr number of chromosomes to simulate
-#' @param nSegSites number of segregating sites to keep per chromosome
-#' @param Ne effective population size
-#' @param nBp  base pair length of chromosome
-#' @param genLen genetic length of chromosome in Morgans
-#' @param mutRate per base pair mutation rate
-#' @param histNe effective population size in previous generations
-#' @param histGen number of generations ago for effective population sizes given
-#'   in histNe
-#' @param split an optional historic population split in terms of generations
-#'   ago
-#' @param nThreads if OpenMP is available, this will allow for simulating
+#' @param nMelN integer, number of Apis mellifera mellifera North individuals to simulate
+#' @param nMelS integer, number of Apis mellifera mellifera South individuals to simulate
+#' @param nCar integer, number of Apis mellifera carnica individuals to simulate
+#' @param nLig integer, number of Apis mellifera ligustica individuals to simulate
+#' @param ploidy integer, the ploidy of the individuals
+#' @param nChr integer, number of chromosomes to simulate
+#' @param nSegSites integer, number of segregating sites to keep per chromosome
+#' @param Ne integer, effective population size
+#' @param nBp integer, base pair length of chromosome
+#' @param genLen numeric, genetic length of chromosome in Morgans
+#' @param mutRate numeric, per base pair mutation rate
+#' @param recRate numeric, per base pair recombination rate
+#' @param nThreads integer, if OpenMP is available, this will allow for simulating
 #'   chromosomes in parallel. If the value is NULL, the number of threads is
 #'   automatically detected
 #'

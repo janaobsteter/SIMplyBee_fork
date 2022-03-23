@@ -4,7 +4,7 @@
 \alias{splitColony}
 \title{Split colony in two colonies}
 \usage{
-splitColony(colony, p = 0.3, year = NULL)
+splitColony(colony, p = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -12,6 +12,8 @@ splitColony(colony, p = 0.3, year = NULL)
 \item{p}{numeric, proportion of workers that will go to the split colony}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with two \code{\link{Colony-class}}, the \code{split} and the

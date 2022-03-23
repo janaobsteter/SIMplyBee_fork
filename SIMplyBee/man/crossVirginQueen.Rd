@@ -4,7 +4,7 @@
 \alias{crossVirginQueen}
 \title{Cross (mate) a virgin queen to a group drones}
 \usage{
-crossVirginQueen(pop, fathers, nAvgFathers, simParamBee = NULL)
+crossVirginQueen(pop, fathers, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated;
@@ -13,10 +13,10 @@ crossVirginQueen(pop, fathers, nAvgFathers, simParamBee = NULL)
 \item{fathers}{\code{\link{Pop-class}}, a group of drones that will be mated
 with virgin queen(s); if there is more than one virgin queen, then the
 \code{fathers} are partitioned into multiple groups of average size of
-\code{nAvgFathers} using \code{\link{pullDroneGroupsFromDCA}};
+\code{nFathers} using \code{\link{pullDroneGroupsFromDCA}};
 \code{\link{isDrone}} test will be run on these individuals}
 
-\item{nAvgFathers}{numeric, average number of drones (fathers) used in mating
+\item{nFathers}{numeric, average number of drones (fathers) used in mating
 the virgin queen(s) - currently active only when multiple virgin queens
 provided}
 
@@ -61,7 +61,7 @@ getFathers(matedQueen2)@id
 
 matedQueens <- crossVirginQueen(
   pop = c(virginQueen1, virginQueen2),
-  fathers = drones[1:10], nAvgFathers = 2
+  fathers = drones[1:10], nFathers = 2
 )
 matedQueens
 isQueenMated(matedQueens)
