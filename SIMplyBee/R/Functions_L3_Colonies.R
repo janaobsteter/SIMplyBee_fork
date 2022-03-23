@@ -441,6 +441,57 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
   return(colonies)
 }
 
+#' @rdname downsizeColonies
+#' @title Reduce number of workers and remove all drones and virgin queens from colonies
+#'
+#' @description Level 3 function that downsizes colonies by removing a percentage of
+#'   workers, all drones and all virgin queens. Usually in the autumn, such an event occurs
+#'   in preparation for the winter months.
+#'
+#' @param colonies \code{\link{Colonies-class}}
+#' @param p numeric, percentage of workers to remove from the colonies
+
+#' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#'
+#' apiary <- createColonies(pop = basePop, n = 2)
+#' apiary <- buildUpColonies(apiary)
+#' apiary <- addVirginQueens(x = apiary, nInd = 20)
+#' apiary[[1]]
+#' apiary[[2]]
+#'
+#' #downsize apiary
+#' apiary <- downsizeColonies(colonies = apiary)
+#' apiary[[1]]
+#' apiary[[2]]
+#'
+#' #TODO: FIND REFERENCES for defaults
+#' https://github.com/HighlanderLab/SIMplyBee/issues/197
+#'
+#' @export
+#'
+downsizeColonies <- function(colonies, p = 0.85) {
+  if (!isColonies(colonies)) {
+    stop("Argument colonies must be a Colonies class object!")
+  }
+
+  # Reduce workers by p
+  colonies <- removeWorkers(x = colonies, p = p, use = "rand")
+
+  # Remove all Drones
+  colonies <- removeDrones(x = colonies, p = 1)
+
+  #Remove all Virgin Queens
+  colonies <- removeVirginQueens(x = colonies, p = 1)
+  validObject(colonies)
+  return(colonies)
+}
+
 #' @rdname reQueenColonies
 #' @title Re-queen a colony for all given colonies
 #'
