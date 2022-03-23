@@ -4,10 +4,10 @@
 \alias{removeWorkers}
 \title{Remove a proportion of workers}
 \usage{
-removeWorkers(colony, p = 1, use = "rand")
+removeWorkers(x, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion to be removed}
 
@@ -34,11 +34,11 @@ colony <- addWorkers(colony, nInd = 10)
 colony
 getWorkers(colony)@id
 
-colony <- removeWorkers(colony, p = 0.5)
+colony <- removeWorkers(x = colony, p = 0.5)
 colony
 getWorkers(colony)@id
 
-colony <- removeWorkers(colony, p = 1.0)
+colony <- removeWorkers(x = colony, p = 1.0)
 colony
 getWorkers(colony)
 }

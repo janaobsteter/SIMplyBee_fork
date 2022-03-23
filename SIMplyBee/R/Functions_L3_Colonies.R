@@ -442,11 +442,12 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 }
 
 #' @rdname downsizeColonies
-#' @title Reduce number of workers and remove all drones and virgin queens from colonies
+#' @title Reduce number of workers and remove all drones and virgin queens from
+#'   colonies
 #'
-#' @description Level 3 function that downsizes colonies by removing a percentage of
-#'   workers, all drones and all virgin queens. Usually in the autumn, such an event occurs
-#'   in preparation for the winter months.
+#' @description Level 3 function that downsizes colonies by removing a percentage
+#'   of workers, all drones and all virgin queens. Usually in the autumn, such
+#'   an event occurs in preparation for the winter months.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, percentage of workers to remove from the colonies
@@ -458,7 +459,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueen(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
 #'
 #' apiary <- createColonies(pop = basePop, n = 2)
 #' apiary <- buildUpColonies(apiary)
