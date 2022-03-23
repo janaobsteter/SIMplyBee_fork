@@ -573,6 +573,62 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   return(colony)
 }
 
+#' @rdname downsizeColony
+#' @title Reduce number of workers and remove all drones and virgin queens from hive
+#'
+#' @description Level 2 function that downsizes colony by removing a percentage of
+#'   workers, all drones and all virgin queens.  Usually in the autumn, such an event occurs
+#'   in preparation for the winter months.
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param PWorkers numeric or function, percentage of workers to remove from the colony
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   create the exact specified number of only viable workers (heterozygous on
+#'   the csd locus)
+
+#' @return \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' colony
+#' isProductive(colony)
+#'
+#' # Using defaults in SP$nWorkers & SP$nDrones
+#' colony <- buildUpColony(colony)
+#' colony<- addVirginQueens(x = colony, nInd = 10)
+#'
+#' #Downsize population using default pWorkers
+#' colony <- downsizeColony(colony = colony)
+#' colony
+#'
+#' #FIND REFERENCES for defaults
+#' #MAKE FOR COLONY AND COLONIES
+#' @export
+downsizeColony <- function(colony, pWorkers = 0.85,
+                           exact = FALSE) {
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+
+  # Reduce workers by pWorkers
+  colony <- removeWorkers(colony = colony, p = pWorkers, use = "rand")
+
+  # Remove all Drones
+  colony <- removeDrones(colony = colony, p = 1, use = "rand")
+
+  #Remove all Virgin Queens
+  colony <- removeVirginQueens(colony = colony, p = 1, use = "rand")
+
+  colony@production <- TRUE
+  validObject(colony)
+  return(colony)
+}
+
 #' @rdname replaceVirginQueens
 #' @title Replace a proportion of virgin queens with new ones
 #'
