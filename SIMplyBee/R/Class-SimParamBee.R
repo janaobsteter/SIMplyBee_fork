@@ -7,7 +7,8 @@ isPop <- function(x) {
   return(ret)
 }
 
-#TODO: This should go to AlphaSimR too
+# TODO: This should go to AlphaSimR too
+# https://github.com/HighlanderLab/SIMplyBee/issues/196
 isMapPop <- function(x) {
   ret <- is(x, class2 = "MapPop")
   return(ret)
