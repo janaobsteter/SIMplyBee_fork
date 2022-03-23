@@ -591,6 +591,8 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], n = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
 #' colony <- buildUpColony(colony)
 #' colony <- addVirginQueens(x = colony, nInd = 10)
 #' colony

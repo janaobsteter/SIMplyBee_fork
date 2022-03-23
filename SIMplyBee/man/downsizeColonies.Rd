@@ -24,7 +24,7 @@ Level 3 function that downsizes colonies by removing a percentage
   an event occurs in preparation for the winter months.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 

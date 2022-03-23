@@ -80,7 +80,7 @@ createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
     }
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
     if (mated) {
-      if (nInd(pop) < (n - 1)) {
+      if (nInd(pop) < (n + 1)) {
         stop("You must provide at least n+1 individuals in the pop to create n mated colonies!")
       }
       tmp <- pullInd(pop = pop, nInd = n)
@@ -457,7 +457,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -558,8 +558,9 @@ reQueenColonies <- function(colonies, queens) {
 #' @param colonies \code{\link{Colonies-class}}
 #' @param DCA \code{\link{Pop-class}}, Drone Congregation Area;
 #'   \code{\link{isDrone}} test will be run on these to ensure these are drones
-#' @param nFathers numeric, average number of drones (fathers) to used in
-#'   matings (see \code{\link{crossColony}})
+#' @param nFathers numeric or function, number of drones (fathers) to used in
+#'   matings (see \code{\link{crossColony}}); if \code{NULL} then
+#'   \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with mated colonies
@@ -583,7 +584,7 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[2]]
 #'
 #' @export
-crossColonies <- function(colonies, DCA, nFathers, simParamBee = NULL) {
+crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -596,6 +597,10 @@ crossColonies <- function(colonies, DCA, nFathers, simParamBee = NULL) {
   if (any(!isDrone(DCA))) {
     stop("Individuals in DCA must be drones!")
   }
+  if (is.null(nFathers)) {
+    nFathers <- simParamBee$nFathers
+  }
+  # skipping "if (is.function(nFathers))" since we pass nFathers to pullDroneGroupsFromDCA
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()
