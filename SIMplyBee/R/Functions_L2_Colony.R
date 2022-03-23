@@ -1417,6 +1417,66 @@ splitColony <- function(colony, p = 0.3, year = NULL) {
   return(ret)
 }
 
+
+#' @rdname combine
+#' @title Combine two colony objects
+#'
+#' @description Level 2 function that combines two colony objects into one or
+#'   two colonies objects of the same length to one. For example, to combine a
+#'   weak and a strong colony (or colonies). Workers and drones of the weak
+#'   colony are added to the strong. User has to remove the weak colony (or
+#'   colonies) from the workspace.
+#'
+#' @param strong \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param weak \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @return a combined \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 40)
+#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10] )
+#' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
+#' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
+#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col1 <- combine(strong = col1, weak = col2)
+#' rm(col2)
+#'
+#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
+#' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
+#' col3 <- createColony(queen = basePop[4], fathers = drones[21:30])
+#' col4 <- createColony(queen = basePop[5], fathers = drones[31:40])
+#' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
+#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
+#' col4 <- buildUpColony(colony = col4, nWorkers =  20, nDrones =  2)
+#' colsStrong <- c(col1, col3)
+#' colsWeak <- c(col2, col4)
+#' cols <- combine(strong = colStrong, weak = colsWeak)
+#' rm(colsWeak)
+#' @export
+combine <- function(strong, weak) {
+  if (isColony(strong) & isColony(weak)) {
+    strong@workers <- c(strong@workers, weak@workers)
+    strong@drones <- c(strong@drones, weak@drones)
+  } else if (isColonies(strong) & isColonies(weak)) {
+     if (nColonies(weak) == nColonies(strong)) {
+       nCol <- nColonies(weak)
+       for (colony in seq_len(nCol)) {
+         strong[[colony]] <- combine(strong = strong[[colony]], weak = weak[[colony]])
+       }
+     } else {
+       stop("Weak and strong colonies objects must be of the same length!")
+     }
+  } else {
+    stop("Argument strong and weak must both be either a Colony or Colonies class objects!")
+  }
+  return(strong)
+}
+
 #' @rdname setLocation
 #' @title Set colony location
 #'
@@ -1529,50 +1589,4 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   }
   validObject(colony)
   return(colony)
-}
-
-#' @rdname combineColony
-#' @title Combine two colony objects
-#'
-#' @description Level 2 function that combines two colony objects into one or
-#'   two colonies objects of the same length to one.
-#'   For example, to combine a weak and a strong colony or colonies. Workers
-#'   and drones of the weak colony are added to the strong. User has to remove
-#'   the weak colony.
-#'
-#' @param strong \code{\link{Colony-class}}
-#' @param weak \code{\link{Colony-class}}
-#'
-#' @return a colony \code{\link{Colony-class}} that combines workers and drones
-#'   of both colony.
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- asVirginQueen(newPop(founderGenomes))
-#'
-#' drones <- createDrones(x = base[1], nInd = 30)
-#' col1 <- createColony(queen = base[2], fathers = drones[1:15] )
-#' col2 <- createColony(queen = base[3], fathers = drones[16:30])
-#'
-#' col2 <- combineColony(strong = col1, weak = col2)
-#' rm(col1)
-#' @export
-combineColony <- function(strong, weak) {
-  if (isColony(strong) & isColony(weak)) {
-    strong@workers <- c(strong@workers, weak@workers)
-    strong@drones <- c(strong@drones, weak@drones)
-  } else if (isColonies(strong) & isColonies(weak)) {
-     if (nColonies(weak) == nColonies(strong)){
-       nCol <- nColonies(weak)
-       for (colony in seq_len(nCol)) {
-         strong[[colony]] <- combineColony(weak = weak[[colony]], strong = strong[[colony]])
-       }
-     } else {
-       stop("Weak and strong colonies objects are not of the same length")
-     }
-  } else {
-    stop("Argument strong and weak must both be either a Colony or Colonies class objects!")
-  }
-  return(strong)
 }
