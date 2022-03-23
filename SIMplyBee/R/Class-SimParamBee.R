@@ -50,43 +50,54 @@ SimParamBee <- R6Class(
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to have some workers to work
+    #'   with - you will want to change this!
     nWorkers = "numericOrFunction",
 
     #' @field nDrones numeric or function, default number of drones
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to
+    #'   have some drones to work with - you will want to change this!
     nDrones = "numericOrFunction",
 
     #' @field nVirginQueens numeric or function, default number of virgin queens
     #'   to generate in a colony; if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to have some virgin queens
+    #'   to work with - you will want to change this!
     nVirginQueens = "numericOrFunction",
 
     #' @field nFathers numeric or function, default number of drones
     #'   a queen mates with; if a function, it will be passed to other
-    #'   functions and work with the internals of those functions. The
-    #'   function must return a single value.
+    #'   functions and work with the internals of those functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to have some fathers to work with -
+    #'   you will want to change this!
     nFathers = "numericOrFunction",
 
     #' @field pSwarm numeric or a function, the percentage of workers that leave
     #'   with the old queen when the colony swarms; if a function, it will be passed to other
-    #'   functions and work with the internals of those functions -  therefore
+    #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
-    #'   and return a single value.
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to have some percentage to work with -
+    #'   you will want to change this!
     pSwarm = "numericOrFunction",
 
     #' @field pSplit numeric or a function, the percentage of workers that we remove
     #'   in a managed split; if a function, it will be passed to other
-    #'   functions and work with the internals of those functions -  therefore
+    #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could operate on a colony or not, and return a single value
-    #'   and return a single value.
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. The default value is only to have some percentage to work with -
+    #'   you will want to change this!
     pSplit = "numericOrFunction",
 
     #' @description Starts the process of building a new simulation by creating
@@ -100,23 +111,12 @@ SimParamBee <- R6Class(
     #'
     #' @param founderPop \code{\link{MapPop-class}}, founder population of
     #'   genomes
-    #'
-    #' @param nWorkers numeric or function, default number of workers to
-    #'   generate in a colony; the default value for this function is only to
-    #'   have some workers to work with - you will want to change this!; see
-    #'   also the \code{nWorkers} field description on using functions and their
-    #'   examples in \code{\link{createWorkers}}
-    #' @param nDrones numeric or function, default number of drones to
-    #'   generate in a colony; the default value for this function is only to
-    #'   have some drones to work with - you will want to change this!; see
-    #'   also the \code{nDrones} field description on using functions and their
-    #'   examples in \code{\link{createDrones}}
-    #' @param nVirginQueens numeric or function, default number of virgin queens
-    #'   to generate in a colony; the default value for this function is only to
-    #'   have some virgin queens to work with - you will want to change this!;
-    #'   see also the \code{nVirginQueens} field description on using functions
-    #'   and their examples in \code{\link{createVirginQueens}}
-    #'
+    #' @param nWorkers see \code{\link{SimParamBee}} field \code{nWorkers}
+    #' @param nDrones see \code{\link{SimParamBee}} field \code{nDrones}
+    #' @param nVirginQueens see \code{\link{SimParamBee}} field \code{nVirginQueens}
+    #' @param nFathers see \code{\link{SimParamBee}} field \code{nVirginQueens}
+    #' @param pSwarm see \code{\link{SimParamBee}} field \code{pSwarm}
+    #' @param pSplit see \code{\link{SimParamBee}} field \code{pSplit}
     #' @param csdChr integer, chromosome that will carry the csd locus, by
     #'   default 3, but if there are less chromosomes (for a simplified
     #'   simulation), the locus is put on the last available chromosome (1 or
@@ -128,7 +128,24 @@ SimParamBee <- R6Class(
     #'   determines how many segregating sites will be needed to represent the
     #'   csd locus from the underlying bi-allelic SNP; the minimum number of
     #'   bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
-    #'   then \code{csdChr=NULL} is triggered
+    #'   then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
+    #'   to 128, which is at the upper end of the reported number of csd alleles
+    #'   (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).
+    #'
+    #' @references
+    #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
+    #'   Sequencing for the Identification of Apis mellifera Complementary Sex
+    #'   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
+    #'   \url{https://www.mdpi.com/2075-4450/12/10/868}
+    #'
+    #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
+    #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
+    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
+    #'
+    #' Lechner et al. (2014) Nucleotide variability at its limit? Insights into
+    #'  the number and evolutionary dynamics of the sex-determining specificities
+    #'  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
+    #'  272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -142,13 +159,12 @@ SimParamBee <- R6Class(
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
-    # TODO: use the max number of csd alleles found in literature and cite that
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/93
+
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 10,
-                          nVirginQueens = 10,
+                          nVirginQueens = 10, nFathers = 15,
                           pSwarm = 0.5, pSplit = 0.3,
-                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 100) {
+                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 128) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
       private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version

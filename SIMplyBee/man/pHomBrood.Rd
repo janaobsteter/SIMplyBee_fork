@@ -8,7 +8,6 @@ pHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-
   \code{\link{Colonies-class}}
 TODO: describe queen's and colony's pHomBrood
   https://github.com/HighlanderLab/SIMplyBee/issues/80

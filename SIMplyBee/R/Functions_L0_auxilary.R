@@ -341,7 +341,7 @@ nDrones <- function(x) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
@@ -361,7 +361,6 @@ nDrones <- function(x) {
 #' apiary <- c(colony1, colony2)
 #' computeQueensPHomBrood(apiary)
 #' @export
-
 computeQueensPHomBrood <- function(x) {
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
@@ -369,9 +368,12 @@ computeQueensPHomBrood <- function(x) {
       if (is.null(x@misc[[ind]]$fathers)) {
         ret[ind] <- NA
       } else {
-        queensCsd <- apply(getCsdAlleles(x), MARGIN = 1, FUN = function(x) paste0(x, collapse = ""))
-        fathersCsd <- apply(getCsdAlleles(x@misc[[ind]]$fathers), MARGIN = 1, FUN = function(x) paste0(x, collapse = ""))
-        ret[ind] <- sum(fathersCsd %in% queensCsd) / (length(queensCsd) * length(fathersCsd))
+        queensCsd <- apply(X = getCsdAlleles(x), MARGIN = 1,
+                           FUN = function(x) paste0(x, collapse = ""))
+        fathersCsd <- apply(X = getCsdAlleles(x@misc[[ind]]$fathers), MARGIN = 1,
+                            FUN = function(x) paste0(x, collapse = ""))
+        nComb <- length(queensCsd) * length(fathersCsd)
+        ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
       }
     }
   } else if (isColony(x)) {
@@ -380,7 +382,7 @@ computeQueensPHomBrood <- function(x) {
     ret <- sapply(X = x@colonies, FUN = computeQueensPHomBrood)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop or Colony or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
   }
   return(ret)
 }
@@ -1066,11 +1068,11 @@ getId <- function(x) {
 }
 
 #' @rdname getCasteId
-#'
 #' @title Get IDs of individuals of a caste, or ID of all members of colony
 #'
 #' @description Level 0 function that returns the ID individuals of a caste. To
-#'   get the individuals, use \code{\link{getCaste}}.
+#'   get the individuals, use \code{\link{getCastePop}}. To get individuals'
+#'   caste, use \code{\link{getCaste}}.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
@@ -1087,9 +1089,8 @@ getId <- function(x) {
 #'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
-
 #'
-#' @seealso \code{\link{getCaste}} and \code{\link{caste}}
+#' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1175,7 +1176,7 @@ getCasteId <- function(x, caste = "all") {
 #'   caste). When x is \code{\link{Colonies-class}}, list of lists with
 #'   character vectors (list is named with colony id).
 #'
-#' @seealso \code{\link{getCaste}} and \code{\link{getCasteId}}
+#' @seealso \code{\link{getCastePop}} and \code{\link{getCasteId}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -1243,7 +1244,7 @@ getCaste <- function(x) {
       }
     }
   } else if (isColonies(x)) {
-    ret <- lapply(X = x@colonies, FUN = caste)
+    ret <- lapply(X = x@colonies, FUN = getCaste)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -1361,7 +1362,6 @@ hasSplit <- function(x) {
 }
 
 #' @rdname getEvents
-#'
 #' @title Report which colony events have occurred
 #'
 #' @description Level 0 function that returns a matrix of logicals reporting the
@@ -1592,29 +1592,29 @@ isProductive <- function(x) {
 #'
 #' @description Level 0 function that returns simulated honeybee genomes
 #'
-#' @param nInd number of individuals to simulate
-#' @param nChr number of chromosomes to simulate
-#' @param nSegSites number of segregating sites to keep per chromosome
-#' @param Ne effective population size
-#' @param nBp  base pair length of chromosome
-#' @param genLen genetic length of chromosome in Morgans
-#' @param mutRate per base pair mutation rate
-#' @param histNe effective population size in previous generations
-#' @param histGen number of generations ago for effective population sizes given
-#'   in histNe
-#' @param split an optional historic population split in terms of generations
-#'   ago
-#' @param nThreads if OpenMP is available, this will allow for simulating
+#' @param nMelN integer, number of Apis mellifera mellifera North individuals to simulate
+#' @param nMelS integer, number of Apis mellifera mellifera South individuals to simulate
+#' @param nCar integer, number of Apis mellifera carnica individuals to simulate
+#' @param nLig integer, number of Apis mellifera ligustica individuals to simulate
+#' @param ploidy integer, the ploidy of the individuals
+#' @param nChr integer, number of chromosomes to simulate
+#' @param nSegSites integer, number of segregating sites to keep per chromosome
+#' @param Ne integer, effective population size
+#' @param nBp integer, base pair length of chromosome
+#' @param genLen numeric, genetic length of chromosome in Morgans
+#' @param mutRate numeric, per base pair mutation rate
+#' @param recRate numeric, per base pair recombination rate
+#' @param nThreads integer, if OpenMP is available, this will allow for simulating
 #'   chromosomes in parallel. If the value is NULL, the number of threads is
 #'   automatically detected
 #'
 #' @return \code{\link{MapPop-class}}
 #'
 #' @examples
-#' founderGenomes <- simulateHoneyBeeGenomes(
-#'   nInd = 10, nChr = 1,
-#'   nSegSites = 2, Ne = 10
-#' )
+#' # founderGenomes <- simulateHoneyBeeGenomes(
+#' #   nInd = 10, nChr = 1,
+#' #   nSegSites = 2, Ne = 10
+#' # )
 #' @export
 simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     nMelS = 0L,
@@ -1727,7 +1727,7 @@ reduceDroneHaplo <- function(haplo, pop) {
   idSelF <- id %in% pop@id[pop@sex == "F"]
   idSelM <- id %in% pop@id[pop@sex == "M"]
   sel <- idSelF | (idSelM & grepl(x = idHap, pattern = "_1"))
-  ret <- haplo[sel, ]
+  ret <- haplo[sel, , drop = FALSE]
   return(ret)
 }
 

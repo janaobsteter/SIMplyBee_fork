@@ -40,7 +40,7 @@ apiary2[[1]]
 apiary2[[2]]
 
 matedQueens <- crossVirginQueen(pop = basePop[4:5],
-                                fathers = drones[11:20], nAvgFathers = 2)
+                                fathers = drones[11:20], nFathers = 2)
 apiary3 <- reQueenColonies(apiary, queen = matedQueens)
 apiary3
 apiary3[[1]]
