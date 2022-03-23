@@ -6,9 +6,9 @@
 \usage{
 createColonies(
   pop = NULL,
-  nCol = NULL,
+  n = NULL,
   mated = TRUE,
-  nAvgFathers = 15,
+  nFathers = NULL,
   nDronesPerQueen = 100,
   yearOfBirth = NULL,
   simParamBee = NULL
@@ -20,7 +20,7 @@ createColonies(
 \code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
 individuals}
 
-\item{nCol}{integer, number of colonies to create (if only \code{nCol} is
+\item{n}{integer, number of colonies to create (if only \code{nCol} is
 given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 (\code{NULL}) individual colony) - this is mostly useful for programming)}
 
@@ -28,8 +28,8 @@ given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 then \code{nInd(pop)-n} individuals from \code{pop} are used to create
 drones with which the queens will mate with}
 
-\item{nAvgFathers}{integer, number of drones that a queen mates with
-TODO nAvgFathers default should go to simParamBee and then we set it to NULL
+\item{nFathers}{integer, number of drones that a queen mates with
+TODO nFathers default should go to simParamBee and then we set it to NULL
      here and if its NULL we grab value from simParamBee, otherwise use it
      from the user
      https://github.com/HighlanderLab/SIMplyBee/issues/98}
@@ -62,19 +62,19 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- asVirginQueen(newPop(founderGenomes))
 
 # Create 2 empty (NULL) colonies
-apiary <- createColonies(nCol = 2)
+apiary <- createColonies(n = 2)
 apiary
 apiary[[1]]
 apiary[[2]]
 
 # Create 2 mated colonies
-apiary <- createColonies(pop = basePop, nCol = 2)
+apiary <- createColonies(pop = basePop, n = 2)
 apiary
 apiary[[1]]
 apiary[[2]]
 
 # Create 2 unmated/virgin colonies
-apiary <- createColonies(pop = basePop, nCol = 2, mated = FALSE)
+apiary <- createColonies(pop = basePop, n = 2, mated = FALSE)
 apiary
 apiary[[1]]
 apiary[[2]]

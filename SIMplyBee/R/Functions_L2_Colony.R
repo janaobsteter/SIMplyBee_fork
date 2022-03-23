@@ -1222,6 +1222,7 @@ collapseColony <- function(colony) {
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony
 #' @param year numeric, year of birth for virgin queens
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
 #'   \code{remnant} (see the description what each colony holds!); both colonies
@@ -1249,6 +1250,9 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   if (is.null(p)) {
     p <- simParamBee$pSwarm
+  }
+  if (is.function(p)) {
+    p <- p(colony)
   }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")
@@ -1361,6 +1365,7 @@ supersedeColony <- function(colony, year = NULL) {
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony
 #' @param year numeric, year of birth for virgin queens
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{split} and the
 #'   \code{remnant} (see the description what each colony holds!); both colonies
@@ -1388,6 +1393,9 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   if (is.null(p)) {
     p <- simParamBee$pSplit
+  }
+  if (is.function(p)) {
+    p <- p(colony)
   }
   if (p < 0 | p > 1) {
     stop("p must be between 0 and 1 (inclusive)!")

@@ -69,10 +69,10 @@ resetEvents(swarms)[[1]]
 remnants[[1]]
 resetEvents(remnants)[[1]]
 
-(tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
+(tmp <- supersedeColony(colony1))
 resetEvents(tmp)
 
-(tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+(tmp <- supersedeColonies(apiary))
 tmp[[1]]
 resetEvents(tmp)[[1]]
 

@@ -4,15 +4,19 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(DCA, nGroup, avgGroupSize = 17)
+pullDroneGroupsFromDCA(DCA, n, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones;
 \code{\link{isDrone}} test will be run on these individuals}
 
-\item{nGroup}{integer, number of drone groups to be created}
+\item{n}{integer, number of drone groups to be created}
 
-\item{avgGroupSize}{numeric, average number of drones per group}
+\item{nFathers}{numeric, average number of drones/fathers per group,
+the actual number is sampled from a truncated Poisson with lambda of
+nFathers}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list of \code{\link{Pop-class}}
@@ -37,5 +41,5 @@ colony1 <- addDrones(colony1, nInd = 10)
 colony2 <- addDrones(colony2, nInd = 20)
 apiary <- c(colony1, colony2)
 DCA <- createDCA(apiary)
-pullDroneGroupsFromDCA(DCA, nGroup = 4, avgGroupSize = 5)
+pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
 }

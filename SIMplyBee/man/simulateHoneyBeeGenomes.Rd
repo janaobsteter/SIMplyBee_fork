@@ -21,31 +21,33 @@ simulateHoneyBeeGenomes(
 )
 }
 \arguments{
-\item{nChr}{number of chromosomes to simulate}
+\item{nMelN}{integer, number of Apis mellifera mellifera North individuals to simulate}
 
-\item{nSegSites}{number of segregating sites to keep per chromosome}
+\item{nMelS}{integer, number of Apis mellifera mellifera South individuals to simulate}
 
-\item{Ne}{effective population size}
+\item{nCar}{integer, number of Apis mellifera carnica individuals to simulate}
 
-\item{nBp}{base pair length of chromosome}
+\item{nLig}{integer, number of Apis mellifera ligustica individuals to simulate}
 
-\item{genLen}{genetic length of chromosome in Morgans}
+\item{ploidy}{integer, the ploidy of the individuals}
 
-\item{mutRate}{per base pair mutation rate}
+\item{nChr}{integer, number of chromosomes to simulate}
 
-\item{nThreads}{if OpenMP is available, this will allow for simulating
+\item{nSegSites}{integer, number of segregating sites to keep per chromosome}
+
+\item{Ne}{integer, effective population size}
+
+\item{nBp}{integer, base pair length of chromosome}
+
+\item{genLen}{numeric, genetic length of chromosome in Morgans}
+
+\item{mutRate}{numeric, per base pair mutation rate}
+
+\item{recRate}{numeric, per base pair recombination rate}
+
+\item{nThreads}{integer, if OpenMP is available, this will allow for simulating
 chromosomes in parallel. If the value is NULL, the number of threads is
 automatically detected}
-
-\item{nInd}{number of individuals to simulate}
-
-\item{histNe}{effective population size in previous generations}
-
-\item{histGen}{number of generations ago for effective population sizes given
-in histNe}
-
-\item{split}{an optional historic population split in terms of generations
-ago}
 }
 \value{
 \code{\link{MapPop-class}}

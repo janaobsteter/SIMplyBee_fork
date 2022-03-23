@@ -956,6 +956,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param nFathers numeric, average number of drones/fathers per group,
 #'   the actual number is sampled from a truncated Poisson with lambda of
 #'   nFathers
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list of \code{\link{Pop-class}}
 #'
