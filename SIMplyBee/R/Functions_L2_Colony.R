@@ -1532,12 +1532,13 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 }
 
 #' @rdname combineColony
-#' @title Combine two colony
+#' @title Combine two colony objects
 #'
-#' @description Level 2 function that combines two colony objects into one.
-#'   For example, to combine a weak and a strong colony. Workers and drones
-#'   of the weak colony are added to the strong. User has to remove the weak
-#'.  colony.
+#' @description Level 2 function that combines two colony objects into one or
+#'   two colonies objects of the same length to one.
+#'   For example, to combine a weak and a strong colony or colonies. Workers
+#'   and drones of the weak colony are added to the strong. User has to remove
+#'   the weak colony.
 #'
 #' @param strong \code{\link{Colony-class}}
 #' @param weak \code{\link{Colony-class}}
@@ -1558,13 +1559,20 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
 #' rm(col1)
 #' @export
 combineColony <- function(strong, weak) {
-  if (!isColony(strong)) {
-    stop("Argument strong must be a Colony class object!")
+  if (isColony(strong) & isColony(weak)) {
+    strong@workers <- c(strong@workers, weak@workers)
+    strong@drones <- c(strong@drones, weak@drones)
+  } else if (isColonies(strong) & isColonies(weak)) {
+     if (nColonies(weak) == nColonies(strong)){
+       nCol <- nColonies(weak)
+       for (colony in seq_len(nCol)) {
+         strong[[colony]] <- combineColony(weak = weak[[colony]], strong = strong[[colony]])
+       }
+     } else {
+       stop("Weak and strong colonies objects are not of the same length")
+     }
+  } else {
+    stop("Argument strong and weak must both be either a Colony or Colonies class objects!")
   }
-  if (!isColony(weak)) {
-    stop("Argument weak must be a Colony class object!")
-  }
-  strong@workers <- c(strong@workers, weak@workers)
-  strong@drones <- c(strong@drones, weak@drones)
   return(strong)
 }
