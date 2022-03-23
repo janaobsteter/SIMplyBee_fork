@@ -450,14 +450,15 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, percentage of workers to remove from the colonies
+#' @param use character, all the options provided by \code{\link{selectInd}};
+#'   it guides the selection of workers that will be removed
 
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- asVirginQueen(newPop(founderGenomes))
-#'
+#' basePop <- createVirginQueen(founderGenomes)
 #'
 #' apiary <- createColonies(pop = basePop, n = 2)
 #' apiary <- buildUpColonies(apiary)
@@ -465,28 +466,19 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' #downsize apiary
 #' apiary <- downsizeColonies(colonies = apiary)
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' #TODO: FIND REFERENCES for defaults
-#' https://github.com/HighlanderLab/SIMplyBee/issues/197
-#'
+#' # TODO: FIND REFERENCES for defaults
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/197
 #' @export
-#'
-downsizeColonies <- function(colonies, p = 0.85) {
+downsizeColonies <- function(colonies, p = 0.85, use = "rand") {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-
-  # Reduce workers by p
   colonies <- removeWorkers(x = colonies, p = p, use = "rand")
-
-  # Remove all Drones
   colonies <- removeDrones(x = colonies, p = 1)
-
-  #Remove all Virgin Queens
   colonies <- removeVirginQueens(x = colonies, p = 1)
   validObject(colonies)
   return(colonies)
