@@ -812,8 +812,9 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 #' @description Level 3 function that TODO
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param FUN TODO
-#' @param ... TODO
+#' @param FUN function, any function that can be applied on \code{colony} and
+#'   can return phenotypes for defined traits via \code{\link{SimParamBee}}
+#' @param ... all parameters of \code{\link{setPheno}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with phenotypes

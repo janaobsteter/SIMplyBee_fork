@@ -14,14 +14,19 @@ getCasteId(x, caste = "all")
 "drones", or "all"}
 }
 \value{
-When x is \code{\link{Pop-class}}, character of individual ID. When x
-  is \code{\link{Colony-class}}, list with character vectors (list is named
-  with caste). When x is \code{\link{Colonies-class}}, list of lists with
-  character vectors (list is named with colony id).
+when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+ or list for \code{caste == "all"} with ID nodes named by caste;
+   when \code{x} is \code{\link{Colony-class}} return is a named list of
+  \code{\link{Pop-class}} for \code{caste != "all"}
+  or named list for \code{caste == "all"} indluding caste members IDs;
+   when \code{x} is \code{\link{Colonies-class}} return is a named list of
+  \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+  \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
 }
 \description{
 Level 0 function that returns the ID individuals of a caste. To
-  get the individuals, use \code{\link{getCaste}}.
+  get the individuals, use \code{\link{getCastePop}}. To get individuals'
+  caste, use \code{\link{getCaste}}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -46,12 +51,12 @@ getCasteId(x = apiary)
 getCasteId(x = apiary, caste = "virginQueens")
 
 # Create a data.frame with id, colony, and caste information
-(tmpC <- caste(colony1))
+(tmpC <- getCaste(colony1))
 (tmpI <- getCasteId(colony1))
 tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
 head(tmp);tail(tmp)
 
-(tmpC <- caste(apiary))
+(tmpC <- getCaste(apiary))
 (tmpI <- getCasteId(apiary))
 (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
 tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
@@ -63,5 +68,5 @@ head(tmp);tail(tmp)
 \seealso{
 \code{\link{getCaste}}
 
-\code{\link{getCaste}} and \code{\link{caste}}
+\code{\link{getCastePop}} and \code{\link{getCaste}}
 }

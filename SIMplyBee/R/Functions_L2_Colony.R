@@ -15,13 +15,7 @@
 #'   and the fathers argument is ignored)
 #' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
 #'   which one will become the queen of the colony in the future
-#'   TODO: think and explain what happens if we provide both a queen and virgin
-#'   queens (possibly of different origin)!
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @details When a mated queen is given or a queen alongside with fathers, the
-#'   function also generates one virgin queen.
-#'   TODO: discuss this - see below
 #'
 #' @return new \code{\link{Colony-class}}
 #'
@@ -80,8 +74,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       }
     }
     if (!is.null(virginQueens)) {
-      warning("You are providing the queen and virgin queen(s) at the same time.")
-      warning("Are they properly related?")
+      stop("You can provide only queen or virgin queen(s).")
     }
   }
   colony <- new(
@@ -265,13 +258,13 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'   combined.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param nInd numeric or function, number of workers; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used
-#' @param new logical, should the workers be added a fresh (ignoring currently
-#'   present workers in the colony)
+#' @param nInd numeric or function, number of workers to be added, but see
+#'   \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#' @param new logical, should the number of workers be added anew or should we
+#'   only top-up the existing number of workers to \code{nInd}
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   add the exact specified number of only viable workers (heterozygous on the csd
-#'   locus)
+#'   we add the exact specified number of viable workers (heterozygous at the
+#'   csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -294,16 +287,19 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #'
+#' # Specify own number
 #' SP$nWorkers <- 15
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #'
+#' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' addWorkers(colony1, nInd = nWorkersFun)
 #' nWorkers(addWorkers(apiary, nInd = nWorkersFun))
 #'
+#' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
@@ -323,8 +319,8 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
       newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
-        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood
         x@queen@misc[[1]]$nWorkers <- nInd
+        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood
       } else {
         x@workers <- c(x@workers, newWorkers$workers)
         x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd
@@ -355,8 +351,10 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'   \code{simParamBee$nDrones} is used
-#' @param new logical, should the drones be added a fresh (ignoring currently
-#'   present drones)
+#' @param nInd numeric or function, number of drones to be added, but see
+#'   \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#' @param new logical, should the number of drones be added anew or should we
+#'   only top-up the existing number of drones to \code{nInd}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
@@ -374,21 +372,24 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #' addDrones(colony1, nInd = 20)
 #' nDrones(addDrones(apiary, nInd = 20))
 #'
-#' # Using a default in SP$nWorkers
+#' # Using defaults in SP$nWorkers
 #' # (just to have some workers - change this to your needs!)
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #'
+#' # Specifying own number
 #' SP$nDrones <- 15
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #'
+#' # Specify a function that will give a number
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
 #' addDrones(colony1, nInd = nDronesFun)
 #' nDrones(addDrones(apiary, nInd = nDronesFun))
 #'
+#' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesFun
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
@@ -437,16 +438,13 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   swarming.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param nWorkers numeric or function, number of worker; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
-#'   present workers are taken into account and only the missing difference is
-#'   added)
-#' @param nDrones numeric or function, number of drones; if \code{NULL} then
-#'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
-#'   present drones are taken into account so only the missing difference is
-#'   added)
-#' @param new logical, should the workers and drones be added a
-#'   fresh (ignoring currently present workers and drones)
+#' @param nWorkers numeric or function, number of worker to add to the colony,
+#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#' @param nDrones numeric or function, number of drones to add to the colony,
+#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#' @param new logical, should the number of workers and drones be added anew or
+#'   should we only top-up the existing number of workers and drones to
+#'   \code{nWorkers} and \code{nDrones} (see details)
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
 #'   create the exact specified number of only viable workers (heterozygous on
 #'   the csd locus)
@@ -454,9 +452,23 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details This function turns production of the colony to \code{TRUE}.
+#' @details Argument \code{new} enables simulation of two common cases. First,
+#'   if you are modelling year-to-year cycle, you will likely want
+#'   \code{new = TRUE}, so that, say, in spring you will replace old (from last
+#'   year) workers and drones with the new ones. This is the case that we are
+#'   targeting and hence \code{new = TRUE} is default. Second, if you are
+#'   modelling shorter period cycles, you will likely want \code{new = FALSE} to
+#'   just top up the current workers and drones - you might also want to look at
+#'   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
 #'
-#' @return \code{\link{Colony-class}} with workers and drones added
+#' TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
+#'   We are not sure this is easy to achieve with current implementation just
+#'   now, but could be expanded.
+#'   https://github.com/HighlanderLab/SIMplyBee/issues/176
+#'
+#' This function turns on production in the colony.
+#'
+#' @return \code{\link{Colony-class}} with workers and drones replaced or added
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -468,21 +480,25 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' colony
 #' isProductive(colony)
 #'
-#' # Using defaults in SP
-#' # (just to have some bees - change this to your needs!)
+#' # Using defaults in SP$nWorkers & SP$nDrones
 #' (colony <- buildUpColony(colony))
 #' isProductive(colony)
+#' getWorkers(colony)@id
 #'
+#' # Specifying own number
 #' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony # we are already at the target
-#' colony <- buildUpColony(colony, nWorkers = 150)
-#' colony # increasing the target
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony # we are already at the target
-#' colony <- buildUpColony(colony, nWorkers = 100, new = TRUE)
-#' colony # adding completely new workers & drones
+#' getWorkers(colony)@id
+#' # we got new workers since new = TRUE
 #'
-#' # Using functions
+#' colony <- buildUpColony(colony, nWorkers = 100, new = FALSE)
+#' getWorkers(colony)@id
+#' # we did NOT get new workers since new = FALSE and we were at the target of 100
+#'
+#' colony <- buildUpColony(colony, nWorkers = 150, new = FALSE)
+#' getWorkers(colony)@id
+#' # we got additional workers since new = FALSE and we were NOT at the target of 150
+#'
+#' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 100)
 #' }
@@ -493,7 +509,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #'
-#' # Using functions in simParamBee
+#' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
 #' colony <- createColony(queen = basePop[2], fathers = drones)
@@ -501,7 +517,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUpColony(colony)
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
-                          new = FALSE, exact = FALSE, resetEvents = FALSE,
+                          new = TRUE, exact = FALSE, resetEvents = FALSE,
                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -553,9 +569,6 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
     colony <- resetEvents(colony)
   }
   colony@production <- TRUE
-  # TODO: call some sort of finalise function that will guide what happens next
-  #       with the colony?
-
   validObject(colony)
   return(colony)
 }
@@ -1050,10 +1063,10 @@ removeDrones <- function(colony, p = 1, use = "rand") {
 #' remnants[[1]]
 #' resetEvents(remnants)[[1]]
 #'
-#' (tmp <- supersedeColony(colony1)) # TODO: do we still get production if we have supersedure?
+#' (tmp <- supersedeColony(colony1))
 #' resetEvents(tmp)
 #'
-#' (tmp <- supersedeColonies(apiary)) # TODO: do we still get production if we have supersedure?
+#' (tmp <- supersedeColonies(apiary))
 #' tmp[[1]]
 #' resetEvents(tmp)[[1]]
 #'
@@ -1104,7 +1117,6 @@ resetEvents <- function(x, collapse = NULL) {
 #'   one is selected at random, mated, and promoted to the queen of the colony.
 #'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
 #'   producing progeny at a later stage.
-#'   TODO: is this correct (about destroy)?
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
@@ -1147,14 +1159,16 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (any(!isDrone(fathers))) {
     stop("Individuals in fathers must be drones!")
   }
-  # Pick one virgin queen that will prevail
-  # TODO: should this use argument be really random? Do we want to make it into argument of this function?
+  # TODO: Choosing the queen in supersedure: at random or something else
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   # TODO: do we take all fathers or just a 'default/nFathers' or some other number?
   #       imagine someone providing 100 or 1000 fathers - should we just take them all?
   #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
   #       but throw a warning if a user provided more fathers? If the user specifies
   #       nFathers, then we take as many as he/she wants
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/157
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/98
   queen <- crossVirginQueen(
     pop = virginQueen, fathers,
     simParamBee = simParamBee
@@ -1242,7 +1256,9 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 
   nWorkers <- nWorkers(colony)
   nWorkersSwarm <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make type/use of pulling an argument?
+
+  # TODO: Add use="something" to select pWorkers that swarm
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/160
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1263,11 +1279,10 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   remnantColony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
   remnantColony@last_event <- "remnant"
@@ -1323,11 +1338,10 @@ supersedeColony <- function(colony, year = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   colony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE
@@ -1380,7 +1394,8 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-  # TODO: pulling is random by default, should we make the type/use of pulling an argument?
+  # TODO: Split colony splits at random by default, but we could make it as a function of some parameters
+  #   https://github.com/HighlanderLab/SIMplyBee/issues/179
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
@@ -1393,11 +1408,10 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   # Could consider that a non-random one prevails (say the more aggressive one),
   #   by creating many virgin queens and then picking the one with highest
   #   gv/pheno for competition or some other criteria (patri-lineage)
-  # TODO: add the exact = 1 argument in createVirginQueens() once available
   splitColony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
-  )$virginQueens
+  )
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
   remnantColony@last_event <- "remnant"
@@ -1506,11 +1520,7 @@ setLocation <- function(x, location) {
 #' @examples
 #' # TODO
 #'
-# TODO: Set pheno to virgin queens as well? Add caste argument here, similarly as
-#       in getColonyGv()?
-# TODO: what if caste phenos have already been set? need a sensible default!!!
-# TODO: while ... will work for all arguments of setPheno() (such as h2, H2, ...)
-#       it will not work for simParam - so best to add all these arguments directly?
+# TODO:
 # See
 #     https://github.com/HighlanderLab/SIMplyBee/issues/26
 #     https://github.com/HighlanderLab/SIMplyBee/issues/28
@@ -1531,4 +1541,42 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   }
   validObject(colony)
   return(colony)
+}
+
+#' @rdname combineColony
+#' @title Combine two colony
+#'
+#' @description Level 2 function that combines two colony objects into one.
+#'   For example, to combine a weak and a strong colony. Workers and drones
+#'   of the weak colony are added to the strong. User has to remove the weak
+#'.  colony.
+#'
+#' @param strong \code{\link{Colony-class}}
+#' @param weak \code{\link{Colony-class}}
+#'
+#' @return a colony \code{\link{Colony-class}} that combines workers and drones
+#'   of both colony.
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- asVirginQueen(newPop(founderGenomes))
+#'
+#' drones <- createDrones(x = base[1], nInd = 30)
+#' col1 <- createColony(queen = base[2], fathers = drones[1:15] )
+#' col2 <- createColony(queen = base[3], fathers = drones[16:30])
+#'
+#' col2 <- combineColony(strong = col1, weak = col2)
+#' rm(col1)
+#' @export
+combineColony <- function(strong, weak) {
+  if (!isColony(strong)) {
+    stop("Argument strong must be a Colony class object!")
+  }
+  if (!isColony(weak)) {
+    stop("Argument weak must be a Colony class object!")
+  }
+  strong@workers <- c(strong@workers, weak@workers)
+  strong@drones <- c(strong@drones, weak@drones)
+  return(strong)
 }
