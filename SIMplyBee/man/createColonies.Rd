@@ -59,7 +59,7 @@ When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- asVirginQueen(newPop(founderGenomes))
+basePop <- createVirginQueens(founderGenomes)
 
 # Create 2 empty (NULL) colonies
 apiary <- createColonies(n = 2)
