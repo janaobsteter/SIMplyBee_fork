@@ -265,6 +265,9 @@ SimParamBee <- R6Class(
     #' SP$pedigree
     #' SP$caste
     changeCaste = function(id, caste) {
+      if (!is.character(id)) {
+        stop("Argument id must be a character!")
+      }
       private$.caste[id] = caste[1]
       invisible(self)
     }
