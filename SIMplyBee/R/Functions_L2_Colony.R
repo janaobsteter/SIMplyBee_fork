@@ -573,6 +573,45 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
   return(colony)
 }
 
+#' @rdname downsizeColony
+#' @title Reduce number of workers and remove all drones and virgin queens from hive
+#'
+#' @description Level 2 function that downsizes colony by removing a percentage of
+#'   workers, all drones and all virgin queens.  Usually in the autumn, such an event occurs
+#'   in preparation for the winter months.
+#'
+#' @param colony \code{\link{Colony-class}}
+#' @param p numeric, percentage of workers to remove from the colony
+#' @param use character, all the options provided by \code{\link{selectInd}};
+#'   it guides the selection of workers that will be removed
+#'
+#' @return \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#' colony <- buildUpColony(colony)
+#' colony <- addVirginQueens(x = colony, nInd = 10)
+#' colony
+#' colony <- downsizeColony(colony = colony)
+#' colony
+#'
+#' # TODO: FIND REFERENCES for defaults
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/197
+#' @export
+downsizeColony <- function(colony, p = 0.85, use = "rand") {
+  if (!isColony(colony)) {
+    stop("Argument colony must be a Colony class object!")
+  }
+  colony <- removeWorkers(colony = colony, p = p, use = "rand")
+  colony <- removeDrones(colony = colony, p = 1)
+  colony <- removeVirginQueens(colony = colony, p = 1)
+  colony@production <- FALSE
+  validObject(colony)
+  return(colony)
+}
+
 #' @rdname replaceVirginQueens
 #' @title Replace a proportion of virgin queens with new ones
 #'
@@ -871,25 +910,30 @@ removeQueen <- function(colony) {
 #' colony
 #' getVirginQueens(colony)
 #' @export
-removeVirginQueens <- function(colony, p = 1, use = "rand") {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if (p > 1) {
-    stop("p must not be higher than 1!")
-  } else if (p < 0) {
-    stop("p must not be less than 0!")
-  } else if (p == 1) {
-    colony@virginQueens <- NULL
+removeVirginQueens <- function(x, p = 1, use = "rand") {
+  if (isColony(x)) {
+    if (p > 1) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    } else if (p == 1) {
+      x@virginQueens <- NULL
+    } else {
+      nVirginQueensNew <- round(nVirginQueens(x) * (1 - p))
+      x@virginQueens <- selectInd(
+        pop = x@virginQueens,
+        nInd = nVirginQueensNew, use = use)
+    }
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    for (colony in seq_len(nCol)) {
+      x[[colony]] <- removeVirginQueens(x = x[[colony]], p = p, use = use)
+    }
   } else {
-    n <- round(nVirginQueens(colony) * (1 - p))
-    colony@virginQueens <- selectInd(
-      pop = colony@virginQueens,
-      nInd = n, use = use
-    )
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  validObject(colony)
-  return(colony)
+  validObject(x)
+  return(x)
 }
 
 #' @rdname removeWorkers
@@ -898,7 +942,7 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' @description Level 2 function that removes a proportion of workers, for
 #'   example, as a preparation for winter.
 #'
-#' @param colony \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that will stay when \code{p < 1}
@@ -918,33 +962,38 @@ removeVirginQueens <- function(colony, p = 1, use = "rand") {
 #' colony
 #' getWorkers(colony)@id
 #'
-#' colony <- removeWorkers(colony, p = 0.5)
+#' colony <- removeWorkers(x = colony, p = 0.5)
 #' colony
 #' getWorkers(colony)@id
 #'
-#' colony <- removeWorkers(colony, p = 1.0)
+#' colony <- removeWorkers(x = colony, p = 1.0)
 #' colony
 #' getWorkers(colony)
 #' @export
-removeWorkers <- function(colony, p = 1, use = "rand") {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if (p > 1) {
-    stop("p must not be higher than 1!")
-  } else if (p < 0) {
-    stop("p must not be less than 0!")
-  } else if (p == 1) {
-    colony@workers <- NULL
+removeWorkers <- function(x, p = 1, use = "rand") {
+  if (isColony(x)) {
+      if (p > 1) {
+        stop("p must not be higher than 1!")
+      } else if (p < 0) {
+        stop("p must not be less than 0!")
+      } else if (p == 1) {
+        x@workers <- NULL
+      } else {
+        nWorkersNew <- round(nWorkers(x) * (1 - p))
+        x@workers <- selectInd(
+                               pop = x@workers,
+                               nInd = nWorkersNew, use = use)
+      }
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    for (colony in seq_len(nCol)) {
+      x[[colony]] <- removeWorkers(x = x[[colony]], p = p, use = use)
+    }
   } else {
-    nWorkersNew <- round(nWorkers(colony) * (1 - p))
-    colony@workers <- selectInd(
-      pop = colony@workers,
-      nInd = nWorkersNew, use = use
-    )
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  validObject(colony)
-  return(colony)
+  validObject(x)
+  return(x)
 }
 
 #' @rdname removeDrones
@@ -980,25 +1029,30 @@ removeWorkers <- function(colony, p = 1, use = "rand") {
 #' colony
 #' getDrones(colony)
 #' @export
-removeDrones <- function(colony, p = 1, use = "rand") {
-  if (!isColony(colony)) {
-    stop("Argument colony must be a Colony class object!")
-  }
-  if (p > 1) {
-    stop("p must not be higher than 1!")
-  } else if (p < 0) {
-    stop("p must not be less than 0!")
-  } else if (p == 1) {
-    colony@drones <- NULL
+removeDrones <- function(x, p = 1, use = "rand") {
+  if (isColony(x)) {
+    if (p > 1) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    } else if (p == 1) {
+      x@drones <- NULL
+    } else {
+      nDronesNew <- round(nDrones(x) * (1 - p))
+      x@drones <- selectInd(
+        pop = x@drones,
+        nInd = nDronesNew, use = use)
+    }
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    for (colony in seq_len(nCol)) {
+      x[[colony]] <- removeDrones(x = x[[colony]], p = p, use = use)
+    }
   } else {
-    nDronesNew <- round(nDrones(colony) * (1 - p))
-    colony@drones <- selectInd(
-      pop = colony@drones,
-      nInd = nDronesNew, use = use
-    )
+    stop("Argument x must be a Colony or Colonies class object!")
   }
-  validObject(colony)
-  return(colony)
+  validObject(x)
+  return(x)
 }
 
 #' @rdname resetEvents
