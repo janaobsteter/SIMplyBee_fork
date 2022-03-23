@@ -83,11 +83,8 @@ SimParamBee <- R6Class(
 
     #' @field nFathers numeric or function, default number of drones
     #'   a queen mates with; if a function, it will be passed to other
-    #'   functions and work with the internals of those functions - therefore
-    #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could work with colony internals or not, and return a
-    #'   single value. The default value is only to have some fathers to work with -
-    #'   you will want to change this!
+    #'   functions and work with the internals of those functions; see
+    #'   \code{\link{nFathersPoisson}} and \code{\link{nFathersTruncPoisson}}
     nFathers = "numericOrFunction",
 
     #' @field pSwarm numeric or a function, the percentage of workers that leave
@@ -122,7 +119,7 @@ SimParamBee <- R6Class(
     #' @param nWorkers see \code{\link{SimParamBee}} field \code{nWorkers}
     #' @param nDrones see \code{\link{SimParamBee}} field \code{nDrones}
     #' @param nVirginQueens see \code{\link{SimParamBee}} field \code{nVirginQueens}
-    #' @param nFathers see \code{\link{SimParamBee}} field \code{nVirginQueens}
+    #' @param nFathers see \code{\link{SimParamBee}} field \code{nFathers}
     #' @param pSwarm see \code{\link{SimParamBee}} field \code{pSwarm}
     #' @param pSplit see \code{\link{SimParamBee}} field \code{pSplit}
     #' @param csdChr integer, chromosome that will carry the csd locus, by
@@ -403,3 +400,41 @@ isSimParamBee <- function(x) {
   ret <- is(x, class2 = "SimParamBee")
   return(ret)
 }
+
+# nFunctions ----
+
+#' @rdname nFathersPoisson
+#' @title Functions to sample the number of fathers
+#'
+#' @description Functions to sample the number of fathers when
+#'   \code{nFathers = NULL} in various functions
+#'
+#' @param n integer, number of samples
+#' @param lambda numeric, average number of fathers
+#'
+#' @details \code{nFathersPoisson()} samples from a Poisson distribution, which
+#'   can return a vale 0 (that would lead to a failed queen mating), while
+#'   \code{nFathersTruncPoisson} samples from a truncated Poisson distribution
+#'   (truncated at zero) to avoid failed matings
+#'
+#' @return numeric, number of fathers
+#'
+#' @examples
+#' nFathersPoisson()
+#' hist(nFathersPoisson(n = 100))
+#'
+#' nFathersTruncPoisson()
+#' hist(nFathersTruncPoisson(n = 100))
+#' @export
+nFathersPoisson <- function(n = 1, lambda = 15) {
+  rpois(n = n, lambda = lambda)
+}
+
+#' @describeIn nFathersPoisson Functions to sample the number of fathers
+#' @export
+nFathersTruncPoisson <- function(n = 1, lambda = 15) {
+  extraDistr::rtpois(n = n, lambda = lambda, a = 0)
+}
+
+
+
