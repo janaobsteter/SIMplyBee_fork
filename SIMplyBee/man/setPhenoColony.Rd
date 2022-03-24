@@ -28,4 +28,10 @@ Level 2 function that sets phenotypes for all individuals in
 \examples{
 # TODO
 
+# TODO:
+# See
+#     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#     https://github.com/HighlanderLab/SIMplyBee/issues/44
 }

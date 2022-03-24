@@ -4,7 +4,7 @@
 \alias{getCasteId}
 \title{Get IDs of individuals of a caste, or ID of all members of colony}
 \usage{
-getCasteId(x, caste = "all")
+getCasteId(x, caste = "all", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -12,6 +12,8 @@ getCasteId(x, caste = "all")
 
 \item{caste}{character, "queen", "fathers", "virginQueens", "workers",
 "drones", or "all"}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
@@ -42,7 +44,7 @@ colony1 <- addVirginQueens(colony1, nInd = 4)
 colony1 <- addDrones(colony1, nInd = 2)
 colony2 <- addWorkers(colony2, nInd = 20)
 
-apiary = c(colony1, colony2)
+apiary <- c(colony1, colony2)
 
 getCasteId(x = drones)
 getCasteId(x = colony1)
@@ -54,16 +56,21 @@ getCasteId(x = apiary, caste = "virginQueens")
 (tmpC <- getCaste(colony1))
 (tmpI <- getCasteId(colony1))
 tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
-head(tmp);tail(tmp)
+head(tmp)
+tail(tmp)
 
 (tmpC <- getCaste(apiary))
 (tmpI <- getCasteId(apiary))
 (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
-tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
-                                  fixed = TRUE),
-                     FUN = function(z) z[[1]])
-head(tmp);tail(tmp)
-
+tmp$colony <- sapply(
+  X = strsplit(
+    x = rownames(tmp), split = ".",
+    fixed = TRUE
+  ),
+  FUN = function(z) z[[1]]
+)
+head(tmp)
+tail(tmp)
 }
 \seealso{
 \code{\link{getCaste}}

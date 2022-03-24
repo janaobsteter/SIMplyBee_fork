@@ -62,7 +62,7 @@ TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
 This function turns on production in the colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -96,14 +96,19 @@ nWorkersFun <- function(colony) {
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
-colony <- createColony(queen = basePop[2], fathers = drones)
+
+# Create new drones and a new colony
+drones <- createDrones(x = basePop[1], nInd = 5)
+colony <- createColony(queen = basePop[3], fathers = drones)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 
 # Store a function or a value in the SP object
 SP$nWorkers <- nWorkersFun
 SP$nDrones <- nDronesFun
-colony <- createColony(queen = basePop[2], fathers = drones)
+# Create new drones and a new colony
+drones <- createDrones(x = basePop[1], nInd = 5)
+colony <- createColony(queen = basePop[4], fathers = drones)
 buildUpColony(colony)
 buildUpColony(colony)
 }

@@ -22,35 +22,28 @@ Level 2 function that combines two colony objects into one or
   colonies) from the workspace.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 40)
-col1 <- createColony(queen = basePop[2], fathers = drones[1:10] )
-col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
-col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-col1
-col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
-col2
-col1 <- combine(strong = col1, weak = col2)
-col1
-rm(col2)
-
+drones <- createDrones(x = basePop[1], nInd = 70)
 col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
 col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
-col3 <- createColony(queen = basePop[4], fathers = drones[21:30])
-col4 <- createColony(queen = basePop[5], fathers = drones[31:40])
 col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
+col1 <- combine(strong = col1, weak = col2)
+rm(col2)
+
+col1 <- createColony(queen = basePop[4], fathers = drones[21:30])
+col2 <- createColony(queen = basePop[5], fathers = drones[31:40])
+col3 <- createColony(queen = basePop[6], fathers = drones[41:50])
+col4 <- createColony(queen = basePop[7], fathers = drones[51:60])
+col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
+col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
-col4 <- buildUpColony(colony = col4, nWorkers =  20, nDrones =  2)
-colsStrong <- c(col1, col3)
-colsStrong[[1]]
-colsStrong[[2]]
+col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
+colStrong <- c(col1, col3)
 colsWeak <- c(col2, col4)
-cols <- combine(strong = colsStrong, weak = colsWeak)
-cols[[1]]
-cols[[2]]
+cols <- combine(strong = colStrong, weak = colsWeak)
 rm(colsWeak)
 }

@@ -19,12 +19,12 @@ it guides the selection of workers that will be removed}
 \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 }
 \description{
-Level 3 function that downsizes colonies by removing a percentage
-  of workers, all drones and all virgin queens. Usually in the autumn, such
-  an event occurs in preparation for the winter months.
+Level 3 function that downsizes colonies by removing a percentage of
+  workers, all drones and all virgin queens. Usually in the autumn, such an event occurs
+  in preparation for the winter months.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 

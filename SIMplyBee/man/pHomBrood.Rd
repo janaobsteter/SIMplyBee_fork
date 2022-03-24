@@ -22,11 +22,11 @@ Level 0 function that returns the theoretical percentage of
 homozygous brood of a queen in a colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 15)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1, nInd = 10)
@@ -38,7 +38,7 @@ colony2 <- addDrones(colony2, nInd = 20)
 try(pHomBrood(basePop[2]))
 
 # Mated queen
-pHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+pHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
 
 # Queen of the colony
 pHomBrood(getQueen(colony1))

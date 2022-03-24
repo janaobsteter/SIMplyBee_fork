@@ -4,10 +4,12 @@
 \alias{isQueen}
 \title{Is individual a queen}
 \usage{
-isQueen(x)
+isQueen(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical

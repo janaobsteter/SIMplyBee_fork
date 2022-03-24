@@ -117,7 +117,6 @@ GRMs$indiv[dI, wI]
 
 GRMs$genome[vG, wG]
 GRMs$indiv[vI, wI]
-
 }
 \references{
 Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between

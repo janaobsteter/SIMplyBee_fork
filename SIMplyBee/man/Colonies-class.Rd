@@ -163,7 +163,6 @@ getId(apiary2)
 apiary2[c("4", "5")] <- apiary1
 getId(apiary2)
 try(apiary2[c("4", "5")] <- apiary1)
-
 }
 \seealso{
 \code{\link{createColonies}}

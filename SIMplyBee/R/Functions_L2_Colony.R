@@ -471,7 +471,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' @return \code{\link{Colony-class}} with workers and drones replaced or added
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -505,14 +505,19 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' colony <- createColony(queen = basePop[2], fathers = drones)
+#'
+#' # Create new drones and a new colony
+#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' colony <- createColony(queen = basePop[3], fathers = drones)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #'
 #' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
-#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' # Create new drones and a new colony
+#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' colony <- createColony(queen = basePop[4], fathers = drones)
 #' buildUpColony(colony)
 #' buildUpColony(colony)
 #' @export
@@ -1082,9 +1087,9 @@ removeDrones <- function(x, p = 1, use = "rand") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones)
-#' colony2 <- createColony(queen = basePop[3], fathers = drones)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1
 #' apiary <- c(colony1, colony2)
 #'
@@ -1508,11 +1513,11 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' @return a combined \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 40)
+#' drones <- createDrones(x = basePop[1], nInd = 70)
 #' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
 #' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
@@ -1523,10 +1528,10 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col1
 #' rm(col2)
 #'
-#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
-#' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
-#' col3 <- createColony(queen = basePop[4], fathers = drones[21:30])
-#' col4 <- createColony(queen = basePop[5], fathers = drones[31:40])
+#' col1 <- createColony(queen = basePop[4], fathers = drones[21:30])
+#' col2 <- createColony(queen = basePop[5], fathers = drones[31:40])
+#' col3 <- createColony(queen = basePop[6], fathers = drones[41:50])
+#' col4 <- createColony(queen = basePop[7], fathers = drones[51:60])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
 #' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)

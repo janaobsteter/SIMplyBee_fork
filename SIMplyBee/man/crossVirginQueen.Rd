@@ -33,11 +33,11 @@ Level 1 function that crossses (mates) a virgin queen to a group
   mated drones (fathers) so we can later create progeny as needed.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 20)
 
 virginQueen1 <- basePop[2]
 (matedQueen1 <- crossVirginQueen(
@@ -60,8 +60,8 @@ nFathers(matedQueen2)
 getFathers(matedQueen2)@id
 
 matedQueens <- crossVirginQueen(
-  pop = c(virginQueen1, virginQueen2),
-  fathers = drones[1:10], nFathers = 2
+  pop = c(basePop[4], basePop[5]),
+  fathers = drones[11:15], nFathers = 2
 )
 matedQueens
 isQueenMated(matedQueens)
@@ -69,11 +69,12 @@ nFathers(matedQueens)
 getFathers(matedQueens)
 
 # Inbred mated queen (mated with her own sons)
-matedQueen3 <- crossVirginQueen(pop = basePop[1],
-                                fathers = drones[1:6])
-# Check the theretical homozygosity
+matedQueen3 <- crossVirginQueen(
+  pop = basePop[1],
+  fathers = drones[16:20]
+)
+# Check the theoretical homozygosity
 matedQueen3@misc[[1]]$pHomBrood
-
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

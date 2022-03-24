@@ -16,11 +16,11 @@ logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 Level 0 function that returns colony collapse status.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 20)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony
 hasCollapsed(colony)
@@ -31,8 +31,8 @@ tmp <- collapseColony(colony)
 tmp
 hasCollapsed(tmp)
 
-colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 apiary <- c(colony1, colony2)
 apiary <- buildUpColonies(apiary, nWorkers = 100)
 tmp <- collapseColonies(apiary)

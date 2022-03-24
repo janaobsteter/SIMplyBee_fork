@@ -40,5 +40,4 @@ getId(removeColonies(apiary, ID = c("5", "6")))
 
 getId(removeColonies(apiary, ID = 5))
 getId(removeColonies(apiary, ID = "9"))
-
 }

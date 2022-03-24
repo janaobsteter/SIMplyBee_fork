@@ -35,4 +35,6 @@ SIMplyBee:::isGenoHeterozygous(tmp)
 (tmp <- getCsdGeno(getWorkers(colony1)))
 SIMplyBee:::isGenoHeterozygous(tmp)
 
+# Not exporting this function, since its just a helper and quite specific for
+#   our csd locus implementation
 }

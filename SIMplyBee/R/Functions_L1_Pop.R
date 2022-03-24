@@ -329,10 +329,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     }
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
     ret@sex[] <- "F"
-    ret <- setMisc(x = ret, node = "caste", value = "V")
-    if (simParamBee$isTrackPed) {
-      simParamBee$changeCaste(id = ret@id, caste = "V")
-    }
+    simParamBee$changeCaste(id = ret@id, caste = "V")
     if (!is.null(year)) {
       ret <- setQueensYearOfBirth(x = ret, year = year)
     }
@@ -349,10 +346,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
   } else if (isMapPop(x)) {
     ret <- newPop(x)
     ret@sex[] <- "F"
-    ret <- setMisc(x = ret, node = "caste", value = "V")
-    if (simParamBee$isTrackPed) {
-      simParamBee$changeCaste(id = ret@id, caste = "V")
-    }
+    simParamBee$changeCaste(id = ret@id, caste = "V")
   } else {
     stop("Argument x must be a Map-Pop or Colony or Colonies class object!")
   }
@@ -481,10 +475,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       ret$nHomBrood <- NA
     }
     ret$workers@sex[] <- "F"
-    ret$workers <- setMisc(x = ret$workers, node = "caste", value = "W")
-    if (simParamBee$isTrackPed) {
-      simParamBee$addToCaste(id = ret$workers@id, caste = "W")
-    }
+    simParamBee$addToCaste(id = ret$workers@id, caste = "W")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -800,10 +791,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # Diploid version - a hack, but it works
     ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     ret@sex[] <- "M"
-    ret <- setMisc(x = ret, node = "caste", value = "D")
-    if (simParamBee$isTrackPed) {
-      simParamBee$addToCaste(id = ret@id, caste = "D")
-    }
+    simParamBee$addToCaste(id = ret@id, caste = "D")
   } else if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -825,10 +813,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
       simParam = simParamBee
     )
     ret@sex[] <- "M"
-    ret <- setMisc(x = ret, node = "caste", value = "D")
-    if (simParamBee$isTrackPed) {
-      simParamBee$addToCaste(id = ret@id, caste = "D")
-    }
+    simParamBee$addToCaste(id = ret@id, caste = "D")
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -1168,11 +1153,11 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' brood produced and the theoretical percentage of homozygous brood.
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #'
 #' virginQueen1 <- basePop[2]
 #' (matedQueen1 <- crossVirginQueen(
@@ -1195,8 +1180,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' getFathers(matedQueen2)@id
 #'
 #' matedQueens <- crossVirginQueen(
-#'   pop = c(virginQueen1, virginQueen2),
-#'   fathers = drones[1:10], nFathers = 2
+#'   pop = c(basePop[4], basePop[5]),
+#'   fathers = drones[11:15], nFathers = 2
 #' )
 #' matedQueens
 #' isQueenMated(matedQueens)
@@ -1206,9 +1191,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' # Inbred mated queen (mated with her own sons)
 #' matedQueen3 <- crossVirginQueen(
 #'   pop = basePop[1],
-#'   fathers = drones[1:6]
+#'   fathers = drones[16:20]
 #' )
-#' # Check the theretical homozygosity
+#' # Check the theoretical homozygosity
 #' matedQueen3@misc[[1]]$pHomBrood
 #' @export
 crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
@@ -1233,10 +1218,7 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   # skipping "if (is.function(nFathers))" since we use it below or pass it to
   # pullDroneGroupsFromDCA
   nVirginQueen <- nInd(pop)
-  pop <- setMisc(x = pop, node = "caste", value = "Q")
-  if (simParamBee$isTrackPed) {
-    simParamBee$changeCaste(id = pop@id, caste = "Q")
-  }
+  simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {
     if (is.function(nFathers)) {
       n <- nFathers()
@@ -1246,10 +1228,7 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
     # TODO: In crossVirginQueens we select drones for mating at random, should we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
-    fathers <- setMisc(x = fathers, node = "caste", value = "F")
-    if (simParamBee$isTrackPed) {
-      simParamBee$changeCaste(id = fathers@id, caste = "F")
-    }
+    simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
     fathers <- pullDroneGroupsFromDCA(
@@ -1258,10 +1237,7 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
       nFathers = nFathers
     )
     for (queen in seq_len(nVirginQueen)) {
-      fathers[[queen]] <- setMisc(x = fathers[[queen]], node = "caste", value = "F")
-      if (simParamBee$isTrackPed) {
-        simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
-      }
+      simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
       pop@misc[[queen]]$fathers <- fathers[[queen]]
     }
   }
