@@ -57,7 +57,6 @@
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
-#'
 #' @export
 createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
                            nFathers = NULL, nDronesPerQueen = 100,
@@ -88,17 +87,21 @@ createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
       DCA <- createDrones(x = tmp$remainder, nInd = nDronesPerQueen)
       fatherPackages <- pullDroneGroupsFromDCA(DCA, n = n, nFathers = nFathers)
       for (colony in seq_len(n)) {
-        ret[[colony]] <- createColony(queen = queens[colony],
-                                      fathers = fatherPackages[[colony]],
-                                      yearOfBirth = yearOfBirth,
-                                      simParamBee = simParamBee)
+        ret[[colony]] <- createColony(
+          queen = queens[colony],
+          fathers = fatherPackages[[colony]],
+          yearOfBirth = yearOfBirth,
+          simParamBee = simParamBee
+        )
       }
     } else {
       virginQueens <- selectInd(pop, nInd = n, use = "rand")
       for (colony in seq_len(n)) {
-        ret[[colony]] <- createColony(virginQueens = virginQueens[colony],
-                                      yearOfBirth = yearOfBirth,
-                                      simParamBee = simParamBee)
+        ret[[colony]] <- createColony(
+          virginQueens = virginQueens[colony],
+          yearOfBirth = yearOfBirth,
+          simParamBee = simParamBee
+        )
       }
     }
   } else if (!is.null(n)) {
@@ -158,7 +161,6 @@ createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
-#'
 #' @export
 selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
@@ -246,7 +248,6 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' tmp <- pullColonies(apiary, p = 0.75)
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
-#'
 #' @export
 pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
@@ -316,7 +317,6 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'
 #' getId(removeColonies(apiary, ID = 5))
 #' getId(removeColonies(apiary, ID = "9"))
-#'
 #' @export
 removeColonies <- function(colonies, ID) {
   if (!isColonies(colonies)) {
@@ -390,8 +390,12 @@ removeColonies <- function(colonies, ID) {
 #' apiary[[1]] # adding completely new workers & drones
 #'
 #' # Using functions
-#' nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
-#' nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+#' nWorkersFun <- function(colony) {
+#'   rpois(n = 1, lambda = 100)
+#' }
+#' nDronesFun <- function(colony) {
+#'   rpois(n = 1, lambda = 15)
+#' }
 #' apiary <- c(colony1, colony2)
 #' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' tmp[[1]]
@@ -410,7 +414,6 @@ removeColonies <- function(colonies, ID) {
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
 #' tmp[[2]]
-#'
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                             new = FALSE, exact = FALSE,
@@ -429,13 +432,15 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- buildUpColony(colony = colonies[[colony]],
-                                        nWorkers = nWorkers,
-                                        nDrones = nDrones,
-                                        new = new,
-                                        exact = exact,
-                                        resetEvents = resetEvents,
-                                        simParamBee = simParamBee)
+    colonies[[colony]] <- buildUpColony(
+      colony = colonies[[colony]],
+      nWorkers = nWorkers,
+      nDrones = nDrones,
+      new = new,
+      exact = exact,
+      resetEvents = resetEvents,
+      simParamBee = simParamBee
+    )
   }
   validObject(colonies)
   return(colonies)
@@ -517,13 +522,14 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand") {
 #' apiary2[[1]]
 #' apiary2[[2]]
 #'
-#' matedQueens <- crossVirginQueen(pop = basePop[4:5],
-#'                                 fathers = drones[11:20], nFathers = 2)
+#' matedQueens <- crossVirginQueen(
+#'   pop = basePop[4:5],
+#'   fathers = drones[11:20], nFathers = 2
+#' )
 #' apiary3 <- reQueenColonies(apiary, queen = matedQueens)
 #' apiary3
 #' apiary3[[1]]
 #' apiary3[[2]]
-#'
 #' @export
 reQueenColonies <- function(colonies, queens) {
   if (!isColonies(colonies)) {
@@ -540,8 +546,10 @@ reQueenColonies <- function(colonies, queens) {
     stop("Not enough queens provided!")
   }
   for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- reQueenColony(colony = colonies[[colony]],
-                                        queen = queens[colony])
+    colonies[[colony]] <- reQueenColony(
+      colony = colonies[[colony]],
+      queen = queens[colony]
+    )
   }
   validObject(colonies)
   return(colonies)
@@ -582,7 +590,6 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
-#'
 #' @export
 crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -606,12 +613,15 @@ crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA, n = nCol,
-                                           nFathers = nFathers)
+    fatherGroups <- pullDroneGroupsFromDCA(DCA,
+      n = nCol,
+      nFathers = nFathers
+    )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
-                                   fathers = fatherGroups[[colony]],
-                                   simParamBee = simParamBee)
+        fathers = fatherGroups[[colony]],
+        simParamBee = simParamBee
+      )
     }
   }
   validObject(ret)
@@ -635,7 +645,7 @@ crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' founderDrones <- createDrones(x = basePop[1], nInd = 30)
-#' colony1 <- createColony(queen = basePop[2], fathers = founderDrones[ 1:10])
+#' colony1 <- createColony(queen = basePop[2], fathers = founderDrones[1:10])
 #' colony2 <- createColony(queen = basePop[3], fathers = founderDrones[11:20])
 #' colony3 <- createColony(queen = basePop[4], fathers = founderDrones[21:30])
 #' apiary <- c(colony1, colony2, colony3)
@@ -648,7 +658,6 @@ crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
 #' hasCollapsed(apiaryLost)
 #' apiaryLeft <- tmp$remainingColonies
 #' hasCollapsed(apiaryLeft)
-#'
 #' @export
 collapseColonies <- function(colonies) {
   if (!isColonies(colonies)) {
@@ -701,7 +710,6 @@ collapseColonies <- function(colonies) {
 #' tmp$remnants[[1]]
 #' tmp$remnants[[2]]
 #' hasSwarmed(tmp$remnants)
-#'
 #' @export
 swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -715,11 +723,15 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(swarms = createColonies(),
-                remnants = createColonies())
+    ret <- list(
+      swarms = createColonies(),
+      remnants = createColonies()
+    )
   } else {
-    ret <- list(swarms = createColonies(n = nCol),
-                remnants = createColonies(n = nCol))
+    ret <- list(
+      swarms = createColonies(n = nCol),
+      remnants = createColonies(n = nCol)
+    )
     for (colony in seq_len(nCol)) {
       tmp <- swarmColony(colonies[[colony]], p = p, year = year)
       ret$swarms[[colony]] <- tmp$swarm
@@ -762,7 +774,6 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 #' apiary[[1]]
 #' apiary[[2]]
 #' hasSuperseded(apiary)
-#'
 #' @export
 supersedeColonies <- function(colonies, year = NULL) {
   if (!isColonies(colonies)) {
@@ -774,7 +785,8 @@ supersedeColonies <- function(colonies, year = NULL) {
   } else {
     for (colony in seq_len(nCol)) {
       colonies[[colony]] <- supersedeColony(colonies[[colony]],
-                                            year = year)
+        year = year
+      )
     }
   }
   validObject(colonies)
@@ -820,7 +832,6 @@ supersedeColonies <- function(colonies, year = NULL) {
 #' tmp$remnants[[1]]
 #' tmp$remnants[[2]]
 #' hasSplit(tmp$remnants)
-#'
 #' @export
 splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -834,11 +845,15 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
-    ret <- list(splits = createColonies(),
-                remnants = createColonies())
+    ret <- list(
+      splits = createColonies(),
+      remnants = createColonies()
+    )
   } else {
-    ret <- list(splits = createColonies(n = nCol),
-                remnants = createColonies(n = nCol))
+    ret <- list(
+      splits = createColonies(n = nCol),
+      remnants = createColonies(n = nCol)
+    )
     for (colony in seq_len(nCol)) {
       tmp <- splitColony(colonies[[colony]], p = p, year = year)
       ret$splits[[colony]] <- tmp$split
@@ -866,7 +881,6 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 #'
 #' @examples
 #' # TODO
-#'
 #' @export
 # See setPhenoColony() and
 #     https://github.com/HighlanderLab/SIMplyBee/issues/26
@@ -883,8 +897,9 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                         FUN = FUN, ...,
-                                         simParamBee = simParamBee)
+      FUN = FUN, ...,
+      simParamBee = simParamBee
+    )
   }
   validObject(colonies)
   return(colonies)

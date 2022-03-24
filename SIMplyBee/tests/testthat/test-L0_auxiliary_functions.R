@@ -79,7 +79,7 @@ test_that("nDrones", {
   colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 
   expect_equal(nDrones(colony1), 0)
-  colony1 <- addDrones(colony1, nInd =  5)
+  colony1 <- addDrones(colony1, nInd = 5)
   colony2 <- addDrones(colony2, nInd = 10)
   expect_equal(nDrones(colony1), 5)
   expect_equal(nDrones(colony2), 10)
@@ -103,9 +103,13 @@ test_that("isQueenMated", {
   expect_equal(isQueenMated(apiary), c("2" = TRUE, "3" = TRUE, `NA` = FALSE))
   expect_false(isQueenMated(removeQueen(colony1)))
   expect_false(isQueenMated(supersedeColony(colony2)))
-  expect_equal(isQueenMated(c(getQueen(colony1), getQueen(colony2),
-                        getVirginQueens(colony3))),
-               c(TRUE, TRUE, FALSE))
+  expect_equal(
+    isQueenMated(c(
+      getQueen(colony1), getQueen(colony2),
+      getVirginQueens(colony3)
+    )),
+    c(TRUE, TRUE, FALSE)
+  )
 })
 
 test_that("getCsd", {
@@ -123,12 +127,12 @@ test_that("getCsd", {
   apiary <- c(colony1, colony2)
 
   haplo <- getCsdAlleles(getQueen(colony1))
-  geno  <- getCsdGeno(getQueen(colony1))
+  geno <- getCsdGeno(getQueen(colony1))
   expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
   # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
 
   haplo <- getCsdAlleles(colony1)$queen
-  geno  <- getCsdGeno(colony1)$queen
+  geno <- getCsdGeno(colony1)$queen
   expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
   # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
 
@@ -139,13 +143,16 @@ test_that("getCsd", {
 })
 
 test_that("isGenoHeterozygous", {
-  geno <- matrix(data = c(0, 1, 2,
-                          0, 0, 0,
-                          2, 2, 2),
-                 nrow = 3, byrow = TRUE)
+  geno <- matrix(
+    data = c(
+      0, 1, 2,
+      0, 0, 0,
+      2, 2, 2
+    ),
+    nrow = 3, byrow = TRUE
+  )
   expect_true(SIMplyBee:::isGenoHeterozygous(geno[1, , drop = FALSE]))
   expect_false(SIMplyBee:::isGenoHeterozygous(geno[2, , drop = FALSE]))
   expect_false(SIMplyBee:::isGenoHeterozygous(geno[3, , drop = FALSE]))
   expect_equal(SIMplyBee:::isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
 })
-

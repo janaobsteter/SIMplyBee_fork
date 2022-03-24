@@ -340,7 +340,8 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- createVirginQueens(x = x[[colony]],
+      ret[[colony]] <- createVirginQueens(
+        x = x[[colony]],
         nInd = nInd, year = year, simParamBee = simParamBee
       )
     }
@@ -447,8 +448,10 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "nHomBrood")
-    workers <- beeCross(queen = getQueen(x), drones = getFathers(x),
-                        nProgeny = nInd, simParamBee = simParamBee)
+    workers <- beeCross(
+      queen = getQueen(x), drones = getFathers(x),
+      nProgeny = nInd, simParamBee = simParamBee
+    )
     if (isCsdActive(simParamBee = simParamBee)) {
       sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
       ret$workers <- workers[sel]
@@ -817,8 +820,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     # keepParents = FALSE means that the queen will be stored as drones' parent,
     #   instead of storing queen's parents
     # Diploid version - a hack, but it works
-    ret <- makeDH(pop = getQueen(x), nDH = nInd, keepParents = FALSE,
-                  simParam = simParamBee)
+    ret <- makeDH(
+      pop = getQueen(x), nDH = nInd, keepParents = FALSE,
+      simParam = simParamBee
+    )
     ret@sex[] <- "M"
     ret <- setMisc(x = ret, node = "caste", value = "D")
     if (simParamBee$isTrackPed) {
@@ -1201,11 +1206,12 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' getFathers(matedQueens)
 #'
 #' # Inbred mated queen (mated with her own sons)
-#' matedQueen3 <- crossVirginQueen(pop = basePop[1],
-#'                                 fathers = drones[1:6])
+#' matedQueen3 <- crossVirginQueen(
+#'   pop = basePop[1],
+#'   fathers = drones[1:6]
+#' )
 #' # Check the theretical homozygosity
 #' matedQueen3@misc[[1]]$pHomBrood
-#'
 #' @export
 crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) {
   # TODO: set nFathers to NULL by default and then grab the value from
@@ -1325,7 +1331,8 @@ setQueensYearOfBirth <- function(x, year) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]]@queen <- setMisc(x = x[[colony]]@queen, node = "yearOfBirth",
+      x[[colony]]@queen <- setMisc(
+        x = x[[colony]]@queen, node = "yearOfBirth",
         value = year
       )
     }
@@ -1430,7 +1437,6 @@ setMisc <- function(x, node, value) {
 #' getMisc(x = basePop, node = "location")
 #'
 #' getMisc(x = basePop)
-#'
 #' @export
 # TODO: move to AlphaSimR - track
 #   https://github.com/gaynorr/AlphaSimR/pull/51

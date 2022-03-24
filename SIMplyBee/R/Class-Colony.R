@@ -59,26 +59,28 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #'
 #' c(apiary, colony3)
 #' c(colony3, apiary)
-#'
 #' @export
-setClass(Class = "Colony",
-         slots = c(id = "characterOrNULL",
-                   location = "numericOrNULL",
-                   queen = "PopOrNULL",
-                   virginQueens = "PopOrNULL",
-                   workers = "PopOrNULL",
-                   drones = "PopOrNULL",
-                   pheno = "matrix",
-                   split = "logical",
-                   #remnant = "",
-                   swarm = "logicalOrNULL",
-                   supersedure = "logicalOrNULL",
-                   #rob = "logical",
-                   collapse = "logicalOrNULL",
-                   production = "logicalOrNULL",
-                   last_event = "character",
-                   misc = "listOrNULL"
-         ))
+setClass(
+  Class = "Colony",
+  slots = c(
+    id = "characterOrNULL",
+    location = "numericOrNULL",
+    queen = "PopOrNULL",
+    virginQueens = "PopOrNULL",
+    workers = "PopOrNULL",
+    drones = "PopOrNULL",
+    pheno = "matrix",
+    split = "logical",
+    # remnant = "",
+    swarm = "logicalOrNULL",
+    supersedure = "logicalOrNULL",
+    # rob = "logical",
+    collapse = "logicalOrNULL",
+    production = "logicalOrNULL",
+    last_event = "character",
+    misc = "listOrNULL"
+  )
+)
 
 #' @describeIn Colony-class Test if x is a Colony class object
 #' @export
@@ -111,76 +113,82 @@ setValidity(Class = "Colony", method = function(object) {
 })
 
 #' @describeIn Colony-class Show colony object
-setMethod(f = "show",
-          signature(object = "Colony"),
-          definition = function(object) {
-            cat("An object of class", classLabel(class(object)), "\n")
-            cat("Id:", getId(object),"\n")
-            cat("Location:", getLocation(object),"\n")
-            cat("Queen:", getId(object@queen),"\n")
-            cat("Number of fathers:", nFathers(object), "\n")
-            cat("Number of virgin queens:", nVirginQueens(object),"\n")
-            cat("Number of workers:", nWorkers(object), "\n")
-            cat("Number of drones:", nDrones(object),"\n")
-            cat("Has split:", object@split, "\n")
-            cat("Has swarmed:", object@swarm, "\n")
-            cat("Has superseded:", object@supersedure, "\n")
-            cat("Has collapsed:", object@collapse, "\n")
-            cat("Is productive:", object@production, "\n")
-            invisible()
-          }
+setMethod(
+  f = "show",
+  signature(object = "Colony"),
+  definition = function(object) {
+    cat("An object of class", classLabel(class(object)), "\n")
+    cat("Id:", getId(object), "\n")
+    cat("Location:", getLocation(object), "\n")
+    cat("Queen:", getId(object@queen), "\n")
+    cat("Number of fathers:", nFathers(object), "\n")
+    cat("Number of virgin queens:", nVirginQueens(object), "\n")
+    cat("Number of workers:", nWorkers(object), "\n")
+    cat("Number of drones:", nDrones(object), "\n")
+    cat("Has split:", object@split, "\n")
+    cat("Has swarmed:", object@swarm, "\n")
+    cat("Has superseded:", object@supersedure, "\n")
+    cat("Has collapsed:", object@collapse, "\n")
+    cat("Is productive:", object@production, "\n")
+    invisible()
+  }
 )
 
 #' @describeIn Colony-class Combine multiple colony objects
-setMethod(f = "c",
-          signature(x = "ColonyOrNULL"),
-          definition = function(x, ...) {
-            if (is.null(x)) {
-              colonies <- new(Class = "Colonies")
-            } else {
-              colonies <- new(Class = "Colonies", colonies = list(x))
-            }
-            for (y in list(...)) {
-              if (class(y) == "NULL") {
-                # Do nothing
-              } else if (class(y) == "Colony") {
-                colonies@colonies <- c(colonies@colonies, y)
-              } else if (class(y) == "Colonies") {
-                colonies@colonies <- c(colonies@colonies, y@colonies)
-              } else {
-                stop("... must be a NULL, Colony, or Colonies class object!")
-              }
-            }
-            validObject(colonies)
-            return(colonies)
-          }
+setMethod(
+  f = "c",
+  signature(x = "ColonyOrNULL"),
+  definition = function(x, ...) {
+    if (is.null(x)) {
+      colonies <- new(Class = "Colonies")
+    } else {
+      colonies <- new(Class = "Colonies", colonies = list(x))
+    }
+    for (y in list(...)) {
+      if (class(y) == "NULL") {
+        # Do nothing
+      } else if (class(y) == "Colony") {
+        colonies@colonies <- c(colonies@colonies, y)
+      } else if (class(y) == "Colonies") {
+        colonies@colonies <- c(colonies@colonies, y@colonies)
+      } else {
+        stop("... must be a NULL, Colony, or Colonies class object!")
+      }
+    }
+    validObject(colonies)
+    return(colonies)
+  }
 )
 
 #' @describeIn Colonies-class Assign colony into colonies
-setReplaceMethod(f = "[[",
-                 signature(x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
-                           j = "ANY", value = "Colony"),
-                 definition = function(x, i, j, value) {
-                   if (is.numeric(i)) {
-                     if (length(i) > 1) {
-                       stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
-                     }
-                     x@colonies[[i]] <- value
-                   } else if (is.logical(i)) {
-                     if (sum(i) != 1) {
-                       stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
-                     }
-                     x@colonies[i][[1L]] <- value
-                   } else if (is.character(i)) {
-                     if (length(i) > 1) {
-                       stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
-                     }
-                     match <- getId(x) %in% i
-                     if (sum(match) != 1) {
-                       stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
-                     }
-                     x@colonies[match][[1L]] <- value
-                   }
-                   validObject(x)
-                   x
-                 })
+setReplaceMethod(
+  f = "[[",
+  signature(
+    x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
+    j = "ANY", value = "Colony"
+  ),
+  definition = function(x, i, j, value) {
+    if (is.numeric(i)) {
+      if (length(i) > 1) {
+        stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[[i]] <- value
+    } else if (is.logical(i)) {
+      if (sum(i) != 1) {
+        stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[i][[1L]] <- value
+    } else if (is.character(i)) {
+      if (length(i) > 1) {
+        stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
+      }
+      match <- getId(x) %in% i
+      if (sum(match) != 1) {
+        stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[match][[1L]] <- value
+    }
+    validObject(x)
+    x
+  }
+)
