@@ -4,10 +4,10 @@
 \alias{removeDrones}
 \title{Remove a proportion of drones}
 \usage{
-removeDrones(colony, p = 1, use = "rand")
+removeDrones(x, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion to be removed}
 

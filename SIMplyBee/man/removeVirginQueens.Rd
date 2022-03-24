@@ -4,10 +4,10 @@
 \alias{removeVirginQueens}
 \title{Remove a proportion of virgin queens}
 \usage{
-removeVirginQueens(colony, p = 1, use = "rand")
+removeVirginQueens(x, p = 1, use = "rand")
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{p}{numeric, proportion to be removed}
 

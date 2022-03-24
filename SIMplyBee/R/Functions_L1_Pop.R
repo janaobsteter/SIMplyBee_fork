@@ -940,9 +940,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param DCA \code{\link{Pop-class}}, population of drones;
 #'   \code{\link{isDrone}} test will be run on these individuals
 #' @param n integer, number of drone groups to be created
-#' @param nFathers numeric, average number of drones/fathers per group,
-#'   the actual number is sampled from a truncated Poisson with lambda of
-#'   nFathers
+#' @param nFathers numeric of function, number of drones (possible future
+#'   fathers) per group; if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list of \code{\link{Pop-class}}
@@ -974,13 +973,17 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
-  nDrones <- extraDistr::rtpois(n = n, lambda = nFathers, a = 0)
-  if (sum(nDrones) > nInd(DCA)) {
-    stop("Not enough drones in the DCA!")
-  }
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
-    tmp <- pullInd(pop = DCA, nInd = nDrones[group])
+    if (is.function(nFathers)) {
+      n <- nFathers()
+    } else {
+      n <- nFathers
+    }
+    if (nInd(DCA) < nFathers) {
+      stop("We ran out of drones in the DCA!")
+    }
+    tmp <- pullInd(pop = DCA, nInd = n)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
   }

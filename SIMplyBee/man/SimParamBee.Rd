@@ -131,7 +131,7 @@ to work with - you will want to change this!}
 \item{\code{nFathers}}{numeric or function, default number of drones
 a queen mates with; if a function, it will be passed to other
 functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
+the function must be defined like \code{function() someCode },
 that is, it could work with colony internals or not, and return a
 single value. The default value is only to have some fathers to work with -
 you will want to change this!}
