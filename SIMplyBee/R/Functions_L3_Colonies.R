@@ -16,11 +16,8 @@
 #' @param mated logical, create mated or unmated (virgin) colonies; if mated,
 #'   then \code{nInd(pop)-n} individuals from \code{pop} are used to create
 #'   drones with which the queens will mate with
-#' @param nFathers integer, number of drones that a queen mates with
-#'   TODO nFathers default should go to simParamBee and then we set it to NULL
-#'        here and if its NULL we grab value from simParamBee, otherwise use it
-#'        from the user
-#'        https://github.com/HighlanderLab/SIMplyBee/issues/98
+#' @param nFathers numeric of function, number of drones that a queen mates with;
+#'   if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param nDronesPerQueen integer, number of drones to generate per individual
 #'   in the \code{pop} for mating with the queens
 #'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
@@ -77,9 +74,10 @@ createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
     if (is.null(nFathers)) {
       nFathers <- simParamBee$nFathers
     }
+    # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
     if (mated) {
-      if (nInd(pop) < (n - 1)) {
+      if (nInd(pop) < (n + 1)) {
         stop("You must provide at least n+1 individuals in the pop to create n mated colonies!")
       }
       tmp <- pullInd(pop = pop, nInd = n)
@@ -447,11 +445,12 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 }
 
 #' @rdname downsizeColonies
-#' @title Reduce number of workers and remove all drones and virgin queens from colonies
+#' @title Reduce number of workers and remove all drones and virgin queens from
+#'   colonies
 #'
-#' @description Level 3 function that downsizes colonies by removing a percentage of
-#'   workers, all drones and all virgin queens. Usually in the autumn, such an event occurs
-#'   in preparation for the winter months.
+#' @description Level 3 function that downsizes colonies by removing a percentage
+#'   of workers, all drones and all virgin queens. Usually in the autumn, such
+#'   an event occurs in preparation for the winter months.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param p numeric, percentage of workers to remove from the colonies
@@ -563,10 +562,11 @@ reQueenColonies <- function(colonies, queens) {
 #'   each colony virgin queen mates with one group/partition of drones.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param DCA \code{\link{Pop-class}}, Drone Congregation Area;
-#'   \code{\link{isDrone}} test will be run on these to ensure these are drones
-#' @param nFathers numeric, average number of drones (fathers) to used in
-#'   matings (see \code{\link{crossColony}})
+#' @param drones \code{\link{Pop-class}}, drones that the virgin queens could
+#'   mate with (Drone Congregation Area - DCA)
+#' @param nFathers numeric or function, number of drones (fathers) to be used in
+#'   mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
+#'   then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with mated colonies
@@ -584,36 +584,40 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' apiary <- crossColonies(colonies = apiary, DCA = drones, nFathers = 10)
+#' apiary <- crossColonies(colonies = apiary, drones = drones, nFathers = 10)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-crossColonies <- function(colonies, DCA, nFathers, simParamBee = NULL) {
+crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  if (!isPop(DCA)) {
-    stop("Argument DCA must be a Pop class object!")
+  if (!isPop(drones)) {
+    stop("Argument drones must be a Pop class object!")
   }
-  if (any(!isDrone(DCA))) {
-    stop("Individuals in DCA must be drones!")
+  if (any(!isDrone(drones))) {
+    stop("Individuals in drones must be drones!")
   }
+  if (is.null(nFathers)) {
+    nFathers <- simParamBee$nFathers
+  }
+  # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA,
+    fatherGroups <- pullDroneGroupsFromDCA(DCA = drones,
       n = nCol,
       nFathers = nFathers
     )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
-        fathers = fatherGroups[[colony]],
+        drones = fatherGroups[[colony]],
         simParamBee = simParamBee
       )
     }
