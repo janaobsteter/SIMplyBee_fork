@@ -16,11 +16,8 @@
 #' @param mated logical, create mated or unmated (virgin) colonies; if mated,
 #'   then \code{nInd(pop)-n} individuals from \code{pop} are used to create
 #'   drones with which the queens will mate with
-#' @param nFathers integer, number of drones that a queen mates with
-#'   TODO nFathers default should go to simParamBee and then we set it to NULL
-#'        here and if its NULL we grab value from simParamBee, otherwise use it
-#'        from the user
-#'        https://github.com/HighlanderLab/SIMplyBee/issues/98
+#' @param nFathers numeric of function, number of drones that a queen mates with;
+#'   if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param nDronesPerQueen integer, number of drones to generate per individual
 #'   in the \code{pop} for mating with the queens
 #'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
@@ -77,6 +74,7 @@ createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
     if (is.null(nFathers)) {
       nFathers <- simParamBee$nFathers
     }
+    # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
     ret <- new("Colonies", colonies = vector(mode = "list", length = n))
     if (mated) {
       if (nInd(pop) < (n + 1)) {
@@ -564,11 +562,10 @@ reQueenColonies <- function(colonies, queens) {
 #'   each colony virgin queen mates with one group/partition of drones.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param DCA \code{\link{Pop-class}}, Drone Congregation Area;
-#'   \code{\link{isDrone}} test will be run on these to ensure these are drones
-#' @param nFathers numeric or function, number of drones (fathers) to used in
-#'   matings (see \code{\link{crossColony}}); if \code{NULL} then
-#'   \code{simParamBee$nFathers} is used
+#' @param DCA \code{\link{Pop-class}}, Drone Congregation Area
+#' @param nFathers numeric or function, number of drones (fathers) to be used in
+#'   mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
+#'   then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with mated colonies
@@ -607,7 +604,7 @@ crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
-  # skipping "if (is.function(nFathers))" since we pass nFathers to pullDroneGroupsFromDCA
+  # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()

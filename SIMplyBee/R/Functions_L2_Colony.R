@@ -1178,8 +1178,10 @@ resetEvents <- function(x, collapse = NULL) {
 #'   producing progeny at a later stage.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
-#'   will be run on these individuals
+#' @param fathers \code{\link{Pop-class}}, drones the virgin queen could mate
+#'   with
+#' @param nFathers numeric of function, number of drones that a queen mates with;
+#'   if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1199,7 +1201,7 @@ resetEvents <- function(x, collapse = NULL) {
 #' colony <- crossColony(colony, fathers = drones)
 #' colony
 #' @export
-crossColony <- function(colony, fathers, simParamBee = NULL) {
+crossColony <- function(colony, fathers, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1218,18 +1220,12 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (any(!isDrone(fathers))) {
     stop("Individuals in fathers must be drones!")
   }
-  # TODO: Choosing the queen in supersedure: at random or something else
-  #   https://github.com/HighlanderLab/SIMplyBee/issues/178
+  # TODO: Should we chose the virgin queen from colony that will mate in
+  #       crossColony() at random or use "use"?
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
-  # TODO: do we take all fathers or just a 'default/nFathers' or some other number?
-  #       imagine someone providing 100 or 1000 fathers - should we just take them all?
-  #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
-  #       but throw a warning if a user provided more fathers? If the user specifies
-  #       nFathers, then we take as many as he/she wants
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/157
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/98
   queen <- crossVirginQueen(
-    pop = virginQueen, fathers,
+    pop = virginQueen, fathers = fathers, nFathers = nFathers,
     simParamBee = simParamBee
   )
   colony <- reQueenColony(colony, queen)

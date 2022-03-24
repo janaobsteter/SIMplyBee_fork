@@ -435,6 +435,3 @@ nFathersPoisson <- function(n = 1, lambda = 15) {
 nFathersTruncPoisson <- function(n = 1, lambda = 15) {
   extraDistr::rtpois(n = n, lambda = lambda, a = 0)
 }
-
-
-
