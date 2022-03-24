@@ -1248,13 +1248,8 @@ getCaste <- function(x, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@id,
-      FUN = function(z) {
-        simParamBee$caste[z]
-      }
-    )
-    ret <- as.character(ret)
+    ret <- simParamBee$caste[x@id]
+    ret <- as.character(ret) #TODO: Do we want to return as a character or factor?
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
@@ -1646,7 +1641,6 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     ploidy = 2L,
                                     nChr = 16L,
                                     nSegSites = 100L,
-                                    Ne = 170000L, # Wallberg et al. (2014)
                                     nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
                                     genLen = 3.199121, # Beye et al., 2006
                                     mutRate = 3.4e-9, # Yang et al. (2015)
@@ -1659,15 +1653,40 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
     nLig <- nLig * ploidy
   }
 
+  # For now, the user cannot change this since all the model was specified with these numbers
+  Ne <- 170000L # Wallberg et al. (2014)
+  genInt <- 1
+
   nInd <- (nMelN + nMelS + nCar + nLig) / 2
   mu <- 4 * Ne * mutRate
   rho <- 4 * Ne * recRate
 
+  # M lineage split
+  timeM_y <- 13000
+  timeM_g <- timeM_y / genInt
+  timeNeM <- timeM_g / (4 * Ne)
+  NeM <- 210000
+  NeChangeM <- NeM / Ne
+
+  # C lineage split
+  timeC_y <- 25000
+  timeC_g <- timeC_y / genInt
+  timeNeC <- timeC_g / (Ne * 4)
+  NeC <- 190000
+  NeChangeC <- NeC / Ne
+
+  # M - C lineage split
+  timeMC_y <- 300000
+  timeMC_g <- timeMC_y / genInt
+  timeNeMC <- timeMC_g / (Ne * 4)
+  NeMC <- 350000
+  NeChangeMC <- NeMC / Ne
+
   command <- paste0(
     nBp, " -t ", mu, " -r ", rho, " -I 4 ", nMelS, " ", nMelN, " ", nCar, " ", nLig,
-    " -ej 0.01912 2 1 -en 0.01913 1 1.235 -ej 0.03676 4 3 -en 0.03677 3 1.118 -ej 0.44118 3 1 -en 0.44119 1 2.059"
-  )
-
+    " -ej ", timeNeM, " 2 1 -en ", timeNeM + 0.00001, " 1 ", NeChangeM,
+    " -ej ", timeNeC, " 4 3 -en ", timeNeC + 0.00001, " 3 ", NeChangeC,
+    " -ej ", timeNeMC, " 3 1 -en ", timeNeMC + 0.00001, " 1 ", NeChangeMC)
 
   founderGenomes <- runMacs(
     nInd = nInd,
