@@ -68,7 +68,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
         warning("The queen is already mated - ignoring the fathers argument!")
       } else {
         queen <- crossVirginQueen(
-          pop = queen, fathers = fathers,
+          pop = queen, drones = fathers,
           simParamBee = simParamBee
         )
       }
@@ -596,8 +596,8 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(basePop[1], nInd = 10)
-#' colony <- createColony(queen = basePop[2], fathers = drones )
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones)
 #' colony <- buildUpColony(colony)
 #' colony <- addVirginQueens(x = colony, nInd = 10)
 #' colony
@@ -896,7 +896,7 @@ removeQueen <- function(colony) {
 #' @description Level 2 function that removes a proportion of virgin queens of a
 #'   colony.
 #'
-#' @param x \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
@@ -1011,7 +1011,7 @@ removeWorkers <- function(x, p = 1, use = "rand") {
 #' @description Level 2 function that removes a proportion of drones, for
 #'   example, at the end of summer.
 #'
-#' @param x \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that will stay when \code{p < 1}
@@ -1183,8 +1183,10 @@ resetEvents <- function(x, collapse = NULL) {
 #'   producing progeny at a later stage.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param fathers \code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
-#'   will be run on these individuals
+#' @param drones \code{\link{Pop-class}}, drones the virgin queen could mate
+#'   with
+#' @param nFathers numeric of function, number of drones that a queen mates with;
+#'   if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1201,10 +1203,10 @@ resetEvents <- function(x, collapse = NULL) {
 #'
 #' colony <- createColony(virginQueen = basePop[2])
 #' colony
-#' colony <- crossColony(colony, fathers = drones)
+#' colony <- crossColony(colony, drones, nFathers = 5)
 #' colony
 #' @export
-crossColony <- function(colony, fathers, simParamBee = NULL) {
+crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1217,24 +1219,18 @@ crossColony <- function(colony, fathers, simParamBee = NULL) {
   if (!areVirginQueensPresent(colony)) {
     stop("No virgin queen(s) in the colony to cross!")
   }
-  if (!isPop(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
+  if (!isPop(drones)) {
+    stop("Argument drones must be a Pop class object!")
   }
-  if (any(!isDrone(fathers))) {
+  if (any(!isDrone(drones))) {
     stop("Individuals in fathers must be drones!")
   }
-  # TODO: Choosing the queen in supersedure: at random or something else
-  #   https://github.com/HighlanderLab/SIMplyBee/issues/178
+  # TODO: Should we chose the virgin queen from colony that will mate in
+  #       crossColony() at random or use "use"?
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
-  # TODO: do we take all fathers or just a 'default/nFathers' or some other number?
-  #       imagine someone providing 100 or 1000 fathers - should we just take them all?
-  #       maybe add argument nFathers = NULL and in that case pull value from simParamBee,
-  #       but throw a warning if a user provided more fathers? If the user specifies
-  #       nFathers, then we take as many as he/she wants
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/157
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/98
   queen <- crossVirginQueen(
-    pop = virginQueen, fathers,
+    pop = virginQueen, drones = drones, nFathers = nFathers,
     simParamBee = simParamBee
   )
   colony <- reQueenColony(colony, queen)
@@ -1525,8 +1521,11 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
 #' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-#' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
+#' col1
+#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col2
 #' col1 <- combine(strong = col1, weak = col2)
+#' col1
 #' rm(col2)
 #'
 #' col1 <- createColony(queen = basePop[4], fathers = drones[21:30])
@@ -1538,8 +1537,12 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
 #' col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
 #' colsStrong <- c(col1, col3)
+#' colsStrong[[1]]
+#' colsStrong[[2]]
 #' colsWeak <- c(col2, col4)
 #' cols <- combine(strong = colsStrong, weak = colsWeak)
+#' cols[[1]]
+#' cols[[2]]
 #' rm(colsWeak)
 #' @export
 combine <- function(strong, weak) {
@@ -1650,8 +1653,6 @@ setLocation <- function(x, location) {
 #' @return \code{\link{Colony-class}} with phenotypes
 #'
 #' @examples
-#' # TODO
-#'
 #' # TODO:
 #' # See
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/26

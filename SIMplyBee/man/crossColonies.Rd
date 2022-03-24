@@ -4,7 +4,7 @@
 \alias{crossColonies}
 \title{Cross colony for all given colonies}
 \usage{
-crossColonies(colonies, DCA, nFathers, simParamBee = NULL)
+crossColonies(colonies, DCA, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,8 +12,9 @@ crossColonies(colonies, DCA, nFathers, simParamBee = NULL)
 \item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area;
 \code{\link{isDrone}} test will be run on these to ensure these are drones}
 
-\item{nFathers}{numeric, average number of drones (fathers) to used in
-matings (see \code{\link{crossColony}})}
+\item{nFathers}{numeric or function, number of drones (fathers) to used in
+matings (see \code{\link{crossColony}}); if \code{NULL} then
+\code{simParamBee$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

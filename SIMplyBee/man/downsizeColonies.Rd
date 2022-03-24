@@ -2,7 +2,8 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{downsizeColonies}
 \alias{downsizeColonies}
-\title{Reduce number of workers and remove all drones and virgin queens from colonies}
+\title{Reduce number of workers and remove all drones and virgin queens from
+  colonies}
 \usage{
 downsizeColonies(colonies, p = 0.85, use = "rand")
 }
