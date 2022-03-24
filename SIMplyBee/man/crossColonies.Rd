@@ -4,17 +4,17 @@
 \alias{crossColonies}
 \title{Cross colony for all given colonies}
 \usage{
-crossColonies(colonies, DCA, nFathers = NULL, simParamBee = NULL)
+crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{DCA}{\code{\link{Pop-class}}, Drone Congregation Area;
-\code{\link{isDrone}} test will be run on these to ensure these are drones}
+\item{drones}{\code{\link{Pop-class}}, drones that the virgin queens could
+mate with (Drone Congregation Area - DCA)}
 
-\item{nFathers}{numeric or function, number of drones (fathers) to used in
-matings (see \code{\link{crossColony}}); if \code{NULL} then
-\code{simParamBee$nFathers} is used}
+\item{nFathers}{numeric or function, number of drones (fathers) to be used in
+mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
+then \code{simParamBee$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -40,7 +40,7 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-apiary <- crossColonies(colonies = apiary, DCA = drones, nFathers = 10)
+apiary <- crossColonies(colonies = apiary, drones = drones, nFathers = 10)
 apiary
 apiary[[1]]
 apiary[[2]]

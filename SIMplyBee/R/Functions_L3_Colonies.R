@@ -483,7 +483,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
-  }  
+  }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- downsizeColony(
@@ -529,7 +529,7 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
 #'
 #' matedQueens <- crossVirginQueen(
 #'   pop = basePop[4:5],
-#'   fathers = drones[11:20], nFathers = 2
+#'   drones = drones[11:20], nFathers = 2
 #' )
 #' apiary3 <- reQueenColonies(apiary, queen = matedQueens)
 #' apiary3

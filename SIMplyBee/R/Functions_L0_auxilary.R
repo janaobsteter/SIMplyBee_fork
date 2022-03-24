@@ -423,7 +423,7 @@ computeQueensPHomBrood <- function(x) {
 #' try(pHomBrood(basePop[2]))
 #'
 #' # Mated queen
-#' pHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
+#' pHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15]))
 #'
 #' # Queen of the colony
 #' pHomBrood(getQueen(colony1))
@@ -494,7 +494,7 @@ pHomBrood <- function(x) {
 #' try(nHomBrood(basePop[2]))
 #'
 #' # Mated queen
-#' nHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
+#' nHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15]))
 #'
 #' # Queen of the colony
 #' nHomBrood(getQueen(colony1))
@@ -1617,7 +1617,6 @@ isProductive <- function(x) {
 #' @param ploidy integer, the ploidy of the individuals
 #' @param nChr integer, number of chromosomes to simulate
 #' @param nSegSites integer, number of segregating sites to keep per chromosome
-#' @param Ne integer, effective population size
 #' @param nBp integer, base pair length of chromosome
 #' @param genLen numeric, genetic length of chromosome in Morgans
 #' @param mutRate numeric, per base pair mutation rate

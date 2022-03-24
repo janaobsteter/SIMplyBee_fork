@@ -4,13 +4,16 @@
 \alias{crossColony}
 \title{Cross (mate) a virgin queen of a colony to a group of drones}
 \usage{
-crossColony(colony, fathers, simParamBee = NULL)
+crossColony(colony, drones, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{fathers}{\code{\link{Pop-class}}, drones; \code{\link{isDrone}} test
-will be run on these individuals}
+\item{drones}{\code{\link{Pop-class}}, drones the virgin queen could mate
+with}
+
+\item{nFathers}{numeric of function, number of drones that a queen mates with;
+if \code{NULL} then \code{simParamBee$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -33,7 +36,7 @@ drones <- createDrones(x = basePop[1], nInd = 5)
 
 colony <- createColony(virginQueen = basePop[2])
 colony
-colony <- crossColony(colony, fathers = drones)
+colony <- crossColony(colony, drones, nFathers = 5)
 colony
 }
 \seealso{

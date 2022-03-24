@@ -28,11 +28,8 @@ given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 then \code{nInd(pop)-n} individuals from \code{pop} are used to create
 drones with which the queens will mate with}
 
-\item{nFathers}{integer, number of drones that a queen mates with
-TODO nFathers default should go to simParamBee and then we set it to NULL
-     here and if its NULL we grab value from simParamBee, otherwise use it
-     from the user
-     https://github.com/HighlanderLab/SIMplyBee/issues/98}
+\item{nFathers}{numeric of function, number of drones that a queen mates with;
+if \code{NULL} then \code{simParamBee$nFathers} is used}
 
 \item{nDronesPerQueen}{integer, number of drones to generate per individual
 in the \code{pop} for mating with the queens

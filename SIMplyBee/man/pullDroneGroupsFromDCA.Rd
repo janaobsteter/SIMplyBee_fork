@@ -7,8 +7,7 @@
 pullDroneGroupsFromDCA(DCA, n, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{DCA}{\code{\link{Pop-class}}, population of drones;
-\code{\link{isDrone}} test will be run on these individuals}
+\item{DCA}{\code{\link{Pop-class}}, population of drones}
 
 \item{n}{integer, number of drone groups to be created}
 
