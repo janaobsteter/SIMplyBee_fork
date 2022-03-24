@@ -976,14 +976,14 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nFathers)) {
-      n <- nFathers()
+      nF <- nFathers()
     } else {
-      n <- nFathers
+      nF <- nFathers
     }
-    if (nInd(DCA) < n) {
+    if (nInd(DCA) < nF) {
       stop("We ran out of drones in the DCA!")
     }
-    tmp <- pullInd(pop = DCA, nInd = n)
+    tmp <- pullInd(pop = DCA, nInd = nF)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
   }
@@ -1152,7 +1152,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated;
 #'   \code{\link{isVirginQueen}} test will be run on these individuals
-#' @param fathers \code{\link{Pop-class}}, a group of drones that could be mated
+#' @param drones \code{\link{Pop-class}}, a group of drones that could be mated
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
@@ -1211,7 +1211,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' # Check the theretical homozygosity
 #' matedQueen3@misc[[1]]$pHomBrood
 #' @export
-crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) {
+crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1221,11 +1221,11 @@ crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) 
   if (any(!isVirginQueen(pop))) {
     stop("Individuals in pop must be virgin queens!")
   }
-  if (!isPop(fathers)) {
+  if (!isPop(drones)) {
     stop("Argument fathers must be a Pop class object!")
   }
-  if (any(!isDrone(fathers))) {
-    stop("Individuals in fathers must be drones!")
+  if (any(!isDrone(drones))) {
+    stop("Individuals in drones must be drones!")
   }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
@@ -1245,7 +1245,7 @@ crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) 
     }
     # TODO: In crossVirginQueens we select drones for mating at random, should we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
-    fathers <- selectInd(pop = fathers, nInd = n, use = "rand")
+    fathers <- selectInd(pop = drones, nInd = n, use = "rand")
     fathers <- setMisc(x = fathers, node = "caste", value = "F")
     if (simParamBee$isTrackPed) {
       simParamBee$changeCaste(id = fathers@id, caste = "F")
@@ -1253,7 +1253,7 @@ crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) 
     pop@misc[[1]]$fathers <- fathers
   } else {
     fathers <- pullDroneGroupsFromDCA(
-      DCA = fathers,
+      DCA = drones,
       n = nVirginQueen,
       nFathers = nFathers
     )
