@@ -68,7 +68,7 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
         warning("The queen is already mated - ignoring the fathers argument!")
       } else {
         queen <- crossVirginQueen(
-          pop = queen, fathers = fathers,
+          pop = queen, drones = fathers,
           simParamBee = simParamBee
         )
       }
@@ -1178,7 +1178,7 @@ resetEvents <- function(x, collapse = NULL) {
 #'   producing progeny at a later stage.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param fathers \code{\link{Pop-class}}, drones the virgin queen could mate
+#' @param drones \code{\link{Pop-class}}, drones the virgin queen could mate
 #'   with
 #' @param nFathers numeric of function, number of drones that a queen mates with;
 #'   if \code{NULL} then \code{simParamBee$nFathers} is used
@@ -1198,10 +1198,10 @@ resetEvents <- function(x, collapse = NULL) {
 #'
 #' colony <- createColony(virginQueen = basePop[2])
 #' colony
-#' colony <- crossColony(colony, fathers = drones)
+#' colony <- crossColony(colony, drones, nFathers = 5)
 #' colony
 #' @export
-crossColony <- function(colony, fathers, nFathers = NULL, simParamBee = NULL) {
+crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1214,10 +1214,10 @@ crossColony <- function(colony, fathers, nFathers = NULL, simParamBee = NULL) {
   if (!areVirginQueensPresent(colony)) {
     stop("No virgin queen(s) in the colony to cross!")
   }
-  if (!isPop(fathers)) {
-    stop("Argument fathers must be a Pop class object!")
+  if (!isPop(drones)) {
+    stop("Argument drones must be a Pop class object!")
   }
-  if (any(!isDrone(fathers))) {
+  if (any(!isDrone(drones))) {
     stop("Individuals in fathers must be drones!")
   }
   # TODO: Should we chose the virgin queen from colony that will mate in
@@ -1225,7 +1225,7 @@ crossColony <- function(colony, fathers, nFathers = NULL, simParamBee = NULL) {
   #       https://github.com/HighlanderLab/SIMplyBee/issues/178
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   queen <- crossVirginQueen(
-    pop = virginQueen, fathers = fathers, nFathers = nFathers,
+    pop = virginQueen, drones = drones, nFathers = nFathers,
     simParamBee = simParamBee
   )
   colony <- reQueenColony(colony, queen)
@@ -1648,8 +1648,6 @@ setLocation <- function(x, location) {
 #' @return \code{\link{Colony-class}} with phenotypes
 #'
 #' @examples
-#' # TODO
-#'
 #' # TODO:
 #' # See
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/26

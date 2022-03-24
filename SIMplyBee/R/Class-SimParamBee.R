@@ -1,4 +1,4 @@
-# TOOD: I have provided this as PullRequest for AlphaSimR
+# TODO: I have provided this as PullRequest for AlphaSimR
 #       https://github.com/gaynorr/AlphaSimR/pull/52
 #       once it gets incorporated there we should remove it here
 #       https://github.com/HighlanderLab/SIMplyBee/issues/60

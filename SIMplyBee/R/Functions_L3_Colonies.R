@@ -562,7 +562,8 @@ reQueenColonies <- function(colonies, queens) {
 #'   each colony virgin queen mates with one group/partition of drones.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param DCA \code{\link{Pop-class}}, Drone Congregation Area
+#' @param drones \code{\link{Pop-class}}, drones that the virgin queens could
+#'   mate with (Drone Congregation Area - DCA)
 #' @param nFathers numeric or function, number of drones (fathers) to be used in
 #'   mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
 #'   then \code{simParamBee$nFathers} is used
@@ -583,23 +584,23 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' apiary <- crossColonies(colonies = apiary, DCA = drones, nFathers = 10)
+#' apiary <- crossColonies(colonies = apiary, drones = drones, nFathers = 10)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
+crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  if (!isPop(DCA)) {
-    stop("Argument DCA must be a Pop class object!")
+  if (!isPop(drones)) {
+    stop("Argument drones must be a Pop class object!")
   }
-  if (any(!isDrone(DCA))) {
-    stop("Individuals in DCA must be drones!")
+  if (any(!isDrone(drones))) {
+    stop("Individuals in drones must be drones!")
   }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
@@ -610,13 +611,13 @@ crossColonies <- function(colonies, DCA, nFathers = NULL, simParamBee = NULL) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA,
+    fatherGroups <- pullDroneGroupsFromDCA(DCA = drones,
       n = nCol,
       nFathers = nFathers
     )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
-        fathers = fatherGroups[[colony]],
+        drones = fatherGroups[[colony]],
         simParamBee = simParamBee
       )
     }
