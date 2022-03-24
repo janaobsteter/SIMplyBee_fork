@@ -77,8 +77,12 @@ apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
 apiary[[1]] # adding completely new workers & drones
 
 # Using functions
-nWorkersFun <- function(colony) { rpois(n = 1, lambda = 100) }
-nDronesFun <- function(colony) { rpois(n = 1, lambda = 15) }
+nWorkersFun <- function(colony) {
+  rpois(n = 1, lambda = 100)
+}
+nDronesFun <- function(colony) {
+  rpois(n = 1, lambda = 15)
+}
 apiary <- c(colony1, colony2)
 tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
 tmp[[1]]
@@ -97,5 +101,4 @@ tmp[[2]]
 tmp <- buildUpColonies(apiary)
 tmp[[1]]
 tmp[[2]]
-
 }

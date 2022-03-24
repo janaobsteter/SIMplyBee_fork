@@ -52,5 +52,4 @@ basePop@misc
 getMisc(x = basePop, node = "location")
 
 getMisc(x = basePop)
-
 }

@@ -18,11 +18,11 @@ logical, named by colony id when \code{x} is
 Level 0 function that returns queen's mating status.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 20)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony3 <- createColony(virginQueen = basePop[4])
@@ -37,5 +37,5 @@ isQueenMated(supersedeColony(colony2))
 
 isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
 
-isQueenMated(crossVirginQueen(basePop[2], drones))
+isQueenMated(crossVirginQueen(basePop[5], drones[11:20]))
 }

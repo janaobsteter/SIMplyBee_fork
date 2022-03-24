@@ -57,5 +57,4 @@ getId(apiary["9"])
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
-
 }

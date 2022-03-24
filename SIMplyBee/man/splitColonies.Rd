@@ -48,5 +48,4 @@ tmp$remnants
 tmp$remnants[[1]]
 tmp$remnants[[2]]
 hasSplit(tmp$remnants)
-
 }

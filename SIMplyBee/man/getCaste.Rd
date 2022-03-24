@@ -4,11 +4,13 @@
 \alias{getCaste}
 \title{Report caste of an individual}
 \usage{
-getCaste(x)
+getCaste(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 When x is \code{\link{Pop-class}}, character of caste status; if you
@@ -27,7 +29,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony2 <- createColony(queen = basePop[3], fathers = drones[1:5])
+colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 colony1 <- addWorkers(colony1)
 colony2 <- addWorkers(colony2)
 colony1 <- addDrones(colony1)
@@ -41,27 +43,34 @@ getCaste(getWorkers(colony1))
 getCaste(getDrones(colony1))
 getCaste(getVirginQueens(colony1))
 
-bees <- c(getQueen(colony1),
-          getFathers(colony1, nInd = 2),
-          getWorkers(colony1, nInd = 2),
-          getDrones(colony1, nInd = 2),
-          getVirginQueens(colony1, nInd = 2))
+bees <- c(
+  getQueen(colony1),
+  getFathers(colony1, nInd = 2),
+  getWorkers(colony1, nInd = 2),
+  getDrones(colony1, nInd = 2),
+  getVirginQueens(colony1, nInd = 2)
+)
 getCaste(bees)
 
 # Create a data.frame with id, colony, and caste information
 (tmpC <- getCaste(colony1))
 (tmpI <- getCasteId(colony1))
 tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
-head(tmp);tail(tmp)
+head(tmp)
+tail(tmp)
 
 (tmpC <- getCaste(apiary))
 (tmpI <- getCasteId(apiary))
 (tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI)))
-tmp$colony <- sapply(X = strsplit(x = rownames(tmp), split = ".",
-                                  fixed = TRUE),
-                     FUN = function(z) z[[1]])
-head(tmp);tail(tmp)
-
+tmp$colony <- sapply(
+  X = strsplit(
+    x = rownames(tmp), split = ".",
+    fixed = TRUE
+  ),
+  FUN = function(z) z[[1]]
+)
+head(tmp)
+tail(tmp)
 }
 \seealso{
 \code{\link{getCastePop}} and \code{\link{getCasteId}}

@@ -4,10 +4,12 @@
 \alias{isWorker}
 \title{Is individual a worker}
 \usage{
-isWorker(x)
+isWorker(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical

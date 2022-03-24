@@ -25,5 +25,4 @@ Level 3 function that TODO
 }
 \examples{
 # TODO
-
 }

@@ -78,5 +78,4 @@ apiary <- createColonies(pop = basePop, n = 2, mated = FALSE)
 apiary
 apiary[[1]]
 apiary[[2]]
-
 }

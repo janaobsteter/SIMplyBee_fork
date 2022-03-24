@@ -45,9 +45,9 @@ nColonies <- function(colonies) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' founderDrones <- createDrones(x = basePop[1:2], nInd = 10)
-#' colony1 <- createColony(queen = basePop[3], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[4], fathers = founderDrones[11:20])
+#' drones <- createDrones(x = basePop[1:2], nInd = 10)
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[1:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:20])
 #' apiary <- c(colony1, colony2)
 #' getId(apiary)
 #'
@@ -407,11 +407,11 @@ computeQueensPHomBrood <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -423,7 +423,7 @@ computeQueensPHomBrood <- function(x) {
 #' try(pHomBrood(basePop[2]))
 #'
 #' # Mated queen
-#' pHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+#' pHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
 #'
 #' # Queen of the colony
 #' pHomBrood(getQueen(colony1))
@@ -478,11 +478,11 @@ pHomBrood <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -494,7 +494,7 @@ pHomBrood <- function(x) {
 #' try(nHomBrood(basePop[2]))
 #'
 #' # Mated queen
-#' nHomBrood(crossVirginQueen(pop = basePop[2], fathers = drones[1:5]))
+#' nHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
 #'
 #' # Queen of the colony
 #' nHomBrood(getQueen(colony1))
@@ -538,6 +538,7 @@ nHomBrood <- function(x) {
 #' @description Level 0 function that tests if individuals are queens
 #'
 #' @param x \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical
 #'
@@ -565,17 +566,16 @@ nHomBrood <- function(x) {
 #' )
 #' isQueen(bees)
 #' @export
-isQueen <- function(x) {
+isQueen <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@misc,
-      FUN = function(z) {
-        ifelse(test = is.null(z$caste),
-          yes = FALSE,
-          no = z$caste == "Q"
-        )
-      }
-    )
+    if (x@nInd == 0) {
+      ret <- FALSE
+    } else {
+    ret <- simParamBee$caste[x@id] == "queen"
+   }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -588,6 +588,7 @@ isQueen <- function(x) {
 #' @description Level 0 function that tests if individuals are drones
 #'
 #' @param x \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical
 #'
@@ -615,17 +616,16 @@ isQueen <- function(x) {
 #' )
 #' isDrone(bees)
 #' @export
-isDrone <- function(x) {
+isDrone <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@misc,
-      FUN = function(z) {
-        ifelse(test = is.null(z$caste),
-          yes = FALSE,
-          no = z$caste == "D"
-        )
-      }
-    )
+    if (x@nInd == 0) {
+      ret <- FALSE
+    } else {
+      ret <- simParamBee$caste[x@id] == "drones"
+   }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -638,6 +638,7 @@ isDrone <- function(x) {
 #' @description Level 0 function that tests if individuals are workers
 #'
 #' @param x \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical
 #'
@@ -665,17 +666,16 @@ isDrone <- function(x) {
 #' )
 #' isWorker(bees)
 #' @export
-isWorker <- function(x) {
+isWorker <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@misc,
-      FUN = function(z) {
-        ifelse(test = is.null(z$caste),
-          yes = FALSE,
-          no = z$caste == "W"
-        )
-      }
-    )
+    if (x@nInd == 0) {
+      ret <- FALSE
+    } else {
+      ret <- simParamBee$caste[x@id] == "workers"
+   }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -688,6 +688,7 @@ isWorker <- function(x) {
 #' @description Level 0 function that tests if individuals are virgin queens
 #'
 #' @param x \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical
 #'
@@ -715,17 +716,16 @@ isWorker <- function(x) {
 #' )
 #' isVirginQueen(bees)
 #' @export
-isVirginQueen <- function(x) {
+isVirginQueen <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@misc,
-      FUN = function(z) {
-        ifelse(test = is.null(z$caste),
-          yes = FALSE,
-          no = z$caste == "V"
-        )
-      }
-    )
+    if (x@nInd == 0) {
+      ret <- FALSE
+    } else {
+      ret <- simParamBee$caste[x@id] == "virginQueens"
+    }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -849,11 +849,11 @@ areVirginQueensPresent <- function(x) {
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony3 <- createColony(virginQueen = basePop[4])
@@ -868,7 +868,7 @@ areVirginQueensPresent <- function(x) {
 #'
 #' isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
 #'
-#' isQueenMated(crossVirginQueen(basePop[2], drones))
+#' isQueenMated(crossVirginQueen(basePop[5], drones[11:20]))
 #' @export
 isQueenMated <- function(x) {
   if (isPop(x)) {
@@ -1082,6 +1082,7 @@ getId <- function(x) {
 #'   \code{\link{Colonies-class}}
 #' @param caste character, "queen", "fathers", "virginQueens", "workers",
 #'   "drones", or "all"
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCaste}}
 #'
@@ -1138,7 +1139,10 @@ getId <- function(x) {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-getCasteId <- function(x, caste = "all") {
+getCasteId <- function(x, caste = "all", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
     ret <- x@id
   } else if (isColony(x)) {
@@ -1178,6 +1182,8 @@ getCasteId <- function(x, caste = "all") {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+
 #'
 #' @return When x is \code{\link{Pop-class}}, character of caste status; if you
 #'   get \code{NA} note that this is not supposed to happen. When x is
@@ -1194,7 +1200,7 @@ getCasteId <- function(x, caste = "all") {
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1 <- addWorkers(colony1)
 #' colony2 <- addWorkers(colony2)
 #' colony1 <- addDrones(colony1)
@@ -1237,20 +1243,16 @@ getCasteId <- function(x, caste = "all") {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-getCaste <- function(x) {
+getCaste <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
     ret <- sapply(
-      X = x@misc,
+      X = x@id,
       FUN = function(z) {
-        ifelse(test = is.null(z$caste),
-          yes = NA,
-          no = z$caste
-        )
+        simParamBee$caste[z]
       }
-    )
-    ret <- factor(
-      x = ret, levels = c("Q", "F", "W", "D", "V"),
-      labels = list("queen", "fathers", "workers", "drones", "virginQueens")
     )
     ret <- as.character(ret)
   } else if (isColony(x)) {
@@ -1345,11 +1347,11 @@ getLocation <- function(x) {
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSplit(colony)
@@ -1361,8 +1363,8 @@ getLocation <- function(x) {
 #' hasSplit(tmp$split)
 #' hasSplit(tmp$remnant)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
 #' tmp <- splitColonies(apiary)
@@ -1440,11 +1442,11 @@ getEvents <- function(x) {
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSwarmed(colony)
@@ -1456,8 +1458,8 @@ getEvents <- function(x) {
 #' hasSwarmed(tmp$swarm)
 #' hasSwarmed(tmp$remnant)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
 #' tmp <- swarmColonies(apiary)
@@ -1487,11 +1489,11 @@ hasSwarmed <- function(x) {
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasSuperseded(colony)
@@ -1502,8 +1504,8 @@ hasSwarmed <- function(x) {
 #' tmp
 #' hasSuperseded(tmp)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
 #' tmp <- supersedeColonies(apiary)
@@ -1532,11 +1534,11 @@ hasSuperseded <- function(x) {
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' hasCollapsed(colony)
@@ -1547,8 +1549,8 @@ hasSuperseded <- function(x) {
 #' tmp
 #' hasCollapsed(tmp)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
 #' tmp <- collapseColonies(apiary)
@@ -1578,11 +1580,11 @@ hasCollapsed <- function(x) {
 #' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 20)
 #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 #' colony
 #' isProductive(colony)
@@ -1590,8 +1592,8 @@ hasCollapsed <- function(x) {
 #' colony
 #' isProductive(colony)
 #'
-#' colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+#' colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 #' apiary <- c(colony1, colony2)
 #' apiary <- buildUpColonies(apiary, nWorkers = 100)
 #' isProductive(apiary)

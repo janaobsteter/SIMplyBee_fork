@@ -43,5 +43,4 @@ apiary <- crossColonies(colonies = apiary, DCA = drones, nFathers = 10)
 apiary
 apiary[[1]]
 apiary[[2]]
-
 }

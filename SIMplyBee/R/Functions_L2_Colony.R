@@ -471,7 +471,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' @return \code{\link{Colony-class}} with workers and drones replaced or added
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -505,14 +505,19 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' colony <- createColony(queen = basePop[2], fathers = drones)
+#'
+#' # Create new drones and a new colony
+#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' colony <- createColony(queen = basePop[3], fathers = drones)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 #'
 #' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
 #' SP$nDrones <- nDronesFun
-#' colony <- createColony(queen = basePop[2], fathers = drones)
+#' # Create new drones and a new colony
+#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' colony <- createColony(queen = basePop[4], fathers = drones)
 #' buildUpColony(colony)
 #' buildUpColony(colony)
 #' @export
@@ -591,6 +596,8 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(basePop[1], nInd = 10)
+#' colony <- createColony(queen = basePop[2], fathers = drones )
 #' colony <- buildUpColony(colony)
 #' colony <- addVirginQueens(x = colony, nInd = 10)
 #' colony
@@ -604,9 +611,9 @@ downsizeColony <- function(colony, p = 0.85, use = "rand") {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
-  colony <- removeWorkers(colony = colony, p = p, use = "rand")
-  colony <- removeDrones(colony = colony, p = 1)
-  colony <- removeVirginQueens(colony = colony, p = 1)
+  colony <- removeWorkers(x = colony, p = p, use = "rand")
+  colony <- removeDrones(x = colony, p = 1)
+  colony <- removeVirginQueens(x = colony, p = 1)
   colony@production <- FALSE
   validObject(colony)
   return(colony)
@@ -889,7 +896,7 @@ removeQueen <- function(colony) {
 #' @description Level 2 function that removes a proportion of virgin queens of a
 #'   colony.
 #'
-#' @param colony \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
@@ -1004,7 +1011,7 @@ removeWorkers <- function(x, p = 1, use = "rand") {
 #' @description Level 2 function that removes a proportion of drones, for
 #'   example, at the end of summer.
 #'
-#' @param colony \code{\link{Colony-class}}
+#' @param x \code{\link{Colony-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that will stay when \code{p < 1}
@@ -1080,9 +1087,9 @@ removeDrones <- function(x, p = 1, use = "rand") {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones)
-#' colony2 <- createColony(queen = basePop[3], fathers = drones)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
 #' colony1
 #' apiary <- c(colony1, colony2)
 #'
@@ -1510,11 +1517,11 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' @return a combined \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 40)
+#' drones <- createDrones(x = basePop[1], nInd = 70)
 #' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
 #' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
@@ -1522,15 +1529,15 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col1 <- combine(strong = col1, weak = col2)
 #' rm(col2)
 #'
-#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
-#' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
-#' col3 <- createColony(queen = basePop[4], fathers = drones[21:30])
-#' col4 <- createColony(queen = basePop[5], fathers = drones[31:40])
+#' col1 <- createColony(queen = basePop[4], fathers = drones[21:30])
+#' col2 <- createColony(queen = basePop[5], fathers = drones[31:40])
+#' col3 <- createColony(queen = basePop[6], fathers = drones[41:50])
+#' col4 <- createColony(queen = basePop[7], fathers = drones[51:60])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
 #' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
 #' col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
-#' colsStrong <- c(col1, col3)
+#' colStrong <- c(col1, col3)
 #' colsWeak <- c(col2, col4)
 #' cols <- combine(strong = colStrong, weak = colsWeak)
 #' rm(colsWeak)

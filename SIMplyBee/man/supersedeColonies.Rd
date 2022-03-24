@@ -38,5 +38,4 @@ apiary
 apiary[[1]]
 apiary[[2]]
 hasSuperseded(apiary)
-
 }

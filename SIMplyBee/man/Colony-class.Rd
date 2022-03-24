@@ -92,7 +92,6 @@ isColonies(apiary)
 
 c(apiary, colony3)
 c(colony3, apiary)
-
 }
 \seealso{
 \code{\link{createColony}}

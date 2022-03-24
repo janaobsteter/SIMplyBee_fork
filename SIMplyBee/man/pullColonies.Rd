@@ -62,5 +62,4 @@ getId(tmp$remainingColonies)
 tmp <- pullColonies(apiary, p = 0.75)
 getId(tmp$pulledColonies)
 getId(tmp$remainingColonies)
-
 }

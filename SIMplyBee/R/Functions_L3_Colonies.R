@@ -461,9 +461,9 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueen(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
 #'
 #' apiary <- createColonies(pop = basePop, n = 2)
 #' apiary <- buildUpColonies(apiary)

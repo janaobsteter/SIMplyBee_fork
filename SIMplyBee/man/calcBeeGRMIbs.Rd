@@ -46,15 +46,17 @@ genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
 
 geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
 n <- length(rownames(geno))
-rownames(geno)[c(n-1, n)] <- c("mw", "md")
+rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 
-sex <- c(getQueen(colony)@sex,
-         getFathers(colony)@sex,
-         getWorkers(colony)@sex,
-         getDrones(colony)@sex,
-         getVirginQueens(colony)@sex,
-         "F",
-         "M")
+sex <- c(
+  getQueen(colony)@sex,
+  getFathers(colony)@sex,
+  getWorkers(colony)@sex,
+  getDrones(colony)@sex,
+  getVirginQueens(colony)@sex,
+  "F",
+  "M"
+)
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
@@ -98,7 +100,6 @@ GRM[w, d]
 GRM[w, v]
 GRM[w, mw]
 GRM[w, md]
-
 }
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of

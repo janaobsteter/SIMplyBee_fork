@@ -17,11 +17,11 @@ Level 0 function that returns colony production status. This can
   be used to decided if colony production can be simulated.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 20)
 colony <- createColony(queen = basePop[2], fathers = drones[1:5])
 colony
 isProductive(colony)
@@ -29,8 +29,8 @@ colony <- buildUpColony(colony, nWorkers = 100)
 colony
 isProductive(colony)
 
-colony1 <- createColony(queen = basePop[1], fathers = drones[1:5])
-colony2 <- createColony(queen = basePop[2], fathers = drones[6:10])
+colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
 apiary <- c(colony1, colony2)
 apiary <- buildUpColonies(apiary, nWorkers = 100)
 isProductive(apiary)
