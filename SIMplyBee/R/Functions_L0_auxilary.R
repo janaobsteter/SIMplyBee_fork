@@ -1654,8 +1654,8 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
   }
 
   # For now, the user cannot change this since all the model was specified with these numbers
-  Ne = 170000L # Wallberg et al. (2014)
-  genInt = 1
+  Ne <- 170000L # Wallberg et al. (2014)
+  genInt <- 1
 
   nInd <- (nMelN + nMelS + nCar + nLig) / 2
   mu <- 4 * Ne * mutRate
