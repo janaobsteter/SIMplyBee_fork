@@ -589,9 +589,8 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' @param p numeric, percentage of workers to remove from the colony (Seeley, 2019)
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
-#' @param new logical, should the number of workers and drones be added anew or
-#'   should we only top-up the existing number of workers and drones to
-#'   \code{nWorkers} and \code{nDrones} (see details)
+#' @param new logical, should we remove all current workers and add a targeted
+#'   proportion anew (say, create winter workers)
 #'
 #' @return \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
 #'
@@ -610,20 +609,17 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' colony
 #' colony <- downsizeColony(colony = colony, new = TRUE, use = "rand")
 #' colony
-#'
-#' # TODO: FIND REFERENCES for defaults
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/197
 #' @export
-downsizeColony <- function(colony, p = 0.85, use = "rand", new = FALSE){
+downsizeColony <- function(colony, p = 0.85, use = "rand", new = FALSE) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (new == TRUE) {
-    n <- (1-p) * nWorkers(colony)
+    n <- nWorkers(colony) * (1 - p)
     colony <- addWorkers(x = colony, nInd = n, new = TRUE)
   } else {
-      colony <- removeWorkers(x = colony, p = p)
-    }
+    colony <- removeWorkers(x = colony, p = p)
+  }
   colony <- removeDrones(x = colony, p = 1)
   colony <- removeVirginQueens(x = colony, p = 1)
   colony@production <- FALSE
