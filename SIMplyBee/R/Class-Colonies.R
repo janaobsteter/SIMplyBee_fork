@@ -101,10 +101,11 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' apiary2[c("4", "5")] <- apiary1
 #' getId(apiary2)
 #' try(apiary2[c("4", "5")] <- apiary1)
-#'
 #' @export
-setClass(Class = "Colonies",
-         slots = c(colonies = "list"))
+setClass(
+  Class = "Colonies",
+  slots = c(colonies = "list")
+)
 
 #' @describeIn Colonies-class Test if x is a Colonies class object
 #' @export
@@ -120,7 +121,7 @@ setValidity(Class = "Colonies", method = function(object) {
   ids <- getId(object)
   ids <- ids[!is.na(ids)]
   if (any(duplicated(ids))) {
-    errors = c(errors, "Some colonies are duplicated!")
+    errors <- c(errors, "Some colonies are duplicated!")
   }
   if (length(errors) == 0) {
     return(TRUE)
@@ -130,137 +131,148 @@ setValidity(Class = "Colonies", method = function(object) {
 })
 
 #' @describeIn Colonies-class Show colonies object
-setMethod(f = "show",
-          signature(object = "Colonies"),
-          definition = function (object) {
-            cat("An object of class", classLabel(class(object)), "\n")
-            cat("Number of colonies:", nColonies(object), "\n")
-            cat("Number of empty (NULL) colonies:", nNULLColonies(object), "\n")
-            invisible()
-          }
+setMethod(
+  f = "show",
+  signature(object = "Colonies"),
+  definition = function(object) {
+    cat("An object of class", classLabel(class(object)), "\n")
+    cat("Number of colonies:", nColonies(object), "\n")
+    cat("Number of empty (NULL) colonies:", nNULLColonies(object), "\n")
+    invisible()
+  }
 )
 
 #' @describeIn Colonies-class Combine multiple colony and colonies objects
-setMethod(f = "c",
-          signature(x = "Colonies"),
-          definition = function(x, ...) {
-            for (y in list(...)) {
-              if (class(y) == "NULL") {
-                # Do nothing
-              } else if (class(y) == "Colony") {
-                x@colonies <- c(x@colonies, y)
-              } else if (class(y) == "Colonies") {
-                x@colonies <- c(x@colonies, y@colonies)
-              } else {
-                stop("... must be a NULL, Colony or Colonies class object!")
-              }
-            }
-            validObject(x)
-            return(x)
-          }
+setMethod(
+  f = "c",
+  signature(x = "Colonies"),
+  definition = function(x, ...) {
+    for (y in list(...)) {
+      if (class(y) == "NULL") {
+        # Do nothing
+      } else if (class(y) == "Colony") {
+        x@colonies <- c(x@colonies, y)
+      } else if (class(y) == "Colonies") {
+        x@colonies <- c(x@colonies, y@colonies)
+      } else {
+        stop("... must be a NULL, Colony or Colonies class object!")
+      }
+    }
+    validObject(x)
+    return(x)
+  }
 )
 
 #' @describeIn Colonies-class Combine multiple colony and colonies objects
-setMethod(f = "c",
-          signature(x = "ColoniesOrNULL"),
-          definition = function(x, ...) {
-            if (is.null(x)) {
-              colonies <- new(Class = "Colonies")
-            } else {
-              colonies <- new(Class = "Colonies", colonies = list(x))
-            }
-            for (y in list(...)) {
-              if (class(y) == "NULL") {
-                # Do nothing
-              } else if (class(y) == "Colony") {
-                colonies@colonies <- c(colonies@colonies, y)
-              } else if (class(y) == "Colonies") {
-                colonies@colonies <- c(colonies@colonies, y@colonies)
-              } else {
-                stop("... must be a NULL, Colony, or Colonies class object!")
-              }
-            }
-            validObject(colonies)
-            return(colonies)
-          }
+setMethod(
+  f = "c",
+  signature(x = "ColoniesOrNULL"),
+  definition = function(x, ...) {
+    if (is.null(x)) {
+      colonies <- new(Class = "Colonies")
+    } else {
+      colonies <- new(Class = "Colonies", colonies = list(x))
+    }
+    for (y in list(...)) {
+      if (class(y) == "NULL") {
+        # Do nothing
+      } else if (class(y) == "Colony") {
+        colonies@colonies <- c(colonies@colonies, y)
+      } else if (class(y) == "Colonies") {
+        colonies@colonies <- c(colonies@colonies, y@colonies)
+      } else {
+        stop("... must be a NULL, Colony, or Colonies class object!")
+      }
+    }
+    validObject(colonies)
+    return(colonies)
+  }
 )
 
 #' @describeIn Colonies-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
-setMethod(f = "[",
-          signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
-          definition = function(x, i, j, drop) {
-            x@colonies <- x@colonies[i]
-            validObject(x)
-            return(x)
-          }
+setMethod(
+  f = "[",
+  signature(x = "Colonies", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
+  definition = function(x, i, j, drop) {
+    x@colonies <- x@colonies[i]
+    validObject(x)
+    return(x)
+  }
 )
 
 #' @describeIn Colonies-class Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
-setMethod(f = "[",
-          signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
-          definition = function(x, i, j, drop) {
-            # match returns integers, so we then call the x[integer] method
-            ret <- x[match(x = i, table = getId(x))]
-            validObject(ret)
-            return(ret)
-          }
+setMethod(
+  f = "[",
+  signature(x = "Colonies", i = "character", j = "ANY", drop = "ANY"),
+  definition = function(x, i, j, drop) {
+    # match returns integers, so we then call the x[integer] method
+    ret <- x[match(x = i, table = getId(x))]
+    validObject(ret)
+    return(ret)
+  }
 )
 
 #' @describeIn Colonies-class Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
-setMethod(f = "[[",
-          signature(x = "Colonies", i = "integerOrNumericOrLogical"),
-          definition = function(x, i) {
-            n <- length(i)
-            if (n > 1) {
-              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
-            }
-            # ...@colonies[[i[1L]]] is to get just one colony
-            ret <- x@colonies[[i[1L]]]
-            validObject(ret)
-            return(ret)
-          }
+setMethod(
+  f = "[[",
+  signature(x = "Colonies", i = "integerOrNumericOrLogical"),
+  definition = function(x, i) {
+    n <- length(i)
+    if (n > 1) {
+      warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+    }
+    # ...@colonies[[i[1L]]] is to get just one colony
+    ret <- x@colonies[[i[1L]]]
+    validObject(ret)
+    return(ret)
+  }
 )
 
 #' @describeIn Colonies-class Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
-setMethod(f = "[[",
-          signature(x = "Colonies", i = "character"),
-          definition = function(x, i) {
-            n <- length(i)
-            if (n > 1) {
-              warning(paste("Selecting only the first colony out of ", n, " requested\n"))
-            }
-            # x[i[1L]] calls x[character]
-            # ...@colonies[[1L]] is to get just one colony
-            ret <- x[i[1L]]@colonies[[1L]]
-            validObject(ret)
-            return(ret)
-          }
+setMethod(
+  f = "[[",
+  signature(x = "Colonies", i = "character"),
+  definition = function(x, i) {
+    n <- length(i)
+    if (n > 1) {
+      warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+    }
+    # x[i[1L]] calls x[character]
+    # ...@colonies[[1L]] is to get just one colony
+    ret <- x[i[1L]]@colonies[[1L]]
+    validObject(ret)
+    return(ret)
+  }
 )
 
 #' @describeIn Colonies-class Assign colonies into colonies
 # There is also [[<- method for colony in Class-Colony.R
-setReplaceMethod(f = "[",
-                 signature(x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
-                           j = "ANY", value = "Colonies"),
-                 definition = function(x, i, j, value) {
-                   nCol <- nColonies(value)
-                   if (is.numeric(i)) {
-                     if (length(i) != nCol) {
-                       stop("Length of i (position index) does not match the number of assigned colonies!")
-                     }
-                     x@colonies[i] <- value@colonies
-                   } else if (is.logical(i)) {
-                     if (sum(i) != nCol) {
-                       stop("Number of TRUE values in i (position index) does not match the number of assigned colonies!")
-                     }
-                     x@colonies[i] <- value@colonies
-                   } else if (is.character(i)) {
-                     matches <- getId(x) %in% i
-                     if (sum(matches) != nCol) {
-                       stop("Number of matched colony names in x from i (name index) does not match the number of assigned colonies!")
-                     }
-                     x@colonies[matches] <- value@colonies
-                   }
-                   validObject(x)
-                   x
-                 })
+setReplaceMethod(
+  f = "[",
+  signature(
+    x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
+    j = "ANY", value = "Colonies"
+  ),
+  definition = function(x, i, j, value) {
+    nCol <- nColonies(value)
+    if (is.numeric(i)) {
+      if (length(i) != nCol) {
+        stop("Length of i (position index) does not match the number of assigned colonies!")
+      }
+      x@colonies[i] <- value@colonies
+    } else if (is.logical(i)) {
+      if (sum(i) != nCol) {
+        stop("Number of TRUE values in i (position index) does not match the number of assigned colonies!")
+      }
+      x@colonies[i] <- value@colonies
+    } else if (is.character(i)) {
+      matches <- getId(x) %in% i
+      if (sum(matches) != nCol) {
+        stop("Number of matched colony names in x from i (name index) does not match the number of assigned colonies!")
+      }
+      x@colonies[matches] <- value@colonies
+    }
+    validObject(x)
+    x
+  }
+)

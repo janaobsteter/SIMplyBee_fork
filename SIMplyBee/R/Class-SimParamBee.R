@@ -251,7 +251,7 @@ SimParamBee <- R6Class(
     addToCaste = function(id, caste) {
       tmp <- rep(x = caste[1], times = length(id))
       names(tmp) <- id
-      private$.caste = c(private$.caste, tmp)
+      private$.caste <- c(private$.caste, tmp)
       invisible(self)
     },
 
@@ -277,10 +277,9 @@ SimParamBee <- R6Class(
       if (!is.character(id)) {
         stop("Argument id must be a character!")
       }
-      private$.caste[id] = caste[1]
+      private$.caste[id] <- caste[1]
       invisible(self)
     }
-
   ),
 
   # Private ----
@@ -304,8 +303,10 @@ SimParamBee <- R6Class(
     #'   created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}
     caste = function(value) {
       if (missing(value)) {
-        factor(x = private$.caste, levels = c("Q", "F", "W", "D", "V"),
-               labels = list("queen", "fathers", "workers", "drones", "virginQueens"))
+        factor(
+          x = private$.caste, levels = c("Q", "F", "W", "D", "V"),
+          labels = list("queen", "fathers", "workers", "drones", "virginQueens")
+        )
       } else {
         stop("`$caste` is read only", call. = FALSE)
       }
@@ -371,15 +372,15 @@ SimParamBee <- R6Class(
     #'   generate this object
     version = function(value) {
       if (missing(value)) {
-        list("AlphaSimR" = private$.version,
-             "SIMplyBee" = private$.versionSIMplyBee)
+        list(
+          "AlphaSimR" = private$.version,
+          "SIMplyBee" = private$.versionSIMplyBee
+        )
       } else {
         stop("`$version` is read only", call. = FALSE)
       }
     }
-
   )
-
 )
 
 # isSimParamBee ----
@@ -397,7 +398,6 @@ SimParamBee <- R6Class(
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' isSimParamBee(SP)
-#'
 #' @export
 isSimParamBee <- function(x) {
   ret <- is(x, class2 = "SimParamBee")

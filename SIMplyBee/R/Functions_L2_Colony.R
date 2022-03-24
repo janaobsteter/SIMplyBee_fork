@@ -922,7 +922,8 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
       nVirginQueensNew <- round(nVirginQueens(x) * (1 - p))
       x@virginQueens <- selectInd(
         pop = x@virginQueens,
-        nInd = nVirginQueensNew, use = use)
+        nInd = nVirginQueensNew, use = use
+      )
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -972,18 +973,19 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
 #' @export
 removeWorkers <- function(x, p = 1, use = "rand") {
   if (isColony(x)) {
-      if (p > 1) {
-        stop("p must not be higher than 1!")
-      } else if (p < 0) {
-        stop("p must not be less than 0!")
-      } else if (p == 1) {
-        x@workers <- NULL
-      } else {
-        nWorkersNew <- round(nWorkers(x) * (1 - p))
-        x@workers <- selectInd(
-                               pop = x@workers,
-                               nInd = nWorkersNew, use = use)
-      }
+    if (p > 1) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    } else if (p == 1) {
+      x@workers <- NULL
+    } else {
+      nWorkersNew <- round(nWorkers(x) * (1 - p))
+      x@workers <- selectInd(
+        pop = x@workers,
+        nInd = nWorkersNew, use = use
+      )
+    }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
@@ -1041,7 +1043,8 @@ removeDrones <- function(x, p = 1, use = "rand") {
       nDronesNew <- round(nDrones(x) * (1 - p))
       x@drones <- selectInd(
         pop = x@drones,
-        nInd = nDronesNew, use = use)
+        nInd = nDronesNew, use = use
+      )
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -1512,10 +1515,10 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 40)
-#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10] )
+#' col1 <- createColony(queen = basePop[2], fathers = drones[1:10])
 #' col2 <- createColony(queen = basePop[3], fathers = drones[11:20])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col1 <- combine(strong = col1, weak = col2)
 #' rm(col2)
 #'
@@ -1524,9 +1527,9 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col3 <- createColony(queen = basePop[4], fathers = drones[21:30])
 #' col4 <- createColony(queen = basePop[5], fathers = drones[31:40])
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
-#' col4 <- buildUpColony(colony = col4, nWorkers =  20, nDrones =  2)
+#' col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
 #' colsStrong <- c(col1, col3)
 #' colsWeak <- c(col2, col4)
 #' cols <- combine(strong = colStrong, weak = colsWeak)
@@ -1537,14 +1540,14 @@ combine <- function(strong, weak) {
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
   } else if (isColonies(strong) & isColonies(weak)) {
-     if (nColonies(weak) == nColonies(strong)) {
-       nCol <- nColonies(weak)
-       for (colony in seq_len(nCol)) {
-         strong[[colony]] <- combine(strong = strong[[colony]], weak = weak[[colony]])
-       }
-     } else {
-       stop("Weak and strong colonies objects must be of the same length!")
-     }
+    if (nColonies(weak) == nColonies(strong)) {
+      nCol <- nColonies(weak)
+      for (colony in seq_len(nCol)) {
+        strong[[colony]] <- combine(strong = strong[[colony]], weak = weak[[colony]])
+      }
+    } else {
+      stop("Weak and strong colonies objects must be of the same length!")
+    }
   } else {
     stop("Argument strong and weak must both be either a Colony or Colonies class objects!")
   }
@@ -1642,12 +1645,12 @@ setLocation <- function(x, location) {
 #' @examples
 #' # TODO
 #'
-# TODO:
-# See
-#     https://github.com/HighlanderLab/SIMplyBee/issues/26
-#     https://github.com/HighlanderLab/SIMplyBee/issues/28
-#     https://github.com/HighlanderLab/SIMplyBee/issues/32
-#     https://github.com/HighlanderLab/SIMplyBee/issues/44
+#' # TODO:
+#' # See
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/44
 setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
