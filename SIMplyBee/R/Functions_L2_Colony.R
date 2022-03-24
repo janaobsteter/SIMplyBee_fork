@@ -587,6 +587,10 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, percentage of workers to remove from the colony
+#'     @references Seeley, T. (2019).
+#'     The Lives of Bees: The Untold Story of the Honey Bee in the Wild.
+#'      Princeton: Princeton University Press.
+#'      \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should the number of workers and drones be added anew or
