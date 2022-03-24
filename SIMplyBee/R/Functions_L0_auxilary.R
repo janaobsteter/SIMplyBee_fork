@@ -1248,13 +1248,8 @@ getCaste <- function(x, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- sapply(
-      X = x@id,
-      FUN = function(z) {
-        simParamBee$caste[z]
-      }
-    )
-    ret <- as.character(ret)
+    ret <- simParamBee$caste[x@id]
+    ret <- as.character(ret) #TODO: Do we want to return as a character or factor?
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")

@@ -12,7 +12,6 @@ simulateHoneyBeeGenomes(
   ploidy = 2L,
   nChr = 16L,
   nSegSites = 100L,
-  Ne = 170000L,
   nBp = 225200000/16,
   genLen = 3.199121,
   mutRate = 3.4e-09,
@@ -35,8 +34,6 @@ simulateHoneyBeeGenomes(
 
 \item{nSegSites}{integer, number of segregating sites to keep per chromosome}
 
-\item{Ne}{integer, effective population size}
-
 \item{nBp}{integer, base pair length of chromosome}
 
 \item{genLen}{numeric, genetic length of chromosome in Morgans}
@@ -48,6 +45,8 @@ simulateHoneyBeeGenomes(
 \item{nThreads}{integer, if OpenMP is available, this will allow for simulating
 chromosomes in parallel. If the value is NULL, the number of threads is
 automatically detected}
+
+\item{Ne}{integer, effective population size}
 }
 \value{
 \code{\link{MapPop-class}}

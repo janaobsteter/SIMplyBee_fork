@@ -1537,9 +1537,9 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
 #' col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
-#' colStrong <- c(col1, col3)
+#' colsStrong <- c(col1, col3)
 #' colsWeak <- c(col2, col4)
-#' cols <- combine(strong = colStrong, weak = colsWeak)
+#' cols <- combine(strong = colsStrong, weak = colsWeak)
 #' rm(colsWeak)
 #' @export
 combine <- function(strong, weak) {
