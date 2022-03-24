@@ -456,6 +456,9 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' @param p numeric, percentage of workers to remove from the colonies
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
+#' @param new logical, should the number of workers and drones be added anew or
+#'   should we only top-up the existing number of workers and drones to
+#'   \code{nWorkers} and \code{nDrones} (see details)
 
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 #'
@@ -470,18 +473,28 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' apiary <- downsizeColonies(colonies = apiary)
+#' apiary <- downsizeColonies(colonies = apiary, use = "rand", new = TRUE)
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # TODO: FIND REFERENCES for defaults
 #' #   https://github.com/HighlanderLab/SIMplyBee/issues/197
 #' @export
-downsizeColonies <- function(colonies, p = 0.85, use = "rand") {
+downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  colonies <- removeWorkers(x = colonies, p = p, use = "rand")
+  if (new == TRUE) {
+    nCol <- nColonies(colonies)
+    for (colony in seq_len(nCol)) {
+      colonies[[colony]] <- downsizeColony(
+        colony = colonies[[colony]],
+        p = p,
+        new = TRUE)
+    }
+  } else {
+    colonies <- removeWorkers(x = colonies, p = p)
+  }
   colonies <- removeDrones(x = colonies, p = 1)
   colonies <- removeVirginQueens(x = colonies, p = 1)
   validObject(colonies)
