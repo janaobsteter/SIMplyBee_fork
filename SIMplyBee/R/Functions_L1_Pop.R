@@ -937,8 +937,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'   Drones are pulled (removed) from the DCA to reflect the fact that drones
 #'   die after mating, so they can't be present in the DCA anymore.
 #'
-#' @param DCA \code{\link{Pop-class}}, population of drones;
-#'   \code{\link{isDrone}} test will be run on these individuals
+#' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param n integer, number of drone groups to be created
 #' @param nFathers numeric of function, number of drones (possible future
 #'   fathers) per group; if \code{NULL} then \code{simParamBee$nFathers} is used
@@ -973,6 +972,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
+  # doing "if (is.function(nFathers))" below
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nFathers)) {
@@ -980,7 +980,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
     } else {
       n <- nFathers
     }
-    if (nInd(DCA) < nFathers) {
+    if (nInd(DCA) < n) {
       stop("We ran out of drones in the DCA!")
     }
     tmp <- pullInd(pop = DCA, nInd = n)
@@ -1146,20 +1146,18 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @rdname crossVirginQueen
 #' @title Cross (mate) a virgin queen to a group drones
 #'
-#' @description Level 1 function that crossses (mates) a virgin queen to a group
+#' @description Level 1 function that crosses (mates) a virgin queen to a group
 #'   of drones. This function does not create any progeny, it only stores the
 #'   mated drones (fathers) so we can later create progeny as needed.
 #'
 #' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated;
 #'   \code{\link{isVirginQueen}} test will be run on these individuals
-#' @param fathers \code{\link{Pop-class}}, a group of drones that will be mated
+#' @param fathers \code{\link{Pop-class}}, a group of drones that could be mated
 #'   with virgin queen(s); if there is more than one virgin queen, then the
-#'   \code{fathers} are partitioned into multiple groups of average size of
-#'   \code{nFathers} using \code{\link{pullDroneGroupsFromDCA}};
-#'   \code{\link{isDrone}} test will be run on these individuals
+#'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
+#'    using \code{\link{pullDroneGroupsFromDCA}}
 #' @param nFathers numeric, average number of drones (fathers) used in mating
-#'   the virgin queen(s) - currently active only when multiple virgin queens
-#'   provided
+#'   the virgin queen(s)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1214,8 +1212,6 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' matedQueen3@misc[[1]]$pHomBrood
 #' @export
 crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) {
-  # TODO: set nFathers to NULL by default and then grab the value from
-  #       SimParamBee: https://github.com/HighlanderLab/SIMplyBee/issues/98
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1234,13 +1230,22 @@ crossVirginQueen <- function(pop, fathers, nFathers = NULL, simParamBee = NULL) 
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
-
+  # skipping "if (is.function(nFathers))" since we use it below or pass it to
+  # pullDroneGroupsFromDCA
   nVirginQueen <- nInd(pop)
   pop <- setMisc(x = pop, node = "caste", value = "Q")
   if (simParamBee$isTrackPed) {
     simParamBee$changeCaste(id = pop@id, caste = "Q")
   }
   if (nVirginQueen == 1) {
+    if (is.function(nFathers)) {
+      n <- nFathers()
+    } else {
+      n <- nFathers
+    }
+    # TODO: In crossVirginQueens we select drones for mating at random, should we use "use"?
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/205
+    fathers <- selectInd(pop = fathers, nInd = n, use = "rand")
     fathers <- setMisc(x = fathers, node = "caste", value = "F")
     if (simParamBee$isTrackPed) {
       simParamBee$changeCaste(id = fathers@id, caste = "F")
