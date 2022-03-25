@@ -603,7 +603,6 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
   }
 
   # Closely following AlphaSimR:::reduceGenome() and AlphaSimR:::mergeGenome()
-
   crossPlan <- cbind(
     match(x = queen@id, table = queen@id), # this handles more than one queen!
     match(
@@ -1156,7 +1155,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
 #' @param nFathers numeric, average number of drones (fathers) used in mating
-#'   the virgin queen(s)
+#'   the virgin queen(s); if \code{NULL} then \code{simParamBee$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
