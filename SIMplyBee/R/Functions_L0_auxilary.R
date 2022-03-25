@@ -1223,7 +1223,7 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #' getCasteSex(x = apiary)
 #' getCasteSex(x = apiary, caste = "virginQueens")
 #'
-#' # Create a data.frame with id, colony, and caste information
+#' # Create a data.frame with sex, colony, and caste information
 #' (tmpC <- getCaste(colony1))
 #' (tmpS <- getCasteSex(colony1))
 #' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS))
@@ -1243,7 +1243,6 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-
 getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
