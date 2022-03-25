@@ -4,13 +4,11 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x = NULL, yearOfBirth = NULL, location = NULL, simParamBee = NULL)
+createColony(x = NULL, location = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; error is thrown if more than one individual is given}
-
-\item{yearOfBirth}{numeric, year of birth of the queen}
 
 \item{location}{numeric, location of the colony as \code{c(x, y)}}
 

@@ -40,7 +40,8 @@ drones <- createDrones(x = basePop[1], nInd = 20)
 virginQueen1 <- basePop[2]
 (matedQueen1 <- crossVirginQueen(
   pop = virginQueen1,
-  fathers = drones[1:5]
+  drones = drones[1:5],
+  nFathers = 5
 ))
 isQueenMated(virginQueen1)
 isQueenMated(matedQueen1)
@@ -50,7 +51,8 @@ getFathers(matedQueen1)@id
 virginQueen2 <- basePop[3]
 (matedQueen2 <- crossVirginQueen(
   pop = virginQueen2,
-  fathers = drones[6:10]
+  drones = drones[6:10],
+  nFathers = 5
 ))
 isQueenMated(virginQueen2)
 isQueenMated(matedQueen2)
@@ -59,7 +61,7 @@ getFathers(matedQueen2)@id
 
 matedQueens <- crossVirginQueen(
   pop = c(basePop[4], basePop[5]),
-  fathers = drones[11:15], nFathers = 2
+  drones = drones[11:15], nFathers = 2
 )
 matedQueens
 isQueenMated(matedQueens)
@@ -69,7 +71,8 @@ getFathers(matedQueens)
 # Inbred mated queen (mated with her own sons)
 matedQueen3 <- crossVirginQueen(
   pop = basePop[1],
-  fathers = drones[16:20]
+  drones = drones[16:20],
+  nFathers = 5
 )
 # Check the theoretical homozygosity
 matedQueen3@misc[[1]]$pHomBrood

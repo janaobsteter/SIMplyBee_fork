@@ -44,9 +44,12 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 15)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-#' colony3 <- createColony(queen = basePop[4], fathers = drones[11:15])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' colony3 <- createColony(x = basePop[4])
+#' colony3 <- crossColony(colony3, drones = drones[11:15], nFathers = 5)
 #'
 #' colony1
 #' show(colony1)

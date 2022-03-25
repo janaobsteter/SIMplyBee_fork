@@ -7,17 +7,14 @@
 #'   start a simulation.
 #'
 #' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
-#'   (selected at random if there are more than \code{n} in \code{Pop});
-#'   \code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
-#'   individuals
+#'   (selected at random if there are more than \code{n} in \code{Pop})
 #' @param n integer, number of colonies to create (if only \code{nCol} is
 #'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 #'   (\code{NULL}) individual colony) - this is mostly useful for programming)
-#' @param yearOfBirth numeric, year of birth of the queens
-#' @param location numeric, location of the colonies as \code{c(x, y)}
+#' @param location list, location of the colonies as \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
+#' @details When both \code{x} and \code{nCol} are \code{NULL}, then an empty
 #'   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
 #'
 #' @return \code{\link{Colonies-class}}
@@ -34,7 +31,7 @@
 #' apiary[[2]]
 #'
 #' # Create 2 mated colonies
-#' apiary <- createColonies(pop = basePop, n = 2)
+#' apiary <- createColonies(x = basePop, n = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -48,7 +45,7 @@
 #' apiary[[2]]
 #' @export
 createColonies <- function(x = NULL, n = NULL,
-                           yearOfBirth = NULL, location = NULL,
+                           location = NULL,
                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -76,7 +73,6 @@ createColonies <- function(x = NULL, n = NULL,
     for (colony in seq_len(n)) {
       ret[[colony]] <- createColony(
         x = x[colony],
-        yearOfBirth = yearOfBirth[colony],
         location = location[colony],
         simParamBee = simParamBee
       )
@@ -107,11 +103,15 @@ createColonies <- function(x = NULL, n = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' founderDrones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
-#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' drones <- createDrones(x = basePop[1:4], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
+#' colony3 <- createColony(x = basePop[4])
+#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
+#' colony4 <- createColony(x = basePop[5])
+#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
 #' apiary <- c(colony1, colony2, colony3, colony4)
 #' getId(apiary)
 #'
@@ -190,11 +190,15 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' founderDrones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
-#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' drones <- createDrones(x = basePop[1:4], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
+#' colony3 <- createColony(x = basePop[4])
+#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
+#' colony4 <- createColony(x = basePop[5])
+#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
 #' apiary <- c(colony1, colony2, colony3, colony4)
 #' getId(apiary)
 #'
@@ -274,11 +278,15 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' founderDrones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(queen = basePop[5], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[6], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[7], fathers = founderDrones[21:30])
-#' colony4 <- createColony(queen = basePop[8], fathers = founderDrones[31:40])
+#' drones <- createDrones(x = basePop[1:4], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
+#' colony3 <- createColony(x = basePop[4])
+#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
+#' colony4 <- createColony(x = basePop[5])
+#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
 #' apiary <- c(colony1, colony2, colony3, colony4)
 #' getId(apiary)
 #'
@@ -339,8 +347,10 @@ removeColonies <- function(colonies, ID) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' apiary <- c(colony1, colony2)
 #' isProductive(apiary)
 #' apiary[[1]]
@@ -445,7 +455,9 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' apiary <- createColonies(pop = basePop, n = 2)
+#' apiary <- createColonies(x = basePop[1:2], n = 2)
+#' drones <- createDrones(x = basePop[3:4], nInd = 20)
+#' apiary <- crossColonies(apiary, drones = drones, nFathers = 5)
 #' apiary <- buildUpColonies(apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 20)
 #' apiary[[1]]
@@ -489,8 +501,12 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' drones <- createDrones(x = basePop[1:4], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
@@ -504,7 +520,7 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
 #'
 #' matedQueens <- crossVirginQueen(
 #'   pop = basePop[4:5],
-#'   fathers = drones[11:20], nFathers = 2
+#'   drones = drones[11:20], nFathers = 2
 #' )
 #' apiary3 <- reQueenColonies(apiary, queen = matedQueens)
 #' apiary3
@@ -559,8 +575,8 @@ reQueenColonies <- function(colonies, queens) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 30)
-#' colony1 <- createColony(virginQueen = basePop[2])
-#' colony2 <- createColony(virginQueen = basePop[3])
+#' colony1 <- createColony(x = basePop[2])
+#' colony2 <- createColony(x = basePop[3])
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
@@ -626,9 +642,13 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' founderDrones <- createDrones(x = basePop[1], nInd = 30)
-#' colony1 <- createColony(queen = basePop[2], fathers = founderDrones[1:10])
-#' colony2 <- createColony(queen = basePop[3], fathers = founderDrones[11:20])
-#' colony3 <- createColony(queen = basePop[4], fathers = founderDrones[21:30])
+#' drones <- createDrones(x = basePop[1:4], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
+#' colony3 <- createColony(x = basePop[4])
+#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
 #' apiary <- c(colony1, colony2, colony3)
 #' apiary
 #' hasCollapsed(apiary)
@@ -673,9 +693,11 @@ collapseColonies <- function(colonies) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony2 <- buildUpColony(colony2, nWorkers = 100)
 #' apiary <- c(colony1, colony2)
 #' apiary
@@ -741,9 +763,11 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony2 <- buildUpColony(colony2, nWorkers = 100)
 #' apiary <- c(colony1, colony2)
 #' apiary
@@ -795,9 +819,11 @@ supersedeColonies <- function(colonies, year = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony2 <- buildUpColony(colony2, nWorkers = 100)
 #' apiary <- c(colony1, colony2)
 #' apiary

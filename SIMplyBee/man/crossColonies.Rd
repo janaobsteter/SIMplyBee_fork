@@ -33,8 +33,8 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 30)
-colony1 <- createColony(virginQueen = basePop[2])
-colony2 <- createColony(virginQueen = basePop[3])
+colony1 <- createColony(x = basePop[2])
+colony2 <- createColony(x = basePop[3])
 apiary <- c(colony1, colony2)
 apiary
 apiary[[1]]

@@ -9,6 +9,7 @@ getColonyIbdHaplo(
   caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   chr = NULL,
+  snpChip = NULL,
   dronesHaploid = TRUE,
   simParamBee = NULL
 )
@@ -26,6 +27,9 @@ access different number of different caste - when this is the case
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{snpChip}{integer, indicating which SNP array loci are to be retrieved,
+if \code{NULL}, all sites are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
 
@@ -49,8 +53,10 @@ SP$setTrackRec(isTrackRec = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+colony1 <- createColony(x = basePop[2])
+colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+colony2 <- createColony(x = basePop[3])
+colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 2)
