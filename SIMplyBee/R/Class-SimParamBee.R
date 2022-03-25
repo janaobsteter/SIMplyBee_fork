@@ -238,7 +238,8 @@ SimParamBee <- R6Class(
     #' basePop <- createVirginQueens(founderGenomes)
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
-    #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+    #' colony <- createColony(x = basePop[2])
+    #' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
     #' colony <- addWorkers(colony, nInd = 5)
     #' colony <- addDrones(colony, nInd = 5)
     #' colony <- addVirginQueens(colony, nInd = 2)
@@ -267,7 +268,8 @@ SimParamBee <- R6Class(
     #' SP$caste
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
-    #' colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+    #' colony <- createColony(x = basePop[2])
+    #' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
     #' SP$pedigree
     #' SP$caste
     changeCaste = function(id, caste) {

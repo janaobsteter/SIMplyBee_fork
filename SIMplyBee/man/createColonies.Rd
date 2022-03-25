@@ -4,25 +4,15 @@
 \alias{createColonies}
 \title{Create colonies}
 \usage{
-createColonies(
-  x = NULL,
-  n = NULL,
-  yearOfBirth = NULL,
-  location = NULL,
-  simParamBee = NULL
-)
+createColonies(x = NULL, n = NULL, location = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
-(selected at random if there are more than \code{n} in \code{Pop});
-\code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
-individuals}
+(selected at random if there are more than \code{n} in \code{Pop})}
 
 \item{n}{integer, number of colonies to create (if only \code{nCol} is
 given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 (\code{NULL}) individual colony) - this is mostly useful for programming)}
-
-\item{yearOfBirth}{numeric, year of birth of the queens}
 
 \item{location}{numeric, location of the colonies as \code{c(x, y)}}
 
@@ -36,7 +26,7 @@ Level 3 function that creates a set of colonies. Usually to
   start a simulation.
 }
 \details{
-When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
+When both \code{x} and \code{nCol} are \code{NULL}, then an empty
   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
 }
 \examples{
@@ -51,7 +41,7 @@ apiary[[1]]
 apiary[[2]]
 
 # Create 2 mated colonies
-apiary <- createColonies(pop = basePop, n = 2)
+apiary <- createColonies(x = basePop, n = 2)
 apiary
 apiary[[1]]
 apiary[[2]]

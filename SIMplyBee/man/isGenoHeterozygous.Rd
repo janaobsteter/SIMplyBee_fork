@@ -22,7 +22,8 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
-colony1 <- createColony(queen = basePop[2], fathers = drones)
+colony1 <- createColony(x = basePop[2])
+colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
 colony1 <- addWorkers(colony1, nInd = 10)
 colony1 <- addVirginQueens(colony1, nInd = 10)
 

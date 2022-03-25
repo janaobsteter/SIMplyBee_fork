@@ -22,7 +22,8 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 20)
-colony <- createColony(queen = basePop[2], fathers = drones[1:5])
+colony <- createColony(x = basePop[2])
+colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
 colony
 hasSwarmed(colony)
 colony <- buildUpColony(colony, nWorkers = 100)
@@ -33,8 +34,11 @@ tmp
 hasSwarmed(tmp$swarm)
 hasSwarmed(tmp$remnant)
 
-colony1 <- createColony(queen = basePop[3], fathers = drones[6:10])
-colony2 <- createColony(queen = basePop[4], fathers = drones[11:15])
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony1 <- createColony(x = basePop[3])
+colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+colony2 <- createColony(x = basePop[4])
+colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 apiary <- c(colony1, colony2)
 apiary <- buildUpColonies(apiary, nWorkers = 100)
 tmp <- swarmColonies(apiary)
