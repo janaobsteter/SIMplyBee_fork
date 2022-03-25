@@ -6,25 +6,15 @@
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
 #'
-#' @param pop \code{\link{Pop-class}}, virgin queens or queens for the colonies
+#' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
 #'   (selected at random if there are more than \code{n} in \code{Pop});
 #'   \code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
 #'   individuals
 #' @param n integer, number of colonies to create (if only \code{nCol} is
 #'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 #'   (\code{NULL}) individual colony) - this is mostly useful for programming)
-#' @param mated logical, create mated or unmated (virgin) colonies; if mated,
-#'   then \code{nInd(pop)-n} individuals from \code{pop} are used to create
-#'   drones with which the queens will mate with
-#' @param nFathers numeric of function, number of drones that a queen mates with;
-#'   if \code{NULL} then \code{simParamBee$nFathers} is used
-#' @param nDronesPerQueen integer, number of drones to generate per individual
-#'   in the \code{pop} for mating with the queens
-#'   TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
-#'        here and if its NULL we grab value from simParamBee, otherwise use it
-#'        from the user
-#'        ttps://github.com/HighlanderLab/SIMplyBee/issues/26
-#' @param yearOfBirth numeric, year of birth of the queen
+#' @param yearOfBirth numeric, year of birth of the queens
+#' @param location numeric, location of the colonies as \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
@@ -50,62 +40,47 @@
 #' apiary[[2]]
 #'
 #' # Create 2 unmated/virgin colonies
-#' apiary <- createColonies(pop = basePop, n = 2, mated = FALSE)
+#' apiary <- createColonies(x = basePop[1:2], n = 2)
+#' drones <- createDrones(x = basePop[3], n = 50)
+#' apiary <- crossColonies(apiary, drones = drones, nFathers = 15)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-createColonies <- function(pop = NULL, n = NULL, mated = TRUE,
-                           nFathers = NULL, nDronesPerQueen = 100,
-                           yearOfBirth = NULL, simParamBee = NULL) {
+createColonies <- function(x = NULL, n = NULL,
+                           yearOfBirth = NULL, location = NULL,
+                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (!is.null(pop)) {
-    if (!isPop(pop)) {
-      stop("Argument pop must be a Pop class object!")
-    }
-    if (any(!(isVirginQueen(pop) | isQueen(pop)))) {
-      stop("Individuals in pop must be virgin queens or queens!")
-    }
-    if (nInd(pop) < n) {
-      stop("Not enough individuals in the pop to create n colonies!")
-    }
-    if (is.null(nFathers)) {
-      nFathers <- simParamBee$nFathers
-    }
-    # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
-    ret <- new("Colonies", colonies = vector(mode = "list", length = n))
-    if (mated) {
-      if (nInd(pop) < (n + 1)) {
-        stop("You must provide at least n+1 individuals in the pop to create n mated colonies!")
-      }
-      tmp <- pullInd(pop = pop, nInd = n)
-      queens <- tmp$pulled
-      DCA <- createDrones(x = tmp$remainder, nInd = nDronesPerQueen)
-      fatherPackages <- pullDroneGroupsFromDCA(DCA, n = n, nFathers = nFathers)
-      for (colony in seq_len(n)) {
-        ret[[colony]] <- createColony(
-          queen = queens[colony],
-          fathers = fatherPackages[[colony]],
-          yearOfBirth = yearOfBirth,
-          simParamBee = simParamBee
-        )
-      }
+  if (is.null(x)) {
+    if (is.null(n)) {
+      ret <- new(Class = "Colonies")
     } else {
-      virginQueens <- selectInd(pop, nInd = n, use = "rand")
-      for (colony in seq_len(n)) {
-        ret[[colony]] <- createColony(
-          virginQueens = virginQueens[colony],
-          yearOfBirth = yearOfBirth,
-          simParamBee = simParamBee
-        )
-      }
+      ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
     }
-  } else if (!is.null(n)) {
-    ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
   } else {
-    ret <- new(Class = "Colonies")
+    if (!isPop(x)) {
+      stop("Argument x must be a Pop class object!")
+    }
+    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+      stop("Individuals in x must be virgin queens or queens!")
+    }
+    if (nInd(x) < n) {
+      stop("Not enough individuals in the x to create n colonies!")
+    }
+
+    # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
+
+    ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
+    for (colony in seq_len(n)) {
+      ret[[colony]] <- createColony(
+        x = x[colony],
+        yearOfBirth = yearOfBirth[colony],
+        location = location[colony],
+        simParamBee = simParamBee
+      )
+    }
   }
   validObject(ret)
   return(ret)
@@ -483,7 +458,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
-  }  
+  }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- downsizeColony(
@@ -619,13 +594,14 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
   } else {
     ret <- createColonies(n = nCol)
     fatherGroups <- pullDroneGroupsFromDCA(DCA = drones,
-      n = nCol,
-      nFathers = nFathers
+                                           n = nCol,
+                                           nFathers = nFathers
     )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
-        drones = fatherGroups[[colony]],
-        simParamBee = simParamBee
+                                   drones = fatherGroups[[colony]],
+                                   nFathers = nFathers,
+                                   simParamBee = simParamBee
       )
     }
   }
@@ -790,7 +766,7 @@ supersedeColonies <- function(colonies, year = NULL) {
   } else {
     for (colony in seq_len(nCol)) {
       colonies[[colony]] <- supersedeColony(colonies[[colony]],
-        year = year
+                                            year = year
       )
     }
   }
@@ -902,8 +878,8 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-      FUN = FUN, ...,
-      simParamBee = simParamBee
+                                         FUN = FUN, ...,
+                                         simParamBee = simParamBee
     )
   }
   validObject(colonies)

@@ -26,8 +26,6 @@ Level 2 function that sets phenotypes for all individuals in
   THIS FUNCTION IS UNDER DEVELOPMENT - BEST IF YOU DON'T USE IT JUST YET!
 }
 \examples{
-# TODO
-
 # TODO:
 # See
 #     https://github.com/HighlanderLab/SIMplyBee/issues/26

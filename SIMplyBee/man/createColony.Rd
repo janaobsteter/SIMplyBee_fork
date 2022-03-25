@@ -4,29 +4,15 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(
-  location = NULL,
-  queen = NULL,
-  yearOfBirth = NULL,
-  fathers = NULL,
-  virginQueens = NULL,
-  simParamBee = NULL
-)
+createColony(x = NULL, yearOfBirth = NULL, location = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{location}{numeric, location of the colony as \code{c(x, y)}}
-
-\item{queen}{\code{\link{Pop-class}} with one individual that will be the
+\item{x}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; error is thrown if more than one individual is given}
 
 \item{yearOfBirth}{numeric, year of birth of the queen}
 
-\item{fathers}{\code{\link{Pop-class}} with drones that the queen will mate
-with as part of this function (if she is already mated, a warning is given
-and the fathers argument is ignored)}
-
-\item{virginQueens}{\code{\link{Pop-class}} with one or more individuals of
-which one will become the queen of the colony in the future}
+\item{location}{numeric, location of the colony as \code{c(x, y)}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -42,10 +28,11 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(queen = basePop[2], fathers = drones)
+drones <- createDrones(x = basePop[1], nInd = 50)
+colony1 <- createColony(x = basePop[2])
+colony1 <- crossColony(colony1, drones = drones, nFathers = 15)
 colony1
 
-colony2 <- createColony(virginQueens = basePop[3])
+colony2 <- createColony(x = basePop[3])
 colony2
 }

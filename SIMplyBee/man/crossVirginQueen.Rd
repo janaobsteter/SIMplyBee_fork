@@ -4,21 +4,19 @@
 \alias{crossVirginQueen}
 \title{Cross (mate) a virgin queen to a group drones}
 \usage{
-crossVirginQueen(pop, fathers, nFathers = NULL, simParamBee = NULL)
+crossVirginQueen(pop, drones, nFathers = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated;
 \code{\link{isVirginQueen}} test will be run on these individuals}
 
-\item{fathers}{\code{\link{Pop-class}}, a group of drones that will be mated
+\item{drones}{\code{\link{Pop-class}}, a group of drones that could be mated
 with virgin queen(s); if there is more than one virgin queen, then the
-\code{fathers} are partitioned into multiple groups of average size of
-\code{nFathers} using \code{\link{pullDroneGroupsFromDCA}};
-\code{\link{isDrone}} test will be run on these individuals}
+\code{fathers} are partitioned into multiple groups of \code{nFathers} size
+ using \code{\link{pullDroneGroupsFromDCA}}}
 
 \item{nFathers}{numeric, average number of drones (fathers) used in mating
-the virgin queen(s) - currently active only when multiple virgin queens
-provided}
+the virgin queen(s)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -28,7 +26,7 @@ contains additional information about the number of workers, drones and homozygo
 brood produced and the theoretical percentage of homozygous brood.
 }
 \description{
-Level 1 function that crossses (mates) a virgin queen to a group
+Level 1 function that crosses (mates) a virgin queen to a group
   of drones. This function does not create any progeny, it only stores the
   mated drones (fathers) so we can later create progeny as needed.
 }

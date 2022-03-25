@@ -4,15 +4,18 @@
 \alias{downsizeColony}
 \title{Reduce number of workers and remove all drones and virgin queens from hive}
 \usage{
-downsizeColony(colony, p = 0.85, use = "rand")
+downsizeColony(colony, p = 0.85, use = "rand", new = FALSE)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{numeric, percentage of workers to remove from the colony}
+\item{p}{numeric, percentage of workers to remove from the colony (Seeley, 2019)}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}
+
+\item{new}{logical, should we remove all current workers and add a targeted
+proportion anew (say, create winter workers)}
 }
 \value{
 \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
@@ -26,14 +29,16 @@ Level 2 function that downsizes colony by removing a percentage of
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], n = 10)
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(queen = basePop[2], fathers = drones)
 colony <- buildUpColony(colony)
 colony <- addVirginQueens(x = colony, nInd = 10)
 colony
-colony <- downsizeColony(colony = colony)
+colony <- downsizeColony(colony = colony, new = TRUE, use = "rand")
 colony
-
-# TODO: FIND REFERENCES for defaults
-#   https://github.com/HighlanderLab/SIMplyBee/issues/197
+}
+\references{
+Seeley (2019) The Lives of Bees: The Untold Story of the Honey
+  Bee in the Wild. Princeton: Princeton University Press.
+  \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 }

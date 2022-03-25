@@ -6,15 +6,10 @@
 #' @description Level 2 function that creates a new \code{\link{Colony-class}}
 #'   to initiate simulations.
 #'
-#' @param location numeric, location of the colony as \code{c(x, y)}
-#' @param queen \code{\link{Pop-class}} with one individual that will be the
+#' @param x \code{\link{Pop-class}} with one individual that will be the
 #'   queen of the colony; error is thrown if more than one individual is given
 #' @param yearOfBirth numeric, year of birth of the queen
-#' @param fathers \code{\link{Pop-class}} with drones that the queen will mate
-#'   with as part of this function (if she is already mated, a warning is given
-#'   and the fathers argument is ignored)
-#' @param virginQueens \code{\link{Pop-class}} with one or more individuals of
-#'   which one will become the queen of the colony in the future
+#' @param location numeric, location of the colony as \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
@@ -24,19 +19,34 @@
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones)
+#' drones <- createDrones(x = basePop[1], nInd = 50)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones, nFathers = 15)
 #' colony1
 #'
-#' colony2 <- createColony(virginQueens = basePop[3])
+#' colony2 <- createColony(x = basePop[3])
 #' colony2
 #' @export
-createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
-                         fathers = NULL, virginQueens = NULL,
+createColony <- function(x = NULL,
+                         yearOfBirth = NULL, location = NULL,
                          simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+
+  if (is.null(x)) {
+    queen <- NULL
+    virginQueens <- NULL
+  } else if (isQueen(x)) {
+    queen <- x
+    virginQueens < NULL
+  } else if (isVirginQueen(x)) {
+    queen <- NULL
+    virginQueens <- x
+  } else {
+    stop("Individual in x must be a virgin queen or a queen or NULL!")
+  }
+
   if (is.null(queen)) {
     id <- as.character(NA)
   } else {
@@ -46,9 +56,6 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
     if (nInd(queen) > 1) {
       stop("You must provide just one queen for the colony!")
     }
-    if (!(isVirginQueen(queen) | isQueen(queen))) {
-      stop("Individual in queen must be a virgin queen or a queen!")
-    }
     id <- queen@id
     if (!is.null(yearOfBirth)) {
       if (is.null(queen@misc[[1]]$yearOfBirth)) {
@@ -56,27 +63,8 @@ createColony <- function(location = NULL, queen = NULL, yearOfBirth = NULL,
       } else {
         warning("The queen already has the year of birth set - ignoring the yearOfBirth argument!")
       }
-    }
-    if (!is.null(fathers)) {
-      if (!isPop(fathers)) {
-        stop("Argument fathers must be a Pop class object!")
-      }
-      if (any(!isDrone(fathers))) {
-        stop("Individuals in fathers must be drones!")
-      }
-      if (isQueenMated(queen)) {
-        warning("The queen is already mated - ignoring the fathers argument!")
-      } else {
-        queen <- crossVirginQueen(
-          pop = queen, drones = fathers,
-          simParamBee = simParamBee
-        )
-      }
-    }
-    if (!is.null(virginQueens)) {
-      stop("You can provide only queen or virgin queen(s).")
-    }
-  }
+     }
+   }
   colony <- new(
     Class = "Colony",
     id = id,
