@@ -1226,13 +1226,15 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #' # Create a data.frame with sex, colony, and caste information
 #' (tmpC <- getCaste(colony1))
 #' (tmpS <- getCasteSex(colony1))
-#' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS))
+#' (tmpI <- getCasteId(colony1))
+#' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS), id = unlist(tmpI))
 #' head(tmp)
 #' tail(tmp)
 #'
 #' (tmpC <- getCaste(apiary))
 #' (tmpS <- getCasteSex(apiary))
-#' (tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS)))
+#' (tmpI <- getCasteId(apiary))
+#' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS), id = unlist(tmpI))
 #' tmp$colony <- sapply(
 #'   X = strsplit(
 #'     x = rownames(tmp), split = ".",
