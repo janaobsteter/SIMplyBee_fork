@@ -130,11 +130,8 @@ to work with - you will want to change this!}
 
 \item{\code{nFathers}}{numeric or function, default number of drones
 a queen mates with; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function() someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to have some fathers to work with -
-you will want to change this!}
+functions and work with the internals of those functions; see
+\code{\link{nFathersPoisson}} and \code{\link{nFathersTruncPoisson}}}
 
 \item{\code{pSwarm}}{numeric or a function, the percentage of workers that leave
 with the old queen when the colony swarms; if a function, it will be passed to other
@@ -262,7 +259,7 @@ genomes}
 
 \item{\code{nVirginQueens}}{see \code{\link{SimParamBee}} field \code{nVirginQueens}}
 
-\item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nVirginQueens}}
+\item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nFathers}}
 
 \item{\code{pSwarm}}{see \code{\link{SimParamBee}} field \code{pSwarm}}
 

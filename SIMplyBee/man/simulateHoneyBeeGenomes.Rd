@@ -45,8 +45,6 @@ simulateHoneyBeeGenomes(
 \item{nThreads}{integer, if OpenMP is available, this will allow for simulating
 chromosomes in parallel. If the value is NULL, the number of threads is
 automatically detected}
-
-\item{Ne}{integer, effective population size}
 }
 \value{
 \code{\link{MapPop-class}}

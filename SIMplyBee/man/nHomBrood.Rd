@@ -36,7 +36,7 @@ colony2 <- addDrones(colony2, nInd = 20)
 try(nHomBrood(basePop[2]))
 
 # Mated queen
-nHomBrood(crossVirginQueen(pop = basePop[4], fathers = drones[11:15]))
+nHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15]))
 
 # Queen of the colony
 nHomBrood(getQueen(colony1))
