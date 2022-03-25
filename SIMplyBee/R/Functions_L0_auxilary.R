@@ -1175,6 +1175,111 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
   return(ret)
 }
 
+#' @rdname getCasteSex
+#' @title Get sex of individuals of a caste, or sex of all members of colony
+#'
+#' @description Level 0 function that returns the sex individuals of a caste. To
+#'   get the individuals, use \code{\link{getCastePop}}. To get individuals'
+#'   caste, use \code{\link{getCaste}}.
+#'
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+#'   \code{\link{Colonies-class}}
+#' @param caste character, "queen", "fathers", "virginQueens", "workers",
+#'   "drones", or "all"
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @seealso \code{\link{getCaste}}
+#'
+#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#'  or list for \code{caste == "all"} with sex nodes named by caste;
+#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'   or named list for \code{caste == "all"} indluding caste members sexes;
+#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members sexes
+#'
+#' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
+#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#'
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony1 <- addVirginQueens(colony1, nInd = 4)
+#' colony1 <- addDrones(colony1, nInd = 2)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#'
+#' apiary <- c(colony1, colony2)
+#'
+#' getCasteSex(x = drones)
+#' getCasteSex(x = colony1)
+#' getCasteSex(x = colony1, caste = "workers")
+#' getCasteSex(x = apiary)
+#' getCasteSex(x = apiary, caste = "virginQueens")
+#'
+#' # Create a data.frame with id, colony, and caste information
+#' (tmpC <- getCaste(colony1))
+#' (tmpS <- getCasteSex(colony1))
+#' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS))
+#' head(tmp)
+#' tail(tmp)
+#'
+#' (tmpC <- getCaste(apiary))
+#' (tmpS <- getCasteSex(apiary))
+#' (tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS)))
+#' tmp$colony <- sapply(
+#'   X = strsplit(
+#'     x = rownames(tmp), split = ".",
+#'     fixed = TRUE
+#'   ),
+#'   FUN = function(z) z[[1]]
+#' )
+#' head(tmp)
+#' tail(tmp)
+#' @export
+
+getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isPop(x)) {
+    ret <- x@sex
+  } else if (isColony(x)) {
+    if (caste == "all") {
+      ret <- vector(mode = "list", length = 5)
+      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      for (caste in names(ret)) {
+        tmp <- getCastePop(x = x, caste = caste)
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- tmp@sex
+        }
+      }
+    } else {
+      tmp <- getCastePop(x = x, caste = caste)
+      if (is.null(tmp)) {
+        ret <- NULL
+      } else {
+        ret <- tmp@sex
+      }
+    }
+  } else if (isColonies(x)) {
+    fun <- ifelse(caste == "all", lapply, sapply)
+    ret <- fun(X = x@colonies, FUN = getCasteSex, caste = caste)
+    names(ret) <- getCaste(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+  }
+  return(ret)
+}
+
 #' @rdname getCaste
 #' @title Report caste of an individual
 #'
