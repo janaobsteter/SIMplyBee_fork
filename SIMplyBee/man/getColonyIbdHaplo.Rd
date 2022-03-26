@@ -9,6 +9,7 @@ getColonyIbdHaplo(
   caste = c("queen", "fathers", "virginQueens", "workers", "drones"),
   nInd = NULL,
   chr = NULL,
+  snpChip = NULL,
   dronesHaploid = TRUE,
   simParamBee = NULL
 )
@@ -26,6 +27,9 @@ access different number of different caste - when this is the case
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{snpChip}{integer, indicating which SNP array loci are to be retrieved,
+if \code{NULL}, all sites are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
 

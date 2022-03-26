@@ -14,28 +14,43 @@ getCasteIbdHaplo(
   caste,
   nInd = NULL,
   chr = NULL,
+  snpChip = NULL,
   dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
-getQueensIbdHaplo(x, chr = NULL, simParamBee = NULL)
+getQueensIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
 
 getFathersIbdHaplo(
   x,
   nInd = NULL,
   chr = NULL,
+  snpChip = NULL,
   dronesHaploid = TRUE,
   simParamBee = NULL
 )
 
-getVirginQueensIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getVirginQueensIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  simParamBee = NULL
+)
 
-getWorkersIbdHaplo(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getWorkersIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  simParamBee = NULL
+)
 
 getDronesIbdHaplo(
   x,
   nInd = NULL,
   chr = NULL,
+  snpChip = NULL,
   dronesHaploid = TRUE,
   simParamBee = NULL
 )
@@ -51,6 +66,9 @@ individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{snpChip}{integer, indicating which SNP array loci are to be retrieved,
+if \code{NULL}, all sites are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
 
