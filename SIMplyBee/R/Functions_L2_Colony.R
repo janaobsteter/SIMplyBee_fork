@@ -1667,6 +1667,7 @@ setLocation <- function(x, location) {
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/44
+#' @export
 setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
