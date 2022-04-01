@@ -4,7 +4,7 @@
 #' @title Access individuals of a caste
 #'
 #' @description Level 1 function that returns individuals of a caste. These
-#'   individuals stay in the colony (compared to \code{\link{pullCaste}}).
+#'   individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 #'
 #' @param x Colony or Colonies
 #' @param caste character, "queen", "fathers", "virginQueens", "workers",
@@ -987,7 +987,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
   return(ret)
 }
 
-#' @rdname pullCaste
+#' @rdname pullCastePop
 #' @title Pull individuals from a caste in a colony
 #'
 #' @description Level 1 function that pulls individuals from a caste in a
@@ -1025,50 +1025,50 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 5)
 #' colony2 <- addDrones(colony2, nInd = 6)
-#' pullCaste(colony1, caste = "queen")
+#' pullCastePop(colony1, caste = "queen")
 #' pullQueen(colony1)
 #'
-#' pullCaste(colony1, caste = "virginQueens")
-#' pullCaste(colony1, caste = "virginQueens", nInd = 2)
+#' pullCastePop(colony1, caste = "virginQueens")
+#' pullCastePop(colony1, caste = "virginQueens", nInd = 2)
 #' pullVirginQueens(colony1)
 #' pullVirginQueens(colony1, nInd = 2)
 #'
-#' pullCaste(colony1, caste = "workers")
-#' pullCaste(colony1, caste = "workers", nInd = 5)
+#' pullCastePop(colony1, caste = "workers")
+#' pullCastePop(colony1, caste = "workers", nInd = 5)
 #' pullWorkers(colony1)
 #' pullWorkers(colony1, nInd = 5)
 #'
-#' pullCaste(colony1, caste = "drones")
-#' pullCaste(colony1, caste = "drones", nInd = 5)
+#' pullCastePop(colony1, caste = "drones")
+#' pullCastePop(colony1, caste = "drones", nInd = 5)
 #' pullDrones(colony1)
 #' pullDrones(colony1, nInd = 5)
 #'
 #' apiary <- c(colony1, colony2)
 #'
-#' pullCaste(apiary, caste = "queen")
+#' pullCastePop(apiary, caste = "queen")
 #' pullQueen(apiary)
 #' nQueens(apiary)
 #' nQueens(pullQueen(apiary)$colonies)
 #'
-#' pullCaste(apiary, caste = "virginQueens")
+#' pullCastePop(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
 #' nVirginQueens(apiary)
 #' nVirginQueens(pullVirginQueens(apiary)$colonies)
 #' nVirginQueens(pullVirginQueens(apiary, nInd = 5)$colonies)
 #'
-#' pullCaste(apiary, caste = "workers")
+#' pullCastePop(apiary, caste = "workers")
 #' pullWorkers(apiary)
 #' nWorkers(apiary)
 #' nWorkers(pullWorkers(apiary)$colonies)
 #' nWorkers(pullWorkers(apiary, nInd = 5)$colonies)
 #'
-#' pullCaste(apiary, caste = "drones")
+#' pullCastePop(apiary, caste = "drones")
 #' pullDrones(apiary)
 #' nDrones(apiary)
 #' nDrones(pullDrones(apiary)$colonies)
 #' nDrones(pullDrones(apiary, nInd = 5)$colonies)
 #' @export
-pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
+pullCastePop <- function(x, caste, nInd = NULL, use = "rand") {
   if (isColony(x)) {
     if (is.null(slot(x, caste))) {
       ret <- list(pulled = NULL, colony = x)
@@ -1088,7 +1088,7 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
     names(ret$pulled) <- getId(x)
     ret$colonies <- x
     for (colony in seq_len(nCol)) {
-      tmp <- pullCaste(x = x[[colony]], caste = caste, nInd = nInd, use = use)
+      tmp <- pullCastePop(x = x[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
       ret$colonies[[colony]] <- tmp$colony
     }
@@ -1098,44 +1098,44 @@ pullCaste <- function(x, caste, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn pullCaste Pull queen from a colony
+#' @describeIn pullCastePop Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCaste(x, caste = "queen")
+    ret <- pullCastePop(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
 
-#' @describeIn pullCaste Pull virgin queens from a colony
+#' @describeIn pullCastePop Pull virgin queens from a colony
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCaste(x, caste = "virginQueens", nInd = nInd, use = use)
+    ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
 
-#' @describeIn pullCaste Pull workers from a colony
+#' @describeIn pullCastePop Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCaste(x, caste = "workers", nInd = nInd, use = use)
+    ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
   return(ret)
 }
 
-#' @describeIn pullCaste Pull drones from a colony
+#' @describeIn pullCastePop Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand") {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCaste(x, caste = "drones", nInd = nInd, use = use)
+    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }

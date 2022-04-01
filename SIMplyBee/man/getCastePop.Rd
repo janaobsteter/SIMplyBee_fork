@@ -44,7 +44,7 @@ when \code{x} is \code{\link{Colony-class}} return is
 }
 \description{
 Level 1 function that returns individuals of a caste. These
-  individuals stay in the colony (compared to \code{\link{pullCaste}}).
+  individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 }
 \section{Functions}{
 \itemize{
