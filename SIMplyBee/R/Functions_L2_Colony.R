@@ -36,9 +36,6 @@ createColony <- function(x = NULL,
   if (is.null(x)) {
     stop("You must provide the argument x!")
   } else if (isQueen(x)) {
-    if (nInd(x) > 1) {
-      stop("You must provide only one queen!")
-    }
     queen <- x
     virginQueens <- NULL
   } else if (isVirginQueen(x)) {
