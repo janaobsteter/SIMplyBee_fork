@@ -1698,12 +1698,21 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
+  if (is.null(FUN)) {
+    FUN <- simParamBee$phenoColony
+  }
+  if (is.null(FUN)) {
+    stop("Argument FUN must be provided or SimParamBee$phenoColony must be set!")
+  }
+  # TODO: how should we handle the creation of phenotypes when residual variance
+  #       is set (then we get phenotypes automatically and we should not call
+  #       setPheno() below - this overwrittes previous phenotypes), but when the
+  #       residual variance is not set, we have to call setPheno()
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/235
   colony@queen <- setPheno(colony@queen, ...)
   colony@workers <- setPheno(colony@workers, ...)
   colony@drones <- setPheno(colony@drones, ...)
-  if (!is.null(FUN)) {
-    colony@pheno <- FUN(colony, ...)
-  }
+  colony@pheno <- FUN(colony, ...)
   validObject(colony)
   return(colony)
 }

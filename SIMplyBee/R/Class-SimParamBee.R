@@ -120,6 +120,14 @@ SimParamBee <- R6Class(
     #'   percentage to work with - you might want to change this!
     pDownsize = "numericOrFunction",
 
+    #' @field phenoColony function, used in \code{\link{setPhenoColony()}}); it
+    #'   should work with the internals of others functions - therefore
+    #'   the function must be defined like \code{function(colony) someCode },
+    #'   that is, it could work with colony internals or not, and return a
+    #'   single value. See \code{\link{???}} and \code{\link{???}} for examples.
+    #'   You might want to define your own function!
+    phenoColony = "function",
+
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population to the this
     #'   object. It is recommended that you save the object with the name
@@ -153,6 +161,7 @@ SimParamBee <- R6Class(
     #'   then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
     #'   to 128, which is at the upper end of the reported number of csd alleles
     #'   (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).
+    #' @param phenoColony see \code{\link{SimParamBee}} field \code{phenoColony}
     #'
     #' @references
     #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
@@ -190,7 +199,8 @@ SimParamBee <- R6Class(
                           nWorkers = 100, nDrones = 10,
                           nVirginQueens = 10, nFathers = 15,
                           pSwarm = 0.5, pSplit = 0.3, pDownsize = 0.85,
-                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 128) {
+                          csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
+                          phenoColony = NULL) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
       private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
@@ -240,6 +250,15 @@ SimParamBee <- R6Class(
         # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
         genMap[[private$.csdChr]][private$.csdPosStart:private$.csdPosStop] <- 0
         self$switchGenMap(genMap)
+      }
+
+      # phenoColony ----
+
+      if (!is.null(phenoColony)) {
+        if (is.function(phenoColony)) {
+          stop("Argument phenoColony must be a function!")
+        }
+        self$phenoColony <- phenoColony
       }
 
       invisible(self)

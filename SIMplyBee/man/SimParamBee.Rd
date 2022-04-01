@@ -168,6 +168,13 @@ the function must be defined like \code{function(colony) someCode },
 that is, it could work with colony internals or not, and return a
 single value. The default value is after Seeley (2019) to have some
 percentage to work with - you might want to change this!}
+
+\item{\code{phenoColony}}{function, used in \code{\link{setPhenoColony()}}); it
+should work with the internals of others functions - therefore
+the function must be defined like \code{function(colony) someCode },
+that is, it could work with colony internals or not, and return a
+single value. See \code{\link{???}} and \code{\link{???}} for examples.
+You might want to define your own function!}
 }
 \if{html}{\out{</div>}}
 }
@@ -264,7 +271,8 @@ Starts the process of building a new simulation by creating
   pDownsize = 0.85,
   csdChr = 3,
   csdPos = 0.865,
-  nCsdAlleles = 128
+  nCsdAlleles = 128,
+  phenoColony = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -305,6 +313,8 @@ bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
 then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
+
+\item{\code{phenoColony}}{see \code{\link{SimParamBee}} field \code{phenoColony}}
 }
 \if{html}{\out{</div>}}
 }
