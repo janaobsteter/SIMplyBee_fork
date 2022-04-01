@@ -34,15 +34,18 @@ createColony <- function(x = NULL,
   }
 
   if (is.null(x)) {
-    stop("You must a population of virgin queens or queens!")
+    stop("You must provide the argument x!")
   } else if (isQueen(x)) {
+    if (nInd(x) > 1) {
+      stop("You must provide only one queen!")
+    }
     queen <- x
     virginQueens <- NULL
   } else if (isVirginQueen(x)) {
     queen <- NULL
     virginQueens <- x
   } else {
-    stop("Individual in x must be a virgin queen or a queen or NULL!")
+    stop("Individual in x must be a virgin queen, a queen, or NULL!")
   }
 
   if (is.null(queen)) {
@@ -55,7 +58,7 @@ createColony <- function(x = NULL,
       stop("You must provide just one queen for the colony!")
     }
     id <- queen@id
-   }
+  }
   colony <- new(
     Class = "Colony",
     id = id,
