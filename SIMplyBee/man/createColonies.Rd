@@ -4,41 +4,17 @@
 \alias{createColonies}
 \title{Create colonies}
 \usage{
-createColonies(
-  pop = NULL,
-  n = NULL,
-  mated = TRUE,
-  nFathers = NULL,
-  nDronesPerQueen = 100,
-  yearOfBirth = NULL,
-  simParamBee = NULL
-)
+createColonies(x = NULL, n = NULL, location = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
-(selected at random if there are more than \code{n} in \code{Pop});
-\code{\link{isVirginQueen}} and \code{\link{isQueen}} test will be run on
-individuals}
+\item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
+(selected at random if there are more than \code{n} in \code{Pop})}
 
 \item{n}{integer, number of colonies to create (if only \code{nCol} is
 given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 (\code{NULL}) individual colony) - this is mostly useful for programming)}
 
-\item{mated}{logical, create mated or unmated (virgin) colonies; if mated,
-then \code{nInd(pop)-n} individuals from \code{pop} are used to create
-drones with which the queens will mate with}
-
-\item{nFathers}{numeric of function, number of drones that a queen mates with;
-if \code{NULL} then \code{simParamBee$nFathers} is used}
-
-\item{nDronesPerQueen}{integer, number of drones to generate per individual
-in the \code{pop} for mating with the queens
-TODO nDronesPerQueen default should go to simParamBee and then we set it to NULL
-     here and if its NULL we grab value from simParamBee, otherwise use it
-     from the user
-     ttps://github.com/HighlanderLab/SIMplyBee/issues/26}
-
-\item{yearOfBirth}{numeric, year of birth of the queen}
+\item{location}{numeric, location of the colonies as \code{c(x, y)}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -50,7 +26,7 @@ Level 3 function that creates a set of colonies. Usually to
   start a simulation.
 }
 \details{
-When both \code{pop} and \code{nCol} are \code{NULL}, then an empty
+When both \code{x} and \code{nCol} are \code{NULL}, then an empty
   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
 }
 \examples{
@@ -65,13 +41,15 @@ apiary[[1]]
 apiary[[2]]
 
 # Create 2 mated colonies
-apiary <- createColonies(pop = basePop, n = 2)
+apiary <- createColonies(x = basePop, n = 2)
 apiary
 apiary[[1]]
 apiary[[2]]
 
 # Create 2 unmated/virgin colonies
-apiary <- createColonies(pop = basePop, n = 2, mated = FALSE)
+apiary <- createColonies(x = basePop[1:2], n = 2)
+drones <- createDrones(x = basePop[3], n = 50)
+apiary <- crossColonies(apiary, drones = drones, nFathers = 15)
 apiary
 apiary[[1]]
 apiary[[2]]
