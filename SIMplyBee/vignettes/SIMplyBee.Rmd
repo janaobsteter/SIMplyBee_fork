@@ -1,9 +1,9 @@
 ---
-title: "SIMplyBee"
+title: "SIMplyBee - overview of functions for consolidation"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee}
+  %\VignetteIndexEntry{SIMplyBee - overview of functions for consolidation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

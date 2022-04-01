@@ -1,9 +1,9 @@
 ---
-title: "SIMplyBee"
+title: "SIMplyBee - quantitative genetics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee}
+  %\VignetteIndexEntry{SIMplyBee - quantitative genetics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ library(package = "ggplot2")
 
 ```{r, include = TRUE}
 # Founder genomes
-founderGenomes <- quickHaplo(nInd = 11, nChr = 16, segSites = 1000)
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 ```
 
 # Honey yield 
@@ -33,7 +33,7 @@ SP <- SimParamBee$new(founderGenomes)
 
 # Quantitative genetic parameters - for a single trait with queen and worker genetic effects
 meanP <- c(20, 0)
-varA <- c(1, 1 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers) # TODO: if SP$nWorkers is fun, use value here!
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
@@ -47,8 +47,7 @@ SP$setCorE(corE = corE)
 ```
 
 ```{r, include = TRUE}
-# Base population virgin queens - one for colony, 10 for drones - done above in
-#   quickHaplo(nInd = 1, ...)
+# Base population virgin queens
 basePop <- createVirginQueens(founderGenomes)
 basePop@gv
 basePop@pheno
@@ -56,14 +55,16 @@ basePop@pheno
 
 ```{r, include = TRUE}
 # Base population drones
-drones <- createDrones(x = basePop[1], nInd = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 5)
 drones@gv
 drones@pheno
 ```
 
 ```{r, include = TRUE}
 # Colony
-colony <- createColony(queen = basePop[2], fathers = drones)
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
+                          nFathers = 5)
+colony <- createColony(x = queen)
 colony
 colony@queen@gv
 colony@queen@pheno
@@ -122,8 +123,8 @@ print(p)
 
 ```{r include = TRUE}
 # Colony genetic and phenotype value
-# TODO: can we just sum up the colony@workers@pheno[, 2]?
-# TODO: can we just add up colony@queen@pheno[, 1] and colony@workers@pheno[, 2]
+# TODO: can we just sum up the colony@workers@pheno[, 2] or shall we do something else?
+# TODO: can we just add up colony@queen@pheno[, 1] and colony@workers@pheno[, 2] or is there any other relationship?
 colonyYield <- function(colony) {
   matrix(colony@queen@pheno[, 1] + sum(colony@workers@pheno[, 2]))
 }
@@ -165,14 +166,15 @@ basePop@pheno
 ```
 
 ```{r, include = TRUE}
-drones <- createDrones(x = basePop[1], nInd = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 5)
 drones@gv
 drones@pheno
 ```
 
 ```{r, include = TRUE}
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
+                          nFathers = 5)
+colony <- createColony(x = queen)
 colony@queen@gv
 colony@queen@pheno
 ```
@@ -225,14 +227,15 @@ basePop@pheno
 ```
 
 ```{r, include = TRUE}
-drones <- createDrones(x = basePop[1], nInd = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 5)
 drones@gv
 drones@pheno
 ```
 
 ```{r, include = TRUE}
-colony <- createColony(queen = basePop[2], fathers = drones)
-colony
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
+                          nFathers = 5)
+colony <- createColony(x = queen)
 colony@queen@gv
 colony@queen@pheno
 ```
@@ -256,3 +259,5 @@ colony@pheno
 # Swarming and honey yield
 
 TODO: show how we could genetically and environmentally influence if colony will swarm (can we do this?) and with this honey yield.
+
+TODO: colonyYield should use isProductive - 0 when FALSE
