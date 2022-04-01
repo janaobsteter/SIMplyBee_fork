@@ -880,6 +880,7 @@ createDCA <- function(x, nInd = NULL) {
   } else {
     stop("Argument x must be a Colony of Colonies class object!")
   }
+  DCA <- DCA[isDrone(DCA)]
   return(DCA)
 }
 
