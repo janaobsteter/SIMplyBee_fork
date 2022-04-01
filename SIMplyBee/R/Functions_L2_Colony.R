@@ -570,22 +570,20 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' @rdname downsizeColony
 #' @title Reduce number of workers and remove all drones and virgin queens from hive
 #'
-#' @description Level 2 function that downsizes colony by removing a percentage of
-#'   workers, all drones and all virgin queens.  Usually in the autumn, such an event occurs
-#'   in preparation for the winter months.
+#' @description Level 2 function that downsizes colony by removing a percentage
+#'   of workers, all drones and all virgin queens. Usually in the autumn, such
+#'   an event occurs in preparation for the winter months.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, percentage of workers to remove from the colony (Seeley, 2019)
+#' @param p numeric, percentage of workers to be removed from the colony; if
+#'   \code{NULL} then \code{SimParamBee$pDownsize} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
-#'
-#' @references Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-#'   Bee in the Wild. Princeton: Princeton University Press.
-#'   \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -600,9 +598,19 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' colony <- downsizeColony(colony = colony, new = TRUE, use = "rand")
 #' colony
 #' @export
-downsizeColony <- function(colony, p = 0.85, use = "rand", new = FALSE) {
+downsizeColony <- function(colony, p = NULL, use = "rand", new = FALSE,
+                           simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
+  }
+  if (is.null(p)) {
+    p <- simParamBee$pDownsize
+  }
+  if (is.function(p)) {
+    p <- p(colony)
   }
   if (new == TRUE) {
     n <- nWorkers(colony) * (1 - p)

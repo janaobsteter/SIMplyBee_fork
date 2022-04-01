@@ -60,7 +60,7 @@ SimParamBee <- R6Class(
     #'   the function must be defined like \code{function(colony) someCode },
     #'   that is, it could work with colony internals or not, and return a
     #'   single value. The default value is only to have some workers to work
-    #'   with - you will want to change this!
+    #'   with - you will want to change this to your setting!
     nWorkers = "numericOrFunction",
 
     #' @field nDrones numeric or function, default number of drones
@@ -69,7 +69,8 @@ SimParamBee <- R6Class(
     #'   the function must be defined like \code{function(colony) someCode },
     #'   that is, it could work with colony internals or not, and return a
     #'   single value. The default value is only to
-    #'   have some drones to work with - you will want to change this!
+    #'   have some drones to work with - you will want to change this to your
+    #'   setting!
     nDrones = "numericOrFunction",
 
     #' @field nVirginQueens numeric or function, default number of virgin queens
@@ -78,32 +79,46 @@ SimParamBee <- R6Class(
     #'   the function must be defined like \code{function(colony) someCode },
     #'   that is, it could work with colony internals or not, and return a
     #'   single value. The default value is only to have some virgin queens
-    #'   to work with - you will want to change this!
+    #'   to work with - you might want to change this to your setting!
     nVirginQueens = "numericOrFunction",
 
     #' @field nFathers numeric or function, default number of drones
     #'   a queen mates with; if a function, it will be passed to other
     #'   functions and work with the internals of those functions; see
-    #'   \code{\link{nFathersPoisson}} and \code{\link{nFathersTruncPoisson}}
+    #'   \code{\link{nFathersPoisson}} and \code{\link{nFathersTruncPoisson}} on
+    #'   how such functions should be created. The default value is only to have
+    #'   some fathers to work with - you might want to change this to your setting!
     nFathers = "numericOrFunction",
 
     #' @field pSwarm numeric or a function, the percentage of workers that leave
-    #'   with the old queen when the colony swarms; if a function, it will be passed to other
-    #'   functions and work with the internals of those functions - therefore
-    #'   the function must be defined like \code{function(colony) someCode },
-    #'   that is, it could work with colony internals or not, and return a
-    #'   single value. The default value is only to have some percentage to work with -
-    #'   you will want to change this!
+    #'   with the old queen when the colony swarms (see \code{\link{swarm()}});
+    #'   if a function, it will be passed to other functions and work with the
+    #'   internals of those functions - therefore the function must be defined
+    #'   like \code{function(colony) someCode }, that is, it could work with
+    #'   colony internals or not, and return a single value. The default value
+    #'   is only to have some percentage to work with - you might want to change
+    #'   this to your setting!
     pSwarm = "numericOrFunction",
 
-    #' @field pSplit numeric or a function, the percentage of workers that we remove
-    #'   in a managed split; if a function, it will be passed to other
+    #' @field pSplit numeric or a function, the percentage of workers that we
+    #'   remove in a managed split (see \code{\link{split()}}); if a function,
+    #'   it will be passed to other functions and work with the internals of
+    #'   those functions - therefore the function must be defined like
+    #'   \code{function(colony) someCode }, that is, it could work with colony
+    #'   internals or not, and return a single value. The default value is only
+    #'   to have some percentage to work with - you might want to change this to
+    #'   your setting!
+    pSplit = "numericOrFunction",
+
+    #' @field pDownsize numeric or a function, the percentage of workers to be
+    #'   removed from the colony when downsizing, usually in autumn (see
+    #'   \code{\link{downsize()}}); if a function, it will be passed to other
     #'   functions and work with the internals of those functions - therefore
     #'   the function must be defined like \code{function(colony) someCode },
     #'   that is, it could work with colony internals or not, and return a
-    #'   single value. The default value is only to have some percentage to work with -
-    #'   you will want to change this!
-    pSplit = "numericOrFunction",
+    #'   single value. The default value is after Seeley (2019) to have some
+    #'   percentage to work with - you might want to change this!
+    pDownsize = "numericOrFunction",
 
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population to the this
@@ -122,6 +137,8 @@ SimParamBee <- R6Class(
     #' @param nFathers see \code{\link{SimParamBee}} field \code{nFathers}
     #' @param pSwarm see \code{\link{SimParamBee}} field \code{pSwarm}
     #' @param pSplit see \code{\link{SimParamBee}} field \code{pSplit}
+    #' @param pDownsize see \code{\link{SimParamBee}} field \code{pDownsize} and
+    #'   Seeley (2019)
     #' @param csdChr integer, chromosome that will carry the csd locus, by
     #'   default 3, but if there are less chromosomes (for a simplified
     #'   simulation), the locus is put on the last available chromosome (1 or
@@ -143,14 +160,18 @@ SimParamBee <- R6Class(
     #'   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
     #'   \url{https://www.mdpi.com/2075-4450/12/10/868}
     #'
-    #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
-    #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
-    #'
     #' Lechner et al. (2014) Nucleotide variability at its limit? Insights into
     #'  the number and evolutionary dynamics of the sex-determining specificities
     #'  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
     #'  272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
+    #'
+    #' Seeley (2019) The Lives of Bees: The Untold Story of the Honey
+    #'   Bee in the Wild. Princeton: Princeton University Press.
+    #'   \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
+    #'
+    #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
+    #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
+    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -168,7 +189,7 @@ SimParamBee <- R6Class(
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 10,
                           nVirginQueens = 10, nFathers = 15,
-                          pSwarm = 0.5, pSplit = 0.3,
+                          pSwarm = 0.5, pSplit = 0.3, pDownsize = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
@@ -182,6 +203,7 @@ SimParamBee <- R6Class(
       self$nFathers <- nFathers
       self$pSwarm <- pSwarm
       self$pSplit <- pSplit
+      self$pDownsize <- pDownsize
 
       # caste ----
 
