@@ -476,7 +476,8 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
     colonies[[colony]] <- downsizeColony(
       colony = colonies[[colony]],
       p = p,
-      new = new)
+      new = new
+    )
   }
   validObject(colonies)
   return(colonies)
@@ -506,7 +507,7 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
 #' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony2 <- createColony(x = basePop[3])
 #' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-
+#'
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
@@ -609,15 +610,16 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA = drones,
-                                           n = nCol,
-                                           nFathers = nFathers
+    fatherGroups <- pullDroneGroupsFromDCA(
+      DCA = drones,
+      n = nCol,
+      nFathers = nFathers
     )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
-                                   drones = fatherGroups[[colony]],
-                                   nFathers = nFathers,
-                                   simParamBee = simParamBee
+        drones = fatherGroups[[colony]],
+        nFathers = nFathers,
+        simParamBee = simParamBee
       )
     }
   }
@@ -790,7 +792,7 @@ supersedeColonies <- function(colonies, year = NULL) {
   } else {
     for (colony in seq_len(nCol)) {
       colonies[[colony]] <- supersedeColony(colonies[[colony]],
-                                            year = year
+        year = year
       )
     }
   }
@@ -904,8 +906,8 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                         FUN = FUN, ...,
-                                         simParamBee = simParamBee
+      FUN = FUN, ...,
+      simParamBee = simParamBee
     )
   }
   validObject(colonies)

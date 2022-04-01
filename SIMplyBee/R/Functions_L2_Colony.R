@@ -1538,7 +1538,7 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #' col2 <- crossColony(col2, drones = drones[11:20], nFathers = 5)
 #' col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
 #' col1
-#' col2 <- buildUpColony(colony = col2, nWorkers =  20, nDrones =  2)
+#' col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
 #' col2
 #' col1 <- combine(strong = col1, weak = col2)
 #' col1
@@ -1699,4 +1699,3 @@ setPhenoColony <- function(colony, FUN = NULL, ..., simParamBee = NULL) {
   validObject(colony)
   return(colony)
 }
-

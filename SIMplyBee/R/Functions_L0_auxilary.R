@@ -597,8 +597,8 @@ isQueen <- function(x, simParamBee = NULL) {
     if (x@nInd == 0) {
       ret <- FALSE
     } else {
-    ret <- simParamBee$caste[x@id] == "queen"
-   }
+      ret <- simParamBee$caste[x@id] == "queen"
+    }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -649,7 +649,7 @@ isDrone <- function(x, simParamBee = NULL) {
       ret <- FALSE
     } else {
       ret <- simParamBee$caste[x@id] == "drones"
-   }
+    }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -700,7 +700,7 @@ isWorker <- function(x, simParamBee = NULL) {
       ret <- FALSE
     } else {
       ret <- simParamBee$caste[x@id] == "workers"
-   }
+    }
   } else {
     stop("Argument x must be a Pop class object!")
   }
@@ -1400,7 +1400,7 @@ getCaste <- function(x, simParamBee = NULL) {
   }
   if (isPop(x)) {
     ret <- simParamBee$caste[x@id]
-    ret <- as.character(ret) #TODO: Do we want to return as a character or factor?
+    ret <- as.character(ret) # TODO: Do we want to return as a character or factor?
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
@@ -1859,7 +1859,8 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
     nBp, " -t ", mu, " -r ", rho, " -I 4 ", nMelS, " ", nMelN, " ", nCar, " ", nLig,
     " -ej ", timeNeM, " 2 1 -en ", timeNeM + 0.00001, " 1 ", NeChangeM,
     " -ej ", timeNeC, " 4 3 -en ", timeNeC + 0.00001, " 3 ", NeChangeC,
-    " -ej ", timeNeMC, " 3 1 -en ", timeNeMC + 0.00001, " 1 ", NeChangeMC)
+    " -ej ", timeNeMC, " 3 1 -en ", timeNeMC + 0.00001, " 1 ", NeChangeMC
+  )
 
   founderGenomes <- runMacs(
     nInd = nInd,
@@ -2699,7 +2700,8 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, snpChip = NULL,
         chr = chr,
         snpChip = snpChip,
         dronesHaploid = dronesHaploid,
-        simParamBee = simParamBee)
+        simParamBee = simParamBee
+      )
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -2724,7 +2726,8 @@ getQueensIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
       caste = "queen",
       chr = chr,
       snpChip = snpChip,
-      simParamBee = simParamBee)
+      simParamBee = simParamBee
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2744,7 +2747,8 @@ getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
       caste = "fathers", nInd = nInd, chr = chr,
       snpChip = snpChip,
       dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee)
+      simParamBee = simParamBee
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2764,7 +2768,8 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
       nInd = nInd,
       chr = chr,
       snpChip = snpChip,
-      simParamBee = simParamBee)
+      simParamBee = simParamBee
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2784,7 +2789,8 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
       nInd = nInd,
       chr = chr,
       snpChip = snpChip,
-      simParamBee = simParamBee)
+      simParamBee = simParamBee
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2805,7 +2811,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
       nInd = nInd, chr = chr,
       snpChip = snpChip,
       dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee)
+      simParamBee = simParamBee
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -2899,7 +2906,8 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
       } else {
         ret[[caste]] <- getIbdHaplo(
           pop = tmp, chr = chr, snpChip = snpChip,
-          simParam = simParamBee)
+          simParam = simParamBee
+        )
         if (dronesHaploid && any(tmp@sex == "M")) {
           ret[[caste]] <- reduceDroneHaplo(haplo = ret[[caste]], pop = tmp)
         }
@@ -2914,7 +2922,8 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "virginQueens", "
         nInd = nInd, chr = chr,
         snpChip = snpChip,
         dronesHaploid = dronesHaploid,
-        simParamBee = simParamBee)
+        simParamBee = simParamBee
+      )
     }
     names(ret) <- getId(x)
   } else {
