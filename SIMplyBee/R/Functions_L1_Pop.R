@@ -34,8 +34,10 @@
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #'
 #' colony1 <- addWorkers(colony1, nInd = 10)
 #' colony1 <- addVirginQueens(colony1, nInd = 4)
@@ -272,8 +274,10 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' apiary <- c(colony1, colony2)
 #'
 #' (virginQueens <- createVirginQueens(colony1, nInd = 10))
@@ -382,8 +386,10 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' apiary <- c(colony1, colony2)
 #'
 #' (tmp <- createWorkers(colony1, nInd = 10))
@@ -727,8 +733,10 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' SP$recHist[[13]][[1]][2]
 #' SP$caste
 #'
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' apiary <- c(colony1, colony2)
 #'
 #' (tmp <- createDrones(colony1, nInd = 10))
@@ -848,8 +856,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
 #' createDCA(colony1)
@@ -935,8 +945,10 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
 #' apiary <- c(colony1, colony2)
@@ -1002,8 +1014,10 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1 <- addVirginQueens(colony1, nInd = 10)
 #' colony2 <- addVirginQueens(colony2, nInd = 5)
 #' colony1 <- addWorkers(colony1, nInd = 10)
@@ -1161,7 +1175,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' virginQueen1 <- basePop[2]
 #' (matedQueen1 <- crossVirginQueen(
 #'   pop = virginQueen1,
-#'   drones = drones[1:5]
+#'   drones = drones[1:5],
+#'   nFathers = 5
 #' ))
 #' isQueenMated(virginQueen1)
 #' isQueenMated(matedQueen1)
@@ -1171,7 +1186,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' virginQueen2 <- basePop[3]
 #' (matedQueen2 <- crossVirginQueen(
 #'   pop = virginQueen2,
-#'   drones = drones[6:10]
+#'   drones = drones[6:10],
+#'   nFathers = 5
 #' ))
 #' isQueenMated(virginQueen2)
 #' isQueenMated(matedQueen2)
@@ -1190,7 +1206,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' # Inbred mated queen (mated with her own sons)
 #' matedQueen3 <- crossVirginQueen(
 #'   pop = basePop[1],
-#'   drones = drones[16:20]
+#'   drones = drones[16:20],
+#'   nFathers = 5
 #' )
 #' # Check the theoretical homozygosity
 #' matedQueen3@misc[[1]]$pHomBrood
@@ -1272,8 +1289,10 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-#' colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' apiary <- c(colony1, colony2)
 #'
 #' getQueensYearOfBirth(getQueen(colony1))

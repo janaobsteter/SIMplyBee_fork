@@ -67,7 +67,8 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
-colony <- createColony(queen = basePop[2], fathers = drones)
+colony <- createColony(x = basePop[2])
+colony <- crossColony(colony, drones = drones, nFathers = 5)
 colony
 isProductive(colony)
 
@@ -99,7 +100,8 @@ nDronesFun <- function(colony) {
 
 # Create new drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
-colony <- createColony(queen = basePop[3], fathers = drones)
+colony <- createColony(x = basePop[3])
+colony <- crossColony(colony, drones = drones, nFathers = 5)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
 
@@ -108,7 +110,8 @@ SP$nWorkers <- nWorkersFun
 SP$nDrones <- nDronesFun
 # Create new drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
-colony <- createColony(queen = basePop[4], fathers = drones)
+colony <- createColony(x = basePop[4])
+colony <- crossColony(colony, drones = drones, nFathers = 5)
 buildUpColony(colony)
 buildUpColony(colony)
 }

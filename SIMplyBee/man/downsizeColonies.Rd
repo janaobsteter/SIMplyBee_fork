@@ -31,7 +31,9 @@ founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-apiary <- createColonies(pop = basePop, n = 2)
+apiary <- createColonies(x = basePop[1:2], n = 2)
+drones <- createDrones(x = basePop[3:4], nInd = 20)
+apiary <- crossColonies(apiary, drones = drones, nFathers = 5)
 apiary <- buildUpColonies(apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 20)
 apiary[[1]]

@@ -4,13 +4,16 @@
 \alias{getIbdHaplo}
 \title{Access IBD haplotypes}
 \usage{
-getIbdHaplo(pop, chr = NULL, simParam = NULL)
+getIbdHaplo(pop, chr = NULL, snpChip = NULL, simParam = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
+
+\item{snpChip}{integer, indicating which SNP array loci are to be retrieved,
+if \code{NULL}, all sites are retrieved}
 
 \item{simParam}{\code{\link{SimParam}}, global simulation parameters}
 }
