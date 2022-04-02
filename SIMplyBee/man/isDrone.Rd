@@ -30,12 +30,14 @@ colony <- addDrones(colony)
 colony <- addVirginQueens(colony)
 
 isDrone(getQueen(colony))
+isDrone(getFathers(colony, nInd = 2))
 isDrone(getWorkers(colony, nInd = 2))
 isDrone(getDrones(colony, nInd = 2))
 isDrone(getVirginQueens(colony, nInd = 2))
 
 bees <- c(
   getQueen(colony),
+  getFathers(colony, nInd = 2),
   getWorkers(colony, nInd = 2),
   getDrones(colony, nInd = 2),
   getVirginQueens(colony, nInd = 2)

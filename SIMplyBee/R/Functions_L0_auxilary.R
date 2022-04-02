@@ -557,6 +557,66 @@ nHomBrood <- function(x) {
   return(ret)
 }
 
+#' @rdname isCaste
+#' @title Is individual a member of specific caste
+#'
+#' @description Level 0 function that tests if individuals are members of a
+#'   specific caste
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param caste character, one of "queen", "fathers", "workers", "drones", or
+#'   "virginQueens"; only single value is used
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(x = basePop[2])
+#' colony <- crossColony(colony, drones = drones, nFathers = 5)
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isCaste(getQueen(colony), caste = "queen")
+#' isCaste(getFathers(colony, nInd = 2), caste = "fathers")
+#' isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+#' isCaste(getDrones(colony, nInd = 2), caste = "drones")
+#' isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
+#'
+#' bees <- c(
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
+#' )
+#' isCaste(bees, caste = "queen")
+#' isCaste(bees, caste = "fathers")
+#' isCaste(bees, caste = "workers")
+#' isCaste(bees, caste = "drones")
+#' isCaste(bees, caste = "virginQueens")
+#' @export
+isCaste <- function(x, caste, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isPop(x)) {
+    if (x@nInd == 0) {
+      ret <- FALSE
+    } else {
+      ret <- simParamBee$caste[x@id] == caste[1]
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
 #' @rdname isQueen
 #' @title Is individual a queen
 #'
@@ -580,12 +640,14 @@ nHomBrood <- function(x) {
 #' colony <- addVirginQueens(colony)
 #'
 #' isQueen(getQueen(colony))
+#' isQueen(getFathers(colony, nInd = 2))
 #' isQueen(getWorkers(colony, nInd = 2))
 #' isQueen(getDrones(colony, nInd = 2))
 #' isQueen(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
 #'   getWorkers(colony, nInd = 2),
 #'   getDrones(colony, nInd = 2),
 #'   getVirginQueens(colony, nInd = 2)
@@ -596,22 +658,14 @@ isQueen <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isPop(x)) {
-    if (x@nInd == 0) {
-      ret <- FALSE
-    } else {
-      ret <- simParamBee$caste[x@id] == "queen"
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
+  ret <- isCaste(x = x, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
-#' @rdname isDrone
-#' @title Is individual a drone
+#' @rdname isFather
+#' @title Is individual a father
 #'
-#' @description Level 0 function that tests if individuals are drones
+#' @description Level 0 function that tests if individuals are fathers
 #'
 #' @param x \code{\link{Pop-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -630,32 +684,26 @@ isQueen <- function(x, simParamBee = NULL) {
 #' colony <- addDrones(colony)
 #' colony <- addVirginQueens(colony)
 #'
-#' isDrone(getQueen(colony))
-#' isDrone(getWorkers(colony, nInd = 2))
-#' isDrone(getDrones(colony, nInd = 2))
-#' isDrone(getVirginQueens(colony, nInd = 2))
+#' isFather(getQueen(colony))
+#' isFather(getFathers(colony, nInd = 2))
+#' isFather(getWorkers(colony, nInd = 2))
+#' isFather(getDrones(colony, nInd = 2))
+#' isFather(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
 #'   getWorkers(colony, nInd = 2),
 #'   getDrones(colony, nInd = 2),
 #'   getVirginQueens(colony, nInd = 2)
 #' )
-#' isDrone(bees)
+#' isFather(bees)
 #' @export
-isDrone <- function(x, simParamBee = NULL) {
+isFather <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isPop(x)) {
-    if (x@nInd == 0) {
-      ret <- FALSE
-    } else {
-      ret <- simParamBee$caste[x@id] == "drones"
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
+  ret <- isCaste(x = x, caste = "fathers", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -682,12 +730,14 @@ isDrone <- function(x, simParamBee = NULL) {
 #' colony <- addVirginQueens(colony)
 #'
 #' isWorker(getQueen(colony))
+#' isWorker(getFathers(colony, nInd = 2))
 #' isWorker(getWorkers(colony, nInd = 2))
 #' isWorker(getDrones(colony, nInd = 2))
 #' isWorker(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
 #'   getWorkers(colony, nInd = 2),
 #'   getDrones(colony, nInd = 2),
 #'   getVirginQueens(colony, nInd = 2)
@@ -698,15 +748,52 @@ isWorker <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isPop(x)) {
-    if (x@nInd == 0) {
-      ret <- FALSE
-    } else {
-      ret <- simParamBee$caste[x@id] == "workers"
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
+  ret <- isCaste(x = x, caste = "workers", simParamBee = simParamBee)
+  return(ret)
+}
+
+#' @rdname isDrone
+#' @title Is individual a drone
+#'
+#' @description Level 0 function that tests if individuals are drones
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @return logical
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(x = basePop[2])
+#' colony <- crossColony(colony, drones = drones, nFathers = 5)
+#' colony <- addWorkers(colony)
+#' colony <- addDrones(colony)
+#' colony <- addVirginQueens(colony)
+#'
+#' isDrone(getQueen(colony))
+#' isDrone(getFathers(colony, nInd = 2))
+#' isDrone(getWorkers(colony, nInd = 2))
+#' isDrone(getDrones(colony, nInd = 2))
+#' isDrone(getVirginQueens(colony, nInd = 2))
+#'
+#' bees <- c(
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
+#' )
+#' isDrone(bees)
+#' @export
+isDrone <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  ret <- isCaste(x = x, caste = "drones", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -733,12 +820,14 @@ isWorker <- function(x, simParamBee = NULL) {
 #' colony <- addVirginQueens(colony)
 #'
 #' isVirginQueen(getQueen(colony))
+#' isVirginQueen(getFathers(colony, nInd = 2))
 #' isVirginQueen(getWorkers(colony, nInd = 2))
 #' isVirginQueen(getDrones(colony, nInd = 2))
 #' isVirginQueen(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
 #'   getWorkers(colony, nInd = 2),
 #'   getDrones(colony, nInd = 2),
 #'   getVirginQueens(colony, nInd = 2)
@@ -749,15 +838,7 @@ isVirginQueen <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isPop(x)) {
-    if (x@nInd == 0) {
-      ret <- FALSE
-    } else {
-      ret <- simParamBee$caste[x@id] == "virginQueens"
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
+  ret <- isCaste(x = x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
 
