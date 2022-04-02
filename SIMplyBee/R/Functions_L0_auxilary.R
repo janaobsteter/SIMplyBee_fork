@@ -123,6 +123,9 @@ nNULLColonies <- function(colonies) {
 #' nCaste(apiary, caste = "all")
 #' @export
 nCaste <- function(x, caste = "all") {
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
@@ -1184,6 +1187,9 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
   if (isPop(x)) {
     ret <- x@id
   } else if (isColony(x)) {
@@ -1291,6 +1297,9 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
   }
   if (isPop(x)) {
     ret <- x@sex

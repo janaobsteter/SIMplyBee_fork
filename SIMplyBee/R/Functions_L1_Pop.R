@@ -124,6 +124,9 @@
 #' getCastePop(colony2, caste = "all")
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
