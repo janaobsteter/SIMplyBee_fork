@@ -4912,8 +4912,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'
 #' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
 #'   for honey bees from Identical By State genomic data (bi-allelic SNP
-#'   represented as allele dosages) following the method of Druet and Legarra
-#'   (2020)
+#'   represented as allele dosages) following the method for the sex X
+#'   chromosome (Druet and Legarra, 2020)
 #'
 #' @param x \code{\link{matrix}} of genotypes represented as allele dosage coded
 #'   as 0, 1, or 2 in females (queens or workers) and as 0 or 1 in males
@@ -4921,6 +4921,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #'   missing values are allowed (this is not checked - you will get NAs!)
 #' @param sex character vector denoting sex for individuals with genotypes in
 #'   \code{x} - \code{"F"} for female and \code{"M"} for male
+#' @param alleleFreq numeric, vector of allele frequencies for the sites in
+#'   \code{x}; if \code{NULL}, then \code{calcBeeAlleleFreq} is used
 #'
 #' @return matrix of genomic relatedness coefficients
 #'
@@ -4952,15 +4954,9 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' n <- length(rownames(geno))
 #' rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 #'
-#' sex <- c(
-#'   getQueen(colony)@sex,
-#'   getFathers(colony)@sex,
-#'   getWorkers(colony)@sex,
-#'   getDrones(colony)@sex,
-#'   getVirginQueens(colony)@sex,
-#'   "F",
-#'   "M"
-#' )
+#' sex <- getCasteSex(x = colony)
+#' sex <- c(sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
+#'          "F", "M")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
@@ -5004,8 +5000,46 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' GRM[w, v]
 #' GRM[w, mw]
 #' GRM[w, md]
+#'
+#' # Calculating allele frequencies ourselves (say, to "shift" base population)
+#' aF <- calcBeeAlleleFreq(x = geno, sex = sex)
+#' hist(aF)
+#' GRM2 <- calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF)
+#' stopifnot(identical(GRM2, GRM))
 #' @export
-calcBeeGRMIbs <- function(x, sex) {
+calcBeeGRMIbs <- function(x, sex, alleleFreq = NULL) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  if (!is.character(sex)) {
+    stop("Argument sex must be a character class object!")
+  }
+  if (any(!sex %in% c("F", "M"))) {
+    print(table(sex, useNA = "ifany"))
+    stop("Entries in sex should be either F (for females) or M (for males)!")
+  }
+  if (nrow(x) != length(sex)) {
+    stop("Dimensions of x (number of rows) and sex (length) must match!")
+  }
+  nSite <- ncol(x)
+  ploidy <- (sex == "F") + 1
+  if (is.null(alleleFreq)) {
+    alleleFreq <- calcBeeAlleleFreq(x = x, sex = sex)
+  } else {
+    if (length(alleleFreq) != nSite) {
+      stop(paste0("Argument alleleFreq must be of length: ", nSite, "!"))
+    }
+  }
+  for (site in 1:nSite) {
+    x[, site] <- x[, site] - ploidy * alleleFreq[site]
+  }
+  G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
+  return(G)
+}
+
+#' @describeIn calcBeeGRMIbs Calculate allele frequencies from honey bee genotypes
+#' @export
+calcBeeAlleleFreq <- function(x, sex) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
   }
@@ -5022,11 +5056,7 @@ calcBeeGRMIbs <- function(x, sex) {
   alleleSum <- apply(X = x, FUN = sum, MARGIN = 2)
   ploidy <- (sex == "F") + 1
   alleleFreq <- alleleSum / sum(ploidy)
-  for (site in 1:ncol(x)) {
-    x[, site] <- x[, site] - ploidy * alleleFreq[site]
-  }
-  G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
-  return(G)
+  return(alleleFreq)
 }
 
 #' @rdname calcBeeGRMIbd

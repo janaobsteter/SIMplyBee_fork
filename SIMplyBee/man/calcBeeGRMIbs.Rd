@@ -2,10 +2,13 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{calcBeeGRMIbs}
 \alias{calcBeeGRMIbs}
+\alias{calcBeeAlleleFreq}
 \title{Calculate Genomic Relatedness Matrix (GRM) for honey bees from
   Identical By State genomic data}
 \usage{
-calcBeeGRMIbs(x, sex)
+calcBeeGRMIbs(x, sex, alleleFreq = NULL)
+
+calcBeeAlleleFreq(x, sex)
 }
 \arguments{
 \item{x}{\code{\link{matrix}} of genotypes represented as allele dosage coded
@@ -15,6 +18,9 @@ missing values are allowed (this is not checked - you will get NAs!)}
 
 \item{sex}{character vector denoting sex for individuals with genotypes in
 \code{x} - \code{"F"} for female and \code{"M"} for male}
+
+\item{alleleFreq}{numeric, vector of allele frequencies for the sites in
+\code{x}; if \code{NULL}, then \code{calcBeeAlleleFreq} is used}
 }
 \value{
 matrix of genomic relatedness coefficients
@@ -22,9 +28,14 @@ matrix of genomic relatedness coefficients
 \description{
 Level 0 function that returns Genomic Relatedness Matrix (GRM)
   for honey bees from Identical By State genomic data (bi-allelic SNP
-  represented as allele dosages) following the method of Druet and Legarra
-  (2020)
+  represented as allele dosages) following the method for the sex X
+  chromosome (Druet and Legarra, 2020)
 }
+\section{Functions}{
+\itemize{
+\item \code{calcBeeAlleleFreq}: Calculate allele frequencies from honey bee genotypes
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -49,15 +60,9 @@ geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
 n <- length(rownames(geno))
 rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 
-sex <- c(
-  getQueen(colony)@sex,
-  getFathers(colony)@sex,
-  getWorkers(colony)@sex,
-  getDrones(colony)@sex,
-  getVirginQueens(colony)@sex,
-  "F",
-  "M"
-)
+sex <- getCasteSex(x = colony)
+sex <- c(sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
+         "F", "M")
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
@@ -101,6 +106,12 @@ GRM[w, d]
 GRM[w, v]
 GRM[w, mw]
 GRM[w, md]
+
+# Calculating allele frequencies ourselves (say, to "shift" base population)
+aF <- calcBeeAlleleFreq(x = geno, sex = sex)
+hist(aF)
+GRM2 <- calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF)
+stopifnot(identical(GRM2, GRM))
 }
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of
