@@ -883,7 +883,14 @@ createDCA <- function(x, nInd = NULL) {
   } else {
     stop("Argument x must be a Colony of Colonies class object!")
   }
-  DCA <- DCA[isDrone(DCA)]
+  # isDrone() below finds drones that are fathers already - here this is just
+  #   a precaution, since drones in colony likely haven't mated yet, but we can't
+  #   guarantee this, hence using it
+  tmp <- isDrone(DCA)
+  if (any(!tmp)) {
+    DCA <- DCA[tmp]
+    warning("Taking only drones that have not yet mated!")
+  }
   return(DCA)
 }
 
@@ -1236,7 +1243,12 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
     nFathers <- simParamBee$nFathers
   }
   # skipping "if (is.function(nFathers))" since we use it below or pass it to
-  # pullDroneGroupsFromDCA
+  #   pullDroneGroupsFromDCA
+  tmp <- isDrone(drones)
+  if (any(!tmp)) {
+    drones <- drones[tmp]
+    warning("Taking only drones that have not yet mated!")
+  }
   nVirginQueen <- nInd(pop)
   simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {
