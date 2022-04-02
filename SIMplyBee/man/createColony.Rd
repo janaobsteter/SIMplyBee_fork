@@ -4,7 +4,7 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x = NULL, location = NULL)
+createColony(x, location = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} with one individual that will be the

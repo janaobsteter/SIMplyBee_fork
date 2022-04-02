@@ -88,18 +88,18 @@ createDrones(apiary)
 
 # Specify own number
 SP$nDrones <- 15
-createDrones(colony1)
-createDrones(apiary)
+createDrones(colony1) # nDrones will NOT vary between function calls
+createDrones(apiary) # nDrones will NOT vary between function calls
 
 # Specify a function that will give a number
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
-createDrones(colony1, nInd = nDronesFun)
-createDrones(apiary, nInd = nDronesFun)
+createDrones(colony1, nInd = nDronesFun) # nDrones will vary between function calls
+createDrones(apiary, nInd = nDronesFun) # nDrones will vary between function calls
 
 # Store a function or a value in the SP object
 SP$nDrones <- nDronesFun
-createDrones(colony1)
-createDrones(apiary)
+createDrones(colony1) # nDrones will vary between function calls
+createDrones(apiary) # nDrones will vary between function calls
 }

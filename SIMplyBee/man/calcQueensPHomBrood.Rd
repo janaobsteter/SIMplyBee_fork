@@ -69,21 +69,27 @@ calcQueensPHomBrood(basePop[2])
 
 # Mated queen
 matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
-pHomBrood(matedQueen)
+calcQueensPHomBrood(matedQueen)
 
 # Queen of the colony
-pHomBrood(getQueen(colony1))
+calcQueensPHomBrood(getQueen(colony1))
 
 # Colony
-pHomBrood(colony1)
+calcQueensPHomBrood(colony1)
 
 # Colonies
 apiary <- c(colony1, colony2)
-pHomBrood(apiary)
+calcQueensPHomBrood(apiary)
 
-# Now inbreed virgin queen with her brothers to get csd homozygous brood
+# Inbreed virgin queen with her brothers to generate csd homozygous brood
 colony3 <- createColony(x = getVirginQueens(colony1))
 colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+
+# Calculate the expected csd homozygosity
+calcQueensPHomBrood(getQueen(colony3))
+pHomBrood(colony3)
+
+# Evaluate the realised csd homozygosity
 colony3 <- addWorkers(colony3, nInd = 100)
-calcQueensPHomBrood(colony3)
+nHomBrood(colony3)
 }

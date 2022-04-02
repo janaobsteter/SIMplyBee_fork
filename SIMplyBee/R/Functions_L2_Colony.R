@@ -167,18 +167,18 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
 #' nVirginQueens(addVirginQueens(apiary))
 #'
 #' SP$nVirginQueens <- 15
-#' addVirginQueens(colony1)
-#' nVirginQueens(addVirginQueens(apiary))
+#' addVirginQueens(colony1) # nVirginQueens will NOT vary between function calls
+#' nVirginQueens(addVirginQueens(apiary)) # nVirginQueens will NOT vary between function calls
 #'
 #' nVirginQueensFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' addVirginQueens(colony1, nInd = nVirginQueensFun)
-#' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
+#' addVirginQueens(colony1, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
+#' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun)) # nVirginQueens will vary between function calls
 #'
 #' SP$nVirginQueens <- nVirginQueensFun
-#' addVirginQueens(colony1)
-#' nVirginQueens(addVirginQueens(apiary))
+#' addVirginQueens(colony1) # nVirginQueens will vary between function calls
+#' nVirginQueens(addVirginQueens(apiary)) # nVirginQueens will vary between function calls
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
                             simParamBee = NULL) {
@@ -266,20 +266,20 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'
 #' # Specify own number
 #' SP$nWorkers <- 15
-#' addWorkers(colony1)
-#' nWorkers(addWorkers(apiary))
+#' addWorkers(colony1) # nWorkers will NOT vary between function calls
+#' nWorkers(addWorkers(apiary)) # nWorkers will NOT vary between function calls
 #'
 #' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' addWorkers(colony1, nInd = nWorkersFun)
-#' nWorkers(addWorkers(apiary, nInd = nWorkersFun))
+#' addWorkers(colony1, nInd = nWorkersFun) # nWorkers will vary between function calls
+#' nWorkers(addWorkers(apiary, nInd = nWorkersFun)) # nWorkers will vary between function calls
 #'
 #' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
-#' addWorkers(colony1)
-#' nWorkers(addWorkers(apiary))
+#' addWorkers(colony1) # nWorkers will vary between function calls
+#' nWorkers(addWorkers(apiary)) # nWorkers will vary between function calls
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
                        simParamBee = NULL) {
@@ -328,7 +328,6 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #'   there are already some drones present, new and present drones are combined.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#'   \code{simParamBee$nDrones} is used
 #' @param nInd numeric or function, number of drones to be added, but see
 #'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used
 #' @param new logical, should the number of drones be added anew or should we
@@ -359,20 +358,20 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #'
 #' # Specifying own number
 #' SP$nDrones <- 15
-#' addDrones(colony1)
-#' nDrones(addDrones(apiary))
+#' addDrones(colony1) # nDrones will NOT vary between function calls
+#' nDrones(addDrones(apiary)) # nDrones will NOT vary between function calls
 #'
 #' # Specify a function that will give a number
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' addDrones(colony1, nInd = nDronesFun)
-#' nDrones(addDrones(apiary, nInd = nDronesFun))
+#' addDrones(colony1, nInd = nDronesFun) # nDrones will vary between function calls
+#' nDrones(addDrones(apiary, nInd = nDronesFun)) # nDrones will vary between function calls
 #'
 #' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesFun
-#' addDrones(colony1)
-#' nDrones(addDrones(apiary))
+#' addDrones(colony1) # nDrones will vary between function calls
+#' nDrones(addDrones(apiary)) # nDrones will vary between function calls
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {

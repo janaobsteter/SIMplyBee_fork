@@ -57,9 +57,15 @@ nHomBrood(colony1)
 apiary <- c(colony1, colony2)
 nHomBrood(apiary)
 
-# Now inbreed virgin queen with her brothers to get csd homozygous brood
+# Inbreed virgin queen with her brothers to generate csd homozygous brood
 colony3 <- createColony(x = getVirginQueens(colony1))
 colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+
+# Calculate the expected csd homozygosity
+calcQueensPHomBrood(getQueen(colony3))
+pHomBrood(colony3)
+
+# Evaluate the realised csd homozygosity
 colony3 <- addWorkers(colony3, nInd = 100)
 nHomBrood(colony3)
 }

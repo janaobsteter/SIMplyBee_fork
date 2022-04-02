@@ -320,20 +320,20 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' # Specify own number
 #' SP$nVirginQueens <- 15
-#' createVirginQueens(colony1)
-#' createVirginQueens(apiary)
+#' createVirginQueens(colony1) # nVirginQueens will NOT vary between function calls
+#' createVirginQueens(apiary) # nVirginQueens will NOT vary between function calls
 #'
 #' # Specify a function that will give a number
 #' nVirginQueensFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' createVirginQueens(colony1, nInd = nVirginQueensFun)
-#' createVirginQueens(apiary, nInd = nVirginQueensFun)
+#' createVirginQueens(colony1, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
+#' createVirginQueens(apiary, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
 #'
 #' # Store a function or a value in the SP object
 #' SP$nVirginQueens <- nVirginQueensFun
-#' createVirginQueens(colony1)
-#' createVirginQueens(apiary)
+#' createVirginQueens(colony1) # nVirginQueens will vary between function calls
+#' createVirginQueens(apiary) # nVirginQueens will vary between function calls
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
@@ -426,26 +426,37 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' createWorkers(apiary, nInd = 10)
 #'
 #' # Using a default in SP$nWorkers
-#' # (just to have some virgin queens - change this to your needs!)
+#' # (just to have some workers - change this to your needs!)
 #' createWorkers(colony1)
 #' createWorkers(apiary)
 #'
 #' # Specify own number
 #' SP$nWorkers <- 15
-#' createWorkers(colony1)
-#' createWorkers(apiary)
+#' createWorkers(colony1) # nWorkers will NOT vary between function calls
+#' createWorkers(apiary) # nWorkers will NOT vary between function calls
 #'
 #' # Specify a function that will give a number
 #' nWorkersFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' createWorkers(colony1, nInd = nWorkersFun)
-#' createWorkers(apiary, nInd = nWorkersFun)
+#' createWorkers(colony1, nInd = nWorkersFun) # nWorkers will vary between function calls
+#' createWorkers(apiary, nInd = nWorkersFun) # nWorkers will vary between function calls
 #'
 #' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersFun
-#' createWorkers(colony1)
-#' createWorkers(apiary)
+#' createWorkers(colony1) # nWorkers will vary between function calls
+#' createWorkers(apiary) # nWorkers will vary between function calls
+#'
+#' # Inbred virgin queen with her brothers to generate csd homozygous brood
+#' colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
+#' colony3 <- crossColony(colony3, drones = createDrones(colony1, nInd = 5),
+#'                        nFathers = 5)
+#' # Check the expected csd homozygosity
+#' pHomBrood(colony3)
+#'
+#' # Evaluate a realised csd homozygosity
+#' createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
+#' createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -776,20 +787,20 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'
 #' # Specify own number
 #' SP$nDrones <- 15
-#' createDrones(colony1)
-#' createDrones(apiary)
+#' createDrones(colony1) # nDrones will NOT vary between function calls
+#' createDrones(apiary) # nDrones will NOT vary between function calls
 #'
 #' # Specify a function that will give a number
 #' nDronesFun <- function(colony) {
 #'   rpois(n = 1, lambda = 15)
 #' }
-#' createDrones(colony1, nInd = nDronesFun)
-#' createDrones(apiary, nInd = nDronesFun)
+#' createDrones(colony1, nInd = nDronesFun) # nDrones will vary between function calls
+#' createDrones(apiary, nInd = nDronesFun) # nDrones will vary between function calls
 #'
 #' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesFun
-#' createDrones(colony1)
-#' createDrones(apiary)
+#' createDrones(colony1) # nDrones will vary between function calls
+#' createDrones(apiary) # nDrones will vary between function calls
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1189,8 +1200,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   queen.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
-#'   queens contains additional information about the number of workers, drones
-#'   and homozygous brood produced and the theoretical percentage of homozygous
+#'   queens contains additional information about the number of workers, drones,
+#'   and homozygous brood produced, and the expected percentage of csd homozygous
 #'   brood.
 #'
 #' @examples

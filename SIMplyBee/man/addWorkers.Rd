@@ -52,18 +52,18 @@ nWorkers(addWorkers(apiary))
 
 # Specify own number
 SP$nWorkers <- 15
-addWorkers(colony1)
-nWorkers(addWorkers(apiary))
+addWorkers(colony1) # nWorkers will NOT vary between function calls
+nWorkers(addWorkers(apiary)) # nWorkers will NOT vary between function calls
 
 # Specify a function that will give a number
 nWorkersFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
-addWorkers(colony1, nInd = nWorkersFun)
-nWorkers(addWorkers(apiary, nInd = nWorkersFun))
+addWorkers(colony1, nInd = nWorkersFun) # nWorkers will vary between function calls
+nWorkers(addWorkers(apiary, nInd = nWorkersFun)) # nWorkers will vary between function calls
 
 # Store a function or a value in the SP object
 SP$nWorkers <- nWorkersFun
-addWorkers(colony1)
-nWorkers(addWorkers(apiary))
+addWorkers(colony1) # nWorkers will vary between function calls
+nWorkers(addWorkers(apiary)) # nWorkers will vary between function calls
 }
