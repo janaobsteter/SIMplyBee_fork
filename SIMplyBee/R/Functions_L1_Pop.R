@@ -1250,18 +1250,13 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
     stop("Argument fathers must be a Pop class object!")
   }
   if (any(!isDrone(drones))) {
-    stop("Individuals in drones must be drones!")
+    stop("Argument drones must hold only drones, no fathers!")
   }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
   # skipping "if (is.function(nFathers))" since we use it below or pass it to
   #   pullDroneGroupsFromDCA
-  tmp <- isDrone(drones)
-  if (any(!tmp)) {
-    drones <- drones[tmp]
-    warning("Taking only drones that have not yet mated!")
-  }
   nVirginQueen <- nInd(pop)
   simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {

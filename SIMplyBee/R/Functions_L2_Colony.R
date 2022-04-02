@@ -1241,7 +1241,7 @@ crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
     stop("Argument drones must be a Pop class object!")
   }
   if (any(!isDrone(drones))) {
-    stop("Individuals in fathers must be drones!")
+    stop("Argument drones must hold only drones, no fathers!")
   }
   # TODO: Should we chose the virgin queen from colony that will mate in
   #       crossColony() at random or use "use"?
