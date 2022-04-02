@@ -31,6 +31,10 @@ Level 1 function that crosses (mates) a virgin queen to a group
   of drones. This function does not create any progeny, it only stores the
   mated drones (fathers) so we can later create progeny as needed.
 }
+\details{
+This function changes caste for the mated drones to fathers, and
+  mated virgin queens to queens. See examples.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -48,6 +52,11 @@ isQueenMated(virginQueen1)
 isQueenMated(matedQueen1)
 nFathers(matedQueen1)
 getFathers(matedQueen1)@id
+
+isDrone(drones[1:5])
+isFather(drones[1:5])
+isVirginQueen(matedQueen1)
+isQueen(matedQueen1)
 
 virginQueen2 <- basePop[3]
 (matedQueen2 <- crossVirginQueen(

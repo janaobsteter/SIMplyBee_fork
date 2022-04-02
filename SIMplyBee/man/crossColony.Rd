@@ -27,17 +27,32 @@ Level 2 function that crosses (mates) a virgin queen of colony
   Other virgin queens are destroyed. Mated drones (fathers) are stored for
   producing progeny at a later stage.
 }
+\details{
+This function calls \code{\link{crossVirginQueen}} that changes
+  caste for the mated drones to fathers, and mated virgin queens to queens.
+  See examples.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+isVirginQueen(basePop)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
+isDrone(drones)
 
 colony <- createColony(x = basePop[2])
 colony
+isVirginQueen(basePop)
+isVirginQueen(getVirginQueens(colony))
+
 colony <- crossColony(colony, drones, nFathers = 5)
 colony
+isDrone(drones)
+isFather(drones)
+isVirginQueen(basePop)
+isVirginQueen(getVirginQueens(colony))
+isQueen(getQueen(colony))
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

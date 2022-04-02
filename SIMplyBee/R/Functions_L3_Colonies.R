@@ -564,6 +564,8 @@ reQueenColonies <- function(colonies, queens) {
 #'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details See \code{\link{crossColony}} on caste changes.
+#'
 #' @return \code{\link{Colonies-class}} with mated colonies
 #'
 #' @examples

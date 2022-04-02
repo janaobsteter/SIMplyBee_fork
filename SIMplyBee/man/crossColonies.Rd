@@ -26,6 +26,9 @@ Level 3 function that does the same as \code{\link{crossColony}}
   a group of drones (Drone Congregation Area - DCA), partitions it so that
   in each colony virgin queen mates with one group/partition of drones.
 }
+\details{
+See \code{\link{crossColony}} on caste changes.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

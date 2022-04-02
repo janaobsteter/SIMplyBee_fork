@@ -1184,6 +1184,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details This function changes caste for the mated drones to fathers, and
+#'   mated virgin queens to queens. See examples.
+#'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
 #'
@@ -1209,6 +1212,11 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' isQueenMated(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
+#'
+#' isDrone(drones[1:5])
+#' isFather(drones[1:5])
+#' isVirginQueen(matedQueen1)
+#' isQueen(matedQueen1)
 #'
 #' virginQueen2 <- basePop[3]
 #' (matedQueen2 <- crossVirginQueen(

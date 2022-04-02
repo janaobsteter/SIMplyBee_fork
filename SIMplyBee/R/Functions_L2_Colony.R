@@ -1204,6 +1204,10 @@ resetEvents <- function(x, collapse = NULL) {
 #'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details This function calls \code{\link{crossVirginQueen}} that changes
+#'   caste for the mated drones to fathers, and mated virgin queens to queens.
+#'   See examples.
+#'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
 #'
@@ -1213,13 +1217,23 @@ resetEvents <- function(x, collapse = NULL) {
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
+#' isVirginQueen(basePop)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 5)
+#' isDrone(drones)
 #'
 #' colony <- createColony(x = basePop[2])
 #' colony
+#' isVirginQueen(basePop)
+#' isVirginQueen(getVirginQueens(colony))
+#'
 #' colony <- crossColony(colony, drones, nFathers = 5)
 #' colony
+#' isDrone(drones)
+#' isFather(drones)
+#' isVirginQueen(basePop)
+#' isVirginQueen(getVirginQueens(colony))
+#' isQueen(getQueen(colony))
 #' @export
 crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
