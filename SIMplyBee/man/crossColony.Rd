@@ -12,8 +12,8 @@ crossColony(colony, drones, nFathers = NULL, simParamBee = NULL)
 \item{drones}{\code{\link{Pop-class}}, drones the virgin queen could mate
 with}
 
-\item{nFathers}{numeric of function, number of drones that a queen mates with;
-if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

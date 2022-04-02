@@ -12,9 +12,8 @@ crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
 \item{drones}{\code{\link{Pop-class}}, drones that the virgin queens could
 mate with (Drone Congregation Area - DCA)}
 
-\item{nFathers}{numeric or function, number of drones (fathers) to be used in
-mating an individual queen (see \code{\link{crossColony}}); if \code{NULL}
-then \code{\link{SimParamBee}$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -25,7 +24,7 @@ then \code{\link{SimParamBee}$nFathers} is used}
 Level 3 function that does the same as \code{\link{crossColony}}
   but for all given colonies. To ease the use, \code{crossColonies} takes in
   a group of drones (Drone Congregation Area - DCA), partitions it so that
-  each colony virgin queen mates with one group/partition of drones.
+  in each colony virgin queen mates with one group/partition of drones.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

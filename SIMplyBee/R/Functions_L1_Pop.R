@@ -943,17 +943,15 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @title Pulls drone groups from a Drone Congregation Area (DCA)
 #'
 #' @description Level 1 function that pulls drone groups from a Drone
-#'   Congregation Area (DCA) to use them later in mating. Number of drones per
-#'   group is sampled from a truncated Poisson distribution parameterised with
-#'   an average group size and truncation at zero (= zeroes are excluded).
-#'   Drones are pulled (removed) from the DCA to reflect the fact that drones
-#'   die after mating, so they can't be present in the DCA anymore.
+#'   Congregation Area (DCA) to use them later in mating. Within the function
+#'   drones are pulled (removed) from the DCA to reflect the fact that drones
+#'   die after mating, so they can't be present in the DCA anymore. Be careful
+#'   what you do with the DCA object outside function to avoid drone "copies".
 #'
 #' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param n integer, number of drone groups to be created
-#' @param nFathers numeric of function, number of drones (possible future
-#'   fathers) per group; if \code{NULL} then \code{\link{SimParamBee}$nFathers}
-#'   is used
+#' @param nFathers numeric of function, number of drones that a virgin queen
+#'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list of \code{\link{Pop-class}}
@@ -998,6 +996,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
     if (nInd(DCA) < nF) {
       stop("We ran out of drones in the DCA!")
     }
+    # TODO: We select drones for mating at random, should we use "use"?
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     tmp <- pullInd(pop = DCA, nInd = nF)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remainder
@@ -1180,17 +1180,17 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
-#' @param nFathers numeric, average number of drones (fathers) used in mating
-#'   the virgin queen(s); if \code{NULL} then \code{\link{SimParamBee}$nFathers}
-#'   is used
+#' @param nFathers numeric of function, number of drones that a virgin queen
+#'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
 #'
-#' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the queens
-#' contains additional information about the number of workers, drones and homozygous
-#' brood produced and the theoretical percentage of homozygous brood.
+#' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
+#'   queens contains additional information about the number of workers, drones
+#'   and homozygous brood produced and the theoretical percentage of homozygous
+#'   brood.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1268,20 +1268,21 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
     } else {
       n <- nFathers
     }
-    # TODO: In crossVirginQueens we select drones for mating at random, should we use "use"?
+    # TODO: In crossVirginQueens we select drones for mating at random, should
+    #       we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
     simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
-    fathers <- pullDroneGroupsFromDCA(
+    fatherGroups <- pullDroneGroupsFromDCA(
       DCA = drones,
       n = nVirginQueen,
       nFathers = nFathers
     )
     for (queen in seq_len(nVirginQueen)) {
-      simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
-      pop@misc[[queen]]$fathers <- fathers[[queen]]
+      simParamBee$changeCaste(id = fatherGroups[[queen]]@id, caste = "F")
+      pop@misc[[queen]]$fathers <- fatherGroups[[queen]]
     }
   }
 

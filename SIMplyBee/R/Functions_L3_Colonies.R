@@ -555,14 +555,13 @@ reQueenColonies <- function(colonies, queens) {
 #' @description Level 3 function that does the same as \code{\link{crossColony}}
 #'   but for all given colonies. To ease the use, \code{crossColonies} takes in
 #'   a group of drones (Drone Congregation Area - DCA), partitions it so that
-#'   each colony virgin queen mates with one group/partition of drones.
+#'   in each colony virgin queen mates with one group/partition of drones.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param drones \code{\link{Pop-class}}, drones that the virgin queens could
 #'   mate with (Drone Congregation Area - DCA)
-#' @param nFathers numeric or function, number of drones (fathers) to be used in
-#'   mating an individual queen (see \code{\link{crossColony}}); if \code{NULL}
-#'   then \code{\link{SimParamBee}$nFathers} is used
+#' @param nFathers numeric of function, number of drones that a virgin queen
+#'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with mated colonies
@@ -598,9 +597,6 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
   if (any(!isDrone(drones))) {
     stop("Individuals in drones must be drones!")
   }
-  # TODO: revise nFathers in crossColonies - we could just remove the next if or
-  #       best keep it so we only ran the retrieval once?
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/236
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
@@ -610,19 +606,15 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    # TODO: revise nFathers in crossColonies
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/236
     fatherGroups <- pullDroneGroupsFromDCA(
       DCA = drones,
       n = nCol,
       nFathers = nFathers
     )
-    # TODO: revise nFathers in crossColonies
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/236
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- crossColony(colonies[[colony]],
+      ret[[colony]] <- crossColony(colony = colonies[[colony]],
         drones = fatherGroups[[colony]],
-        nFathers = nFathers,
+        nFathers = nInd(fatherGroups[[colony]]),
         simParamBee = simParamBee
       )
     }

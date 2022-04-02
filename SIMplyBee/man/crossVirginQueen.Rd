@@ -15,16 +15,16 @@ with virgin queen(s); if there is more than one virgin queen, then the
 \code{fathers} are partitioned into multiple groups of \code{nFathers} size
  using \code{\link{pullDroneGroupsFromDCA}}}
 
-\item{nFathers}{numeric, average number of drones (fathers) used in mating
-the virgin queen(s); if \code{NULL} then \code{\link{SimParamBee}$nFathers}
-is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with mated queen(s). The misc slot of the queens
-contains additional information about the number of workers, drones and homozygous
-brood produced and the theoretical percentage of homozygous brood.
+\code{\link{Pop-class}} with mated queen(s). The misc slot of the
+  queens contains additional information about the number of workers, drones
+  and homozygous brood produced and the theoretical percentage of homozygous
+  brood.
 }
 \description{
 Level 1 function that crosses (mates) a virgin queen to a group

@@ -1200,8 +1200,8 @@ resetEvents <- function(x, collapse = NULL) {
 #' @param colony \code{\link{Colony-class}}
 #' @param drones \code{\link{Pop-class}}, drones the virgin queen could mate
 #'   with
-#' @param nFathers numeric of function, number of drones that a queen mates with;
-#'   if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param nFathers numeric of function, number of drones that a virgin queen
+#'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1239,6 +1239,12 @@ crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
   }
   if (any(!isDrone(drones))) {
     stop("Argument drones must hold only drones, no fathers!")
+  }
+  if (is.null(nFathers)) {
+    nFathers <- simParamBee$nFathers
+  }
+  if (is.function(nFathers)) {
+    nFathers <- nFathers()
   }
   # TODO: Should we chose the virgin queen from colony that will mate in
   #       crossColony() at random or use "use"?
