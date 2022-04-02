@@ -606,13 +606,11 @@ isCaste <- function(x, caste, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    if (x@nInd == 0) {
-      ret <- FALSE
-    } else {
-      ret <- simParamBee$caste[x@id] == caste[1]
-    }
+    ret <- simParamBee$caste[x@id] == caste[1]
+  } else if (is.null(x)) {
+    ret <- logical()
   } else {
-    stop("Argument x must be a Pop class object!")
+    stop("Argument x must be a Pop class object or NULL!")
   }
   return(ret)
 }
