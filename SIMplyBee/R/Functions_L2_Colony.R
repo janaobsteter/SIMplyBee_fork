@@ -25,9 +25,9 @@
 #' colony2 <- createColony(x = basePop[3])
 #' colony2
 #' @export
-createColony <- function(x = NULL, location = NULL) {
-  if (is.null(x)) {
-    stop("You must provide the argument x!")
+createColony <- function(x, location = NULL) {
+  if (length(x) > 1) {
+    stop("Argument x must be either one virgin queen or one queen!")
   } else if (isQueen(x)) {
     queen <- x
     virginQueens <- NULL
@@ -35,7 +35,7 @@ createColony <- function(x = NULL, location = NULL) {
     queen <- NULL
     virginQueens <- x
   } else {
-    stop("Individual in x must be a virgin queen, a queen, or NULL!")
+    stop("Individual in x must be a virgin queen or a queen!")
   }
 
   if (is.null(queen)) {
