@@ -343,19 +343,23 @@ nDrones <- function(x) {
   return(ret)
 }
 
-#' @rdname computeQueensPHomBrood
-#' @title Theoretical percentage of homozygous brood of a queen
+#' @rdname calcQueensPHomBrood
+#' @title Calculate expected percentage of csd homozygous brood of a queen
 #'
-#' @description Level 0 function that returns the theoretical or
-#' expected percentage of homozygous brood per queen. The percentage
-#' is computed based on the csd allele of the queen and the drones
-#' the queen mated with (the fathers).
+#' @description Level 0 function that calculates the expected percentage of csd
+#'   homozygous brood of a queen. The percentage is computed based on the csd
+#'   alleles of the queen and the drones the queen mated with (the fathers).
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #'
-#' @return numeric, theoretical homozygosity named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#' @details
+#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
+#'
+#' @return numeric, expected csd homozygosity named by colony id when \code{x}
+#'   is \code{\link{Colonies-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -373,16 +377,54 @@ nDrones <- function(x) {
 #' colony2 <- addDrones(colony2, nInd = 20)
 #'
 #' # Mated queen
-#' computeQueensPHomBrood(colony1@queen)
+#' calcQueensPHomBrood(colony1@queen)
 #'
 #' # Colony
-#' computeQueensPHomBrood(colony1)
+#' calcQueensPHomBrood(colony1)
 #'
 #' # Colonies
 #' apiary <- c(colony1, colony2)
-#' computeQueensPHomBrood(apiary)
+#' calcQueensPHomBrood(apiary)
+#'
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 20)
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- createColony(x = basePop[3])
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' colony1 <- addWorkers(colony1, nInd = 10)
+#' colony2 <- addWorkers(colony2, nInd = 20)
+#' colony1 <- addDrones(colony1, nInd = 10)
+#' colony2 <- addDrones(colony2, nInd = 20)
+#' colony1 <- addVirginQueens(colony1, nInd = 1)
+#'
+#' # Virgin queen
+#' calcQueensPHomBrood(basePop[2])
+#'
+#' # Mated queen
+#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
+#' calcQueensPHomBrood(matedQueen)
+#'
+#' # Queen of the colony
+#' calcQueensPHomBrood(getQueen(colony1))
+#'
+#' # Colony
+#' calcQueensPHomBrood(colony1)
+#'
+#' # Colonies
+#' apiary <- c(colony1, colony2)
+#' calcQueensPHomBrood(apiary)
+#'
+#' # Now inbreed virgin queen with her brothers to get csd homozygous brood
+#' colony3 <- createColony(x = getVirginQueens(colony1))
+#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+#' colony3 <- addWorkers(colony3, nInd = 100)
+#' calcQueensPHomBrood(colony3)
 #' @export
-computeQueensPHomBrood <- function(x) {
+calcQueensPHomBrood <- function(x) {
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
@@ -402,9 +444,9 @@ computeQueensPHomBrood <- function(x) {
       }
     }
   } else if (isColony(x)) {
-    ret <- computeQueensPHomBrood(x = x@queen)
+    ret <- calcQueensPHomBrood(x = x@queen)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = computeQueensPHomBrood)
+    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
@@ -413,16 +455,18 @@ computeQueensPHomBrood <- function(x) {
 }
 
 #' @rdname pHomBrood
-#' @title Theoretical percentage of homozygous brood of a queen
+#' @title Expected percentage of csd homozygous brood of a queen / colony
 #'
-#' @description Level 0 function that returns the theoretical percentage of
-#' homozygous brood of a queen in a colony.
+#' @description Level 0 function that returns the expected percentage of
+#'   csd homozygous brood of a queen in a colony.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#' TODO: describe queen's and colony's pHomBrood
-#'   https://github.com/HighlanderLab/SIMplyBee/issues/80
-#'   https://github.com/HighlanderLab/SIMplyBee/issues/104
+#'
+#' @details
+#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
 #'
 #' @return numeric, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
@@ -441,12 +485,14 @@ computeQueensPHomBrood <- function(x) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
+#' colony1 <- addVirginQueens(colony1, nInd = 1)
 #'
 #' # Virgin queen
-#' try(pHomBrood(basePop[2]))
+#' pHomBrood(basePop[2])
 #'
 #' # Mated queen
-#' pHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5))
+#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
+#' pHomBrood(matedQueen)
 #'
 #' # Queen of the colony
 #' pHomBrood(getQueen(colony1))
@@ -457,6 +503,12 @@ computeQueensPHomBrood <- function(x) {
 #' # Colonies
 #' apiary <- c(colony1, colony2)
 #' pHomBrood(apiary)
+#'
+#' # Now inbreed virgin queen with her brothers to get csd homozygous brood
+#' colony3 <- createColony(x = getVirginQueens(colony1))
+#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+#' colony3 <- addWorkers(colony3, nInd = 100)
+#' pHomBrood(colony3)
 #' @export
 pHomBrood <- function(x) {
   if (isPop(x)) {
@@ -470,9 +522,9 @@ pHomBrood <- function(x) {
       }
     }
   } else if (isColony(x)) {
-    # TODO: report colony, not queen pHomBrood
-    # https://github.com/HighlanderLab/SIMplyBee/issues/80
-    # https://github.com/HighlanderLab/SIMplyBee/issues/104
+    # TODO: report queen's and colony's pHomBrood / nHomBrood
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/80
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/104
     if (is.null(x@queen@misc[[1]]$pHomBrood)) {
       ret <- NA
     } else {
@@ -488,14 +540,19 @@ pHomBrood <- function(x) {
 }
 
 #' @rdname nHomBrood
-#' @title Total realised number of homozygous brood produced by a queen.
+#' @title Realised number of csd homozygous brood produced by a queen
 #'
-#' @description Level 0 function that returns the total number of
-#' homozygous brood of a queen in a colony (these are non viable
-#' individuals, only their number is stored)
+#' @description Level 0 function that returns the number of csd homozygous brood
+#'   a queen produced (these are non viable individuals, only their number is
+#'   stored)
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
+#'
+#' @details
+#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
+#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
 #'
 #' @return numeric, named by colony id when \code{x} is
 #'   \code{\link{Colonies-class}}
@@ -514,12 +571,14 @@ pHomBrood <- function(x) {
 #' colony2 <- addWorkers(colony2, nInd = 20)
 #' colony1 <- addDrones(colony1, nInd = 10)
 #' colony2 <- addDrones(colony2, nInd = 20)
+#' colony1 <- addVirginQueens(colony1, nInd = 1)
 #'
 #' # Virgin queen
-#' try(nHomBrood(basePop[2]))
+#' nHomBrood(basePop[2])
 #'
 #' # Mated queen
-#' nHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5))
+#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
+#' nHomBrood(matedQueen)
 #'
 #' # Queen of the colony
 #' nHomBrood(getQueen(colony1))
@@ -530,6 +589,12 @@ pHomBrood <- function(x) {
 #' # Colonies
 #' apiary <- c(colony1, colony2)
 #' nHomBrood(apiary)
+#'
+#' # Now inbreed virgin queen with her brothers to get csd homozygous brood
+#' colony3 <- createColony(x = getVirginQueens(colony1))
+#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+#' colony3 <- addWorkers(colony3, nInd = 100)
+#' nHomBrood(colony3)
 #' @export
 nHomBrood <- function(x) {
   if (isPop(x)) {

@@ -33,7 +33,8 @@ Level 1 function that crosses (mates) a virgin queen to a group
 }
 \details{
 This function changes caste for the mated drones to fathers, and
-  mated virgin queens to queens. See examples.
+  mated virgin queens to queens. See examples. This means that you can not
+  use these individuals in matings anymore!
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -84,8 +85,8 @@ matedQueen3 <- crossVirginQueen(
   drones = drones[16:20],
   nFathers = 5
 )
-# Check the theoretical homozygosity
-matedQueen3@misc[[1]]$pHomBrood
+# Check the expected csd homozygosity
+pHomBrood(matedQueen3)
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

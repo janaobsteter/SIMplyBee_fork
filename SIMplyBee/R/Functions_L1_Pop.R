@@ -265,7 +265,7 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' @description Level 1 function that creates the specified number of virgin
 #'   queens from the colony by mating the colony queen and the fathers. If csd
-#'   locus is defined, it takes it into account and any csd homozygotes are
+#'   locus is active, it takes it into account and any csd homozygotes are
 #'   removed and counted towards homozygous brood.
 #'
 #' @param x \code{link{MapPop-class}} or \code{\link{Colony-class}} or
@@ -380,13 +380,13 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'
 #' @description Level 1 function that creates the specified number of workers
 #'   from the colony by mating the colony queen and the fathers. If csd locus is
-#'   defined, it takes it into account and any csd homozygotes are removed and
+#'   active, it takes it into account and any csd homozygotes are removed and
 #'   counted towards homozygous brood.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of workers created; if \code{NULL}
 #'   then \code{\link{SimParamBee}$nWorkers} is used
-#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#' @param exact logical, if the csd locus is active and exact is \code{TRUE},
 #'   create the exactly specified number of viable workers (heterozygous on the
 #'   csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -475,22 +475,19 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
       ret$workers <- workers[sel]
       ret$nHomBrood <- nInd - sum(sel)
       if (exact) {
-        # if (x@queen@misc$$pHomBrood > 0.5) {
-        #   message(paste("Percentage of homozgous brood is ", x@queen@misc$pHomBrood, ",
-        #                 might take a long time to create viable individuals."))
-        # }
         if (nInd(ret$workers) < nInd) {
-          missingWorkers <- nInd - nInd(ret$workers)
-          while (nInd(ret$workers) != nInd) {
-            worker <- beeCross(
+          nMiss <- nInd - nInd(ret$workers)
+          while (0 < nMiss) {
+            workers <- beeCross(
               queen = getQueen(x),
               drones = getFathers(x),
-              nProgeny = 1,
+              nProgeny = nMiss,
               simParamBee = simParamBee
             )
-            if (isCsdHeterozygous(worker)) {
-              ret$workers <- c(ret$workers, worker)
-            }
+            sel <- isCsdHeterozygous(pop = workers, simParamBee = simParamBee)
+            ret$workers <- c(ret$workers, workers[sel])
+            ret$nHomBrood <- ret$nHomBrood + sum(!sel)
+            nMiss <- nInd - nInd(ret$workers)
           }
         }
       }
@@ -1185,7 +1182,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function changes caste for the mated drones to fathers, and
-#'   mated virgin queens to queens. See examples.
+#'   mated virgin queens to queens. See examples. This means that you can not
+#'   use these individuals in matings anymore!
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
@@ -1244,8 +1242,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   drones = drones[16:20],
 #'   nFathers = 5
 #' )
-#' # Check the theoretical homozygosity
-#' matedQueen3@misc[[1]]$pHomBrood
+#' # Check the expected csd homozygosity
+#' pHomBrood(matedQueen3)
 #' @export
 crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1298,7 +1296,7 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   pop <- setMisc(x = pop, node = "nDrones", value = 0)
   pop <- setMisc(x = pop, node = "nHomBrood", value = 0)
   if (isCsdActive(simParamBee = simParamBee)) {
-    val <- computeQueensPHomBrood(x = pop)
+    val <- calcQueensPHomBrood(x = pop)
   } else {
     val <- NA
   }

@@ -64,9 +64,9 @@ createColony <- function(x = NULL, location = NULL) {
 #' @rdname reQueenColony
 #' @title Re-queen a colony
 #'
-#' @description Level 2 function that re-queens a colony adds a mated or a
-#'   virgin queen, removes the previous queen, and changes colony id to the new
-#'   mated queen.
+#' @description Level 2 function that re-queens a colony by adding a mated or a
+#'   virgin queen, removing the previous queen, and changing the colony id to
+#'   the new mated queen.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
@@ -1206,7 +1206,8 @@ resetEvents <- function(x, collapse = NULL) {
 #'
 #' @details This function calls \code{\link{crossVirginQueen}} that changes
 #'   caste for the mated drones to fathers, and mated virgin queens to queens.
-#'   See examples.
+#'   See examples. This means that you can not use these individuals in matings
+#'   anymore!
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.

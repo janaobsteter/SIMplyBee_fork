@@ -2,24 +2,26 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{pHomBrood}
 \alias{pHomBrood}
-\title{Theoretical percentage of homozygous brood of a queen}
+\title{Expected percentage of csd homozygous brood of a queen / colony}
 \usage{
 pHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-  \code{\link{Colonies-class}}
-TODO: describe queen's and colony's pHomBrood
-  https://github.com/HighlanderLab/SIMplyBee/issues/80
-  https://github.com/HighlanderLab/SIMplyBee/issues/104}
+\code{\link{Colonies-class}}}
 }
 \value{
 numeric, named by colony id when \code{x} is
   \code{\link{Colonies-class}}
 }
 \description{
-Level 0 function that returns the theoretical percentage of
-homozygous brood of a queen in a colony.
+Level 0 function that returns the expected percentage of
+  csd homozygous brood of a queen in a colony.
+}
+\details{
+TODO: describe queen's and colony's pHomBrood / nHomBrood
+        https://github.com/HighlanderLab/SIMplyBee/issues/80
+        https://github.com/HighlanderLab/SIMplyBee/issues/104
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -35,12 +37,14 @@ colony1 <- addWorkers(colony1, nInd = 10)
 colony2 <- addWorkers(colony2, nInd = 20)
 colony1 <- addDrones(colony1, nInd = 10)
 colony2 <- addDrones(colony2, nInd = 20)
+colony1 <- addVirginQueens(colony1, nInd = 1)
 
 # Virgin queen
-try(pHomBrood(basePop[2]))
+pHomBrood(basePop[2])
 
 # Mated queen
-pHomBrood(crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5))
+matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
+pHomBrood(matedQueen)
 
 # Queen of the colony
 pHomBrood(getQueen(colony1))
@@ -51,4 +55,10 @@ pHomBrood(colony1)
 # Colonies
 apiary <- c(colony1, colony2)
 pHomBrood(apiary)
+
+# Now inbreed virgin queen with her brothers to get csd homozygous brood
+colony3 <- createColony(x = getVirginQueens(colony1))
+colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+colony3 <- addWorkers(colony3, nInd = 100)
+pHomBrood(colony3)
 }

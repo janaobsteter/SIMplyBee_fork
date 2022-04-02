@@ -29,7 +29,7 @@ when \code{x} is \code{link{MapPop-class}} returns
 \description{
 Level 1 function that creates the specified number of virgin
   queens from the colony by mating the colony queen and the fathers. If csd
-  locus is defined, it takes it into account and any csd homozygotes are
+  locus is active, it takes it into account and any csd homozygotes are
   removed and counted towards homozygous brood.
 }
 \examples{

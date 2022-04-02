@@ -30,7 +30,8 @@ Level 2 function that crosses (mates) a virgin queen of colony
 \details{
 This function calls \code{\link{crossVirginQueen}} that changes
   caste for the mated drones to fathers, and mated virgin queens to queens.
-  See examples.
+  See examples. This means that you can not use these individuals in matings
+  anymore!
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
