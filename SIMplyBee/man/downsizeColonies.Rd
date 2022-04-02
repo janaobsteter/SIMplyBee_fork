@@ -5,7 +5,13 @@
 \title{Reduce number of workers and remove all drones and virgin queens from
   colonies}
 \usage{
-downsizeColonies(colonies, p = NULL, use = "rand", new = FALSE)
+downsizeColonies(
+  colonies,
+  p = NULL,
+  use = "rand",
+  new = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -18,6 +24,8 @@ it guides the selection of workers that will be removed}
 
 \item{new}{logical, should we remove all current workers and add a targeted
 proportion anew (say, create winter workers)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed

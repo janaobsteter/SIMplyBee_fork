@@ -444,6 +444,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
 #'
@@ -464,9 +465,16 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE) {
+downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE,
+                             simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
+  }
+  if (is.null(p)) {
+    p <- simParamBee$pDownsize
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
@@ -474,7 +482,8 @@ downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE) {
       colony = colonies[[colony]],
       p = p,
       use = use,
-      new = new
+      new = new,
+      simParamBee = simParamBee
     )
   }
   validObject(colonies)
@@ -599,20 +608,27 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
   if (any(!isDrone(drones))) {
     stop("Individuals in drones must be drones!")
   }
+  # TODO: revise nFathers in crossColonies - we could just remove the next if or
+  #       best keep it so we only ran the retrieval once?
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/236
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
-  # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
+  # skipping "if (is.null(nFathers))" since we pass it to pullDroneGroupsFromDCA
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
+    # TODO: revise nFathers in crossColonies
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/236
     fatherGroups <- pullDroneGroupsFromDCA(
       DCA = drones,
       n = nCol,
       nFathers = nFathers
     )
+    # TODO: revise nFathers in crossColonies
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/236
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(colonies[[colony]],
         drones = fatherGroups[[colony]],
@@ -736,7 +752,10 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
       remnants = createColonies(n = nCol)
     )
     for (colony in seq_len(nCol)) {
-      tmp <- swarmColony(colonies[[colony]], p = p, year = year)
+      tmp <- swarmColony(colonies[[colony]],
+        p = p, year = year,
+        simParamBee = simParamBee
+      )
       ret$swarms[[colony]] <- tmp$swarm
       ret$remnants[[colony]] <- tmp$remnant
     }
@@ -862,7 +881,10 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
       remnants = createColonies(n = nCol)
     )
     for (colony in seq_len(nCol)) {
-      tmp <- splitColony(colonies[[colony]], p = p, year = year)
+      tmp <- splitColony(colonies[[colony]],
+        p = p, year = year,
+        simParamBee = simParamBee
+      )
       ret$splits[[colony]] <- tmp$split
       ret$remnants[[colony]] <- tmp$remnant
     }
@@ -900,6 +922,12 @@ setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
+  }
+  if (is.null(FUN)) {
+    FUN <- simParamBee$phenoColony
+  }
+  if (is.null(FUN)) {
+    stop("Argument FUN must be provided or SimParamBee$phenoColony must be set!")
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
