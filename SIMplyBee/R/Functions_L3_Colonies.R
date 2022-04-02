@@ -438,17 +438,14 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #'   an event occurs in preparation for the winter months.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, percentage of workers to remove from the colonies (Seeley, 2019)
+#' @param p numeric, percentage of workers to be removed from each colony; if
+#'   \code{NULL} then \code{SimParamBee$pDownsize} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
 #'
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
-#'
-#' @references Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-#'   Bee in the Wild. Princeton: Princeton University Press.
-#'   \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -467,7 +464,7 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
+downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE) {
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
@@ -476,6 +473,7 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
     colonies[[colony]] <- downsizeColony(
       colony = colonies[[colony]],
       p = p,
+      use = use,
       new = new
     )
   }

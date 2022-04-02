@@ -616,7 +616,7 @@ downsizeColony <- function(colony, p = NULL, use = "rand", new = FALSE,
     n <- nWorkers(colony) * (1 - p)
     colony <- addWorkers(x = colony, nInd = n, new = TRUE)
   } else {
-    colony <- removeWorkers(x = colony, p = p)
+    colony <- removeWorkers(x = colony, p = p, use = use)
   }
   colony <- removeDrones(x = colony, p = 1)
   colony <- removeVirginQueens(x = colony, p = 1)
