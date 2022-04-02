@@ -24,3 +24,42 @@ devtools::install_github(repo="HighlanderLab/SIMplyBee@devel",
                          subdir = "SIMplyBee")
 
 library(SIMplyBee)
+
+
+objects <- ls(name = "package:SIMplyBee")
+for (object in objects) {
+  # object <- "isDrone"
+  code <- get(x = object)
+  if (is.function(code)) {
+    tmp <- formals(code)
+    if ("simParamBee" %in% names(tmp)) {
+      cat(paste(object, paste(names(tmp), collapse = " "), "\n"))
+    }
+  }
+}
+
+objects <- ls(name = "package:AlphaSimR")
+for (object in objects) {
+  # object <- "isDrone"
+  code <- get(x = object)
+  if (is.function(code)) {
+    tmp <- formals(code)
+    if ("simParam" %in% names(tmp)) {
+      cat(paste(object, paste(names(tmp), collapse = " "), "\n"))
+    }
+  }
+}
+
+objects <- ls(name = "package:SIMplyBee")
+sink(file = "SIMplyBee_functions_and_arguments.txt")
+for (object in objects) {
+  # object <- "isDrone"
+  code <- get(x = object)
+  if (is.function(code)) {
+    tmp <- formals(code)
+    cat(object, "\n")
+    cat(str(tmp))
+    cat("\n")
+  }
+}
+sink()
