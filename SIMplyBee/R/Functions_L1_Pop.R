@@ -136,6 +136,13 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
+          if (caste == "drones") {
+            test <- isDrone(tmp)
+            if (any(!test)) {
+              tmp <- tmp[test]
+              warning("Taking only drones that have not yet mated!")
+            }
+          }
           ret[[caste]] <- tmp
         }
       }
@@ -148,6 +155,13 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
       if (is.null(pop)) {
         ret <- NULL
       } else {
+        if (caste == "drones") {
+          test <- isDrone(pop)
+          if (any(!test)) {
+            pop <- pop[test]
+            warning("Taking only drones that have not yet mated!")
+          }
+        }
         if (is.null(nInd)) {
           nInd <- nInd(pop)
         }
@@ -883,14 +897,6 @@ createDCA <- function(x, nInd = NULL) {
   } else {
     stop("Argument x must be a Colony of Colonies class object!")
   }
-  # isDrone() below finds drones that are fathers already - here this is just
-  #   a precaution, since drones in colony likely haven't mated yet, but we can't
-  #   guarantee this, hence using it
-  tmp <- isDrone(DCA)
-  if (any(!tmp)) {
-    DCA <- DCA[tmp]
-    warning("Taking only drones that have not yet mated!")
-  }
   return(DCA)
 }
 
@@ -1088,6 +1094,13 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand") {
       }
       tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
       slot(x, caste) <- tmp$remainder
+      if (caste == "drones") {
+        test <- isDrone(tmp$pulled)
+        if (any(!test)) {
+          tmp$pulled <- tmp$pulled[test]
+          warning("Taking only drones that have not yet mated!")
+        }
+      }
       ret <- list(pulled = tmp$pulled, colony = x)
     }
   } else if (isColonies(x)) {
