@@ -12,8 +12,8 @@ getQtlHaplo(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL)
 \item{trait}{numeric, indicates which trait's QTL haplotypes to retrieve}
 
 \item{haplo}{character, either "all" for all haplotypes or an integer for a
-single set of haplotypes, use a value of 1 for female haplotypes and a value of
-2 for male haplotypes}
+single set of haplotypes, use a value of 1 for female haplotypes and a
+value of 2 for male haplotypes}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}

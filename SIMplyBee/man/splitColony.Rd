@@ -9,7 +9,8 @@ splitColony(colony, p = NULL, year = NULL, simParamBee = NULL)
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{numeric, proportion of workers that will go to the split colony}
+\item{p}{numeric, proportion of workers that will go to the split colony; if
+\code{NULL} then \code{\link{SimParamBee}$pSplit} is used}
 
 \item{year}{numeric, year of birth for virgin queens}
 

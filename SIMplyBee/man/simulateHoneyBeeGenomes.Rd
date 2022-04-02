@@ -43,7 +43,7 @@ simulateHoneyBeeGenomes(
 \item{recRate}{numeric, per base pair recombination rate}
 
 \item{nThreads}{integer, if OpenMP is available, this will allow for simulating
-chromosomes in parallel. If the value is NULL, the number of threads is
+chromosomes in parallel. If \code{NULL}, the number of threads is
 automatically detected}
 }
 \value{

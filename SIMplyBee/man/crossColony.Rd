@@ -13,7 +13,7 @@ crossColony(colony, drones, nFathers = NULL, simParamBee = NULL)
 with}
 
 \item{nFathers}{numeric of function, number of drones that a queen mates with;
-if \code{NULL} then \code{simParamBee$nFathers} is used}
+if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

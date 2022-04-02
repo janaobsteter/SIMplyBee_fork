@@ -29,7 +29,7 @@ getDrones(x, nInd = NULL, use = "rand")
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,
-we return the ones available - this can also be just \code{NULL}}
+we return the ones available - this can return \code{NULL}}
 
 \item{use}{character, all options provided by \code{\link{selectInd}} and
 \code{"order"} that selects \code{1:nInd} individuals}

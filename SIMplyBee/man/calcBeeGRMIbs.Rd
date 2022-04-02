@@ -20,7 +20,7 @@ missing values are allowed (this is not checked - you will get NAs!)}
 \code{x} - \code{"F"} for female and \code{"M"} for male}
 
 \item{alleleFreq}{numeric, vector of allele frequencies for the sites in
-\code{x}; if \code{NULL}, then \code{calcBeeAlleleFreq} is used}
+\code{x}; if \code{NULL}, then \code{\link{calcBeeAlleleFreq}} is used}
 }
 \value{
 matrix of genomic relatedness coefficients

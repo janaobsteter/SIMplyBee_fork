@@ -9,7 +9,6 @@
 #' @param x \code{\link{Pop-class}} with one individual that will be the
 #'   queen of the colony; error is thrown if more than one individual is given
 #' @param location numeric, location of the colony as \code{c(x, y)}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
 #'
@@ -26,13 +25,7 @@
 #' colony2 <- createColony(x = basePop[3])
 #' colony2
 #' @export
-createColony <- function(x = NULL,
-                         location = NULL,
-                         simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-
+createColony <- function(x = NULL, location = NULL) {
   if (is.null(x)) {
     stop("You must provide the argument x!")
   } else if (isQueen(x)) {
@@ -143,7 +136,7 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of virgin queens to add; if
-#'   \code{NULL} then \code{simParamBee$nVirginQueens} is used
+#'   \code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used
 #' @param new logical, should the virgin queens be added a fresh (ignoring
 #'   currently present virgin queens in the colony)
 #' @param year numeric, year of birth for virgin queens
@@ -241,7 +234,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of workers to be added, but see
-#'   \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used
 #' @param new logical, should the number of workers be added anew or should we
 #'   only top-up the existing number of workers to \code{nInd}
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
@@ -288,7 +281,8 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #' @export
-addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL) {
+addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
+                       simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -336,7 +330,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee =
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #'   \code{simParamBee$nDrones} is used
 #' @param nInd numeric or function, number of drones to be added, but see
-#'   \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used
 #' @param new logical, should the number of drones be added anew or should we
 #'   only top-up the existing number of drones to \code{nInd}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -425,9 +419,11 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param nWorkers numeric or function, number of worker to add to the colony,
-#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used
+#'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
+#'   is used
 #' @param nDrones numeric or function, number of drones to add to the colony,
-#'   but see \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used
+#'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
+#'   is used
 #' @param new logical, should the number of workers and drones be added anew or
 #'   should we only top-up the existing number of workers and drones to
 #'   \code{nWorkers} and \code{nDrones} (see details)
@@ -448,9 +444,9 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
 #'
 #' TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
-#'   We are not sure this is easy to achieve with current implementation just
-#'   now, but could be expanded.
-#'   https://github.com/HighlanderLab/SIMplyBee/issues/176
+#'       We are not sure this is easy to achieve with current implementation
+#'       just now, but could be expanded.
+#'       https://github.com/HighlanderLab/SIMplyBee/issues/176
 #'
 #' This function turns on production in the colony.
 #'
@@ -576,7 +572,7 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, percentage of workers to be removed from the colony; if
-#'   \code{NULL} then \code{SimParamBee$pDownsize} is used
+#'   \code{NULL} then \code{\link{SimParamBee}$pDownsize} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
@@ -755,7 +751,8 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' apiary <- replaceWorkers(apiary, p = 1.5)
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #' @export
-replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL) {
+replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
+                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1204,7 +1201,7 @@ resetEvents <- function(x, collapse = NULL) {
 #' @param drones \code{\link{Pop-class}}, drones the virgin queen could mate
 #'   with
 #' @param nFathers numeric of function, number of drones that a queen mates with;
-#'   if \code{NULL} then \code{simParamBee$nFathers} is used
+#'   if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1299,7 +1296,8 @@ collapseColony <- function(colony) {
 #'   the swarm is the same as for the remnant (for now).
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param p numeric, proportion of workers that will leave with the swarm colony;
+#'   if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -1342,7 +1340,7 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   nWorkersSwarm <- round(nWorkers * p)
 
   # TODO: Add use="something" to select pWorkers that swarm
-  #   https://github.com/HighlanderLab/SIMplyBee/issues/160
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/160
   tmp <- pullWorkers(x = colony, nInd = nWorkersSwarm)
   currentLocation <- getLocation(colony)
 
@@ -1414,14 +1412,15 @@ supersedeColony <- function(colony, year = NULL) {
   if (!isQueenPresent(colony)) {
     stop("No queen present in the colony!")
   }
-  # The bilogical order is: 1) queen dies and 2) workers raise virgin queens
-  #   from laid eggs from the queen
+  # The biological order is: 1) queen dies and 2) workers raise virgin queens
+  #   from eggs laid by the queen
   # The code below does 2) and then 1) since we don't store eggs
-  # Workers raise virgin queens from eggs laid by the queen and one random
-  #   virgin queen prevails, so we create just one
-  # Could consider that a non-random one prevails (say the more aggressive one),
-  #   by creating many virgin queens and then picking the one with highest
-  #   gv/pheno for competition or some other criteria (patri-lineage)
+  # Workers raise multiple virgin queens out of which one prevails, so we create
+  #   just one
+  # TODO: We could consider that a non-random one prevails (say the most
+  #       aggressive one), by creating many virgin queens and then picking the
+  #       one with highest pheno for competition or some other criteria
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/239
   colony@virginQueens <- createVirginQueens(
     x = colony, nInd = 1,
     year = year
@@ -1443,7 +1442,8 @@ supersedeColony <- function(colony, year = NULL) {
 #'   prevails. Location of the split is the same as for the remnant.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, proportion of workers that will go to the split colony
+#' @param p numeric, proportion of workers that will go to the split colony; if
+#'   \code{NULL} then \code{\link{SimParamBee}$pSplit} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -1483,8 +1483,9 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   nWorkers <- nWorkers(colony)
   nWorkersSplit <- round(nWorkers * p)
-  # TODO: Split colony splits at random by default, but we could make it as a function of some parameters
-  #   https://github.com/HighlanderLab/SIMplyBee/issues/179
+  # TODO: Split colony splits at random by default, but we could make it as a
+  #       function of some parameters
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/179
   tmp <- pullWorkers(x = colony, nInd = nWorkersSplit)
 
   remnantColony <- tmp$colony
@@ -1498,9 +1499,10 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   # Workers raise virgin queens from eggs laid by the queen (assuming) that
   #   a frame of brood is also provided to the split and then one random virgin
   #   queen prevails, so we create just one
-  # Could consider that a non-random one prevails (say the more aggressive one),
-  #   by creating many virgin queens and then picking the one with highest
-  #   gv/pheno for competition or some other criteria (patri-lineage)
+  # TODO: Could consider that a non-random one prevails (say the most aggressive
+  #       one), by creating many virgin queens and then picking the one with
+  #       highest pheno for competition or some other criteria
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/239
 
   splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
 
@@ -1518,7 +1520,6 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   validObject(ret$remnantColony)
   return(ret)
 }
-
 
 #' @rdname combine
 #' @title Combine two colony objects
@@ -1676,10 +1677,10 @@ setLocation <- function(x, location) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param FUN function, any function that can be aplied on \code{colony} and
-#'   can return phenotypes for defined traits via \code{\link{SimParamBee}}
-#' @param ... all parameters of \code{\link{setPheno}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation
-#'   parameters
+#'   can return phenotypes for traits defined in \code{\link{SimParamBee}};
+#'   if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used
+#' @param ... all parameters of \code{\link{setPheno}} and \code{FUN}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} with phenotypes
 #'

@@ -12,7 +12,7 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 must be virgin queens or queens (see \code{\link{createVirginQueens}})}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used; when \code{x} is
+\code{\link{SimParamBee}$nDrones} is used; when \code{x} is
 \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 the \code{x} (here population individuals serve as a queen, for example
 to initiate population from founding queens; see details). If \code{x}

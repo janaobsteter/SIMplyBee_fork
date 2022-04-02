@@ -11,7 +11,7 @@
 #'   "drones", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
-#'   we return the ones available - this can also be just \code{NULL}
+#'   we return the ones available - this can return \code{NULL}
 #' @param use character, all options provided by \code{\link{selectInd}} and
 #'   \code{"order"} that selects \code{1:nInd} individuals
 #'
@@ -268,9 +268,10 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'   locus is defined, it takes it into account and any csd homozygotes are
 #'   removed and counted towards homozygous brood.
 #'
-#' @param x \code{link{MapPop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{link{MapPop-class}} or \code{\link{Colony-class}} or
+#'   \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of virgin queens; if \code{NULL} then
-#'   \code{simParamBee$nVirginQueens} is used
+#'   \code{\link{SimParamBee}$nVirginQueens} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -384,7 +385,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of workers created; if \code{NULL}
-#'   then \code{simParamBee$nWorkers} is used
+#'   then \code{\link{SimParamBee}$nWorkers} is used
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
 #'   create the exactly specified number of viable workers (heterozygous on the
 #'   csd locus)
@@ -711,7 +712,7 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'   \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
 #'   must be virgin queens or queens (see \code{\link{createVirginQueens}})
 #' @param nInd numeric or function, number of drones; if \code{NULL} then
-#'   \code{simParamBee$nDrones} is used; when \code{x} is
+#'   \code{\link{SimParamBee}$nDrones} is used; when \code{x} is
 #'   \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 #'   the \code{x} (here population individuals serve as a queen, for example
 #'   to initiate population from founding queens; see details). If \code{x}
@@ -951,7 +952,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param DCA \code{\link{Pop-class}}, population of drones
 #' @param n integer, number of drone groups to be created
 #' @param nFathers numeric of function, number of drones (possible future
-#'   fathers) per group; if \code{NULL} then \code{simParamBee$nFathers} is used
+#'   fathers) per group; if \code{NULL} then \code{\link{SimParamBee}$nFathers}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list of \code{\link{Pop-class}}
@@ -1179,7 +1181,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
 #' @param nFathers numeric, average number of drones (fathers) used in mating
-#'   the virgin queen(s); if \code{NULL} then \code{simParamBee$nFathers} is used
+#'   the virgin queen(s); if \code{NULL} then \code{\link{SimParamBee}$nFathers}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
@@ -1462,8 +1465,8 @@ setMisc <- function(x, node, value) {
 #' getMisc(x = basePop)
 #' @export
 # TODO: move to AlphaSimR - track
-#   https://github.com/gaynorr/AlphaSimR/pull/51
-#   https://github.com/HighlanderLab/SIMplyBee/issues/144
+#       https://github.com/gaynorr/AlphaSimR/pull/51
+#       https://github.com/HighlanderLab/SIMplyBee/issues/144
 getMisc <- function(x, node = NULL) {
   if (isPop(x)) {
     if (is.null(node)) {

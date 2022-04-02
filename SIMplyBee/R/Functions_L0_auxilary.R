@@ -1805,7 +1805,7 @@ isProductive <- function(x) {
 #' @param mutRate numeric, per base pair mutation rate
 #' @param recRate numeric, per base pair recombination rate
 #' @param nThreads integer, if OpenMP is available, this will allow for simulating
-#'   chromosomes in parallel. If the value is NULL, the number of threads is
+#'   chromosomes in parallel. If \code{NULL}, the number of threads is
 #'   automatically detected
 #'
 #' @return \code{\link{MapPop-class}}
@@ -2426,7 +2426,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param snpChip integer, indicating which SNP array loci are to be retrieved,
 #'   if \code{NULL}, all sites are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
@@ -2453,10 +2453,10 @@ getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
@@ -2481,7 +2481,7 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @param pop \code{\link{Pop-class}}
 #' @param trait numeric, indicates which trait's QTL genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlGeno}}
@@ -2506,10 +2506,10 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
@@ -2534,7 +2534,7 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #'
 #' @param pop \code{\link{Pop-class}}
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
@@ -2559,10 +2559,10 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @param pop \code{\link{Pop-class}}
 #' @param snpChip numeric, indicates which SNP array haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
-#' single set of haplotypes, use a value of 1 for female haplotypes and a value of
-#' 2 for male haplotypes
+#'   single set of haplotypes, use a value of 1 for female haplotypes and a
+#'   value of 2 for male haplotypes
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
@@ -2587,7 +2587,7 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @param pop \code{\link{Pop-class}}
 #' @param snpChip numeric, indicates which SNP array genotype to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
-#' are retrieved
+#'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
@@ -4922,7 +4922,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 #' @param sex character vector denoting sex for individuals with genotypes in
 #'   \code{x} - \code{"F"} for female and \code{"M"} for male
 #' @param alleleFreq numeric, vector of allele frequencies for the sites in
-#'   \code{x}; if \code{NULL}, then \code{calcBeeAlleleFreq} is used
+#'   \code{x}; if \code{NULL}, then \code{\link{calcBeeAlleleFreq}} is used
 #'
 #' @return matrix of genomic relatedness coefficients
 #'

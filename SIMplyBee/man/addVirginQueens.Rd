@@ -10,7 +10,7 @@ addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens to add; if
-\code{NULL} then \code{simParamBee$nVirginQueens} is used}
+\code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used}
 
 \item{new}{logical, should the virgin queens be added a fresh (ignoring
 currently present virgin queens in the colony)}

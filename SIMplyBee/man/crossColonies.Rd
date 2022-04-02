@@ -13,8 +13,8 @@ crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
 mate with (Drone Congregation Area - DCA)}
 
 \item{nFathers}{numeric or function, number of drones (fathers) to be used in
-mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
-then \code{simParamBee$nFathers} is used}
+mating an individual queen (see \code{\link{crossColony}}); if \code{NULL}
+then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

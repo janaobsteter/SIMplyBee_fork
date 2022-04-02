@@ -4,7 +4,7 @@
 \alias{createColonies}
 \title{Create colonies}
 \usage{
-createColonies(x = NULL, n = NULL, location = NULL, simParamBee = NULL)
+createColonies(x = NULL, n = NULL, location = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
@@ -15,8 +15,6 @@ given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 (\code{NULL}) individual colony) - this is mostly useful for programming)}
 
 \item{location}{list, location of the colonies as \code{c(x, y)}}
-
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colonies-class}}

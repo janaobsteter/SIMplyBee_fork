@@ -18,10 +18,12 @@ buildUpColony(
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker to add to the colony,
-but see \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used}
+but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
+is used}
 
 \item{nDrones}{numeric or function, number of drones to add to the colony,
-but see \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used}
+but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
+is used}
 
 \item{new}{logical, should the number of workers and drones be added anew or
 should we only top-up the existing number of workers and drones to
@@ -55,9 +57,9 @@ Argument \code{new} enables simulation of two common cases. First,
   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
 
 TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
-  We are not sure this is easy to achieve with current implementation just
-  now, but could be expanded.
-  https://github.com/HighlanderLab/SIMplyBee/issues/176
+      We are not sure this is easy to achieve with current implementation
+      just now, but could be expanded.
+      https://github.com/HighlanderLab/SIMplyBee/issues/176
 
 This function turns on production in the colony.
 }

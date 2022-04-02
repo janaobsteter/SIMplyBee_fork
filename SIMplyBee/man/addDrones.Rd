@@ -11,7 +11,7 @@ addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 \code{simParamBee$nDrones} is used}
 
 \item{nInd}{numeric or function, number of drones to be added, but see
-\code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used}
+\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used}
 
 \item{new}{logical, should the number of drones be added anew or should we
 only top-up the existing number of drones to \code{nInd}}

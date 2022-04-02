@@ -10,7 +10,7 @@ addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers to be added, but see
-\code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used}
+\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used}
 
 \item{new}{logical, should the number of workers be added anew or should we
 only top-up the existing number of workers to \code{nInd}}

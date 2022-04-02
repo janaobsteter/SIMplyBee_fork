@@ -10,12 +10,12 @@ setPhenoColony(colony, FUN = NULL, ..., simParamBee = NULL)
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{FUN}{function, any function that can be aplied on \code{colony} and
-can return phenotypes for defined traits via \code{\link{SimParamBee}}}
+can return phenotypes for traits defined in \code{\link{SimParamBee}};
+if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used}
 
-\item{...}{all parameters of \code{\link{setPheno}}}
+\item{...}{all parameters of \code{\link{setPheno}} and \code{FUN}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation
-parameters}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} with phenotypes

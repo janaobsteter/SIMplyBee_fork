@@ -4,15 +4,13 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x = NULL, location = NULL, simParamBee = NULL)
+createColony(x = NULL, location = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; error is thrown if more than one individual is given}
 
 \item{location}{numeric, location of the colony as \code{c(x, y)}}
-
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 new \code{\link{Colony-class}}

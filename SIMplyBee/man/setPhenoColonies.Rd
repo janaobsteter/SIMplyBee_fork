@@ -10,10 +10,11 @@ setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{FUN}{function, any function that can be applied on \code{colony} and
-can return phenotypes for defined traits via \code{\link{SimParamBee}}}
+\item{FUN}{function, any function that can be aplied on \code{colony} and
+can return phenotypes for traits defined in \code{\link{SimParamBee}};
+if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used}
 
-\item{...}{all parameters of \code{\link{setPheno}}}
+\item{...}{all parameters of \code{\link{setPheno}} and \code{FUN}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -25,4 +26,5 @@ Level 3 function that TODO
 }
 \examples{
 # TODO
+
 }

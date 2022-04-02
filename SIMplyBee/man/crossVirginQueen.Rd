@@ -16,7 +16,8 @@ with virgin queen(s); if there is more than one virgin queen, then the
  using \code{\link{pullDroneGroupsFromDCA}}}
 
 \item{nFathers}{numeric, average number of drones (fathers) used in mating
-the virgin queen(s); if \code{NULL} then \code{simParamBee$nFathers} is used}
+the virgin queen(s); if \code{NULL} then \code{\link{SimParamBee}$nFathers}
+is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

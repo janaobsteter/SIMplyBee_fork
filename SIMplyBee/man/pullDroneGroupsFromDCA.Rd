@@ -12,7 +12,8 @@ pullDroneGroupsFromDCA(DCA, n, nFathers = NULL, simParamBee = NULL)
 \item{n}{integer, number of drone groups to be created}
 
 \item{nFathers}{numeric of function, number of drones (possible future
-fathers) per group; if \code{NULL} then \code{simParamBee$nFathers} is used}
+fathers) per group; if \code{NULL} then \code{\link{SimParamBee}$nFathers}
+is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

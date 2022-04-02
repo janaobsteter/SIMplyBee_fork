@@ -10,7 +10,7 @@ createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers created; if \code{NULL}
-then \code{simParamBee$nWorkers} is used}
+then \code{\link{SimParamBee}$nWorkers} is used}
 
 \item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
 create the exactly specified number of viable workers (heterozygous on the

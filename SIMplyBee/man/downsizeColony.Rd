@@ -10,7 +10,7 @@ downsizeColony(colony, p = NULL, use = "rand", new = FALSE, simParamBee = NULL)
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{p}{numeric, percentage of workers to be removed from the colony; if
-\code{NULL} then \code{SimParamBee$pDownsize} is used}
+\code{NULL} then \code{\link{SimParamBee}$pDownsize} is used}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}

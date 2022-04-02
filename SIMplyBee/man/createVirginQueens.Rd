@@ -7,10 +7,11 @@
 createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or
+\code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
-\code{simParamBee$nVirginQueens} is used}
+\code{\link{SimParamBee}$nVirginQueens} is used}
 
 \item{year}{numeric, year of birth for virgin queens}
 
