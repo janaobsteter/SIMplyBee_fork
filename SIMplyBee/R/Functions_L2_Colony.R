@@ -303,13 +303,11 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
       newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
-        x@queen@misc[[1]]$nWorkers <- nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
-        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       } else {
         x@workers <- c(x@workers, newWorkers$workers)
-        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
-        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       }
+      x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newWorkers$workers)
+      x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
@@ -401,11 +399,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       newDrones <- createDrones(x, nInd)
       if (is.null(x@drones) | new) {
         x@drones <- newDrones
-        x@queen@misc[[1]]$nDrones <- nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       } else {
         x@drones <- c(x@drones, newDrones)
-        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       }
+      x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd
     }
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
