@@ -25,7 +25,7 @@ devtools::install_github(repo="HighlanderLab/SIMplyBee@devel",
 
 library(SIMplyBee)
 
-
+# Find all functions and their arguments (in SIMplyBee and imported packages)
 objects <- ls(name = "package:SIMplyBee")
 for (object in objects) {
   # object <- "isDrone"
@@ -38,6 +38,7 @@ for (object in objects) {
   }
 }
 
+# Find all functions and their arguments (in AlphaSimR)
 objects <- ls(name = "package:AlphaSimR")
 for (object in objects) {
   # object <- "isDrone"
@@ -50,6 +51,7 @@ for (object in objects) {
   }
 }
 
+# Find all functions and their arguments (in SIMplyBee and imported packages) - with defaults
 objects <- ls(name = "package:SIMplyBee")
 sink(file = "SIMplyBee_functions_and_arguments.txt")
 for (object in objects) {
@@ -63,3 +65,9 @@ for (object in objects) {
   }
 }
 sink()
+
+# Find TODOs
+system(command = "grep TODO *")
+system(command = "grep TODO */*")
+system(command = "grep TODO */*/*")
+system(command = "grep TODO */*/*/*")
