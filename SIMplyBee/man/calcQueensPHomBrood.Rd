@@ -4,7 +4,7 @@
 \alias{calcQueensPHomBrood}
 \alias{pHomBrood}
 \alias{nHomBrood}
-\title{Calculate expected percentage of csd homozygous brood of a queen}
+\title{The expected proportion and a realised number of csd homozygous brood}
 \usage{
 calcQueensPHomBrood(x)
 
@@ -21,14 +21,14 @@ numeric, expected csd homozygosity named by colony id when \code{x}
   is \code{\link{Colonies-class}}
 }
 \description{
-Level 0 function that calculates the expected percentage of csd
-  homozygous brood of a queen. The percentage is computed based on the csd
-  alleles of the queen and the drones the queen mated with (the fathers).
-}
-\details{
-TODO: describe queen's and colony's pHomBrood / nHomBrood
-        https://github.com/HighlanderLab/SIMplyBee/issues/80
-        https://github.com/HighlanderLab/SIMplyBee/issues/104
+Level 0 functions that calculate or report the proportion of csd
+  homozygous brood of a queen or a colony. The csd locus determines viability
+  of fertilised eggs (brood) - homozygous brood is removed by workers. These
+  functions 1) calculate the expected proportion of homozygous brood from the
+  csd allele of the queen and fathers, 2) report the expected proportion of
+  homozygous brood, or 3) report a realised number of homozygous brood due to
+  inheritance process. See \code{vignette(package = "SIMplyBee")} for more
+  details.
 }
 \section{Functions}{
 \itemize{
@@ -40,30 +40,6 @@ produced by a queen
 }}
 
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-basePop <- createVirginQueens(founderGenomes)
-
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 10)
-colony2 <- addDrones(colony2, nInd = 20)
-
-# Mated queen
-calcQueensPHomBrood(colony1@queen)
-
-# Colony
-calcQueensPHomBrood(colony1)
-
-# Colonies
-apiary <- c(colony1, colony2)
-calcQueensPHomBrood(apiary)
-
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)

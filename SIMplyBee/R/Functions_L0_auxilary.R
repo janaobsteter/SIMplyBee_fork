@@ -344,48 +344,24 @@ nDrones <- function(x) {
 }
 
 #' @rdname calcQueensPHomBrood
-#' @title Calculate expected percentage of csd homozygous brood of a queen
+#' @title The expected proportion and a realised number of csd homozygous brood
 #'
-#' @description Level 0 function that calculates the expected percentage of csd
-#'   homozygous brood of a queen. The percentage is computed based on the csd
-#'   alleles of the queen and the drones the queen mated with (the fathers).
+#' @description Level 0 functions that calculate or report the proportion of csd
+#'   homozygous brood of a queen or a colony. The csd locus determines viability
+#'   of fertilised eggs (brood) - homozygous brood is removed by workers. These
+#'   functions 1) calculate the expected proportion of homozygous brood from the
+#'   csd allele of the queen and fathers, 2) report the expected proportion of
+#'   homozygous brood, or 3) report a realised number of homozygous brood due to
+#'   inheritance process. See \code{vignette(package = "SIMplyBee")} for more
+#'   details.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
-#'
-#' @details
-#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
 #'
 #' @return numeric, expected csd homozygosity named by colony id when \code{x}
 #'   is \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#'
-#' # Mated queen
-#' calcQueensPHomBrood(colony1@queen)
-#'
-#' # Colony
-#' calcQueensPHomBrood(colony1)
-#'
-#' # Colonies
-#' apiary <- c(colony1, colony2)
-#' calcQueensPHomBrood(apiary)
-#'
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -461,67 +437,8 @@ calcQueensPHomBrood <- function(x) {
   return(ret)
 }
 
-#' @rdname pHomBrood
-#' @title Expected percentage of csd homozygous brood of a queen / colony
-#'
-#' @description Level 0 function that returns the expected percentage of
-#'   csd homozygous brood of a queen in a colony.
-#'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
-#'
-#' @details
-#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
-#'
-#' @return numeric, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' colony1 <- addVirginQueens(colony1, nInd = 1)
-#'
-#' # Virgin queen
-#' pHomBrood(basePop[2])
-#'
-#' # Mated queen
-#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
-#' pHomBrood(matedQueen)
-#'
-#' # Queen of the colony
-#' pHomBrood(getQueen(colony1))
-#'
-#' # Colony
-#' pHomBrood(colony1)
-#'
-#' # Colonies
-#' apiary <- c(colony1, colony2)
-#' pHomBrood(apiary)
-#'
-#' # Inbreed virgin queen with her brothers to generate csd homozygous brood
-#' colony3 <- createColony(x = getVirginQueens(colony1))
-#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
-#'
-#' # Calculate the expected csd homozygosity
-#' calcQueensPHomBrood(getQueen(colony3))
-#' pHomBrood(colony3)
-#'
-#' # Evaluate a realised csd homozygosity
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
+#' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
+#'   of a queen / colony
 #' @export
 pHomBrood <- function(x) {
   if (isPop(x)) {
@@ -552,68 +469,8 @@ pHomBrood <- function(x) {
   return(ret)
 }
 
-#' @rdname nHomBrood
-#' @title Realised number of csd homozygous brood produced by a queen
-#'
-#' @description Level 0 function that returns the number of csd homozygous brood
-#'   a queen produced (these are non viable individuals, only their number is
-#'   stored)
-#'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
-#'
-#' @details
-#'   TODO: describe queen's and colony's pHomBrood / nHomBrood
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/80
-#'         https://github.com/HighlanderLab/SIMplyBee/issues/104
-#'
-#' @return numeric, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' colony1 <- addVirginQueens(colony1, nInd = 1)
-#'
-#' # Virgin queen
-#' nHomBrood(basePop[2])
-#'
-#' # Mated queen
-#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
-#' nHomBrood(matedQueen)
-#'
-#' # Queen of the colony
-#' nHomBrood(getQueen(colony1))
-#'
-#' # Colony
-#' nHomBrood(colony1)
-#'
-#' # Colonies
-#' apiary <- c(colony1, colony2)
-#' nHomBrood(apiary)
-#'
-#' # Inbreed virgin queen with her brothers to generate csd homozygous brood
-#' colony3 <- createColony(x = getVirginQueens(colony1))
-#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
-#'
-#' # Calculate the expected csd homozygosity
-#' calcQueensPHomBrood(getQueen(colony3))
-#' pHomBrood(colony3)
-#'
-#' # Evaluate a realised csd homozygosity
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
+#' @describeIn calcQueensPHomBrood Realised number of csd homozygous brood
+#'   produced by a queen
 #' @export
 nHomBrood <- function(x) {
   if (isPop(x)) {
