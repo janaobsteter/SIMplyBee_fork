@@ -4,7 +4,12 @@
 \alias{phenoQueenPlusSumOfWorkers}
 \title{Sample colony phenotype}
 \usage{
-phenoQueenPlusSumOfWorkers(colony, queenTrait = 1, workersTrait = 2)
+phenoQueenPlusSumOfWorkers(
+  colony,
+  queenTrait = 1,
+  workersTrait = 2,
+  checkProduction = TRUE
+)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -14,6 +19,9 @@ yield (defined in \code{\link{SimParamBee}} - see examples)}
 
 \item{workersTrait}{numeric, trait that represents wokers's effect on honey
 yield (defined in \code{\link{SimParamBee}} - see examples)}
+
+\item{checkProduction}{logical, does the phenotype depend on the production
+status of colony; if yes and production is not turned on, the result is a 0}
 }
 \value{
 numeric matrix with a single value
@@ -22,6 +30,10 @@ numeric matrix with a single value
 Sample colony phenotype when \code{colonyFUN = NULL} (see
   \code{\link{SimParamBee}$phenoColony}) - this is just an example and you
   will likely want to define your own sampling functions!
+}
+\details{
+This function returns 0 when production in a colony is not turned on
+  (see \code{\link{getEvents}}).
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)

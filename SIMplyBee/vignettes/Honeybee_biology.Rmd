@@ -21,11 +21,12 @@ This vignette describes and demonstrates how SIMplyBee implements the specific
 honeybee biology. Specifically, it describes:
 
   1) initiating simulation with honeybee genomes and global simulation parameters,
-  2) colony structure,
-  3) sex and caste,
-  4) complementary sex determining (csd) locus,
-  5) inheritance system, and
-  6) colony events.
+  2) creating and building up a colony,
+  3) colony structure,
+  4) sex and caste,
+  5) complementary sex determining (csd) locus,
+  6) inheritance system, and
+  7) colony events.
   
 Now load the package and dive in!
 
@@ -41,6 +42,26 @@ We initiate simulation by simulating honyebee genomes. SIMplyBee provides
 # Founder genomes
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 ```
+
+# Creating and building up a colony
+
+# Colony structure
+
+show how to get colony elements
+
+# Sex and caste
+
+show sex and caste of individuals
+
+# Complementary sex determining (csd) locus
+
+talk regarding csd
+mention queen's counters
+
+# Inheritance system
+
+# Colony events
+
 Honeybees live in a colony with different groups (castes) of individuals.
 In SIMplyBee we implemented \code{\link{Colony-class}} that contains a
 \code{queen}, \code{workers}, \code{drones}, and \code{virgingQueens} slots.

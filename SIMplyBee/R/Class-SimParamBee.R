@@ -1187,8 +1187,17 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #' @export
 phenoQueenPlusSumOfWorkers <- function(colony, queenTrait = 1,
-                                       workersTrait = 2) {
+                                       workersTrait = 2,
+                                       checkProduction = TRUE) {
+  # TODO: should we add checks for other events too? say swarming?
+  #       https://github.com/HighlanderLab/SIMplyBee/issues/255
   queenEff <- colony@queen@pheno[, queenTrait]
   sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
-  return(matrix(queenEff + sumOfWorkersEff))
+  colonyPheno <- queenEff + sumOfWorkersEff
+  if (checkProduction) {
+    if (!colony@production) {
+      colonyPheno <- 0
+    }
+  }
+  return(matrix(colonyPheno))
 }

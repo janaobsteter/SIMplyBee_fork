@@ -62,8 +62,7 @@ drones@pheno
 
 ```{r, include = TRUE}
 # Colony
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
-                          nFathers = 5)
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
 colony <- createColony(x = queen)
 colony
 colony@queen@gv
@@ -121,14 +120,10 @@ p <- ggplot(df, aes(x = gvWorkerEff, colour = father)) +
 print(p)
 ```
 
-```{r include = TRUE}
-# Colony genetic and phenotype value
-# TODO: can we just sum up the colony@workers@pheno[, 2] or shall we do something else?
-# TODO: can we just add up colony@queen@pheno[, 1] and colony@workers@pheno[, 2] or is there any other relationship?
-colonyYield <- function(colony) {
-  matrix(colony@queen@pheno[, 1] + sum(colony@workers@pheno[, 2]))
-}
-colony <- setPhenoColony(colony, colonyFUN = colonyYield)
+```{r include = TRUE} 
+# Colony phenotype value
+phenoQueenPlusSumOfWorkers
+colony <- setPhenoColony(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
 colony@pheno
 ```
 
@@ -172,8 +167,7 @@ drones@pheno
 ```
 
 ```{r, include = TRUE}
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
-                          nFathers = 5)
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
 colony <- createColony(x = queen)
 colony@queen@gv
 colony@queen@pheno
@@ -185,10 +179,15 @@ colony
 ```
 
 ```{r include = TRUE}
-# TODO: does calmness influence honey yield in any way?
 colonyPheno <- function(colony) {
-  cbind(colony@queen@pheno[, 1] + sum(colony@workers@pheno[, 2]),
-        colony@queen@pheno[, 3] + sum(colony@workers@pheno[, 4]))
+  yield <- phenoQueenPlusSumOfWorkers(colony,
+                                      queenTrait = 1,
+                                      workersTrait = 2)
+  calmness <- phenoQueenPlusSumOfWorkers(colony,
+                                         queenTrait = 3,
+                                         workersTrait = 4,
+                                         checkProduction = FALSE)
+  return(cbind(yield, calmness))
 }
 colony <- setPhenoColony(colony, colonyFUN = colonyPheno)
 colony@pheno
@@ -196,7 +195,7 @@ colony@pheno
 
 # Strength and honey yield
 
-Here we will show how to use `nWorkers()` function to genetically and environmentally influence the colony strength and with this honey yield.
+Here we will show how to use `nWorkers` function to genetically and environmentally influence the colony strength and with this honey yield.
 
 ```{r, include = TRUE}
 # Global simulation parameters
@@ -233,31 +232,30 @@ drones@pheno
 ```
 
 ```{r, include = TRUE}
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, 
-                          nFathers = 5)
+queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
 colony <- createColony(x = queen)
 colony@queen@gv
 colony@queen@pheno
 ```
 
 ```{r, include = TRUE}
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = colony@queen@pheno[, 1])
-}
-colony <- buildUpColony(colony, nWorkers = nWorkersFun)
+# Use already provided function in the package - read about it
+help(nWorkersPoissonQueenFecundity)
+colony <- buildUpColony(colony, nWorkers = nWorkersPoissonQueenFecundity)
 colony
 ```
 
 ```{r include = TRUE}
-colonyYield <- function(colony) {
-  matrix(colony@queen@pheno[, 2] + sum(colony@workers@pheno[, 3]))
+colonyPheno <- function(colony) {
+  yield <- phenoQueenPlusSumOfWorkers(colony,
+                                      queenTrait = 2,
+                                      workersTrait = 3)
+  return(matrix(yield))
 }
-colony <- setPhenoColony(colony, colonyFUN = colonyYield)
+colony <- setPhenoColony(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
 colony@pheno
 ```
 
 # Swarming and honey yield
 
 TODO: show how we could genetically and environmentally influence if colony will swarm (can we do this?) and with this honey yield.
-
-TODO: colonyYield should use isProductive - 0 when FALSE
