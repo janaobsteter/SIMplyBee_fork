@@ -31,6 +31,10 @@ Level 2 function that adds (raises) the specified number of
   there are already some workers present, new and present workers are
   combined.
 }
+\details{
+This function increases queen's \code{nWorkers} and \code{nHomBrood}
+  counters.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -66,4 +70,8 @@ SP$nWorkers <- nWorkersPoisson
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
 # nWorkers will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(addWorkers(colony1)))
+getMisc(getQueen(addWorkers(colony2)))
 }

@@ -1130,6 +1130,11 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #'   yield (defined in \code{\link{SimParamBee}} - see examples)
 #' @param workersTrait numeric, trait that represents wokers's effect on honey
 #'   yield (defined in \code{\link{SimParamBee}} - see examples)
+#' @param checkProduction logical, does the phenotype depend on the production
+#'   status of colony; if yes and production is not turned on, the result is a 0
+#'
+#' @details This function returns 0 when production in a colony is not turned on
+#'   (see \code{\link{getEvents}}).
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{phenoColony}
 #'

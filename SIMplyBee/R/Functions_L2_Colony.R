@@ -240,6 +240,9 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'   csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
+#'   counters.
+#'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
 #'   workers added
 #'
@@ -278,6 +281,10 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' addWorkers(colony1)
 #' nWorkers(addWorkers(apiary))
 #' # nWorkers will vary between function calls when a function is used
+#'
+#' # Queen's counters
+#' getMisc(getQueen(addWorkers(colony1)))
+#' getMisc(getQueen(addWorkers(colony2)))
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
                        simParamBee = NULL) {
@@ -333,6 +340,8 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #'   only top-up the existing number of drones to \code{nInd}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
+#' @details This function increases queen's \code{nDrones} counter.
+#'
 #' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
 #'   drones added
 #'
@@ -371,6 +380,10 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #' addDrones(colony1)
 #' nDrones(addDrones(apiary))
 #' # nDrones will vary between function calls when a function is used
+#'
+#' # Queen's counters
+#' getMisc(getQueen(addDrones(colony1)))
+#' getMisc(getQueen(addDrones(colony2)))
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -433,7 +446,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details Argument \code{new} enables simulation of two common cases. First,
+#' @details This function increases queen's \code{nWorkers}, \code{nHomBrood},
+#'   and \code{nDrones} counters. It also turns production on.
+#'
+#'   Argument \code{new} enables simulation of two common cases. First,
 #'   if you are modelling year-to-year cycle, you will likely want
 #'   \code{new = TRUE}, so that, say, in spring you will replace old (from last
 #'   year) workers and drones with the new ones. This is the case that we are
@@ -446,8 +462,6 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'       We are not sure this is easy to achieve with current implementation
 #'       just now, but could be expanded.
 #'       https://github.com/HighlanderLab/SIMplyBee/issues/176
-#'
-#' This function turns on production in the colony.
 #'
 #' @return \code{\link{Colony-class}} with workers and drones replaced or added
 #'
@@ -481,7 +495,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' # we got additional workers since new = FALSE and we were NOT at the target of 150
 #'
 #' # Specify a function that will give a number, but lets first create new
-#' # drones and a new colony
+#' #   drones and a new colony
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(x = basePop[3])
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
@@ -499,6 +513,9 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUpColony(colony)
 #' buildUpColony(colony)
 #' # nWorkers and nDrones will vary between function calls when a function is used
+#'
+#' # Queen's counters
+#' getMisc(getQueen(buildUpColony(colony)))
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
                           new = TRUE, exact = FALSE, resetEvents = FALSE,

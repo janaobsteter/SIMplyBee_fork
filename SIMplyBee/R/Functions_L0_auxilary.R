@@ -362,6 +362,7 @@ nDrones <- function(x) {
 #'   is \code{\link{Colonies-class}}
 #'
 #' @examples
+#' # This is a bit long example - the key is at the end!
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)

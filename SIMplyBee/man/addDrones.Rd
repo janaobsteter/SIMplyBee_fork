@@ -26,6 +26,9 @@ Level 2 function that adds (raises) the specified number of
   drones in the colony by crossing the current queen and the fathers. If
   there are already some drones present, new and present drones are combined.
 }
+\details{
+This function increases queen's \code{nDrones} counter.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -61,4 +64,8 @@ SP$nDrones <- nDronesPoisson
 addDrones(colony1)
 nDrones(addDrones(apiary))
 # nDrones will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(addDrones(colony1)))
+getMisc(getQueen(addDrones(colony2)))
 }

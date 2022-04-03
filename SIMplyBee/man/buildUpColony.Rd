@@ -47,7 +47,10 @@ Level 2 function that builds up colony by adding (raising)
   swarming.
 }
 \details{
-Argument \code{new} enables simulation of two common cases. First,
+This function increases queen's \code{nWorkers}, \code{nHomBrood},
+  and \code{nDrones} counters. It also turns production on.
+
+  Argument \code{new} enables simulation of two common cases. First,
   if you are modelling year-to-year cycle, you will likely want
   \code{new = TRUE}, so that, say, in spring you will replace old (from last
   year) workers and drones with the new ones. This is the case that we are
@@ -60,8 +63,6 @@ TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
       We are not sure this is easy to achieve with current implementation
       just now, but could be expanded.
       https://github.com/HighlanderLab/SIMplyBee/issues/176
-
-This function turns on production in the colony.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -93,7 +94,7 @@ getWorkers(colony)@id
 # we got additional workers since new = FALSE and we were NOT at the target of 150
 
 # Specify a function that will give a number, but lets first create new
-# drones and a new colony
+#   drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[3])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
@@ -111,4 +112,7 @@ colony <- crossColony(colony, drones = drones, nFathers = 5)
 buildUpColony(colony)
 buildUpColony(colony)
 # nWorkers and nDrones will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(buildUpColony(colony)))
 }
