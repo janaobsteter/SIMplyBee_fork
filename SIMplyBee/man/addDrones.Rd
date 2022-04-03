@@ -7,8 +7,7 @@
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}
-\code{simParamBee$nDrones} is used}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of drones to be added, but see
 \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used}
@@ -55,11 +54,15 @@ nDrones(addDrones(apiary)) # nDrones will NOT vary between function calls
 nDronesFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
-addDrones(colony1, nInd = nDronesFun) # nDrones will vary between function calls
-nDrones(addDrones(apiary, nInd = nDronesFun)) # nDrones will vary between function calls
+addDrones(colony1, nInd = nDronesFun)
+# nDrones will vary between function calls
+nDrones(addDrones(apiary, nInd = nDronesFun))
+# nDrones will vary between function calls
 
 # Store a function or a value in the SP object
 SP$nDrones <- nDronesFun
-addDrones(colony1) # nDrones will vary between function calls
-nDrones(addDrones(apiary)) # nDrones will vary between function calls
+addDrones(colony1)
+# nDrones will vary between function calls
+nDrones(addDrones(apiary))
+# nDrones will vary between function calls
 }

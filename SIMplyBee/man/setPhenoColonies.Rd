@@ -2,19 +2,19 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{setPhenoColonies}
 \alias{setPhenoColonies}
-\title{TODO
-https://github.com/HighlanderLab/SIMplyBee/issues/158}
+\title{Set colonies phenotype}
 \usage{
-setPhenoColonies(colonies, FUN = NULL, ..., simParamBee = NULL)
+setPhenoColonies(colonies, colonyFUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{FUN}{function, any function that can be aplied on \code{colony} and
-can return phenotypes for traits defined in \code{\link{SimParamBee}};
-if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used}
+\item{colonyFUN}{function, any function that can be run on \code{colony} and
+returns colony phenotypes; if \code{NULL} then
+\code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+then colony phenotype is not set, but phenotypes of colony individuals are}
 
-\item{...}{all parameters of \code{\link{setPheno}} and \code{FUN}}
+\item{...}{all arguments of \code{\link{setPheno}} and \code{colonyFUN}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -22,9 +22,60 @@ if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used}
 \code{\link{Colonies-class}} with phenotypes
 }
 \description{
-Level 3 function that TODO
+Level 3 function that does the same as
+  \code{\link{setPhenoColony}} but for all given colonies.
 }
 \examples{
-# TODO
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 
+# Define two traits that collectively affect colony honey yield:
+# 1) queen's effect on colony honey yield
+# 2) workers' effect on colony honey yield
+# The traits will have negative genetic correlation and heritability of 0.25
+meanP <- c(20, 0)
+varA <- c(1, 1 / 10)
+corA <- matrix(data = c( 1.0, -0.5,
+                        -0.5,  1.0), nrow = 2, byrow = TRUE)
+varE <- c(3, 3 / 10)
+varA / (varA + varE)
+SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+SP$setVarE(varE = varE)
+
+basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(x = basePop[1], nInd = 10)
+colony1 <- createColony(x = basePop[2])
+colony2 <- createColony(x = basePop[3])
+colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+apiary <- c(colony1, colony2)
+apiary <- buildUpColonies(apiary, nWorkers = 10)
+
+# Set phenotypes for all colony individuals
+apiary <- setPhenoColonies(apiary)
+
+# Queen's phenotype for both traits
+lapply(getQueen(apiary), FUN = pheno)
+# TODO: use getColonyPheno(apiary, caste = "queen")
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
+
+# Workers' phenotype for both traits
+lapply(getWorkers(apiary), FUN = pheno)
+# TODO: use getColonyPheno(apiary, caste = "workers")
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
+
+# Colony phenotype
+colony <- setPhenoColonies(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+pheno(colony)
+
+# Colony phenotype - store function into the SP object
+SP$phenoColony <- phenoQueenPlusSumOfWorkers
+pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+
+# TODO:
+# See
+#     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#     https://github.com/HighlanderLab/SIMplyBee/issues/32
 }

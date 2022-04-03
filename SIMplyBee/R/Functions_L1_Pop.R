@@ -271,7 +271,10 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #' @param x \code{link{MapPop-class}} or \code{\link{Colony-class}} or
 #'   \code{\link{Colonies-class}}
 #' @param nInd numeric or function, number of virgin queens; if \code{NULL} then
-#'   \code{\link{SimParamBee}$nVirginQueens} is used
+#'   \code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
+#'   \code{\link{Colony-class}} or \code{\link{Colonies-class}}, when \code{x}
+#'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
+#'   into virgin queens
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -342,12 +345,20 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x)) {
-    if (is.null(nInd)) {
-      nInd <- simParamBee$nVirginQueens
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nVirginQueens
+  }
+  # doing "if (is.function(nInd))" below
+  if (isMapPop(x)) {
+    ret <- newPop(x)
+    ret@sex[] <- "F"
+    simParamBee$changeCaste(id = ret@id, caste = "V")
+    if (!is.null(year)) {
+      ret <- setQueensYearOfBirth(x = ret, year = year)
     }
+  } else if (isColony(x)) {
     if (is.function(nInd)) {
-      nInd <- nInd(x)
+      nInd <- nInd(colony = x) # see nVirginQueensPoissonColonyStrength
     }
     ret <- createWorkers(x = x, nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
     ret@sex[] <- "F"
@@ -365,10 +376,6 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
       )
     }
     names(ret) <- getId(x)
-  } else if (isMapPop(x)) {
-    ret <- newPop(x)
-    ret@sex[] <- "F"
-    simParamBee$changeCaste(id = ret@id, caste = "V")
   } else {
     stop("Argument x must be a Map-Pop or Colony or Colonies class object!")
   }
@@ -462,6 +469,10 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (is.null(nInd)) {
+    nInd <- simParamBee$nWorkers
+  }
+  # doing "if (is.function(nInd))" below
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
@@ -469,11 +480,8 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     if (!isQueenMated(x)) {
       stop("Unmated queen!")
     }
-    if (is.null(nInd)) {
-      nInd <- simParamBee$nWorkers
-    }
     if (is.function(nInd)) {
-      nInd <- nInd(x)
+      nInd <- nInd(colony = x) # see nWorkersPoissonQueenFecundity
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "nHomBrood")
@@ -718,7 +726,9 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
-#'   must be virgin queens or queens (see \code{\link{createVirginQueens}})
+#'   must be virgin queens or queens (see \code{\link{createVirginQueens}}) -
+#'   this case is so that we can initiate simulation by simulating drones from
+#'   founding queens before we can create colonies
 #' @param nInd numeric or function, number of drones; if \code{NULL} then
 #'   \code{\link{SimParamBee}$nDrones} is used; when \code{x} is
 #'   \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
@@ -809,12 +819,13 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(nInd)) {
     nInd <- simParamBee$nDrones
   }
-  if (is.function(nInd)) {
-    nInd <- nInd(x)
-  }
+  # doing "if (is.function(nInd))" below
   if (isPop(x)) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
+    }
+    if (is.function(nInd)) {
+      nInd <- nInd(x = x) # see nDronesPoissonQueenFecundity
     }
     # Haploid version - causes all sorts of issues downstream
     # ret <- reduceGenome(pop = x, nProgeny = nInd, keepParents = FALSE,
@@ -829,11 +840,8 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
-    if (is.null(nInd)) {
-      nInd <- simParamBee$nDrones
-    }
     if (is.function(nInd)) {
-      nInd <- nInd(x)
+      nInd <- nInd(x = x) # see nDronesPoissonQueenFecundity
     }
     # Haploid version - causes all sorts of issues downstream
     # ret <- reduceGenome(pop = getQueen(x), nProgeny = nInd, keepParents = FALSE,
@@ -997,7 +1005,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nFathers)) {
-      nF <- nFathers()
+      nF <- nFathers() # see nFathersPoisson
     } else {
       nF <- nFathers
     }
@@ -1281,7 +1289,7 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {
     if (is.function(nFathers)) {
-      n <- nFathers()
+      n <- nFathers() # see nFathersPoisson
     } else {
       n <- nFathers
     }

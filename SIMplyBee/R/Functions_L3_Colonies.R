@@ -881,46 +881,90 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 }
 
 #' @rdname setPhenoColonies
-#' @title TODO
-#' https://github.com/HighlanderLab/SIMplyBee/issues/158
+#' @title Set colonies phenotype
 #'
-#' @description Level 3 function that TODO
+#' @description Level 3 function that does the same as
+#'   \code{\link{setPhenoColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param FUN function, any function that can be aplied on \code{colony} and
-#'   can return phenotypes for traits defined in \code{\link{SimParamBee}};
-#'   if \code{NULL} then \code{\link{SimParamBee}$phenoColony} is used
-#' @param ... all parameters of \code{\link{setPheno}} and \code{FUN}
+#' @param colonyFUN function, any function that can be run on \code{colony} and
+#'   returns colony phenotypes; if \code{NULL} then
+#'   \code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+#'   then colony phenotype is not set, but phenotypes of colony individuals are
+#' @param ... all arguments of \code{\link{setPheno}} and \code{colonyFUN}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with phenotypes
 #'
 #' @examples
-#' # TODO
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #'
+#' # Define two traits that collectively affect colony honey yield:
+#' # 1) queen's effect on colony honey yield
+#' # 2) workers' effect on colony honey yield
+#' # The traits will have negative genetic correlation and heritability of 0.25
+#' meanP <- c(20, 0)
+#' varA <- c(1, 1 / 10)
+#' corA <- matrix(data = c( 1.0, -0.5,
+#'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / 10)
+#' varA / (varA + varE)
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+#' SP$setVarE(varE = varE)
+#'
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony2 <- createColony(x = basePop[3])
+#' colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 10)
+#'
+#' # Set phenotypes for all colony individuals
+#' apiary <- setPhenoColonies(apiary)
+#'
+#' # Queen's phenotype for both traits
+#' lapply(getQueen(apiary), FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "queen")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#'
+#' # Workers' phenotype for both traits
+#' lapply(getWorkers(apiary), FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#'
+#' # Colony phenotype
+#' colony <- setPhenoColonies(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+#' pheno(colony)
+#'
+#' # Colony phenotype - store function into the SP object
+#' SP$phenoColony <- phenoQueenPlusSumOfWorkers
+#' pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+#' pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+#'
+#' # TODO:
+#' # See
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
 #' @export
-# See setPhenoColony() and
-#     https://github.com/HighlanderLab/SIMplyBee/issues/26
-#     https://github.com/HighlanderLab/SIMplyBee/issues/28
-#     https://github.com/HighlanderLab/SIMplyBee/issues/32
-#     https://github.com/HighlanderLab/SIMplyBee/issues/44
-setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
+setPhenoColonies <- function(colonies, colonyFUN = NULL, ...,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  if (is.null(FUN)) {
-    FUN <- simParamBee$phenoColony
-  }
-  if (is.null(FUN)) {
-    stop("Argument FUN must be provided or SimParamBee$phenoColony must be set!")
+  if (is.null(colonyFUN)) {
+    colonyFUN <- simParamBee$phenoColony
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-      FUN = FUN, ...,
+      colonyFUN = colonyFUN, ...,
       # TODO: is ... really passed on to setPhenoColony?
       #       https://github.com/HighlanderLab/SIMplyBee/issues/240
       simParamBee = simParamBee

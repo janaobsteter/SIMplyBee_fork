@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{calcBeeGRMIbd}
 \alias{calcBeeGRMIbd}
-\title{Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+\title{Calculate Genomic Relatedness Matrix (GRM) for honeybees from
   Identical By Descent genomic data}
 \usage{
 calcBeeGRMIbd(x)
@@ -20,7 +20,7 @@ a list with a matrix of gametic relatedness coefficients (genome) and
 }
 \description{
 Level 0 function that returns Genomic Relatedness Matrix (GRM)
-  for honey bees from Identical By Descent genomic data (tracked alleles
+  for honeybees from Identical By Descent genomic data (tracked alleles
   since the founders) - see references on the background theory.
 }
 \examples{

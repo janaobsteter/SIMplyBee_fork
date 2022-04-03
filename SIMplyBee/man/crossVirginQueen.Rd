@@ -22,8 +22,8 @@ mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 }
 \value{
 \code{\link{Pop-class}} with mated queen(s). The misc slot of the
-  queens contains additional information about the number of workers, drones
-  and homozygous brood produced and the theoretical percentage of homozygous
+  queens contains additional information about the number of workers, drones,
+  and homozygous brood produced, and the expected percentage of csd homozygous
   brood.
 }
 \description{

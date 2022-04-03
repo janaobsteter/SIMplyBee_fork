@@ -128,7 +128,7 @@ print(p)
 colonyYield <- function(colony) {
   matrix(colony@queen@pheno[, 1] + sum(colony@workers@pheno[, 2]))
 }
-colony <- setPhenoColony(colony, FUN = colonyYield)
+colony <- setPhenoColony(colony, colonyFUN = colonyYield)
 colony@pheno
 ```
 
@@ -190,7 +190,7 @@ colonyPheno <- function(colony) {
   cbind(colony@queen@pheno[, 1] + sum(colony@workers@pheno[, 2]),
         colony@queen@pheno[, 3] + sum(colony@workers@pheno[, 4]))
 }
-colony <- setPhenoColony(colony, FUN = colonyPheno)
+colony <- setPhenoColony(colony, colonyFUN = colonyPheno)
 colony@pheno
 ```
 
@@ -252,7 +252,7 @@ colony
 colonyYield <- function(colony) {
   matrix(colony@queen@pheno[, 2] + sum(colony@workers@pheno[, 3]))
 }
-colony <- setPhenoColony(colony, FUN = colonyYield)
+colony <- setPhenoColony(colony, colonyFUN = colonyYield)
 colony@pheno
 ```
 

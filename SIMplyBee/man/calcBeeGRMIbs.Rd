@@ -3,7 +3,7 @@
 \name{calcBeeGRMIbs}
 \alias{calcBeeGRMIbs}
 \alias{calcBeeAlleleFreq}
-\title{Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+\title{Calculate Genomic Relatedness Matrix (GRM) for honeybees from
   Identical By State genomic data}
 \usage{
 calcBeeGRMIbs(x, sex, alleleFreq = NULL)
@@ -27,13 +27,13 @@ matrix of genomic relatedness coefficients
 }
 \description{
 Level 0 function that returns Genomic Relatedness Matrix (GRM)
-  for honey bees from Identical By State genomic data (bi-allelic SNP
+  for honeybees from Identical By State genomic data (bi-allelic SNP
   represented as allele dosages) following the method for the sex X
   chromosome (Druet and Legarra, 2020)
 }
 \section{Functions}{
 \itemize{
-\item \code{calcBeeAlleleFreq}: Calculate allele frequencies from honey bee genotypes
+\item \code{calcBeeAlleleFreq}: Calculate allele frequencies from honeybee genotypes
 }}
 
 \examples{

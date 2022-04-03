@@ -9,7 +9,9 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
-must be virgin queens or queens (see \code{\link{createVirginQueens}})}
+must be virgin queens or queens (see \code{\link{createVirginQueens}}) -
+this case is so that we can initiate simulation by simulating drones from
+founding queens before we can create colonies}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
 \code{\link{SimParamBee}$nDrones} is used; when \code{x} is

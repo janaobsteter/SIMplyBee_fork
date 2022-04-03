@@ -7,8 +7,7 @@
 createColony(x, location = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} with one individual that will be the
-queen of the colony; error is thrown if more than one individual is given}
+\item{x}{\code{\link{Pop-class}}, one queen or virgin queen(s)}
 
 \item{location}{numeric, location of the colony as \code{c(x, y)}}
 }
@@ -20,7 +19,7 @@ Level 2 function that creates a new \code{\link{Colony-class}}
   to initiate simulations.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -29,6 +28,6 @@ colony1 <- createColony(x = basePop[2])
 colony1 <- crossColony(colony1, drones = drones, nFathers = 15)
 colony1
 
-colony2 <- createColony(x = basePop[3])
+colony2 <- createColony(x = basePop[3:4])
 colony2
 }

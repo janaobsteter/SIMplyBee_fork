@@ -11,7 +11,10 @@ createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
-\code{\link{SimParamBee}$nVirginQueens} is used}
+\code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
+\code{\link{Colony-class}} or \code{\link{Colonies-class}}, when \code{x}
+is \code{link{MapPop-class}} all individuals in \code{x} are converted
+into virgin queens}
 
 \item{year}{numeric, year of birth for virgin queens}
 

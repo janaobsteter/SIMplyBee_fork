@@ -50,16 +50,22 @@ addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
 
 SP$nVirginQueens <- 15
-addVirginQueens(colony1) # nVirginQueens will NOT vary between function calls
-nVirginQueens(addVirginQueens(apiary)) # nVirginQueens will NOT vary between function calls
+addVirginQueens(colony1)
+# nVirginQueens will NOT vary between function calls
+nVirginQueens(addVirginQueens(apiary))
+# nVirginQueens will NOT vary between function calls
 
 nVirginQueensFun <- function(colony) {
   rpois(n = 1, lambda = 15)
 }
-addVirginQueens(colony1, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
-nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun)) # nVirginQueens will vary between function calls
+addVirginQueens(colony1, nInd = nVirginQueensFun)
+# nVirginQueens will vary between function calls
+nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
+# nVirginQueens will vary between function calls
 
 SP$nVirginQueens <- nVirginQueensFun
-addVirginQueens(colony1) # nVirginQueens will vary between function calls
-nVirginQueens(addVirginQueens(apiary)) # nVirginQueens will vary between function calls
+addVirginQueens(colony1)
+# nVirginQueens will vary between function calls
+nVirginQueens(addVirginQueens(apiary))
+# nVirginQueens will vary between function calls
 }

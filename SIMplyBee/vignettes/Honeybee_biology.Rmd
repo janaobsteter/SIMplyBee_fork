@@ -1,0 +1,77 @@
+---
+title: "SIMplyBee - honeybee biology"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - honeybee biology}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+This vignette describes and demonstrates how SIMplyBee implements the specific 
+honeybee biology. Specifically, it describes:
+
+  1) initiating simulation with honeybee genomes and global simulation parameters,
+  2) colony structure,
+  3) sex and caste,
+  4) complementary sex determining (csd) locus,
+  5) inheritance system, and
+  6) colony events.
+  
+Now load the package and dive in!
+
+```{r, include = FALSE}
+library(package = "SIMplyBee")
+```
+
+# Initiating simulation with honeybee genomes and global simulation parameters
+
+We initiate simulation by simulating honyebee genomes. SIMplyBee provides
+
+```{r, include = TRUE}
+# Founder genomes
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+```
+Honeybees live in a colony with different groups (castes) of individuals.
+In SIMplyBee we implemented \code{\link{Colony-class}} that contains a
+\code{queen}, \code{workers}, \code{drones}, and \code{virgingQueens} slots.
+There is also a \code{fathers} slot in the \code{queen}, to store drones
+the queen mated with.
+
+add colony creation image
+
+Honeybees have haplo-diploid inheritance system where queens and workers
+are diploid and drones are haploid. In SIMplyBee we simulate drones as
+doubled-haploids (see \code{\link{createDrones}}), but return just one
+set of chromosomes by default when requested (see
+\code{\link{getDronesSegSiteHaplo}}).
+
+ 2) complementary sex determining (csd) locus impacts sex of
+   individuals on top of haplo-diploidy, . Heterozygous individuals at the csd locus become
+ queens or workers, while homozygous individuals at the csd locus become
+ unviable "drones". Hence genotype status at the csd locus is critical for
+ honeybee simulations. In SIMplyBee, the csd locus is implemented as a
+ series of bi-allelic SNPs that don't recombine. Technically speaking these
+ are haplotypes, but since they don't recombine, we call them alleles - see
+ \code{\link(getCsdAlleles)}. By varying the number of SNP we can tune the
+ number of unique csd alleles \code{nCsdHaplo}. Individuals that are
+ homozygous at the csd locus are not viable and removed from simulation -
+ see \code{\link{pHomBrood}} and \code{\link{nHomBrood}}.
+ 
+ show example of pHomBrood
+
+```{r, include = TRUE}
+# Global simulation parameters
+SP <- SimParamBee$new(founderGenomes)
+```
+
+add colony events image

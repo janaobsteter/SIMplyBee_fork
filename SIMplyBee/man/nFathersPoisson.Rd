@@ -3,39 +3,51 @@
 \name{nFathersPoisson}
 \alias{nFathersPoisson}
 \alias{nFathersTruncPoisson}
-\title{Functions to sample the number of fathers}
+\title{Sample a number of fathers}
 \usage{
-nFathersPoisson(n = 1, lambda = 15)
+nFathersPoisson(n = 1, average = 15)
 
-nFathersTruncPoisson(n = 1, lambda = 15)
+nFathersTruncPoisson(n = 1, average = 15, lowerLimit = 0)
 }
 \arguments{
 \item{n}{integer, number of samples}
 
-\item{lambda}{numeric, average number of fathers}
+\item{average}{numeric, average number of fathers}
+
+\item{lowerLimit}{numeric, returned numbers will be above this value}
 }
 \value{
 numeric, number of fathers
 }
 \description{
-Functions to sample the number of fathers when
-  \code{nFathers = NULL} in various functions
+Sample a number of fathers when \code{nFathers = NULL} (see
+  \code{\link{SimParamBee}$nFathers}) - this is just an example and you will
+  likely want to define your own sampling functions!
 }
 \details{
-\code{nFathersPoisson()} samples from a Poisson distribution, which
-  can return a vale 0 (that would lead to a failed queen mating), while
+\code{nFathersPoisson} samples from a Poisson distribution, which
+  can return a value 0 (that would mean a failed queen mating), while
   \code{nFathersTruncPoisson} samples from a truncated Poisson distribution
-  (truncated at zero) to avoid failed matings
+  (truncated at zero) to avoid failed matings.
 }
 \section{Functions}{
 \itemize{
-\item \code{nFathersTruncPoisson}: Functions to sample the number of fathers
+\item \code{nFathersTruncPoisson}: Sample a non-zero number of fathers
 }}
 
 \examples{
 nFathersPoisson()
-hist(nFathersPoisson(n = 100))
+nFathersPoisson()
+n <- nFathersPoisson(n = 1000)
+hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 40))
+table(n)
 
 nFathersTruncPoisson()
-hist(nFathersTruncPoisson(n = 100))
+nFathersTruncPoisson()
+n <- nFathersTruncPoisson(n = 1000)
+hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 40))
+table(n)
+}
+\seealso{
+\code{\link{SimParamBee}} field \code{nFathers}
 }

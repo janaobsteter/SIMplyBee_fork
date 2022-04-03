@@ -5069,11 +5069,11 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "virginQueens", "w
 }
 
 #' @rdname calcBeeGRMIbs
-#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honeybees from
 #'   Identical By State genomic data
 #'
 #' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
-#'   for honey bees from Identical By State genomic data (bi-allelic SNP
+#'   for honeybees from Identical By State genomic data (bi-allelic SNP
 #'   represented as allele dosages) following the method for the sex X
 #'   chromosome (Druet and Legarra, 2020)
 #'
@@ -5199,7 +5199,7 @@ calcBeeGRMIbs <- function(x, sex, alleleFreq = NULL) {
   return(G)
 }
 
-#' @describeIn calcBeeGRMIbs Calculate allele frequencies from honey bee genotypes
+#' @describeIn calcBeeGRMIbs Calculate allele frequencies from honeybee genotypes
 #' @export
 calcBeeAlleleFreq <- function(x, sex) {
   if (!is.matrix(x)) {
@@ -5222,11 +5222,11 @@ calcBeeAlleleFreq <- function(x, sex) {
 }
 
 #' @rdname calcBeeGRMIbd
-#' @title Calculate Genomic Relatedness Matrix (GRM) for honey bees from
+#' @title Calculate Genomic Relatedness Matrix (GRM) for honeybees from
 #'   Identical By Descent genomic data
 #'
 #' @description Level 0 function that returns Genomic Relatedness Matrix (GRM)
-#'   for honey bees from Identical By Descent genomic data (tracked alleles
+#'   for honeybees from Identical By Descent genomic data (tracked alleles
 #'   since the founders) - see references on the background theory.
 #'
 #' @param x \code{\link{matrix}} of haplotypes/genomes with allele indicators

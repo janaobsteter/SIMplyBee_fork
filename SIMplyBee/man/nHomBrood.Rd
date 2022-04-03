@@ -65,7 +65,7 @@ colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
 calcQueensPHomBrood(getQueen(colony3))
 pHomBrood(colony3)
 
-# Evaluate the realised csd homozygosity
-colony3 <- addWorkers(colony3, nInd = 100)
-nHomBrood(colony3)
+# Evaluate a realised csd homozygosity
+nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
+nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
 }
