@@ -65,13 +65,18 @@ lapply(getWorkers(apiary), FUN = pheno)
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Colony phenotype
-colony <- setPhenoColonies(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
-pheno(colony)
+apiary <- setPhenoColonies(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+lapply(apiary@colonies, FUN = pheno)
+# TODO: use getColonyPheno(apiary, caste = "workers")
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Colony phenotype - store function into the SP object
 SP$phenoColony <- phenoQueenPlusSumOfWorkers
-pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
-pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+# TODO: use getColonyPheno(apiary, caste = "workers")
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
+# phenotype will vary between function calls
 
 # TODO:
 # See

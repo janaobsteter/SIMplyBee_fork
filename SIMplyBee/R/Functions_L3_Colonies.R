@@ -363,23 +363,18 @@ removeColonies <- function(colonies, ID) {
 #' apiary[[1]] # adding completely new workers & drones
 #'
 #' # Using functions
-#' nWorkersFun <- function(colony) {
-#'   rpois(n = 1, lambda = 100)
-#' }
-#' nDronesFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
 #' apiary <- c(colony1, colony2)
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' tmp[[1]]
 #' tmp[[2]]
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' tmp[[1]]
 #' tmp[[2]]
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #'
 #' # Using functions in simParamBee
-#' SP$nWorkers <- nWorkersFun
-#' SP$nDrones <- nDronesFun
+#' SP$nWorkers <- nWorkersPoisson
+#' SP$nDrones <- nDronesPoisson
 #' apiary <- c(colony1, colony2)
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
@@ -387,6 +382,7 @@ removeColonies <- function(colonies, ID) {
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
 #' tmp[[2]]
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                             new = FALSE, exact = FALSE,
@@ -936,13 +932,18 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
 #' # Colony phenotype
-#' colony <- setPhenoColonies(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
-#' pheno(colony)
+#' apiary <- setPhenoColonies(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+#' lapply(apiary@colonies, FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
 #' # Colony phenotype - store function into the SP object
 #' SP$phenoColony <- phenoQueenPlusSumOfWorkers
-#' pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
-#' pheno(setPhenoColonies(colony)) # phenotype will vary between function calls
+#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' # phenotype will vary between function calls
 #'
 #' # TODO:
 #' # See

@@ -49,23 +49,20 @@ nVirginQueens(addVirginQueens(apiary, nInd = 20))
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
 
+# Specify own number
 SP$nVirginQueens <- 15
 addVirginQueens(colony1)
-# nVirginQueens will NOT vary between function calls
 nVirginQueens(addVirginQueens(apiary))
-# nVirginQueens will NOT vary between function calls
+# nVirginQueens will NOT vary between function calls when a constant is used
 
-nVirginQueensFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-addVirginQueens(colony1, nInd = nVirginQueensFun)
-# nVirginQueens will vary between function calls
-nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
-# nVirginQueens will vary between function calls
+# Specify a function that will give a number
+addVirginQueens(colony1, nInd = nVirginQueensPoisson)
+nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensPoisson))
+# nVirginQueens will vary between function calls when a function is used
 
-SP$nVirginQueens <- nVirginQueensFun
+# Store a function or a value in the SP object
+SP$nVirginQueens <- nVirginQueensPoisson
 addVirginQueens(colony1)
-# nVirginQueens will vary between function calls
 nVirginQueens(addVirginQueens(apiary))
-# nVirginQueens will vary between function calls
+# nVirginQueens will vary between function calls when a function is used
 }

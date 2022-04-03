@@ -92,28 +92,23 @@ colony <- buildUpColony(colony, nWorkers = 150, new = FALSE)
 getWorkers(colony)@id
 # we got additional workers since new = FALSE and we were NOT at the target of 150
 
-# Specify a function that will give a number
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 100)
-}
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-
-# Create new drones and a new colony
+# Specify a function that will give a number, but lets first create new
+# drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[3])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+# nWorkers and nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nWorkers <- nWorkersFun
-SP$nDrones <- nDronesFun
+SP$nWorkers <- nWorkersPoisson
+SP$nDrones <- nDronesPoisson
 # Create new drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[4])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
 buildUpColony(colony)
 buildUpColony(colony)
+# nWorkers and nDrones will vary between function calls when a function is used
 }

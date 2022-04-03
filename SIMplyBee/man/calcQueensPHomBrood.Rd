@@ -2,9 +2,15 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{calcQueensPHomBrood}
 \alias{calcQueensPHomBrood}
+\alias{pHomBrood}
+\alias{nHomBrood}
 \title{Calculate expected percentage of csd homozygous brood of a queen}
 \usage{
 calcQueensPHomBrood(x)
+
+pHomBrood(x)
+
+nHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -24,6 +30,15 @@ TODO: describe queen's and colony's pHomBrood / nHomBrood
         https://github.com/HighlanderLab/SIMplyBee/issues/80
         https://github.com/HighlanderLab/SIMplyBee/issues/104
 }
+\section{Functions}{
+\itemize{
+\item \code{pHomBrood}: Expected percentage of csd homozygous brood
+of a queen / colony
+
+\item \code{nHomBrood}: Realised number of csd homozygous brood
+produced by a queen
+}}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -90,6 +105,7 @@ calcQueensPHomBrood(getQueen(colony3))
 pHomBrood(colony3)
 
 # Evaluate a realised csd homozygosity
-nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
-nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
+nHomBrood(addWorkers(colony3, nInd = 100))
+nHomBrood(addWorkers(colony3, nInd = 100))
+# nHomBrood will vary between function calls due to inheritance process
 }

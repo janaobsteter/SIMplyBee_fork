@@ -427,8 +427,9 @@ nDrones <- function(x) {
 #' pHomBrood(colony3)
 #'
 #' # Evaluate a realised csd homozygosity
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
-#' nHomBrood(addWorkers(colony3, nInd = 100)) # nHomBrood will vary between function calls
+#' nHomBrood(addWorkers(colony3, nInd = 100))
+#' nHomBrood(addWorkers(colony3, nInd = 100))
+#' # nHomBrood will vary between function calls due to inheritance process
 #' @export
 calcQueensPHomBrood <- function(x) {
   if (isPop(x)) {
@@ -1571,7 +1572,7 @@ getCaste <- function(x, simParamBee = NULL) {
   }
   if (isPop(x)) {
     ret <- simParamBee$caste[x@id]
-    ret <- as.character(ret) # TODO: Do we want to return as a character or factor?
+    ret <- as.character(ret)
   } else if (isColony(x)) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")

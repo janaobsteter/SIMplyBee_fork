@@ -81,7 +81,7 @@ pSplitColonyStrength(colony)
 nWorkersFull <- 100
 nWorkers <- 0:200
 pSplit <- 1 - rbeta(n = length(nWorkers),
-                    shape1 = nWorkers + nFull,
+                    shape1 = nWorkers + nWorkersFull,
                     shape2 = nWorkers)
 plot(pSplit ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
 pKeep <- 1 - pSplit

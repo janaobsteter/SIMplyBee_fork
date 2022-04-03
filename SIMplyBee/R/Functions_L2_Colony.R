@@ -160,25 +160,22 @@ reQueenColony <- function(colony, queen, removeVirginQueens = TRUE) {
 #' addVirginQueens(colony1)
 #' nVirginQueens(addVirginQueens(apiary))
 #'
+#' # Specify own number
 #' SP$nVirginQueens <- 15
 #' addVirginQueens(colony1)
-#' # nVirginQueens will NOT vary between function calls
 #' nVirginQueens(addVirginQueens(apiary))
-#' # nVirginQueens will NOT vary between function calls
+#' # nVirginQueens will NOT vary between function calls when a constant is used
 #'
-#' nVirginQueensFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' addVirginQueens(colony1, nInd = nVirginQueensFun)
-#' # nVirginQueens will vary between function calls
-#' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
-#' # nVirginQueens will vary between function calls
+#' # Specify a function that will give a number
+#' addVirginQueens(colony1, nInd = nVirginQueensPoisson)
+#' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensPoisson))
+#' # nVirginQueens will vary between function calls when a function is used
 #'
-#' SP$nVirginQueens <- nVirginQueensFun
+#' # Store a function or a value in the SP object
+#' SP$nVirginQueens <- nVirginQueensPoisson
 #' addVirginQueens(colony1)
-#' # nVirginQueens will vary between function calls
 #' nVirginQueens(addVirginQueens(apiary))
-#' # nVirginQueens will vary between function calls
+#' # nVirginQueens will vary between function calls when a function is used
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
                             simParamBee = NULL) {
@@ -267,24 +264,20 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #'
 #' # Specify own number
 #' SP$nWorkers <- 15
-#' addWorkers(colony1) # nWorkers will NOT vary between function calls
-#' nWorkers(addWorkers(apiary)) # nWorkers will NOT vary between function calls
+#' addWorkers(colony1)
+#' nWorkers(addWorkers(apiary))
+#' # nWorkers will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nWorkersFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' addWorkers(colony1, nInd = nWorkersFun)
-#' # nWorkers will vary between function calls
-#' nWorkers(addWorkers(apiary, nInd = nWorkersFun))
-#' # nWorkers will vary between function calls
+#' addWorkers(colony1, nInd = nWorkersPoisson)
+#' nWorkers(addWorkers(apiary, nInd = nWorkersPoisson))
+#' # nWorkers will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nWorkers <- nWorkersFun
+#' SP$nWorkers <- nWorkersPoisson
 #' addWorkers(colony1)
-#' # nWorkers will vary between function calls
 #' nWorkers(addWorkers(apiary))
-#' # nWorkers will vary between function calls
+#' # nWorkers will vary between function calls when a function is used
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
                        simParamBee = NULL) {
@@ -303,12 +296,12 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
       newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
       if (is.null(x@workers) | new) {
         x@workers <- newWorkers$workers
-        x@queen@misc[[1]]$nWorkers <- nInd # TODO:
-        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood # TODO:
+        x@queen@misc[[1]]$nWorkers <- nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
+        x@queen@misc[[1]]$nHomBrood <- newWorkers$nHomBrood # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       } else {
         x@workers <- c(x@workers, newWorkers$workers)
-        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd # TODO:
-        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood # TODO:
+        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
+        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       }
     }
   } else if (isColonies(x)) {
@@ -364,24 +357,20 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #'
 #' # Specifying own number
 #' SP$nDrones <- 15
-#' addDrones(colony1) # nDrones will NOT vary between function calls
-#' nDrones(addDrones(apiary)) # nDrones will NOT vary between function calls
+#' addDrones(colony1)
+#' nDrones(addDrones(apiary))
+#' # nDrones will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nDronesFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' addDrones(colony1, nInd = nDronesFun)
-#' # nDrones will vary between function calls
-#' nDrones(addDrones(apiary, nInd = nDronesFun))
-#' # nDrones will vary between function calls
+#' addDrones(colony1, nInd = nDronesPoisson)
+#' nDrones(addDrones(apiary, nInd = nDronesPoisson))
+#' # nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nDrones <- nDronesFun
+#' SP$nDrones <- nDronesPoisson
 #' addDrones(colony1)
-#' # nDrones will vary between function calls
 #' nDrones(addDrones(apiary))
-#' # nDrones will vary between function calls
+#' # nDrones will vary between function calls when a function is used
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -399,10 +388,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       newDrones <- createDrones(x, nInd)
       if (is.null(x@drones) | new) {
         x@drones <- newDrones
-        x@queen@misc[[1]]$nDrones <- nInd # TODO:
+        x@queen@misc[[1]]$nDrones <- nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       } else {
         x@drones <- c(x@drones, newDrones)
-        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd # TODO:
+        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd # TODO: https://github.com/HighlanderLab/SIMplyBee/issues/249
       }
     }
   } else if (isColonies(x)) {
@@ -491,30 +480,25 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' getWorkers(colony)@id
 #' # we got additional workers since new = FALSE and we were NOT at the target of 150
 #'
-#' # Specify a function that will give a number
-#' nWorkersFun <- function(colony) {
-#'   rpois(n = 1, lambda = 100)
-#' }
-#' nDronesFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#'
-#' # Create new drones and a new colony
+#' # Specify a function that will give a number, but lets first create new
+#' # drones and a new colony
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(x = basePop[3])
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
-#' buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+#' buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nWorkers <- nWorkersFun
-#' SP$nDrones <- nDronesFun
+#' SP$nWorkers <- nWorkersPoisson
+#' SP$nDrones <- nDronesPoisson
 #' # Create new drones and a new colony
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(x = basePop[4])
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
 #' buildUpColony(colony)
 #' buildUpColony(colony)
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #' @export
 buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
                           new = TRUE, exact = FALSE, resetEvents = FALSE,
@@ -1766,8 +1750,9 @@ setLocation <- function(x, location) {
 #'
 #' # Set phenotypes for ... - store the colony function into the SP object
 #' SP$phenoColony <- phenoQueenPlusSumOfWorkers
-#' pheno(setPhenoColony(colony)) # phenotype will vary between function calls
-#' pheno(setPhenoColony(colony)) # phenotype will vary between function calls
+#' pheno(setPhenoColony(colony))
+#' pheno(setPhenoColony(colony))
+#' # phenotype will vary between function calls
 #'
 #' # TODO:
 #' # See

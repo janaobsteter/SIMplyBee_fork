@@ -323,23 +323,24 @@ getDrones <- function(x, nInd = NULL, use = "rand") {
 #'
 #' # Specify own number
 #' SP$nVirginQueens <- 15
-#' createVirginQueens(colony1) # nVirginQueens will NOT vary between function calls
-#' createVirginQueens(apiary) # nVirginQueens will NOT vary between function calls
+#' createVirginQueens(colony1)
+#' createVirginQueens(apiary)
+#' # nVirginQueens will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nVirginQueensFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' createVirginQueens(colony1, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
-#' createVirginQueens(apiary, nInd = nVirginQueensFun) # nVirginQueens will vary between function calls
+#' createVirginQueens(colony1, nInd = nVirginQueensPoisson)
+#' createVirginQueens(apiary, nInd = nVirginQueensPoisson)
+#' # nVirginQueens will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nVirginQueens <- nVirginQueensFun
-#' createVirginQueens(colony1) # nVirginQueens will vary between function calls
-#' createVirginQueens(apiary) # nVirginQueens will vary between function calls
+#' SP$nVirginQueens <- nVirginQueensPoisson
+#' createVirginQueens(colony1)
+#' createVirginQueens(apiary)
+#' # nVirginQueens will vary between function calls when a function is used
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
-#       patrilines - see https://github.com/HighlanderLab/SIMplyBee/issues/78
+#       patrilines
+#       https://github.com/HighlanderLab/SIMplyBee/issues/78
 createVirginQueens <- function(x, nInd = NULL, year = NULL,
                                simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -439,20 +440,20 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'
 #' # Specify own number
 #' SP$nWorkers <- 15
-#' createWorkers(colony1) # nWorkers will NOT vary between function calls
-#' createWorkers(apiary) # nWorkers will NOT vary between function calls
+#' createWorkers(colony1)
+#' createWorkers(apiary)
+#' # nWorkers will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nWorkersFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' createWorkers(colony1, nInd = nWorkersFun) # nWorkers will vary between function calls
-#' createWorkers(apiary, nInd = nWorkersFun) # nWorkers will vary between function calls
+#' createWorkers(colony1, nInd = nWorkersPoisson)
+#' createWorkers(apiary, nInd = nWorkersPoisson)
+#' # nWorkers will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nWorkers <- nWorkersFun
-#' createWorkers(colony1) # nWorkers will vary between function calls
-#' createWorkers(apiary) # nWorkers will vary between function calls
+#' SP$nWorkers <- nWorkersPoisson
+#' createWorkers(colony1)
+#' createWorkers(apiary)
+#' # nWorkers will vary between function calls when a function is used
 #'
 #' # Inbred virgin queen with her brothers to generate csd homozygous brood
 #' colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
@@ -462,8 +463,10 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' pHomBrood(colony3)
 #'
 #' # Evaluate a realised csd homozygosity
-#' createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
-#' createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
+#' createWorkers(colony3, nInd = 100)
+#' # nHomBrood will vary between function calls due to inheritance process
+#' createWorkers(colony3, nInd = 100)
+#' # nHomBrood will vary between function calls due to inheritance process
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -797,20 +800,20 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'
 #' # Specify own number
 #' SP$nDrones <- 15
-#' createDrones(colony1) # nDrones will NOT vary between function calls
-#' createDrones(apiary) # nDrones will NOT vary between function calls
+#' createDrones(colony1)
+#' createDrones(apiary)
+#' # nDrones will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nDronesFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
-#' createDrones(colony1, nInd = nDronesFun) # nDrones will vary between function calls
-#' createDrones(apiary, nInd = nDronesFun) # nDrones will vary between function calls
+#' createDrones(colony1, nInd = nDronesPoisson)
+#' createDrones(apiary, nInd = nDronesPoisson)
+#' # nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nDrones <- nDronesFun
-#' createDrones(colony1) # nDrones will vary between function calls
-#' createDrones(apiary) # nDrones will vary between function calls
+#' SP$nDrones <- nDronesPoisson
+#' createDrones(colony1)
+#' createDrones(apiary)
+#' # nDrones will vary between function calls when a function is used
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1427,8 +1430,8 @@ setQueensYOB <- setQueensYearOfBirth
 #' basePop@misc
 #' @export
 # TODO: move to AlphaSimR - track
-#   https://github.com/gaynorr/AlphaSimR/pull/51
-#   https://github.com/HighlanderLab/SIMplyBee/issues/144
+#       https://github.com/gaynorr/AlphaSimR/pull/51
+#       https://github.com/HighlanderLab/SIMplyBee/issues/144
 setMisc <- function(x, node, value) {
   if (isPop(x)) {
     n <- nInd(x)

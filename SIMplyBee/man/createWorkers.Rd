@@ -66,20 +66,20 @@ createWorkers(apiary)
 
 # Specify own number
 SP$nWorkers <- 15
-createWorkers(colony1) # nWorkers will NOT vary between function calls
-createWorkers(apiary) # nWorkers will NOT vary between function calls
+createWorkers(colony1)
+createWorkers(apiary)
+# nWorkers will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-createWorkers(colony1, nInd = nWorkersFun) # nWorkers will vary between function calls
-createWorkers(apiary, nInd = nWorkersFun) # nWorkers will vary between function calls
+createWorkers(colony1, nInd = nWorkersPoisson)
+createWorkers(apiary, nInd = nWorkersPoisson)
+# nWorkers will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nWorkers <- nWorkersFun
-createWorkers(colony1) # nWorkers will vary between function calls
-createWorkers(apiary) # nWorkers will vary between function calls
+SP$nWorkers <- nWorkersPoisson
+createWorkers(colony1)
+createWorkers(apiary)
+# nWorkers will vary between function calls when a function is used
 
 # Inbred virgin queen with her brothers to generate csd homozygous brood
 colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
@@ -89,6 +89,8 @@ colony3 <- crossColony(colony3, drones = createDrones(colony1, nInd = 5),
 pHomBrood(colony3)
 
 # Evaluate a realised csd homozygosity
-createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
-createWorkers(colony3, nInd = 100) # nHomBrood will vary between function calls
+createWorkers(colony3, nInd = 100)
+# nHomBrood will vary between function calls due to inheritance process
+createWorkers(colony3, nInd = 100)
+# nHomBrood will vary between function calls due to inheritance process
 }

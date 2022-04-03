@@ -889,7 +889,9 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #'   \code{a = nWorkers + nWorkersFull} and \code{b = nWorkers}. This beta
 #'   sampling mimics larger swarms for strong colonies and smaller swarms for
 #'   weak colonies - see examples - this is just an example, not based on actual
-#'   data! # TODO: should we flip the pattern?
+#'   data!
+#'   # TODO: should we flip the pattern?
+#'   #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #'
 #'   The \code{nWorkersFull} default value used in this function is geared
 #'   towards a situation where we simulate ~100 workers per colony (down-scaled
@@ -932,6 +934,7 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' pStay <- 1 - pSwarm
 #' plot(pStay ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
 #' # TODO: should we flip the pattern?
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #' @export
 pSwarmUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
   return(runif(n = n, min = min, max = max))
@@ -1010,7 +1013,7 @@ pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
 #' pSplit <- 1 - rbeta(n = length(nWorkers),
-#'                     shape1 = nWorkers + nFull,
+#'                     shape1 = nWorkers + nWorkersFull,
 #'                     shape2 = nWorkers)
 #' plot(pSplit ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
 #' pKeep <- 1 - pSplit

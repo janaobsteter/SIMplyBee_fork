@@ -76,8 +76,9 @@ pheno(colony)
 
 # Set phenotypes for ... - store the colony function into the SP object
 SP$phenoColony <- phenoQueenPlusSumOfWorkers
-pheno(setPhenoColony(colony)) # phenotype will vary between function calls
-pheno(setPhenoColony(colony)) # phenotype will vary between function calls
+pheno(setPhenoColony(colony))
+pheno(setPhenoColony(colony))
+# phenotype will vary between function calls
 
 # TODO:
 # See

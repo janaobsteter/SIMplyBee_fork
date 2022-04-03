@@ -47,22 +47,18 @@ nDrones(addDrones(apiary))
 
 # Specifying own number
 SP$nDrones <- 15
-addDrones(colony1) # nDrones will NOT vary between function calls
-nDrones(addDrones(apiary)) # nDrones will NOT vary between function calls
+addDrones(colony1)
+nDrones(addDrones(apiary))
+# nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-addDrones(colony1, nInd = nDronesFun)
-# nDrones will vary between function calls
-nDrones(addDrones(apiary, nInd = nDronesFun))
-# nDrones will vary between function calls
+addDrones(colony1, nInd = nDronesPoisson)
+nDrones(addDrones(apiary, nInd = nDronesPoisson))
+# nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nDrones <- nDronesFun
+SP$nDrones <- nDronesPoisson
 addDrones(colony1)
-# nDrones will vary between function calls
 nDrones(addDrones(apiary))
-# nDrones will vary between function calls
+# nDrones will vary between function calls when a function is used
 }
