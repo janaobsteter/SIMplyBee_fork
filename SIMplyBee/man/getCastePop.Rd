@@ -9,7 +9,7 @@
 \alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
-getCastePop(x, caste = "all", nInd = NULL, use = "order")
+getCastePop(x, caste = "all", nInd = NULL, use = "order", removeFathers = TRUE)
 
 getQueen(x)
 
@@ -33,6 +33,10 @@ we return the ones available - this can return \code{NULL}}
 
 \item{use}{character, all options provided by \code{\link{selectInd}} and
 \code{"order"} that selects \code{1:nInd} individuals}
+
+\item{removeFathers}{logical, removes \code{drones} that have already mated;
+set to \code{TRUE} if you would like to get drones for mating with multiple
+virgin queens, say via insemination}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is

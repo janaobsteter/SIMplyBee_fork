@@ -4,7 +4,13 @@
 \alias{crossVirginQueen}
 \title{Cross (mate) a virgin queen to a group drones}
 \usage{
-crossVirginQueen(pop, drones, nFathers = NULL, simParamBee = NULL)
+crossVirginQueen(
+  pop,
+  drones,
+  removeFathers = TRUE,
+  nFathers = NULL,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated;
@@ -14,6 +20,10 @@ crossVirginQueen(pop, drones, nFathers = NULL, simParamBee = NULL)
 with virgin queen(s); if there is more than one virgin queen, then the
 \code{fathers} are partitioned into multiple groups of \code{nFathers} size
  using \code{\link{pullDroneGroupsFromDCA}}}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{TRUE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{nFathers}{numeric of function, number of drones that a virgin queen
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}

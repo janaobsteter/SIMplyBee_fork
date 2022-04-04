@@ -255,7 +255,7 @@ number of distinct alleles (see `help(SimParamBee)`).
 A keen geneticist would immediately inspect csd alleles of fathers to check for
 any similarity with the queen's csd alleles. Lets boost a chance of such an
 event by creating an inbreed colony. We will create a virgin queen from the
-current colony and mate her with her brothers, oh dear.
+current colony and mate her with her brothers. Oh, dear me.
 
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
@@ -354,7 +354,7 @@ getDronesSegSiteGeno(inbredColony)[, 1:10]
 SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
 segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
 descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
-are all synonyms for a position in the genome. Oh well. Study the index of
+are all synonyms for a position in the genome. Oh, well. Study the index of
 available `get*()` functions in SIMplyBee.
 
 ```{r help II}

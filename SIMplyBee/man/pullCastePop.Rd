@@ -8,7 +8,7 @@
 \alias{pullDrones}
 \title{Pull individuals from a caste in a colony}
 \usage{
-pullCastePop(x, caste, nInd = NULL, use = "rand")
+pullCastePop(x, caste, nInd = NULL, use = "rand", removeFathers = TRUE)
 
 pullQueen(x)
 
@@ -27,6 +27,10 @@ pullDrones(x, nInd = NULL, use = "rand")
 individuals are pulled}
 
 \item{use}{character, all options provided by \code{\link{selectInd}}}
+
+\item{removeFathers}{logical, removes \code{drones} that have already mated;
+set to \code{TRUE} if you would like to get drones for mating with multiple
+virgin queens, say via insemination}
 }
 \value{
 list of \code{\link{Pop-class}} and \code{\link{Colony-class}}

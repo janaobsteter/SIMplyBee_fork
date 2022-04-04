@@ -14,6 +14,9 @@
 #'   we return the ones available - this can return \code{NULL}
 #' @param use character, all options provided by \code{\link{selectInd}} and
 #'   \code{"order"} that selects \code{1:nInd} individuals
+#' @param removeFathers logical, removes \code{drones} that have already mated;
+#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   virgin queens, say via insemination
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -123,7 +126,8 @@
 #' getCastePop(colony1, caste = "all")
 #' getCastePop(colony2, caste = "all")
 #' @export
-getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
+getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
+                        removeFathers = TRUE) {
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -137,10 +141,11 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
           ret[caste] <- list(NULL)
         } else {
           if (caste == "drones") {
-            test <- isDrone(tmp)
-            if (any(!test)) {
-              tmp <- tmp[test]
-              warning("Taking only drones that have not yet mated!")
+            if (removeFathers) {
+              test <- isDrone(tmp)
+              if (any(!test)) {
+                tmp <- tmp[test]
+              }
             }
           }
           ret[[caste]] <- tmp
@@ -1038,6 +1043,9 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
 #'   individuals are pulled
 #' @param use character, all options provided by \code{\link{selectInd}}
+#' @param removeFathers logical, removes \code{drones} that have already mated;
+#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   virgin queens, say via insemination
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
@@ -1107,7 +1115,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #' nDrones(pullDrones(apiary)$colonies)
 #' nDrones(pullDrones(apiary, nInd = 5)$colonies)
 #' @export
-pullCastePop <- function(x, caste, nInd = NULL, use = "rand") {
+pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
+                         removeFathers = TRUE) {
   if (isColony(x)) {
     if (is.null(slot(x, caste))) {
       ret <- list(pulled = NULL, colony = x)
@@ -1118,10 +1127,12 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand") {
       tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
       slot(x, caste) <- tmp$remainder
       if (caste == "drones") {
-        test <- isDrone(tmp$pulled)
-        if (any(!test)) {
-          tmp$pulled <- tmp$pulled[test]
-          warning("Taking only drones that have not yet mated!")
+        if (removeFathers) {
+          test <- isDrone(tmp$pulled)
+          if (any(!test)) {
+            tmp$pulled <- tmp$pulled[test]
+            warning("Taking only drones that have not yet mated!")
+          }
         }
       }
       ret <- list(pulled = tmp$pulled, colony = x)
@@ -1201,6 +1212,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
+#' @param removeFathers logical, removes those \code{drones} that have already
+#'   mated; set to \code{TRUE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -1269,7 +1283,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand") {
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
-crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
+crossVirginQueen <- function(pop, drones, removeFathers = TRUE, nFathers = NULL,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1284,6 +1299,10 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, simParamBee = NULL) {
   }
   if (any(!isDrone(drones))) {
     stop("Argument drones must hold only drones, no fathers!")
+  }
+  # Ensuring we don't use drones that have already mated
+  if (removeFathers) {
+    drones <- drones[isDrone(drones)]
   }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
