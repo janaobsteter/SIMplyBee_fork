@@ -564,7 +564,7 @@ isSimParamBee <- function(x) {
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1@queen@pheno
 #' colony2@queen@pheno
@@ -581,7 +581,9 @@ isSimParamBee <- function(x) {
 #' hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 #' r <- range(c(n, queenFecundity))
 #' plot(n ~ queenFecundity, xlim = r, ylim = r)
-#' abline(v = average); abline(h = average); abline(a = 0, b = 1)
+#' abline(v = average)
+#' abline(h = average)
+#' abline(a = 0, b = 1)
 #' @export
 nWorkersPoisson <- function(colony, n = 1, average = 100) {
   return(rpois(n = n, lambda = average))
@@ -645,7 +647,7 @@ nWorkersPoissonQueenFecundity <- function(colony, n = 1,
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1@queen@pheno
 #' colony2@queen@pheno
@@ -663,7 +665,9 @@ nWorkersPoissonQueenFecundity <- function(colony, n = 1,
 #' hist(n, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
 #' r <- range(c(n, queenFecundity))
 #' plot(n ~ queenFecundity, xlim = r, ylim = r)
-#' abline(v = average); abline(h = average); abline(a = 0, b = 1)
+#' abline(v = average)
+#' abline(h = average)
+#' abline(a = 0, b = 1)
 #' @export
 nDronesPoisson <- function(x, n = 1, average = 10) {
   return(rpois(n = n, lambda = average))
@@ -780,9 +784,11 @@ nDronesTruncPoissonQueenFecundity <- function(x, n = 1,
 #' nWorkersFull <- 100
 #' nW <- 0:400
 #' x <- (nW - nWorkersFull) / nWorkersFull
-#' average <- lower + ((upper - lower) / (1 + exp(-rate*x)))
+#' average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
 #' n <- rpois(n = length(nW), lambda = average)
-#' plot(n ~ nW); abline(v = nWorkersFull); abline(h = averageExp)
+#' plot(n ~ nW)
+#' abline(v = nWorkersFull)
+#' abline(h = averageExp)
 #' lines(average ~ nW)
 #' @export
 nVirginQueensPoisson <- function(colony, n = 1, average = 10) {
@@ -803,7 +809,7 @@ nVirginQueensPoissonColonyStrength <- function(colony, n = 1,
                                                nWorkersFull = 100) {
   nW <- nWorkers(colony)
   x <- (nW - nWorkersFull) / nWorkersFull
-  average <- lower + ((upper - lower) / (1 + exp(- rate * x)))
+  average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
   return(rpois(n = n, lambda = average))
 }
 
@@ -816,7 +822,7 @@ nVirginQueensTruncPoissonColonyStrength <- function(colony, n = 1,
                                                     lowerLimit = 0) {
   nW <- nWorkers(colony)
   x <- (nW - nWorkersFull) / nWorkersFull
-  average <- lower + ((upper - lower) / (1 + exp(- rate * x)))
+  average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
@@ -927,12 +933,16 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' # Logic behind pSwarmColonyStrength()
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
-#' pSwarm <- 1 - rbeta(n = length(nWorkers),
-#'                     shape1 = nWorkers + nWorkersFull,
-#'                     shape2 = nWorkers)
-#' plot(pSwarm ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' pSwarm <- 1 - rbeta(
+#'   n = length(nWorkers),
+#'   shape1 = nWorkers + nWorkersFull,
+#'   shape2 = nWorkers
+#' )
+#' plot(pSwarm ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' pStay <- 1 - pSwarm
-#' plot(pStay ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' plot(pStay ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' # TODO: should we flip the pattern?
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #' @export
@@ -945,9 +955,11 @@ pSwarmUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
 #' @export
 pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   nW <- nWorkers(colony)
-  pKeep <- rbeta(n = n,
-                 shape1 = (nW + nWorkersFull) / scale,
-                 shape2 = nW / scale)
+  pKeep <- rbeta(
+    n = n,
+    shape1 = (nW + nWorkersFull) / scale,
+    shape2 = nW / scale
+  )
   return(1 - pKeep)
 }
 
@@ -1012,12 +1024,16 @@ pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' # Logic behind pSplitColonyStrength()
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
-#' pSplit <- 1 - rbeta(n = length(nWorkers),
-#'                     shape1 = nWorkers + nWorkersFull,
-#'                     shape2 = nWorkers)
-#' plot(pSplit ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' pSplit <- 1 - rbeta(
+#'   n = length(nWorkers),
+#'   shape1 = nWorkers + nWorkersFull,
+#'   shape2 = nWorkers
+#' )
+#' plot(pSplit ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' pKeep <- 1 - pSplit
-#' plot(pKeep ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' plot(pKeep ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' @export
 pSplitUnif <- function(colony, n = 1, min = 0.2, max = 0.4) {
   return(runif(n = n, min = min, max = max))
@@ -1028,9 +1044,11 @@ pSplitUnif <- function(colony, n = 1, min = 0.2, max = 0.4) {
 #' @export
 pSplitColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   nW <- nWorkers(colony)
-  pKeep <- rbeta(n = n,
-                 shape1 = (nW + nWorkersFull) / scale,
-                 shape2 = nW / scale)
+  pKeep <- rbeta(
+    n = n,
+    shape1 = (nW + nWorkersFull) / scale,
+    shape2 = nW / scale
+  )
   return(1 - pKeep)
 }
 
@@ -1094,12 +1112,16 @@ pSplitColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' # Logic behind pDownsizeColonyStrength()
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
-#' pRemove <- 1 - rbeta(n = length(nWorkers),
-#'                      shape1 = nWorkers,
-#'                      shape2 = 3 * nWorkers + nWorkersFull)
-#' plot(pRemove ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' pRemove <- 1 - rbeta(
+#'   n = length(nWorkers),
+#'   shape1 = nWorkers,
+#'   shape2 = 3 * nWorkers + nWorkersFull
+#' )
+#' plot(pRemove ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' pNew <- 1 - pRemove
-#' plot(pNew ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+#' plot(pNew ~ nWorkers, ylim = c(0, 1))
+#' abline(v = nWorkersFull)
 #' @export
 pDownsizeUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
   return(runif(n = n, min = min, max = max))
@@ -1110,9 +1132,11 @@ pDownsizeUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @export
 pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   nW <- nWorkers(colony)
-  pSurvive <- rbeta(n = n,
-                    shape1 = nW / scale,
-                    shape2 = (2 * nW + nWorkersFull) / scale)
+  pSurvive <- rbeta(
+    n = n,
+    shape1 = nW / scale,
+    shape2 = (2 * nW + nWorkersFull) / scale
+  )
   return(1 - pSurvive)
 }
 
@@ -1150,8 +1174,10 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' # The traits will have negative genetic correlation and heritability of 0.25
 #' meanP <- c(20, 0)
 #' varA <- c(1, 1 / 10)
-#' corA <- matrix(data = c( 1.0, -0.5,
-#'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
 #' varE <- c(3, 3 / 10)
 #' varA / (varA + varE)
 #' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
@@ -1181,7 +1207,8 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #'
 #' # Set phenotypes for all colony individuals AND colony
 #' colony <- setPhenoColony(colony,
-#'                          colonyFUN = phenoQueenPlusSumOfWorkers)
+#'   colonyFUN = phenoQueenPlusSumOfWorkers
+#' )
 #' pheno(colony)
 #' # TODO: use getColonyPheno(colony) for all individuals and/or colony
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26

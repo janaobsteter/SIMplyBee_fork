@@ -4976,8 +4976,10 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 #'
 #' sex <- getCasteSex(x = colony)
-#' sex <- c(sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
-#'          "F", "M")
+#' sex <- c(
+#'   sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
+#'   "F", "M"
+#' )
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
