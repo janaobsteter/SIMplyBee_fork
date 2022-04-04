@@ -79,12 +79,16 @@ pDownsizeColonyStrength(colony)
 # Logic behind pDownsizeColonyStrength()
 nWorkersFull <- 100
 nWorkers <- 0:200
-pRemove <- 1 - rbeta(n = length(nWorkers),
-                     shape1 = nWorkers,
-                     shape2 = 3 * nWorkers + nWorkersFull)
-plot(pRemove ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+pRemove <- 1 - rbeta(
+  n = length(nWorkers),
+  shape1 = nWorkers,
+  shape2 = 3 * nWorkers + nWorkersFull
+)
+plot(pRemove ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 pNew <- 1 - pRemove
-plot(pNew ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+plot(pNew ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 }
 \seealso{
 \code{\link{SimParamBee}} field \code{pDownsize}

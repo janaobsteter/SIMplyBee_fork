@@ -81,12 +81,16 @@ pSwarmColonyStrength(colony)
 # Logic behind pSwarmColonyStrength()
 nWorkersFull <- 100
 nWorkers <- 0:200
-pSwarm <- 1 - rbeta(n = length(nWorkers),
-                    shape1 = nWorkers + nWorkersFull,
-                    shape2 = nWorkers)
-plot(pSwarm ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+pSwarm <- 1 - rbeta(
+  n = length(nWorkers),
+  shape1 = nWorkers + nWorkersFull,
+  shape2 = nWorkers
+)
+plot(pSwarm ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 pStay <- 1 - pSwarm
-plot(pStay ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+plot(pStay ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 # TODO: should we flip the pattern?
 #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 }

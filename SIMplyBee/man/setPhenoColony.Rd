@@ -39,8 +39,10 @@ SP <- SimParamBee$new(founderGenomes)
 # The traits will have negative genetic correlation and heritability of 0.25
 meanP <- c(20, 0)
 varA <- c(1, 1 / 10)
-corA <- matrix(data = c( 1.0, -0.5,
-                        -0.5,  1.0), nrow = 2, byrow = TRUE)
+corA <- matrix(data = c(
+  1.0, -0.5,
+  -0.5, 1.0
+), nrow = 2, byrow = TRUE)
 varE <- c(3, 3 / 10)
 varA / (varA + varE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)

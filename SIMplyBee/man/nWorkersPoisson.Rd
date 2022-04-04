@@ -61,7 +61,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(x = basePop[2])
 colony2 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 colony1@queen@pheno
 colony2@queen@pheno
@@ -78,7 +78,9 @@ n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
 hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 r <- range(c(n, queenFecundity))
 plot(n ~ queenFecundity, xlim = r, ylim = r)
-abline(v = average); abline(h = average); abline(a = 0, b = 1)
+abline(v = average)
+abline(h = average)
+abline(a = 0, b = 1)
 }
 \seealso{
 \code{\link{SimParamBee}} field \code{nWorkers}

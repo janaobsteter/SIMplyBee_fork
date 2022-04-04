@@ -35,8 +35,10 @@ SP <- SimParamBee$new(founderGenomes)
 # The traits will have negative genetic correlation and heritability of 0.25
 meanP <- c(20, 0)
 varA <- c(1, 1 / 10)
-corA <- matrix(data = c( 1.0, -0.5,
-                        -0.5,  1.0), nrow = 2, byrow = TRUE)
+corA <- matrix(data = c(
+  1.0, -0.5,
+  -0.5, 1.0
+), nrow = 2, byrow = TRUE)
 varE <- c(3, 3 / 10)
 varA / (varA + varE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
@@ -46,7 +48,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony1 <- createColony(x = basePop[2])
 colony2 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[1:5],  nFathers = 5)
+colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 apiary <- c(colony1, colony2)
 apiary <- buildUpColonies(apiary, nWorkers = 10)

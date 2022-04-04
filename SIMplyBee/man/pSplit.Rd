@@ -80,12 +80,16 @@ pSplitColonyStrength(colony)
 # Logic behind pSplitColonyStrength()
 nWorkersFull <- 100
 nWorkers <- 0:200
-pSplit <- 1 - rbeta(n = length(nWorkers),
-                    shape1 = nWorkers + nWorkersFull,
-                    shape2 = nWorkers)
-plot(pSplit ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+pSplit <- 1 - rbeta(
+  n = length(nWorkers),
+  shape1 = nWorkers + nWorkersFull,
+  shape2 = nWorkers
+)
+plot(pSplit ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 pKeep <- 1 - pSplit
-plot(pKeep ~ nWorkers, ylim = c(0, 1)); abline(v = nWorkersFull)
+plot(pKeep ~ nWorkers, ylim = c(0, 1))
+abline(v = nWorkersFull)
 }
 \seealso{
 \code{\link{SimParamBee}} field \code{pSplit}

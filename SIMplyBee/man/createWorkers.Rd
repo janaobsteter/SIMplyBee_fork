@@ -83,8 +83,10 @@ createWorkers(apiary)
 
 # Inbred virgin queen with her brothers to generate csd homozygous brood
 colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
-colony3 <- crossColony(colony3, drones = createDrones(colony1, nInd = 5),
-                       nFathers = 5)
+colony3 <- crossColony(colony3,
+  drones = createDrones(colony1, nInd = 5),
+  nFathers = 5
+)
 # Check the expected csd homozygosity
 pHomBrood(colony3)
 

@@ -118,9 +118,11 @@ rate <- 3
 nWorkersFull <- 100
 nW <- 0:400
 x <- (nW - nWorkersFull) / nWorkersFull
-average <- lower + ((upper - lower) / (1 + exp(-rate*x)))
+average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
 n <- rpois(n = length(nW), lambda = average)
-plot(n ~ nW); abline(v = nWorkersFull); abline(h = averageExp)
+plot(n ~ nW)
+abline(v = nWorkersFull)
+abline(h = averageExp)
 lines(average ~ nW)
 }
 \seealso{
