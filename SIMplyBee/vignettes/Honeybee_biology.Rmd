@@ -18,22 +18,22 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette describes and demonstrates how SIMplyBee implements the specific 
-honeybee biology. Specifically, it describes:
+This vignette describes and demonstrates how SIMplyBee implements honeybee
+biology. Specifically, it describes:
 
-  1. initiating simulation with genomes and parameters,
+  1. Initiating with genomes and parameters,
 
-  2. creating and building up a colony,
+  2. Creating and building up a colony,
   
-  3. colony structure,
+  3. Colony structure,
   
-  4. sex and caste,
+  4. Sex and caste,
   
-  5. complementary sex determining (csd) locus,
+  5. Complementary sex determining (csd) locus,
   
-  6. inheritance system, and
+  6. Inheritance system, and
   
-  7. colony events.
+  7. Colony events.
   
 Now load the package and dive in!
 
@@ -41,7 +41,7 @@ Now load the package and dive in!
 library(package = "SIMplyBee")
 ```
 
-# Initiating simulation with genomes and parameters
+# Initiating with genomes and parameters
 
 We initiate simulation by simulating honyebee genomes. We can quickly generate
 genomes using AlphaSimR's `quickHaplo()` or with SIMplyBee's `TODO()` with
@@ -227,7 +227,7 @@ bees@sex
 getCaste(bees)
 ```
 
-# Complementary sex determining (csd) locus
+# Complementary sex determining locus
 
 The complementary sex determining (csd) locus, well, complements sex
 determination. Fertilised eggs that are heterozygous at the csd locus develop
