@@ -20,7 +20,7 @@
 # (swarming, supersedure, etc.), and colony phenotype values.
 #'
 #' See the introductory vignette on using this package by running:
-#' \code{vignette("TODO", package="SIMplyBee")}
+#' \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
 #' @keywords internal
 "_PACKAGE"

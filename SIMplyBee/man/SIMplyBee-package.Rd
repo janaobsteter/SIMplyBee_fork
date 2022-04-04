@@ -7,7 +7,7 @@
 \title{SIMplyBee: AlphaSimR extension for simulating honeybee populations and breeding programmes}
 \description{
 See the introductory vignette on using this package by running:
-\code{vignette("TODO", package="SIMplyBee")}
+\code{vignette("Honeybee_biology", package="SIMplyBee")}
 }
 \seealso{
 Useful links:
