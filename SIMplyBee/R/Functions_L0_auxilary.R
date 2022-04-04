@@ -358,6 +358,9 @@ nDrones <- function(x) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{Colonies-class}}
 #'
+#' @seealso Demo in the introductory vignette
+#'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
+#'
 #' @return numeric, expected csd homozygosity named by colony id when \code{x}
 #'   is \code{\link{Colonies-class}}
 #'

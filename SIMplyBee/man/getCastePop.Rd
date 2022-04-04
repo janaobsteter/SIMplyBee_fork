@@ -19,7 +19,7 @@ getVirginQueens(x, nInd = NULL, use = "rand")
 
 getWorkers(x, nInd = NULL, use = "rand")
 
-getDrones(x, nInd = NULL, use = "rand")
+getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
 \item{x}{Colony or Colonies}

@@ -16,7 +16,7 @@ pullVirginQueens(x, nInd = NULL, use = "rand")
 
 pullWorkers(x, nInd = NULL, use = "rand")
 
-pullDrones(x, nInd = NULL, use = "rand")
+pullDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}

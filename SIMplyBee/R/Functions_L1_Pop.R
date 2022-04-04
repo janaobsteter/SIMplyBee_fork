@@ -256,9 +256,10 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 
 #' @describeIn getCastePop Access drones
 #' @export
-getDrones <- function(x, nInd = NULL, use = "rand") {
+getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use,
+                       removeFathers = removeFathers)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -891,6 +892,16 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
 #' @param nInd numeric, number of random drones to pull from each colony,
 #'   if \code{NULL} all drones in a colony are pulled
+#' @param removeFathers logical, removes \code{drones} that have already mated;
+#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   virgin queens, say via insemination
+#'
+#' @details In reality, drones leave the colony to mate. They die after that.
+#'   In this function we only get a copy of drones from \code{x}, for
+#'   computational efficiency and ease of use. However, any mating will change
+#'   the caste of drones to fathers, and they won't be available for future
+#'   matings (see \code{\link{crossVirginQueen}}). Not unless
+#'   \code{removeFathers = TRUE}.
 #'
 #' @return \code{\link{Pop-class}}
 #'
@@ -915,11 +926,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
 #' @export
-createDCA <- function(x, nInd = NULL) {
+createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
   if (isColony(x)) {
-    DCA <- getDrones(x, nInd = nInd)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
   } else if (isColonies(x)) {
-    DCA <- getDrones(x, nInd = nInd)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
     DCA <- mergePops(popList = DCA)
   } else {
     stop("Argument x must be a Colony of Colonies class object!")
@@ -1190,9 +1201,10 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 
 #' @describeIn pullCastePop Pull drones from a colony
 #' @export
-pullDrones <- function(x, nInd = NULL, use = "rand") {
+pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use)
+    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use,
+                        removeFathers = removeFathers)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -1317,7 +1329,7 @@ crossVirginQueen <- function(pop, drones, removeFathers = TRUE, nFathers = NULL,
     } else {
       n <- nFathers
     }
-    # TODO: In crossVirginQueens we select drones for mating at random, should
+    # TODO: In crossVirginQueen we select drones for mating at random, should
     #       we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
