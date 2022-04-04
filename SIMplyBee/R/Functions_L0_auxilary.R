@@ -2010,7 +2010,7 @@ reduceDroneGeno <- function(geno, pop) {
   id <- rownames(geno)
   sel <- id %in% pop@id[pop@sex == "M"]
   if (any(sel)) {
-    geno[sel, ] <- geno[sel, ] / 2
+    geno[sel, ] <- geno[sel, , drop = FALSE] / 2
   }
   return(geno)
 }
