@@ -10,8 +10,8 @@ nCaste(x, caste = "all")
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
-"drones", or "all"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for

@@ -58,8 +58,8 @@ getDronesIbdHaplo(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virginQueens", "workers", or
-"drones"}
+\item{caste}{character, "queen", "fathers", "workers", "drones", or
+"virginQueens"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}

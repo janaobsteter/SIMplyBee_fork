@@ -7,8 +7,8 @@
 #'   individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 #'
 #' @param x Colony or Colonies
-#' @param caste character, "queen", "fathers", "virginQueens", "workers",
-#'   "drones", or "all"
+#' @param caste character, "queen", "fathers", "workers", "drones",
+#'   "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can return \code{NULL}
@@ -130,7 +130,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order") {
   if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
-      names(ret) <- c("queen", "fathers", "virginQueens", "workers", "drones")
+      names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
         tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use)
         if (is.null(tmp)) {
@@ -1032,7 +1032,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #'   \code{\link{getCaste}}).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, "queen", virginQueens", "workers", or "drones"
+#' @param caste character, "queen", "workers", "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
 #'   individuals are pulled
 #' @param use character, all options provided by \code{\link{selectInd}}

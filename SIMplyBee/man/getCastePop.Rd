@@ -24,8 +24,8 @@ getDrones(x, nInd = NULL, use = "rand")
 \arguments{
 \item{x}{Colony or Colonies}
 
-\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
-"drones", or "all"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,

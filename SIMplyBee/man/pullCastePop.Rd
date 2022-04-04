@@ -21,7 +21,7 @@ pullDrones(x, nInd = NULL, use = "rand")
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", virginQueens", "workers", or "drones"}
+\item{caste}{character, "queen", "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric, number of individuals to pull, if \code{NULL} all
 individuals are pulled}
