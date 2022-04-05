@@ -100,6 +100,7 @@ average <- 100
 queenFecundity <- rnorm(n = 1000, mean = average, sd = sqrt(average))
 hist(queenFecundity, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
+n <- round(queenFecundity)
 hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 r <- range(c(n, queenFecundity))
 plot(n ~ queenFecundity, xlim = r, ylim = r)

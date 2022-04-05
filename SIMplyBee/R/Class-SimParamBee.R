@@ -274,7 +274,7 @@ SimParamBee <- R6Class(
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
     initialize = function(founderPop,
-                          nWorkers = 100, nDrones = 10,
+                          nWorkers = 100, nDrones = 100,
                           nVirginQueens = 10, nFathers = 15,
                           pSwarm = 0.5, pSplit = 0.3, pDownsize = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
@@ -657,13 +657,13 @@ nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
 #' nDronesPoisson()
 #' nDronesPoisson()
 #' n <- nDronesPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
+#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 #' table(n)
 #'
 #' # Example for nDronesPoissonQueenFecundity()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' average <- 10
+#' average <- 100
 #' h2 <- 0.1
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 #' SP$setVarE(varE = average * (1 - h2))
@@ -681,25 +681,25 @@ nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
 #' nWorkers(colony2)
 #'
 #' # Logic behind nDronesPoissonQueenFecundity()
-#' average <- 10
+#' average <- 100
 #' queenFecundity <- rnorm(n = 1000, mean = average, sd = sqrt(average))
 #' queenFecundity[queenFecundity < 0] <- 0
-#' hist(queenFecundity, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
+#' hist(queenFecundity, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 #' n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
-#' hist(n, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
+#' hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 #' r <- range(c(n, queenFecundity))
 #' plot(n ~ queenFecundity, xlim = r, ylim = r)
 #' abline(v = average)
 #' abline(h = average)
 #' abline(a = 0, b = 1)
 #' @export
-nDronesPoisson <- function(x, n = 1, average = 10) {
+nDronesPoisson <- function(x, n = 1, average = 100) {
   return(rpois(n = n, lambda = average))
 }
 
 #' @describeIn nDronesPoisson Sample a non-zero number of drones
 #' @export
-nDronesTruncPoisson <- function(x, n = 1, average = 10, lowerLimit = 0) {
+nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 

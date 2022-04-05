@@ -7,9 +7,9 @@
 \alias{nDronesTruncPoissonQueenFecundity}
 \title{Sample a number of drones}
 \usage{
-nDronesPoisson(x, n = 1, average = 10)
+nDronesPoisson(x, n = 1, average = 100)
 
-nDronesTruncPoisson(x, n = 1, average = 10, lowerLimit = 0)
+nDronesTruncPoisson(x, n = 1, average = 100, lowerLimit = 0)
 
 nDronesPoissonQueenFecundity(x, n = 1, queenFecundityTrait = 1)
 
@@ -72,13 +72,13 @@ Sample a number of drones when \code{nDrones = NULL}
 nDronesPoisson()
 nDronesPoisson()
 n <- nDronesPoisson(n = 1000)
-hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
+hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 table(n)
 
 # Example for nDronesPoissonQueenFecundity()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-average <- 10
+average <- 100
 h2 <- 0.1
 SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 SP$setVarE(varE = average * (1 - h2))
@@ -96,12 +96,12 @@ colony2 <- addDrones(colony2, nInd = nDronesPoissonQueenFecundity)
 nWorkers(colony2)
 
 # Logic behind nDronesPoissonQueenFecundity()
-average <- 10
+average <- 100
 queenFecundity <- rnorm(n = 1000, mean = average, sd = sqrt(average))
 queenFecundity[queenFecundity < 0] <- 0
-hist(queenFecundity, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
+hist(queenFecundity, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
-hist(n, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
+hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
 r <- range(c(n, queenFecundity))
 plot(n ~ queenFecundity, xlim = r, ylim = r)
 abline(v = average)

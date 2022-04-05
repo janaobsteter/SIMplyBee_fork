@@ -335,7 +335,7 @@ Starts the process of building a new simulation by creating
 \if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(
   founderPop,
   nWorkers = 100,
-  nDrones = 10,
+  nDrones = 100,
   nVirginQueens = 10,
   nFathers = 15,
   pSwarm = 0.5,
