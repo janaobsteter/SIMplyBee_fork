@@ -1171,21 +1171,24 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' @title Sample colony phenotype
 #'
 #' @description Sample colony phenotype when \code{colonyFUN = NULL} (see
-#'   \code{\link{SimParamBee}$phenoColony}) - this is just an example and you
-#'   will likely want to define your own sampling functions!
+#'   \code{\link{SimParamBee}$phenoColony}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param queenTrait numeric, trait that represents queen's effect on honey
-#'   yield (defined in \code{\link{SimParamBee}} - see examples)
-#' @param workersTrait numeric, trait that represents wokers's effect on honey
-#'   yield (defined in \code{\link{SimParamBee}} - see examples)
+#' @param queenTrait numeric, trait that represents queen's effect on the
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
+#' @param workersTrait numeric, trait that represents workers's effect on the
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
 #' @param checkProduction logical, does the phenotype depend on the production
-#'   status of colony; if yes and production is not turned on, the result is a 0
+#'   status of colony; if yes and production is not \code{TRUE}, the result is
+#'   a 0
 #'
-#' @details This function returns 0 when production in a colony is not turned on
-#'   (see \code{\link{getEvents}}).
-#'
-#' @seealso \code{\link{SimParamBee}} field \code{phenoColony}
+#' @seealso \code{\link{SimParamBee}} field \code{phenoColony} and
+#'   \code{\link{getEvents}}
 #'
 #' @return numeric matrix with a single value
 #'
@@ -1243,8 +1246,16 @@ phenoQueenPlusSumOfWorkers <- function(colony, queenTrait = 1,
                                        checkProduction = TRUE) {
   # TODO: should we add checks for other events too? say swarming?
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
-  queenEff <- colony@queen@pheno[, queenTrait]
-  sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
+  if (queenTrait > 0) {
+    queenEff <- colony@queen@pheno[, queenTrait]
+  } else {
+    queenEff <- 0
+  }
+  if (workersTrait > 0) {
+    sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
+  } else {
+    sumOfWorkersEff <- 0
+  }
   colonyPheno <- queenEff + sumOfWorkersEff
   if (checkProduction) {
     if (!colony@production) {
