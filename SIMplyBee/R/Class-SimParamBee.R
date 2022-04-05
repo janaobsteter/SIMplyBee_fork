@@ -330,10 +330,8 @@ SimParamBee <- R6Class(
 
       # phenoColony initialize ----
 
-      if (!is.null(phenoColony)) {
-        if (is.function(phenoColony)) {
+      if (!is.null(phenoColony) && !is.function(phenoColony)) {
           stop("Argument phenoColony must be a function or NULL!")
-        }
       }
       self$phenoColony <- phenoColony
 
