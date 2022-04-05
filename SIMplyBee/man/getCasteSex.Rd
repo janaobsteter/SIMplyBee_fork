@@ -10,8 +10,8 @@ getCasteSex(x, caste = "all", simParamBee = NULL)
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}}
 
-\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
-"drones", or "all"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

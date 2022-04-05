@@ -5,31 +5,22 @@
 \title{Honeybee simulation parameters}
 \description{
 Container for global honeybee simulation parameters. Saving this
-  object as \code{SP} will allow it to be accessed by SIMplyBee functions and
-  many defaults can be used from the \code{SP}. \code{SimParamBee} inherits
+  object as \code{SP} will allow it to be accessed by SIMplyBee functions
+  without repeatedly (and annoyingly!) typing out
+  \code{someFun(..., simParamBee = SP)}. \code{SimParamBee} inherits
   from AlphaSimR \code{\link{SimParam}}, so all \code{\link{SimParam}} slots
   and functions are available in addition to \code{SimParamBee}-specific
   slots and functions. Some \code{\link{SimParam}} functions could have
-  upgraded behaviour as documented below in line with honeybee biology.
+  upgraded behaviour as documented in line with honeybee biology.
 }
 \details{
 This documentation shows details specific to \code{SimParamBee}. We
   suggest you also read all the options provided by the AlphaSimR
   \code{\link{SimParam}}. Below we show minimal usage cases for each
-  \code{SimParamBee} function. Before that, we highlight key points of
-  honeybee biology in relation to implementation in the SIMplyBee package.
+  \code{SimParamBee} function.
 
-In honeybees, complementary sex determining (csd) locus impacts sex of
-individuals on top of haplo-diploidy, where diploids are queens or workers
-and haploids are drones. Heterozygous individuals at the csd locus become
-queens or workers, while homozygous individuals at the csd locus become
-unviable "drones". Hence genotype status at the csd locus is critical for
-honeybee simulations. In SIMplyBee, the csd locus is implemented as a series
-of bi-allelic SNP that don't recombine. Technically speaking these are
-haplotypes, but since they don't recombine, we call them alleles. By varying
-the number of SNP we can tune the number of csd alleles \code{nCsdHaplo}.
-Individuals that are homozygous at the csd locus are not viable and removed
-from simulation - see \code{\link{pHomBrood}}.
+See also \code{vignette(package = "SIMplyBee")} for descriptions of how
+  SIMplyBee implements the specific honeybee biology.
 }
 \examples{
 
@@ -91,14 +82,18 @@ Bovo et al. (2021) Application of Next Generation Semiconductor-Based
   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
   \url{https://www.mdpi.com/2075-4450/12/10/868}
 
-Zareba et al. (2017) Uneven distribution of complementary sex determiner
-  (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-  \url{https://doi.org/10.1038/s41598-017-02629-9}
-
 Lechner et al. (2014) Nucleotide variability at its limit? Insights into
  the number and evolutionary dynamics of the sex-determining specificities
  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
  272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
+
+Seeley (2019) The Lives of Bees: The Untold Story of the Honey
+  Bee in the Wild. Princeton: Princeton University Press.
+  \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
+
+Zareba et al. (2017) Uneven distribution of complementary sex determiner
+  (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
+  \url{https://doi.org/10.1038/s41598-017-02629-9}
 }
 \section{Super class}{
 \code{\link[AlphaSimR:SimParam]{AlphaSimR::SimParam}} -> \code{SimParamBee}
@@ -106,50 +101,156 @@ Lechner et al. (2014) Nucleotide variability at its limit? Insights into
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{nWorkers}}{numeric or function, default number of workers
-to generate in a colony; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to have some workers to work
-with - you will want to change this!}
+\item{\code{nWorkers}}{numeric or function, a number of workers generated in a
+  colony - used in \code{\link{createWorkers}}, \code{\link{addWorkers}},
+  \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
 
-\item{\code{nDrones}}{numeric or function, default number of drones
-to generate in a colony; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to
-have some drones to work with - you will want to change this!}
+  The default value is 100, that is, queen generates 100 workers - this
+  is for a down-scaled simulation (for efficiency) assuming that this
+  represents ~60,000 workers in a full/strong colony (Seeley, 2019). This
+  value is set in \code{SimParamBee$new()} to have a number to work with
+  - you might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
 
-\item{\code{nVirginQueens}}{numeric or function, default number of virgin queens
-to generate in a colony; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to have some virgin queens
-to work with - you will want to change this!}
+  When \code{nWorkers} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(x, arg = default) someCode }, that is, the first
+  argument MUST be \code{x} and any following arguments MUST have a
+  default value. See \code{\link{nWorkersPoisson}},
+  \code{\link{nWorkersTruncPoisson}},
+  \code{\link{nWorkersPoissonQueenFecundity}}, or
+  \code{\link{nWorkersTruncPoissonQueenFecundity}} for examples. You will
+  likely want to define your own functions!}
 
-\item{\code{nFathers}}{numeric or function, default number of drones
-a queen mates with; if a function, it will be passed to other
-functions and work with the internals of those functions; see
-\code{\link{nFathersPoisson}} and \code{\link{nFathersTruncPoisson}}}
+\item{\code{nDrones}}{numeric or function, a number of drones generated in a
+  colony - used in \code{\link{createDrones}}, \code{\link{addDrones}},
+  \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
+
+  The default value is 10, that is, queen generates 10 drones - this is
+  for a down-scaled simulation (for efficiency) assuming that this
+  represents ~1,000 drones in a full/strong colony (Seeley, 2019). This
+  value is set in \code{SimParamBee$new()} to have a number to work with
+  - you might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{nDrones} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(x, arg = default) someCode }, that is, the first
+  argument MUST be \code{x} and any following arguments MUST have a
+  default value. See \code{\link{nDronesPoisson}},
+  \code{\link{nDronesTruncPoisson}},
+  \code{\link{nDronesPoissonQueenFecundity}}, or
+  \code{\link{nDronesTruncPoissonQueenFecundity}} for examples. You will
+  likely want to define your own functions!}
+
+\item{\code{nVirginQueens}}{numeric or function, a number of virgin queens
+  generated when a queen dies or other situations - used in
+  \code{\link{createVirginQueens}} and \code{\link{addVirginQueens}}.
+
+  The default value is 10, that is, when the queen dies, workers generate
+  10 new virgin queens (Seeley, 2019). This value is set in
+  \code{SimParamBee$new()} to have a number to work with - you might want
+  to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{nVirginQueens} is a function, it should work with internals
+  of other functions. Therefore, the function MUST be defined like
+  \code{function(colony, arg = default) someCode }, that is, the first
+  argument MUST be \code{colony} and any following arguments MUST have a
+  default value. See \code{\link{nVirginQueensPoisson}},
+  \code{\link{nVirginQueensTruncPoisson}},
+  \code{\link{nVirginQueensPoissonColonyStrength}}, or
+  \code{\link{nVirginQueensTruncPoissonColonyStrength}} for examples.
+  You will likely want to define your own functions!}
+
+\item{\code{nFathers}}{numeric or function, a number of drones a queen mates
+  with  - used in \code{\link{pullDroneGroupsFromDCA}},
+  \code{\link{crossVirginQueen}}, \code{\link{crossColony}}, and
+  \code{\link{crossColonies}}.
+
+  The default value is 15, that is, a virging queen mates on average with
+  15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
+  to have a number to work with - you might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{nFathers} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(arg = default) someCode }, that is, any arguments MUST
+  have a default value. We did not use the \code{colony} argument here,
+  because \code{nFathers} likely does not depend on the colony. Let us
+  know if we are wrong! See \code{\link{nFathersPoisson}} or
+  \code{\link{nFathersTruncPoisson}} for examples. You will likely want
+  to define your own functions!}
 
 \item{\code{pSwarm}}{numeric or a function, the percentage of workers that leave
-with the old queen when the colony swarms; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to have some percentage to work with -
-you will want to change this!}
+  with the old queen when the colony swarms - used in
+  \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
 
-\item{\code{pSplit}}{numeric or a function, the percentage of workers that we remove
-in a managed split; if a function, it will be passed to other
-functions and work with the internals of those functions - therefore
-the function must be defined like \code{function(colony) someCode },
-that is, it could work with colony internals or not, and return a
-single value. The default value is only to have some percentage to work with -
-you will want to change this!}
+  The default value is 0.50, that is, about a half of workers leave colony
+  in a swarm (Seeley, 2019). This value is set in \code{SimParamBee$new()}
+  to have a percentage to work with - you might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{pSwarm} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(colony, arg = default) someCode }, that is, the first
+  argument MUST be \code{colony} and any following arguments MUST have a
+  default value. See \code{\link{pSwarmUnif}} or
+  \code{\link{pSwarmColonyStrength}} for examples. You will likely want
+  to define your own functions!}
+
+\item{\code{pSplit}}{numeric or a function, the percentage of workers to be
+  removed in a managed split - used in \code{\link{splitColony}} and
+  \code{\link{splitColonies}}.
+
+  The default value is 0.30, that is, about a third of workers is put into
+  a split colony from a strong colony (Seeley, 2019). This value is set
+  in \code{SimParamBee$new()} to have a percentage to work with - you
+  might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{pSplit} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(colony, arg = default) someCode }, that is, the first
+  argument MUST be \code{colony} and any following arguments MUST have a
+  default value. See \code{\link{pSplitUnif}} or
+  \code{\link{pSplitColonyStrength}} for examples. You will likely want
+  to define your own functions!}
+
+\item{\code{pDownsize}}{numeric or a function, the percentage of workers to be
+  removed from the colony when downsizing, usually in autumn - used in
+  \code{\link{downsizeColony}} and \code{\link{downsizeColonies}}.
+
+  The default value is 0.85, that is, a majority of workers die before
+  autumn or all die but some winter workers are created (Seeley, 2019).
+  This value is set in \code{SimParamBee$new()} to have a percentage to
+  work with - you might want to change this!
+  TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
+        https://github.com/HighlanderLab/SIMplyBee/issues/242
+
+  When \code{pDownsize} is a function, it should work with internals of
+  other functions. Therefore, the function MUST be defined like
+  \code{function(colony, arg = default) someCode }, that is, the first
+  argument MUST be \code{colony} and any following arguments MUST have a
+  default value. See \code{\link{pDownsizeUnif}} or
+  \code{\link{pDownsizeColonyStrength}} for examples. You will likely want
+  to define your own functions!}
+
+\item{\code{phenoColony}}{function, to set colony phenotypes - used in
+  \code{\link{setPhenoColony}} and \code{\link{setPhenoColonies}}.
+
+  This function should work with internals of others functions -
+  therefore the function MUST be defined like \code{function(colony, arg
+  = default) someCode }, that is, the first argument MUST be
+  \code{colony} and any following arguments MUST have a default value.
+  See \code{\link{phenoQueenPlusSumOfWorkers}} for an example. You will
+  likely want to define your own functions!}
 }
 \if{html}{\out{</div>}}
 }
@@ -161,8 +262,9 @@ created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}}
 
 \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
-\item{\code{csdPos}}{numeric, starting position of the csd locus on the \code{csdChr}
-chromosome (relative at the moment, but could be in bp in the future)}
+\item{\code{csdPos}}{numeric, starting position of the csd locus on the
+\code{csdChr} chromosome (relative at the moment, but could be in base
+pairs in the future)}
 
 \item{\code{nCsdAlleles}}{integer, number of possible csd alleles}
 
@@ -227,13 +329,8 @@ generate this object}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Starts the process of building a new simulation by creating
-  a new SimParamBee object and assigning a founder population to the this
-  object. It is recommended that you save the object with the name
-  \code{SP}, because subsequent functions will check your global
-  environment for an object of this name if their \code{simParamBee}
-  arguments are \code{NULL}. This allows you to call these functions
-  without explicitly supplying a \code{simParamBee} argument with every
-  call.
+  a new SimParamBee object and assigning a founder population of genomes
+  to the this object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(
   founderPop,
@@ -243,9 +340,11 @@ Starts the process of building a new simulation by creating
   nFathers = 15,
   pSwarm = 0.5,
   pSplit = 0.3,
+  pDownsize = 0.85,
   csdChr = 3,
   csdPos = 0.865,
-  nCsdAlleles = 128
+  nCsdAlleles = 128,
+  phenoColony = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -267,14 +366,16 @@ genomes}
 
 \item{\code{pSplit}}{see \code{\link{SimParamBee}} field \code{pSplit}}
 
+\item{\code{pDownsize}}{see \code{\link{SimParamBee}} field \code{pDownsize}}
+
 \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified
 simulation), the locus is put on the last available chromosome (1 or
 2); if \code{NULL} then csd locus is ignored in the simulation}
 
 \item{\code{csdPos}}{numeric, starting position of the csd locus on the
-\code{csdChr} chromosome (relative at the moment, but could be in bp in
-the future)}
+\code{csdChr} chromosome (relative at the moment, but could be in base
+pairs in future)}
 
 \item{\code{nCsdAlleles}}{integer, number of possible csd alleles (this
 determines how many segregating sites will be needed to represent the
@@ -283,6 +384,8 @@ bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
 then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
+
+\item{\code{phenoColony}}{see \code{\link{SimParamBee}} field \code{phenoColony}}
 }
 \if{html}{\out{</div>}}
 }

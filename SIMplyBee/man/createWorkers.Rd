@@ -10,9 +10,9 @@ createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers created; if \code{NULL}
-then \code{simParamBee$nWorkers} is used}
+then \code{\link{SimParamBee}$nWorkers} is used}
 
-\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+\item{exact}{logical, if the csd locus is active and exact is \code{TRUE},
 create the exactly specified number of viable workers (heterozygous on the
 csd locus)}
 
@@ -27,7 +27,7 @@ when \code{x} is \code{\link{Colony-class}} return is a list with two
 \description{
 Level 1 function that creates the specified number of workers
   from the colony by mating the colony queen and the fathers. If csd locus is
-  defined, it takes it into account and any csd homozygotes are removed and
+  active, it takes it into account and any csd homozygotes are removed and
   counted towards homozygous brood.
 }
 \examples{
@@ -60,7 +60,7 @@ SP$caste
 createWorkers(apiary, nInd = 10)
 
 # Using a default in SP$nWorkers
-# (just to have some virgin queens - change this to your needs!)
+# (just to have some workers - change this to your needs!)
 createWorkers(colony1)
 createWorkers(apiary)
 
@@ -68,16 +68,31 @@ createWorkers(apiary)
 SP$nWorkers <- 15
 createWorkers(colony1)
 createWorkers(apiary)
+# nWorkers will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-createWorkers(colony1, nInd = nWorkersFun)
-createWorkers(apiary, nInd = nWorkersFun)
+createWorkers(colony1, nInd = nWorkersPoisson)
+createWorkers(apiary, nInd = nWorkersPoisson)
+# nWorkers will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nWorkers <- nWorkersFun
+SP$nWorkers <- nWorkersPoisson
 createWorkers(colony1)
 createWorkers(apiary)
+# nWorkers will vary between function calls when a function is used
+
+# Inbred virgin queen with her brothers to generate csd homozygous brood
+colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
+colony3 <- crossColony(colony3,
+  drones = createDrones(colony1, nInd = 5),
+  nFathers = 5
+)
+# Check the expected csd homozygosity
+pHomBrood(colony3)
+
+# Evaluate a realised csd homozygosity
+createWorkers(colony3, nInd = 100)
+# nHomBrood will vary between function calls due to inheritance process
+createWorkers(colony3, nInd = 100)
+# nHomBrood will vary between function calls due to inheritance process
 }

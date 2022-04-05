@@ -7,11 +7,10 @@
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}
-\code{simParamBee$nDrones} is used}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of drones to be added, but see
-\code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used}
+\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used}
 
 \item{new}{logical, should the number of drones be added anew or should we
 only top-up the existing number of drones to \code{nInd}}
@@ -26,6 +25,9 @@ only top-up the existing number of drones to \code{nInd}}
 Level 2 function that adds (raises) the specified number of
   drones in the colony by crossing the current queen and the fathers. If
   there are already some drones present, new and present drones are combined.
+}
+\details{
+This function increases queen's \code{nDrones} counter.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -50,16 +52,20 @@ nDrones(addDrones(apiary))
 SP$nDrones <- 15
 addDrones(colony1)
 nDrones(addDrones(apiary))
+# nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-addDrones(colony1, nInd = nDronesFun)
-nDrones(addDrones(apiary, nInd = nDronesFun))
+addDrones(colony1, nInd = nDronesPoisson)
+nDrones(addDrones(apiary, nInd = nDronesPoisson))
+# nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nDrones <- nDronesFun
+SP$nDrones <- nDronesPoisson
 addDrones(colony1)
 nDrones(addDrones(apiary))
+# nDrones will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(addDrones(colony1)))
+getMisc(getQueen(addDrones(colony2)))
 }

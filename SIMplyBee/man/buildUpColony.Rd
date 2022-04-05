@@ -18,10 +18,12 @@ buildUpColony(
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker to add to the colony,
-but see \code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used}
+but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
+is used}
 
 \item{nDrones}{numeric or function, number of drones to add to the colony,
-but see \code{new}; if \code{NULL} then \code{simParamBee$nDrones} is used}
+but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
+is used}
 
 \item{new}{logical, should the number of workers and drones be added anew or
 should we only top-up the existing number of workers and drones to
@@ -45,7 +47,10 @@ Level 2 function that builds up colony by adding (raising)
   swarming.
 }
 \details{
-Argument \code{new} enables simulation of two common cases. First,
+This function increases queen's \code{nWorkers}, \code{nHomBrood},
+  and \code{nDrones} counters. It also turns production on.
+
+  Argument \code{new} enables simulation of two common cases. First,
   if you are modelling year-to-year cycle, you will likely want
   \code{new = TRUE}, so that, say, in spring you will replace old (from last
   year) workers and drones with the new ones. This is the case that we are
@@ -55,11 +60,9 @@ Argument \code{new} enables simulation of two common cases. First,
   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
 
 TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
-  We are not sure this is easy to achieve with current implementation just
-  now, but could be expanded.
-  https://github.com/HighlanderLab/SIMplyBee/issues/176
-
-This function turns on production in the colony.
+      We are not sure this is easy to achieve with current implementation
+      just now, but could be expanded.
+      https://github.com/HighlanderLab/SIMplyBee/issues/176
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -90,28 +93,26 @@ colony <- buildUpColony(colony, nWorkers = 150, new = FALSE)
 getWorkers(colony)@id
 # we got additional workers since new = FALSE and we were NOT at the target of 150
 
-# Specify a function that will give a number
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 100)
-}
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-
-# Create new drones and a new colony
+# Specify a function that will give a number, but lets first create new
+#   drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[3])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
-buildUpColony(colony, nWorkers = nWorkersFun, nDrones = nDronesFun)
+buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+buildUpColony(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
+# nWorkers and nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nWorkers <- nWorkersFun
-SP$nDrones <- nDronesFun
+SP$nWorkers <- nWorkersPoisson
+SP$nDrones <- nDronesPoisson
 # Create new drones and a new colony
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[4])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
 buildUpColony(colony)
 buildUpColony(colony)
+# nWorkers and nDrones will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(buildUpColony(colony)))
 }

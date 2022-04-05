@@ -23,9 +23,10 @@ guides selection of virgin queens that stay when \code{p < 1}}
   replaced virgin queens
 }
 \description{
-Level 2 function that replaces a proportion of virgin queens with new
-  virgin queens from the colony. Useful after events like season change, swarming,
-  supersedure, etc. due to the short life span of the virgin queens.
+Level 2 function that replaces a proportion of virgin queens
+  with new virgin queens from the colony. Useful after events like season
+  change, swarming, supersedure, etc. due to the short life span of the
+  virgin queens.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

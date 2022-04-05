@@ -7,10 +7,14 @@
 createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or
+\code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
-\code{simParamBee$nVirginQueens} is used}
+\code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
+\code{\link{Colony-class}} or \code{\link{Colonies-class}}, when \code{x}
+is \code{link{MapPop-class}} all individuals in \code{x} are converted
+into virgin queens}
 
 \item{year}{numeric, year of birth for virgin queens}
 
@@ -28,7 +32,7 @@ when \code{x} is \code{link{MapPop-class}} returns
 \description{
 Level 1 function that creates the specified number of virgin
   queens from the colony by mating the colony queen and the fathers. If csd
-  locus is defined, it takes it into account and any csd homozygotes are
+  locus is active, it takes it into account and any csd homozygotes are
   removed and counted towards homozygous brood.
 }
 \examples{
@@ -70,16 +74,16 @@ createVirginQueens(apiary)
 SP$nVirginQueens <- 15
 createVirginQueens(colony1)
 createVirginQueens(apiary)
+# nVirginQueens will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nVirginQueensFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-createVirginQueens(colony1, nInd = nVirginQueensFun)
-createVirginQueens(apiary, nInd = nVirginQueensFun)
+createVirginQueens(colony1, nInd = nVirginQueensPoisson)
+createVirginQueens(apiary, nInd = nVirginQueensPoisson)
+# nVirginQueens will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nVirginQueens <- nVirginQueensFun
+SP$nVirginQueens <- nVirginQueensPoisson
 createVirginQueens(colony1)
 createVirginQueens(apiary)
+# nVirginQueens will vary between function calls when a function is used
 }

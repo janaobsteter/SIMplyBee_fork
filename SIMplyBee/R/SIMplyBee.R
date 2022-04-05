@@ -2,7 +2,7 @@
 #' @importFrom methods classLabel is new setClass setClassUnion setValidity
 #' @importFrom methods setMethod show slot slot<- validObject
 #' @importFrom R6 R6Class
-#' @importFrom stats rpois
+#' @importFrom stats rbeta runif rpois
 #' @importFrom extraDistr rtpois
 # see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
@@ -20,7 +20,7 @@
 # (swarming, supersedure, etc.), and colony phenotype values.
 #'
 #' See the introductory vignette on using this package by running:
-#' \code{vignette("TODO", package="SIMplyBee")}
+#' \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
 #' @keywords internal
 "_PACKAGE"

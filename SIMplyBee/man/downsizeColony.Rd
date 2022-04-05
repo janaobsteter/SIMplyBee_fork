@@ -4,26 +4,29 @@
 \alias{downsizeColony}
 \title{Reduce number of workers and remove all drones and virgin queens from hive}
 \usage{
-downsizeColony(colony, p = 0.85, use = "rand", new = FALSE)
+downsizeColony(colony, p = NULL, use = "rand", new = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{numeric, percentage of workers to remove from the colony (Seeley, 2019)}
+\item{p}{numeric, percentage of workers to be removed from the colony; if
+\code{NULL} then \code{\link{SimParamBee}$pDownsize} is used}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}
 
 \item{new}{logical, should we remove all current workers and add a targeted
 proportion anew (say, create winter workers)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
 }
 \description{
-Level 2 function that downsizes colony by removing a percentage of
-  workers, all drones and all virgin queens.  Usually in the autumn, such an event occurs
-  in preparation for the winter months.
+Level 2 function that downsizes colony by removing a percentage
+  of workers, all drones and all virgin queens. Usually in the autumn, such
+  an event occurs in preparation for the winter months.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -37,9 +40,4 @@ colony <- addVirginQueens(x = colony, nInd = 10)
 colony
 colony <- downsizeColony(colony = colony, new = TRUE, use = "rand")
 colony
-}
-\references{
-Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-  Bee in the Wild. Princeton: Princeton University Press.
-  \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 }

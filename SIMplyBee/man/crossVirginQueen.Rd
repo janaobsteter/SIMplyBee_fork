@@ -4,7 +4,13 @@
 \alias{crossVirginQueen}
 \title{Cross (mate) a virgin queen to a group drones}
 \usage{
-crossVirginQueen(pop, drones, nFathers = NULL, simParamBee = NULL)
+crossVirginQueen(
+  pop,
+  drones,
+  nFathers = NULL,
+  removeFathers = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated;
@@ -15,20 +21,30 @@ with virgin queen(s); if there is more than one virgin queen, then the
 \code{fathers} are partitioned into multiple groups of \code{nFathers} size
  using \code{\link{pullDroneGroupsFromDCA}}}
 
-\item{nFathers}{numeric, average number of drones (fathers) used in mating
-the virgin queen(s); if \code{NULL} then \code{simParamBee$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with mated queen(s). The misc slot of the queens
-contains additional information about the number of workers, drones and homozygous
-brood produced and the theoretical percentage of homozygous brood.
+\code{\link{Pop-class}} with mated queen(s). The misc slot of the
+  queens contains additional information about the number of workers, drones,
+  and homozygous brood produced, and the expected percentage of csd homozygous
+  brood.
 }
 \description{
 Level 1 function that crosses (mates) a virgin queen to a group
   of drones. This function does not create any progeny, it only stores the
   mated drones (fathers) so we can later create progeny as needed.
+}
+\details{
+This function changes caste for the mated drones to fathers, and
+  mated virgin queens to queens. See examples. This means that you can not
+  use these individuals in matings anymore!
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -47,6 +63,11 @@ isQueenMated(virginQueen1)
 isQueenMated(matedQueen1)
 nFathers(matedQueen1)
 getFathers(matedQueen1)@id
+
+isDrone(drones[1:5])
+isFather(drones[1:5])
+isVirginQueen(matedQueen1)
+isQueen(matedQueen1)
 
 virginQueen2 <- basePop[3]
 (matedQueen2 <- crossVirginQueen(
@@ -74,8 +95,8 @@ matedQueen3 <- crossVirginQueen(
   drones = drones[16:20],
   nFathers = 5
 )
-# Check the theoretical homozygosity
-matedQueen3@misc[[1]]$pHomBrood
+# Check the expected csd homozygosity
+pHomBrood(matedQueen3)
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

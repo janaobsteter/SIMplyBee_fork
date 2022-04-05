@@ -5,18 +5,27 @@
 \title{Reduce number of workers and remove all drones and virgin queens from
   colonies}
 \usage{
-downsizeColonies(colonies, p = 0.85, use = "rand", new = FALSE)
+downsizeColonies(
+  colonies,
+  p = NULL,
+  use = "rand",
+  new = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 
-\item{p}{numeric, percentage of workers to remove from the colonies (Seeley, 2019)}
+\item{p}{numeric, percentage of workers to be removed from each colony; if
+\code{NULL} then \code{\link{SimParamBee}$pDownsize} is used}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}
 
 \item{new}{logical, should we remove all current workers and add a targeted
 proportion anew (say, create winter workers)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
@@ -42,9 +51,4 @@ apiary[[2]]
 apiary <- downsizeColonies(colonies = apiary, use = "rand", new = TRUE)
 apiary[[1]]
 apiary[[2]]
-}
-\references{
-Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-  Bee in the Wild. Princeton: Princeton University Press.
-  \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 }
