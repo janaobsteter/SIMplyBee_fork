@@ -558,6 +558,9 @@ reQueenColonies <- function(colonies, queens) {
 #'   mate with (Drone Congregation Area - DCA)
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param removeFathers logical, removes those \code{drones} that have already
+#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details See \code{\link{crossColony}} on caste changes.
@@ -582,7 +585,8 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL) {
+crossColonies <- function(colonies, drones, nFathers = NULL,
+                          removeFathers = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -607,13 +611,15 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
     fatherGroups <- pullDroneGroupsFromDCA(
       DCA = drones,
       n = nCol,
-      nFathers = nFathers
+      nFathers = nFathers,
+      removeFathers = removeFathers
     )
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- crossColony(
         colony = colonies[[colony]],
         drones = fatherGroups[[colony]],
         nFathers = nInd(fatherGroups[[colony]]),
+        removeFathers = removeFathers,
         simParamBee = simParamBee
       )
     }

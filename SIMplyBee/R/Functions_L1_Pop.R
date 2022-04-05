@@ -15,7 +15,7 @@
 #' @param use character, all options provided by \code{\link{selectInd}} and
 #'   \code{"order"} that selects \code{1:nInd} individuals
 #' @param removeFathers logical, removes \code{drones} that have already mated;
-#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
@@ -893,7 +893,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @param nInd numeric, number of random drones to pull from each colony,
 #'   if \code{NULL} all drones in a colony are pulled
 #' @param removeFathers logical, removes \code{drones} that have already mated;
-#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #'
 #' @details In reality, drones leave the colony to mate. They die after that.
@@ -901,7 +901,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   computational efficiency and ease of use. However, any mating will change
 #'   the caste of drones to fathers, and they won't be available for future
 #'   matings (see \code{\link{crossVirginQueen}}). Not unless
-#'   \code{removeFathers = TRUE}.
+#'   \code{removeFathers = FALSE}.
 #'
 #' @return \code{\link{Pop-class}}
 #'
@@ -989,6 +989,9 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param n integer, number of drone groups to be created
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param removeFathers logical, removes drones in \code{DCA} that have already
+#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list of \code{\link{Pop-class}}
@@ -1009,7 +1012,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' DCA <- createDCA(apiary)
 #' pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
 #' @export
-pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) {
+pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
+                                   removeFathers = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1023,6 +1027,10 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
     nFathers <- simParamBee$nFathers
   }
   # doing "if (is.function(nFathers))" below
+  # Ensuring we don't use drones that have already mated
+  if (removeFathers) {
+    DCA <- DCA[isDrone(DCA)]
+  }
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nFathers)) {
@@ -1055,7 +1063,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL, simParamBee = NULL) 
 #'   individuals are pulled
 #' @param use character, all options provided by \code{\link{selectInd}}
 #' @param removeFathers logical, removes \code{drones} that have already mated;
-#'   set to \code{TRUE} if you would like to get drones for mating with multiple
+#'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
@@ -1224,11 +1232,11 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   with virgin queen(s); if there is more than one virgin queen, then the
 #'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
 #'    using \code{\link{pullDroneGroupsFromDCA}}
-#' @param removeFathers logical, removes those \code{drones} that have already
-#'   mated; set to \code{TRUE} if you would like to mate a drone to multiple
-#'   virgin queens, say via insemination
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param removeFathers logical, removes those \code{drones} that have already
+#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function changes caste for the mated drones to fathers, and
@@ -1295,7 +1303,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
-crossVirginQueen <- function(pop, drones, removeFathers = TRUE, nFathers = NULL,
+crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1312,15 +1320,15 @@ crossVirginQueen <- function(pop, drones, removeFathers = TRUE, nFathers = NULL,
   if (any(!isDrone(drones))) {
     stop("Argument drones must hold only drones, no fathers!")
   }
-  # Ensuring we don't use drones that have already mated
-  if (removeFathers) {
-    drones <- drones[isDrone(drones)]
-  }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
   # skipping "if (is.function(nFathers))" since we use it below or pass it to
   #   pullDroneGroupsFromDCA
+  # Ensuring we don't use drones that have already mated
+  if (removeFathers) {
+    drones <- drones[isDrone(drones)]
+  }
   nVirginQueen <- nInd(pop)
   simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {

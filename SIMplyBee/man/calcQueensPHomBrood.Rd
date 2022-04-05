@@ -86,3 +86,7 @@ nHomBrood(addWorkers(colony3, nInd = 100))
 nHomBrood(addWorkers(colony3, nInd = 100))
 # nHomBrood will vary between function calls due to inheritance process
 }
+\seealso{
+Demo in the introductory vignette
+  \code{vignette("Honeybee_biology", package="SIMplyBee")}
+}

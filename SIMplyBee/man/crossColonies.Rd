@@ -4,7 +4,13 @@
 \alias{crossColonies}
 \title{Cross colony for all given colonies}
 \usage{
-crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
+crossColonies(
+  colonies,
+  drones,
+  nFathers = NULL,
+  removeFathers = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -14,6 +20,10 @@ mate with (Drone Congregation Area - DCA)}
 
 \item{nFathers}{numeric of function, number of drones that a virgin queen
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

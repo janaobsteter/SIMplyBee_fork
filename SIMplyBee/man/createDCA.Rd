@@ -13,7 +13,7 @@ createDCA(x, nInd = NULL, removeFathers = TRUE)
 if \code{NULL} all drones in a colony are pulled}
 
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
-set to \code{TRUE} if you would like to get drones for mating with multiple
+set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
 }
 \value{
@@ -30,7 +30,7 @@ In reality, drones leave the colony to mate. They die after that.
   computational efficiency and ease of use. However, any mating will change
   the caste of drones to fathers, and they won't be available for future
   matings (see \code{\link{crossVirginQueen}}). Not unless
-  \code{removeFathers = TRUE}.
+  \code{removeFathers = FALSE}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

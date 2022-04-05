@@ -7,8 +7,8 @@
 crossVirginQueen(
   pop,
   drones,
-  removeFathers = TRUE,
   nFathers = NULL,
+  removeFathers = TRUE,
   simParamBee = NULL
 )
 }
@@ -21,12 +21,12 @@ with virgin queen(s); if there is more than one virgin queen, then the
 \code{fathers} are partitioned into multiple groups of \code{nFathers} size
  using \code{\link{pullDroneGroupsFromDCA}}}
 
-\item{removeFathers}{logical, removes those \code{drones} that have already
-mated; set to \code{TRUE} if you would like to mate a drone to multiple
-virgin queens, say via insemination}
-
 \item{nFathers}{numeric of function, number of drones that a virgin queen
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

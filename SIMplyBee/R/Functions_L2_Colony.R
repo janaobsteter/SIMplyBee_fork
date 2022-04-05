@@ -1211,6 +1211,9 @@ resetEvents <- function(x, collapse = NULL) {
 #'   with
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param removeFathers logical, removes those \code{drones} that have already
+#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function calls \code{\link{crossVirginQueen}} that changes
@@ -1245,7 +1248,8 @@ resetEvents <- function(x, collapse = NULL) {
 #' isVirginQueen(getVirginQueens(colony))
 #' isQueen(getQueen(colony))
 #' @export
-crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
+crossColony <- function(colony, drones, nFathers = NULL, removeFathers = TRUE,
+                        simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1276,7 +1280,7 @@ crossColony <- function(colony, drones, nFathers = NULL, simParamBee = NULL) {
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   queen <- crossVirginQueen(
     pop = virginQueen, drones = drones, nFathers = nFathers,
-    simParamBee = simParamBee
+    removeFathers = removeFathers, simParamBee = simParamBee
   )
   colony <- reQueenColony(colony, queen)
   colony <- removeVirginQueens(colony)

@@ -35,7 +35,7 @@ we return the ones available - this can return \code{NULL}}
 \code{"order"} that selects \code{1:nInd} individuals}
 
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
-set to \code{TRUE} if you would like to get drones for mating with multiple
+set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
 }
 \value{
