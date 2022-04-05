@@ -1265,9 +1265,6 @@ crossColony <- function(colony, drones, nFathers = NULL, removeFathers = TRUE,
   if (!isPop(drones)) {
     stop("Argument drones must be a Pop class object!")
   }
-  if (any(!isDrone(drones))) {
-    stop("Argument drones must hold only drones, no fathers!")
-  }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
