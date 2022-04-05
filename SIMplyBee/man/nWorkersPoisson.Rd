@@ -2,12 +2,23 @@
 % Please edit documentation in R/Class-SimParamBee.R
 \name{nWorkersPoisson}
 \alias{nWorkersPoisson}
+\alias{nWorkersTruncPoisson}
 \alias{nWorkersPoissonQueenFecundity}
+\alias{nWorkersTruncPoissonQueenFecundity}
 \title{Sample a number of workers}
 \usage{
 nWorkersPoisson(colony, n = 1, average = 100)
 
+nWorkersTruncPoisson(colony, n = 1, average = 100, lowerLimit = 0)
+
 nWorkersPoissonQueenFecundity(colony, n = 1, queenFecundityTrait = 1)
+
+nWorkersTruncPoissonQueenFecundity(
+  colony,
+  n = 1,
+  queenFecundityTrait = 1,
+  lowerLimit = 0
+)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -15,6 +26,8 @@ nWorkersPoissonQueenFecundity(colony, n = 1, queenFecundityTrait = 1)
 \item{n}{integer, number of samples}
 
 \item{average}{numeric, average number of workers}
+
+\item{lowerLimit}{numeric, returned numbers will be above this value}
 
 \item{queenFecundityTrait}{numeric, trait that represents queen's fecundity
 (defined in \code{\link{SimParamBee}} - see examples)}
@@ -29,14 +42,26 @@ Sample a number of workers when \code{nWorkers = NULL}
 }
 \details{
 \code{nWorkersPoisson} samples from a Poisson distribution with a
-  given average, while \code{nWorkersPoissonQueenFecundity} samples from a
+  given average, which can return a value 0. \code{nDronesTruncPoisson}
+  samples from a zero truncated Poisson distribution.
+  \code{nWorkersPoissonQueenFecundity} samples from a
   Poisson distribution whose average is a function of queen's fecundity
   phenotype ((trait)). You need to set up the trait parameters (means and
-  variances) via \code{\link{SimParamBee}} (see examples).
+  variances) via \code{\link{SimParamBee}} (see examples). Finally,
+  \code{nWorkersTruncPoissonQueenFecundity} samples from from a zero truncated
+  Poisson distribution whose average is a function of queen's fecundity.
 }
 \section{Functions}{
 \itemize{
+\item \code{nWorkersTruncPoisson}: Sample a non-zero number of workers
+
 \item \code{nWorkersPoissonQueenFecundity}: Sample a number of workers based on
+  queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
+# TODO: Is using Poisson on top of queen's fecundity phenotype adding too
+#       much variation?
+#       https://github.com/HighlanderLab/SIMplyBee/issues/243
+
+\item \code{nWorkersTruncPoissonQueenFecundity}: Sample a number of workers based on
   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
 # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
 #       much variation?

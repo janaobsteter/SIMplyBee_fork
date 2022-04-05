@@ -60,10 +60,12 @@ SimParamBee <- R6Class(
     #'
     #'   When \code{nWorkers} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
-    #'   \code{function(colony, arg = default) someCode }, that is, the first
-    #'   argument MUST be \code{colony} and any following arguments MUST have a
-    #'   default value. See \code{\link{nWorkersPoisson}} or
-    #'   \code{\link{nWorkersPoissonQueenFecundity}} for examples. You will
+    #'   \code{function(x, arg = default) someCode }, that is, the first
+    #'   argument MUST be \code{x} and any following arguments MUST have a
+    #'   default value. See \code{\link{nWorkersPoisson}},
+    #'   \code{\link{nWorkersTruncPoisson}},
+    #'   \code{\link{nWorkersPoissonQueenFecundity}}, or
+    #'   \code{\link{nWorkersTruncPoissonQueenFecundity}} for examples. You will
     #'   likely want to define your own functions!
     nWorkers = "numericOrFunction",
 
@@ -533,12 +535,17 @@ isSimParamBee <- function(x) {
 #' @param average numeric, average number of workers
 #' @param queenFecundityTrait numeric, trait that represents queen's fecundity
 #'   (defined in \code{\link{SimParamBee}} - see examples)
+#' @param lowerLimit numeric, returned numbers will be above this value
 #'
 #' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
-#'   given average, while \code{nWorkersPoissonQueenFecundity} samples from a
+#'   given average, which can return a value 0. \code{nDronesTruncPoisson}
+#'   samples from a zero truncated Poisson distribution.
+#'   \code{nWorkersPoissonQueenFecundity} samples from a
 #'   Poisson distribution whose average is a function of queen's fecundity
 #'   phenotype ((trait)). You need to set up the trait parameters (means and
-#'   variances) via \code{\link{SimParamBee}} (see examples).
+#'   variances) via \code{\link{SimParamBee}} (see examples). Finally,
+#'   \code{nWorkersTruncPoissonQueenFecundity} samples from from a zero truncated
+#'   Poisson distribution whose average is a function of queen's fecundity.
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{nWorkers}
 #'
@@ -587,6 +594,12 @@ nWorkersPoisson <- function(colony, n = 1, average = 100) {
   return(rpois(n = n, lambda = average))
 }
 
+#' @describeIn nWorkersPoisson Sample a non-zero number of workers
+#' @export
+nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
+  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
+}
+
 #' @describeIn nWorkersPoisson Sample a number of workers based on
 #'   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
 #' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
@@ -597,6 +610,19 @@ nWorkersPoissonQueenFecundity <- function(colony, n = 1,
                                           queenFecundityTrait = 1) {
   average <- colony@queen@pheno[, queenFecundityTrait]
   return(rpois(n = n, lambda = average))
+}
+
+#' @describeIn nWorkersPoisson Sample a number of workers based on
+#'   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
+#' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
+#' #       much variation?
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/243
+#' @export
+nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
+                                               queenFecundityTrait = 1,
+                                               lowerLimit = 0) {
+  average <- colony@queen@pheno[, queenFecundityTrait]
+  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
 #' @rdname nDronesPoisson
@@ -672,6 +698,7 @@ nDronesPoisson <- function(x, n = 1, average = 10) {
 }
 
 #' @describeIn nDronesPoisson Sample a non-zero number of drones
+#' @export
 nDronesTruncPoisson <- function(x, n = 1, average = 10, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }

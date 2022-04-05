@@ -115,10 +115,12 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   When \code{nWorkers} is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
-  \code{function(colony, arg = default) someCode }, that is, the first
-  argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{nWorkersPoisson}} or
-  \code{\link{nWorkersPoissonQueenFecundity}} for examples. You will
+  \code{function(x, arg = default) someCode }, that is, the first
+  argument MUST be \code{x} and any following arguments MUST have a
+  default value. See \code{\link{nWorkersPoisson}},
+  \code{\link{nWorkersTruncPoisson}},
+  \code{\link{nWorkersPoissonQueenFecundity}}, or
+  \code{\link{nWorkersTruncPoissonQueenFecundity}} for examples. You will
   likely want to define your own functions!}
 
 \item{\code{nDrones}}{numeric or function, a number of drones generated in a
