@@ -574,13 +574,13 @@ buildUpColony <- function(colony, nWorkers = NULL, nDrones = NULL,
 #' @rdname downsizeColony
 #' @title Reduce number of workers and remove all drones and virgin queens from hive
 #'
-#' @description Level 2 function that downsizes colony by removing a percentage
+#' @description Level 2 function that downsizes colony by removing a proportion
 #'   of workers, all drones and all virgin queens. Usually in the autumn, such
 #'   an event occurs in preparation for the winter months.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param p numeric, percentage of workers to be removed from the colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$pDownsize} is used
+#' @param p numeric, proportion of workers to be removed from the colony; if
+#'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
@@ -611,7 +611,7 @@ downsizeColony <- function(colony, p = NULL, use = "rand", new = FALSE,
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(p)) {
-    p <- simParamBee$pDownsize
+    p <- simParamBee$downsizeP
   }
   if (is.function(p)) {
     p <- p(colony)
@@ -1328,7 +1328,7 @@ collapseColony <- function(colony) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
-#'   if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used
+#'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -1358,7 +1358,7 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
     stop("Argument colony must be a Colony class object!!")
   }
   if (is.null(p)) {
-    p <- simParamBee$pSwarm
+    p <- simParamBee$swarmP
   }
   if (is.function(p)) {
     p <- p(colony)
@@ -1474,7 +1474,7 @@ supersedeColony <- function(colony, year = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$pSplit} is used
+#'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -1504,7 +1504,7 @@ splitColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
     stop("Argument colony must be a Colony class object!")
   }
   if (is.null(p)) {
-    p <- simParamBee$pSplit
+    p <- simParamBee$splitP
   }
   if (is.function(p)) {
     p <- p(colony)
