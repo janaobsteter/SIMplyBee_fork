@@ -41,6 +41,10 @@ Now load the package and dive in!
 library(package = "SIMplyBee")
 ```
 
+TODO: Say something about the image (covering 1-4) and how you can use it as a guide?
+
+TODO: add colony creation image
+
 # Initiating with genomes and parameters
 
 We initiate simulation by simulating honyebee genomes. We can quickly generate
@@ -186,8 +190,6 @@ index of functions.
 help(SIMplyBee)
 ```
 
-TODO: add colony creation image
-
 # Sex and caste
 
 Sex of the caste members is as you would expect.
@@ -228,6 +230,8 @@ getCaste(bees)
 ```
 
 # Complementary sex determining locus
+
+TODO: add genome image (tree and inheritance and csd)
 
 The complementary sex determining (csd) locus, well, complements sex
 determination. Fertilised eggs that are heterozygous at the csd locus develop
@@ -303,6 +307,9 @@ getMisc(getQueen(inbredColony))
 ```
 
 # Inheritance system
+
+TODO: add genome image (tree and inheritance and csd)
+TODO: mention recombination
 
 Honeybees have the haplo-diploid inheritance system where queens and workers
 are diploid and drones are haploid. In SIMplyBee, we simulate drones as
