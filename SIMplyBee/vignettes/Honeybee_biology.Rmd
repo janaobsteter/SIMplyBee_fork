@@ -75,7 +75,7 @@ show(SP)
 ```
 
 From the simulated genomes, we will create virgin queens. These will serve as
-our our first honeybee individuals. In SIMplyBee we use AlphaSimR's populations
+our our first honeybee individuals. In SIMplyBee, we use AlphaSimR's populations
 (`Pop` class). So, the `basePop` is a population of two individuals, our virgin
 queens.
 
@@ -101,7 +101,7 @@ baseDrones
 
 # Creating and building up a colony
 
-We will use the other virging queen to create a colony. In SIMplyBee a colony is
+We will use the other virgin queen to create a colony. In SIMplyBee, a colony is
 an object of `Colony` class with all sorts of information.
 
 ```{r colony}
@@ -117,7 +117,7 @@ colony <- crossColony(colony, drones = baseDrones[1:5], nFathers = 5)
 colony
 ```
 
-We build up colony with workers and drones with `buildUpColony()`. 
+We build up colony with workers and drones using `buildUpColony()`. 
 
 ```{r build up colony}
 buildUpColony(colony, nWorkers = 10, nDrones = 7)
@@ -148,10 +148,10 @@ colony
 Lets explore this colony. In every colony we have different groups of
 individuals (castes). These include: queen, fathers, workers, drones, and virgin
 queens. Queen controls the colony, workers do all the hard work, drones
-disseminate queen's genes, and one of virgin queens will eventually replace the
-queen. We also store fathers, which represent drones that the queen mated with.
-Storing fathers enables us to generate colony members on demand. Let's count how
-many individuals we have for each caste.
+disseminate queen's genes, and one of the virgin queens will eventually replace
+the queen. We also store fathers, which represent drones that the queen mated
+with. Storing fathers enables us to generate colony members on demand. Let's
+count how many individuals we have for each caste.
 
 ```{r colony numbers}
 nQueens(colony)
@@ -305,7 +305,7 @@ getMisc(getQueen(inbredColony))
 # Inheritance system
 
 Honeybees have the haplo-diploid inheritance system where queens and workers
-are diploid and drones are haploid. In SIMplyBee we simulate drones as
+are diploid and drones are haploid. In SIMplyBee, we simulate drones as
 doubled-haploids, that is, as fully homozygous diploid individuals. This means
 that they have two identical sets of chromosomes. When they produce sperm, their
 gametes all have the same one set of chromosomes. Despite them being diploid, we
