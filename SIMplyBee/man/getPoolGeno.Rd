@@ -44,24 +44,24 @@ genoV <- getVirginQueensSegSiteGeno(colony)
 
 # Pool of drones
 sexD <- rep(x = "M", times = nrow(genoD))
-getPoolGeno(x = genoD, type = "count", sex = sexD)
-(poolD <- getPoolGeno(x = genoD, type = "mean", sex = sexD))
+getPoolGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
+(poolD <- getPoolGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
 # ... compare to queen's genotype
-genoQ
-plot(y = poolD, x = genoQ[1, ], ylim = c(0, 2), xlim = c(0, 2),
+genoQ[, 1:10]
+plot(y = poolD, x = genoQ, ylim = c(0, 2), xlim = c(0, 2),
      ylab = "Average allele dosage in drones",
      xlab = "Allele dosage in the queen")
 
 # Pool of workers
-getPoolGeno(x = genoW, type = "count")
-(poolW <- getPoolGeno(x = genoW, type = "mean"))
+getPoolGeno(x = genoW, type = "count")[, 1:10]
+(poolW <- getPoolGeno(x = genoW, type = "mean"))[, 1:10]
 # ... compare to fathers' and queen's avearage genotype
 sexF <- rep(x = "M", times = nrow(genoF))
 sexQ <- rep(x = "F", times = nrow(genoF))
 sexFQ <- c(sexF, sexQ)
 genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
-(poolFQ <- getPoolGeno(x = genoFQ, type = "mean", sex = sexFQ))
+(poolFQ <- getPoolGeno(x = genoFQ, type = "mean", sex = sexFQ))[, 1:10]
 plot(y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
      ylab = "Average allele dosage in workers",
-     xlab = "Allele dosage in the queen and fathers")
+     xlab = "Average allele dosage in the queen and fathers")
 }
