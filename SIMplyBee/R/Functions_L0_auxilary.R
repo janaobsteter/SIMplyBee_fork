@@ -4930,6 +4930,90 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
   return(ret)
 }
 
+#' @rdname getPoolGeno
+#' @title Get a pool genotype from true genotypes
+#'
+#' @description Level 0 function that returns a pool genotype from true
+#'   genotypes to mimic pool genotyping of colony members.
+#'
+#' @param x matrix, true genotypes with individuals in rows and sites in columns
+#' @param type character, "mean" for average genotype or "count" for the counts
+#'   of reference and alternative alleles
+#' @param sex character, vector of "F" and "M" to denote the sex of individuals
+#'   in \code{x}
+#'
+#' @return a numeric vector with average allele dosage when \code{type = "mean"}
+#'   and a two-row matrix with the counts of reference (1st row) and
+#'   alternative (2nd row) alleles
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(x = basePop[2])
+#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+#' colony <- addWorkers(colony, nInd = 5)
+#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addVirginQueens(colony, nInd = 2)
+#'
+#' genoQ <- getQueensSegSiteGeno(colony)
+#' genoF <- getFathersSegSiteGeno(colony)
+#' genoW <- getWorkersSegSiteGeno(colony)
+#' genoD <- getDronesSegSiteGeno(colony)
+#' genoV <- getVirginQueensSegSiteGeno(colony)
+#'
+#' # Pool of drones
+#' sexD <- rep(x = "M", times = nrow(genoD))
+#' getPoolGeno(x = genoD, type = "count", sex = sexD)
+#' (poolD <- getPoolGeno(x = genoD, type = "mean", sex = sexD))
+#' # ... compare to queen's genotype
+#' genoQ
+#' plot(y = poolD, x = genoQ[1, ], ylim = c(0, 2), xlim = c(0, 2),
+#'      ylab = "Average allele dosage in drones",
+#'      xlab = "Allele dosage in the queen")
+#'
+#' # Pool of workers
+#' getPoolGeno(x = genoW, type = "count")
+#' (poolW <- getPoolGeno(x = genoW, type = "mean"))
+#' # ... compare to fathers' and queen's avearage genotype
+#' sexF <- rep(x = "M", times = nrow(genoF))
+#' sexQ <- rep(x = "F", times = nrow(genoF))
+#' sexFQ <- c(sexF, sexQ)
+#' genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
+#' (poolFQ <- getPoolGeno(x = genoFQ, type = "mean", sex = sexFQ))
+#' plot(y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
+#'      ylab = "Average allele dosage in workers",
+#'      xlab = "Allele dosage in the queen and fathers")
+#' @export
+getPoolGeno <- function(x, type = NULL, sex = NULL) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  n <- nrow(x)
+  if (is.null(sex)) {
+    warning("Argument sex is NULL. Assuming that all individuals are female/diploid!")
+    sex <- rep(x = "F", times = n)
+  }
+  nPloids <- sum((sex == "F")) * 2 + sum((sex == "M"))
+  if (any(!(sex %in% c("F", "M")))) {
+    stop("Argument sex must contain only F and M!")
+  }
+  if (type == "mean") {
+    ret <- apply(X = x, MARGIN = 2, FUN = sum)
+    ret <- ret / nPloids * 2
+    # / nPloids gives allele frequency and * 2 gives diploid dosage
+  } else if (type == "count") {
+    ret <- apply(X = x, MARGIN = 2, FUN = sum)
+    ret <- rbind(nPloids - ret, ret)
+    rownames(ret) <- c("0", "1")
+  } else {
+    stop("Argument type must be mean or count!")
+  }
+  return(ret)
+}
+
 #' @rdname calcBeeGRMIbs
 #' @title Calculate Genomic Relatedness Matrix (GRM) for honeybees from
 #'   Identical By State genomic data
