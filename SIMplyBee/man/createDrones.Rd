@@ -9,10 +9,12 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
-must be virgin queens or queens (see \code{\link{createVirginQueens}})}
+must be virgin queens or queens (see \code{\link{createVirginQueens}}) -
+this case is so that we can initiate simulation by simulating drones from
+founding queens before we can create colonies}
 
 \item{nInd}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used; when \code{x} is
+\code{\link{SimParamBee}$nDrones} is used; when \code{x} is
 \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 the \code{x} (here population individuals serve as a queen, for example
 to initiate population from founding queens; see details). If \code{x}
@@ -90,16 +92,16 @@ createDrones(apiary)
 SP$nDrones <- 15
 createDrones(colony1)
 createDrones(apiary)
+# nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-createDrones(colony1, nInd = nDronesFun)
-createDrones(apiary, nInd = nDronesFun)
+createDrones(colony1, nInd = nDronesPoisson)
+createDrones(apiary, nInd = nDronesPoisson)
+# nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nDrones <- nDronesFun
+SP$nDrones <- nDronesPoisson
 createDrones(colony1)
 createDrones(apiary)
+# nDrones will vary between function calls when a function is used
 }

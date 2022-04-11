@@ -22,9 +22,9 @@ to ensure the provided queen prevails (see details)}
 \code{\link{Colony-class}} with a new queen (see details)
 }
 \description{
-Level 2 function that re-queens a colony adds a mated or a
-  virgin queen, removes the previous queen, and changes colony id to the new
-  mated queen.
+Level 2 function that re-queens a colony by adding a mated or a
+  virgin queen, removing the previous queen, and changing the colony id to
+  the new mated queen.
 }
 \details{
 If the provided queen is mated, then she is saved in the queen slot

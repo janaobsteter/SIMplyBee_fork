@@ -4,7 +4,13 @@
 \alias{crossColonies}
 \title{Cross colony for all given colonies}
 \usage{
-crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
+crossColonies(
+  colonies,
+  drones,
+  nFathers = NULL,
+  removeFathers = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
@@ -12,9 +18,12 @@ crossColonies(colonies, drones, nFathers = NULL, simParamBee = NULL)
 \item{drones}{\code{\link{Pop-class}}, drones that the virgin queens could
 mate with (Drone Congregation Area - DCA)}
 
-\item{nFathers}{numeric or function, number of drones (fathers) to be used in
-mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
-then \code{simParamBee$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -25,7 +34,10 @@ then \code{simParamBee$nFathers} is used}
 Level 3 function that does the same as \code{\link{crossColony}}
   but for all given colonies. To ease the use, \code{crossColonies} takes in
   a group of drones (Drone Congregation Area - DCA), partitions it so that
-  each colony virgin queen mates with one group/partition of drones.
+  in each colony virgin queen mates with one group/partition of drones.
+}
+\details{
+See \code{\link{crossColony}} on caste changes.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

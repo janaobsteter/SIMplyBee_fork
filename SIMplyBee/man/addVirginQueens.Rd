@@ -10,7 +10,7 @@ addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens to add; if
-\code{NULL} then \code{simParamBee$nVirginQueens} is used}
+\code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used}
 
 \item{new}{logical, should the virgin queens be added a fresh (ignoring
 currently present virgin queens in the colony)}
@@ -49,17 +49,20 @@ nVirginQueens(addVirginQueens(apiary, nInd = 20))
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
 
+# Specify own number
 SP$nVirginQueens <- 15
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
+# nVirginQueens will NOT vary between function calls when a constant is used
 
-nVirginQueensFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-addVirginQueens(colony1, nInd = nVirginQueensFun)
-nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensFun))
+# Specify a function that will give a number
+addVirginQueens(colony1, nInd = nVirginQueensPoisson)
+nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensPoisson))
+# nVirginQueens will vary between function calls when a function is used
 
-SP$nVirginQueens <- nVirginQueensFun
+# Store a function or a value in the SP object
+SP$nVirginQueens <- nVirginQueensPoisson
 addVirginQueens(colony1)
 nVirginQueens(addVirginQueens(apiary))
+# nVirginQueens will vary between function calls when a function is used
 }

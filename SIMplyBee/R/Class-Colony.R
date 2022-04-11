@@ -69,9 +69,9 @@ setClass(
     id = "characterOrNULL",
     location = "numericOrNULL",
     queen = "PopOrNULL",
-    virginQueens = "PopOrNULL",
     workers = "PopOrNULL",
     drones = "PopOrNULL",
+    virginQueens = "PopOrNULL",
     pheno = "matrix",
     split = "logical",
     # remnant = "",
@@ -125,9 +125,9 @@ setMethod(
     cat("Location:", getLocation(object), "\n")
     cat("Queen:", getId(object@queen), "\n")
     cat("Number of fathers:", nFathers(object), "\n")
-    cat("Number of virgin queens:", nVirginQueens(object), "\n")
     cat("Number of workers:", nWorkers(object), "\n")
     cat("Number of drones:", nDrones(object), "\n")
+    cat("Number of virgin queens:", nVirginQueens(object), "\n")
     cat("Has split:", object@split, "\n")
     cat("Has swarmed:", object@swarm, "\n")
     cat("Has superseded:", object@supersedure, "\n")

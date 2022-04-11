@@ -12,7 +12,6 @@
 #'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
 #'   (\code{NULL}) individual colony) - this is mostly useful for programming)
 #' @param location list, location of the colonies as \code{c(x, y)}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When both \code{x} and \code{nCol} are \code{NULL}, then an empty
 #'   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
@@ -44,12 +43,7 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-createColonies <- function(x = NULL, n = NULL,
-                           location = NULL,
-                           simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
+createColonies <- function(x = NULL, n = NULL, location = NULL) {
   if (is.null(x)) {
     if (is.null(n)) {
       ret <- new(Class = "Colonies")
@@ -66,15 +60,11 @@ createColonies <- function(x = NULL, n = NULL,
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")
     }
-
-    # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
-
     ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
     for (colony in seq_len(n)) {
       ret[[colony]] <- createColony(
         x = x[colony],
-        location = location[colony],
-        simParamBee = simParamBee
+        location = location[colony]
       )
     }
   }
@@ -137,8 +127,8 @@ createColonies <- function(x = NULL, n = NULL,
 #' @export
 selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
-  #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
-  #       this will be complicated - best to follow ideas from
+  #       the idea is that we could swarm/supersede/... colonies depending on a
+  #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
@@ -228,8 +218,8 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' @export
 pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
-  #       the idea is that we could swarm/supersede/... colonies depending on a trait expression
-  #       this will be complicated - best to follow ideas from
+  #       the idea is that we could swarm/supersede/... colonies depending on a
+  #        trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
@@ -323,16 +313,16 @@ removeColonies <- function(colonies, ID) {
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param nWorkers numeric or function, number of worker; if \code{NULL} then
-#'   \code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
-#'   present workers are taken into account and only the missing difference is
-#'   added)
+#'   \code{\link{SimParamBee}$nWorkers} is used (unless \code{new = TRUE},
+#'   currently present workers are taken into account and only the missing
+#'   difference is added)
 #' @param nDrones numeric or function, number of drones; if \code{NULL} then
-#'   \code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
-#'   present drones are taken into account so only the missing difference is
-#'   added)
-#' @param exact logical, if the csd locus is turned on and exact is TRUE,
-#' create the exact specified number of only
-#' viable workers (heterozygous on the csd locus)
+#'   \code{\link{SimParamBee}$nDrones} is used (unless \code{new = TRUE},
+#'   currently present drones are taken into account so only the missing
+#'   difference is added)
+#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
+#'   create the exactly specified number of viable workers (they are
+#'   heterozygous at the csd locus)
 #' @param new logical, should the workers and drones be added a fresh (ignoring
 #'   currently present workers and drones)
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
@@ -373,23 +363,18 @@ removeColonies <- function(colonies, ID) {
 #' apiary[[1]] # adding completely new workers & drones
 #'
 #' # Using functions
-#' nWorkersFun <- function(colony) {
-#'   rpois(n = 1, lambda = 100)
-#' }
-#' nDronesFun <- function(colony) {
-#'   rpois(n = 1, lambda = 15)
-#' }
 #' apiary <- c(colony1, colony2)
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' tmp[[1]]
 #' tmp[[2]]
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' tmp[[1]]
 #' tmp[[2]]
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #'
 #' # Using functions in simParamBee
-#' SP$nWorkers <- nWorkersFun
-#' SP$nDrones <- nDronesFun
+#' SP$nWorkers <- nWorkersPoisson
+#' SP$nDrones <- nDronesPoisson
 #' apiary <- c(colony1, colony2)
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
@@ -397,6 +382,7 @@ removeColonies <- function(colonies, ID) {
 #' tmp <- buildUpColonies(apiary)
 #' tmp[[1]]
 #' tmp[[2]]
+#' # nWorkers and nDrones will vary between function calls when a function is used
 #' @export
 buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
                             new = FALSE, exact = FALSE,
@@ -438,17 +424,15 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #'   an event occurs in preparation for the winter months.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, percentage of workers to remove from the colonies (Seeley, 2019)
+#' @param p numeric, percentage of workers to be removed from each colony; if
+#'   \code{NULL} then \code{\link{SimParamBee}$pDownsize} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
-#'
-#' @references Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-#'   Bee in the Wild. Princeton: Princeton University Press.
-#'   \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -467,16 +451,26 @@ buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
+downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE,
+                             simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
+  }
+  if (is.null(p)) {
+    p <- simParamBee$pDownsize
   }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- downsizeColony(
       colony = colonies[[colony]],
       p = p,
-      new = new)
+      use = use,
+      new = new,
+      simParamBee = simParamBee
+    )
   }
   validObject(colonies)
   return(colonies)
@@ -506,7 +500,7 @@ downsizeColonies <- function(colonies, p = 0.85, use = "rand", new = FALSE) {
 #' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
 #' colony2 <- createColony(x = basePop[3])
 #' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-
+#'
 #' apiary <- c(colony1, colony2)
 #' apiary
 #' apiary[[1]]
@@ -557,15 +551,19 @@ reQueenColonies <- function(colonies, queens) {
 #' @description Level 3 function that does the same as \code{\link{crossColony}}
 #'   but for all given colonies. To ease the use, \code{crossColonies} takes in
 #'   a group of drones (Drone Congregation Area - DCA), partitions it so that
-#'   each colony virgin queen mates with one group/partition of drones.
+#'   in each colony virgin queen mates with one group/partition of drones.
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param drones \code{\link{Pop-class}}, drones that the virgin queens could
 #'   mate with (Drone Congregation Area - DCA)
-#' @param nFathers numeric or function, number of drones (fathers) to be used in
-#'   mating individual queen (see \code{\link{crossColony}}); if \code{NULL}
-#'   then \code{simParamBee$nFathers} is used
+#' @param nFathers numeric of function, number of drones that a virgin queen
+#'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
+#' @param removeFathers logical, removes those \code{drones} that have already
+#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
+#'   virgin queens, say via insemination
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @details See \code{\link{crossColony}} on caste changes.
 #'
 #' @return \code{\link{Colonies-class}} with mated colonies
 #'
@@ -587,7 +585,8 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL) {
+crossColonies <- function(colonies, drones, nFathers = NULL,
+                          removeFathers = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -603,21 +602,25 @@ crossColonies <- function(colonies, drones, nFathers = NULL, simParamBee = NULL)
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
-  # skipping "if (is.function(nFathers))" since we pass it to pullDroneGroupsFromDCA
+  # skipping "if (is.null(nFathers))" since we pass it to pullDroneGroupsFromDCA
   nCol <- nColonies(colonies)
   if (nCol == 0) {
     ret <- createColonies()
   } else {
     ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(DCA = drones,
-                                           n = nCol,
-                                           nFathers = nFathers
+    fatherGroups <- pullDroneGroupsFromDCA(
+      DCA = drones,
+      n = nCol,
+      nFathers = nFathers,
+      removeFathers = removeFathers
     )
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- crossColony(colonies[[colony]],
-                                   drones = fatherGroups[[colony]],
-                                   nFathers = nFathers,
-                                   simParamBee = simParamBee
+      ret[[colony]] <- crossColony(
+        colony = colonies[[colony]],
+        drones = fatherGroups[[colony]],
+        nFathers = nInd(fatherGroups[[colony]]),
+        removeFathers = removeFathers,
+        simParamBee = simParamBee
       )
     }
   }
@@ -679,7 +682,8 @@ collapseColonies <- function(colonies) {
 #'   but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, proportion of workers that will leave with the swarm colony
+#' @param p numeric, proportion of workers that will leave with the swarm colony;
+#'   if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -736,7 +740,10 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
       remnants = createColonies(n = nCol)
     )
     for (colony in seq_len(nCol)) {
-      tmp <- swarmColony(colonies[[colony]], p = p, year = year)
+      tmp <- swarmColony(colonies[[colony]],
+        p = p, year = year,
+        simParamBee = simParamBee
+      )
       ret$swarms[[colony]] <- tmp$swarm
       ret$remnants[[colony]] <- tmp$remnant
     }
@@ -790,7 +797,7 @@ supersedeColonies <- function(colonies, year = NULL) {
   } else {
     for (colony in seq_len(nCol)) {
       colonies[[colony]] <- supersedeColony(colonies[[colony]],
-                                            year = year
+        year = year
       )
     }
   }
@@ -805,7 +812,8 @@ supersedeColonies <- function(colonies, year = NULL) {
 #'   but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, percentage of workers that will go to the split colony
+#' @param p numeric, proportion of workers that will go to the split colony; if
+#'   \code{NULL} then \code{\link{SimParamBee}$pSplit} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -862,7 +870,10 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
       remnants = createColonies(n = nCol)
     )
     for (colony in seq_len(nCol)) {
-      tmp <- splitColony(colonies[[colony]], p = p, year = year)
+      tmp <- splitColony(colonies[[colony]],
+        p = p, year = year,
+        simParamBee = simParamBee
+      )
       ret$splits[[colony]] <- tmp$split
       ret$remnants[[colony]] <- tmp$remnant
     }
@@ -873,39 +884,100 @@ splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
 }
 
 #' @rdname setPhenoColonies
-#' @title TODO
-#' https://github.com/HighlanderLab/SIMplyBee/issues/158
+#' @title Set colonies phenotype
 #'
-#' @description Level 3 function that TODO
+#' @description Level 3 function that does the same as
+#'   \code{\link{setPhenoColony}} but for all given colonies.
 #'
 #' @param colonies \code{\link{Colonies-class}}
-#' @param FUN function, any function that can be applied on \code{colony} and
-#'   can return phenotypes for defined traits via \code{\link{SimParamBee}}
-#' @param ... all parameters of \code{\link{setPheno}}
+#' @param colonyFUN function, any function that can be run on \code{colony} and
+#'   returns colony phenotypes; if \code{NULL} then
+#'   \code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+#'   then colony phenotype is not set, but phenotypes of colony individuals are
+#' @param ... all arguments of \code{\link{setPheno}} and \code{colonyFUN}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with phenotypes
 #'
 #' @examples
-#' # TODO
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#'
+#' # Define two traits that collectively affect colony honey yield:
+#' # 1) queen's effect on colony honey yield
+#' # 2) workers' effect on colony honey yield
+#' # The traits will have negative genetic correlation and heritability of 0.25
+#' meanP <- c(20, 0)
+#' varA <- c(1, 1 / 10)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / 10)
+#' varA / (varA + varE)
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+#' SP$setVarE(varE = varE)
+#'
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony2 <- createColony(x = basePop[3])
+#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' apiary <- c(colony1, colony2)
+#' apiary <- buildUpColonies(apiary, nWorkers = 10)
+#'
+#' # Set phenotypes for all colony individuals
+#' apiary <- setPhenoColonies(apiary)
+#'
+#' # Queen's phenotype for both traits
+#' lapply(getQueen(apiary), FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "queen")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#'
+#' # Workers' phenotype for both traits
+#' lapply(getWorkers(apiary), FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#'
+#' # Colony phenotype
+#' apiary <- setPhenoColonies(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+#' lapply(apiary@colonies, FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#'
+#' # Colony phenotype - store function into the SP object
+#' SP$phenoColony <- phenoQueenPlusSumOfWorkers
+#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
+#' # TODO: use getColonyPheno(apiary, caste = "workers")
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' # phenotype will vary between function calls
+#'
+#' # TODO:
+#' # See
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
+#' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
 #' @export
-# See setPhenoColony() and
-#     https://github.com/HighlanderLab/SIMplyBee/issues/26
-#     https://github.com/HighlanderLab/SIMplyBee/issues/28
-#     https://github.com/HighlanderLab/SIMplyBee/issues/32
-#     https://github.com/HighlanderLab/SIMplyBee/issues/44
-setPhenoColonies <- function(colonies, FUN = NULL, ..., simParamBee = NULL) {
+setPhenoColonies <- function(colonies, colonyFUN = NULL, ...,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
+  if (is.null(colonyFUN)) {
+    colonyFUN <- simParamBee$phenoColony
+  }
   nCol <- nColonies(colonies)
   for (colony in seq_len(nCol)) {
     colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-                                         FUN = FUN, ...,
-                                         simParamBee = simParamBee
+      colonyFUN = colonyFUN, ...,
+      # TODO: is ... really passed on to setPhenoColony?
+      #       https://github.com/HighlanderLab/SIMplyBee/issues/240
+      simParamBee = simParamBee
     )
   }
   validObject(colonies)

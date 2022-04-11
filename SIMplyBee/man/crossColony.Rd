@@ -4,7 +4,13 @@
 \alias{crossColony}
 \title{Cross (mate) a virgin queen of a colony to a group of drones}
 \usage{
-crossColony(colony, drones, nFathers = NULL, simParamBee = NULL)
+crossColony(
+  colony,
+  drones,
+  nFathers = NULL,
+  removeFathers = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -12,8 +18,12 @@ crossColony(colony, drones, nFathers = NULL, simParamBee = NULL)
 \item{drones}{\code{\link{Pop-class}}, drones the virgin queen could mate
 with}
 
-\item{nFathers}{numeric of function, number of drones that a queen mates with;
-if \code{NULL} then \code{simParamBee$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes those \code{drones} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -27,17 +37,33 @@ Level 2 function that crosses (mates) a virgin queen of colony
   Other virgin queens are destroyed. Mated drones (fathers) are stored for
   producing progeny at a later stage.
 }
+\details{
+This function calls \code{\link{crossVirginQueen}} that changes
+  caste for the mated drones to fathers, and mated virgin queens to queens.
+  See examples. This means that you can not use these individuals in matings
+  anymore!
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+isVirginQueen(basePop)
 
 drones <- createDrones(x = basePop[1], nInd = 5)
+isDrone(drones)
 
 colony <- createColony(x = basePop[2])
 colony
+isVirginQueen(basePop)
+isVirginQueen(getVirginQueens(colony))
+
 colony <- crossColony(colony, drones, nFathers = 5)
 colony
+isDrone(drones)
+isFather(drones)
+isVirginQueen(basePop)
+isVirginQueen(getVirginQueens(colony))
+isQueen(getQueen(colony))
 }
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the

@@ -4,15 +4,25 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(DCA, n, nFathers = NULL, simParamBee = NULL)
+pullDroneGroupsFromDCA(
+  DCA,
+  n,
+  nFathers = NULL,
+  removeFathers = TRUE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones}
 
 \item{n}{integer, number of drone groups to be created}
 
-\item{nFathers}{numeric of function, number of drones (possible future
-fathers) per group; if \code{NULL} then \code{simParamBee$nFathers} is used}
+\item{nFathers}{numeric of function, number of drones that a virgin queen
+mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+
+\item{removeFathers}{logical, removes drones in \code{DCA} that have already
+mated; set to \code{FALSE} if you would like to mate a drone to multiple
+virgin queens, say via insemination}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -21,11 +31,10 @@ list of \code{\link{Pop-class}}
 }
 \description{
 Level 1 function that pulls drone groups from a Drone
-  Congregation Area (DCA) to use them later in mating. Number of drones per
-  group is sampled from a truncated Poisson distribution parameterised with
-  an average group size and truncation at zero (= zeroes are excluded).
-  Drones are pulled (removed) from the DCA to reflect the fact that drones
-  die after mating, so they can't be present in the DCA anymore.
+  Congregation Area (DCA) to use them later in mating. Within the function
+  drones are pulled (removed) from the DCA to reflect the fact that drones
+  die after mating, so they can't be present in the DCA anymore. Be careful
+  what you do with the DCA object outside function to avoid drone "copies".
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

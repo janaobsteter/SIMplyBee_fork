@@ -10,7 +10,7 @@ addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric or function, number of workers to be added, but see
-\code{new}; if \code{NULL} then \code{simParamBee$nWorkers} is used}
+\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used}
 
 \item{new}{logical, should the number of workers be added anew or should we
 only top-up the existing number of workers to \code{nInd}}
@@ -30,6 +30,10 @@ Level 2 function that adds (raises) the specified number of
   workers in the colony by crossing the current queen and the fathers. If
   there are already some workers present, new and present workers are
   combined.
+}
+\details{
+This function increases queen's \code{nWorkers} and \code{nHomBrood}
+  counters.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -54,16 +58,20 @@ nWorkers(addWorkers(apiary))
 SP$nWorkers <- 15
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
+# nWorkers will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
-addWorkers(colony1, nInd = nWorkersFun)
-nWorkers(addWorkers(apiary, nInd = nWorkersFun))
+addWorkers(colony1, nInd = nWorkersPoisson)
+nWorkers(addWorkers(apiary, nInd = nWorkersPoisson))
+# nWorkers will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nWorkers <- nWorkersFun
+SP$nWorkers <- nWorkersPoisson
 addWorkers(colony1)
 nWorkers(addWorkers(apiary))
+# nWorkers will vary between function calls when a function is used
+
+# Queen's counters
+getMisc(getQueen(addWorkers(colony1)))
+getMisc(getQueen(addWorkers(colony2)))
 }

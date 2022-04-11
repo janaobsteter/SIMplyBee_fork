@@ -19,21 +19,21 @@ buildUpColonies(
 \item{colonies}{\code{\link{Colonies-class}}}
 
 \item{nWorkers}{numeric or function, number of worker; if \code{NULL} then
-\code{simParamBee$nWorkers} is used (unless \code{new = TRUE}, currently
-present workers are taken into account and only the missing difference is
-added)}
+\code{\link{SimParamBee}$nWorkers} is used (unless \code{new = TRUE},
+currently present workers are taken into account and only the missing
+difference is added)}
 
 \item{nDrones}{numeric or function, number of drones; if \code{NULL} then
-\code{simParamBee$nDrones} is used (unless \code{new = TRUE}, currently
-present drones are taken into account so only the missing difference is
-added)}
+\code{\link{SimParamBee}$nDrones} is used (unless \code{new = TRUE},
+currently present drones are taken into account so only the missing
+difference is added)}
 
 \item{new}{logical, should the workers and drones be added a fresh (ignoring
 currently present workers and drones)}
 
-\item{exact}{logical, if the csd locus is turned on and exact is TRUE,
-create the exact specified number of only
-viable workers (heterozygous on the csd locus)}
+\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+create the exactly specified number of viable workers (they are
+heterozygous at the csd locus)}
 
 \item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
 build up}
@@ -79,23 +79,18 @@ apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
 apiary[[1]] # adding completely new workers & drones
 
 # Using functions
-nWorkersFun <- function(colony) {
-  rpois(n = 1, lambda = 100)
-}
-nDronesFun <- function(colony) {
-  rpois(n = 1, lambda = 15)
-}
 apiary <- c(colony1, colony2)
-tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 tmp[[1]]
 tmp[[2]]
-tmp <- buildUpColonies(apiary, nWorkers = nWorkersFun, nDrones = nDronesFun)
+tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 tmp[[1]]
 tmp[[2]]
+# nWorkers and nDrones will vary between function calls when a function is used
 
 # Using functions in simParamBee
-SP$nWorkers <- nWorkersFun
-SP$nDrones <- nDronesFun
+SP$nWorkers <- nWorkersPoisson
+SP$nDrones <- nDronesPoisson
 apiary <- c(colony1, colony2)
 tmp <- buildUpColonies(apiary)
 tmp[[1]]
@@ -103,4 +98,5 @@ tmp[[2]]
 tmp <- buildUpColonies(apiary)
 tmp[[1]]
 tmp[[2]]
+# nWorkers and nDrones will vary between function calls when a function is used
 }

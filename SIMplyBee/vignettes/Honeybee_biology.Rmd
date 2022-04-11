@@ -1,0 +1,371 @@
+---
+title: "SIMplyBee - honeybee biology"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - honeybee biology}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#",
+  include = TRUE
+)
+```
+
+# Introduction
+
+This vignette describes and demonstrates how SIMplyBee implements honeybee
+biology. Specifically, it describes:
+
+  1. Initiating with genomes and parameters,
+
+  2. Creating and building up a colony,
+  
+  3. Colony structure,
+  
+  4. Sex and caste,
+  
+  5. Complementary sex determining (csd) locus,
+  
+  6. Inheritance system, and
+  
+  7. Colony events.
+  
+Now load the package and dive in!
+
+```{r load package}
+library(package = "SIMplyBee")
+```
+
+# Initiating with genomes and parameters
+
+We initiate simulation by simulating honyebee genomes. We can quickly generate
+genomes using AlphaSimR's `quickHaplo()` or with SIMplyBee's `TODO()` with
+appropriate honeybee genome parameters and demography. We will use
+`quickHaplo()` and simulate genomes of two founding individuals. The genomes
+will be represented by only three chromosomes and 1000 segregating sites per
+chromosome. Honeybees have 16 chromosomes and way more segregating sites per
+chromosome, but we want a quick simulation here.
+
+```{r founder genomes}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+```
+
+Now we are ready to setup global simulation parameters using `SimParamBee`.
+`SimParamBee` enables tweaking many simulation settings, which you can read
+about in the help pages (`help(SimParamBee)` and `help(SimParam)`). Here we will
+only point out that we recommend saving this object with the name `SP`. Namely,
+all SIMplyBee functions will use this object, if you don't directly specify
+`simParamBee` argument.
+
+```{r SimParamBee}
+SP <- SimParamBee$new(founderGenomes)
+```
+
+As mentioned there is many options provided by `SimParamBee` of which we will
+not talk about. You can quickly take a peek into the information and functions
+stored in the `SP` object.
+
+```{r SP, eval = FALSE}
+show(SP)
+```
+
+From the simulated genomes, we will create virgin queens. These will serve as
+our our first honeybee individuals. In SIMplyBee we use AlphaSimR's populations
+(`Pop` class). So, the `basePop` is a population of two individuals, our virgin
+queens.
+
+```{r base pop virgin queens}
+baseQueens <- createVirginQueens(founderGenomes)
+baseQueens
+isVirginQueen(baseQueens)
+```
+
+We will use the first virgin queen to create five drones for mating.
+Technically, virgin queens do not create drones. Only queens with colonies
+create drones. However, to get the simulation up and running, we need drones and
+the function `createDrones()` can work both with virgin queens or colonies (we
+will talk about colonies in the next section).
+
+```{r base pop drones}
+baseDrones <- createDrones(x = baseQueens[1], nInd = 5)
+baseDrones
+```
+ 
+ A keen reader will notice that drones' ploidy is two. We will address this in
+ the next sections.
+
+# Creating and building up a colony
+
+We will use the other virging queen to create a colony. In SIMplyBee a colony is
+an object of `Colony` class with all sorts of information.
+
+```{r colony}
+colony <- createColony(x = baseQueens[2])
+colony
+```
+
+Before we look into the colony, lets mate the virgin queen, so that she becomes
+a queen and can start laying eggs for her own workers and drones.
+
+```{r cross colony}
+colony <- crossColony(colony, drones = baseDrones[1:5], nFathers = 5)
+colony
+```
+
+We build up colony with workers and drones with `buildUpColony()`. 
+
+```{r build up colony}
+buildUpColony(colony, nWorkers = 10, nDrones = 7)
+```
+
+Of note, we have not saved the result of the `buildUpColony()` call, so our
+colony object `colony` still doesn't contain workers and drones.
+
+At this point, its worth mentioning that `SimParamBee` (saved as the `SP` 
+object) conveniently holds some defaults for the number of workers and drones. 
+The defaults are just some numbers to work with. You should adapt these defaults
+to your needs.
+
+```{r SP n values}
+SP$nWorkers
+SP$nDrones
+```
+
+When we run SIMplyBee functions, such defaults are automatically used.
+
+```{r build up colony with defaults}
+colony <- buildUpColony(colony)
+colony
+```
+
+# Colony structure
+
+Lets explore this colony. In every colony we have different groups of
+individuals (castes). These include: queen, fathers, workers, drones, and virgin
+queens. Queen controls the colony, workers do all the hard work, drones
+disseminate queen's genes, and one of virgin queens will eventually replace the
+queen. We also store fathers, which represent drones that the queen mated with.
+Storing fathers enables us to generate colony members on demand. Let's count how
+many individuals we have for each caste.
+
+```{r colony numbers}
+nQueens(colony)
+nFathers(colony)
+nWorkers(colony)
+nDrones(colony)
+nVirginQueens(colony)
+```
+
+We can also access castes using `get*()` functions. Should you want to pull out,
+that is, remove castes, or their members, have a look at `pull*()` functions.
+
+```{r colony castes via get}
+(queen <- getQueen(colony))
+(fathers <- getFathers(colony))
+(workers <- getWorkers(colony))
+(drones <- getDrones(colony))
+(virginQueens <- getVirginQueens(colony))
+```
+
+There is additional information that you can retrieve. Peek under the hood and
+view the complete colony data structure with `str()`.
+
+```{r colony structure, eval = FALSE}
+str(colony)
+```
+
+To explore the various accessor or modificator functions, study the SIMplyBee's
+index of functions.
+
+```{r help, eval = FALSE}
+help(SIMplyBee)
+```
+
+TODO: add colony creation image
+
+# Sex and caste
+
+Sex of the caste members is as you would expect.
+
+```{r sex queen}
+queen@sex
+```
+
+```{r sex fathers}
+fathers@sex
+```
+
+```{r sex workers}
+workers@sex
+```
+
+```{r sex drones}
+drones@sex
+```
+
+Furthermore, the caste information is also as you would expect:
+
+```{r caste queen}
+getCaste(queen)
+```
+
+```{r caste fathers}
+getCaste(fathers)
+```
+
+and so on. However, when you have a bunch of bees at hand and you might not
+know their source, the `getCaste()` can be very useful.
+
+```{r caste bees}
+bees <- c(queen, fathers, workers, drones)
+bees@sex
+getCaste(bees)
+```
+
+# Complementary sex determining locus
+
+The complementary sex determining (csd) locus, well, complements sex
+determination. Fertilised eggs that are heterozygous at the csd locus develop
+into workers. On the other hand, homozygous eggs develop into unviable drones.
+These drones are usually discarded by workers. SIMplyBee doesn't store these
+unviable drones, but it does store their number.
+ 
+We can retrieve information about csd variation with `getCsdAlleles()`. For
+details on where is the csd locus and the number of distinct alleles see
+`help(SimParamBee)`. The output below shows two sequences (in two rows) of 0s
+and 1s representing respectively ancestral and mutation alleles along the csd
+locus for the queen. You can see that the two sequences are different, meaning
+that she is heterozygous, as expected.
+
+```{r csd}
+getCsdAlleles(queen)
+```
+
+Technically, SIMplyBee represents the csd locus as a series of bi-allelic 
+single nucleotide polymorphisms that don't recombine. So, the csd locus is 
+represented as a haplotype and different haplotypes represent different csd 
+alleles. By varying the number of sites within the csd locus we can control the
+number of distinct alleles (see `help(SimParamBee)`).
+
+A keen geneticist would immediately inspect csd alleles of fathers to check for
+any similarity with the queen's csd alleles. Lets boost a chance of such an
+event by creating an inbreed colony. We will create a virgin queen from the
+current colony and mate her with her brothers. Oh, dear me.
+
+```{r inbred colony}
+inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
+inbredColony <- crossColony(inbredColony, drones = drones, nFathers = 10)
+getCsdAlleles(inbredColony)
+getCsdAlleles(inbredColony, unique = TRUE)
+```
+
+Can you spot any matches? Let's calculate the expected proportion of homozygous
+brood from this mating.
+
+```{r pHomBrood}
+pHomBrood(inbredColony)
+```
+
+Let's see how many homozygotes will we observe. Note that inheritance is
+a random process, so a realised number of homozygotes will deviate from the
+expected proportion.
+
+```{r hHomBrood}
+inbredColony <- addWorkers(inbredColony, nInd = 100)
+inbredColony
+nHomBrood(inbredColony)
+```
+
+We tried adding 100 workers, but we only got `r nWorkers(inbredColony)`. The
+difference of `r nHomBrood(inbredColony)` is due to csd homozygous brood. Let's
+add another set of workers to show variation in realised numbers and
+accumulation of information.
+
+```{r hHomBrood II}
+inbredColony <- addWorkers(inbredColony, nInd = 100)
+inbredColony
+nHomBrood(inbredColony)
+```
+
+In total we tried adding 200 workers. We got `r nWorkers(inbredColony)` workers
+and `r nHomBrood(inbredColony)` homozygous brood. To see all this information,
+we can inspect the miscellaneous slot of the queen that contains the fathers
+population as well as the cumulative number of workers, drones, homozygous brood,
+and the expected proportion of homozygous brood.
+
+```{r queens counters}
+getMisc(getQueen(inbredColony))
+```
+
+# Inheritance system
+
+Honeybees have the haplo-diploid inheritance system where queens and workers
+are diploid and drones are haploid. In SIMplyBee we simulate drones as
+doubled-haploids, that is, as fully homozygous diploid individuals. This means
+that they have two identical sets of chromosomes. When they produce sperm, their
+gametes all have the same one set of chromosomes. Despite them being diploid, we
+generally return a haploid set of chromosomes, unless specifically requested.
+
+To show all this, let's get haplotypes and genotypes across the segregating
+sites for the different castes. The haplotypes are below shown in rows, spanning
+sites in columns (limiting to the first ten sites). Genotypes are simply a sum
+of the two haplotypes. First the queen:
+
+```{r queens haplo}
+getQueensSegSiteHaplo(inbredColony)[, 1:10]
+getQueensSegSiteGeno(inbredColony)[, 1:10]
+```
+
+now all fathers:
+
+```{r fathers haplo}
+getFathersSegSiteHaplo(inbredColony)[, 1:10]
+getFathersSegSiteGeno(inbredColony)[, 1:10]
+```
+
+each father is listed once (one row per father), but we can retrieve the diploid
+state, if this is desired:
+
+```{r fathers haplo II}
+getFathersSegSiteHaplo(inbredColony, nInd = 1, dronesHaploid = FALSE)[, 1:10]
+getFathersSegSiteGeno(inbredColony, nInd = 1, dronesHaploid = FALSE)[, 1:10, drop = FALSE]
+```
+
+now two workers:
+
+```{r workers haplo}
+getWorkersSegSiteHaplo(inbredColony, nInd = 2)[, 1:10]
+getWorkersSegSiteGeno(inbredColony, nInd = 2)[, 1:10]
+```
+
+and finally four drones:
+
+```{r drones haplo}
+inbredColony <- addDrones(inbredColony, nInd = 4)
+getDronesSegSiteHaplo(inbredColony)[, 1:10]
+getDronesSegSiteGeno(inbredColony)[, 1:10]
+```
+
+SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
+segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
+descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
+are all synonyms for a position in the genome. Oh, well. Study the index of
+available `get*()` functions in SIMplyBee.
+
+```{r help II}
+help(SIMplyBee)
+```
+
+# Colony events
+
+TODO: add colony events image
+
+TODO: where do we describe L0, L1, L2, and L3? In the next vignette that dives
+      into these aspects (already?)?
+TODO: related to the above, where do we want to write a list of functions
+      grouped by some nice system (according to L0, L1, L2 and L3?)

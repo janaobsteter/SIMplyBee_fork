@@ -4,13 +4,17 @@
 \alias{createDCA}
 \title{Create a drone congregation area (DCA)}
 \usage{
-createDCA(x, nInd = NULL)
+createDCA(x, nInd = NULL, removeFathers = TRUE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 
 \item{nInd}{numeric, number of random drones to pull from each colony,
 if \code{NULL} all drones in a colony are pulled}
+
+\item{removeFathers}{logical, removes \code{drones} that have already mated;
+set to \code{FALSE} if you would like to get drones for mating with multiple
+virgin queens, say via insemination}
 }
 \value{
 \code{\link{Pop-class}}
@@ -19,6 +23,14 @@ if \code{NULL} all drones in a colony are pulled}
 Level 1 function that creates a population of drones from one or
   multiple colonies. Such a population is often referred to as a drone
   congregation area (DCA).
+}
+\details{
+In reality, drones leave the colony to mate. They die after that.
+  In this function we only get a copy of drones from \code{x}, for
+  computational efficiency and ease of use. However, any mating will change
+  the caste of drones to fathers, and they won't be available for future
+  matings (see \code{\link{crossVirginQueen}}). Not unless
+  \code{removeFathers = FALSE}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

@@ -9,7 +9,7 @@
 \alias{getDrones}
 \title{Access individuals of a caste}
 \usage{
-getCastePop(x, caste = "all", nInd = NULL, use = "order")
+getCastePop(x, caste = "all", nInd = NULL, use = "order", removeFathers = TRUE)
 
 getQueen(x)
 
@@ -19,20 +19,24 @@ getVirginQueens(x, nInd = NULL, use = "rand")
 
 getWorkers(x, nInd = NULL, use = "rand")
 
-getDrones(x, nInd = NULL, use = "rand")
+getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
 \item{x}{Colony or Colonies}
 
-\item{caste}{character, "queen", "fathers", "virginQueens", "workers",
-"drones", or "all"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,
-we return the ones available - this can also be just \code{NULL}}
+we return the ones available - this can return \code{NULL}}
 
 \item{use}{character, all options provided by \code{\link{selectInd}} and
 \code{"order"} that selects \code{1:nInd} individuals}
+
+\item{removeFathers}{logical, removes \code{drones} that have already mated;
+set to \code{FALSE} if you would like to get drones for mating with multiple
+virgin queens, say via insemination}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is
@@ -44,7 +48,7 @@ when \code{x} is \code{\link{Colony-class}} return is
 }
 \description{
 Level 1 function that returns individuals of a caste. These
-  individuals stay in the colony (compared to \code{\link{pullCaste}}).
+  individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 }
 \section{Functions}{
 \itemize{
