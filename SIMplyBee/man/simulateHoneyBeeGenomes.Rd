@@ -58,3 +58,22 @@ Level 0 function that returns simulated honeybee genomes
 #   nSegSites = 2, Ne = 10
 # )
 }
+\references{
+Wallberg, A., Bunikis, I., Pettersson, O.V. et al.
+  A hybrid de novo genome assembly of the honeybee, Apis mellifera,
+  with chromosome-length scaffolds. 2019, BMC Genomics 20:275.
+  https://doi.org/10.1186/s12864-019-5642-0
+
+Beye M, Gattermeier I, Hasselmann M, et al. Exceptionally high levels
+  of recombination across the honey bee genome.
+  2006, Genome Res 16(11):1339-1344. doi:10.1101/gr.5680406
+
+Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
+  genome sequence variation provides insight into the evolutionary
+  history of the honeybee Apis mellifera.
+  2014, Nat Genet 46:1081–1088. https://doi.org/10.1038/ng.3077
+
+Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
+  Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
+  2015, Nature 523(7561):463-7. doi: 10.1038/nature14649.
+}
