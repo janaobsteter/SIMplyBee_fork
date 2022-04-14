@@ -936,7 +936,7 @@ isQueenMated <- function(x) {
       if (!all(isQueen(x) | isVirginQueen(x))) {
         stop("Individuals in x must be virgin queens or queens!")
       }
-      ret <- sapply(X = x@misc, FUN = function(z) !is.null(z$fathers) && z$fathers != 0)
+      ret <- sapply(X = x@misc, FUN = function(z) (!is.null(z$fathers) && z$fathers@nInd != 0))
     } else {
       ret <- FALSE
     }

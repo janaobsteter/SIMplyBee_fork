@@ -27,7 +27,8 @@
 #'   == "all"} with nodes named by caste; when \code{x} is
 #'   \code{\link{Colonies-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"}
+#'   \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
+#'   all the populations in the list with \code{\link{mergePops}} function.
 #'
 #' @seealso \code{\link{getCasteId}} and \code{\link{getCaste}}
 #'
@@ -110,18 +111,21 @@
 #' getVirginQueens(apiary)[[2]]
 #' getVirginQueens(apiary, nInd = 1)
 #' getVirginQueens(apiary, nInd = 2)
+#' mergePops(getVirginQueens(apiary))
 #'
 #' getCastePop(apiary, caste = "workers")
 #' getWorkers(apiary)
 #' getWorkers(apiary)[[1]]@id
 #' getWorkers(apiary)[[2]]@id
 #' getWorkers(apiary, nInd = 2)
+#' mergePops(getWorkers(apiary))
 #'
 #' getCastePop(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
 #' getDrones(apiary)[[2]]
 #' getDrones(apiary, nInd = 2)
+#' mergePops(getDrones(apiary))
 #'
 #' getCastePop(colony1, caste = "all")
 #' getCastePop(colony2, caste = "all")
@@ -929,11 +933,17 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
   if (isColony(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    if (is.null(DCA)) {
+      warning("No available drones!")
+    }
   } else if (isColonies(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
-    DCA <- mergePops(popList = DCA)
-  } else {
-    stop("Argument x must be a Colony of Colonies class object!")
+    DCA <- DCA[sapply(DCA, FUN = function(z) !is.null(z))]
+    if (length(DCA) != 0) {
+      DCA <- mergePops(popList = DCA)
+    } else {
+      warning("No available drones!")
+    }
   }
   return(DCA)
 }
@@ -1237,6 +1247,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
+#' @param checkMating logical, if the function should stop and throw an error if
+#' not all virgin queens are mated successfully (unsuccessful mating is mating with
+#' 0 drones)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function changes caste for the mated drones to fathers, and
@@ -1298,12 +1311,15 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' matedQueen3 <- crossVirginQueen(
 #'   pop = basePop[1],
 #'   drones = drones[16:20],
-#'   nFathers = 5
+#'   nFathers = 5,
+#'   removeFathers = TRUE,
+#'   checkMating = TRUE
 #' )
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
-crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
+crossVirginQueen <- function(pop, drones, nFathers = NULL,
+                             removeFathers = TRUE, checkMating = TRUE,
                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1341,6 +1357,9 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
     #       we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
+    if (checkMating && fathers@nInd == 0) {
+      stop("Unsuccessful mating!")
+    }
     simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
@@ -1349,6 +1368,9 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
       n = nVirginQueen,
       nFathers = nFathers
     )
+    if (checkMating && any(sapply(fatherGroups, FUN = function(z) z@nInd == 0))) {
+      stop("Not all virgin queens mated successfully!")
+    }
     for (queen in seq_len(nVirginQueen)) {
       simParamBee$changeCaste(id = fatherGroups[[queen]]@id, caste = "F")
       pop@misc[[queen]]$fathers <- fatherGroups[[queen]]
