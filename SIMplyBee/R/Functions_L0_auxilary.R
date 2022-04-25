@@ -4930,11 +4930,11 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
   return(ret)
 }
 
-#' @rdname getPoolGeno
-#' @title Get a pool genotype from true genotypes
+#' @rdname getPooledGeno
+#' @title Get a pooled genotype from true genotypes
 #'
-#' @description Level 0 function that returns a pool genotype from true
-#'   genotypes to mimic pool genotyping of colony members.
+#' @description Level 0 function that returns a pooled genotype from true
+#'   genotypes to mimic genotyping of a pool of colony members.
 #'
 #' @param x matrix, true genotypes with individuals in rows and sites in columns
 #' @param type character, "mean" for average genotype or "count" for the counts
@@ -4954,8 +4954,8 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(x = basePop[2])
 #' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 5)
-#' colony <- addDrones(colony, nInd = 5)
+#' colony <- addWorkers(colony, nInd = 100)
+#' colony <- addDrones(colony, nInd = 100)
 #' colony <- addVirginQueens(colony, nInd = 2)
 #'
 #' genoQ <- getQueensSegSiteGeno(colony)
@@ -4965,29 +4965,34 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' genoV <- getVirginQueensSegSiteGeno(colony)
 #'
 #' # Pool of drones
-#' sexD <- rep(x = "M", times = nrow(genoD))
-#' getPoolGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
-#' (poolD <- getPoolGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
+#' sexD <- getCasteSex(colony, caste = "drones")
+#' getPooledGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
+#' (poolD <- getPooledGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
 #' # ... compare to queen's genotype
 #' genoQ[, 1:10]
 #' plot(y = poolD, x = genoQ, ylim = c(0, 2), xlim = c(0, 2),
 #'      ylab = "Average allele dosage in drones",
 #'      xlab = "Allele dosage in the queen")
 #'
+#' # As an exercise you could repeat the above with different numbers of drones!
+#'
 #' # Pool of workers
-#' getPoolGeno(x = genoW, type = "count")[, 1:10]
-#' (poolW <- getPoolGeno(x = genoW, type = "mean"))[, 1:10]
+#' getPooledGeno(x = genoW, type = "count")[, 1:10]
+#' (poolW <- getPooledGeno(x = genoW, type = "mean"))[, 1:10]
 #' # ... compare to fathers' and queen's avearage genotype
-#' sexF <- rep(x = "M", times = nrow(genoF))
+#' sexF <- getCasteSex(colony, caste = "fathers")
 #' sexQ <- rep(x = "F", times = nrow(genoF))
 #' sexFQ <- c(sexF, sexQ)
 #' genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
-#' (poolFQ <- getPoolGeno(x = genoFQ, type = "mean", sex = sexFQ))[, 1:10]
+#' (poolFQ <- getPooledGeno(x = genoFQ, type = "mean", sex = sexFQ))[, 1:10]
 #' plot(y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
 #'      ylab = "Average allele dosage in workers",
 #'      xlab = "Average allele dosage in the queen and fathers")
+#'
+#' # As an exercise you could repeat the above with different numbers of workers!
+#'
 #' @export
-getPoolGeno <- function(x, type = NULL, sex = NULL) {
+getPooledGeno <- function(x, type = NULL, sex = NULL) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
   }
