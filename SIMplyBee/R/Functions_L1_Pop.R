@@ -1252,8 +1252,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
-#' @param checkMating character, throw a warning (when \code{checkMating = "warning"),
-#'  or stop error (when \code{checkMating = "error") when some matings fail (see
+#' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
+#'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
 #'  Details)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'

@@ -4,12 +4,19 @@
 \alias{supersedeColony}
 \title{Supersede colony}
 \usage{
-supersedeColony(colony, year = NULL)
+supersedeColony(colony, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{nVirginQueens}{integer, the number of virgin queens to be created in the
+colony; of these one is randomly selected as the new virgin queen of the
+remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+is used}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} with the supersede event set to

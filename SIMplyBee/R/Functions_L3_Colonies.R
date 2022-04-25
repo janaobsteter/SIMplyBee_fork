@@ -561,9 +561,9 @@ reQueenColonies <- function(colonies, queens) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
-#' @param checkMating character, throw a warning (when \code{checkMating = "warning"),
-#'  or stop error (when \code{checkMating = "error") when some matings fail (see
-#'  Details in \code{\link{crossVirginQueen}])
+#' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
+#'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
+#'  Details in \code{\link{crossVirginQueen}})
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details See \code{\link{crossColony}} on caste changes.
@@ -737,8 +737,11 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, nVirginQueens = NULL,
   if (is.null(p)) {
     p <- simParamBee$pSwarm
   }
-  if (is.null(nVirginQueens())) {
+  if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
+  }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
   }
   nCol <- nColonies(colonies)
   if (nCol == 0) {
@@ -809,8 +812,11 @@ supersedeColonies <- function(colonies, year = NULL, nVirginQueens = NULL, simPa
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(nVirginQueens())) {
+  if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
+  }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
   }
   if (!isColonies(colonies)) {
     stop("Argument colonies must be a Colonies class object!")

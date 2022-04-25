@@ -9,6 +9,7 @@ crossColony(
   drones,
   nFathers = NULL,
   removeFathers = TRUE,
+  checkMating = TRUE,
   simParamBee = NULL
 )
 }
@@ -24,6 +25,10 @@ mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 \item{removeFathers}{logical, removes those \code{drones} that have already
 mated; set to \code{FALSE} if you would like to mate a drone to multiple
 virgin queens, say via insemination}
+
+\item{checkMating}{logical, if the function should stop and throw an error if
+not all virgin queens are mated successfully (unsuccessful mating is mating with
+0 drones)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
