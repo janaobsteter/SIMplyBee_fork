@@ -561,9 +561,9 @@ reQueenColonies <- function(colonies, queens) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
-#' @param checkMating logical, if the function should stop and throw an error if
-#'   not all virgin queens are mated successfully (unsuccessful mating is mating with
-#'   0 drones)
+#' @param checkMating character, throw a warning (when \code{checkMating = "warning"),
+#'  or stop error (when \code{checkMating = "error") when some matings fail (see
+#'  Details in \code{\link{crossVirginQueen}])
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details See \code{\link{crossColony}} on caste changes.
@@ -589,7 +589,7 @@ reQueenColonies <- function(colonies, queens) {
 #' apiary[[2]]
 #' @export
 crossColonies <- function(colonies, drones, nFathers = NULL,
-                          removeFathers = TRUE, checkMating = TRUE,
+                          removeFathers = TRUE, checkMating = "error",
                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -690,9 +690,10 @@ collapseColonies <- function(colonies) {
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
 #'   if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used
 #' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer The number of virgin queens to be created in the
-#' colony, from which only one is randomly selected as the new virgin queens of the
-#' remnant colony. If \code{NULL}, the parameter is pulled from \code{simParamBee$nVirginQueens}
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colonies-class}}, the \code{swarms} and the
@@ -773,9 +774,10 @@ swarmColonies <- function(colonies, p = NULL, year = NULL, nVirginQueens = NULL,
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer The number of virgin queens to be created in the
-#' colony, from which only one is randomly selected as the new virgin queens of the
-#' remnant colony. If \code{NULL}, the parameter is pulled from \code{simParamBee$nVirginQueens}
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colonies-class}} with superseded colonies

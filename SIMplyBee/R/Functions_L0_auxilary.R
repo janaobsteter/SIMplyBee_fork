@@ -8,7 +8,6 @@
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
-#' @return integer
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -69,8 +68,12 @@ nNULLColonies <- function(colonies) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  n <- sum(sapply(X = colonies@colonies, FUN = is.null))
-  return(n)
+  if (length(colonies@colonies) == 0) {
+    ret <- 0
+  } else {
+    ret <- sum(sapply(X = colonies@colonies, FUN = is.null))
+  }
+  return(ret)
 }
 
 #' @rdname nCaste

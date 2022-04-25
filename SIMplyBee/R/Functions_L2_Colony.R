@@ -1338,9 +1338,10 @@ collapseColony <- function(colony) {
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
 #'   if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used
 #' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer The number of virgin queens to be created in the
-#' colony, from which only one is randomly selected as the new virgin queen of the
-#' remnant colony. If \code{NULL}, the parameter is pulled from \code{simParamBee$nVirginQueens}
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
@@ -1379,6 +1380,9 @@ swarmColony <- function(colony, p = NULL, year = NULL, nVirginQueens = NULL, sim
   }
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
+  }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
   }
 
   nWorkers <- nWorkers(colony)
@@ -1435,9 +1439,10 @@ swarmColony <- function(colony, p = NULL, year = NULL, nVirginQueens = NULL, sim
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer The number of virgin queens to be created in the
-#' colony, from which only one is randomly selected as the new virgin queen of the
-#' colony. If \code{NULL}, the parameter is pulled from \code{simParamBee$nVirginQueens}
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} with the supersede event set to
@@ -1468,6 +1473,10 @@ supersedeColony <- function(colony, year = NULL, nVirginQueens = NULL, simParamB
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
   }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
+  }
+
   # The biological order is: 1) queen dies and 2) workers raise virgin queens
   #   from eggs laid by the queen
   # The code below does 2) and then 1) since we don't store eggs

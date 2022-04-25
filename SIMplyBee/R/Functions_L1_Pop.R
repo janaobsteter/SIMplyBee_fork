@@ -910,7 +910,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -929,6 +929,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' apiary <- c(colony1, colony2)
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
+#'
+#' colony3 <- createColony(basePop[4])
+#' apiary <- c(colony1, colony2, colony3)
+#' createDCA(apiary)
+#'
 #' @export
 createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
   if (isColony(x)) {
@@ -1247,9 +1252,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
-#' @param checkMating logical, if the function should stop and throw an error if
-#' not all virgin queens are mated successfully (unsuccessful mating is mating with
-#' 0 drones)
+#' @param checkMating character, throw a warning (when \code{checkMating = "warning"),
+#'  or stop error (when \code{checkMating = "error") when some matings fail (see
+#'  Details)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function changes caste for the mated drones to fathers, and
@@ -1258,6 +1263,14 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
+#'
+#' @details If the supplied drone population is empty (has 0 individuals), which
+#'   can happen in edge cases or when \code{\link{nFathersPoisson}} is used
+#'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
+#'   queen will fail and she will stay virgin. This can happen for just a few
+#'   of many virgin queens, which can be annoying to track down, but you can use
+#'   \code{\link{isQueenMated}} to find such virgin queens. You can use
+#'   \code{checkMating} to alert you about this situation.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
@@ -1311,15 +1324,13 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' matedQueen3 <- crossVirginQueen(
 #'   pop = basePop[1],
 #'   drones = drones[16:20],
-#'   nFathers = 5,
-#'   removeFathers = TRUE,
-#'   checkMating = TRUE
+#'   nFathers = 5
 #' )
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
 crossVirginQueen <- function(pop, drones, nFathers = NULL,
-                             removeFathers = TRUE, checkMating = TRUE,
+                             removeFathers = TRUE, checkMating = "error",
                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1357,8 +1368,13 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL,
     #       we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
-    if (checkMating && fathers@nInd == 0) {
-      stop("Unsuccessful mating!")
+    if (fathers@nInd == 0) {
+      msg <- "Mating failed!"
+      if (checkMating == "warning") {
+        warning(msg)
+      } else if (checkMating == "error") {
+        stop(msg)
+      }
     }
     simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
@@ -1368,8 +1384,13 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL,
       n = nVirginQueen,
       nFathers = nFathers
     )
-    if (checkMating && any(sapply(fatherGroups, FUN = function(z) z@nInd == 0))) {
-      stop("Not all virgin queens mated successfully!")
+    if (any(sapply(fatherGroups, FUN = function(z) z@nInd == 0))) {
+      msg <- "Some matings failed!"
+      if (checkMating == "warning") {
+        warning(msg)
+      } else if (checkMating == "error") {
+        stop(msg)
+      }
     }
     for (queen in seq_len(nVirginQueen)) {
       simParamBee$changeCaste(id = fatherGroups[[queen]]@id, caste = "F")
