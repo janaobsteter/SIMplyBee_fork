@@ -10,7 +10,7 @@ swarmColony(colony, p = NULL, year = NULL, simParamBee = NULL)
 \item{colony}{\code{\link{Colony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony;
-if \code{NULL} then \code{\link{SimParamBee}$pSwarm} is used}
+if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used}
 
 \item{year}{numeric, year of birth for virgin queens}
 

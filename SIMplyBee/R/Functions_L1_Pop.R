@@ -1027,7 +1027,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
     nFathers <- simParamBee$nFathers
   }
   # doing "if (is.function(nFathers))" below
-  # Ensuring we don't use drones that have already mated
   if (removeFathers) {
     DCA <- DCA[isDrone(DCA)]
   }
@@ -1317,15 +1316,11 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
   if (!isPop(drones)) {
     stop("Argument fathers must be a Pop class object!")
   }
-  if (any(!isDrone(drones))) {
-    stop("Argument drones must hold only drones, no fathers!")
-  }
   if (is.null(nFathers)) {
     nFathers <- simParamBee$nFathers
   }
   # skipping "if (is.function(nFathers))" since we use it below or pass it to
   #   pullDroneGroupsFromDCA
-  # Ensuring we don't use drones that have already mated
   if (removeFathers) {
     drones <- drones[isDrone(drones)]
   }

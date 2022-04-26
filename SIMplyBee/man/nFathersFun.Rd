@@ -20,13 +20,16 @@ nFathersTruncPoisson(n = 1, average = 15, lowerLimit = 0)
 numeric, number of fathers
 }
 \description{
-Sample a number of fathers when \code{nFathers = NULL} (see
-  \code{\link{SimParamBee}$nFathers}) - this is just an example and you will
-  likely want to define your own sampling functions!
+Sample a number of fathers - use when \code{nFathers = NULL}
+  (see \code{\link{SimParamBee}$nFathers}).
+
+  This is just an example. You can provide your own functions that satisfy
+  your needs!
 }
 \details{
 \code{nFathersPoisson} samples from a Poisson distribution, which
-  can return a value 0 (that would mean a failed queen mating), while
+  can return a value 0 (that would mean a failed queen mating).
+
   \code{nFathersTruncPoisson} samples from a truncated Poisson distribution
   (truncated at zero) to avoid failed matings.
 }
