@@ -50,7 +50,7 @@ SP <- SimParamBee$new(founderGenomes)
 
 # Quantitative genetic parameters - for a single trait with queen and worker genetic effects
 meanP <- c(20, 0)
-varA <- c(1, 1 / SP$nWorkers) # TODO: if SP$nWorkers is fun, use value here!
+varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
@@ -201,7 +201,8 @@ colony@pheno
 
 # Strength and honey yield
 
-Here we will show how to use `nWorkers` function to genetically and environmentally influence the colony strength and with this honey yield.
+Here we will show how to use `nWorkers` function to genetically and
+environmentally influence the colony strength and with this honey yield.
 
 ```{r SimParamBee III}
 # Global simulation parameters
@@ -210,7 +211,7 @@ SP <- SimParamBee$new(founderGenomes)
 # Quantitative genetic parameters - for two traits with queen and worker genetic effects
 meanP <- c(100, 20, 0)
 # TODO: revise covariances (I made them up!)
-varA <- c(100, 1, 1 / SP$nWorkers)
+varA <- c(100, 1, 1 / meanP[1]) # meanP[1] will be average nWorkers
 corA <- matrix(data = c(1.0,  0.0,  0.0,
                         0.0,  1.0, -0.5, 
                         0.0, -0.5,  1.0), nrow = 3, byrow = TRUE)
@@ -235,8 +236,8 @@ colony@queen@pheno
 
 ```{r colony strength}
 # Use already provided function in the package - read about it
-help(nWorkersPoissonQueenFecundity)
-colony <- buildUpColony(colony, nWorkers = nWorkersPoissonQueenFecundity)
+help(nWorkersColonyPhenotype)
+colony <- buildUpColony(colony, nWorkers = nWorkersColonyPhenotype)
 colony
 ```
 

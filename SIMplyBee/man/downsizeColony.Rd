@@ -9,8 +9,8 @@ downsizeColony(colony, p = NULL, use = "rand", new = FALSE, simParamBee = NULL)
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{p}{numeric, percentage of workers to be removed from the colony; if
-\code{NULL} then \code{\link{SimParamBee}$pDownsize} is used}
+\item{p}{numeric, proportion of workers to be removed from the colony; if
+\code{NULL} then \code{\link{SimParamBee}$downsizeP} is used}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}
@@ -24,7 +24,7 @@ proportion anew (say, create winter workers)}
 \code{\link{Colony-class}} with workers reduced and drones/virgin queens removed
 }
 \description{
-Level 2 function that downsizes colony by removing a percentage
+Level 2 function that downsizes colony by removing a proportion
   of workers, all drones and all virgin queens. Usually in the autumn, such
   an event occurs in preparation for the winter months.
 }
