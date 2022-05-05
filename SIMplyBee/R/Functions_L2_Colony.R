@@ -1214,6 +1214,9 @@ resetEvents <- function(x, collapse = NULL) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
+#' @param checkMating logical, if the function should stop and throw an error if
+#'   not all virgin queens are mated successfully (unsuccessful mating is mating with
+#'   0 drones)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function calls \code{\link{crossVirginQueen}} that changes
@@ -1248,7 +1251,8 @@ resetEvents <- function(x, collapse = NULL) {
 #' isVirginQueen(getVirginQueens(colony))
 #' isQueen(getQueen(colony))
 #' @export
-crossColony <- function(colony, drones, nFathers = NULL, removeFathers = TRUE,
+crossColony <- function(colony, drones, nFathers = NULL,
+                        removeFathers = TRUE, checkMating = TRUE,
                         simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1277,7 +1281,8 @@ crossColony <- function(colony, drones, nFathers = NULL, removeFathers = TRUE,
   virginQueen <- selectInd(colony@virginQueens, nInd = 1, use = "rand")
   queen <- crossVirginQueen(
     pop = virginQueen, drones = drones, nFathers = nFathers,
-    removeFathers = removeFathers, simParamBee = simParamBee
+    removeFathers = removeFathers, checkMating = checkMating,
+    simParamBee = simParamBee
   )
   colony <- reQueenColony(colony, queen)
   colony <- removeVirginQueens(colony)
@@ -1330,6 +1335,10 @@ collapseColony <- function(colony) {
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
 #'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used
 #' @param year numeric, year of birth for virgin queens
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{Colony-class}}, the \code{swarm} and the
@@ -1350,7 +1359,7 @@ collapseColony <- function(colony) {
 #' tmp$swarm
 #' tmp$remnant
 #' @export
-swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
+swarmColony <- function(colony, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1365,6 +1374,12 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   }
   if (p < 0 | 1 < p) {
     stop("p must be between 0 and 1 (inclusive)!")
+  }
+  if (is.null(nVirginQueens)) {
+    nVirginQueens <- simParamBee$nVirginQueens
+  }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
   }
 
   nWorkers <- nWorkers(colony)
@@ -1382,9 +1397,10 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
   swarmColony <- setLocation(x = swarmColony, location = currentLocation)
 
   tmpVirginQueen <- createVirginQueens(
-    x = colony, nInd = 1,
+    x = colony, nInd = nVirginQueens,
     year = year
   )
+  tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
 
   remnantColony <- createColony(x = tmpVirginQueen)
   remnantColony@workers <- getWorkers(tmp$colony)
@@ -1420,6 +1436,11 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param year numeric, year of birth for virgin queens
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; of these one is randomly selected as the new virgin queen of the
+#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} with the supersede event set to
 #'   \code{TRUE}
@@ -1436,13 +1457,23 @@ swarmColony <- function(colony, p = NULL, year = NULL, simParamBee = NULL) {
 #'
 #' supersedeColony(colony)
 #' @export
-supersedeColony <- function(colony, year = NULL) {
+supersedeColony <- function(colony, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isColony(colony)) {
     stop("Argument colony must be a Colony class object!")
   }
   if (!isQueenPresent(colony)) {
     stop("No queen present in the colony!")
   }
+  if (is.null(nVirginQueens)) {
+    nVirginQueens <- simParamBee$nVirginQueens
+  }
+  if (is.function(nVirginQueens)) {
+    nVirginQueens <- nVirginQueens()
+  }
+
   # The biological order is: 1) queen dies and 2) workers raise virgin queens
   #   from eggs laid by the queen
   # The code below does 2) and then 1) since we don't store eggs
@@ -1452,10 +1483,11 @@ supersedeColony <- function(colony, year = NULL) {
   #       aggressive one), by creating many virgin queens and then picking the
   #       one with highest pheno for competition or some other criteria
   #       https://github.com/HighlanderLab/SIMplyBee/issues/239
-  colony@virginQueens <- createVirginQueens(
-    x = colony, nInd = 1,
+  tmpVirginQueen <- createVirginQueens(
+    x = colony, nInd = nVirginQueens,
     year = year
   )
+  colony@virginQueens <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
   colony <- removeQueen(colony)
   colony@last_event <- "superseded"
   colony@supersedure <- TRUE

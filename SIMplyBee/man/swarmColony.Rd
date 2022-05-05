@@ -4,7 +4,13 @@
 \alias{swarmColony}
 \title{Swarm colony}
 \usage{
-swarmColony(colony, p = NULL, year = NULL, simParamBee = NULL)
+swarmColony(
+  colony,
+  p = NULL,
+  year = NULL,
+  nVirginQueens = NULL,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -13,6 +19,11 @@ swarmColony(colony, p = NULL, year = NULL, simParamBee = NULL)
 if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{nVirginQueens}{integer, the number of virgin queens to be created in the
+colony; of these one is randomly selected as the new virgin queen of the
+remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }

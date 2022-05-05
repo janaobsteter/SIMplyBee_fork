@@ -9,9 +9,6 @@ nColonies(colonies)
 \arguments{
 \item{colonies}{\code{\link{Colonies-class}}}
 }
-\value{
-integer
-}
 \description{
 Level 0 function that returns the number of colonies in a
   colonies object.

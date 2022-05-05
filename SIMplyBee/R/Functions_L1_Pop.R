@@ -27,7 +27,8 @@
 #'   == "all"} with nodes named by caste; when \code{x} is
 #'   \code{\link{Colonies-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"}
+#'   \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
+#'   all the populations in the list with \code{\link{mergePops}} function.
 #'
 #' @seealso \code{\link{getCasteId}} and \code{\link{getCaste}}
 #'
@@ -110,18 +111,21 @@
 #' getVirginQueens(apiary)[[2]]
 #' getVirginQueens(apiary, nInd = 1)
 #' getVirginQueens(apiary, nInd = 2)
+#' mergePops(getVirginQueens(apiary))
 #'
 #' getCastePop(apiary, caste = "workers")
 #' getWorkers(apiary)
 #' getWorkers(apiary)[[1]]@id
 #' getWorkers(apiary)[[2]]@id
 #' getWorkers(apiary, nInd = 2)
+#' mergePops(getWorkers(apiary))
 #'
 #' getCastePop(apiary, caste = "drones")
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
 #' getDrones(apiary)[[2]]
 #' getDrones(apiary, nInd = 2)
+#' mergePops(getDrones(apiary))
 #'
 #' getCastePop(colony1, caste = "all")
 #' getCastePop(colony2, caste = "all")
@@ -906,7 +910,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -925,15 +929,26 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' apiary <- c(colony1, colony2)
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
+#'
+#' colony3 <- createColony(basePop[4])
+#' apiary <- c(colony1, colony2, colony3)
+#' createDCA(apiary)
+#'
 #' @export
 createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
   if (isColony(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    if (is.null(DCA)) {
+      warning("No available drones!")
+    }
   } else if (isColonies(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
-    DCA <- mergePops(popList = DCA)
-  } else {
-    stop("Argument x must be a Colony of Colonies class object!")
+    DCA <- DCA[sapply(DCA, FUN = function(z) !is.null(z))]
+    if (length(DCA) != 0) {
+      DCA <- mergePops(popList = DCA)
+    } else {
+      warning("No available drones!")
+    }
   }
   return(DCA)
 }
@@ -1236,6 +1251,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
+#' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
+#'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
+#'  Details)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function changes caste for the mated drones to fathers, and
@@ -1244,6 +1262,14 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.
+#'
+#' @details If the supplied drone population is empty (has 0 individuals), which
+#'   can happen in edge cases or when \code{\link{nFathersPoisson}} is used
+#'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
+#'   queen will fail and she will stay virgin. This can happen for just a few
+#'   of many virgin queens, which can be annoying to track down, but you can use
+#'   \code{\link{isQueenMated}} to find such virgin queens. You can use
+#'   \code{checkMating} to alert you about this situation.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
@@ -1302,7 +1328,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
-crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
+crossVirginQueen <- function(pop, drones, nFathers = NULL,
+                             removeFathers = TRUE, checkMating = "error",
                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1336,6 +1363,14 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
     #       we use "use"?
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     fathers <- selectInd(pop = drones, nInd = n, use = "rand")
+    if (fathers@nInd == 0) {
+      msg <- "Mating failed!"
+      if (checkMating == "warning") {
+        warning(msg)
+      } else if (checkMating == "error") {
+        stop(msg)
+      }
+    }
     simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
@@ -1344,6 +1379,14 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL, removeFathers = TRUE,
       n = nVirginQueen,
       nFathers = nFathers
     )
+    if (any(sapply(fatherGroups, FUN = function(z) z@nInd == 0))) {
+      msg <- "Some matings failed!"
+      if (checkMating == "warning") {
+        warning(msg)
+      } else if (checkMating == "error") {
+        stop(msg)
+      }
+    }
     for (queen in seq_len(nVirginQueen)) {
       simParamBee$changeCaste(id = fatherGroups[[queen]]@id, caste = "F")
       pop@misc[[queen]]$fathers <- fatherGroups[[queen]]

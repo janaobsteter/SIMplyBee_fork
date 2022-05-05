@@ -33,7 +33,7 @@ In reality, drones leave the colony to mate. They die after that.
   \code{removeFathers = FALSE}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -52,4 +52,9 @@ createDCA(colony2, nInd = 10)@id
 apiary <- c(colony1, colony2)
 createDCA(apiary)
 createDCA(apiary, nInd = 10)
+
+colony3 <- createColony(basePop[4])
+apiary <- c(colony1, colony2, colony3)
+createDCA(apiary)
+
 }
