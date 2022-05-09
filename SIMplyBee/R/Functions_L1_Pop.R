@@ -286,7 +286,17 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
 #'   into virgin queens
 #' @param year numeric, year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param editCsd logical, whether the csd locus should be edited, for more details
+#' see parameter \code{csdAlleles}
+#' @param csdAlleles list or \code{NULL}, can only be not \code{NULL} when input
+#' is \code{link{MapPop-class}}. If not null, the user has to provide a list of
+#' matrices or data frames with two rows and n columns, where n is the length of the csd
+#' as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+#' individual. The two haplotypes must not be the same, as the function does not allow
+#' to edit the csd to a homozygous state. If the parameter is \code{NULL},
+#' the function samples a heterozygous csd genotype for each individual from
+#' all possible csd alleles.
+#' @param simParamBee \code{\link{simParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
@@ -352,6 +362,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #       patrilines
 #       https://github.com/HighlanderLab/SIMplyBee/issues/78
 createVirginQueens <- function(x, nInd = NULL, year = NULL,
+                               editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -362,6 +373,11 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
   # doing "if (is.function(nInd))" below
   if (isMapPop(x)) {
     ret <- newPop(x)
+    if (!is.null(simParamBee$csdChr)) {
+      if (editCsd) {
+      ret <- editCsdLocus(ret, alleles = csdAlleles)
+      }
+    }
     ret@sex[] <- "F"
     simParamBee$changeCaste(id = ret@id, caste = "V")
     if (!is.null(year)) {

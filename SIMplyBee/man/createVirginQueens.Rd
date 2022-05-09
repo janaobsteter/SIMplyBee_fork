@@ -4,7 +4,14 @@
 \alias{createVirginQueens}
 \title{Creates virgin queens from the colony}
 \usage{
-createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
+createVirginQueens(
+  x,
+  nInd = NULL,
+  year = NULL,
+  editCsd = TRUE,
+  csdAlleles = NULL,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or
@@ -18,7 +25,19 @@ into virgin queens}
 
 \item{year}{numeric, year of birth for virgin queens}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{editCsd}{logical, whether the csd locus should be edited, for more details
+see parameter \code{csdAlleles}}
+
+\item{csdAlleles}{list or \code{NULL}, can only be not \code{NULL} when input
+is \code{link{MapPop-class}}. If not null, the user has to provide a list of
+matrices or data frames with two rows and n columns, where n is the length of the csd
+as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+individual. The two haplotypes must not be the same, as the function does not allow
+to edit the csd to a homozygous state. If the parameter is \code{NULL},
+the function samples a heterozygous csd genotype for each individual from
+all possible csd alleles.}
+
+\item{simParamBee}{\code{\link{simParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{link{MapPop-class}} returns
