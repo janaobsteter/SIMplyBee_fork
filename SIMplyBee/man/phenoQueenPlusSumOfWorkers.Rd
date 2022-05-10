@@ -14,26 +14,27 @@ phenoQueenPlusSumOfWorkers(
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{queenTrait}{numeric, trait that represents queen's effect on honey
-yield (defined in \code{\link{SimParamBee}} - see examples)}
+\item{queenTrait}{numeric, trait that represents queen's effect on the
+phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+\code{NULL} then this effect is 0}
 
-\item{workersTrait}{numeric, trait that represents wokers's effect on honey
-yield (defined in \code{\link{SimParamBee}} - see examples)}
+\item{workersTrait}{numeric, trait that represents workers's effect on the
+phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+\code{NULL} then this effect is 0}
 
 \item{checkProduction}{logical, does the phenotype depend on the production
-status of colony; if yes and production is not turned on, the result is a 0}
+status of colony; if yes and production is not \code{TRUE}, the result is
+a 0}
 }
 \value{
 numeric matrix with a single value
 }
 \description{
-Sample colony phenotype when \code{colonyFUN = NULL} (see
-  \code{\link{SimParamBee}$phenoColony}) - this is just an example and you
-  will likely want to define your own sampling functions!
-}
-\details{
-This function returns 0 when production in a colony is not turned on
-  (see \code{\link{getEvents}}).
+Sample colony phenotype - used when \code{colonyFUN = NULL} (see
+  \code{\link{SimParamBee}$phenoColony}).
+
+  This is just an example. You can provide your own functions that satisfy
+  your needs!
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -44,7 +45,8 @@ SP <- SimParamBee$new(founderGenomes)
 # 2) workers' effect on colony honey yield
 # The traits will have negative genetic correlation and heritability of 0.25
 meanP <- c(20, 0)
-varA <- c(1, 1 / 10)
+nWorkers <- 10
+varA <- c(1, 1 / nWorkers)
 corA <- matrix(data = c(
   1.0, -0.5,
   -0.5, 1.0
@@ -58,7 +60,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 5)
 colony <- createColony(x = basePop[2])
 colony <- crossColony(colony, drones = drones, nFathers = 5)
-colony <- buildUpColony(colony, nWorkers = 10)
+colony <- buildUpColony(colony, nWorkers = nWorkers)
 
 # Set phenotypes for all colony individuals
 colony <- setPhenoColony(colony)
@@ -85,5 +87,6 @@ pheno(colony)
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{phenoColony}
+\code{\link{SimParamBee}} field \code{phenoColony} and
+  \code{\link{getEvents}}
 }

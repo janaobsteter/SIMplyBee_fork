@@ -8,7 +8,6 @@
 #'
 #' @param colonies \code{\link{Colonies-class}}
 #'
-#' @return integer
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -69,8 +68,12 @@ nNULLColonies <- function(colonies) {
   if (!"Colonies" %in% class(colonies)) {
     stop("Argument colonies must be a Colonies class object!")
   }
-  n <- sum(sapply(X = colonies@colonies, FUN = is.null))
-  return(n)
+  if (length(colonies@colonies) == 0) {
+    ret <- 0
+  } else {
+    ret <- sum(sapply(X = colonies@colonies, FUN = is.null))
+  }
+  return(ret)
 }
 
 #' @rdname nCaste
@@ -936,7 +939,7 @@ isQueenMated <- function(x) {
       if (!all(isQueen(x) | isVirginQueen(x))) {
         stop("Individuals in x must be virgin queens or queens!")
       }
-      ret <- sapply(X = x@misc, FUN = function(z) !is.null(z$fathers))
+      ret <- sapply(X = x@misc, FUN = function(z) (!is.null(z$fathers) && z$fathers@nInd != 0))
     } else {
       ret <- FALSE
     }
@@ -1833,6 +1836,25 @@ isProductive <- function(x) {
 #'   automatically detected
 #'
 #' @return \code{\link{MapPop-class}}
+#'
+#' @references
+#' Wallberg, A., Bunikis, I., Pettersson, O.V. et al.
+#'   A hybrid de novo genome assembly of the honeybee, Apis mellifera,
+#'   with chromosome-length scaffolds. 2019, BMC Genomics 20:275.
+#'   https://doi.org/10.1186/s12864-019-5642-0
+#'
+#' Beye M, Gattermeier I, Hasselmann M, et al. Exceptionally high levels
+#'   of recombination across the honey bee genome.
+#'   2006, Genome Res 16(11):1339-1344. doi:10.1101/gr.5680406
+#'
+#' Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
+#'   genome sequence variation provides insight into the evolutionary
+#'   history of the honeybee Apis mellifera.
+#'   2014, Nat Genet 46:1081–1088. https://doi.org/10.1038/ng.3077
+#'
+#' Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
+#'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
+#'   2015, Nature 523(7561):463-7. doi: 10.1038/nature14649.
 #'
 #' @examples
 #' # founderGenomes <- simulateHoneyBeeGenomes(
@@ -4926,6 +4948,95 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
+  }
+  return(ret)
+}
+
+#' @rdname getPooledGeno
+#' @title Get a pooled genotype from true genotypes
+#'
+#' @description Level 0 function that returns a pooled genotype from true
+#'   genotypes to mimic genotyping of a pool of colony members.
+#'
+#' @param x matrix, true genotypes with individuals in rows and sites in columns
+#' @param type character, "mean" for average genotype or "count" for the counts
+#'   of reference and alternative alleles
+#' @param sex character, vector of "F" and "M" to denote the sex of individuals
+#'   in \code{x}
+#'
+#' @return a numeric vector with average allele dosage when \code{type = "mean"}
+#'   and a two-row matrix with the counts of reference (1st row) and
+#'   alternative (2nd row) alleles
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony <- createColony(x = basePop[2])
+#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+#' colony <- addWorkers(colony, nInd = 100)
+#' colony <- addDrones(colony, nInd = 100)
+#' colony <- addVirginQueens(colony, nInd = 2)
+#'
+#' genoQ <- getQueensSegSiteGeno(colony)
+#' genoF <- getFathersSegSiteGeno(colony)
+#' genoW <- getWorkersSegSiteGeno(colony)
+#' genoD <- getDronesSegSiteGeno(colony)
+#' genoV <- getVirginQueensSegSiteGeno(colony)
+#'
+#' # Pool of drones
+#' sexD <- getCasteSex(colony, caste = "drones")
+#' getPooledGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
+#' (poolD <- getPooledGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
+#' # ... compare to queen's genotype
+#' genoQ[, 1:10]
+#' plot(y = poolD, x = genoQ, ylim = c(0, 2), xlim = c(0, 2),
+#'      ylab = "Average allele dosage in drones",
+#'      xlab = "Allele dosage in the queen")
+#'
+#' # As an exercise you could repeat the above with different numbers of drones!
+#'
+#' # Pool of workers
+#' getPooledGeno(x = genoW, type = "count")[, 1:10]
+#' (poolW <- getPooledGeno(x = genoW, type = "mean"))[, 1:10]
+#' # ... compare to fathers' and queen's avearage genotype
+#' sexF <- getCasteSex(colony, caste = "fathers")
+#' sexQ <- rep(x = "F", times = nrow(genoF))
+#' sexFQ <- c(sexF, sexQ)
+#' genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
+#' (poolFQ <- getPooledGeno(x = genoFQ, type = "mean", sex = sexFQ))[, 1:10]
+#' plot(y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
+#'      ylab = "Average allele dosage in workers",
+#'      xlab = "Average allele dosage in the queen and fathers")
+#'
+#' # As an exercise you could repeat the above with different numbers of workers!
+#'
+#' @export
+getPooledGeno <- function(x, type = NULL, sex = NULL) {
+  if (!is.matrix(x)) {
+    stop("Argument x must be a matrix class object!")
+  }
+  n <- nrow(x)
+  if (is.null(sex)) {
+    warning("Argument sex is NULL. Assuming that all individuals are female/diploid!")
+    sex <- rep(x = "F", times = n)
+  }
+  nPloids <- sum((sex == "F")) * 2 + sum((sex == "M"))
+  if (any(!(sex %in% c("F", "M")))) {
+    stop("Argument sex must contain only F and M!")
+  }
+  ret <- apply(X = x, MARGIN = 2, FUN = sum)
+  if (type == "mean") {
+    ret <- ret / nPloids * 2
+    ret <- matrix(ret, nrow = 1, dimnames = list(NULL, names(ret)))
+    # / nPloids gives allele frequency and * 2 gives diploid dosage
+  } else if (type == "count") {
+    ret <- rbind(nPloids - ret, ret)
+    rownames(ret) <- c("0", "1")
+  } else {
+    stop("Argument type must be mean or count!")
   }
   return(ret)
 }

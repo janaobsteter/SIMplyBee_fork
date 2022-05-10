@@ -7,7 +7,7 @@
 Container for global honeybee simulation parameters. Saving this
   object as \code{SP} will allow it to be accessed by SIMplyBee functions
   without repeatedly (and annoyingly!) typing out
-  \code{someFun(..., simParamBee = SP)}. \code{SimParamBee} inherits
+  \code{someFun(argument, simParamBee = SP)}. \code{SimParamBee} inherits
   from AlphaSimR \code{\link{SimParam}}, so all \code{\link{SimParam}} slots
   and functions are available in addition to \code{SimParamBee}-specific
   slots and functions. Some \code{\link{SimParam}} functions could have
@@ -108,8 +108,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   The default value is 100, that is, queen generates 100 workers - this
   is for a down-scaled simulation (for efficiency) assuming that this
   represents ~60,000 workers in a full/strong colony (Seeley, 2019). This
-  value is set in \code{SimParamBee$new()} to have a number to work with
-  - you might want to change this!
+  value is set in \code{SimParamBee$new()} to have a number to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
@@ -118,20 +120,22 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   \code{function(x, arg = default) someCode }, that is, the first
   argument MUST be \code{x} and any following arguments MUST have a
   default value. See \code{\link{nWorkersPoisson}},
-  \code{\link{nWorkersTruncPoisson}},
-  \code{\link{nWorkersPoissonQueenFecundity}}, or
-  \code{\link{nWorkersTruncPoissonQueenFecundity}} for examples. You will
-  likely want to define your own functions!}
+  \code{\link{nWorkersTruncPoisson}}, or
+  \code{\link{nWorkersColonyPhenotype}} for examples.
+
+  You can provide your own functions that satisfy your needs!}
 
 \item{\code{nDrones}}{numeric or function, a number of drones generated in a
   colony - used in \code{\link{createDrones}}, \code{\link{addDrones}},
   \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
 
-  The default value is 10, that is, queen generates 10 drones - this is
+  The default value is 100, that is, queen generates 100 drones - this is
   for a down-scaled simulation (for efficiency) assuming that this
   represents ~1,000 drones in a full/strong colony (Seeley, 2019). This
-  value is set in \code{SimParamBee$new()} to have a number to work with
-  - you might want to change this!
+  value is set in \code{SimParamBee$new()} to have a number to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
@@ -140,10 +144,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   \code{function(x, arg = default) someCode }, that is, the first
   argument MUST be \code{x} and any following arguments MUST have a
   default value. See \code{\link{nDronesPoisson}},
-  \code{\link{nDronesTruncPoisson}},
-  \code{\link{nDronesPoissonQueenFecundity}}, or
-  \code{\link{nDronesTruncPoissonQueenFecundity}} for examples. You will
-  likely want to define your own functions!}
+  \code{\link{nDronesTruncPoisson}}, or
+  \code{\link{nDronesColonyPhenotype}} for examples.
+
+  You can provide your own functions that satisfy your needs!}
 
 \item{\code{nVirginQueens}}{numeric or function, a number of virgin queens
   generated when a queen dies or other situations - used in
@@ -151,8 +155,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   The default value is 10, that is, when the queen dies, workers generate
   10 new virgin queens (Seeley, 2019). This value is set in
-  \code{SimParamBee$new()} to have a number to work with - you might want
-  to change this!
+  \code{SimParamBee$new()} to have a number to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
@@ -161,10 +167,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
   default value. See \code{\link{nVirginQueensPoisson}},
-  \code{\link{nVirginQueensTruncPoisson}},
-  \code{\link{nVirginQueensPoissonColonyStrength}}, or
-  \code{\link{nVirginQueensTruncPoissonColonyStrength}} for examples.
-  You will likely want to define your own functions!}
+  \code{\link{nVirginQueensTruncPoisson}}, or
+  \code{\link{nVirginQueensColonyPhenotype}} for examples.
+
+  You can provide your own functions that satisfy your needs!}
 
 \item{\code{nFathers}}{numeric or function, a number of drones a queen mates
   with  - used in \code{\link{pullDroneGroupsFromDCA}},
@@ -173,7 +179,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   The default value is 15, that is, a virging queen mates on average with
   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
-  to have a number to work with - you might want to change this!
+  to have a number to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
@@ -183,64 +192,76 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   have a default value. We did not use the \code{colony} argument here,
   because \code{nFathers} likely does not depend on the colony. Let us
   know if we are wrong! See \code{\link{nFathersPoisson}} or
-  \code{\link{nFathersTruncPoisson}} for examples. You will likely want
-  to define your own functions!}
+  \code{\link{nFathersTruncPoisson}} for examples.
 
-\item{\code{pSwarm}}{numeric or a function, the percentage of workers that leave
-  with the old queen when the colony swarms - used in
-  \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{swarmP}}{numeric or a function, the swarm proportion - the proportion
+  of workers that leave with the old queen when the colony swarms - used
+  in \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
 
   The default value is 0.50, that is, about a half of workers leave colony
   in a swarm (Seeley, 2019). This value is set in \code{SimParamBee$new()}
-  to have a percentage to work with - you might want to change this!
+  to have a proportion to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
-  When \code{pSwarm} is a function, it should work with internals of
+  When \code{swarmP} is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{pSwarmUnif}} or
-  \code{\link{pSwarmColonyStrength}} for examples. You will likely want
-  to define your own functions!}
+  default value. See \code{\link{swarmPUnif}} or
+  \code{\link{swarmPColonyStrength}} for examples.
 
-\item{\code{pSplit}}{numeric or a function, the percentage of workers to be
-  removed in a managed split - used in \code{\link{splitColony}} and
-  \code{\link{splitColonies}}.
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{splitP}}{numeric or a function, the split proportion - the
+  proportion of workers removed in a managed split - used in
+  \code{\link{splitColony}} and \code{\link{splitColonies}}.
 
   The default value is 0.30, that is, about a third of workers is put into
   a split colony from a strong colony (Seeley, 2019). This value is set
-  in \code{SimParamBee$new()} to have a percentage to work with - you
-  might want to change this!
+  in \code{SimParamBee$new()} to have a proportion to work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
-  When \code{pSplit} is a function, it should work with internals of
+  When \code{splitP} is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{pSplitUnif}} or
-  \code{\link{pSplitColonyStrength}} for examples. You will likely want
-  to define your own functions!}
+  default value. See \code{\link{splitPUnif}} or
+  \code{\link{splitPColonyStrength}} for examples.
 
-\item{\code{pDownsize}}{numeric or a function, the percentage of workers to be
-  removed from the colony when downsizing, usually in autumn - used in
-  \code{\link{downsizeColony}} and \code{\link{downsizeColonies}}.
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{downsizeP}}{numeric or a function, the downsize proportion - the
+  proportion of workers removed from the colony when downsizing, usually
+  in autumn - used in \code{\link{downsizeColony}} and
+  \code{\link{downsizeColonies}}.
 
   The default value is 0.85, that is, a majority of workers die before
   autumn or all die but some winter workers are created (Seeley, 2019).
-  This value is set in \code{SimParamBee$new()} to have a percentage to
-  work with - you might want to change this!
+  This value is set in \code{SimParamBee$new()} to have a proportion to
+  work with.
+
+  You can change this setting to your needs!
+
   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
         https://github.com/HighlanderLab/SIMplyBee/issues/242
 
-  When \code{pDownsize} is a function, it should work with internals of
+  When \code{downsizeP} is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{pDownsizeUnif}} or
-  \code{\link{pDownsizeColonyStrength}} for examples. You will likely want
-  to define your own functions!}
+  default value. See \code{\link{downsizePUnif}} for example.
+
+  You can provide your own functions that satisfy your needs!}
 
 \item{\code{phenoColony}}{function, to set colony phenotypes - used in
   \code{\link{setPhenoColony}} and \code{\link{setPhenoColonies}}.
@@ -249,8 +270,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   therefore the function MUST be defined like \code{function(colony, arg
   = default) someCode }, that is, the first argument MUST be
   \code{colony} and any following arguments MUST have a default value.
-  See \code{\link{phenoQueenPlusSumOfWorkers}} for an example. You will
-  likely want to define your own functions!}
+  See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
+
+  You can provide your own functions that satisfy your needs!}
 }
 \if{html}{\out{</div>}}
 }
@@ -335,12 +357,12 @@ Starts the process of building a new simulation by creating
 \if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(
   founderPop,
   nWorkers = 100,
-  nDrones = 10,
+  nDrones = 100,
   nVirginQueens = 10,
   nFathers = 15,
-  pSwarm = 0.5,
-  pSplit = 0.3,
-  pDownsize = 0.85,
+  swarmP = 0.5,
+  splitP = 0.3,
+  downsizeP = 0.85,
   csdChr = 3,
   csdPos = 0.865,
   nCsdAlleles = 128,
@@ -362,11 +384,11 @@ genomes}
 
 \item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nFathers}}
 
-\item{\code{pSwarm}}{see \code{\link{SimParamBee}} field \code{pSwarm}}
+\item{\code{swarmP}}{see \code{\link{SimParamBee}} field \code{swarmP}}
 
-\item{\code{pSplit}}{see \code{\link{SimParamBee}} field \code{pSplit}}
+\item{\code{splitP}}{see \code{\link{SimParamBee}} field \code{splitP}}
 
-\item{\code{pDownsize}}{see \code{\link{SimParamBee}} field \code{pDownsize}}
+\item{\code{downsizeP}}{see \code{\link{SimParamBee}} field \code{downsizeP}}
 
 \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified

@@ -9,6 +9,7 @@ crossVirginQueen(
   drones,
   nFathers = NULL,
   removeFathers = TRUE,
+  checkMating = "error",
   simParamBee = NULL
 )
 }
@@ -28,6 +29,10 @@ mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 mated; set to \code{FALSE} if you would like to mate a drone to multiple
 virgin queens, say via insemination}
 
+\item{checkMating}{character, throw a warning (when \code{checkMating = "warning"}),
+or stop error (when \code{checkMating = "error"}) when some matings fail (see
+Details)}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
@@ -45,6 +50,14 @@ Level 1 function that crosses (mates) a virgin queen to a group
 This function changes caste for the mated drones to fathers, and
   mated virgin queens to queens. See examples. This means that you can not
   use these individuals in matings anymore!
+
+If the supplied drone population is empty (has 0 individuals), which
+  can happen in edge cases or when \code{\link{nFathersPoisson}} is used
+  instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
+  queen will fail and she will stay virgin. This can happen for just a few
+  of many virgin queens, which can be annoying to track down, but you can use
+  \code{\link{isQueenMated}} to find such virgin queens. You can use
+  \code{checkMating} to alert you about this situation.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)

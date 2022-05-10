@@ -22,7 +22,7 @@ setClassUnion("numericOrFunction", c("numeric", "function"))
 #' @description Container for global honeybee simulation parameters. Saving this
 #'   object as \code{SP} will allow it to be accessed by SIMplyBee functions
 #'   without repeatedly (and annoyingly!) typing out
-#'   \code{someFun(..., simParamBee = SP)}. \code{SimParamBee} inherits
+#'   \code{someFun(argument, simParamBee = SP)}. \code{SimParamBee} inherits
 #'   from AlphaSimR \code{\link{SimParam}}, so all \code{\link{SimParam}} slots
 #'   and functions are available in addition to \code{SimParamBee}-specific
 #'   slots and functions. Some \code{\link{SimParam}} functions could have
@@ -53,8 +53,10 @@ SimParamBee <- R6Class(
     #'   The default value is 100, that is, queen generates 100 workers - this
     #'   is for a down-scaled simulation (for efficiency) assuming that this
     #'   represents ~60,000 workers in a full/strong colony (Seeley, 2019). This
-    #'   value is set in \code{SimParamBee$new()} to have a number to work with
-    #'   - you might want to change this!
+    #'   value is set in \code{SimParamBee$new()} to have a number to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
@@ -63,10 +65,10 @@ SimParamBee <- R6Class(
     #'   \code{function(x, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{x} and any following arguments MUST have a
     #'   default value. See \code{\link{nWorkersPoisson}},
-    #'   \code{\link{nWorkersTruncPoisson}},
-    #'   \code{\link{nWorkersPoissonQueenFecundity}}, or
-    #'   \code{\link{nWorkersTruncPoissonQueenFecundity}} for examples. You will
-    #'   likely want to define your own functions!
+    #'   \code{\link{nWorkersTruncPoisson}}, or
+    #'   \code{\link{nWorkersColonyPhenotype}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
     nWorkers = "numericOrFunction",
 
     # nDrones field ----
@@ -74,11 +76,13 @@ SimParamBee <- R6Class(
     #'   colony - used in \code{\link{createDrones}}, \code{\link{addDrones}},
     #'   \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
     #'
-    #'   The default value is 10, that is, queen generates 10 drones - this is
+    #'   The default value is 100, that is, queen generates 100 drones - this is
     #'   for a down-scaled simulation (for efficiency) assuming that this
     #'   represents ~1,000 drones in a full/strong colony (Seeley, 2019). This
-    #'   value is set in \code{SimParamBee$new()} to have a number to work with
-    #'   - you might want to change this!
+    #'   value is set in \code{SimParamBee$new()} to have a number to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
@@ -87,10 +91,10 @@ SimParamBee <- R6Class(
     #'   \code{function(x, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{x} and any following arguments MUST have a
     #'   default value. See \code{\link{nDronesPoisson}},
-    #'   \code{\link{nDronesTruncPoisson}},
-    #'   \code{\link{nDronesPoissonQueenFecundity}}, or
-    #'   \code{\link{nDronesTruncPoissonQueenFecundity}} for examples. You will
-    #'   likely want to define your own functions!
+    #'   \code{\link{nDronesTruncPoisson}}, or
+    #'   \code{\link{nDronesColonyPhenotype}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
     nDrones = "numericOrFunction",
 
     # nVirginQueens field ----
@@ -100,8 +104,10 @@ SimParamBee <- R6Class(
     #'
     #'   The default value is 10, that is, when the queen dies, workers generate
     #'   10 new virgin queens (Seeley, 2019). This value is set in
-    #'   \code{SimParamBee$new()} to have a number to work with - you might want
-    #'   to change this!
+    #'   \code{SimParamBee$new()} to have a number to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
@@ -110,10 +116,10 @@ SimParamBee <- R6Class(
     #'   \code{function(colony, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{colony} and any following arguments MUST have a
     #'   default value. See \code{\link{nVirginQueensPoisson}},
-    #'   \code{\link{nVirginQueensTruncPoisson}},
-    #'   \code{\link{nVirginQueensPoissonColonyStrength}}, or
-    #'   \code{\link{nVirginQueensTruncPoissonColonyStrength}} for examples.
-    #'   You will likely want to define your own functions!
+    #'   \code{\link{nVirginQueensTruncPoisson}}, or
+    #'   \code{\link{nVirginQueensColonyPhenotype}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
     nVirginQueens = "numericOrFunction",
 
     # nFathers field ----
@@ -124,7 +130,10 @@ SimParamBee <- R6Class(
     #'
     #'   The default value is 15, that is, a virging queen mates on average with
     #'   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
-    #'   to have a number to work with - you might want to change this!
+    #'   to have a number to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
@@ -134,71 +143,83 @@ SimParamBee <- R6Class(
     #'   have a default value. We did not use the \code{colony} argument here,
     #'   because \code{nFathers} likely does not depend on the colony. Let us
     #'   know if we are wrong! See \code{\link{nFathersPoisson}} or
-    #'   \code{\link{nFathersTruncPoisson}} for examples. You will likely want
-    #'   to define your own functions!
+    #'   \code{\link{nFathersTruncPoisson}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
     nFathers = "numericOrFunction",
 
-    # pSwarm field ----
-    #' @field pSwarm numeric or a function, the percentage of workers that leave
-    #'   with the old queen when the colony swarms - used in
-    #'   \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
+    # swarmP field ----
+    #' @field swarmP numeric or a function, the swarm proportion - the proportion
+    #'   of workers that leave with the old queen when the colony swarms - used
+    #'   in \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
     #'
     #'   The default value is 0.50, that is, about a half of workers leave colony
     #'   in a swarm (Seeley, 2019). This value is set in \code{SimParamBee$new()}
-    #'   to have a percentage to work with - you might want to change this!
+    #'   to have a proportion to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
-    #'   When \code{pSwarm} is a function, it should work with internals of
+    #'   When \code{swarmP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{colony} and any following arguments MUST have a
-    #'   default value. See \code{\link{pSwarmUnif}} or
-    #'   \code{\link{pSwarmColonyStrength}} for examples. You will likely want
-    #'   to define your own functions!
-    pSwarm = "numericOrFunction",
+    #'   default value. See \code{\link{swarmPUnif}} or
+    #'   \code{\link{swarmPColonyStrength}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    swarmP = "numericOrFunction",
 
-    # pSplit field ----
-    #' @field pSplit numeric or a function, the percentage of workers to be
-    #'   removed in a managed split - used in \code{\link{splitColony}} and
-    #'   \code{\link{splitColonies}}.
+    # splitP field ----
+    #' @field splitP numeric or a function, the split proportion - the
+    #'   proportion of workers removed in a managed split - used in
+    #'   \code{\link{splitColony}} and \code{\link{splitColonies}}.
     #'
     #'   The default value is 0.30, that is, about a third of workers is put into
     #'   a split colony from a strong colony (Seeley, 2019). This value is set
-    #'   in \code{SimParamBee$new()} to have a percentage to work with - you
-    #'   might want to change this!
+    #'   in \code{SimParamBee$new()} to have a proportion to work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
-    #'   When \code{pSplit} is a function, it should work with internals of
+    #'   When \code{splitP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{colony} and any following arguments MUST have a
-    #'   default value. See \code{\link{pSplitUnif}} or
-    #'   \code{\link{pSplitColonyStrength}} for examples. You will likely want
-    #'   to define your own functions!
-    pSplit = "numericOrFunction",
+    #'   default value. See \code{\link{splitPUnif}} or
+    #'   \code{\link{splitPColonyStrength}} for examples.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    splitP = "numericOrFunction",
 
-    # pDownsize field ----
-    #' @field pDownsize numeric or a function, the percentage of workers to be
-    #'   removed from the colony when downsizing, usually in autumn - used in
-    #'   \code{\link{downsizeColony}} and \code{\link{downsizeColonies}}.
+    # downsizeP field ----
+    #' @field downsizeP numeric or a function, the downsize proportion - the
+    #'   proportion of workers removed from the colony when downsizing, usually
+    #'   in autumn - used in \code{\link{downsizeColony}} and
+    #'   \code{\link{downsizeColonies}}.
     #'
     #'   The default value is 0.85, that is, a majority of workers die before
     #'   autumn or all die but some winter workers are created (Seeley, 2019).
-    #'   This value is set in \code{SimParamBee$new()} to have a percentage to
-    #'   work with - you might want to change this!
+    #'   This value is set in \code{SimParamBee$new()} to have a proportion to
+    #'   work with.
+    #'
+    #'   You can change this setting to your needs!
+    #'
     #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
     #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
-    #'   When \code{pDownsize} is a function, it should work with internals of
+    #'   When \code{downsizeP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
     #'   argument MUST be \code{colony} and any following arguments MUST have a
-    #'   default value. See \code{\link{pDownsizeUnif}} or
-    #'   \code{\link{pDownsizeColonyStrength}} for examples. You will likely want
-    #'   to define your own functions!
-    pDownsize = "numericOrFunction",
+    #'   default value. See \code{\link{downsizePUnif}} for example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    downsizeP = "numericOrFunction",
 
     # phenoColony field ----
     #' @field phenoColony function, to set colony phenotypes - used in
@@ -208,8 +229,9 @@ SimParamBee <- R6Class(
     #'   therefore the function MUST be defined like \code{function(colony, arg
     #'   = default) someCode }, that is, the first argument MUST be
     #'   \code{colony} and any following arguments MUST have a default value.
-    #'   See \code{\link{phenoQueenPlusSumOfWorkers}} for an example. You will
-    #'   likely want to define your own functions!
+    #'   See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
     phenoColony = "function",
 
     #' @description Starts the process of building a new simulation by creating
@@ -222,9 +244,9 @@ SimParamBee <- R6Class(
     #' @param nDrones see \code{\link{SimParamBee}} field \code{nDrones}
     #' @param nVirginQueens see \code{\link{SimParamBee}} field \code{nVirginQueens}
     #' @param nFathers see \code{\link{SimParamBee}} field \code{nFathers}
-    #' @param pSwarm see \code{\link{SimParamBee}} field \code{pSwarm}
-    #' @param pSplit see \code{\link{SimParamBee}} field \code{pSplit}
-    #' @param pDownsize see \code{\link{SimParamBee}} field \code{pDownsize}
+    #' @param swarmP see \code{\link{SimParamBee}} field \code{swarmP}
+    #' @param splitP see \code{\link{SimParamBee}} field \code{splitP}
+    #' @param downsizeP see \code{\link{SimParamBee}} field \code{downsizeP}
     #' @param csdChr integer, chromosome that will carry the csd locus, by
     #'   default 3, but if there are less chromosomes (for a simplified
     #'   simulation), the locus is put on the last available chromosome (1 or
@@ -274,9 +296,9 @@ SimParamBee <- R6Class(
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
     initialize = function(founderPop,
-                          nWorkers = 100, nDrones = 10,
+                          nWorkers = 100, nDrones = 100,
                           nVirginQueens = 10, nFathers = 15,
-                          pSwarm = 0.5, pSplit = 0.3, pDownsize = 0.85,
+                          swarmP = 0.5, splitP = 0.3, downsizeP = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
                           phenoColony = NULL) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
@@ -289,9 +311,9 @@ SimParamBee <- R6Class(
       self$nDrones <- nDrones
       self$nVirginQueens <- nVirginQueens
       self$nFathers <- nFathers
-      self$pSwarm <- pSwarm
-      self$pSplit <- pSplit
-      self$pDownsize <- pDownsize
+      self$swarmP <- swarmP
+      self$splitP <- splitP
+      self$downsizeP <- downsizeP
 
       # caste initialize ----
 
@@ -523,29 +545,39 @@ isSimParamBee <- function(x) {
 
 # nFunctions ----
 
-#' @rdname nWorkersPoisson
+#' @rdname nWorkersFun
 #' @title Sample a number of workers
 #'
-#' @description Sample a number of workers when \code{nWorkers = NULL}
-#'   (see \code{\link{SimParamBee}$nWorkers}) - this is just an example and
-#'   you will likely want to define your own sampling functions!
+#' @description Sample a number of workers - used when \code{nInd = NULL}
+#'   (see \code{\link{SimParamBee}$nWorkers}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param n integer, number of samples
 #' @param average numeric, average number of workers
-#' @param queenFecundityTrait numeric, trait that represents queen's fecundity
-#'   (defined in \code{\link{SimParamBee}} - see examples)
 #' @param lowerLimit numeric, returned numbers will be above this value
+#' @param queenTrait numeric, trait that represents queen's effect on the colony
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
+#' @param workersTrait numeric, trait that represents workers's effect on the
+#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
+#' @param checkProduction logical, does the phenotype depend on the production
+#'   status of colony; if yes and production is not \code{TRUE}, the result is
+#'   above \code{lowerLimit}
+#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
 #'
 #' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
 #'   given average, which can return a value 0. \code{nDronesTruncPoisson}
 #'   samples from a zero truncated Poisson distribution.
-#'   \code{nWorkersPoissonQueenFecundity} samples from a
-#'   Poisson distribution whose average is a function of queen's fecundity
-#'   phenotype ((trait)). You need to set up the trait parameters (means and
-#'   variances) via \code{\link{SimParamBee}} (see examples). Finally,
-#'   \code{nWorkersTruncPoissonQueenFecundity} samples from from a zero truncated
-#'   Poisson distribution whose average is a function of queen's fecundity.
+#'
+#'   \code{nWorkersColonyPhenotype} returns a number (above \code{lowerLimit})
+#'   as a function of colony phenotype, say queen's fecundity. Colony phenotype
+#'   is provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+#'   traits influencing the colony phenotype and their parameters (mean and
+#'   variances) via \code{\link{SimParamBee}} (see examples).
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{nWorkers}
 #'
@@ -558,7 +590,13 @@ isSimParamBee <- function(x) {
 #' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 #' table(n)
 #'
-#' # Example for nWorkersPoissonQueenFecundity()
+#' nWorkersTruncPoisson()
+#' nWorkersTruncPoisson()
+#' n <- nWorkersTruncPoisson(n = 1000)
+#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
+#' table(n)
+#'
+#' # Example for nWorkersColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' average <- 100
@@ -569,85 +607,78 @@ isSimParamBee <- function(x) {
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
+#' colony2 <- crossColony(colony2, drones = drones, nFathers = 5)
 #' colony1@queen@pheno
 #' colony2@queen@pheno
-#' colony1 <- addWorkers(colony1, nInd = nWorkersPoissonQueenFecundity)
-#' nWorkers(colony1)
-#' colony2 <- addWorkers(colony2, nInd = nWorkersPoissonQueenFecundity)
-#' nWorkers(colony2)
-#'
-#' # Logic behind nWorkersPoissonQueenFecundity()
-#' average <- 100
-#' queenFecundity <- rnorm(n = 1000, mean = average, sd = sqrt(average))
-#' hist(queenFecundity, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
-#' n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
-#' hist(n, breaks = seq(from = 0, to = 200), xlim = c(0, 200))
-#' r <- range(c(n, queenFecundity))
-#' plot(n ~ queenFecundity, xlim = r, ylim = r)
-#' abline(v = average)
-#' abline(h = average)
-#' abline(a = 0, b = 1)
+#' createWorkers(colony1, nInd = nWorkersColonyPhenotype)
+#' createWorkers(colony2, nInd = nWorkersColonyPhenotype)
 #' @export
 nWorkersPoisson <- function(colony, n = 1, average = 100) {
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nWorkersPoisson Sample a non-zero number of workers
+#' @describeIn nWorkersFun Sample a non-zero number of workers
 #' @export
 nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
-#' @describeIn nWorkersPoisson Sample a number of workers based on
-#'   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
-#' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
-#' #       much variation?
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/243
+#' @describeIn nWorkersFun Sample a non-zero number of workers based on
+#'   colony phenotype, say queen's fecundity
 #' @export
-nWorkersPoissonQueenFecundity <- function(colony, n = 1,
-                                          queenFecundityTrait = 1) {
-  average <- colony@queen@pheno[, queenFecundityTrait]
-  return(rpois(n = n, lambda = average))
+nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
+                                   checkProduction = FALSE, lowerLimit = 0,
+                                   ...) {
+  ret <- round(phenoQueenPlusSumOfWorkers(colony = colony,
+                                          queenTrait = queenTrait,
+                                          workersTrait = workersTrait,
+                                          checkProduction = checkProduction,
+                                          ...))
+  if (ret < (lowerLimit + 1)) {
+    ret <- lowerLimit + 1
+  }
+  return(ret)
 }
 
-#' @describeIn nWorkersPoisson Sample a number of workers based on
-#'   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
-#' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
-#' #       much variation?
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/243
-#' @export
-nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
-                                               queenFecundityTrait = 1,
-                                               lowerLimit = 0) {
-  average <- colony@queen@pheno[, queenFecundityTrait]
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
-}
-
-#' @rdname nDronesPoisson
+#' @rdname nDronesFun
 #' @title Sample a number of drones
 #'
-#' @description Sample a number of drones when \code{nDrones = NULL}
-#'   (see \code{\link{SimParamBee}$nDrones}) - this is just an example and
-#'   you will likely want to define your own sampling functions!
+#' @description Sample a number of drones - used when \code{nDrones = NULL}
+#'   (see \code{\link{SimParamBee}$nDrones}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}}
 #' @param n integer, number of samples
 #' @param average numeric, average number of drones
-#' @param queenFecundityTrait numeric, trait that represents queen's fecundity
-#'   (defined in \code{\link{SimParamBee}} - see examples)
 #' @param lowerLimit numeric, returned numbers will be above this value
+#' @param queenTrait numeric, trait that represents queen's effect on the colony
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
+#' @param workersTrait numeric, trait that represents workers's effect on the
+#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{0} then this effect is 0
+#' @param checkProduction logical, does the phenotype depend on the production
+#'   status of colony; if yes and production is not \code{TRUE}, the result is
+#'   above \code{lowerLimit}
+#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
 #'
 #' @details \code{nDronesPoisson} samples from a Poisson distribution with a
-#'   given average, which can return a value 0. \code{nDronesTruncPoisson}
-#'   samples from a zero truncated Poisson distribution.
-#'   \code{nDronesPoissonQueenFecundity} samples from a
-#'   Poisson distribution whose average is a function of queen's fecundity
-#'   phenotype ((trait)). You need to set up the trait parameters (means and
-#'   variances) via \code{\link{SimParamBee}} (see examples). Finally,
-#'   \code{nDronesTruncPoissonQueenFecundity} samples from from a zero truncated
-#'   Poisson distribution whose average is a function of queen's fecundity.
+#'   given average, which can return a value 0.
+#'
+#'   \code{nDronesTruncPoisson} samples from a zero truncated Poisson
+#'   distribution.
+#'
+#'   \code{nDronesColonyPhenotype} returns a number (above \code{lowerLimit}) as
+#'   a function of colony phenotype, say queen's fecundity. Colony phenotype is
+#'   provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+#'   traits influencing the colony phenotype and their parameters (mean and
+#'   variances) via \code{\link{SimParamBee}} (see examples).
+#'
+#'   When \code{x} is \code{\link{Pop-class}}, only \code{workersTrait} is not
+#'   used, that is, only \code{queenTrait} is used.
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{nDrones}
 #'
@@ -657,13 +688,19 @@ nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
 #' nDronesPoisson()
 #' nDronesPoisson()
 #' n <- nDronesPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
+#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 #' table(n)
 #'
-#' # Example for nDronesPoissonQueenFecundity()
+#' nDronesTruncPoisson()
+#' nDronesTruncPoisson()
+#' n <- nDronesTruncPoisson(n = 1000)
+#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
+#' table(n)
+#'
+#' # Example for nDronesColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' average <- 10
+#' average <- 100
 #' h2 <- 0.1
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 #' SP$setVarE(varE = average * (1 - h2))
@@ -675,97 +712,79 @@ nWorkersTruncPoissonQueenFecundity <- function(colony, n = 1,
 #' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
 #' colony1@queen@pheno
 #' colony2@queen@pheno
-#' colony1 <- addDrones(colony1, nInd = nDronesPoissonQueenFecundity)
-#' nWorkers(colony1)
-#' colony2 <- addDrones(colony2, nInd = nDronesPoissonQueenFecundity)
-#' nWorkers(colony2)
-#'
-#' # Logic behind nDronesPoissonQueenFecundity()
-#' average <- 10
-#' queenFecundity <- rnorm(n = 1000, mean = average, sd = sqrt(average))
-#' queenFecundity[queenFecundity < 0] <- 0
-#' hist(queenFecundity, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
-#' n <- rpois(n = length(queenFecundity), lambda = queenFecundity)
-#' hist(n, breaks = seq(from = 0, to = 40), xlim = c(0, 40))
-#' r <- range(c(n, queenFecundity))
-#' plot(n ~ queenFecundity, xlim = r, ylim = r)
-#' abline(v = average)
-#' abline(h = average)
-#' abline(a = 0, b = 1)
+#' createDrones(colony1, nInd = nDronesColonyPhenotype)
+#' createDrones(colony2, nInd = nDronesColonyPhenotype)
 #' @export
-nDronesPoisson <- function(x, n = 1, average = 10) {
+nDronesPoisson <- function(x, n = 1, average = 100) {
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nDronesPoisson Sample a non-zero number of drones
+#' @describeIn nDronesFun Sample a non-zero number of drones
 #' @export
-nDronesTruncPoisson <- function(x, n = 1, average = 10, lowerLimit = 0) {
+nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
-#' @describeIn nDronesPoisson Sample a number of drones based on queen's
-#'   fecundity trait (defined in \code{\link{SimParamBee}}!)
-#' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
-#' #       much variation?
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/243
+#' @describeIn nDronesFun Sample a non-zero number of drones based on
+#'   colony phenotype, say queen's fecundity
 #' @export
-nDronesPoissonQueenFecundity <- function(x, n = 1,
-                                         queenFecundityTrait = 1) {
+nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
+                                   checkProduction = FALSE, lowerLimit = 0,
+                                   ...) {
+  # This one is special because we cater drone production from base population
+  #   virgin queens and colonies
   if (isPop(x)) {
-    pheno <- x@pheno[, queenFecundityTrait]
+    ret <- round(x@pheno[, queenTrait])
   } else {
-    pheno <- x@queen@pheno[, queenFecundityTrait]
+    ret <- round(phenoQueenPlusSumOfWorkers(colony = x,
+                                            queenTrait = queenTrait,
+                                            workersTrait = workersTrait,
+                                            checkProduction = checkProduction,
+                                            ...))
   }
-  average <- pheno
-  return(rpois(n = n, lambda = average))
+  if (ret < (lowerLimit + 1)) {
+    ret <- lowerLimit + 1
+  }
+  return(ret)
 }
 
-#' @describeIn nDronesPoisson Sample a non-zero number of drones based on
-#'   queen's fecundity trait (defined in \code{\link{SimParamBee}}!)
-#' # TODO: Is using Poisson on top of queen's fecundity phenotype adding too
-#' #       much variation?
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/243
-#' @export
-nDronesTruncPoissonQueenFecundity <- function(x, n = 1,
-                                              queenFecundityTrait = 1,
-                                              lowerLimit = 0) {
-  if (isPop(x)) {
-    pheno <- x@pheno[, queenFecundityTrait]
-  } else {
-    pheno <- x@queen@pheno[, queenFecundityTrait]
-  }
-  average <- pheno
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
-}
-
-#' @rdname nVirginQueensPoisson
+#' @rdname nVirginQueensFun
 #' @title Sample a number of virgin queens
 #'
-#' @description Sample a number of virgin queens when \code{nFathers = NULL}
-#'   (see \code{\link{SimParamBee}$nVirginQueens}) - this is just an example and
-#'   you will likely want to define your own sampling functions!
+#' @description Sample a number of virgin queens - used when
+#'   \code{nFathers = NULL} (see \code{\link{SimParamBee}$nVirginQueens}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param n integer, number of samples
 #' @param average numeric, average number of virgin queens
-#' @param lower numeric, lower (left) asymptote with respect to colony strength
-#'   (see examples)
-#' @param upper numeric, upper (right) asymptote with respect to colony strength
-#'   (see examples)
-#' @param rate numeric, growth rate with respect to colony strength
-#'   (see examples)
-#' @param nWorkersFull numeric, average number of workers in a full/strong colony
 #' @param lowerLimit numeric, returned numbers will be above this value
+#' @param queenTrait numeric, trait that represents queen's effect on the colony
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{NULL} then this effect is 0
+#' @param workersTrait numeric, trait that represents workers's effect on the
+#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{NULL} then this effect is 0
+#' @param checkProduction logical, does the phenotype depend on the production
+#'   status of colony; if yes and production is not \code{TRUE}, the result is
+#'   above \code{lowerLimit}
+#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
 #'
 #' @details \code{nVirginQueensPoisson} samples from a Poisson distribution,
-#'   which can return a value 0 (that would mean a failed colony recover after a
-#'   queen dies), while \code{nVirginQueensTruncPoisson} samples from a
-#'   truncated Poisson distribution (truncated at zero) to avoid failure.
+#'   which can return a value 0 (that would mean a colony will fail to raise a
+#'   single virgin queen after the queen swarms or dies).
 #'
-#'   The \code{nWorkersFull} default value used in this function is geared
-#'   towards a situation where we simulate ~100 workers per colony (down-scaled
-#'   simulation for efficiency). If you simulate more workers, you should change
-#'   the default accordingly.
+#'   \code{nVirginQueensTruncPoisson} samples from a truncated Poisson
+#'   distribution (truncated at zero) to avoid failure.
+#'
+#'   \code{nVirginQueensColonyPhenotype} returns a number (above
+#'   \code{lowerLimit}) as a function of colony phenotype, say swarming
+#'   tendency. Colony phenotype is provided by
+#'   \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up traits
+#'   influencing the colony phenotype and their parameters (mean and variances)
+#'   via \code{\link{SimParamBee}} (see examples).
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{nVirginQueens}
 #'
@@ -784,86 +803,77 @@ nDronesTruncPoissonQueenFecundity <- function(x, n = 1,
 #' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
 #' table(n)
 #'
-#' # Example for nVirginQueensPoissonColonyStrength()
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' # Example for nVirginQueensColonyPhenotype()
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' # TODO: Find some means and variances (Vg and Ve) for swarming in honeybees
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/259
+#' meanP <- c(10, 0)
+#' # setup variances such that the total phenotype variance will match the mean
+#' varA <- c(3 / 2, 3 / 2 / SP$nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(7 / 2, 7 / 2 / SP$nWorkers)
+#' varA / (varA + varE)
+#' varP <- varA + varE
+#' varP[1] + varP[2] * SP$nWorkers
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+#' SP$setVarE(varE = varE)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 10)
-#' nWorkers(colony) # weak colony
-#' nVirginQueensPoissonColonyStrength(colony)
-#' nVirginQueensPoissonColonyStrength(colony)
-#' colony <- addWorkers(colony, nInd = 100)
-#' nWorkers(colony) # strong colony
-#' nVirginQueensPoissonColonyStrength(colony)
-#' nVirginQueensPoissonColonyStrength(colony)
-#'
-#' # Logic behind nVirginQueensPoissonColonyStrength()
-#' # Based https://en.wikipedia.org/wiki/Generalised_logistic_function
-#' averageExp <- 10
-#' lower <- 0
-#' upper <- 20
-#' rate <- 3
-#' nWorkersFull <- 100
-#' nW <- 0:400
-#' x <- (nW - nWorkersFull) / nWorkersFull
-#' average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
-#' n <- rpois(n = length(nW), lambda = average)
-#' plot(n ~ nW)
-#' abline(v = nWorkersFull)
-#' abline(h = averageExp)
-#' lines(average ~ nW)
+#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' colony1 <- createColony(x = basePop[2])
+#' colony2 <- createColony(x = basePop[3])
+#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
+#' colony2 <- crossColony(colony2, drones = drones, nFathers = 5)
+#' colony1 <- buildUpColony(colony1)
+#' colony2 <- buildUpColony(colony2)
+#' nVirginQueensColonyPhenotype(colony1)
+#' nVirginQueensColonyPhenotype(colony2)
 #' @export
 nVirginQueensPoisson <- function(colony, n = 1, average = 10) {
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nVirginQueensPoisson Sample a non-zero number of virgin queens
+#' @describeIn nVirginQueensFun Sample a non-zero number of virgin queens
 #' @export
 nVirginQueensTruncPoisson <- function(colony, n = 1, average = 10, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
-#' @describeIn nVirginQueensPoisson Sample a number of virgin queens based on
-#'   colony strength
+#' @describeIn nVirginQueensFun Sample a non-zero number of virgin queens
+#'   based on colony's phenotype, say, swarming tendency
 #' @export
-nVirginQueensPoissonColonyStrength <- function(colony, n = 1,
-                                               lower = 0, upper = 20, rate = 3,
-                                               nWorkersFull = 100) {
-  nW <- nWorkers(colony)
-  x <- (nW - nWorkersFull) / nWorkersFull
-  average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
-  return(rpois(n = n, lambda = average))
+nVirginQueensColonyPhenotype <- function(colony, queenTrait = 1,
+                                         workersTrait = 2,
+                                         checkProduction = FALSE,
+                                         lowerLimit = 0, ...) {
+  ret <- round(phenoQueenPlusSumOfWorkers(colony = colony,
+                                          queenTrait = queenTrait,
+                                          workersTrait = workersTrait, ...))
+  if (ret < (lowerLimit + 1)) {
+    ret <- lowerLimit + 1
+  }
+  return(ret)
 }
 
-#' @describeIn nVirginQueensPoisson Sample a non-zero number of virgin queens
-#'   based on colony strength
-#' @export
-nVirginQueensTruncPoissonColonyStrength <- function(colony, n = 1,
-                                                    lower = 0, upper = 20, rate = 3,
-                                                    nWorkersFull = 100,
-                                                    lowerLimit = 0) {
-  nW <- nWorkers(colony)
-  x <- (nW - nWorkersFull) / nWorkersFull
-  average <- lower + ((upper - lower) / (1 + exp(-rate * x)))
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
-}
-
-#' @rdname nFathersPoisson
+#' @rdname nFathersFun
 #' @title Sample a number of fathers
 #'
-#' @description Sample a number of fathers when \code{nFathers = NULL} (see
-#'   \code{\link{SimParamBee}$nFathers}) - this is just an example and you will
-#'   likely want to define your own sampling functions!
+#' @description Sample a number of fathers - use when \code{nFathers = NULL}
+#'   (see \code{\link{SimParamBee}$nFathers}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param n integer, number of samples
 #' @param average numeric, average number of fathers
 #' @param lowerLimit numeric, returned numbers will be above this value
 #'
 #' @details \code{nFathersPoisson} samples from a Poisson distribution, which
-#'   can return a value 0 (that would mean a failed queen mating), while
+#'   can return a value 0 (that would mean a failed queen mating).
+#'
 #'   \code{nFathersTruncPoisson} samples from a truncated Poisson distribution
 #'   (truncated at zero) to avoid failed matings.
 #'
@@ -888,7 +898,7 @@ nFathersPoisson <- function(n = 1, average = 15) {
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nFathersPoisson Sample a non-zero number of fathers
+#' @describeIn nFathersFun Sample a non-zero number of fathers
 #' @export
 nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
@@ -896,31 +906,34 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 
 # pFunctions ----
 
-#' @rdname pSwarm
-#' @title Sample the proportion of workers in a swarm
+#' @rdname swarmPFun
+#' @title Sample the swarm proportion - the proportion of workers that swarm
 #'
-#' @description Sample the proportion of workers in a swarm when \code{p = NULL}
-#'   (see \code{\link{SimParamBee}$pSwarm}) - this is just an example and you
-#'   will likely want to define your own sampling functions!
+#' @description Sample the swarm proportion - the proportion of workers that
+#'   swarm - used when \code{p = NULL} (see \code{\link{SimParamBee}$swarmP}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param n integer, number of samples
-#' @param min numeric, lower limit for \code{pSwarmUnif}
-#' @param max numeric, upper limit for \code{pSwarmUnif}
+#' @param min numeric, lower limit for \code{swarmPUnif}
+#' @param max numeric, upper limit for \code{swarmPUnif}
 #' @param nWorkersFull numeric, average number of workers in a full/strong
-#'   colony for \code{pSplitColonyStrength} (actual number can go beyond this
+#'   colony for \code{splitPColonyStrength} (actual number can go beyond this
 #'   value)
-#' @param scale numeric, scaling of numbers in \code{pSwarmColonyStrength}
+#' @param scale numeric, scaling of numbers in \code{swarmPColonyStrength}
 #'   to avoid to narrow range when colonies have a large number of bees (in that
 #'   case change \code{nWorkersFull} too!)
 #'
-#' @details \code{pSwarmUnif} samples from a uniform distribution between values
-#'   0.4 and 0.6 irrespective of colony strength. \code{pSwarmColonyStrength}
-#'   samples from a beta distribution with a mean of \code{a / (a + b)}, where
-#'   \code{a = nWorkers + nWorkersFull} and \code{b = nWorkers}. This beta
-#'   sampling mimics larger swarms for strong colonies and smaller swarms for
-#'   weak colonies - see examples - this is just an example, not based on actual
-#'   data!
+#' @details \code{swarmPUnif} samples from a uniform distribution between values
+#'   0.4 and 0.6 irrespective of colony strength.
+#'
+#'   \code{swarmPColonyStrength} samples from a beta distribution with a mean of
+#'   \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
+#'   nWorkers}. This beta sampling mimics larger swarms for strong colonies and
+#'   smaller swarms for weak colonies - see examples. This is just an example,
+#'   not based on actual data!
 #'   # TODO: should we flip the pattern?
 #'   #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #'
@@ -929,17 +942,17 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #'   simulation for efficiency). If you simulate more workers, you should change
 #'   the default accordingly.
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{pSwarm}
+#' @seealso \code{\link{SimParamBee}} field \code{swarmP}
 #'
-#' @return numeric, proportion of workers in a swarm
+#' @return numeric, swarm proportion
 #'
 #' @examples
-#' pSwarmUnif()
-#' pSwarmUnif()
-#' p <- pSwarmUnif(n = 1000)
+#' swarmPUnif()
+#' swarmPUnif()
+#' p <- swarmPUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #'
-#' # Example for pSwarmColonyStrength()
+#' # Example for swarmPColonyStrength()
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -948,37 +961,37 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
-#' pSwarmColonyStrength(colony)
-#' pSwarmColonyStrength(colony)
+#' swarmPColonyStrength(colony)
+#' swarmPColonyStrength(colony)
 #' colony <- addWorkers(colony, nInd = 100)
 #' nWorkers(colony) # strong colony
-#' pSwarmColonyStrength(colony)
-#' pSwarmColonyStrength(colony)
+#' swarmPColonyStrength(colony)
+#' swarmPColonyStrength(colony)
 #'
-#' # Logic behind pSwarmColonyStrength()
+#' # Logic behind swarmPColonyStrength()
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
-#' pSwarm <- 1 - rbeta(
+#' swarmP <- 1 - rbeta(
 #'   n = length(nWorkers),
 #'   shape1 = nWorkers + nWorkersFull,
 #'   shape2 = nWorkers
 #' )
-#' plot(pSwarm ~ nWorkers, ylim = c(0, 1))
+#' plot(swarmP ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
-#' pStay <- 1 - pSwarm
+#' pStay <- 1 - swarmP
 #' plot(pStay ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
 #' # TODO: should we flip the pattern?
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #' @export
-pSwarmUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
+swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
   return(runif(n = n, min = min, max = max))
 }
 
-#' @describeIn pSwarm Sample the proportion of workers in a swarm based on
-#'   colony strength
+#' @describeIn swarmPFun Sample the swarm proportion - the proportion of
+#'   workers that swarm based on the colony strength
 #' @export
-pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
+swarmPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   nW <- nWorkers(colony)
   pKeep <- rbeta(
     n = n,
@@ -988,49 +1001,53 @@ pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   return(1 - pKeep)
 }
 
-#' @rdname pSplit
-#' @title Sample the proportion of removed workers in a managed
-#'   split
+#' @rdname splitPFun
+#' @title Sample the split proportion - proportion of removed workers in a
+#'   managed split
 #'
-#' @description Sample the proportion of removed workers in a managed split when
-#'   \code{p = NULL} - (see \code{\link{SimParamBee}$pSplit}) - this is just an
-#'   example and you will likely want to define your own sampling functions!
+#' @description Sample the split proportion - proportion of removed workers in a
+#'   managed split - used when \code{p = NULL} - (see
+#'   \code{\link{SimParamBee}$splitP}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param n integer, number of samples
-#' @param min numeric, lower limit for \code{pSplitUnif}
-#' @param max numeric, upper limit for \code{pSplitUnif}
+#' @param min numeric, lower limit for \code{splitPUnif}
+#' @param max numeric, upper limit for \code{splitPUnif}
 #' @param nWorkersFull numeric, average number of workers in a full/strong
-#'   colony for \code{pSplitColonyStrength} (actual number can go beyond this
+#'   colony for \code{splitPColonyStrength} (actual number can go beyond this
 #'   value)
-#' @param scale numeric, scaling of numbers in \code{pSplitColonyStrength}
+#' @param scale numeric, scaling of numbers in \code{splitPColonyStrength}
 #'   to avoid to narrow range when colonies have a large number of bees (in that
 #'   case change \code{nWorkersFull} too!)
 #'
-#' @details \code{pSplitUnif} samples from a uniform distribution between values
-#'   0.2 and 0.4 irrespective of colony strength. \code{pSplitColonyStrength}
-#'   samples from a beta distribution with mean \code{a / (a + b)}, where
-#'   \code{a = nWorkers + nWorkersFull} and \code{b = nWorkers}. This beta
-#'   sampling mimics larger splits for strong colonies and smaller splits for
-#'   weak colonies - see examples - this is just an example, not based on actual
-#'   data!
+#' @details \code{splitPUnif} samples from a uniform distribution between values
+#'   0.2 and 0.4 irrespective of colony strength.
+#'
+#'   \code{splitPColonyStrength} samples from a beta distribution with mean
+#'   \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
+#'   nWorkers}. This beta sampling mimics larger splits for strong colonies and
+#'   smaller splits for weak colonies - see examples. This is just an example,
+#'   based on practical experience!
 #'
 #'   The \code{nWorkersFull} default value used in this function is geared
 #'   towards a situation where we simulate ~100 workers per colony (down-scaled
 #'   simulation for efficiency). If you simulate more workers, you should change
 #'   the default accordingly.
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{pSplit}
+#' @seealso \code{\link{SimParamBee}} field \code{splitP}
 #'
-#' @return numeric, proportion of removed workers
+#' @return numeric, split proportion
 #'
 #' @examples
-#' pSplitUnif()
-#' pSplitUnif()
-#' p <- pSplitUnif(n = 1000)
+#' splitPUnif()
+#' splitPUnif()
+#' p <- splitPUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #'
-#' # Example for pSplitColonyStrength()
+#' # Example for splitPColonyStrength()
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -1039,35 +1056,35 @@ pSwarmColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
-#' pSplitColonyStrength(colony)
-#' pSplitColonyStrength(colony)
+#' splitPColonyStrength(colony)
+#' splitPColonyStrength(colony)
 #' colony <- addWorkers(colony, nInd = 100)
 #' nWorkers(colony) # strong colony
-#' pSplitColonyStrength(colony)
-#' pSplitColonyStrength(colony)
+#' splitPColonyStrength(colony)
+#' splitPColonyStrength(colony)
 #'
-#' # Logic behind pSplitColonyStrength()
+#' # Logic behind splitPColonyStrength()
 #' nWorkersFull <- 100
 #' nWorkers <- 0:200
-#' pSplit <- 1 - rbeta(
+#' splitP <- 1 - rbeta(
 #'   n = length(nWorkers),
 #'   shape1 = nWorkers + nWorkersFull,
 #'   shape2 = nWorkers
 #' )
-#' plot(pSplit ~ nWorkers, ylim = c(0, 1))
+#' plot(splitP ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
-#' pKeep <- 1 - pSplit
+#' pKeep <- 1 - splitP
 #' plot(pKeep ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
 #' @export
-pSplitUnif <- function(colony, n = 1, min = 0.2, max = 0.4) {
+splitPUnif <- function(colony, n = 1, min = 0.2, max = 0.4) {
   return(runif(n = n, min = min, max = max))
 }
 
-#' @describeIn pSplit Sample the proportion of removed workers in a managed
-#'   split based on colony strength
+#' @describeIn splitPFun Sample the split proportion - the proportion of
+#'   removed workers in a managed split based on the colony strength
 #' @export
-pSplitColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
+splitPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   nW <- nWorkers(colony)
   pKeep <- rbeta(
     n = n,
@@ -1077,92 +1094,34 @@ pSplitColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
   return(1 - pKeep)
 }
 
-#' @rdname pDownsize
-#' @title Sample the proportion of removed workers in downsizing
+#' @rdname downsizePFun
+#' @title Sample the downsize proportion - proportion of removed workers in
+#'   downsizing
 #'
-#' @description Sample the proportion of removed workers in downsizing when
-#'   \code{p = NULL} (see \code{\link{SimParamBee}$pDownsize}) - this is just an
-#'   example and you will likely want to define your own sampling functions!
+#' @description Sample the downsize proportion - proportion of removed workers
+#'   in downsizing - used when \code{p = NULL} (see
+#'   \code{\link{SimParamBee}$downsizeP}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param n integer, number of samples
-#' @param min numeric, lower limit for \code{pDownsizeUnif}
-#' @param max numeric, upper limit for \code{pDownsizeUnif}
-#' @param nWorkersFull numeric, average number of workers in a full/strong
-#'   colony for \code{pSplitColonyStrength} (actual number can go beyond this
-#'   value)
-#' @param scale numeric, scaling of numbers in \code{pDownsizeColonyStrength}
-#'   to avoid to narrow range when colonies have a large number of bees (in that
-#'   case change \code{nWorkersFull} too!)
+#' @param min numeric, lower limit for \code{downsizePUnif}
+#' @param max numeric, upper limit for \code{downsizePUnif}
 #'
-#' @details \code{pDownsizeUnif} samples from a uniform distribution between
-#'   values 0.8 and 0.9 irrespective of colony strength.
-#'   \code{pDownsizeColonyStrength} samples from a beta distribution with mean
-#'   \code{a / (a + b)}, where \code{a = nWorkers} and \code{b = 3 * nWorkers +
-#'   nWorkersFull}. This beta sampling mimics larger winter colonies for strong
-#'   colonies and small winter colonies for weak colonies - see examples - this
-#'   is just an example, not based on actual data!
+#' @seealso \code{\link{SimParamBee}} field \code{downsizeP}
 #'
-#'   The \code{nWorkersFull} default value used in this function is geared
-#'   towards a situation where we simulate ~100 workers per colony (down-scaled
-#'   simulation for efficiency). If you simulate more workers, you should change
-#'   the default accordingly.
-#'
-#' @seealso \code{\link{SimParamBee}} field \code{pDownsize}
-#'
-#' @return numeric, proportion of removed workers
+#' @return numeric, downsize proportion
 #'
 #' @examples
-#' pDownsizeUnif()
-#' pDownsizeUnif()
-#' p <- pDownsizeUnif(n = 1000)
+#' downsizePUnif()
+#' downsizePUnif()
+#' p <- downsizePUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
-#'
-#' # Example for pDownsizeColonyStrength()
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 10)
-#' nWorkers(colony) # weak colony
-#' pDownsizeColonyStrength(colony)
-#' pDownsizeColonyStrength(colony)
-#' colony <- addWorkers(colony, nInd = 100)
-#' nWorkers(colony) # strong colony
-#' pDownsizeColonyStrength(colony)
-#' pDownsizeColonyStrength(colony)
-#'
-#' # Logic behind pDownsizeColonyStrength()
-#' nWorkersFull <- 100
-#' nWorkers <- 0:200
-#' pRemove <- 1 - rbeta(
-#'   n = length(nWorkers),
-#'   shape1 = nWorkers,
-#'   shape2 = 3 * nWorkers + nWorkersFull
-#' )
-#' plot(pRemove ~ nWorkers, ylim = c(0, 1))
-#' abline(v = nWorkersFull)
-#' pNew <- 1 - pRemove
-#' plot(pNew ~ nWorkers, ylim = c(0, 1))
-#' abline(v = nWorkersFull)
 #' @export
-pDownsizeUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
+downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
   return(runif(n = n, min = min, max = max))
-}
-
-#' @describeIn pDownsize Sample the proportion of removed workers in downsizing
-#'   based on colony strength
-#' @export
-pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
-  nW <- nWorkers(colony)
-  pSurvive <- rbeta(
-    n = n,
-    shape1 = nW / scale,
-    shape2 = (2 * nW + nWorkersFull) / scale
-  )
-  return(1 - pSurvive)
 }
 
 # phenoFunctions ----
@@ -1170,22 +1129,25 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' @rdname phenoQueenPlusSumOfWorkers
 #' @title Sample colony phenotype
 #'
-#' @description Sample colony phenotype when \code{colonyFUN = NULL} (see
-#'   \code{\link{SimParamBee}$phenoColony}) - this is just an example and you
-#'   will likely want to define your own sampling functions!
+#' @description Sample colony phenotype - used when \code{colonyFUN = NULL} (see
+#'   \code{\link{SimParamBee}$phenoColony}).
+#'
+#'   This is just an example. You can provide your own functions that satisfy
+#'   your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param queenTrait numeric, trait that represents queen's effect on honey
-#'   yield (defined in \code{\link{SimParamBee}} - see examples)
-#' @param workersTrait numeric, trait that represents wokers's effect on honey
-#'   yield (defined in \code{\link{SimParamBee}} - see examples)
+#' @param queenTrait numeric, trait that represents queen's effect on the
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{NULL} then this effect is 0
+#' @param workersTrait numeric, trait that represents workers's effect on the
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{NULL} then this effect is 0
 #' @param checkProduction logical, does the phenotype depend on the production
-#'   status of colony; if yes and production is not turned on, the result is a 0
+#'   status of colony; if yes and production is not \code{TRUE}, the result is
+#'   a 0
 #'
-#' @details This function returns 0 when production in a colony is not turned on
-#'   (see \code{\link{getEvents}}).
-#'
-#' @seealso \code{\link{SimParamBee}} field \code{phenoColony}
+#' @seealso \code{\link{SimParamBee}} field \code{phenoColony} and
+#'   \code{\link{getEvents}}
 #'
 #' @return numeric matrix with a single value
 #'
@@ -1198,7 +1160,8 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' # 2) workers' effect on colony honey yield
 #' # The traits will have negative genetic correlation and heritability of 0.25
 #' meanP <- c(20, 0)
-#' varA <- c(1, 1 / 10)
+#' nWorkers <- 10
+#' varA <- c(1, 1 / nWorkers)
 #' corA <- matrix(data = c(
 #'   1.0, -0.5,
 #'   -0.5, 1.0
@@ -1212,7 +1175,7 @@ pDownsizeColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1
 #' drones <- createDrones(x = basePop[1], nInd = 5)
 #' colony <- createColony(x = basePop[2])
 #' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- buildUpColony(colony, nWorkers = 10)
+#' colony <- buildUpColony(colony, nWorkers = nWorkers)
 #'
 #' # Set phenotypes for all colony individuals
 #' colony <- setPhenoColony(colony)
@@ -1243,13 +1206,19 @@ phenoQueenPlusSumOfWorkers <- function(colony, queenTrait = 1,
                                        checkProduction = TRUE) {
   # TODO: should we add checks for other events too? say swarming?
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
-  queenEff <- colony@queen@pheno[, queenTrait]
-  sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
+  if (is.null(queenTrait)) {
+    queenEff <- 0
+  } else {
+    queenEff <- colony@queen@pheno[, queenTrait]
+  }
+  if (is.null(workersTrait)) {
+    sumOfWorkersEff <- 0
+  } else {
+    sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
+  }
   colonyPheno <- queenEff + sumOfWorkersEff
-  if (checkProduction) {
-    if (!colony@production) {
-      colonyPheno <- 0
-    }
+  if (checkProduction && !colony@production) {
+    colonyPheno <- 0
   }
   return(matrix(colonyPheno))
 }
