@@ -43,22 +43,22 @@ library(package = "SIMplyBee")
 
 # Initiating with genomes and parameters
 
-We initiate simulation by simulating honyebee genomes. We can quickly generate
+We initiate the simulation by simulating honeybee genomes. We can quickly generate
 genomes using AlphaSimR's `quickHaplo()` or with SIMplyBee's `TODO()` with
 appropriate honeybee genome parameters and demography. We will use
-`quickHaplo()` and simulate genomes of two founding individuals. The genomes
-will be represented by only three chromosomes and 1000 segregating sites per
-chromosome. Honeybees have 16 chromosomes and way more segregating sites per
-chromosome, but we want a quick simulation here.
+`quickHaplo()` and simulate genomes of two founding individuals. 
+In this example, the genomes will be represented by only three chromosomes
+and 1000 segregating sites per chromosome. Honeybees have 16 chromosomes 
+and far more segregating sites per chromosome, but we want a quick simulation here.
 
 ```{r founder genomes}
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 ```
 
 Now we are ready to setup global simulation parameters using `SimParamBee`.
-`SimParamBee` enables tweaking many simulation settings, which you can read
+`SimParamBee` enables the user to tweak many simulation settings, which you can read
 about in the help pages (`help(SimParamBee)` and `help(SimParam)`). Here we will
-only point out that we recommend saving this object with the name `SP`. Namely,
+point out that we recommend saving this object with the name `SP`. Namely,
 all SIMplyBee functions will use this object, if you don't directly specify
 `simParamBee` argument.
 
@@ -96,12 +96,12 @@ baseDrones <- createDrones(x = baseQueens[1], nInd = 5)
 baseDrones
 ```
  
- A keen reader will notice that drones' ploidy is two. We will address this in
- the next sections.
+A keen reader will notice that drones' ploidy is two. We will address this in
+the next sections.
 
 # Creating and building up a colony
 
-We will use the other virging queen to create a colony. In SIMplyBee a colony is
+We will use the other virgin queen to create a colony. In SIMplyBee a colony is
 an object of `Colony` class with all sorts of information.
 
 ```{r colony}
@@ -147,11 +147,11 @@ colony
 
 Lets explore this colony. In every colony we have different groups of
 individuals (castes). These include: queen, fathers, workers, drones, and virgin
-queens. Queen controls the colony, workers do all the hard work, drones
-disseminate queen's genes, and one of virgin queens will eventually replace the
+queens. The queen controls the colony, workers do all the hard work, drones
+disseminate queen's genes, and one of the virgin queens will eventually replace the
 queen. We also store fathers, which represent drones that the queen mated with.
-Storing fathers enables us to generate colony members on demand. Let's count how
-many individuals we have for each caste.
+Storing fathers enables us to generate colony members on demand.
+Let's count how many individuals we have for each caste.
 
 ```{r colony numbers}
 nQueens(colony)
@@ -179,14 +179,16 @@ view the complete colony data structure with `str()`.
 str(colony)
 ```
 
-To explore the various accessor or modificator functions, study the SIMplyBee's
+To explore the various accessor or modification functions, study the SIMplyBee's
 index of functions.
 
 ```{r help, eval = FALSE}
 help(SIMplyBee)
 ```
 
-TODO: add colony creation image
+TODO: add colony creation image- not working yet 
+# knitr::include_graphics("~/Desktop/GitHub/SIMplyBee/SIMplyBee/vignettes/images/founderpop_diagram2.pdf", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
+
 
 # Sex and caste
 
@@ -236,7 +238,7 @@ These drones are usually discarded by workers. SIMplyBee doesn't store these
 unviable drones, but it does store their number.
  
 We can retrieve information about csd variation with `getCsdAlleles()`. For
-details on where is the csd locus and the number of distinct alleles see
+details on where the csd locus is and the number of distinct alleles, see
 `help(SimParamBee)`. The output below shows two sequences (in two rows) of 0s
 and 1s representing respectively ancestral and mutation alleles along the csd
 locus for the queen. You can see that the two sequences are different, meaning
