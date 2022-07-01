@@ -291,12 +291,12 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' @param csdAlleles list or \code{NULL}, can only be not \code{NULL} when input
 #' is \code{link{MapPop-class}}. If not null, the user has to provide a list of
 #' matrices or data frames with two rows and n columns, where n is the length of the csd
-#' as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+#' as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
 #' individual. The two haplotypes must not be the same, as the function does not allow
 #' to edit the csd to a homozygous state. If the parameter is \code{NULL},
 #' the function samples a heterozygous csd genotype for each individual from
 #' all possible csd alleles.
-#' @param simParamBee \code{\link{simParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
@@ -375,7 +375,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     ret <- newPop(x)
     if (!is.null(simParamBee$csdChr)) {
       if (editCsd) {
-      ret <- editCsdLocus(ret, alleles = csdAlleles)
+        ret <- editCsdLocus(ret, alleles = csdAlleles, simParamBee = simParamBee)
       }
     }
     ret@sex[] <- "F"

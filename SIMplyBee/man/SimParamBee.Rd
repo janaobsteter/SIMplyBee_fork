@@ -305,50 +305,50 @@ generate this object}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{SimParamBee$new()}}
-\item \href{#method-addToCaste}{\code{SimParamBee$addToCaste()}}
-\item \href{#method-changeCaste}{\code{SimParamBee$changeCaste()}}
-\item \href{#method-clone}{\code{SimParamBee$clone()}}
+\item \href{#method-SimParamBee-new}{\code{SimParamBee$new()}}
+\item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
+\item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
+\item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip">}\href{../../AlphaSimR/html/SimParam.html#method-addSnpChip}{\code{AlphaSimR::SimParam$addSnpChip()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip">}\href{../../AlphaSimR/html/SimParam.html#method-addStructuredSnpChip}{\code{AlphaSimR::SimParam$addStructuredSnpChip()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed">}\href{../../AlphaSimR/html/SimParam.html#method-addToPed}{\code{AlphaSimR::SimParam$addToPed()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec">}\href{../../AlphaSimR/html/SimParam.html#method-addToRec}{\code{AlphaSimR::SimParam$addToRec()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitA}{\code{AlphaSimR::SimParam$addTraitA()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAD}{\code{AlphaSimR::SimParam$addTraitAD()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitADE}{\code{AlphaSimR::SimParam$addTraitADE()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitADEG}{\code{AlphaSimR::SimParam$addTraitADEG()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitADG}{\code{AlphaSimR::SimParam$addTraitADG()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAE}{\code{AlphaSimR::SimParam$addTraitAE()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAEG}{\code{AlphaSimR::SimParam$addTraitAEG()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAG}{\code{AlphaSimR::SimParam$addTraitAG()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo">}\href{../../AlphaSimR/html/SimParam.html#method-ibdHaplo}{\code{AlphaSimR::SimParam$ibdHaplo()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait">}\href{../../AlphaSimR/html/SimParam.html#method-manAddTrait}{\code{AlphaSimR::SimParam$manAddTrait()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait">}\href{../../AlphaSimR/html/SimParam.html#method-removeTrait}{\code{AlphaSimR::SimParam$removeTrait()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits">}\href{../../AlphaSimR/html/SimParam.html#method-rescaleTraits}{\code{AlphaSimR::SimParam$rescaleTraits()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed">}\href{../../AlphaSimR/html/SimParam.html#method-resetPed}{\code{AlphaSimR::SimParam$resetPed()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites">}\href{../../AlphaSimR/html/SimParam.html#method-restrSegSites}{\code{AlphaSimR::SimParam$restrSegSites()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE">}\href{../../AlphaSimR/html/SimParam.html#method-setCorE}{\code{AlphaSimR::SimParam$setCorE()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio">}\href{../../AlphaSimR/html/SimParam.html#method-setRecombRatio}{\code{AlphaSimR::SimParam$setRecombRatio()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes">}\href{../../AlphaSimR/html/SimParam.html#method-setSexes}{\code{AlphaSimR::SimParam$setSexes()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed">}\href{../../AlphaSimR/html/SimParam.html#method-setTrackPed}{\code{AlphaSimR::SimParam$setTrackPed()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec">}\href{../../AlphaSimR/html/SimParam.html#method-setTrackRec}{\code{AlphaSimR::SimParam$setTrackRec()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE">}\href{../../AlphaSimR/html/SimParam.html#method-setVarE}{\code{AlphaSimR::SimParam$setVarE()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap">}\href{../../AlphaSimR/html/SimParam.html#method-switchFemaleMap}{\code{AlphaSimR::SimParam$switchFemaleMap()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap">}\href{../../AlphaSimR/html/SimParam.html#method-switchGenMap}{\code{AlphaSimR::SimParam$switchGenMap()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap">}\href{../../AlphaSimR/html/SimParam.html#method-switchMaleMap}{\code{AlphaSimR::SimParam$switchMaleMap()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait">}\href{../../AlphaSimR/html/SimParam.html#method-switchTrait}{\code{AlphaSimR::SimParam$switchTrait()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId">}\href{../../AlphaSimR/html/SimParam.html#method-updateLastId}{\code{AlphaSimR::SimParam$updateLastId()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChip'><code>AlphaSimR::SimParam$addSnpChip()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addStructuredSnpChip'><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToPed'><code>AlphaSimR::SimParam$addToPed()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToRec'><code>AlphaSimR::SimParam$addToRec()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitA'><code>AlphaSimR::SimParam$addTraitA()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAD'><code>AlphaSimR::SimParam$addTraitAD()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADE'><code>AlphaSimR::SimParam$addTraitADE()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADEG'><code>AlphaSimR::SimParam$addTraitADEG()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADG'><code>AlphaSimR::SimParam$addTraitADG()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAE'><code>AlphaSimR::SimParam$addTraitAE()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAEG'><code>AlphaSimR::SimParam$addTraitAEG()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAG'><code>AlphaSimR::SimParam$addTraitAG()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-ibdHaplo'><code>AlphaSimR::SimParam$ibdHaplo()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-manAddTrait'><code>AlphaSimR::SimParam$manAddTrait()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-removeTrait'><code>AlphaSimR::SimParam$removeTrait()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-rescaleTraits'><code>AlphaSimR::SimParam$rescaleTraits()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-resetPed'><code>AlphaSimR::SimParam$resetPed()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-restrSegSites'><code>AlphaSimR::SimParam$restrSegSites()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setCorE'><code>AlphaSimR::SimParam$setCorE()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setRecombRatio'><code>AlphaSimR::SimParam$setRecombRatio()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setSexes'><code>AlphaSimR::SimParam$setSexes()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackPed'><code>AlphaSimR::SimParam$setTrackPed()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackRec'><code>AlphaSimR::SimParam$setTrackRec()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setVarE'><code>AlphaSimR::SimParam$setVarE()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchFemaleMap'><code>AlphaSimR::SimParam$switchFemaleMap()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchGenMap'><code>AlphaSimR::SimParam$switchGenMap()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchMaleMap'><code>AlphaSimR::SimParam$switchMaleMap()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchTrait'><code>AlphaSimR::SimParam$switchTrait()</code></a></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-updateLastId'><code>AlphaSimR::SimParam$updateLastId()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-SimParamBee-new"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-new}{}}}
 \subsection{Method \code{new()}}{
 Starts the process of building a new simulation by creating
   a new SimParamBee object and assigning a founder population of genomes
@@ -431,8 +431,8 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-addToCaste"></a>}}
-\if{latex}{\out{\hypertarget{method-addToCaste}{}}}
+\if{html}{\out{<a id="method-SimParamBee-addToCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-addToCaste}{}}}
 \subsection{Method \code{addToCaste()}}{
 Store caste information (for internal use only!)
 \subsection{Usage}{
@@ -472,8 +472,8 @@ SP$caste
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-changeCaste"></a>}}
-\if{latex}{\out{\hypertarget{method-changeCaste}{}}}
+\if{html}{\out{<a id="method-SimParamBee-changeCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-changeCaste}{}}}
 \subsection{Method \code{changeCaste()}}{
 Change caste information (for internal use only!)
 \subsection{Usage}{
@@ -511,8 +511,8 @@ SP$caste
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-SimParamBee-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

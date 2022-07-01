@@ -6208,8 +6208,6 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
   return(ret)
 }
 
-
-
 #' @title Edit genome at a single diploid site in a population
 #'
 #' @description
@@ -6235,14 +6233,12 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' #Change individual 1 to homozygous for the 1 allele
 #' #at locus 1, chromosome 1
-#' pop2 <- editGenome_OneSite_Diploid_Pop(pop,
-#'                                       chr = 1, segSite = 1,
-#'                                       alleles = list(c(1, 1), c(0, 1)),
-#'                                       simParam = SP)
+#' pop2 <- SIMplyBee:::editGenome_OneSite_Diploid_Pop(pop,
+#'                                                    chr = 1, segSite = 1,
+#'                                                    alleles = list(c(1, 1), c(0, 1)),
+#'                                                    simParam = SP)
 #' getSegSiteHaplo(pop)
 #' getSegSiteHaplo(pop2)
-#'
-#' @export
 editGenome_OneSite_Diploid_Pop = function (pop, chr, segSite, alleles, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee = get("SP", envir = .GlobalEnv)
@@ -6272,7 +6268,6 @@ editGenome_OneSite_Diploid_Pop = function (pop, chr, segSite, alleles, simParamB
   return(pop)
 }
 
-
 #' @title Edit the csd locus
 #'
 #' @description
@@ -6285,12 +6280,12 @@ editGenome_OneSite_Diploid_Pop = function (pop, chr, segSite, alleles, simParamB
 #' @param pop an object of \code{\link{Pop-class}}
 #' @param alleles list or \code{NULL}. If not null, the user has to provide a list of
 #' matrices or data frames with two rows and n columns, where n is the length of the csd
-#' as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+#' as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
 #' individual. The two haplotypes must not be the same, as the function does not allow
 #' to edit the csd to a homozygous state. If the parameter is \code{NULL},
 #' the function samples a heterozygous csd genotype for each individual from
 #' all possible csd alleles.
-#' @param simParamBee an object of \code{\link{simParamBee}}
+#' @param simParamBee an object of \code{\link{SimParamBee}}
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
 #'
@@ -6302,25 +6297,27 @@ editGenome_OneSite_Diploid_Pop = function (pop, chr, segSite, alleles, simParamB
 #' nrow(getCsdAlleles(basePop, unique = TRUE))
 #' all(isCsdHeterozygous(basePop))
 #'
-#' basePopEdited <- editCsd(basePop)
+#' basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
 #' nrow(getCsdAlleles(basePopEdited, unique = TRUE))
 #' all(isCsdHeterozygous(basePopEdited))
-#' @export
 editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   csdSites = simParamBee$csdPosStart:simParamBee$csdPosStop
   if (is.null(alleles)) {
+    # Create a matrix of all possible csd alleles
     alleles <- expand.grid(as.data.frame(matrix(rep(0:1, length(csdSites)), nrow = 2, byrow=F)))
-    alleles <- sapply(seq_len(pop@nInd), FUN = function(x) list(alleles[sample(rownames(alleles), 2, replace = F),]))
+    # Sample two different alleles (without replacement) for each individual
+    nAlleles <- simParamBee$nCsdAlleles
+    alleles <- sapply(seq_len(pop@nInd), FUN = function(x) list(alleles[sample(nAlleles, size = 2, replace = F),]))
   }
 
   if (pop@nInd != length(alleles)) {
-    stop("The length of the allele vector must match the number of individuals in the pop parameter.")
+    stop("The length of the allele list must match the number of individuals in the pop argument")
   }
   if (any(sapply(alleles, FUN = function(x) all(x[1,] == x[2,])))) {
-    stop("You must provide two different haplotypes for each individual!")
+    stop("You must provide two different alleles for each individual!")
   }
 
   for (site in csdSites) {

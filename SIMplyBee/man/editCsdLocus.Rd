@@ -11,13 +11,13 @@ editCsdLocus(pop, alleles = NULL, simParamBee = NULL)
 
 \item{alleles}{list or \code{NULL}. If not null, the user has to provide a list of
 matrices or data frames with two rows and n columns, where n is the length of the csd
-as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
 individual. The two haplotypes must not be the same, as the function does not allow
 to edit the csd to a homozygous state. If the parameter is \code{NULL},
 the function samples a heterozygous csd genotype for each individual from
 all possible csd alleles.}
 
-\item{simParamBee}{an object of \code{\link{simParamBee}}}
+\item{simParamBee}{an object of \code{\link{SimParamBee}}}
 }
 \value{
 Returns an object of \code{\link{Pop-class}}
@@ -36,7 +36,7 @@ basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
 nrow(getCsdAlleles(basePop, unique = TRUE))
 all(isCsdHeterozygous(basePop))
 
-basePopEdited <- editCsd(basePop)
+basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
 nrow(getCsdAlleles(basePopEdited, unique = TRUE))
 all(isCsdHeterozygous(basePopEdited))
 }

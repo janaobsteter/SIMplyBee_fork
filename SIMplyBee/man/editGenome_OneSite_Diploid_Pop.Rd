@@ -35,11 +35,10 @@ pop <- createVirginQueens(founderGenomes)
 
 #Change individual 1 to homozygous for the 1 allele
 #at locus 1, chromosome 1
-pop2 <- editGenome_OneSite_Diploid_Pop(pop,
-                                      chr = 1, segSite = 1,
-                                      alleles = list(c(1, 1), c(0, 1)),
-                                      simParam = SP)
+pop2 <- SIMplyBee:::editGenome_OneSite_Diploid_Pop(pop,
+                                                   chr = 1, segSite = 1,
+                                                   alleles = list(c(1, 1), c(0, 1)),
+                                                   simParam = SP)
 getSegSiteHaplo(pop)
 getSegSiteHaplo(pop2)
-
 }

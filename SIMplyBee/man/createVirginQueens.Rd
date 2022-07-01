@@ -31,13 +31,13 @@ see parameter \code{csdAlleles}}
 \item{csdAlleles}{list or \code{NULL}, can only be not \code{NULL} when input
 is \code{link{MapPop-class}}. If not null, the user has to provide a list of
 matrices or data frames with two rows and n columns, where n is the length of the csd
-as specific in \code{\link{simParamBee}}, each representing a csd haplotype for each
+as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
 individual. The two haplotypes must not be the same, as the function does not allow
 to edit the csd to a homozygous state. If the parameter is \code{NULL},
 the function samples a heterozygous csd genotype for each individual from
 all possible csd alleles.}
 
-\item{simParamBee}{\code{\link{simParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{link{MapPop-class}} returns

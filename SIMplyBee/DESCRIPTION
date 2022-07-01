@@ -27,7 +27,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1), ggplot2
 Depends: R (>= 3.3.0), AlphaSimR (>= 1.1.2)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests: 
     rmarkdown,
     knitr,
