@@ -1258,10 +1258,11 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated;
 #'   \code{\link{isVirginQueen}} test will be run on these individuals
-#' @param drones \code{\link{Pop-class}}, a group of drones that could be mated
-#'   with virgin queen(s); if there is more than one virgin queen, then the
-#'   \code{fathers} are partitioned into multiple groups of \code{nFathers} size
-#'    using \code{\link{pullDroneGroupsFromDCA}}
+#' @param fathers \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
+#'   group(s) of drones that will be mated with virgin queen(s);
+#'   if there is more than one virgin queen, the user has to provide
+#'   a list of drone \code{\link{Pop-class}}. For this, the user can use
+#'   \code{\link{pullDroneGroupsFromDCA}}
 #' @param nFathers numeric of function, number of drones that a virgin queen
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param removeFathers logical, removes those \code{drones} that have already
@@ -1302,8 +1303,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' virginQueen1 <- basePop[2]
 #' (matedQueen1 <- crossVirginQueen(
 #'   pop = virginQueen1,
-#'   drones = drones[1:5],
-#'   nFathers = 5
+#'   fathers = drones[1:5]
 #' ))
 #' isQueenMated(virginQueen1)
 #' isQueenMated(matedQueen1)
@@ -1318,17 +1318,17 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' virginQueen2 <- basePop[3]
 #' (matedQueen2 <- crossVirginQueen(
 #'   pop = virginQueen2,
-#'   drones = drones[6:10],
-#'   nFathers = 5
+#'   fathers = drones[6:10]
 #' ))
 #' isQueenMated(virginQueen2)
 #' isQueenMated(matedQueen2)
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
+#' fatherGroups <- pullDroneGroupsFromDCA(drones[11:20], n = 2, nFathers = 2)
 #' matedQueens <- crossVirginQueen(
 #'   pop = c(basePop[4], basePop[5]),
-#'   drones = drones[11:15], nFathers = 2
+#'   fathers = fatherGroups
 #' )
 #' matedQueens
 #' isQueenMated(matedQueens)
@@ -1338,13 +1338,12 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Inbred mated queen (mated with her own sons)
 #' matedQueen3 <- crossVirginQueen(
 #'   pop = basePop[1],
-#'   drones = drones[16:20],
-#'   nFathers = 5
+#'   fathers = drones[16:20]
 #' )
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #' @export
-crossVirginQueen <- function(pop, drones, nFathers = NULL,
+crossVirginQueen <- function(pop, fathers, nFathers = NULL,
                              removeFathers = TRUE, checkMating = "error",
                              simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1356,29 +1355,19 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL,
   if (any(!isVirginQueen(pop))) {
     stop("Individuals in pop must be virgin queens!")
   }
-  if (!isPop(drones)) {
-    stop("Argument fathers must be a Pop class object!")
+  if (nInd(pop) != length(fathers)) {
+    stop("Length of argument drone should match the number of virgin queens!")
   }
-  if (is.null(nFathers)) {
-    nFathers <- simParamBee$nFathers
-  }
-  # skipping "if (is.function(nFathers))" since we use it below or pass it to
-  #   pullDroneGroupsFromDCA
-  if (removeFathers) {
-    drones <- drones[isDrone(drones)]
-  }
+
   nVirginQueen <- nInd(pop)
   simParamBee$changeCaste(id = pop@id, caste = "Q")
   if (nVirginQueen == 1) {
-    if (is.function(nFathers)) {
-      n <- nFathers() # see nFathersPoisson
-    } else {
-      n <- nFathers
+    if (!isPop(fathers)) {
+      stop("Argument fathers must be a Pop class object!")
     }
-    # TODO: In crossVirginQueen we select drones for mating at random, should
-    #       we use "use"?
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/205
-    fathers <- selectInd(pop = drones, nInd = n, use = "rand")
+    if (!all(isDrone(fathers))) {
+      stop("Individuals in fathers must be drones!")
+    }
     if (fathers@nInd == 0) {
       msg <- "Mating failed!"
       if (checkMating == "warning") {
@@ -1390,12 +1379,10 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL,
     simParamBee$changeCaste(id = fathers@id, caste = "F")
     pop@misc[[1]]$fathers <- fathers
   } else {
-    fatherGroups <- pullDroneGroupsFromDCA(
-      DCA = drones,
-      n = nVirginQueen,
-      nFathers = nFathers
-    )
-    if (any(sapply(fatherGroups, FUN = function(z) z@nInd == 0))) {
+    if (!all(sapply(fathers, isPop))) {
+      stop("Argument fathers must be a list of Pop class object!")
+    }
+    if (any(sapply(fathers, FUN = function(z) z@nInd == 0))) {
       msg <- "Some matings failed!"
       if (checkMating == "warning") {
         warning(msg)
@@ -1404,8 +1391,8 @@ crossVirginQueen <- function(pop, drones, nFathers = NULL,
       }
     }
     for (queen in seq_len(nVirginQueen)) {
-      simParamBee$changeCaste(id = fatherGroups[[queen]]@id, caste = "F")
-      pop@misc[[queen]]$fathers <- fatherGroups[[queen]]
+      simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
+      pop@misc[[queen]]$fathers <- fathers[[queen]]
     }
   }
 
