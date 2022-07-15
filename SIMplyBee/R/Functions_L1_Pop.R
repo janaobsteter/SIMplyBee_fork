@@ -262,8 +262,10 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use,
-                       removeFathers = removeFathers)
+    ret <- getCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -1255,8 +1257,10 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use,
-                        removeFathers = removeFathers)
+    ret <- pullCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
