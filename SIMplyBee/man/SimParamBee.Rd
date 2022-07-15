@@ -327,6 +327,7 @@ generate this object}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAEG}{\code{AlphaSimR::SimParam$addTraitAEG()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG">}\href{../../AlphaSimR/html/SimParam.html#method-addTraitAG}{\code{AlphaSimR::SimParam$addTraitAG()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo">}\href{../../AlphaSimR/html/SimParam.html#method-ibdHaplo}{\code{AlphaSimR::SimParam$ibdHaplo()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="importTrait">}\href{../../AlphaSimR/html/SimParam.html#method-importTrait}{\code{AlphaSimR::SimParam$importTrait()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait">}\href{../../AlphaSimR/html/SimParam.html#method-manAddTrait}{\code{AlphaSimR::SimParam$manAddTrait()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait">}\href{../../AlphaSimR/html/SimParam.html#method-removeTrait}{\code{AlphaSimR::SimParam$removeTrait()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits">}\href{../../AlphaSimR/html/SimParam.html#method-rescaleTraits}{\code{AlphaSimR::SimParam$rescaleTraits()}}\out{</span>}

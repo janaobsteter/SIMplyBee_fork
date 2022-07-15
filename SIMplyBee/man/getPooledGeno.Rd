@@ -48,9 +48,11 @@ getPooledGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
 (poolD <- getPooledGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
 # ... compare to queen's genotype
 genoQ[, 1:10]
-plot(y = poolD, x = genoQ, ylim = c(0, 2), xlim = c(0, 2),
-     ylab = "Average allele dosage in drones",
-     xlab = "Allele dosage in the queen")
+plot(
+  y = poolD, x = genoQ, ylim = c(0, 2), xlim = c(0, 2),
+  ylab = "Average allele dosage in drones",
+  xlab = "Allele dosage in the queen"
+)
 
 # As an exercise you could repeat the above with different numbers of drones!
 
@@ -63,9 +65,11 @@ sexQ <- rep(x = "F", times = nrow(genoF))
 sexFQ <- c(sexF, sexQ)
 genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
 (poolFQ <- getPooledGeno(x = genoFQ, type = "mean", sex = sexFQ))[, 1:10]
-plot(y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
-     ylab = "Average allele dosage in workers",
-     xlab = "Average allele dosage in the queen and fathers")
+plot(
+  y = poolW, x = poolFQ, ylim = c(0, 2), xlim = c(0, 2),
+  ylab = "Average allele dosage in workers",
+  xlab = "Average allele dosage in the queen and fathers"
+)
 
 # As an exercise you could repeat the above with different numbers of workers!
 
