@@ -17,7 +17,7 @@ editGenomeGeno(pop, chr, segSite, alleles, simParam = NULL)
 desired alleles for each individual at the segregating sites. The length of the list
 should match the number of individuals in the population}
 
-\item{simParamBee}{an object of \code{\link{SimParamBee}}}
+\item{simParam}{an object of \code{\link{SimParam}}}
 }
 \value{
 Returns an object of \code{\link{Pop-class}}

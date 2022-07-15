@@ -6226,7 +6226,7 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' @param alleles list, each element of the list contains a vector with twe two
 #' desired alleles for each individual at the segregating sites. The length of the list
 #' should match the number of individuals in the population
-#' @param simParamBee an object of \code{\link{SimParamBee}}
+#' @param simParam an object of \code{\link{SimParam}}
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
 #'
