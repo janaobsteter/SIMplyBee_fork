@@ -4,7 +4,14 @@
 \alias{createVirginQueens}
 \title{Creates virgin queens from the colony}
 \usage{
-createVirginQueens(x, nInd = NULL, year = NULL, simParamBee = NULL)
+createVirginQueens(
+  x,
+  nInd = NULL,
+  year = NULL,
+  editCsd = TRUE,
+  csdAlleles = NULL,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or
@@ -17,6 +24,20 @@ is \code{link{MapPop-class}} all individuals in \code{x} are converted
 into virgin queens}
 
 \item{year}{numeric, year of birth for virgin queens}
+
+\item{editCsd}{logical (only active when \code{x} is \code{link{MapPop-class}}),
+whether the csd locus should be edited to ensure heterozygosity at the csd
+locus (to get viable virgin queens); see \code{csdAlleles}}
+
+\item{csdAlleles}{\code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+If \code{NULL}, then the function samples a heterozygous csd genotype for
+each virgin queen from all possible csd alleles.
+If not \code{NULL}, the user provides a list of length \code{nInd} with each
+node holding a matrix or a data.frame, each having two rows and n columns.
+Each row must hold one csd haplotype (allele) that will be assigned to a
+virgin queen. The n columns span the length of the csd locus as specified
+in \code{\link{SimParamBee}}. The two csd alleles must be different to
+ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -86,4 +107,16 @@ SP$nVirginQueens <- nVirginQueensPoisson
 createVirginQueens(colony1)
 createVirginQueens(apiary)
 # nVirginQueens will vary between function calls when a function is used
+
+# csd homozygosity
+founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+nrow(getCsdAlleles(basePop, unique = TRUE))
+all(isCsdHeterozygous(basePop))
+
+basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
+nrow(getCsdAlleles(basePop, unique = TRUE))
+all(isCsdHeterozygous(basePop))
+
 }

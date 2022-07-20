@@ -262,8 +262,10 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use,
-                       removeFathers = removeFathers)
+    ret <- getCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -286,6 +288,18 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
 #'   into virgin queens
 #' @param year numeric, year of birth for virgin queens
+#' @param editCsd logical (only active when \code{x} is \code{link{MapPop-class}}),
+#'   whether the csd locus should be edited to ensure heterozygosity at the csd
+#'   locus (to get viable virgin queens); see \code{csdAlleles}
+#' @param csdAlleles \code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+#'   If \code{NULL}, then the function samples a heterozygous csd genotype for
+#'   each virgin queen from all possible csd alleles.
+#'   If not \code{NULL}, the user provides a list of length \code{nInd} with each
+#'   node holding a matrix or a data.frame, each having two rows and n columns.
+#'   Each row must hold one csd haplotype (allele) that will be assigned to a
+#'   virgin queen. The n columns span the length of the csd locus as specified
+#'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
+#'   ensure heterozygosity at the csd locus.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
@@ -347,11 +361,24 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' createVirginQueens(colony1)
 #' createVirginQueens(apiary)
 #' # nVirginQueens will vary between function calls when a function is used
+#'
+#' # csd homozygosity
+#' founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+#' basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+#' nrow(getCsdAlleles(basePop, unique = TRUE))
+#' all(isCsdHeterozygous(basePop))
+#'
+#' basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
+#' nrow(getCsdAlleles(basePop, unique = TRUE))
+#' all(isCsdHeterozygous(basePop))
+#'
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines
 #       https://github.com/HighlanderLab/SIMplyBee/issues/78
 createVirginQueens <- function(x, nInd = NULL, year = NULL,
+                               editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -362,6 +389,11 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
   # doing "if (is.function(nInd))" below
   if (isMapPop(x)) {
     ret <- newPop(x)
+    if (!is.null(simParamBee$csdChr)) {
+      if (editCsd) {
+        ret <- editCsdLocus(ret, alleles = csdAlleles, simParamBee = simParamBee)
+      }
+    }
     ret@sex[] <- "F"
     simParamBee$changeCaste(id = ret@id, caste = "V")
     if (!is.null(year)) {
@@ -1225,8 +1257,10 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use,
-                        removeFathers = removeFathers)
+    ret <- pullCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }

@@ -355,7 +355,7 @@ SimParamBee <- R6Class(
       # phenoColony initialize ----
 
       if (!is.null(phenoColony) && !is.function(phenoColony)) {
-          stop("Argument phenoColony must be a function or NULL!")
+        stop("Argument phenoColony must be a function or NULL!")
       }
       self$phenoColony <- phenoColony
 
@@ -628,13 +628,15 @@ nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
 #'   colony phenotype, say queen's fecundity
 #' @export
 nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
-                                   checkProduction = FALSE, lowerLimit = 0,
-                                   ...) {
-  ret <- round(phenoQueenPlusSumOfWorkers(colony = colony,
-                                          queenTrait = queenTrait,
-                                          workersTrait = workersTrait,
-                                          checkProduction = checkProduction,
-                                          ...))
+                                    checkProduction = FALSE, lowerLimit = 0,
+                                    ...) {
+  ret <- round(phenoQueenPlusSumOfWorkers(
+    colony = colony,
+    queenTrait = queenTrait,
+    workersTrait = workersTrait,
+    checkProduction = checkProduction,
+    ...
+  ))
   if (ret < (lowerLimit + 1)) {
     ret <- lowerLimit + 1
   }
@@ -736,11 +738,13 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
   if (isPop(x)) {
     ret <- round(x@pheno[, queenTrait])
   } else {
-    ret <- round(phenoQueenPlusSumOfWorkers(colony = x,
-                                            queenTrait = queenTrait,
-                                            workersTrait = workersTrait,
-                                            checkProduction = checkProduction,
-                                            ...))
+    ret <- round(phenoQueenPlusSumOfWorkers(
+      colony = x,
+      queenTrait = queenTrait,
+      workersTrait = workersTrait,
+      checkProduction = checkProduction,
+      ...
+    ))
   }
   if (ret < (lowerLimit + 1)) {
     ret <- lowerLimit + 1
@@ -849,9 +853,11 @@ nVirginQueensColonyPhenotype <- function(colony, queenTrait = 1,
                                          workersTrait = 2,
                                          checkProduction = FALSE,
                                          lowerLimit = 0, ...) {
-  ret <- round(phenoQueenPlusSumOfWorkers(colony = colony,
-                                          queenTrait = queenTrait,
-                                          workersTrait = workersTrait, ...))
+  ret <- round(phenoQueenPlusSumOfWorkers(
+    colony = colony,
+    queenTrait = queenTrait,
+    workersTrait = workersTrait, ...
+  ))
   if (ret < (lowerLimit + 1)) {
     ret <- lowerLimit + 1
   }
