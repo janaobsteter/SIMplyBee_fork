@@ -33,9 +33,9 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 }
 \section{Functions}{
 \itemize{
-\item \code{calcBeeAlleleFreq}: Calculate allele frequencies from honeybee genotypes
-}}
+\item \code{calcBeeAlleleFreq()}: Calculate allele frequencies from honeybee genotypes
 
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

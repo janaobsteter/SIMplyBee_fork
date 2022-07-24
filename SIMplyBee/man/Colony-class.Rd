@@ -30,13 +30,13 @@ An object holding honeybee colony
 }
 \section{Functions}{
 \itemize{
-\item \code{isColony}: Test if x is a Colony class object
+\item \code{isColony()}: Test if x is a Colony class object
 
-\item \code{show,Colony-method}: Show colony object
+\item \code{show(Colony)}: Show colony object
 
-\item \code{c,ColonyOrNULL-method}: Combine multiple colony objects
+\item \code{c(ColonyOrNULL)}: Combine multiple colony objects
+
 }}
-
 \section{Slots}{
 
 \describe{
