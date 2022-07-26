@@ -69,12 +69,12 @@ Sample a number of virgin queens - used when
 }
 \section{Functions}{
 \itemize{
-\item \code{nVirginQueensTruncPoisson}: Sample a non-zero number of virgin queens
+\item \code{nVirginQueensTruncPoisson()}: Sample a non-zero number of virgin queens
 
-\item \code{nVirginQueensColonyPhenotype}: Sample a non-zero number of virgin queens
+\item \code{nVirginQueensColonyPhenotype()}: Sample a non-zero number of virgin queens
 based on colony's phenotype, say, swarming tendency
-}}
 
+}}
 \examples{
 nVirginQueensPoisson()
 nVirginQueensPoisson()

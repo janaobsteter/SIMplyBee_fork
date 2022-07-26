@@ -262,8 +262,10 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- getCastePop(x, caste = "drones", nInd = nInd, use = use,
-                       removeFathers = removeFathers)
+    ret <- getCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -286,16 +288,18 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
 #'   into virgin queens
 #' @param year numeric, year of birth for virgin queens
-#' @param editCsd logical, whether the csd locus should be edited, for more details
-#' see parameter \code{csdAlleles}
-#' @param csdAlleles list or \code{NULL}, can only be not \code{NULL} when input
-#' is \code{link{MapPop-class}}. If not null, the user has to provide a list of
-#' matrices or data frames with two rows and n columns, where n is the length of the csd
-#' as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
-#' individual. The two haplotypes must not be the same, as the function does not allow
-#' to edit the csd to a homozygous state. If the parameter is \code{NULL},
-#' the function samples a heterozygous csd genotype for each individual from
-#' all possible csd alleles.
+#' @param editCsd logical (only active when \code{x} is \code{link{MapPop-class}}),
+#'   whether the csd locus should be edited to ensure heterozygosity at the csd
+#'   locus (to get viable virgin queens); see \code{csdAlleles}
+#' @param csdAlleles \code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+#'   If \code{NULL}, then the function samples a heterozygous csd genotype for
+#'   each virgin queen from all possible csd alleles.
+#'   If not \code{NULL}, the user provides a list of length \code{nInd} with each
+#'   node holding a matrix or a data.frame, each having two rows and n columns.
+#'   Each row must hold one csd haplotype (allele) that will be assigned to a
+#'   virgin queen. The n columns span the length of the csd locus as specified
+#'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
+#'   ensure heterozygosity at the csd locus.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
@@ -357,6 +361,18 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' createVirginQueens(colony1)
 #' createVirginQueens(apiary)
 #' # nVirginQueens will vary between function calls when a function is used
+#'
+#' # csd homozygosity
+#' founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+#' basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+#' nrow(getCsdAlleles(basePop, unique = TRUE))
+#' all(isCsdHeterozygous(basePop))
+#'
+#' basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
+#' nrow(getCsdAlleles(basePop, unique = TRUE))
+#' all(isCsdHeterozygous(basePop))
+#'
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines
@@ -1240,8 +1256,10 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   if (isColony(x) | isColonies(x)) {
-    ret <- pullCastePop(x, caste = "drones", nInd = nInd, use = use,
-                        removeFathers = removeFathers)
+    ret <- pullCastePop(x,
+      caste = "drones", nInd = nInd, use = use,
+      removeFathers = removeFathers
+    )
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
   }
@@ -1546,117 +1564,3 @@ setQueensYearOfBirth <- function(x, year) {
 #' @describeIn setQueensYearOfBirth Set the queen's year of birth
 #' @export
 setQueensYOB <- setQueensYearOfBirth
-
-#' @rdname setMisc
-#' @title Set miscelaneous information in a population
-#'
-#' @description Level 1 function that sets the queen's year of birth.
-#'
-#' @param x \code{\link{Pop-class}}
-#' @param node character, name of the node to set within the \code{x@misc} slot
-#' @param value, value to be saved into \code{x@misc[[*]][[slot]]}; length of
-#'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
-#'   it is repeated using \code{rep}
-#'
-#' @return \code{\link{Pop-class}} with \code{x@misc[[*]][[slot]]} set
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#' basePop@misc
-#'
-#' basePop <- setMisc(basePop, node = "info", value = c("A", "B", "C"))
-#' basePop@misc
-#'
-#' basePop <- setMisc(basePop, node = "info", value = c("B", "C", "A"))
-#' basePop@misc
-#'
-#' basePop <- setMisc(basePop, node = "info2", value = "A")
-#' basePop@misc
-#' @export
-# TODO: move to AlphaSimR - track
-#       https://github.com/gaynorr/AlphaSimR/pull/51
-#       https://github.com/HighlanderLab/SIMplyBee/issues/144
-setMisc <- function(x, node, value) {
-  if (isPop(x)) {
-    n <- nInd(x)
-    if (length(value) == 1 && n > 1) {
-      value <- rep(x = value, times = n)
-    }
-    for (ind in seq_len(n)) {
-      x@misc[[ind]][[node]] <- value[ind]
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
-  return(x)
-}
-
-#' @rdname getMisc
-#' @title Get miscelaneous information in a population
-#'
-#' @description Get miscelaneous information in a population
-#'
-#' @param x \code{\link{Pop-class}}
-#' @param node character, name of the node to get from the \code{x@misc} slot;
-#'   if \code{NULL} the whole \code{x@misc} slot is returned
-#'
-#' @return The \code{x@misc} slot or its nodes \code{x@misc[[*]][[node]]}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParam$new(founderGenomes)
-#' basePop <- newPop(founderGenomes)
-#'
-#' basePop <- setMisc(basePop, node = "info", value = 1)
-#' basePop@misc
-#' getMisc(x = basePop, node = "info")
-#'
-#' basePop <- setMisc(basePop, node = "info2", value = c("A", "B", "C"))
-#' basePop@misc
-#' getMisc(x = basePop, node = "info2")
-#'
-#' n <- nInd(basePop)
-#' location <- vector(mode = "list", length = n)
-#' for (ind in seq_len(n)) {
-#'   location[[ind]] <- runif(n = 2, min = 0, max = 100)
-#' }
-#' location
-#' basePop <- setMisc(basePop, node = "location", value = location)
-#' basePop@misc
-#' getMisc(x = basePop, node = "location")
-#'
-#' n <- nInd(basePop)
-#' location <- vector(mode = "list", length = n)
-#' for (ind in c(1, 3)) {
-#'   location[[ind]] <- runif(n = 2, min = 0, max = 100)
-#' }
-#' location
-#' basePop <- setMisc(basePop, node = "location", value = location)
-#' basePop@misc
-#' getMisc(x = basePop, node = "location")
-#'
-#' getMisc(x = basePop)
-#' @export
-# TODO: move to AlphaSimR - track
-#       https://github.com/gaynorr/AlphaSimR/pull/51
-#       https://github.com/HighlanderLab/SIMplyBee/issues/144
-getMisc <- function(x, node = NULL) {
-  if (isPop(x)) {
-    if (is.null(node)) {
-      ret <- x@misc
-    } else {
-      nInd <- nInd(x)
-      ret <- vector(mode = "list", length = nInd)
-      for (ind in seq_len(nInd)) {
-        if (!is.null(x@misc[[ind]][[node]])) {
-          ret[ind] <- x@misc[[ind]][node]
-        }
-      }
-    }
-  } else {
-    stop("Argument x must be a Pop class object!")
-  }
-  return(ret)
-}

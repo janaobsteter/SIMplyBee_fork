@@ -100,17 +100,17 @@ Level 0 function that returns SNP array haplotypes of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSnpHaplo}: Access SNP array haplotype data of the queen
+\item \code{getQueensSnpHaplo()}: Access SNP array haplotype data of the queen
 
-\item \code{getFathersSnpHaplo}: Access SNP array haplotype data of fathers
+\item \code{getFathersSnpHaplo()}: Access SNP array haplotype data of fathers
 
-\item \code{getVirginQueensSnpHaplo}: Access SNP array haplotype data of virgin queens
+\item \code{getVirginQueensSnpHaplo()}: Access SNP array haplotype data of virgin queens
 
-\item \code{getWorkersSnpHaplo}: Access SNP array haplotype of workers
+\item \code{getWorkersSnpHaplo()}: Access SNP array haplotype of workers
 
-\item \code{getDronesSnpHaplo}: Access SNP array haplotype data of drones
+\item \code{getDronesSnpHaplo()}: Access SNP array haplotype data of drones
+
 }}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

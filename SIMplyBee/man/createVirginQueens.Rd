@@ -25,17 +25,19 @@ into virgin queens}
 
 \item{year}{numeric, year of birth for virgin queens}
 
-\item{editCsd}{logical, whether the csd locus should be edited, for more details
-see parameter \code{csdAlleles}}
+\item{editCsd}{logical (only active when \code{x} is \code{link{MapPop-class}}),
+whether the csd locus should be edited to ensure heterozygosity at the csd
+locus (to get viable virgin queens); see \code{csdAlleles}}
 
-\item{csdAlleles}{list or \code{NULL}, can only be not \code{NULL} when input
-is \code{link{MapPop-class}}. If not null, the user has to provide a list of
-matrices or data frames with two rows and n columns, where n is the length of the csd
-as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
-individual. The two haplotypes must not be the same, as the function does not allow
-to edit the csd to a homozygous state. If the parameter is \code{NULL},
-the function samples a heterozygous csd genotype for each individual from
-all possible csd alleles.}
+\item{csdAlleles}{\code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+If \code{NULL}, then the function samples a heterozygous csd genotype for
+each virgin queen from all possible csd alleles.
+If not \code{NULL}, the user provides a list of length \code{nInd} with each
+node holding a matrix or a data.frame, each having two rows and n columns.
+Each row must hold one csd haplotype (allele) that will be assigned to a
+virgin queen. The n columns span the length of the csd locus as specified
+in \code{\link{SimParamBee}}. The two csd alleles must be different to
+ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -105,4 +107,16 @@ SP$nVirginQueens <- nVirginQueensPoisson
 createVirginQueens(colony1)
 createVirginQueens(apiary)
 # nVirginQueens will vary between function calls when a function is used
+
+# csd homozygosity
+founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+nrow(getCsdAlleles(basePop, unique = TRUE))
+all(isCsdHeterozygous(basePop))
+
+basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
+nrow(getCsdAlleles(basePop, unique = TRUE))
+all(isCsdHeterozygous(basePop))
+
 }

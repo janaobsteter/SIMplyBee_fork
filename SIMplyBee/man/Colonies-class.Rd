@@ -62,27 +62,27 @@ An object holding a collection of honeybee colonies. It behaves
 }
 \section{Functions}{
 \itemize{
-\item \code{isColonies}: Test if x is a Colonies class object
+\item \code{isColonies()}: Test if x is a Colonies class object
 
-\item \code{show,Colonies-method}: Show colonies object
+\item \code{show(Colonies)}: Show colonies object
 
-\item \code{c,Colonies-method}: Combine multiple colony and colonies objects
+\item \code{c(Colonies)}: Combine multiple colony and colonies objects
 
-\item \code{c,ColoniesOrNULL-method}: Combine multiple colony and colonies objects
+\item \code{c(ColoniesOrNULL)}: Combine multiple colony and colonies objects
 
-\item \code{[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
+\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{Colonies-class}})
 
-\item \code{[,Colonies,character-method}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
+\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{Colonies-class}})
 
-\item \code{[[,Colonies,integerOrNumericOrLogical-method}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
 
-\item \code{[[,Colonies,character-method}: Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
 
-\item \code{[<-,Colonies,integerOrNumericOrLogicalOrCharacter,ANY,Colonies-method}: Assign colonies into colonies
+\item \code{`[`(x = Colonies, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into colonies
 
-\item \code{[[<-,Colonies,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}: Assign colony into colonies
+\item \code{`[[`(x = Colonies, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colony into colonies
+
 }}
-
 \section{Slots}{
 
 \describe{

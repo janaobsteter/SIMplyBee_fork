@@ -7,27 +7,30 @@
 editCsdLocus(pop, alleles = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{pop}{an object of \code{\link{Pop-class}}}
+\item{pop}{\code{\link{Pop-class}}}
 
-\item{alleles}{list or \code{NULL}. If not null, the user has to provide a list of
-matrices or data frames with two rows and n columns, where n is the length of the csd
-as specific in \code{\link{SimParamBee}}, each representing a csd haplotype for each
-individual. The two haplotypes must not be the same, as the function does not allow
-to edit the csd to a homozygous state. If the parameter is \code{NULL},
-the function samples a heterozygous csd genotype for each individual from
-all possible csd alleles.}
+\item{alleles}{\code{NULL} or list;
+If \code{NULL}, then the function samples a heterozygous csd genotype for
+each virgin queen from all possible csd alleles.
+If not \code{NULL}, the user provides a list of length \code{nInd} with each
+node holding a matrix or a data.frame, each having two rows and n columns.
+Each row must hold one csd haplotype (allele) that will be assigned to a
+virgin queen. The n columns span the length of the csd locus as specified
+in \code{\link{SimParamBee}}. The two csd alleles must be different to
+ensure heterozygosity at the csd locus.}
 
-\item{simParamBee}{an object of \code{\link{SimParamBee}}}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters.}
 }
 \value{
 Returns an object of \code{\link{Pop-class}}
 }
 \description{
-Edits the csd locus in an entire population of individuals. The user
-can provide a list of csd alleles for each individual or, alternatively,
-the function samples a heterozygous genotype for each individual
-from all possible csd alleles. The gv slot is recalculated to
-reflect the any changes due to editing, but other slots remain the same.
+Edits the csd locus in an entire population of individuals to
+  ensure heterozygosity. The user can provide a list of csd alleles for each
+  individual or, alternatively, the function samples a heterozygous genotype
+  for each individual from all possible csd alleles. The gv slot is
+  recalculated to reflect the any changes due to editing, but other slots
+  remain the same.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
