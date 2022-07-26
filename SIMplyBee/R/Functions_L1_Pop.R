@@ -129,6 +129,9 @@
 #'
 #' getCastePop(colony1, caste = "all")
 #' getCastePop(colony2, caste = "all")
+#'
+#' colony1@workers <- colony1@workers[0]
+#' getCastePop(colony1)
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
                         removeFathers = TRUE) {
@@ -179,8 +182,13 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
         if (nIndRequested > nIndAvailable) {
           nIndRequested <- nIndAvailable
         }
+        if (nIndAvailable == 0) {
+          start <- 0
+        } else {
+          start <- 1
+        }
         if (use == "order") {
-          ret <- pop[1:nIndRequested]
+          ret <- pop[start:nIndRequested]
         } else {
           ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
         }
