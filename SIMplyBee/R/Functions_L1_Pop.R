@@ -598,7 +598,6 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' SP$recHist
 #' SP$recHist[[11]][[1]][1]
 #' SP$recHist[[11]][[1]][2]
-#' @export
 beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1294,18 +1293,23 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   brood.
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
+#' drones <- createDrones(x = basePop[1], nInd = 100)
 #'
+#' # If input is a Pop class of virgin queen(s)
 #' virginQueen1 <- basePop[2]
-#' (matedQueen1 <- crossVirginQueen(
-#'   pop = virginQueen1,
+#' isQueen(virginQueen1)
+#' (matedQueen1 <- cross(
+#'   x = virginQueen1,
 #'   fathers = drones[1:5]
 #' ))
+#'
+#' isQueen(virginQueen1)
 #' isQueenMated(virginQueen1)
+#' isQueen(matedQueen1)
 #' isQueenMated(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
@@ -1316,8 +1320,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' isQueen(matedQueen1)
 #'
 #' virginQueen2 <- basePop[3]
-#' (matedQueen2 <- crossVirginQueen(
-#'   pop = virginQueen2,
+#' (matedQueen2 <- cross(
+#'   x = virginQueen2,
 #'   fathers = drones[6:10]
 #' ))
 #' isQueenMated(virginQueen2)
@@ -1325,87 +1329,147 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
-#' fatherGroups <- pullDroneGroupsFromDCA(drones[11:20], n = 2, nFathers = 2)
-#' matedQueens <- crossVirginQueen(
-#'   pop = c(basePop[4], basePop[5]),
+#' fatherGroups <- pullDroneGroupsFromDCA(drones[11:90], n = 2, nFathers = 2)
+#' matedQueens <- cross(
+#'   x = c(basePop[4], basePop[5]),
 #'   fathers = fatherGroups
 #' )
 #' matedQueens
+#' isQueen(matedQueens)
 #' isQueenMated(matedQueens)
 #' nFathers(matedQueens)
 #' getFathers(matedQueens)
 #'
 #' # Inbred mated queen (mated with her own sons)
-#' matedQueen3 <- crossVirginQueen(
-#'   pop = basePop[1],
-#'   fathers = drones[16:20]
+#' matedQueen3 <- cross(
+#'   x = basePop[1],
+#'   fathers = drones[90:100]
 #' )
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
+#'
+#'
+#' # If input is a Colony class
+#' colony <- createColony(basePop[6])
+#' isVirginQueen(getVirginQueens(colony))
+#'
+#' # Try mating with drones that were already used for mating
+#' (matedColony <- cross(x = colony, fathers = drones[1:15]))
+#' # Create new drones
+#' drones <- createDrones(x = basePop[1], nInd = 100)
+#' all(isDrone(drones))
+#' any(isFather(drones))
+#'
+#' (matedColony <- cross(x = colony, fathers = drones[1:15]))
+#' isQueenMated(matedColony)
+#'
+#' # If input is a Colonies class
+#' colony1 <- createColony(x = basePop[7])
+#' colony2 <- createColony(x = basePop[8])
+#' apiary <- c(colony1, colony2)
+#' apiary
+#' isVirginQueen(getVirginQueens(apiary[[1]]))
+#' isVirginQueen(getVirginQueens(apiary[[2]]))
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 100)
+#' fatherGroups <- pullDroneGroupsFromDCA(DCA = drones, n = 2, nFathers = nFathersPoisson)
+#' fatherGroups
+#' apiary <- cross(x = apiary, fathers = fatherGroups)
+#' apiary
+#' isQueenMated(apiary)
+#' nFathers(apiary)
+#'
 #' @export
-crossVirginQueen <- function(pop, fathers, nFathers = NULL,
-                             removeFathers = TRUE, checkMating = "error",
-                             simParamBee = NULL) {
+cross <- function(x, fathers,
+                  removeFathers = TRUE, checkMating = "error",
+                  simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
-  }
-  if (any(!isVirginQueen(pop))) {
-    stop("Individuals in pop must be virgin queens!")
-  }
-  if (nInd(pop) != length(fathers)) {
-    stop("Length of argument drone should match the number of virgin queens!")
-  }
+  if (isPop(x)) {
+    if (any(!isVirginQueen(x))) {
+      stop("Individuals in pop must be virgin queens!")
+    }
+    if (nInd(x) != length(fathers)) {
+      stop("Length of argument fathers should match the number of virgin queens!")
+    }
+    nVirginQueen <- nInd(x)
 
-  nVirginQueen <- nInd(pop)
-  simParamBee$changeCaste(id = pop@id, caste = "Q")
-  if (nVirginQueen == 1) {
-    if (!isPop(fathers)) {
-      stop("Argument fathers must be a Pop class object!")
+    if (nVirginQueen == 1) {
+      if (!isPop(fathers)) {
+        stop("Argument fathers must be a Pop class object!")
+      }
+      if (!all(isDrone(fathers))) {
+        stop("Individuals in fathers must be drones!")
+      }
+      if (fathers@nInd == 0) {
+        msg <- "Mating failed!"
+        if (checkMating == "warning") {
+          warning(msg)
+        } else if (checkMating == "error") {
+          stop(msg)
+        }
+      }
+
+      x@misc[[1]]$fathers <- fathers
+      simParamBee$changeCaste(id = x@id, caste = "Q")
+      simParamBee$changeCaste(id = fathers@id, caste = "F")
+
+      x <- setMisc(x = x, node = "nWorkers", value = 0)
+      x <- setMisc(x = x, node = "nDrones", value = 0)
+      x <- setMisc(x = x, node = "nHomBrood", value = 0)
+      if (isCsdActive(simParamBee = simParamBee)) {
+        val <- calcQueensPHomBrood(x = x)
+      } else {
+        val <- NA
+      }
+      x <- setMisc(x = x, node = "pHomBrood", value = val)
+      ret <- x
+    } else {
+      ret <- list()
+      for (queen in seq_len(nVirginQueen)) {
+        ret[[queen]] <- cross(x[queen], fathers = fathers[[queen]])
+      }
+      ret <- mergePops(ret)
     }
-    if (!all(isDrone(fathers))) {
-      stop("Individuals in fathers must be drones!")
+  } else if (isColony(x)) {
+    if (isQueenPresent(x)) {
+      stop("Queen already present in the colony!")
     }
-    if (fathers@nInd == 0) {
-      msg <- "Mating failed!"
-      if (checkMating == "warning") {
-        warning(msg)
-      } else if (checkMating == "error") {
-        stop(msg)
+    if (!areVirginQueensPresent(x)) {
+      stop("No virgin queen(s) in the colony to cross!")
+    }
+    virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand")
+    queen <- cross(
+      x = virginQueen, fathers = fathers,
+      removeFathers = removeFathers, checkMating = checkMating,
+      simParamBee = simParamBee
+    )
+    x <- reQueen(x, queen)
+    x <- removeVirginQueens(x)
+    ret <- x
+  } else if (isColonies(x)) {
+    nCol <- nColonies(x)
+    if (nCol == 0) {
+      ret <- createColonies()
+    } else {
+      ret <- createColonies(n = nCol)
+      if (nCol != length(fathers)) {
+        stop("Length of argument fatheres should match the number of colonies!")
+      }
+      for (colony in seq_len(nCol)) {
+        ret[[colony]] <- cross(
+          x = x[[colony]],
+          fathers = fathers[[colony]],
+          removeFathers = removeFathers,
+          checkMating = checkMating,
+          simParamBee = simParamBee
+        )
       }
     }
-    simParamBee$changeCaste(id = fathers@id, caste = "F")
-    pop@misc[[1]]$fathers <- fathers
-  } else {
-    if (!all(sapply(fathers, isPop))) {
-      stop("Argument fathers must be a list of Pop class object!")
-    }
-    if (any(sapply(fathers, FUN = function(z) z@nInd == 0))) {
-      msg <- "Some matings failed!"
-      if (checkMating == "warning") {
-        warning(msg)
-      } else if (checkMating == "error") {
-        stop(msg)
-      }
-    }
-    for (queen in seq_len(nVirginQueen)) {
-      simParamBee$changeCaste(id = fathers[[queen]]@id, caste = "F")
-      pop@misc[[queen]]$fathers <- fathers[[queen]]
-    }
   }
-
-  pop <- setMisc(x = pop, node = "nWorkers", value = 0)
-  pop <- setMisc(x = pop, node = "nDrones", value = 0)
-  pop <- setMisc(x = pop, node = "nHomBrood", value = 0)
-  if (isCsdActive(simParamBee = simParamBee)) {
-    val <- calcQueensPHomBrood(x = pop)
-  } else {
-    val <- NA
-  }
-  pop <- setMisc(x = pop, node = "pHomBrood", value = val)
-  return(pop)
+  validObject(ret)
+  return(ret)
 }
 
 #' @rdname setQueensYearOfBirth

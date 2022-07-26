@@ -2347,7 +2347,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  geno <- getCsdGeno(x = pop, simParamBee = simParamBee)
+  geno <- getCsdGeno(x = pop, simParamBee = simParamBee, dronesHaploid = FALSE)
   # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
   # to test than isCsdHeterozygous()
   ret <- isGenoHeterozygous(x = geno)
