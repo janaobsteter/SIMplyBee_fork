@@ -42,17 +42,17 @@ Level 0 function that returns genetic values of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensGv}: Access genetic value of the queen
+\item \code{getQueensGv()}: Access genetic value of the queen
 
-\item \code{getFathersGv}: Access genetic values of fathers
+\item \code{getFathersGv()}: Access genetic values of fathers
 
-\item \code{getVirginQueensGv}: Access genetic values of virgin queens
+\item \code{getVirginQueensGv()}: Access genetic values of virgin queens
 
-\item \code{getWorkersGv}: Access genetic values of workers
+\item \code{getWorkersGv()}: Access genetic values of workers
 
-\item \code{getDronesGv}: Access genetic values of drones
+\item \code{getDronesGv()}: Access genetic values of drones
+
 }}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

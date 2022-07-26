@@ -148,11 +148,11 @@ setMethod(
       colonies <- new(Class = "Colonies", colonies = list(x))
     }
     for (y in list(...)) {
-      if (class(y) == "NULL") {
+      if (is(y, class2 = "NULL")) {
         # Do nothing
-      } else if (class(y) == "Colony") {
+      } else if (isColony(y)) {
         colonies@colonies <- c(colonies@colonies, y)
-      } else if (class(y) == "Colonies") {
+      } else if (isColonies(y)) {
         colonies@colonies <- c(colonies@colonies, y@colonies)
       } else {
         stop("... must be a NULL, Colony, or Colonies class object!")

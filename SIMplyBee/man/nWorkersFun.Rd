@@ -65,12 +65,12 @@ Sample a number of workers - used when \code{nInd = NULL}
 }
 \section{Functions}{
 \itemize{
-\item \code{nWorkersTruncPoisson}: Sample a non-zero number of workers
+\item \code{nWorkersTruncPoisson()}: Sample a non-zero number of workers
 
-\item \code{nWorkersColonyPhenotype}: Sample a non-zero number of workers based on
+\item \code{nWorkersColonyPhenotype()}: Sample a non-zero number of workers based on
 colony phenotype, say queen's fecundity
-}}
 
+}}
 \examples{
 nWorkersPoisson()
 nWorkersPoisson()
