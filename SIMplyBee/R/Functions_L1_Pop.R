@@ -1418,7 +1418,21 @@ cross <- function(x, fathers,
       if (!all(isDrone(fathers))) {
         stop("Individuals in fathers must be drones!")
       }
-      if (fathers@nInd == 0) {
+      if (fathers@nInd != 0) {
+        x@misc[[1]]$fathers <- fathers
+        simParamBee$changeCaste(id = x@id, caste = "Q")
+        simParamBee$changeCaste(id = fathers@id, caste = "F")
+
+        x <- setMisc(x = x, node = "nWorkers", value = 0)
+        x <- setMisc(x = x, node = "nDrones", value = 0)
+        x <- setMisc(x = x, node = "nHomBrood", value = 0)
+        if (isCsdActive(simParamBee = simParamBee)) {
+          val <- calcQueensPHomBrood(x = x)
+        } else {
+          val <- NA
+        }
+        x <- setMisc(x = x, node = "pHomBrood", value = val)
+        } else if (fathers@nInd == 0) {
         msg <- "Mating failed!"
         if (checkMating == "warning") {
           warning(msg)
@@ -1427,24 +1441,12 @@ cross <- function(x, fathers,
         }
       }
 
-      x@misc[[1]]$fathers <- fathers
-      simParamBee$changeCaste(id = x@id, caste = "Q")
-      simParamBee$changeCaste(id = fathers@id, caste = "F")
-
-      x <- setMisc(x = x, node = "nWorkers", value = 0)
-      x <- setMisc(x = x, node = "nDrones", value = 0)
-      x <- setMisc(x = x, node = "nHomBrood", value = 0)
-      if (isCsdActive(simParamBee = simParamBee)) {
-        val <- calcQueensPHomBrood(x = x)
-      } else {
-        val <- NA
-      }
-      x <- setMisc(x = x, node = "pHomBrood", value = val)
       ret <- x
     } else {
       ret <- list()
       for (queen in seq_len(nVirginQueen)) {
-        ret[[queen]] <- cross(x[queen], fathers = fathers[[queen]])
+        ret[[queen]] <- cross(x[queen], fathers = fathers[[queen]],
+                              checkMating = checkMating, simParamBee = simParamBee)
       }
       ret <- mergePops(ret)
     }
@@ -1461,8 +1463,10 @@ cross <- function(x, fathers,
       removeFathers = removeFathers, checkMating = checkMating,
       simParamBee = simParamBee
     )
-    x <- reQueen(x, queen)
-    x <- removeVirginQueens(x)
+    if (isQueen(queen)) {
+      x <- reQueen(x, queen)
+      x <- removeVirginQueens(x)
+    }
     ret <- x
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
