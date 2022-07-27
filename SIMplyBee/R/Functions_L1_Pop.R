@@ -1266,12 +1266,19 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
   return(ret)
 }
 
-#' @rdname crossVirginQueen
-#' @title Cross (mate) a virgin queen to a group drones
+#' @rdname cross
+#' @title Cross (mate) virgin queen(s) as a population, of a colony, or
+#'   of all given colonies
 #'
 #' @description Level 1 function that crosses (mates) a virgin queen to a group
-#'   of drones. This function does not create any progeny, it only stores the
+#'   of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
+#'   in a colony (\code{\link{Colony-class}}), or colonies (\code{\link{Colonies-class}}).
+#'   This function does not create any progeny, it only stores the
 #'   mated drones (fathers) so we can later create progeny as needed.
+#'   When input is a  (\code{\link{Colony-class}}) or  (\code{\link{Colonies-class}}),
+#'   one virgin queens is selected at random, mated, and promoted to the queen of the colony.
+#'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
+#'   producing progeny at a later stage.
 #'
 #' @param pop \code{\link{Pop-class}}, one or more virgin queens to be mated;
 #'   \code{\link{isVirginQueen}} test will be run on these individuals
@@ -1280,8 +1287,6 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   if there is more than one virgin queen, the user has to provide
 #'   a list of drone \code{\link{Pop-class}}. For this, the user can use
 #'   \code{\link{pullDroneGroupsFromDCA}}
-#' @param nFathers numeric of function, number of drones that a virgin queen
-#'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination
@@ -1315,14 +1320,15 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 8, nFathers = nFathersPoisson)
 #'
 #' # If input is a Pop class of virgin queen(s)
 #' virginQueen1 <- basePop[2]
 #' isQueen(virginQueen1)
 #' (matedQueen1 <- cross(
 #'   x = virginQueen1,
-#'   fathers = drones[1:5]
+#'   fathers = fatherGroups[[1]]
 #' ))
 #'
 #' isQueen(virginQueen1)
@@ -1332,25 +1338,24 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
 #'
-#' isDrone(drones[1:5])
-#' isFather(drones[1:5])
+#' isDrone(getFathers(matedQueen1))
+#' isFather(getFathers(matedQueen1))
 #' isVirginQueen(matedQueen1)
 #' isQueen(matedQueen1)
 #'
 #' virginQueen2 <- basePop[3]
 #' (matedQueen2 <- cross(
 #'   x = virginQueen2,
-#'   fathers = drones[6:10]
+#'   fathers = fatherGroups[[2]]
 #' ))
 #' isQueenMated(virginQueen2)
 #' isQueenMated(matedQueen2)
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
-#' fatherGroups <- pullDroneGroupsFromDCA(drones[11:90], n = 2, nFathers = 2)
 #' matedQueens <- cross(
 #'   x = c(basePop[4], basePop[5]),
-#'   fathers = fatherGroups
+#'   fathers = fatherGroups[c(3,4)]
 #' )
 #' matedQueens
 #' isQueen(matedQueens)
@@ -1361,41 +1366,34 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Inbred mated queen (mated with her own sons)
 #' matedQueen3 <- cross(
 #'   x = basePop[1],
-#'   fathers = drones[90:100]
+#'   fathers = fatherGroups[[5]]
 #' )
 #' # Check the expected csd homozygosity
 #' pHomBrood(matedQueen3)
 #'
-#'
-#' # If input is a Colony class
+#' # If input is a Colony or MultiColony class
+#' # Create Colony and MultiColony class
 #' colony <- createColony(basePop[6])
 #' isVirginQueen(getVirginQueens(colony))
+#' apiary <- createColonies(basePop[7:8], n = 2)
+#' all(isVirginQueen(mergePops(getVirginQueens(apiary))))
+#'
+#' # Cross
+#' colony <- cross(colony, fathers = fatherGroups[[6]])
+#' isQueenMated(colony)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(7, 8)])
+#' all(isQueenMated(apiary))
+#' nFathers(apiary)
 #'
 #' # Try mating with drones that were already used for mating
-#' (matedColony <- cross(x = colony, fathers = drones[1:15]))
-#' # Create new drones
-#' drones <- createDrones(x = basePop[1], nInd = 100)
+#' colony <- createColony(basePop[9])
+#' (matedColony <- cross(x = colony, fathers = fatherGroups[[1]]))
+#' # Create new drones and mate the colony with them
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' all(isDrone(drones))
 #' any(isFather(drones))
-#'
-#' (matedColony <- cross(x = colony, fathers = drones[1:15]))
+#' (matedColony <- cross(x = colony, fathers = drones))
 #' isQueenMated(matedColony)
-#'
-#' # If input is a Colonies class
-#' colony1 <- createColony(x = basePop[7])
-#' colony2 <- createColony(x = basePop[8])
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' isVirginQueen(getVirginQueens(apiary[[1]]))
-#' isVirginQueen(getVirginQueens(apiary[[2]]))
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(DCA = drones, n = 2, nFathers = nFathersPoisson)
-#' fatherGroups
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' apiary
-#' isQueenMated(apiary)
-#' nFathers(apiary)
 #'
 #' @export
 cross <- function(x, fathers,
