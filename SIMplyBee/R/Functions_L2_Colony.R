@@ -1427,7 +1427,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 
   if (isColony(x)) {
     if  (is.function(p)) {
-      p <- p(colony)
+      p <- p(x)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
@@ -1441,7 +1441,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     # TODO: Add use="something" to select pWorkers that swarm
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
     tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
-    currentLocation <- getLocation(colony)
+    currentLocation <- getLocation(x)
 
     swarmColony <- createColony(x = x@queen)
     # It's not re-queening, but the function also sets the colony id
