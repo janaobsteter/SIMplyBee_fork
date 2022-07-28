@@ -29,16 +29,17 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 mated colonies
+#' # Create 2 virgin colonies
 #' apiary <- createColonies(x = basePop, n = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 unmated/virgin colonies
+#' # Create mated colonies by crossing
 #' apiary <- createColonies(x = basePop[1:2], n = 2)
-#' drones <- createDrones(x = basePop[3], n = 50)
-#' apiary <- crossColonies(apiary, drones = drones, nFathers = 15)
+#' drones <- createDrones(x = basePop[3], n = 30)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
+#' apiary <- cross(apiary, fathers = fatherGroups)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -93,16 +94,10 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
 #' getId(selectColonies(apiary, ID = 1))
@@ -180,16 +175,10 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
@@ -268,16 +257,10 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))
@@ -288,6 +271,11 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'
 #' getId(removeColonies(apiary, ID = 5))
 #' getId(removeColonies(apiary, ID = "9"))
+#'
+#' nColonies(apiary)
+#' apiary <- removeColonies(apiary, ID = "2")
+#' nColonies(apiary)
+#'
 #' @export
 removeColonies <- function(colonies, ID) {
   if (!isColonies(colonies)) {

@@ -4,29 +4,36 @@
 \alias{removeQueen}
 \title{Remove queen}
 \usage{
-removeQueen(colony)
+removeQueen(x)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
 }
 \value{
-\code{\link{Colony-class}} without the queen
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} without the queen
 }
 \description{
 Level 2 function that removes the queen of a colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony
-getQueen(colony)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
 
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Remove the queen
+nQueens(colony)
 colony <- removeQueen(colony)
-colony
-getQueen(colony)
+nQueens(colony)
+nQueens(apiary)
+apiary <- removeQueen(apiary)
+nQueens(apiary)
 }

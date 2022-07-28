@@ -1066,6 +1066,9 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
   if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
+  if (removeFathers) {
+    DCA <- DCA[isDrone(DCA)]
+  }
   if (any(!isDrone(DCA))) {
     stop("Individuals in DCA must be drones!")
   }
@@ -1073,9 +1076,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
     nFathers <- simParamBee$nFathers
   }
   # doing "if (is.function(nFathers))" below
-  if (removeFathers) {
-    DCA <- DCA[isDrone(DCA)]
-  }
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nFathers)) {

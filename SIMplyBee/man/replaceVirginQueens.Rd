@@ -29,24 +29,29 @@ Level 2 function that replaces a proportion of virgin queens
   virgin queens.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-colony1 <- addVirginQueens(colony1, nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add virgin queens
+colony <- addVirginQueens(colony, nInd = 20)
 apiary <- addVirginQueens(apiary, nInd = 20)
 
-getVirginQueens(colony1)@id
-colony1 <- replaceVirginQueens(colony1, p = 0.5)
-getVirginQueens(colony1)@id
-colony1 <- replaceVirginQueens(colony1, p = 1.5)
-getVirginQueens(colony1)@id
+# Replace virgin queens
+getVirginQueens(colony)@id
+colony <- replaceVirginQueens(colony, p = 0.5)
+getVirginQueens(colony)@id
+colony <- replaceVirginQueens(colony, p = 1.5)
+getVirginQueens(colony)@id
 
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 apiary <- replaceVirginQueens(apiary, p = 0.5)

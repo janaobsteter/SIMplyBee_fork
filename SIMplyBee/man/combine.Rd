@@ -25,39 +25,39 @@ Level 2 function that combines two colony objects into one or
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+drones = createDrones(basePop[1], n = 1000)
+fatherGroups = pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 
-drones <- createDrones(x = basePop[1], nInd = 70)
-col1 <- createColony(x = basePop[2])
-col1 <- crossColony(col1, drones = drones[1:10], nFathers = 5)
-col2 <- createColony(x = basePop[3])
-col2 <- crossColony(col2, drones = drones[11:20], nFathers = 5)
-col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-col1
-col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
-col2
-col1 <- combine(strong = col1, weak = col2)
-col1
-rm(col2)
+# Create weak and strong Colony and MultiColony class
+colony1 <- createColony(x = basePop[2])
+colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+colony2 <- createColony(x = basePop[3])
+colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+apiary1 <- createColonies(basePop[4:6], n = 3)
+apiary1 <- cross(apiary1, fathers = fatherGroups[3:5])
+apiary2 <- createColonies(basePop[7:9], n = 3)
+apiary2 <- cross(apiary2, fathers = fatherGroups[6:8])
 
-drones <- createDrones(x = basePop[1], nInd = 70)
-col1 <- createColony(x = basePop[4])
-col1 <- crossColony(col1, drones = drones[1:10], nFathers = 5)
-col2 <- createColony(x = basePop[5])
-col2 <- crossColony(col2, drones = drones[11:20], nFathers = 5)
-col3 <- createColony(x = basePop[6])
-col3 <- crossColony(col3, drones = drones[21:30], nFathers = 5)
-col4 <- createColony(x = basePop[7])
-col4 <- crossColony(col4, drones = drones[31:40], nFathers = 5)
-col1 <- buildUpColony(colony = col1, nWorkers = 100, nDrones = 10)
-col2 <- buildUpColony(colony = col2, nWorkers = 20, nDrones = 2)
-col3 <- buildUpColony(colony = col3, nWorkers = 100, nDrones = 10)
-col4 <- buildUpColony(colony = col4, nWorkers = 20, nDrones = 2)
-colsStrong <- c(col1, col3)
-colsStrong[[1]]
-colsStrong[[2]]
-colsWeak <- c(col2, col4)
-cols <- combine(strong = colsStrong, weak = colsWeak)
-cols[[1]]
-cols[[2]]
-rm(colsWeak)
+# Build-up
+colony1 <- buildUp(x = colony1, nWorkers = 100, nDrones = 20)
+colony2 <- buildUp(x = colony2, nWorkers = 20, nDrones = 5)
+apiary1 <- buildUp(x = apiary1, nWorkers = 100, nDrones = 20)
+apiary2 <- buildUp(x = apiary2, nWorkers = 20, nDrones = 5)
+
+# Combine
+nWorkers(colony1); nWorkers(colony2)
+nDrones(colony1); nDrones(colony2)
+colony1 <- combine(strong = colony1, weak = colony2)
+nWorkers(colony1); nWorkers(colony2)
+nDrones(colony1); nDrones(colony2)
+getQueen(colony1)@id; getQueen(colony2)@id
+rm(colony2)
+
+nWorkers(apiary1); nWorkers(apiary2)
+nDrones(apiary1); nDrones(apiary2)
+apiary1 <- combine(strong = apiary1, weak = apiary2)
+nWorkers(apiary1); nWorkers(apiary2)
+nDrones(apiary1); nDrones(apiary2)
+rm(apiary2)
+
 }

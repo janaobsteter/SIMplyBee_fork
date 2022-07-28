@@ -38,16 +38,17 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-# Create 2 mated colonies
+# Create 2 virgin colonies
 apiary <- createColonies(x = basePop, n = 2)
 apiary
 apiary[[1]]
 apiary[[2]]
 
-# Create 2 unmated/virgin colonies
+# Create mated colonies by crossing
 apiary <- createColonies(x = basePop[1:2], n = 2)
-drones <- createDrones(x = basePop[3], n = 50)
-apiary <- crossColonies(apiary, drones = drones, nFathers = 15)
+drones <- createDrones(x = basePop[3], n = 30)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
+apiary <- cross(apiary, fathers = fatherGroups)
 apiary
 apiary[[1]]
 apiary[[2]]

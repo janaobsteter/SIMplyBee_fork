@@ -24,24 +24,29 @@ Level 2 function that replaces a proportion of drones with new
   supersedure, etc. due to the short life span of the drones.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-colony1 <- addDrones(colony1, nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add drones
+colony <- addDrones(colony, nInd = 20)
 apiary <- addDrones(apiary, nInd = 20)
 
-getDrones(colony1)@id
-colony1 <- replaceDrones(colony1, p = 0.5)
-getDrones(colony1)@id
-colony1 <- replaceDrones(colony1, p = 1.5)
-getDrones(colony1)@id
+# Replace drones
+getDrones(colony)@id
+colony <- replaceDrones(colony, p = 0.5)
+getDrones(colony)@id
+colony <- replaceDrones(colony, p = 1.5)
+getDrones(colony)@id
 
 lapply(getDrones(apiary), FUN = function(x) x@id)
 apiary <- replaceDrones(apiary, p = 0.5)

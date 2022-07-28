@@ -30,42 +30,46 @@ Level 2 function that adds (raises) the specified number of
 This function increases queen's \code{nDrones} counter.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-addDrones(colony1, nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add drones
+addDrones(colony, nInd = 20)
 nDrones(addDrones(apiary, nInd = 20))
 
 # Using defaults in SP$nWorkers
 # (just to have some workers - change this to your needs!)
-addDrones(colony1)
+addDrones(colony)
 nDrones(addDrones(apiary))
 
 # Specifying own number
 SP$nDrones <- 15
-addDrones(colony1)
+addDrones(colony)
 nDrones(addDrones(apiary))
 # nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-addDrones(colony1, nInd = nDronesPoisson)
+addDrones(colony, nInd = nDronesPoisson)
 nDrones(addDrones(apiary, nInd = nDronesPoisson))
 # nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nDrones <- nDronesPoisson
-addDrones(colony1)
+addDrones(colony)
 nDrones(addDrones(apiary))
 # nDrones will vary between function calls when a function is used
 
 # Queen's counters
-getMisc(getQueen(addDrones(colony1)))
-getMisc(getQueen(addDrones(colony2)))
+getMisc(getQueen(addDrones(colony)))
+
 }
