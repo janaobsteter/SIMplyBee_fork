@@ -768,7 +768,7 @@ isQueenPresent <- function(x) {
   return(ret)
 }
 
-#' @rdname areVirginQueensPresent
+#' @rdname isVirginQueensPresent
 #' @title Are virgin queen(s) present
 #'
 #' @description Level 0 function that returns virgin queen(s) presence status.
@@ -789,27 +789,27 @@ isQueenPresent <- function(x) {
 #' apiary <- createColonies(basePop[1:2], n = 2)
 #' apiary <- cross(x = apiary, fathers = fatherGroups)
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' areVirginQueensPresent(apiary)
+#' isVirginQueensPresent(apiary)
 #'
 #' colony1 <- removeQueen(apiary[[1]])
-#' areVirginQueensPresent(colony1)
+#' isVirginQueensPresent(colony1)
 #'
 #' colony2 <- supersede(x = apiary[[2]])
-#' areVirginQueensPresent(colony2)
+#' isVirginQueensPresent(colony2)
 #'
 #' tmp <- swarm(x = apiary[[1]])
-#' areVirginQueensPresent(tmp$swarm)
-#' areVirginQueensPresent(tmp$remnant)
+#' isVirginQueensPresent(tmp$swarm)
+#' isVirginQueensPresent(tmp$remnant)
 #'
 #' tmp <- split(x = apiary[[1]])
-#' areVirginQueensPresent(tmp$split)
-#' areVirginQueensPresent(tmp$remnant)
+#' isVirginQueensPresent(tmp$split)
+#' isVirginQueensPresent(tmp$remnant)
 #' @export
-areVirginQueensPresent <- function(x) {
+isVirginQueensPresent <- function(x) {
   if (isColony(x)) {
     ret <- !is.null(x@virginQueens)
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = areVirginQueensPresent)
+    ret <- sapply(X = x@colonies, FUN = isVirginQueensPresent)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
