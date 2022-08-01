@@ -516,7 +516,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
-    if (!isQueenMated(x)) {
+    if (!isQueen(x)) {
       stop("Unmated queen!")
     }
     if (is.function(nInd)) {
@@ -1291,7 +1291,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
 #'   queen will fail and she will stay virgin. This can happen for just a few
 #'   of many virgin queens, which can be annoying to track down, but you can use
-#'   \code{\link{isQueenMated}} to find such virgin queens. You can use
+#'   \code{\link{isQueen}} to find such virgin queens. You can use
 #'   \code{checkMating} to alert you about this situation.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
@@ -1316,9 +1316,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' ))
 #'
 #' isQueen(virginQueen1)
-#' isQueenMated(virginQueen1)
+#' isQueen(virginQueen1)
 #' isQueen(matedQueen1)
-#' isQueenMated(matedQueen1)
+#' isQueen(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
 #'
@@ -1332,8 +1332,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   x = virginQueen2,
 #'   fathers = fatherGroups[[2]]
 #' ))
-#' isQueenMated(virginQueen2)
-#' isQueenMated(matedQueen2)
+#' isQueen(virginQueen2)
+#' isQueen(matedQueen2)
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
@@ -1343,7 +1343,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' )
 #' matedQueens
 #' isQueen(matedQueens)
-#' isQueenMated(matedQueens)
+#' isQueen(matedQueens)
 #' nFathers(matedQueens)
 #' getFathers(matedQueens)
 #'
@@ -1364,9 +1364,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' # Cross
 #' colony <- cross(colony, fathers = fatherGroups[[6]])
-#' isQueenMated(colony)
+#' isQueen(colony)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(7, 8)])
-#' all(isQueenMated(apiary))
+#' all(isQueen(apiary))
 #' nFathers(apiary)
 #'
 #' # Try mating with drones that were already used for mating
@@ -1377,7 +1377,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' all(isDrone(drones))
 #' any(isFather(drones))
 #' (matedColony <- cross(x = colony, fathers = drones))
-#' isQueenMated(matedColony)
+#' isQueen(matedColony)
 #'
 #' @export
 cross <- function(x, fathers,

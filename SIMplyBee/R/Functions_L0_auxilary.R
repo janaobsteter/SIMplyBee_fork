@@ -122,7 +122,7 @@ nCaste <- function(x, caste = "all") {
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x)) {
-          ret <- ifelse(isQueenMated(x), nInd(x@queen@misc[[1]]$fathers), 0)
+          ret <- ifelse(isQueen(x), nInd(x@queen@misc[[1]]$fathers), 0)
         } else {
           ret <- 0
         }
@@ -201,7 +201,7 @@ nFathers <- function(x) {
     nInd <- nInd(x)
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (isQueenMated(x[ind])) {
+      if (isQueen(x[ind])) {
         ret[ind] <- nInd(x@misc[[ind]]$fathers)
       }
     }
@@ -817,7 +817,7 @@ areVirginQueensPresent <- function(x) {
   return(ret)
 }
 
-#' @rdname isQueenMated
+#' @rdname isQueen
 #' @title Is the queen mated?
 #'
 #' @description Level 0 function that returns queen's mating status.
@@ -838,13 +838,13 @@ areVirginQueensPresent <- function(x) {
 #'
 #' apiary <- createColonies(basePop[1:3], n =3)
 #' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' isQueenMated(apiary)
+#' isQueen(apiary)
 #'
-#' isQueenMated(removeQueen(apiary[[1]]))
-#' isQueenMated(supersede(apiary[[2]]))
-#' isQueenMated(c(getQueen(apiary[[1]]), getQueen(apiary[[2]]), getVirginQueens(supersede(apiary[[3]]))))
+#' isQueen(removeQueen(apiary[[1]]))
+#' isQueen(supersede(apiary[[2]]))
+#' isQueen(c(getQueen(apiary[[1]]), getQueen(apiary[[2]]), getVirginQueens(supersede(apiary[[3]]))))
 #' @export
-isQueenMated <- function(x) {
+isQueen <- function(x) {
   if (isPop(x)) {
     if (nInd(x) > 0) {
       if (!all(isQueen(x) | isVirginQueen(x))) {
@@ -856,12 +856,12 @@ isQueenMated <- function(x) {
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x)) {
-      ret <- isQueenMated(x@queen)
+      ret <- isQueen(x@queen)
     } else {
       ret <- FALSE
     }
   } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenMated)
+    ret <- sapply(X = x@colonies, FUN = isQueen)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or Colonies class object!")
