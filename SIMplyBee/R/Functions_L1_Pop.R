@@ -1059,16 +1059,15 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
-                                   removeFathers = TRUE, simParamBee = NULL) {
+                                   simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!isPop(DCA)) {
     stop("Argument DCA must be a Pop class object!")
   }
-  if (removeFathers) {
-    DCA <- DCA[isDrone(DCA)]
-  }
+  # Keep only the drones (remove the fathers)
+  DCA <- DCA[isDrone(DCA)]
   if (any(!isDrone(DCA))) {
     stop("Individuals in DCA must be drones!")
   }

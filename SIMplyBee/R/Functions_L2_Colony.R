@@ -595,7 +595,6 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-
   if (isColony(x)) {
     # Workers
     if (is.null(nWorkers)) {
@@ -1761,7 +1760,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
 
   if (isColony(x)) {
     if (is.function(p)) {
-      p <- p(colony)
+      p <- p(x)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
