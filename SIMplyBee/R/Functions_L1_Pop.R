@@ -13,7 +13,8 @@
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can return \code{NULL}
 #' @param use character, all options provided by \code{\link{selectInd}} and
-#'   \code{"order"} that selects \code{1:nInd} individuals
+#'   \code{"order"} that selects \code{1:nInd} individuals (meaning it always
+#'   returns at least one individual, even if \code{nInd = 0})
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
@@ -140,18 +141,10 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use)
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use, removeFathers = removeFathers)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
-          if (caste == "drones") {
-            if (removeFathers) {
-              test <- isDrone(tmp)
-              if (any(!test)) {
-                tmp <- tmp[test]
-              }
-            }
-          }
           ret[[caste]] <- tmp
         }
       }
@@ -164,7 +157,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
       if (is.null(pop)) {
         ret <- NULL
       } else {
-        if (caste == "drones") {
+        if (caste == "drones" && removeFathers) {
           test <- isDrone(pop)
           if (any(!test)) {
             pop <- pop[test]
