@@ -137,7 +137,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
     stop("Individual in queen must be a virgin queen or a queen!")
   }
   if (isColony(x)) {
-    if (isQueenMated(queen)) {
+    if (isQueen(queen)) {
       if (nInd(queen) > 1) {
         stop("You must provide just one queen for the colony!")
       }
@@ -234,7 +234,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
-    if (!isQueenMated(x)) {
+    if (!isQueen(x)) {
       stop("Unmated queen!")
     }
     if (is.function(nInd)) {
@@ -585,7 +585,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x) # see nWorkersPoissonQueenFecundity
+      nWorkers <- nWorkers(x = x)
     }
     if (new) {
       n <- nWorkers
@@ -604,7 +604,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nDrones <- simParamBee$nDrones
     }
     if (is.function(nDrones)) {
-      nDrones <- nDrones(x = x) # see nDronesPoissonQueenFecundity
+      nDrones <- nDrones(x = x)
     }
     if (new) {
       n <- nDrones
@@ -1671,7 +1671,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
 
   if (isColony(x)) {
     if (is.function(p)) {
-      p <- p(colony)
+      p <- p(x)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")

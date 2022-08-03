@@ -869,6 +869,7 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' createDrones(colony)
 #' createDrones(apiary)
 #' # nDrones will vary between function calls when a function is used
+#'
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1478,7 +1479,7 @@ cross <- function(x, fathers,
     if (isQueenPresent(x)) {
       stop("Queen already present in the colony!")
     }
-    if (!areVirginQueensPresent(x)) {
+    if (!isVirginQueensPresent(x)) {
       stop("No virgin queen(s) in the colony to cross!")
     }
     virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand")
@@ -1499,7 +1500,7 @@ cross <- function(x, fathers,
     } else {
       ret <- createColonies(n = nCol)
       if (nCol != length(fathers)) {
-        stop("Length of argument fatheres should match the number of colonies!")
+        stop("Length of argument fathers should match the number of colonies!")
       }
       for (colony in seq_len(nCol)) {
         ret[[colony]] <- cross(
@@ -1543,7 +1544,7 @@ cross <- function(x, fathers,
 #'
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- cross(x = colony, fathers = fatherGroups[[1]])
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'

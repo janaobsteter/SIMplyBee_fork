@@ -817,57 +817,6 @@ isVirginQueensPresent <- function(x) {
   return(ret)
 }
 
-#' @rdname isQueen
-#' @title Is the queen mated?
-#'
-#' @description Level 0 function that returns queen's mating status.
-#'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
-#'
-#' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 3, nFathers = nFathersPoisson)
-#'
-#' apiary <- createColonies(basePop[1:3], n =3)
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' isQueen(apiary)
-#'
-#' isQueen(removeQueen(apiary[[1]]))
-#' isQueen(supersede(apiary[[2]]))
-#' isQueen(c(getQueen(apiary[[1]]), getQueen(apiary[[2]]), getVirginQueens(supersede(apiary[[3]]))))
-#' @export
-isQueen <- function(x) {
-  if (isPop(x)) {
-    if (nInd(x) > 0) {
-      if (!all(isQueen(x) | isVirginQueen(x))) {
-        stop("Individuals in x must be virgin queens or queens!")
-      }
-      ret <- sapply(X = x@misc, FUN = function(z) (!is.null(z$fathers) && z$fathers@nInd != 0))
-    } else {
-      ret <- FALSE
-    }
-  } else if (isColony(x)) {
-    if (isQueenPresent(x)) {
-      ret <- isQueen(x@queen)
-    } else {
-      ret <- FALSE
-    }
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueen)
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
-  }
-  return(ret)
-}
 
 #' @rdname getQueensYearOfBirth
 #' @title Access the queen's year of birth
