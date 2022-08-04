@@ -137,7 +137,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
     stop("Individual in queen must be a virgin queen or a queen!")
   }
   if (isColony(x)) {
-    if (isQueenPresent(queen)) {
+    if (isQueen(queen)) {
       if (nInd(queen) > 1) {
         stop("You must provide just one queen for the colony!")
       }

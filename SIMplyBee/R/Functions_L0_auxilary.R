@@ -542,7 +542,7 @@ isQueen <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  ret <- isCaste(x = x@queen, caste = "queen", simParamBee = simParamBee)
+  ret <- isCaste(x = x, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
