@@ -137,7 +137,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
     stop("Individual in queen must be a virgin queen or a queen!")
   }
   if (isColony(x)) {
-    if (isQueen(queen)) {
+    if (isQueenPresent(queen)) {
       if (nInd(queen) > 1) {
         stop("You must provide just one queen for the colony!")
       }
@@ -233,9 +233,6 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
-    }
-    if (!isQueen(x)) {
-      stop("Unmated queen!")
     }
     if (is.function(nInd)) {
       nInd <- nInd(colony = x) # see nVirginQueensPoissonColonyStrength

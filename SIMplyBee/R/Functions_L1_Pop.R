@@ -540,9 +540,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
-    if (!isQueen(x)) {
-      stop("Unmated queen!")
-    }
+
     if (is.function(nInd)) {
       nInd <- nInd(colony = x) # see nWorkersPoissonQueenFecundity
     }

@@ -122,7 +122,7 @@ nCaste <- function(x, caste = "all") {
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x)) {
-          ret <- ifelse(isQueen(x), nInd(x@queen@misc[[1]]$fathers), 0)
+          ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
         } else {
           ret <- 0
         }
@@ -542,7 +542,7 @@ isQueen <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  ret <- isCaste(x = x, caste = "queen", simParamBee = simParamBee)
+  ret <- isCaste(x = x@queen, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
