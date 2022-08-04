@@ -99,7 +99,7 @@ setValidity(Class = "Colony", method = function(object) {
   if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
     errors <- c(errors, "There can be only one queen per colony!")
   }
-  if (isQueenPresent(object) && !isQueen()(object)) {
+  if (isQueenPresent(object) && !isQueen(object)) {
     errors <- c(errors, "Queen must be mated to be in the queen slot!")
   }
   if (!isQueenPresent(object) && !is.na(getId(object))) {
