@@ -1004,7 +1004,7 @@ removeQueen <- function(x) {
   } else if (isColonies(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- removeQueen(x = x[[colony]], p = p, use = use)
+      x[[colony]] <- removeQueen(x = x[[colony]])
     }
   } else {
     stop("Argument x must be a Colony or Colonies class object!")
