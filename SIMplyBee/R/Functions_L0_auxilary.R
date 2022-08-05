@@ -626,6 +626,9 @@ isCaste <- function(x, caste, simParamBee = NULL) {
 #' isQueen(bees)
 #' @export
 isQueen <- function(x, simParamBee = NULL) {
+  if (!isPop(x)) {
+    stop("Argument x must be a Pop class object!")
+  }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
