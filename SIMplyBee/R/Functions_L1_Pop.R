@@ -99,9 +99,6 @@
 #' getDrones(colony, nInd = 2)@id
 #'
 #' # Comparisons on MultiColony class
-#' getCastePop(apiary[[2]], caste = "drones")
-#' getDrones(apiary[[2]])
-#'
 #' getCastePop(apiary, caste = "queen")
 #' getQueen(apiary)
 #' getCastePop(apiary, caste = "queen")[[1]]@id
@@ -135,8 +132,7 @@
 #' getDrones(apiary, nInd = 2)
 #' mergePops(getDrones(apiary))
 #'
-#' getCastePop(apiary[[1]], caste = "all")
-#' getCastePop(apiary[[2]], caste = "all")
+#' getCastePop(apiary)
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
                         removeFathers = TRUE) {
@@ -336,15 +332,8 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
-#' # Using defaults in SP$nWorkers & SP$nDrones
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#'
 #' # Using a default in SP$nVirginQueens
-#' tmp <- createVirginQueens(colony)
-#' colony@virginQueens <- tmp
-#' colony
-#' colony@queen@id
+#' colony@virginQueens <- createVirginQueens(colony)
 #' virginQueens <- colony@virginQueens
 #' virginQueens@id
 #' virginQueens@sex
@@ -518,7 +507,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'
 #' # Inbred virgin queen with her brothers to generate csd homozygous brood
 #' colony2 <- createColony(createVirginQueens(colony, nInd = 1))
-#' colony2 <- cross(x = colony2, fathers = createDrones(x = colony, nInd = nFathersPoisson()))
+#' colony2 <- cross(x = colony2, fathers = createDrones(x = colony, nInd = nFathersPoisson))
 #' # Check the expected csd homozygosity
 #' pHomBrood(colony2)
 #'
@@ -843,8 +832,6 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' SP$recHist[[13]][[1]][2]
 #' SP$caste
 #'
-#' createDrones(apiary, nInd = 10)
-#'
 #' # Using a default in SP$nDrones
 #' # (just to have some drones - change this to your needs!)
 #' SP$nDrones
@@ -1064,18 +1051,13 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #' colony <- addDrones(colony, nInd = 100)
-#' apiary <- addDrones(apiary, nInd = 100)
 #'
 #' # Create colony DCA
 #' DCA <- createDCA(colony)
 #' pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
+#' pullDroneGroupsFromDCA(DCA, n = 5, nFathers = nFathersPoisson)
 #'
-#' # Create apiary DCA
-#' DCA2 <- createDCA(apiary)
-#' pullDroneGroupsFromDCA(DCA2, n = 4, nFathers = 5)
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
                                    removeFathers = TRUE, simParamBee = NULL) {
@@ -1190,7 +1172,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
 #' nVirginQueens(apiary)
-#' nVirginQueens(pullVirginQueens(apiary)$colonies)
 #'
 #' pullCastePop(apiary, caste = "workers")
 #' pullWorkers(apiary)
@@ -1330,7 +1311,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
 #'   queen will fail and she will stay virgin. This can happen for just a few
 #'   of many virgin queens, which can be annoying to track down, but you can use
-#'   \code{\link{isQueen}} to find such virgin queens. You can use
+#'   \code{\link{isQueen}} or \code{\link{isVirginQueen}}  to find such virgin queens. You can use
 #'   \code{checkMating} to alert you about this situation.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
@@ -1547,29 +1528,15 @@ cross <- function(x, fathers,
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
 #' # Example on Colony class
-#' getQueensYearOfBirth(getQueen(colony))
 #' getQueensYearOfBirth(colony)
+#' getQueensYearOfBirth(apiary)
 #'
 #' queen1 <- getQueen(colony)
 #' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
 #' getQueensYearOfBirth(queen1)
 #'
-#' # Example on MultiColony class
-#' getQueensYearOfBirth(getQueen(apiary[[1]]))
-#' getQueensYearOfBirth(c(getQueen(apiary[[1]]), getQueen(apiary[[2]])))
-#' getQueensYearOfBirth(apiary[[1]])
-#' getQueensYearOfBirth(apiary)
-#'
-#' queen1 <- getQueen(apiary[[1]])
-#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
-#' getQueensYearOfBirth(queen1)
-#'
-#' queen2 <- getQueen(apiary[[2]])
-#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
-#' getQueensYearOfBirth(queens)
-#'
-#' apiary[[1]] <- setQueensYearOfBirth(apiary[[1]], year = 2022)
-#' getQueensYearOfBirth(apiary[[1]])
+#' colony <- setQueensYearOfBirth(colony, year = 2022)
+#' getQueensYearOfBirth(colony)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)

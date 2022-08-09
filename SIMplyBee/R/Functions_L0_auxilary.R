@@ -14,10 +14,9 @@
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' apiary <- createColonies(basePop[1:2], n = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' apiary <- createColonies(basePop[2:3], n = 2)
 #' nColonies(apiary)
 #' nColonies(createColonies(n = 10))
 #' @export
@@ -44,11 +43,11 @@ nColonies <- function(colonies) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = nFathersPoisson)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' apiary <- createColonies(basePop[1:2], n = 2)
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
+#' apiary <- createColonies(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
 #' getId(apiary)
 #'
 #' nColonies(apiary)
@@ -100,12 +99,12 @@ nNULLColonies <- function(colonies) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10)
 #' colony <- addVirginQueens(x = colony, nInd = 3)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #' apiary <- addVirginQueens(x = apiary, nInd = 3)
 #'
 #' # Check caste members
@@ -180,11 +179,11 @@ nCaste <- function(x, caste = "all") {
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
 #' nQueens(colony)
-#' colony <- removeQueen(x = colony)
+#' colony <- removeQueen(colony)
 #' nQueens(colony)
 #'
 #' nQueens(apiary)
-#' apiary <- removeQueen(x = apiary)
+#' apiary <- removeQueen(apiary)
 #' nQueens(apiary)
 #' @export
 nQueens <- function(x) {
@@ -298,19 +297,24 @@ nVirginQueens <- function(x) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- addVirginQueens(x = colony, nInd = 5)
 #' colony <- addWorkers(x = colony, nInd = 50, exact = TRUE)
+#' nWorkers(colony)
 #'
+#' # Create a Multicolony class
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' tmp <- addWorkers(x = apiary[1], nInd = 100, exact = TRUE)
-#' tmp2 <- addWorkers(x = apiary[2], nInd = 200, exact = TRUE)
-#' apiary <- c(tmp, tmp2)
 #'
-#' nWorkers(colony)
+#' # If exact = TRUE, all 50 individuals are added
+#' tmp <- addWorkers(x = apiary[1], nInd = 100, exact = TRUE)
+#' nWorkers(tmp)
+#' # If exact = FALSE, some of the workers are removed due to homozygosity on the csd (when the csd is turned on)
+#' tmp2 <- addWorkers(x = apiary[2], nInd = 200, exact = FALSE)
+#' nWorkers(tmp2)
+#'
+#' apiary <- c(tmp, tmp2)
 #' nWorkers(apiary)
 #' @export
 nWorkers <- function(x) {
@@ -342,7 +346,7 @@ nWorkers <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- addDrones(x= colony, nInd = 50)
+#' colony <- addDrones(x = colony, nInd = 50)
 #'
 #' apiary <- createColonies(basePop[3:7], n = 5)
 #' apiary <- cross(x = apiary, fathers = fatherGroups[2:6])
@@ -395,16 +399,15 @@ nDrones <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 #' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #'
 #' # Virgin queen
-#' calcQueensPHomBrood(basePop[2])
+#' calcQueensPHomBrood(basePop[5])
 #'
 #' #Queens of colony
 #' calcQueensPHomBrood(colony)
@@ -414,13 +417,14 @@ nDrones <- function(x) {
 #'
 #' # Inbreed virgin queen with her brothers to generate csd homozygous brood
 #' colony2 <- createColony(x = getVirginQueens(colony))
-#' colony2 <- cross(x = colony2, fathers = getDrones(colony))
+#' colony2 <- cross(x = colony2, fathers = pullDrones(x = colony, nInd = 15))
 #'
 #' # Calculate the expected csd homozygosity
 #' calcQueensPHomBrood(getQueen(colony2))
 #' pHomBrood(colony2)
 #'
 #' # Evaluate a realised csd homozygosity
+#' nHomBrood(addWorkers(colony2, nInd = 100))
 #' nHomBrood(addWorkers(colony2, nInd = 100))
 #' # nHomBrood will vary between function calls due to inheritance process
 #' @export
@@ -536,28 +540,17 @@ nHomBrood <- function(x) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 #' colony <- addVirginQueens(x = colony, nInd = 4)
-#'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
 #'
 #' isCaste(getQueen(colony), caste = "queen")
 #' isCaste(getFathers(colony, nInd = 2), caste = "fathers")
 #' isCaste(getWorkers(colony, nInd = 2), caste = "workers")
 #' isCaste(getDrones(colony, nInd = 2), caste = "drones")
 #' isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
-#'
-#' isCaste(getQueen(apiary[[1]]), caste = "queen")
-#' isCaste(getFathers(apiary[[1]], nInd = 2), caste = "fathers")
-#' isCaste(getWorkers(apiary[[1]], nInd = 2), caste = "workers")
-#' isCaste(getDrones(apiary[[1]], nInd = 2), caste = "drones")
-#' isCaste(getVirginQueens(apiary[[1]], nInd = 2), caste = "virginQueens")
 #' @export
 isCaste <- function(x, caste, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -591,37 +584,16 @@ isCaste <- function(x, caste, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
-#'
-#' # Test isQueen on colony class
 #' isQueen(getQueen(colony))
 #' isQueen(getFathers(colony, nInd = 2))
-#' isQueen(getWorkers(colony, nInd = 2))
-#' isQueen(getDrones(colony, nInd = 2))
-#' isQueen(getVirginQueens(colony, nInd = 2))
-#'
-#' # Test isQueen on multicolony class
-#' isQueen(getQueen(apiary[[1]]))
-#' isQueen(getFathers(apiary[[1]], nInd = 2))
-#' isQueen(getWorkers(apiary[[1]], nInd = 2))
-#' isQueen(getDrones(apiary[[1]], nInd = 2))
-#' isQueen(getVirginQueens(apiary[[1]], nInd = 2))
 #'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2)
 #' )
 #' isQueen(bees)
 #' @export
@@ -654,37 +626,16 @@ isQueen <- function(x, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
-#'
-#' # Test isFather on colony class
 #' isFather(getQueen(colony))
 #' isFather(getFathers(colony, nInd = 2))
-#' isFather(getWorkers(colony, nInd = 2))
-#' isFather(getDrones(colony, nInd = 2))
-#' isFather(getVirginQueens(colony, nInd = 2))
-#'
-#' # Test is Father on multicolony class
-#' isFather(getQueen(apiary[[1]]))
-#' isFather(getFathers(apiary[[1]], nInd = 2))
-#' isFather(getWorkers(apiary[[1]], nInd = 2))
-#' isFather(getDrones(apiary[[1]], nInd = 2))
-#' isFather(getVirginQueens(apiary[[1]], nInd = 2))
 #'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2)
 #' )
 #' isFather(bees)
 #' @export
@@ -714,37 +665,19 @@ isFather <- function(x, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
-#'
-#' # Test isWorker on colony class
 #' isWorker(getQueen(colony))
 #' isWorker(getFathers(colony, nInd =2))
 #' isWorker(getWorkers(colony, nInd =2))
-#' isWorker(getDrones(colony, nInd =2))
-#' isWorker(getVirginQueens(colony, nInd =2))
-#'
-#' # Test isWorker on multicolony class
-#' isWorker(getQueen(apiary[[1]]))
-#' isWorker(getFathers(apiary[[1]], nInd = 2))
-#' isWorker(getWorkers(apiary[[1]], nInd = 2))
-#' isWorker(getDrones(apiary[[1]], nInd = 2))
-#' isWorker(getVirginQueens(apiary[[1]], nInd = 2))
 #'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2)
 #' )
 #' isWorker(bees)
 #' @export
@@ -774,37 +707,19 @@ isWorker <- function(x, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
-#'
-#' # Test isDrone on colony class
 #' isDrone(getQueen(colony))
 #' isDrone(getFathers(colony, nInd = 2))
-#' isDrone(getWorkers(colony, nInd = 2))
 #' isDrone(getDrones(colony, nInd = 2))
-#' isDrone(getVirginQueens(colony, nInd = 2))
-#'
-#' # Test isDrone on multicolony class
-#' isDrone(getQueen(apiary[[1]]))
-#' isDrone(getFathers(apiary[[1]], nInd = 2))
-#' isDrone(getWorkers(apiary[[1]], nInd = 2))
-#' isDrone(getDrones(apiary[[1]], nInd = 2))
-#' isDrone(getVirginQueens(apiary[[1]], nInd = 2))
 #'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2)
 #' )
 #' isDrone(bees)
 #' @export
@@ -834,37 +749,21 @@ isDrone <- function(x, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 #' colony <- addVirginQueens(x = colony, nInd = 4)
-#'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 3)
 #'
 #' # Test isVirginQueen on colony class
 #' isVirginQueen(getQueen(colony))
 #' isVirginQueen(getFathers(colony, nInd = 2))
-#' isVirginQueen(getWorkers(colony, nInd = 2))
-#' isVirginQueen(getDrones(colony, nInd = 2))
 #' isVirginQueen(getVirginQueens(colony, nInd = 2))
 #'
-#' # Test isVirginQueen on multicolony class
-#' isVirginQueen(getQueen(apiary[[1]]))
-#' isVirginQueen(getFathers(apiary[[1]], nInd = 2))
-#' isVirginQueen(getWorkers(apiary[[1]], nInd = 2))
-#' isVirginQueen(getDrones(apiary[[1]], nInd = 2))
-#' isVirginQueen(getVirginQueens(apiary[[1]], nInd = 2))
-#'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
 #' )
 #' isVirginQueen(bees)
 #' @export
@@ -898,17 +797,17 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #'
 #' isQueenPresent(colony)
-#'
 #' isQueenPresent(apiary)
-#' tmp <- removeQueen(apiary[[1]])
-#' isQueenPresent(tmp)
+#'
+#' colony <- removeQueen(colony)
+#' isQueenPresent(colony)
 #' @export
 isQueenPresent <- function(x) {
   if (isColony(x)) {
@@ -943,28 +842,20 @@ isQueenPresent <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, exact = TRUE)
 #' colony <- addVirginQueens(x = colony, nInd = 4)
 #' isVirginQueensPresent(colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #' isVirginQueensPresent(apiary)
 #'
-#' colony1 <- removeQueen(apiary[[1]])
-#' isVirginQueensPresent(colony1)
+#' colony <- removeQueen(colony)
+#' isVirginQueensPresent(colony)
 #'
-#' colony2 <- supersede(x = apiary[[2]])
-#' isVirginQueensPresent(colony2)
-#'
-#' tmp <- swarm(x = apiary[[1]])
-#' isVirginQueensPresent(tmp$swarm)
-#' isVirginQueensPresent(tmp$remnant)
-#'
-#' tmp <- split(x = apiary[[1]])
-#' isVirginQueensPresent(tmp$split)
-#' isVirginQueensPresent(tmp$remnant)
+#' apiary <- swarm(x = apiary)
+#' isVirginQueensPresent(apiary$swarm)
+#' isVirginQueensPresent(apiary$remnant)
 #' @export
 isVirginQueensPresent <- function(x) {
   if (isColony(x)) {
@@ -1006,24 +897,13 @@ isVirginQueensPresent <- function(x) {
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
-#' # Test on colony class
+#' queen <- getQueen(colony)
+#' queen <- setQueensYearOfBirth(queen, year = 2022)
+#' getQueensYearOfBirth(queen)
+#'
 #' getQueensYearOfBirth(getQueen(colony))
 #' colony <- setQueensYearOfBirth(colony, year = 2030)
 #' getQueensYearOfBirth(colony)
-#'
-#' # Test on multicolony class
-#' getQueensYearOfBirth(getQueen(apiary[[1]]))
-#'
-#' queen1 <- getQueen(apiary[[1]])
-#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
-#' getQueensYearOfBirth(queen1)
-#'
-#' queen2 <- getQueen(apiary[[2]])
-#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
-#' getQueensYearOfBirth(queens)
-#'
-#' colony1 <- setQueensYearOfBirth(apiary[[1]], year = 2022)
-#' getQueensYearOfBirth(colony1)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)
@@ -1081,20 +961,16 @@ getQueensYOB <- getQueensYearOfBirth
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
-#' # Test on pop class
-#' queen <- getQueen(apiary[[1]])
+#' queen <- getQueen(colony)
 #' queen <- setQueensYOB(queen, year = 2020)
 #' getQueensAge(queen, currentYear = 2022)
 #'
-#' # Test on colony class
 #' colony <- setQueensYOB(colony, year = 2021)
 #' getQueensAge(colony, currentYear = 2022)
 #'
-#' # Test on multicolony class
 #' apiary <- setQueensYOB(apiary, year = 2018)
 #' getQueensAge(apiary, currentYear = 2022)
 #' @export
@@ -1149,15 +1025,14 @@ getQueensAge <- function(x, currentYear) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
-#' getId(getQueen(apiary[[1]])) # Pop class
+#' getId(getQueen(colony)) # Pop class
 #' getId(colony) # Colony Class
 #' getId(apiary) # MultiColony Class
 #'
-#' colony2 <- removeQueen(apiary[[2]])
+#' colony2 <- removeQueen(colony)
 #' getId(colony2)
 #' @export
 getId <- function(x) {
@@ -1212,19 +1087,16 @@ getId <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' tmp <- buildUp(x = apiary[[1]], nWorkers = 10, nDrones = 2, exact = TRUE)
-#' tmp <- addVirginQueens(tmp, nInd = 4)
-#' tmp2 <- addWorkers(apiary[[2]], nInd = 20, exact = TRUE)
-#' apiary <- c(tmp, tmp2)
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
 #' getCasteId(x = drones)
 #' getCasteId(x = colony)
-#' getCasteId(x = apiary[[1]])
-#' getCasteId(x = apiary[[1]], caste = "workers")
+#' getCasteId(x = apiary, caste = "workers")
 #' getCasteId(x = apiary)
 #' getCasteId(x = apiary, caste = "virginQueens")
 #'
@@ -1324,20 +1196,17 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 #' colony <- addVirginQueens(colony, nInd = 5 )
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' tmp <- buildUp(x = apiary[[1]], nWorkers = 10, nDrones = 2, exact = TRUE)
-#' tmp <- addVirginQueens(tmp, nInd = 4)
-#' tmp2 <- addWorkers(apiary[[2]], nInd = 20, exact = TRUE)
-#' apiary <- c(tmp, tmp2)
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
 #' getCasteSex(x = drones)
 #' getCasteSex(x = colony)
-#' getCasteSex(x = apiary[[1]])
-#' getCasteSex(x = apiary[[1]], caste = "workers")
+#' getCasteSex(x = apiary, caste = "workers")
 #' getCasteSex(x = apiary)
 #' getCasteSex(x = apiary, caste = "virginQueens")
 #'
@@ -1431,15 +1300,13 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5, exact = TRUE)
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 #' colony <- addVirginQueens(colony, nInd = 5 )
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' tmp <- buildUp(x = apiary[[1]], nWorkers = 10, nDrones = 2, exact = TRUE)
-#' tmp <- addVirginQueens(tmp, nInd = 4)
-#' tmp2 <- addWorkers(apiary[[2]], nInd = 20, exact = TRUE)
-#' apiary <- c(tmp, tmp2)
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
 #' getCaste(getQueen(colony))
 #' getCaste(getFathers(colony))
@@ -1447,18 +1314,12 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' getCaste(getDrones(colony))
 #' getCaste(getVirginQueens(colony))
 #'
-#' getCaste(getQueen(apiary[[1]]))
-#' getCaste(getFathers(apiary[[1]]))
-#' getCaste(getWorkers(apiary[[1]]))
-#' getCaste(getDrones(apiary[[1]]))
-#' getCaste(getVirginQueens(apiary[[1]]))
-#'
 #' bees <- c(
-#'   getQueen(apiary[[1]]),
-#'   getFathers(apiary[[1]], nInd = 2),
-#'   getWorkers(apiary[[1]], nInd = 2),
-#'   getDrones(apiary[[1]], nInd = 2),
-#'   getVirginQueens(apiary[[1]], nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
 #' )
 #' getCaste(bees)
 #'
@@ -1600,21 +1461,21 @@ getLocation <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
-#' hasSplit(colony)
+#' colony <- buildUp(x= colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
+#'
+#' hasSplit(colony)
+#' colony<- split(colony)
+#' hasSplit(colony$split)
+#' hasSplit(colony$remnant)
+#'
 #' hasSplit(apiary)
-#'
-#' tmp <- split(colony)
-#' hasSplit(tmp$split)
-#' hasSplit(tmp$remnant)
-#'
-#' tmp2 <- split(apiary)
-#' hasSplit(tmp2$split)
-#' hasSplit(tmp2$remnant)
+#' apiary <- split(apiary)
+#' hasSplit(apiary$split)
+#' hasSplit(apiary$remnant)
 #' @export
 hasSplit <- function(x) {
   if (isColony(x)) {
@@ -1652,21 +1513,22 @@ hasSplit <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(colony, nInd = 5)
-#' getEvents(colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(apiary, nInd = 4)
+#'
+#' getEvents(colony)
 #' getEvents(apiary)
 #'
-#' colony <- swarm(x = colony)
+#' colony <- swarm(colony)
 #' getEvents(colony$swarm)
 #' getEvents(colony$remnant)
 #'
-#' apiary <- supersede(x = apiary)
+#' apiary <- supersede(apiary)
 #' getEvents(apiary)
 #' @export
 getEvents <- function(x) {
@@ -1702,22 +1564,22 @@ getEvents <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(colony, nInd = 5)
-#'
-#' hasSwarmed(colony)
-#' tmp <- swarm(x = colony)
-#' hasSwarmed(tmp$swarm)
-#' hasSwarmed(tmp$remnant)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
+#'
+#' hasSwarmed(colony)
+#' colony <- swarm(colony)
+#' hasSwarmed(colony$swarm)
+#' hasSwarmed(colony$remnant)
 #'
 #' hasSwarmed(apiary)
-#' tmp2 <- swarm(x = apiary)
-#' hasSwarmed(tmp2$swarm)
-#' hasSwarmed(tmp2$remnant)
+#' apiary <- swarm(apiary)
+#' hasSwarmed(apiary$swarm)
+#' hasSwarmed(apiary$remnant)
 #' @export
 hasSwarmed <- function(x) {
   if (isColony(x)) {
@@ -1751,20 +1613,20 @@ hasSwarmed <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(colony, nInd = 5)
-#'
-#' hasSuperseded(colony)
-#' tmp <- supersede(x = colony)
-#' hasSuperseded(tmp)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
+#'
+#' hasSuperseded(colony)
+#' colony <- supersede(colony)
+#' hasSuperseded(colony)
 #'
 #' hasSuperseded(apiary)
-#' tmp2 <- supersede(x = apiary)
-#' hasSuperseded(tmp2)
+#' apiary <- supersede(apiary)
+#' hasSuperseded(apiary)
 #' @export
 hasSuperseded <- function(x) {
   if (isColony(x)) {
@@ -1798,20 +1660,20 @@ hasSuperseded <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(colony, nInd = 5)
 #'
 #' hasCollapsed(colony)
-#' tmp <- collapse(x = colony)
-#' hasCollapsed(tmp)
+#' colony <- collapse(colony)
+#' hasCollapsed(colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #'
 #' hasCollapsed(apiary)
-#' tmp2 <- collapse(x = apiary)
-#' hasCollapsed(tmp2)
+#' apiary <- collapse(apiary)
+#' hasCollapsed(apiary)
 #' @export
 hasCollapsed <- function(x) {
   if (isColony(x)) {
@@ -1848,14 +1710,14 @@ hasCollapsed <- function(x) {
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #'
 #' isProductive(colony)
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' isProductive(colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
 #' isProductive(apiary)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' isProductive(apiary)
 #' @export
 isProductive <- function(x) {
@@ -2137,32 +1999,29 @@ reduceDroneGeno <- function(geno, pop) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #'
-#' getCsdAlleles(getQueen(apiary[[1]]))
-#' getCsdAlleles(getFathers(apiary[[1]]))
-#' getCsdAlleles(getWorkers(apiary[[1]]))
-#' getCsdAlleles(getDrones(apiary[[1]]))
+#' # Use getCsdAlleles on a Population
+#' getCsdAlleles(getQueen(colony))
+#' getCsdAlleles(getFathers(colony))
+#' getCsdAlleles(getWorkers(colony))
+#' getCsdAlleles(getDrones(colony))
 #'
+#' # Use getCsdAlleles on a Colony
 #' getCsdAlleles(colony)
 #' getCsdAlleles(colony, unique = TRUE)
 #' getCsdAlleles(colony, collapse = TRUE)
 #' getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
 #'
-#' getCsdAlleles(apiary[[1]])
-#' getCsdAlleles(apiary[[1]], unique = TRUE)
-#' getCsdAlleles(apiary[[1]], collapse = TRUE)
-#' getCsdAlleles(apiary[[1]], collapse = TRUE, unique = TRUE)
-#'
+#' # Use getCsdAlleles on a MultiColony
 #' getCsdAlleles(apiary)
 #' getCsdAlleles(apiary, unique = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
-#'
 #' getCsdAlleles(apiary, nInd = 2)
 #' @export
 getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
@@ -2265,26 +2124,32 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(x= colony, nInd = 4)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
+#' # Use getCsdGeno on a Population
 #' getCsdGeno(getQueen(colony))
 #' getCsdGeno(getFathers(colony))
 #' getCsdGeno(getWorkers(colony))
-#' getCsdGeno(getDrones(colony))
+#'
+#' # Using dronesHaploid = TRUE removes any diploid males
+#' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = TRUE)
+#' # Using dronesHaploid = FALSE does not remove diploid males
+#' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
+#'
+#' # Use getCsdGeno on a Colony
 #' getCsdGeno(colony)
 #'
-#' getCsdGeno(getQueen(apiary[[1]]))
-#' getCsdGeno(getFathers(apiary[[1]]))
-#' getCsdGeno(getWorkers(apiary[[1]]))
-#' getCsdGeno(getDrones(apiary[[1]]))
-#' getCsdGeno(apiary[[1]])
+#' #Compare the use of the dronesHaploid parameter
+#' getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)
+#' getCsdGeno(colony, nInd = 4, dronesHaploid = FALSE)
 #'
+#' # Use getCsdGeno on a MultiColony
 #' getCsdGeno(apiary)
 #' getCsdGeno(apiary, nInd = 2)
 #' @export
@@ -2353,12 +2218,12 @@ getCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(x= colony, nInd = 4)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Caste members taken from Colony class
@@ -2413,28 +2278,17 @@ isGenoHeterozygous <- function(x) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(x= colony, nInd = 4)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' # Caste members taken from Colony class
+#' # Use isCsdHeterozygous on a Population
 #' isCsdHeterozygous(getQueen(colony))
 #' isCsdHeterozygous(getWorkers(colony))
 #' isCsdHeterozygous(getVirginQueens(colony))
 #' isCsdHeterozygous(getDrones(colony))
-#'
-#' # Caste memeber taken from MultiColony class
-#' isCsdHeterozygous(getQueen(apiary[[1]]))
-#' isCsdHeterozygous(getWorkers(apiary[[1]]))
-#' isCsdHeterozygous(getVirginQueens(apiary[[1]]))
-#' isCsdHeterozygous(getDrones(apiary[[1]]))
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -2499,27 +2353,22 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x= colony, exact = TRUE)
+#' colony <- buildUp(x= colony)
 #' colony <- addVirginQueens(x= colony, nInd = 4)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Caste members taken from Colony class
 #' nCsdAlleles(getQueen(colony))
 #' nCsdAlleles(getFathers(colony))
 #' nCsdAlleles(getVirginQueens(colony))
 #' nCsdAlleles(getWorkers(colony))
 #' nCsdAlleles(getDrones(colony))
 #'
-#' # Caste members taken from MultiColony class
-#' nCsdAlleles(getQueen(apiary[[1]]))
-#' nCsdAlleles(getFathers(apiary[[1]]))
-#' nCsdAlleles(getVirginQueens(apiary[[1]]))
-#' nCsdAlleles(getWorkers(apiary[[1]]))
-#' nCsdAlleles(getDrones(apiary[[1]]))
+#' nCsdAlleles(colony)
+#' nCsdAlleles(colony, collapse = TRUE)
 #'
 #' nCsdAlleles(apiary)
 #' nCsdAlleles(apiary, collapse = TRUE)
@@ -2596,30 +2445,15 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' tmp2 <- getQueen(colony)
-#' tmp3 <- getDrones(colony)
-#' tmp4 <- getWorkers(apiary[[1]])
-#' tmp5 <- getQueen(apiary[[1]])
-#' tmp6 <- getDrones(apiary[[1]])
-#'
-#' getIbdHaplo(tmp)
-#' getIbdHaplo(tmp2)
-#' getIbdHaplo(tmp3)
-#' getIbdHaplo(tmp4)
-#' getIbdHaplo(tmp5)
-#' getIbdHaplo(tmp6)
+#' # Use getIbdHaplo on a Population
+#' getIbdHaplo(getWorkers(colony))
+#' getIbdHaplo(getQueen(colony))
+#' getIbdHaplo(getDrones(colony))
 #' @export
 getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2660,28 +2494,14 @@ getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getQtlHaplo(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getQtlHaplo(tmp2)
-#'
-#' tmp3 <- getWorkers(apiary[[1]])
-#' getQtlHaplo(tmp3)
-#'
-#' tmp4 <- getQueen(apiary[[1]])
-#' getQtlHaplo(tmp4)
+#' # Use getQtlHaplo on a Population
+#' getQtlHaplo(getWorkers(colony))
+#' getQtlHaplo(getQueen(colony))
 #' @export
 getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2719,29 +2539,14 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getQtlGeno(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getQtlGeno(tmp2)
-#'
-#' tmp3 <- getWorkers(apiary[[1]])
-#' getQtlGeno(tmp3)
-#'
-#' tmp4 <- getQueen(apiary[[1]])
-#' getQtlGeno(tmp4)
-#'
+#' # Use getQtlGeno on a Population
+#' getQtlGeno(getWorkers(colony))
+#' getQtlGeno(getQueen(colony))
 #' @export
 getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2782,28 +2587,15 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getSegSiteHaplo(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getSegSiteHaplo(tmp2)
-#'
-#' tmp3 <- getWorkers(apiary[[1]])
-#' getSegSiteHaplo(tmp3)
-#'
-#' tmp4 <- getQueen(apiary[[1]])
-#' getSegSiteHaplo(tmp4)
+#' # Use getSegSiteHaplo on a Population
+#' getSegSiteHaplo(getWorkers(colony))
+#' getSegSiteHaplo(getQueen(colony))
+
 #' @export
 getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2841,34 +2633,16 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getSegSiteGeno(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getSegSiteGeno(tmp2)
-#'
-#' tmp3 <- getDrones(colony)
-#' getSegSiteGeno(tmp3)
-#'
-#' tmp4 <- getWorkers(apiary[[1]])
-#' getSegSiteGeno(tmp4)
-#'
-#' tmp5 <- getQueen(apiary[[1]])
-#' getSegSiteGeno(tmp5)
-#'
-#' tmp6 <- getDrones(apiary[[1]])
-#' getSegSiteGeno(tmp6)
+#' # Use getSegSiteGeno on a Population
+#' getSegSiteGeno(getWorkers(colony))
+#' getSegSiteGeno(getQueen(colony))
+#' getSegSiteGeno(getDrones(colony))
+
 #' @export
 getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2909,34 +2683,15 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getSnpHaplo(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getSnpHaplo(tmp2)
-#'
-#' tmp3 <- getDrones(colony)
-#' getSnpHaplo(tmp3)
-#'
-#' tmp4 <- getWorkers(apiary[[1]])
-#' getSnpHaplo(tmp4)
-#'
-#' tmp5 <- getQueen(apiary[[1]])
-#' getSnpHaplo(tmp5)
-#'
-#' tmp6 <- getDrones(apiary[[1]])
-#' getSnpHaplo(tmp6)
+#' # Use getSnpHaplo on a Population
+#' getSnpHaplo(getWorkers(colony))
+#' getSnpHaplo(getQueen(colony))
+#' getSnpHaplo(getDrones(colony))
 #' @export
 getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2974,34 +2729,15 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create a Colony  class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' tmp <- getWorkers(colony)
-#' getSnpGeno(tmp)
-#'
-#' tmp2 <- getQueen(colony)
-#' getSnpGeno(tmp2)
-#'
-#' tmp3 <- getDrones(colony)
-#' getSnpGeno(tmp3)
-#'
-#' tmp4 <- getWorkers(apiary[[1]])
-#' getSnpGeno(tmp4)
-#'
-#' tmp5 <- getQueen(apiary[[1]])
-#' getSnpGeno(tmp5)
-#'
-#' tmp6 <- getDrones(apiary[[1]])
-#' getSnpGeno(tmp6)
+#' # Use getSnpGeno on a Population
+#' getSnpGeno(getWorkers(colony))
+#' getSnpGeno(getQueen(colony))
+#' getSnpGeno(getDrones(colony))
 #' @export
 getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -3052,15 +2788,14 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' #Test on Colony class
 #' getCasteIbdHaplo(x= colony, caste = "queen")
 #' getQueensIbdHaplo(colony)
 #'
@@ -3079,9 +2814,8 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getCasteIbdHaplo(colony, caste = "drones")
 #' getDronesIbdHaplo(colony)
 #'
-#' # Test on MultiColony class
 #' getCasteIbdHaplo(x= apiary, caste = "queen")
-#' getQueensIbdHaplo(apiary[[1]])
+#' getQueensIbdHaplo(apiary)
 #'
 #' getCasteIbdHaplo(apiary, caste = "fathers")
 #' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
@@ -3286,27 +3020,18 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyIbdHaplo(colony)
 #' getColonyIbdHaplo(colony, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(colony, nInd = 1)
 #' getColonyIbdHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonyIbdHaplo(apiary[[1]])
-#' getColonyIbdHaplo(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyIbdHaplo(apiary[[1]], nInd = 1)
-#' getColonyIbdHaplo(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyIbdHaplo(apiary[[2]])
 #'
 #' getColonyIbdHaplo(apiary)
 #' getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
@@ -3412,15 +3137,14 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteQtlHaplo(colony, caste = "queen")
 #' getQueensQtlHaplo(colony)
 #'
@@ -3438,25 +3162,6 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlHaplo(colony, caste = "drones")
 #' getDronesQtlHaplo(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteQtlHaplo(apiary[[1]], caste = "queen")
-#' getQueensQtlHaplo(apiary[[1]])
-#'
-#' getCasteQtlHaplo(apiary[[1]], caste = "fathers")
-#' getCasteQtlHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteQtlHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersQtlHaplo(apiary[[1]])
-#' getFathersQtlHaplo(apiary[[1]], nInd = 2)
-#'
-#' getCasteQtlHaplo(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensQtlHaplo(apiary[[1]])
-#'
-#' getCasteQtlHaplo(apiary[[1]], caste = "workers")
-#' getWorkersQtlHaplo(apiary[[1]])
-#'
-#' getCasteQtlHaplo(apiary[[1]], caste = "drones")
-#' getDronesQtlHaplo(apiary[[1]])
 #'
 #' getCasteQtlHaplo(apiary, caste = "queen")
 #' getQueensQtlHaplo(apiary)
@@ -3665,27 +3370,18 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyQtlHaplo(colony)
 #' getColonyQtlHaplo(colony, caste = c("queen", "fathers"))
 #' getColonyQtlHaplo(colony, nInd = 1)
 #' getColonyQtlHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonyQtlHaplo(apiary[[1]])
-#' getColonyQtlHaplo(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyQtlHaplo(apiary[[1]], nInd = 1)
-#' getColonyQtlHaplo(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyQtlHaplo(apiary[[2]])
 #'
 #' getColonyQtlHaplo(apiary)
 #' getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
@@ -3788,15 +3484,14 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteQtlGeno(colony, caste = "queen")
 #' getQueensQtlGeno(colony)
 #'
@@ -3814,25 +3509,6 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlGeno(colony, caste = "drones")
 #' getDronesQtlGeno(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteQtlGeno(apiary[[1]], caste = "queen")
-#' getQueensQtlGeno(apiary[[1]])
-#'
-#' getCasteQtlGeno(apiary[[1]], caste = "fathers")
-#' getCasteQtlGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteQtlGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersQtlGeno(apiary[[1]])
-#' getFathersQtlGeno(apiary[[1]], nInd = 2)
-#'
-#' getCasteQtlGeno(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensQtlGeno(apiary[[1]])
-#'
-#' getCasteQtlGeno(apiary[[1]], caste = "workers")
-#' getWorkersQtlGeno(apiary[[1]])
-#'
-#' getCasteQtlGeno(apiary[[1]], caste = "drones")
-#' getDronesQtlGeno(apiary[[1]])
 #'
 #' getCasteQtlGeno(apiary, caste = "queen")
 #' getQueensQtlGeno(apiary)
@@ -4029,27 +3705,18 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyQtlGeno(colony)
 #' getColonyQtlGeno(colony, caste = c("queen", "fathers"))
 #' getColonyQtlGeno(colony, nInd = 1)
 #' getColonyQtlGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' #Test on MultiColony class
-#' getColonyQtlGeno(apiary[[1]])
-#' getColonyQtlGeno(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyQtlGeno(apiary[[1]], nInd = 1)
-#' getColonyQtlGeno(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyQtlGeno(apiary[[2]])
 #'
 #' getColonyQtlGeno(apiary)
 #' getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
@@ -4154,15 +3821,14 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteSegSiteHaplo(colony, caste = "queen")
 #' getQueensSegSiteHaplo(colony)
 #'
@@ -4180,25 +3846,6 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #'
 #' getCasteSegSiteHaplo(colony, caste = "drones")
 #' getDronesSegSiteHaplo(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "queen")
-#' getQueensSegSiteHaplo(apiary[[1]])
-#'
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "fathers")
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersSegSiteHaplo(apiary[[1]])
-#' getFathersSegSiteHaplo(apiary[[1]], nInd = 2)
-#'
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensSegSiteHaplo(apiary[[1]])
-#'
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "workers")
-#' getWorkersSegSiteHaplo(apiary[[1]])
-#'
-#' getCasteSegSiteHaplo(apiary[[1]], caste = "drones")
-#' getDronesSegSiteHaplo(apiary[[1]])
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "queen")
 #' getQueensSegSiteHaplo(apiary)
@@ -4398,27 +4045,18 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonySegSiteHaplo(colony)
 #' getColonySegSiteHaplo(colony, caste = c("queen", "fathers"))
 #' getColonySegSiteHaplo(colony, nInd = 1)
 #' getColonySegSiteHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonySegSiteHaplo(apiary[[1]])
-#' getColonySegSiteHaplo(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonySegSiteHaplo(apiary[[1]], nInd = 1)
-#' getColonySegSiteHaplo(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonySegSiteHaplo(apiary[[2]])
 #'
 #' getColonySegSiteHaplo(apiary)
 #' getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
@@ -4520,15 +4158,14 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteSegSiteGeno(colony, caste = "queen")
 #' getQueensSegSiteGeno(colony)
 #'
@@ -4546,25 +4183,6 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #'
 #' getCasteSegSiteGeno(colony, caste = "drones")
 #' getDronesSegSiteGeno(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteSegSiteGeno(apiary[[1]], caste = "queen")
-#' getQueensSegSiteGeno(apiary[[1]])
-#'
-#' getCasteSegSiteGeno(apiary[[1]], caste = "fathers")
-#' getCasteSegSiteGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteSegSiteGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersSegSiteGeno(apiary[[1]])
-#' getFathersSegSiteGeno(apiary[[1]], nInd = 2)
-#'
-#' getCasteSegSiteGeno(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensSegSiteGeno(apiary[[1]])
-#'
-#' getCasteSegSiteGeno(apiary[[1]], caste = "workers")
-#' getWorkersSegSiteGeno(apiary[[1]])
-#'
-#' getCasteSegSiteGeno(apiary[[1]], caste = "drones")
-#' getDronesSegSiteGeno(apiary[[1]])
 #'
 #' getCasteSegSiteGeno(apiary, caste = "queen")
 #' getQueensSegSiteGeno(apiary)
@@ -4758,27 +4376,18 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonySegSiteGeno(colony)
 #' getColonySegSiteGeno(colony, caste = c("queen", "fathers"))
 #' getColonySegSiteGeno(colony, nInd = 1)
 #' getColonySegSiteGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonySegSiteGeno(apiary[[1]])
-#' getColonySegSiteGeno(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonySegSiteGeno(apiary[[1]], nInd = 1)
-#' getColonySegSiteGeno(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonySegSiteGeno(apiary[[2]])
 #'
 #' getColonySegSiteGeno(apiary)
 #' getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
@@ -4880,15 +4489,14 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteSnpHaplo(colony, caste = "queen")
 #' getQueensSnpHaplo(colony)
 #'
@@ -4906,25 +4514,6 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #'
 #' getCasteSnpHaplo(colony, caste = "drones")
 #' getDronesSnpHaplo(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteSnpHaplo(apiary[[1]], caste = "queen")
-#' getQueensSnpHaplo(apiary[[1]])
-#'
-#' getCasteSnpHaplo(apiary[[1]], caste = "fathers")
-#' getCasteSnpHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteSnpHaplo(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersSnpHaplo(apiary[[1]])
-#' getFathersSnpHaplo(apiary[[1]], nInd = 2)
-#'
-#' getCasteSnpHaplo(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensSnpHaplo(apiary[[1]])
-#'
-#' getCasteSnpHaplo(apiary[[1]], caste = "workers")
-#' getWorkersSnpHaplo(apiary[[1]])
-#'
-#' getCasteSnpHaplo(apiary[[1]], caste = "drones")
-#' getDronesSnpHaplo(apiary[[1]])
 #'
 #' getCasteSnpHaplo(apiary, caste = "queen")
 #' getQueensSnpHaplo(apiary)
@@ -5124,27 +4713,18 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonySnpHaplo(colony)
 #' getColonySnpHaplo(colony, caste = c("queen", "fathers"))
 #' getColonySnpHaplo(colony, nInd = 1)
 #' getColonySnpHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonySnpHaplo(apiary[[1]])
-#' getColonySnpHaplo(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonySnpHaplo(apiary[[1]], nInd = 1)
-#' getColonySnpHaplo(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonySnpHaplo(apiary[[2]])
 #'
 #' getColonySnpHaplo(apiary)
 #' getColonySnpHaplo(apiary, caste = c("queen", "fathers"))
@@ -5247,15 +4827,14 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteSnpGeno(colony, caste = "queen")
 #' getQueensSnpGeno(colony)
 #'
@@ -5273,25 +4852,6 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteSnpGeno(colony, caste = "drones")
 #' getDronesSnpGeno(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteSnpGeno(apiary[[1]], caste = "queen")
-#' getQueensSnpGeno(apiary[[1]])
-#'
-#' getCasteSnpGeno(apiary[[1]], caste = "fathers")
-#' getCasteSnpGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteSnpGeno(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersSnpGeno(apiary[[1]])
-#' getFathersSnpGeno(apiary[[1]], nInd = 2)
-#'
-#' getCasteSnpGeno(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensSnpGeno(apiary[[1]])
-#'
-#' getCasteSnpGeno(apiary[[1]], caste = "workers")
-#' getWorkersSnpGeno(apiary[[1]])
-#'
-#' getCasteSnpGeno(apiary[[1]], caste = "drones")
-#' getDronesSnpGeno(apiary[[1]])
 #'
 #' getCasteSnpGeno(apiary, caste = "queen")
 #' getQueensSnpGeno(apiary)
@@ -5488,28 +5048,19 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonySnpGeno(colony)
 #' getColonySnpGeno(colony, caste = c("queen", "fathers"))
 #' getColonySnpGeno(colony, nInd = 1)
 #' getColonySnpGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonySnpGeno(apiary[[1]])
-#' getColonySnpGeno(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonySnpGeno(apiary[[1]], nInd = 1)
-#' getColonySnpGeno(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonySnpGeno(apiary[[2]])
-#'
+
 #' getColonySnpGeno(apiary)
 #' getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySnpGeno(apiary, nInd = 1)
@@ -5596,11 +5147,11 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' SP$addSnpChip(5)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = nFathersPoisson)
-#' apiary <- createColonies(basePop[1:2], n =2)
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' apiary <- createColonies(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' genoQ <- getQueensSegSiteGeno(apiary[[1]])
@@ -5701,11 +5252,11 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' SP$addSnpChip(5)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = nFathersPoisson)
-#' apiary <- createColonies(basePop[1:2], n =2)
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' apiary <- createColonies(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' genoQ <- getQueensSegSiteGeno(apiary[[1]])
@@ -5874,11 +5425,11 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' SP$addSnpChip(5)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = nFathersPoisson)
-#' apiary <- createColonies(basePop[1:2], n =2)
-#' apiary <- cross(x = apiary, fathers = fatherGroups)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' apiary <- createColonies(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' haploQ <- getQueensIbdHaplo(apiary[[1]])
@@ -6046,15 +5597,14 @@ calcBeeGRMIbd <- function(x) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteGv(colony, caste = "queen")
 #' getQueensGv(colony)
 #'
@@ -6072,25 +5622,6 @@ calcBeeGRMIbd <- function(x) {
 #'
 #' getCasteGv(colony, caste = "drones")
 #' getDronesGv(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteGv(apiary[[1]], caste = "queen")
-#' getQueensGv(apiary[[1]])
-#'
-#' getCasteGv(apiary[[1]], caste = "fathers")
-#' getCasteGv(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteGv(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersGv(apiary[[1]])
-#' getFathersGv(apiary[[1]], nInd = 2)
-#'
-#' getCasteGv(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensGv(apiary[[1]])
-#'
-#' getCasteGv(apiary[[1]], caste = "workers")
-#' getWorkersGv(apiary[[1]])
-#'
-#' getCasteGv(apiary[[1]], caste = "drones")
-#' getDronesGv(apiary[[1]])
 #'
 #' getCasteGv(apiary, caste = "queen")
 #' getQueensGv(apiary)
@@ -6228,27 +5759,18 @@ getDronesGv <- function(x, nInd = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyGv(colony)
 #' getColonyGv(colony, caste = c("queen", "fathers"))
 #' getColonyGv(colony, nInd = 1)
 #' getColonyGv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonyGv(apiary[[1]])
-#' getColonyGv(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyGv(apiary[[1]], nInd = 1)
-#' getColonyGv(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyGv(apiary[[2]])
 #'
 #' getColonyGv(apiary)
 #' getColonyGv(apiary, caste = c("queen", "fathers"))
@@ -6334,15 +5856,14 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteBv(colony, caste = "queen")
 #' getQueensBv(colony)
 #'
@@ -6360,25 +5881,6 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteBv(colony, caste = "drones")
 #' getDronesBv(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteBv(apiary[[1]], caste = "queen")
-#' getQueensBv(apiary[[1]])
-#'
-#' getCasteBv(apiary[[1]], caste = "fathers")
-#' getCasteBv(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteBv(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersBv(apiary[[1]])
-#' getFathersBv(apiary[[1]], nInd = 2)
-#'
-#' getCasteBv(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensBv(apiary[[1]])
-#'
-#' getCasteBv(apiary[[1]], caste = "workers")
-#' getWorkersBv(apiary[[1]])
-#'
-#' getCasteBv(apiary[[1]], caste = "drones")
-#' getDronesBv(apiary[[1]])
 #'
 #' getCasteBv(apiary, caste = "queen")
 #' getQueensBv(apiary)
@@ -6553,27 +6055,18 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyBv(colony)
 #' getColonyBv(colony, caste = c("queen", "fathers"))
 #' getColonyBv(colony, nInd = 1)
 #' getColonyBv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' # Test on MultiColony class
-#' getColonyBv(apiary[[1]])
-#' getColonyBv(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyBv(apiary[[1]], nInd = 1)
-#' getColonyBv(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyBv(apiary[[2]])
 #'
 #' getColonyBv(apiary)
 #' getColonyBv(apiary, caste = c("queen", "fathers"))
@@ -6662,15 +6155,14 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getCasteDd(colony, caste = "queen")
 #' getQueensDd(colony)
 #'
@@ -6688,25 +6180,6 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteDd(colony, caste = "drones")
 #' getDronesDd(colony)
-#'
-#' # Test on MultiColony class
-#' getCasteDd(apiary[[1]], caste = "queen")
-#' getQueensDd(apiary[[1]])
-#'
-#' getCasteDd(apiary[[1]], caste = "fathers")
-#' getCasteDd(apiary[[1]], caste = "fathers", nInd = 2)
-#' getCasteDd(apiary[[1]], caste = "fathers", nInd = 2)
-#' getFathersDd(apiary[[1]])
-#' getFathersDd(apiary[[1]], nInd = 2)
-#'
-#' getCasteDd(apiary[[1]], caste = "virginQueens")
-#' getVirginQueensDd(apiary[[1]])
-#'
-#' getCasteDd(apiary[[1]], caste = "workers")
-#' getWorkersDd(apiary[[1]])
-#'
-#' getCasteDd(apiary[[1]], caste = "drones")
-#' getDronesDd(apiary[[1]])
 #'
 #' getCasteDd(apiary, caste = "queen")
 #' getQueensDd(apiary)
@@ -6878,24 +6351,18 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(x = colony, exact = TRUE)
+#' colony <- buildUp(x = colony)
 #' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
-#' apiary <- buildUp(x = apiary, exact = TRUE)
+#' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' # Test on Colony class
 #' getColonyDd(colony)
 #' getColonyDd(colony, caste = c("queen", "fathers"))
 #' getColonyDd(colony, nInd = 1)
 #' getColonyDd(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyDd(apiary[[1]])
-#' getColonyDd(apiary[[1]], caste = c("queen", "fathers"))
-#' getColonyDd(apiary[[1]], nInd = 1)
-#' getColonyDd(apiary[[1]], nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
 #' getColonyDd(apiary)
 #' getColonyDd(apiary, caste = c("queen", "fathers"))
