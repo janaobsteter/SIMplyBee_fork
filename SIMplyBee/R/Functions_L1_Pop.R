@@ -133,6 +133,8 @@
 #' mergePops(getDrones(apiary))
 #'
 #' getCastePop(apiary)
+#' getCastePop(apiary, caste = "queen")
+#' getCastePop(apiary, caste = "drones")
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
                         removeFathers = TRUE) {

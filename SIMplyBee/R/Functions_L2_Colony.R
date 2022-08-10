@@ -582,7 +582,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(x = x)
+      nWorkers <- nWorkers(colony = x)
     }
     if (new) {
       n <- nWorkers

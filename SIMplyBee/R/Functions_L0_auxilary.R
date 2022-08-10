@@ -400,7 +400,7 @@ nDrones <- function(x) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
+#' colony <- addVirginQueens(x = colony, nInd = 1)
 #'
 #' apiary <- createColonies(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
@@ -417,7 +417,7 @@ nDrones <- function(x) {
 #'
 #' # Inbreed virgin queen with her brothers to generate csd homozygous brood
 #' colony2 <- createColony(x = getVirginQueens(colony))
-#' colony2 <- cross(x = colony2, fathers = pullDrones(x = colony, nInd = 15))
+#' colony2 <- cross(x = colony2, fathers = pullDrones(x = colony, nInd = nFathersPoisson())[[1]])
 #'
 #' # Calculate the expected csd homozygosity
 #' calcQueensPHomBrood(getQueen(colony2))
@@ -853,9 +853,9 @@ isQueenPresent <- function(x) {
 #' colony <- removeQueen(colony)
 #' isVirginQueensPresent(colony)
 #'
-#' apiary <- swarm(x = apiary)
-#' isVirginQueensPresent(apiary$swarm)
-#' isVirginQueensPresent(apiary$remnant)
+#' tmp <- swarm(x = apiary)
+#' isVirginQueensPresent(tmp$swarm)
+#' isVirginQueensPresent(tmp$remnant)
 #' @export
 isVirginQueensPresent <- function(x) {
   if (isColony(x)) {
@@ -1323,6 +1323,9 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' )
 #' getCaste(bees)
 #'
+#' getCaste(colony)
+#' getCaste(apiary)
+#'
 #' # Create a data.frame with id, colony, and caste information
 #' (tmpC <- getCaste(apiary[[1]]))
 #' (tmpI <- getCasteId(apiary[[1]]))
@@ -1468,14 +1471,14 @@ getLocation <- function(x) {
 #' apiary <- buildUp(x = apiary)
 #'
 #' hasSplit(colony)
-#' colony<- split(colony)
-#' hasSplit(colony$split)
-#' hasSplit(colony$remnant)
+#' tmp<- split(colony)
+#' hasSplit(tmp$split)
+#' hasSplit(tmp$remnant)
 #'
 #' hasSplit(apiary)
-#' apiary <- split(apiary)
-#' hasSplit(apiary$split)
-#' hasSplit(apiary$remnant)
+#' tmp2 <- split(apiary)
+#' hasSplit(tmp2$split)
+#' hasSplit(tmp2$remnant)
 #' @export
 hasSplit <- function(x) {
   if (isColony(x)) {
@@ -1524,9 +1527,9 @@ hasSplit <- function(x) {
 #' getEvents(colony)
 #' getEvents(apiary)
 #'
-#' colony <- swarm(colony)
-#' getEvents(colony$swarm)
-#' getEvents(colony$remnant)
+#' tmp <- swarm(colony)
+#' getEvents(tmp$swarm)
+#' getEvents(tmp$remnant)
 #'
 #' apiary <- supersede(apiary)
 #' getEvents(apiary)
@@ -1572,14 +1575,14 @@ getEvents <- function(x) {
 #' apiary <- buildUp(x = apiary)
 #'
 #' hasSwarmed(colony)
-#' colony <- swarm(colony)
-#' hasSwarmed(colony$swarm)
-#' hasSwarmed(colony$remnant)
+#' tmp <- swarm(colony)
+#' hasSwarmed(tmp$swarm)
+#' hasSwarmed(tmp$remnant)
 #'
 #' hasSwarmed(apiary)
-#' apiary <- swarm(apiary)
-#' hasSwarmed(apiary$swarm)
-#' hasSwarmed(apiary$remnant)
+#' tmp2 <- swarm(apiary)
+#' hasSwarmed(tmp2$swarm)
+#' hasSwarmed(tmp2$remnant)
 #' @export
 hasSwarmed <- function(x) {
   if (isColony(x)) {
@@ -2137,9 +2140,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
 #' getCsdGeno(getFathers(colony))
 #' getCsdGeno(getWorkers(colony))
 #'
-#' # Using dronesHaploid = TRUE removes any diploid males
+#' # Using dronesHaploid = TRUE returns drones as haploids instead of double haploids
 #' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = TRUE)
-#' # Using dronesHaploid = FALSE does not remove diploid males
+#' # Using dronesHaploid = FALSE returns drones as double haploids
 #' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
 #'
 #' # Use getCsdGeno on a Colony
