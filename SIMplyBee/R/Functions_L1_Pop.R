@@ -34,67 +34,72 @@
 #' @seealso \code{\link{getCasteId}} and \code{\link{getCaste}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 4)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addWorkers(colony2, nInd = 20)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 #'
-#' getCastePop(colony1, caste = "queen")
-#' getQueen(colony1)
+#' # Using defaults in SP$nWorkers & SP$nDrones
+#' colony <- buildUp(x = colony, exact = TRUE)
+#' apiary <- buildUp(x = apiary, exact = TRUE)
 #'
-#' drones@id
-#' getCastePop(colony1, caste = "fathers")
-#' getCastePop(colony1, caste = "fathers")@id
-#' getCastePop(colony1, caste = "fathers", nInd = 2)@id
-#' getCastePop(colony1, caste = "fathers", nInd = 2)@id
-#' getFathers(colony1)
-#' getFathers(colony1)@id
-#' getFathers(colony1, nInd = 2)@id
-#' getFathers(colony1, nInd = 2)@id
+#' # Using a default in SP$nVirginQueens
+#' colony <- addVirginQueens(x = colony)
+#' apiary <- addVirginQueens(x = apiary)
+#' colony
+#' apiary
 #'
-#' getFathers(getQueen(colony1))
+#' # Comparison of getCastePop() and getQueen()
+#' getCastePop(colony, caste = "queen")
+#' getQueen(colony)
 #'
-#' getCastePop(colony1, caste = "virginQueens")
-#' getCastePop(colony1, caste = "virginQueens")@id
-#' getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
-#' getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
-#' getVirginQueens(colony1)
-#' getVirginQueens(colony1)@id
-#' getVirginQueens(colony1, nInd = 2)@id
-#' getVirginQueens(colony1, nInd = 2)@id
+#' # Comparison of getCastePop() and getFathers()
+#' getCastePop(colony, caste = "fathers")
+#' getCastePop(colony, caste = "fathers")@id
+#' getCastePop(colony, caste = "fathers", nInd = 2)@id
 #'
-#' getCastePop(colony1, caste = "workers")
-#' getCastePop(colony1, caste = "workers")@id
-#' getCastePop(colony1, caste = "workers", nInd = 2)@id
-#' getCastePop(colony1, caste = "workers", nInd = 2)@id
-#' getWorkers(colony1)
-#' getWorkers(colony1)@id
-#' getWorkers(colony1, nInd = 2)@id
-#' getWorkers(colony1, nInd = 2)@id
+#' getFathers(colony)
+#' getFathers(colony)@id
+#' getFathers(colony, nInd = 2)@id
 #'
-#' getCastePop(colony1, caste = "drones")
-#' getCastePop(colony1, caste = "drones")@id
-#' getCastePop(colony1, caste = "drones", nInd = 2)@id
-#' getCastePop(colony1, caste = "drones", nInd = 2)@id
-#' getDrones(colony1)
-#' getDrones(colony1)@id
-#' getDrones(colony1, nInd = 2)@id
-#' getDrones(colony1, nInd = 2)@id
+#' getFathers(getQueen(colony))
 #'
-#' getCastePop(colony2, caste = "drones")
-#' getDrones(colony2)
+#' # Comparison of getCastePop() and getVirginQueens()
+#' getCastePop(colony, caste = "virginQueens")
+#' getCastePop(colony, caste = "virginQueens")@id
+#' getCastePop(colony, caste = "virginQueens", nInd = 2)@id
 #'
-#' apiary <- c(colony1, colony2)
+#' getVirginQueens(colony)
+#' getVirginQueens(colony)@id
+#' getVirginQueens(colony, nInd = 2)@id
+#'
+#' # Comparison of getCastePop() and getWorkers()
+#' getCastePop(colony, caste = "workers")
+#' getCastePop(colony, caste = "workers")@id
+#' getCastePop(colony, caste = "workers", nInd = 2)@id
+#'
+#' getWorkers(colony)
+#' getWorkers(colony)@id
+#' getWorkers(colony, nInd = 2)@id
+#'
+#' # Comparison of getCastePop() and getDrones()
+#' getCastePop(colony, caste = "drones")
+#' getCastePop(colony, caste = "drones")@id
+#' getCastePop(colony, caste = "drones", nInd = 2)@id
+#'
+#' getDrones(colony)
+#' getDrones(colony)@id
+#' getDrones(colony, nInd = 2)@id
+#'
+#' # Comparisons on MultiColony class
 #' getCastePop(apiary, caste = "queen")
 #' getQueen(apiary)
 #' getCastePop(apiary, caste = "queen")[[1]]@id
@@ -128,8 +133,9 @@
 #' getDrones(apiary, nInd = 2)
 #' mergePops(getDrones(apiary))
 #'
-#' getCastePop(colony1, caste = "all")
-#' getCastePop(colony2, caste = "all")
+#' getCastePop(apiary)
+#' getCastePop(apiary, caste = "queen")
+#' getCastePop(apiary, caste = "drones")
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
                         removeFathers = TRUE) {
@@ -304,22 +310,26 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   named by colony ID
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$setTrackRec(isTrackRec = TRUE)
-#' # Create virgin queens from the founder population (Map-Pop object)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' (virginQueens <- createVirginQueens(colony1, nInd = 10))
-#' colony1@queen@id
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#'
+#' # Using a default in SP$nVirginQueens
+#' colony@virginQueens <- createVirginQueens(colony)
+#' virginQueens <- colony@virginQueens
 #' virginQueens@id
 #' virginQueens@sex
 #' virginQueens@misc
@@ -331,27 +341,25 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' SP$recHist[[23]][[1]][2]
 #' SP$caste
 #'
-#' createVirginQueens(apiary, nInd = 10)
-#'
 #' # Using a default in SP$nVirginQueens
 #' # (just to have some virgin queens - change this to your needs!)
-#' createVirginQueens(colony1)
+#' createVirginQueens(colony)
 #' createVirginQueens(apiary)
 #'
 #' # Specify own number
 #' SP$nVirginQueens <- 15
-#' createVirginQueens(colony1)
+#' createVirginQueens(colony)
 #' createVirginQueens(apiary)
 #' # nVirginQueens will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' createVirginQueens(colony1, nInd = nVirginQueensPoisson)
+#' createVirginQueens(colony, nInd = nVirginQueensPoisson)
 #' createVirginQueens(apiary, nInd = nVirginQueensPoisson)
 #' # nVirginQueens will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
 #' SP$nVirginQueens <- nVirginQueensPoisson
-#' createVirginQueens(colony1)
+#' createVirginQueens(colony)
 #' createVirginQueens(apiary)
 #' # nVirginQueens will vary between function calls when a function is used
 #'
@@ -365,7 +373,6 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
 #' nrow(getCsdAlleles(basePop, unique = TRUE))
 #' all(isCsdHeterozygous(basePop))
-#'
 #' @export
 # TODO: explore options for implementing difference between workers' and queens'
 #       patrilines
@@ -440,21 +447,25 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'   of lists named by colony ID
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' (tmp <- createWorkers(colony1, nInd = 10))
-#' colony1@queen@id
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#'
+#' (tmp <- createWorkers(colony, nInd = 10))
+#' colony@queen@id
 #' tmp$workers@id
 #' tmp$workers@sex
 #' tmp$workers@misc
@@ -467,42 +478,38 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' SP$caste
 #'
 #' createWorkers(apiary, nInd = 10)
-#'
 #' # Using a default in SP$nWorkers
 #' # (just to have some workers - change this to your needs!)
-#' createWorkers(colony1)
+#' createWorkers(colony)
 #' createWorkers(apiary)
 #'
 #' # Specify own number
 #' SP$nWorkers <- 15
-#' createWorkers(colony1)
+#' createWorkers(colony)
 #' createWorkers(apiary)
 #' # nWorkers will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' createWorkers(colony1, nInd = nWorkersPoisson)
+#' createWorkers(colony, nInd = nWorkersPoisson)
 #' createWorkers(apiary, nInd = nWorkersPoisson)
 #' # nWorkers will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
 #' SP$nWorkers <- nWorkersPoisson
-#' createWorkers(colony1)
+#' createWorkers(colony)
 #' createWorkers(apiary)
 #' # nWorkers will vary between function calls when a function is used
 #'
 #' # Inbred virgin queen with her brothers to generate csd homozygous brood
-#' colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
-#' colony3 <- crossColony(colony3,
-#'   drones = createDrones(colony1, nInd = 5),
-#'   nFathers = 5
-#' )
+#' colony2 <- createColony(createVirginQueens(colony, nInd = 1))
+#' colony2 <- cross(x = colony2, fathers = createDrones(x = colony, nInd = nFathersPoisson))
 #' # Check the expected csd homozygosity
-#' pHomBrood(colony3)
+#' pHomBrood(colony2)
 #'
 #' # Evaluate a realised csd homozygosity
-#' createWorkers(colony3, nInd = 100)
+#' createWorkers(colony2, nInd = 100)
 #' # nHomBrood will vary between function calls due to inheritance process
-#' createWorkers(colony3, nInd = 100)
+#' createWorkers(colony2, nInd = 100)
 #' # nHomBrood will vary between function calls due to inheritance process
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
@@ -517,9 +524,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
-    if (!isQueenMated(x)) {
-      stop("Unmated queen!")
-    }
+
     if (is.function(nInd)) {
       nInd <- nInd(colony = x) # see nWorkersPoissonQueenFecundity
     }
@@ -591,10 +596,12 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -644,10 +651,12 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -789,13 +798,23 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'   with drones - list nodes are named by colony ID
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#'
 #' basePop[1]@id
 #' drones@id
 #' drones@sex
@@ -808,48 +827,29 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' SP$recHist[[13]][[1]][2]
 #' SP$caste
 #'
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#'
-#' (tmp <- createDrones(colony1, nInd = 10))
-#' colony1@queen@id
-#' tmp@id
-#' tmp@sex
-#' tmp@misc
-#' tmp@mother
-#' tmp@father
-#' SP$pedigree
-#' SP$recHist
-#' SP$recHist[[23]][[1]][1]
-#' SP$recHist[[23]][[1]][2]
-#'
-#' createDrones(apiary, nInd = 10)
-#'
 #' # Using a default in SP$nDrones
 #' # (just to have some drones - change this to your needs!)
 #' SP$nDrones
-#' createDrones(colony1)
+#' createDrones(colony)
 #' createDrones(apiary)
 #'
 #' # Specify own number
 #' SP$nDrones <- 15
-#' createDrones(colony1)
+#' createDrones(colony)
 #' createDrones(apiary)
 #' # nDrones will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' createDrones(colony1, nInd = nDronesPoisson)
+#' createDrones(colony, nInd = nDronesPoisson)
 #' createDrones(apiary, nInd = nDronesPoisson)
 #' # nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
 #' SP$nDrones <- nDronesPoisson
-#' createDrones(colony1)
+#' createDrones(colony)
 #' createDrones(apiary)
 #' # nDrones will vary between function calls when a function is used
+#'
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -934,30 +934,30 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @return \code{\link{Pop-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' createDCA(colony1)
-#' createDCA(colony2)
-#' createDCA(colony2, nInd = 10)@id
-#' createDCA(colony2, nInd = 10)@id
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#'
+#' colony <- addDrones(colony, nInd = 10)
+#' createDCA(colony)
+#' createDCA(colony, nInd = 10)@id
+#'
+#' apiary <- addDrones(apiary)
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
-#'
-#' colony3 <- createColony(basePop[4])
-#' apiary <- c(colony1, colony2, colony3)
-#' createDCA(apiary)
-#'
 #' @export
 createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
   if (isColony(x)) {
@@ -1036,20 +1036,23 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @return list of \code{\link{Pop-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' apiary <- c(colony1, colony2)
-#' DCA <- createDCA(apiary)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- addDrones(colony, nInd = 100)
+#'
+#' # Create colony DCA
+#' DCA <- createDCA(colony)
 #' pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
+#' pullDroneGroupsFromDCA(DCA, n = 5, nFathers = nFathersPoisson)
+#'
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
                                    simParamBee = NULL) {
@@ -1113,41 +1116,48 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #'   \code{\link{Colonies-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
-#' colony2 <- addVirginQueens(colony2, nInd = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 5)
-#' colony2 <- addDrones(colony2, nInd = 6)
-#' pullCastePop(colony1, caste = "queen")
-#' pullQueen(colony1)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' pullCastePop(colony1, caste = "virginQueens")
-#' pullCastePop(colony1, caste = "virginQueens", nInd = 2)
-#' pullVirginQueens(colony1)
-#' pullVirginQueens(colony1, nInd = 2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' colony <- addVirginQueens(x = colony, nInd = 3)
 #'
-#' pullCastePop(colony1, caste = "workers")
-#' pullCastePop(colony1, caste = "workers", nInd = 5)
-#' pullWorkers(colony1)
-#' pullWorkers(colony1, nInd = 5)
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
+#' apiary <- addVirginQueens(x = apiary, nInd = 3)
 #'
-#' pullCastePop(colony1, caste = "drones")
-#' pullCastePop(colony1, caste = "drones", nInd = 5)
-#' pullDrones(colony1)
-#' pullDrones(colony1, nInd = 5)
+#' # pullCastePop on Colony class
+#' pullCastePop(colony, caste = "queen")
+#' pullQueen(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' pullCastePop(colony, caste = "virginQueens")
+#' pullCastePop(colony, caste = "virginQueens", nInd = 2)
+#' pullVirginQueens(colony)
+#' pullVirginQueens(colony, nInd = 2)
 #'
+#' pullCastePop(colony, caste = "workers")
+#' pullCastePop(colony, caste = "workers", nInd = 5)
+#' pullWorkers(colony)
+#' pullWorkers(colony, nInd = 5)
+#'
+#' pullCastePop(colony, caste = "drones")
+#' pullCastePop(colony, caste = "drones", nInd = 5)
+#' pullDrones(colony)
+#' pullDrones(colony, nInd = 5)
+#'
+#' # pullCastePop on MultiColony class
 #' pullCastePop(apiary, caste = "queen")
 #' pullQueen(apiary)
 #' nQueens(apiary)
@@ -1156,20 +1166,16 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
 #' nVirginQueens(apiary)
-#' nVirginQueens(pullVirginQueens(apiary)$colonies)
-#' nVirginQueens(pullVirginQueens(apiary, nInd = 5)$colonies)
 #'
 #' pullCastePop(apiary, caste = "workers")
 #' pullWorkers(apiary)
 #' nWorkers(apiary)
 #' nWorkers(pullWorkers(apiary)$colonies)
-#' nWorkers(pullWorkers(apiary, nInd = 5)$colonies)
 #'
 #' pullCastePop(apiary, caste = "drones")
 #' pullDrones(apiary)
 #' nDrones(apiary)
 #' nDrones(pullDrones(apiary)$colonies)
-#' nDrones(pullDrones(apiary, nInd = 5)$colonies)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                          removeFathers = TRUE) {
@@ -1299,7 +1305,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
 #'   queen will fail and she will stay virgin. This can happen for just a few
 #'   of many virgin queens, which can be annoying to track down, but you can use
-#'   \code{\link{isQueenMated}} to find such virgin queens. You can use
+#'   \code{\link{isQueen}} or \code{\link{isVirginQueen}}  to find such virgin queens. You can use
 #'   \code{checkMating} to alert you about this situation.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
@@ -1324,9 +1330,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' ))
 #'
 #' isQueen(virginQueen1)
-#' isQueenMated(virginQueen1)
+#' isQueen(virginQueen1)
 #' isQueen(matedQueen1)
-#' isQueenMated(matedQueen1)
+#' isQueen(matedQueen1)
 #' nFathers(matedQueen1)
 #' getFathers(matedQueen1)@id
 #'
@@ -1340,8 +1346,8 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   x = virginQueen2,
 #'   fathers = fatherGroups[[2]]
 #' ))
-#' isQueenMated(virginQueen2)
-#' isQueenMated(matedQueen2)
+#' isQueen(virginQueen2)
+#' isQueen(matedQueen2)
 #' nFathers(matedQueen2)
 #' getFathers(matedQueen2)@id
 #'
@@ -1351,7 +1357,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' )
 #' matedQueens
 #' isQueen(matedQueens)
-#' isQueenMated(matedQueens)
+#' isQueen(matedQueens)
 #' nFathers(matedQueens)
 #' getFathers(matedQueens)
 #'
@@ -1372,9 +1378,9 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' # Cross
 #' colony <- cross(colony, fathers = fatherGroups[[6]])
-#' isQueenMated(colony)
+#' isQueen(colony)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(7, 8)])
-#' all(isQueenMated(apiary))
+#' all(isQueen(apiary))
 #' nFathers(apiary)
 #'
 #' # Try mating with drones that were already used for mating
@@ -1385,7 +1391,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' all(isDrone(drones))
 #' any(isFather(drones))
 #' (matedColony <- cross(x = colony, fathers = drones))
-#' isQueenMated(matedColony)
+#' isQueen(matedColony)
 #'
 #' @export
 cross <- function(x, fathers,
@@ -1446,7 +1452,7 @@ cross <- function(x, fathers,
     if (isQueenPresent(x)) {
       stop("Queen already present in the colony!")
     }
-    if (!areVirginQueensPresent(x)) {
+    if (!isVirginQueensPresent(x)) {
       stop("No virgin queen(s) in the colony to cross!")
     }
     virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand")
@@ -1467,7 +1473,7 @@ cross <- function(x, fathers,
     } else {
       ret <- createColonies(n = nCol)
       if (nCol != length(fathers)) {
-        stop("Length of argument fatheres should match the number of colonies!")
+        stop("Length of argument fathers should match the number of colonies!")
       }
       for (colony in seq_len(nCol)) {
         ret[[colony]] <- cross(
@@ -1498,32 +1504,33 @@ cross <- function(x, fathers,
 #'   \code{\link{Colonies-class}} with queens having the year of birth set
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' SP$addTraitA(10)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
-#' getQueensYearOfBirth(getQueen(colony1))
-#' getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
-#' getQueensYearOfBirth(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(x = colony, fathers = fatherGroups[[1]])
+#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+#'
+#' # Example on Colony class
+#' getQueensYearOfBirth(colony)
 #' getQueensYearOfBirth(apiary)
 #'
-#' queen1 <- getQueen(colony1)
+#' queen1 <- getQueen(colony)
 #' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
 #' getQueensYearOfBirth(queen1)
 #'
-#' queen2 <- getQueen(colony2)
-#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
-#' getQueensYearOfBirth(queens)
-#'
-#' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
-#' getQueensYearOfBirth(colony1)
+#' colony <- setQueensYearOfBirth(colony, year = 2022)
+#' getQueensYearOfBirth(colony)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueensYearOfBirth(apiary)
@@ -1558,3 +1565,4 @@ setQueensYearOfBirth <- function(x, year) {
 #' @describeIn setQueensYearOfBirth Set the queen's year of birth
 #' @export
 setQueensYOB <- setQueensYearOfBirth
+

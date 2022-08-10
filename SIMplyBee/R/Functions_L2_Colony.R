@@ -141,7 +141,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
     stop("Individual in queen must be a virgin queen or a queen!")
   }
   if (isColony(x)) {
-    if (isQueenMated(queen)) {
+    if (isQueen(queen)) {
       if (nInd(queen) > 1) {
         stop("You must provide just one queen for the colony!")
       }
@@ -241,9 +241,6 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
-    }
-    if (!isQueenMated(x)) {
-      stop("Unmated queen!")
     }
     if (is.function(nInd)) {
       nInd <- nInd(colony = x) # see nVirginQueensPoissonColonyStrength
@@ -601,7 +598,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x) # see nWorkersPoissonQueenFecundity
+      nWorkers <- nWorkers(colony = x)
     }
     if (new) {
       n <- nWorkers
@@ -620,7 +617,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nDrones <- simParamBee$nDrones
     }
     if (is.function(nDrones)) {
-      nDrones <- nDrones(x = x) # see nDronesPoissonQueenFecundity
+      nDrones <- nDrones(x = x)
     }
     if (new) {
       n <- nDrones
@@ -1516,7 +1513,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 
   if (isColony(x)) {
     if  (is.function(p)) {
-      p <- p(colony)
+      p <- p(x)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
@@ -1530,7 +1527,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     # TODO: Add use="something" to select pWorkers that swarm
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
     tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
-    currentLocation <- getLocation(colony)
+    currentLocation <- getLocation(x)
 
     swarmColony <- createColony(x = x@queen)
     # It's not re-queening, but the function also sets the colony id
