@@ -5,7 +5,6 @@ test_that("nColonies", {
   expect_equal(nColonies(createColonies(n = 2)), 2)
   expect_equal(nColonies(createColonies()), 0)
   expect_equal(nColonies(createColonies(n = 10)), 10)
-
 })
 
 test_that("nCaste", {
@@ -24,7 +23,7 @@ test_that("nCaste", {
   expect_equal(nCaste(colony, caste = "drones"), 10)
 
   apiary <- createColonies(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+  apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
   apiary <- buildUp(apiary, nWorkers = 20, nDrones = 10)
   expect_equal(nCaste(apiary, caste = "queen"), c("3" = 1, "4" = 1))
   expect_equal(nCaste(apiary, caste = "fathers"), c("3" = 15, "4" = 15))

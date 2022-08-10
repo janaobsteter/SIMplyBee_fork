@@ -29,32 +29,32 @@ In reality, drones leave the colony to mate. They die after that.
   In this function we only get a copy of drones from \code{x}, for
   computational efficiency and ease of use. However, any mating will change
   the caste of drones to fathers, and they won't be available for future
-  matings (see \code{\link{crossVirginQueen}}). Not unless
+  matings (see \code{\link{cross}}). Not unless
   \code{removeFathers = FALSE}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addDrones(colony1, nInd = 10)
-colony2 <- addDrones(colony2, nInd = 20)
-createDCA(colony1)
-createDCA(colony2)
-createDCA(colony2, nInd = 10)@id
-createDCA(colony2, nInd = 10)@id
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-apiary <- c(colony1, colony2)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+
+colony <- addDrones(colony, nInd = 10)
+createDCA(colony)
+createDCA(colony, nInd = 10)@id
+
+apiary <- addDrones(apiary)
 createDCA(apiary)
 createDCA(apiary, nInd = 10)
-
-colony3 <- createColony(basePop[4])
-apiary <- c(colony1, colony2, colony3)
-createDCA(apiary)
-
 }

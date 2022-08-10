@@ -39,16 +39,16 @@ apiary <- createColonies(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Build-up - this sets Productive to TRUE
-(colony1 <- buildUp(colony1, nWorkers = 100))
-isProductive(colony1)
-resetEvents(colony1)
+(colony <- buildUp(colony, nWorkers = 100))
+isProductive(colony)
+resetEvents(colony)
 
 apiary <- buildUp(apiary, nWorkers = 100)
 isProductive(apiary[[1]])
 resetEvents(apiary)[[1]]
 
 # Split - this sets Split to TRUE
-tmp <- split(colony1)
+tmp <- split(colony)
 (split <- tmp$split)
 hasSplit(split)
 resetEvents(split)
@@ -65,7 +65,7 @@ hasSplit(remnants[[1]])
 resetEvents(remnants)[[1]]
 
 # Swarm - this sets Swarm to TRUE
-tmp <- swarm(colony1)
+tmp <- swarm(colony)
 (swarm <- tmp$swarm)
 hasSwarmed(swarm)
 resetEvents(swarm)
@@ -82,7 +82,7 @@ hasSwarmed(remnants[[1]])
 resetEvents(remnants)[[1]]
 
 # Supersede - this sets Supersede to TRUE
-(tmp <- supersede(colony1))
+(tmp <- supersede(colony))
 hasSuperseded(tmp)
 resetEvents(tmp)
 
@@ -91,7 +91,7 @@ hasSuperseded(tmp[[1]])
 resetEvents(tmp)[[1]]
 
 # Collapse - this sets Collapse to TRUE
-(tmp <- collapse(colony1))
+(tmp <- collapse(colony))
 hasCollapsed(tmp)
 resetEvents(tmp)
 resetEvents(tmp, collapse = TRUE)

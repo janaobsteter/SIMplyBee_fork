@@ -29,32 +29,33 @@ Level 1 function that sets the queen's year of birth.
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getQueensYearOfBirth(getQueen(colony1))
-getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
-getQueensYearOfBirth(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(x = colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+
+# Example on Colony class
+getQueensYearOfBirth(colony)
 getQueensYearOfBirth(apiary)
 
-queen1 <- getQueen(colony1)
+queen1 <- getQueen(colony)
 queen1 <- setQueensYearOfBirth(queen1, year = 2022)
 getQueensYearOfBirth(queen1)
 
-queen2 <- getQueen(colony2)
-queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
-getQueensYearOfBirth(queens)
-
-colony1 <- setQueensYearOfBirth(colony1, year = 2022)
-getQueensYearOfBirth(colony1)
+colony <- setQueensYearOfBirth(colony, year = 2022)
+getQueensYearOfBirth(colony)
 
 apiary <- setQueensYearOfBirth(apiary, year = 2022)
 getQueensYearOfBirth(apiary)

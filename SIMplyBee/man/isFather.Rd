@@ -18,29 +18,23 @@ logical
 Level 0 function that tests if individuals are fathers
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+# Create a Colony class
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones, nFathers = 5)
-colony <- addWorkers(colony)
-colony <- addDrones(colony)
-colony <- addVirginQueens(colony)
+colony <- cross(colony, fathers = fatherGroups[[1]])
 
 isFather(getQueen(colony))
 isFather(getFathers(colony, nInd = 2))
-isFather(getWorkers(colony, nInd = 2))
-isFather(getDrones(colony, nInd = 2))
-isFather(getVirginQueens(colony, nInd = 2))
 
 bees <- c(
   getQueen(colony),
-  getFathers(colony, nInd = 2),
-  getWorkers(colony, nInd = 2),
-  getDrones(colony, nInd = 2),
-  getVirginQueens(colony, nInd = 2)
+  getFathers(colony, nInd = 2)
 )
 isFather(bees)
 }

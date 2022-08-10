@@ -63,5 +63,4 @@ tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
 (swarm(tmp$pulledColonies, p = 0.6))
 
-#' @export
 }

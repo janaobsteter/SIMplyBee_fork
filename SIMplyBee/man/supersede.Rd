@@ -51,9 +51,9 @@ getVirginQueens(colony)
 
 # Supersede all colonies in the apiary
 getId(mergePops(getQueen(apiary)))
-getId(mergePops(getVirginQueens(apiary))) # No virgin queens
+try(getId(mergePops(getVirginQueens(apiary)))) # No virgin queens
 apiary1 <- supersede(apiary)
-getId(mergePops(getQueen(apiary1))) # No queens
+try(getId(mergePops(getQueen(apiary1)))) # No queens
 getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
 
 # Sample colonies from the apiary that will supersede (sample with probability of 0.2)

@@ -57,13 +57,13 @@ SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
 SP$setVarE(varE = varE)
 
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 5)
+drones <- createDrones(x = basePop[1], nInd = 15)
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones, nFathers = 5)
-colony <- buildUpColony(colony, nWorkers = nWorkers)
+colony <- cross(colony, fathers = drones)
+colony <- buildUp(colony, nWorkers = nWorkers)
 
 # Set phenotypes for all colony individuals
-colony <- setPhenoColony(colony)
+colony <- setColonyPheno(colony)
 
 # Queen's phenotype for both traits
 pheno(getQueen(colony))
@@ -79,7 +79,7 @@ pheno(getWorkers(colony))
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Set phenotypes for all colony individuals AND colony
-colony <- setPhenoColony(colony,
+colony <- setColonyPheno(colony,
   colonyFUN = phenoQueenPlusSumOfWorkers
 )
 pheno(colony)

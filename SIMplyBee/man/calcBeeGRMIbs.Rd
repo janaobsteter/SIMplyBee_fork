@@ -37,22 +37,26 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
+
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+apiary <- createColonies(basePop[2:3], n = 2)
+apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony <- addWorkers(colony, nInd = 5)
-colony <- addDrones(colony, nInd = 5)
-colony <- addVirginQueens(colony, nInd = 2)
-
-genoQ <- getQueensSegSiteGeno(colony)
-genoF <- getFathersSegSiteGeno(colony)
-genoW <- getWorkersSegSiteGeno(colony)
-genoD <- getDronesSegSiteGeno(colony)
-genoV <- getVirginQueensSegSiteGeno(colony)
+genoQ <- getQueensSegSiteGeno(apiary[[1]])
+genoF <- getFathersSegSiteGeno(apiary[[1]])
+genoW <- getWorkersSegSiteGeno(apiary[[1]])
+genoD <- getDronesSegSiteGeno(apiary[[1]])
+genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
 genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
 genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
 
@@ -60,7 +64,7 @@ geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
 n <- length(rownames(geno))
 rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 
-sex <- getCasteSex(x = colony)
+sex <- getCasteSex(x = apiary[[1]])
 sex <- c(
   sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
   "F", "M"

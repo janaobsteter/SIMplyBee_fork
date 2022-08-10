@@ -17,25 +17,43 @@ Level 0 function that returns heterozygote status for a
   multilocus genotype.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 5)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-(tmp <- getCsdGeno(getQueen(colony1)))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x= colony)
+colony <- addVirginQueens(x= colony, nInd = 4)
+
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+# Caste members taken from Colony class
+(tmp <- getCsdGeno(getQueen(colony)))
 SIMplyBee:::isGenoHeterozygous(tmp)
 
-(tmp <- getCsdGeno(getVirginQueens(colony1)))
+(tmp <- getCsdGeno(getVirginQueens(colony)))
 SIMplyBee:::isGenoHeterozygous(tmp)
 
-(tmp <- getCsdGeno(getWorkers(colony1)))
+(tmp <- getCsdGeno(getWorkers(colony)))
 SIMplyBee:::isGenoHeterozygous(tmp)
 
+# Caste members taken from MultiColony class
+(tmp <- getCsdGeno(getQueen(apiary[[1]])))
+SIMplyBee:::isGenoHeterozygous(tmp)
+
+(tmp <- getCsdGeno(getVirginQueens(apiary[[1]])))
+SIMplyBee:::isGenoHeterozygous(tmp)
+
+(tmp <- getCsdGeno(getWorkers(apiary[[1]])))
+SIMplyBee:::isGenoHeterozygous(tmp)
 # Not exporting this function, since its just a helper and quite specific for
 #   our csd locus implementation
 }

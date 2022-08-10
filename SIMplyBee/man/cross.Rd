@@ -14,6 +14,9 @@ cross(
 )
 }
 \arguments{
+\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{Colonies-class}},
+one or more virgin queens / colonies to be mated;}
+
 \item{fathers}{\code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
 group(s) of drones that will be mated with virgin queen(s);
 if there is more than one virgin queen, the user has to provide
@@ -29,9 +32,6 @@ or stop error (when \code{checkMating = "error"}) when some matings fail (see
 Details)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
-
-\item{pop}{\code{\link{Pop-class}}, one or more virgin queens to be mated;
-\code{\link{isVirginQueen}} test will be run on these individuals}
 }
 \value{
 \code{\link{Pop-class}} with mated queen(s). The misc slot of the
@@ -60,7 +60,7 @@ If the supplied drone population is empty (has 0 individuals), which
   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
   queen will fail and she will stay virgin. This can happen for just a few
   of many virgin queens, which can be annoying to track down, but you can use
-  \code{\link{isQueenMated}} to find such virgin queens. You can use
+  \code{\link{isQueen}} or \code{\link{isVirginQueen}}  to find such virgin queens. You can use
   \code{checkMating} to alert you about this situation.
 }
 \examples{
@@ -80,9 +80,9 @@ isQueen(virginQueen1)
 ))
 
 isQueen(virginQueen1)
-isQueenMated(virginQueen1)
+isQueen(virginQueen1)
 isQueen(matedQueen1)
-isQueenMated(matedQueen1)
+isQueen(matedQueen1)
 nFathers(matedQueen1)
 getFathers(matedQueen1)@id
 
@@ -96,8 +96,8 @@ virginQueen2 <- basePop[3]
   x = virginQueen2,
   fathers = fatherGroups[[2]]
 ))
-isQueenMated(virginQueen2)
-isQueenMated(matedQueen2)
+isQueen(virginQueen2)
+isQueen(matedQueen2)
 nFathers(matedQueen2)
 getFathers(matedQueen2)@id
 
@@ -107,7 +107,7 @@ matedQueens <- cross(
 )
 matedQueens
 isQueen(matedQueens)
-isQueenMated(matedQueens)
+isQueen(matedQueens)
 nFathers(matedQueens)
 getFathers(matedQueens)
 
@@ -128,20 +128,20 @@ all(isVirginQueen(mergePops(getVirginQueens(apiary))))
 
 # Cross
 colony <- cross(colony, fathers = fatherGroups[[6]])
-isQueenMated(colony)
+isQueenPresent(colony)
 apiary <- cross(apiary, fathers = fatherGroups[c(7, 8)])
-all(isQueenMated(apiary))
+all(isQueenPresent(apiary))
 nFathers(apiary)
 
 # Try mating with drones that were already used for mating
 colony <- createColony(basePop[9])
-(matedColony <- cross(x = colony, fathers = fatherGroups[[1]]))
+try((matedColony <- cross(x = colony, fathers = fatherGroups[[1]])))
 # Create new drones and mate the colony with them
 drones <- createDrones(x = basePop[1], nInd = 15)
 all(isDrone(drones))
 any(isFather(drones))
 (matedColony <- cross(x = colony, fathers = drones))
-isQueenMated(matedColony)
+isQueenPresent(matedColony)
 
 }
 \seealso{

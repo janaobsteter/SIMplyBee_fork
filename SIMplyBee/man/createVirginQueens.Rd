@@ -57,22 +57,26 @@ Level 1 function that creates the specified number of virgin
   removed and counted towards homozygous brood.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$setTrackRec(isTrackRec = TRUE)
-# Create virgin queens from the founder population (Map-Pop object)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-(virginQueens <- createVirginQueens(colony1, nInd = 10))
-colony1@queen@id
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+
+# Using a default in SP$nVirginQueens
+colony@virginQueens <- createVirginQueens(colony)
+virginQueens <- colony@virginQueens
 virginQueens@id
 virginQueens@sex
 virginQueens@misc
@@ -84,27 +88,25 @@ SP$recHist[[23]][[1]][1]
 SP$recHist[[23]][[1]][2]
 SP$caste
 
-createVirginQueens(apiary, nInd = 10)
-
 # Using a default in SP$nVirginQueens
 # (just to have some virgin queens - change this to your needs!)
-createVirginQueens(colony1)
+createVirginQueens(colony)
 createVirginQueens(apiary)
 
 # Specify own number
 SP$nVirginQueens <- 15
-createVirginQueens(colony1)
+createVirginQueens(colony)
 createVirginQueens(apiary)
 # nVirginQueens will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-createVirginQueens(colony1, nInd = nVirginQueensPoisson)
+createVirginQueens(colony, nInd = nVirginQueensPoisson)
 createVirginQueens(apiary, nInd = nVirginQueensPoisson)
 # nVirginQueens will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nVirginQueens <- nVirginQueensPoisson
-createVirginQueens(colony1)
+createVirginQueens(colony)
 createVirginQueens(apiary)
 # nVirginQueens will vary between function calls when a function is used
 
@@ -118,5 +120,4 @@ all(isCsdHeterozygous(basePop))
 basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
 nrow(getCsdAlleles(basePop, unique = TRUE))
 all(isCsdHeterozygous(basePop))
-
 }

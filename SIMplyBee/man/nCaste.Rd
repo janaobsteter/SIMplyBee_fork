@@ -24,27 +24,32 @@ when \code{x} is \code{\link{Colony-class}} return is integer for
 Returns the number of individuals of a caste in a colony
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 100)
-colony1 <- addDrones(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 3)
-colony2 <- addWorkers(colony2, nInd = 200)
-nCaste(colony1, caste = "queen")
-nCaste(colony1, caste = "fathers")
-nCaste(colony1, caste = "virginQueens")
-nCaste(colony1, caste = "workers")
-nCaste(colony1, caste = "drones")
-nCaste(colony1, caste = "all")
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-apiary <- c(colony1, colony2)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10)
+colony <- addVirginQueens(x = colony, nInd = 3)
+
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+apiary <- addVirginQueens(x = apiary, nInd = 3)
+
+# Check caste members
+nCaste(colony, caste = "queen")
+nCaste(colony, caste = "fathers")
+nCaste(colony, caste = "virginQueens")
+nCaste(colony, caste = "workers")
+nCaste(colony, caste = "drones")
+nCaste(colony, caste = "all")
+
 nCaste(apiary, caste = "queen")
 nCaste(apiary, caste = "fathers")
 nCaste(apiary, caste = "virginQueens")

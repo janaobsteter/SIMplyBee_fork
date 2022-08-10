@@ -56,41 +56,43 @@ Level 0 function that returns dominance deviations of
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getCasteDd(colony1, caste = "queen")
-getQueensDd(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteDd(colony1, caste = "fathers")
-getCasteDd(colony1, caste = "fathers", nInd = 2)
-getCasteDd(colony1, caste = "fathers", nInd = 2)
-getFathersDd(colony1)
-getFathersDd(colony1, nInd = 2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteDd(colony1, caste = "virginQueens")
-getVirginQueensDd(colony1)
+getCasteDd(colony, caste = "queen")
+getQueensDd(colony)
 
-getCasteDd(colony1, caste = "workers")
-getWorkersDd(colony1)
+getCasteDd(colony, caste = "fathers")
+getCasteDd(colony, caste = "fathers", nInd = 2)
+getCasteDd(colony, caste = "fathers", nInd = 2)
+getFathersDd(colony)
+getFathersDd(colony, nInd = 2)
 
-getCasteDd(colony1, caste = "drones")
-getDronesDd(colony1)
+getCasteDd(colony, caste = "virginQueens")
+getVirginQueensDd(colony)
 
-apiary <- c(colony1, colony2)
+getCasteDd(colony, caste = "workers")
+getWorkersDd(colony)
+
+getCasteDd(colony, caste = "drones")
+getDronesDd(colony)
+
 getCasteDd(apiary, caste = "queen")
 getQueensDd(apiary)
 

@@ -26,7 +26,7 @@ drones <- createDrones(x = basePop[1], nInd = 15)
 
 # Create an empty Colony class with one or multiple virgin queens
 colony1 <- createColony(x = basePop[2])
-colony
+colony1
 colony2 <- createColony(x = basePop[3:4])
 colony2
 

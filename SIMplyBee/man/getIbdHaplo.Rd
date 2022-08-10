@@ -24,6 +24,28 @@ Matrix of haplotypes
 Level 0 function that returns IBD (identity by descent)
   haplotypes.
 }
+\examples{
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+# Create a Colony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+
+# Use getIbdHaplo on a Population
+getIbdHaplo(getWorkers(colony))
+getIbdHaplo(getQueen(colony))
+getIbdHaplo(getDrones(colony))
+}
 \seealso{
 \code{\link{pullIbdHaplo}}
 }

@@ -32,7 +32,8 @@ individuals are accessed; if there are less individuals than requested,
 we return the ones available - this can return \code{NULL}}
 
 \item{use}{character, all options provided by \code{\link{selectInd}} and
-\code{"order"} that selects \code{1:nInd} individuals}
+\code{"order"} that selects \code{1:nInd} individuals (meaning it always
+returns at least one individual, even if \code{nInd = 0})}
 
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
 set to \code{FALSE} if you would like to get drones for mating with multiple
@@ -65,67 +66,72 @@ Level 1 function that returns individuals of a caste. These
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 4)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addWorkers(colony2, nInd = 20)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
 
-getCastePop(colony1, caste = "queen")
-getQueen(colony1)
+# Using defaults in SP$nWorkers & SP$nDrones
+colony <- buildUp(x = colony, exact = TRUE)
+apiary <- buildUp(x = apiary, exact = TRUE)
 
-drones@id
-getCastePop(colony1, caste = "fathers")
-getCastePop(colony1, caste = "fathers")@id
-getCastePop(colony1, caste = "fathers", nInd = 2)@id
-getCastePop(colony1, caste = "fathers", nInd = 2)@id
-getFathers(colony1)
-getFathers(colony1)@id
-getFathers(colony1, nInd = 2)@id
-getFathers(colony1, nInd = 2)@id
+# Using a default in SP$nVirginQueens
+colony <- addVirginQueens(x = colony)
+apiary <- addVirginQueens(x = apiary)
+colony
+apiary
 
-getFathers(getQueen(colony1))
+# Comparison of getCastePop() and getQueen()
+getCastePop(colony, caste = "queen")
+getQueen(colony)
 
-getCastePop(colony1, caste = "virginQueens")
-getCastePop(colony1, caste = "virginQueens")@id
-getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
-getCastePop(colony1, caste = "virginQueens", nInd = 2)@id
-getVirginQueens(colony1)
-getVirginQueens(colony1)@id
-getVirginQueens(colony1, nInd = 2)@id
-getVirginQueens(colony1, nInd = 2)@id
+# Comparison of getCastePop() and getFathers()
+getCastePop(colony, caste = "fathers")
+getCastePop(colony, caste = "fathers")@id
+getCastePop(colony, caste = "fathers", nInd = 2)@id
 
-getCastePop(colony1, caste = "workers")
-getCastePop(colony1, caste = "workers")@id
-getCastePop(colony1, caste = "workers", nInd = 2)@id
-getCastePop(colony1, caste = "workers", nInd = 2)@id
-getWorkers(colony1)
-getWorkers(colony1)@id
-getWorkers(colony1, nInd = 2)@id
-getWorkers(colony1, nInd = 2)@id
+getFathers(colony)
+getFathers(colony)@id
+getFathers(colony, nInd = 2)@id
 
-getCastePop(colony1, caste = "drones")
-getCastePop(colony1, caste = "drones")@id
-getCastePop(colony1, caste = "drones", nInd = 2)@id
-getCastePop(colony1, caste = "drones", nInd = 2)@id
-getDrones(colony1)
-getDrones(colony1)@id
-getDrones(colony1, nInd = 2)@id
-getDrones(colony1, nInd = 2)@id
+getFathers(getQueen(colony))
 
-getCastePop(colony2, caste = "drones")
-getDrones(colony2)
+# Comparison of getCastePop() and getVirginQueens()
+getCastePop(colony, caste = "virginQueens")
+getCastePop(colony, caste = "virginQueens")@id
+getCastePop(colony, caste = "virginQueens", nInd = 2)@id
 
-apiary <- c(colony1, colony2)
+getVirginQueens(colony)
+getVirginQueens(colony)@id
+getVirginQueens(colony, nInd = 2)@id
+
+# Comparison of getCastePop() and getWorkers()
+getCastePop(colony, caste = "workers")
+getCastePop(colony, caste = "workers")@id
+getCastePop(colony, caste = "workers", nInd = 2)@id
+
+getWorkers(colony)
+getWorkers(colony)@id
+getWorkers(colony, nInd = 2)@id
+
+# Comparison of getCastePop() and getDrones()
+getCastePop(colony, caste = "drones")
+getCastePop(colony, caste = "drones")@id
+getCastePop(colony, caste = "drones", nInd = 2)@id
+
+getDrones(colony)
+getDrones(colony)@id
+getDrones(colony, nInd = 2)@id
+
+# Comparisons on MultiColony class
 getCastePop(apiary, caste = "queen")
 getQueen(apiary)
 getCastePop(apiary, caste = "queen")[[1]]@id
@@ -159,8 +165,9 @@ getDrones(apiary)[[2]]
 getDrones(apiary, nInd = 2)
 mergePops(getDrones(apiary))
 
-getCastePop(colony1, caste = "all")
-getCastePop(colony2, caste = "all")
+getCastePop(apiary)
+getCastePop(apiary, caste = "queen")
+getCastePop(apiary, caste = "drones")
 }
 \seealso{
 \code{\link{getQueen}}, \code{\link{getFathers}},

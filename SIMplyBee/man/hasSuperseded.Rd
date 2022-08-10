@@ -16,30 +16,28 @@ logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
 Level 0 function that returns colony supersedure status.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony
-hasSuperseded(colony)
-colony <- buildUpColony(colony, nWorkers = 100)
-colony
-hasSuperseded(colony)
-tmp <- supersedeColony(colony)
-tmp
-hasSuperseded(tmp)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[4])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-apiary <- buildUpColonies(apiary, nWorkers = 100)
-tmp <- supersedeColonies(apiary)
-tmp
-hasSuperseded(tmp)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x= colony)
+colony <- addVirginQueens(colony, nInd = 5)
+
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary)
+
+hasSuperseded(colony)
+colony <- supersede(colony)
+hasSuperseded(colony)
+
+hasSuperseded(apiary)
+apiary <- supersede(apiary)
+hasSuperseded(apiary)
 }

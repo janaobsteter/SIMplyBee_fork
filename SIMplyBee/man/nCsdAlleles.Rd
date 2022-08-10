@@ -48,29 +48,32 @@ Queen has 2 distinct csd alleles, since she has to be heterozygous
   individuals there should be minimal amount of noise.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addDrones(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 3)
-colony2 <- addWorkers(colony2, nInd = 20)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-nCsdAlleles(getQueen(colony1))
-nCsdAlleles(getFathers(colony1))
-nCsdAlleles(getVirginQueens(colony1))
-nCsdAlleles(getWorkers(colony1))
-nCsdAlleles(getDrones(colony1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x= colony)
+colony <- addVirginQueens(x= colony, nInd = 4)
 
-nCsdAlleles(colony1)
-nCsdAlleles(colony1, collapse = TRUE)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+nCsdAlleles(getQueen(colony))
+nCsdAlleles(getFathers(colony))
+nCsdAlleles(getVirginQueens(colony))
+nCsdAlleles(getWorkers(colony))
+nCsdAlleles(getDrones(colony))
+
+nCsdAlleles(colony)
+nCsdAlleles(colony, collapse = TRUE)
 
 nCsdAlleles(apiary)
 nCsdAlleles(apiary, collapse = TRUE)

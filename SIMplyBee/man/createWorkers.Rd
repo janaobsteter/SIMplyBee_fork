@@ -31,68 +31,68 @@ Level 1 function that creates the specified number of workers
   counted towards homozygous brood.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$setTrackRec(isTrackRec = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-(tmp <- createWorkers(colony1, nInd = 10))
-colony1@queen@id
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+
+(tmp <- createWorkers(colony, nInd = 10))
+colony@queen@id
 tmp$workers@id
 tmp$workers@sex
 tmp$workers@misc
 tmp$workers@mother
 tmp$workers@father
 SP$pedigree
-SP$recHist
-SP$recHist[[23]][[1]][1]
-SP$recHist[[23]][[1]][2]
-SP$caste
+head(SP$recHist)
+head(SP$recHist[[23]][[1]][1])
+head(SP$recHist[[23]][[1]][2])
+head(SP$caste)
 
 createWorkers(apiary, nInd = 10)
-
 # Using a default in SP$nWorkers
 # (just to have some workers - change this to your needs!)
-createWorkers(colony1)
+createWorkers(colony)
 createWorkers(apiary)
 
 # Specify own number
 SP$nWorkers <- 15
-createWorkers(colony1)
+createWorkers(colony)
 createWorkers(apiary)
 # nWorkers will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-createWorkers(colony1, nInd = nWorkersPoisson)
+createWorkers(colony, nInd = nWorkersPoisson)
 createWorkers(apiary, nInd = nWorkersPoisson)
 # nWorkers will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nWorkers <- nWorkersPoisson
-createWorkers(colony1)
+createWorkers(colony)
 createWorkers(apiary)
 # nWorkers will vary between function calls when a function is used
 
 # Inbred virgin queen with her brothers to generate csd homozygous brood
-colony3 <- createColony(createVirginQueens(colony1, nInd = 1))
-colony3 <- crossColony(colony3,
-  drones = createDrones(colony1, nInd = 5),
-  nFathers = 5
-)
+colony2 <- createColony(createVirginQueens(colony, nInd = 1))
+colony2 <- cross(x = colony2, fathers = createDrones(colony, nInd = 15))
 # Check the expected csd homozygosity
-pHomBrood(colony3)
+pHomBrood(colony2)
 
 # Evaluate a realised csd homozygosity
-createWorkers(colony3, nInd = 100)
+createWorkers(colony2, nInd = 100)
 # nHomBrood will vary between function calls due to inheritance process
-createWorkers(colony3, nInd = 100)
+createWorkers(colony2, nInd = 100)
 # nHomBrood will vary between function calls due to inheritance process
 }

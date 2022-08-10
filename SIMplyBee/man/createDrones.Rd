@@ -43,13 +43,23 @@ When \code{x} is \code{\link{Pop-class}} this function creates
   \code{c(nInd(x), nInd)} is large; tune the numbers to your needs.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$setTrackRec(isTrackRec = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+
 basePop[1]@id
 drones@id
 drones@sex
@@ -62,46 +72,27 @@ SP$recHist[[13]][[1]][1]
 SP$recHist[[13]][[1]][2]
 SP$caste
 
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-
-(tmp <- createDrones(colony1, nInd = 10))
-colony1@queen@id
-tmp@id
-tmp@sex
-tmp@misc
-tmp@mother
-tmp@father
-SP$pedigree
-SP$recHist
-SP$recHist[[23]][[1]][1]
-SP$recHist[[23]][[1]][2]
-
-createDrones(apiary, nInd = 10)
-
 # Using a default in SP$nDrones
 # (just to have some drones - change this to your needs!)
 SP$nDrones
-createDrones(colony1)
+createDrones(colony)
 createDrones(apiary)
 
 # Specify own number
 SP$nDrones <- 15
-createDrones(colony1)
+createDrones(colony)
 createDrones(apiary)
 # nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-createDrones(colony1, nInd = nDronesPoisson)
+createDrones(colony, nInd = nDronesPoisson)
 createDrones(apiary, nInd = nDronesPoisson)
 # nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nDrones <- nDronesPoisson
-createDrones(colony1)
+createDrones(colony)
 createDrones(apiary)
 # nDrones will vary between function calls when a function is used
+
 }
