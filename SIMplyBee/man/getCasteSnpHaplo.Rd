@@ -112,41 +112,46 @@ Level 0 function that returns SNP array haplotypes of
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addSnpChip(nSnpPerChr = 10)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getCasteSnpHaplo(colony1, caste = "queen")
-getQueensSnpHaplo(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteSnpHaplo(colony1, caste = "fathers")
-getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-getFathersSnpHaplo(colony1)
-getFathersSnpHaplo(colony1, nInd = 2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteSnpHaplo(colony1, caste = "virginQueens")
-getVirginQueensSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "queen")
+getQueensSnpHaplo(colony)
 
-getCasteSnpHaplo(colony1, caste = "workers")
-getWorkersSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "fathers")
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+getFathersSnpHaplo(colony)
+getFathersSnpHaplo(colony, nInd = 2)
 
-getCasteSnpHaplo(colony1, caste = "drones")
-getDronesSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "virginQueens")
+getVirginQueensSnpHaplo(colony)
 
-apiary <- c(colony1, colony2)
+getCasteSnpHaplo(colony, caste = "workers")
+getWorkersSnpHaplo(colony)
+
+getCasteSnpHaplo(colony, caste = "drones")
+getDronesSnpHaplo(colony)
+
 getCasteSnpHaplo(apiary, caste = "queen")
 getQueensSnpHaplo(apiary)
 

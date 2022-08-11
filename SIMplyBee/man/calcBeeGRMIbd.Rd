@@ -24,23 +24,26 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
   since the founders) - see references on the background theory.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(isTrackRec = TRUE)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
+
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+apiary <- createColonies(basePop[2:3], n = 2)
+apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony <- addWorkers(colony, nInd = 5)
-colony <- addDrones(colony, nInd = 5)
-colony <- addVirginQueens(colony, nInd = 2)
-
-haploQ <- getQueensIbdHaplo(colony)
-haploF <- getFathersIbdHaplo(colony)
-haploW <- getWorkersIbdHaplo(colony)
-haploD <- getDronesIbdHaplo(colony)
-haploV <- getVirginQueensIbdHaplo(colony)
+haploQ <- getQueensIbdHaplo(apiary[[1]])
+haploF <- getFathersIbdHaplo(apiary[[1]])
+haploW <- getWorkersIbdHaplo(apiary[[1]])
+haploD <- getDronesIbdHaplo(apiary[[1]])
+haploV <- getVirginQueensIbdHaplo(apiary[[1]])
 SP$pedigree
 
 haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
@@ -68,11 +71,11 @@ x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 hist(x)
 summary(x)
 
-qI <- getQueen(colony)@id
-fI <- sort(getFathers(colony)@id)
-wI <- sort(getWorkers(colony)@id)
-dI <- sort(getDrones(colony)@id)
-vI <- sort(getVirginQueens(colony)@id)
+qI <- getQueen(apiary[[1]])@id
+fI <- sort(getFathers(apiary[[1]])@id)
+wI <- sort(getWorkers(apiary[[1]])@id)
+dI <- sort(getDrones(apiary[[1]])@id)
+vI <- sort(getVirginQueens(apiary[[1]])@id)
 
 qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
 fG <- paste(fI, 1, sep = "_")

@@ -100,40 +100,46 @@ Level 0 function that returns haplotypes for all segregating
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getCasteSegSiteHaplo(colony1, caste = "queen")
-getQueensSegSiteHaplo(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteSegSiteHaplo(colony1, caste = "fathers")
-getCasteSegSiteHaplo(colony1, caste = "fathers", nInd = 2)
-getCasteSegSiteHaplo(colony1, caste = "fathers", nInd = 2)
-getFathersSegSiteHaplo(colony1)
-getFathersSegSiteHaplo(colony1, nInd = 2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteSegSiteHaplo(colony1, caste = "virginQueens")
-getVirginQueensSegSiteHaplo(colony1)
+getCasteSegSiteHaplo(colony, caste = "queen")
+getQueensSegSiteHaplo(colony)
 
-getCasteSegSiteHaplo(colony1, caste = "workers")
-getWorkersSegSiteHaplo(colony1)
+getCasteSegSiteHaplo(colony, caste = "fathers")
+getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+getFathersSegSiteHaplo(colony)
+getFathersSegSiteHaplo(colony, nInd = 2)
 
-getCasteSegSiteHaplo(colony1, caste = "drones")
-getDronesSegSiteHaplo(colony1)
+getCasteSegSiteHaplo(colony, caste = "virginQueens")
+getVirginQueensSegSiteHaplo(colony)
 
-apiary <- c(colony1, colony2)
+getCasteSegSiteHaplo(colony, caste = "workers")
+getWorkersSegSiteHaplo(colony)
+
+getCasteSegSiteHaplo(colony, caste = "drones")
+getDronesSegSiteHaplo(colony)
+
 getCasteSegSiteHaplo(apiary, caste = "queen")
 getQueensSegSiteHaplo(apiary)
 

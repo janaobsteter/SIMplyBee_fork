@@ -31,33 +31,34 @@ Level 0 function that returns the sex individuals of a caste. To
   caste, use \code{\link{getCaste}}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 4)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addWorkers(colony2, nInd = 20)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
+colony <- addVirginQueens(colony, nInd = 5)
 
-apiary <- c(colony1, colony2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+apiary <- addVirginQueens(apiary, nInd = 4)
 
 getCasteSex(x = drones)
-getCasteSex(x = colony1)
-getCasteSex(x = colony1, caste = "workers")
+getCasteSex(x = colony)
+getCasteSex(x = apiary, caste = "workers")
 getCasteSex(x = apiary)
 getCasteSex(x = apiary, caste = "virginQueens")
 
 # Create a data.frame with sex, colony, and caste information
-(tmpC <- getCaste(colony1))
-(tmpS <- getCasteSex(colony1))
-(tmpI <- getCasteId(colony1))
+(tmpC <- getCaste(apiary[[1]]))
+(tmpS <- getCasteSex(apiary[[1]]))
+(tmpI <- getCasteId(apiary[[1]]))
 tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS), id = unlist(tmpI))
 head(tmp)
 tail(tmp)

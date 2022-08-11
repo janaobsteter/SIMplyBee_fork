@@ -44,27 +44,33 @@ Level 0 function that returns genotypes for all segregating
   sites of individuals in colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getColonySegSiteGeno(colony1)
-getColonySegSiteGeno(colony1, caste = c("queen", "fathers"))
-getColonySegSiteGeno(colony1, nInd = 1)
-getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getColonySegSiteGeno(colony2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-apiary <- c(colony1, colony2)
+getColonySegSiteGeno(colony)
+getColonySegSiteGeno(colony, caste = c("queen", "fathers"))
+getColonySegSiteGeno(colony, nInd = 1)
+getColonySegSiteGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+
 getColonySegSiteGeno(apiary)
 getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
 getColonySegSiteGeno(apiary, nInd = 1)

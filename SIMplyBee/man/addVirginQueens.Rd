@@ -31,38 +31,42 @@ Level 2 function that adds (raises) the specified number of
 \code{addVirginQueens} replaces any currently present virgin queens.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-addVirginQueens(colony1, nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add virgin queens
+addVirginQueens(colony, nInd = 20)
 nVirginQueens(addVirginQueens(apiary, nInd = 20))
 
 # Using a default in SP$nVirginQueens
 # (just to have some workers - change this to your needs!)
-addVirginQueens(colony1)
+addVirginQueens(colony)
 nVirginQueens(addVirginQueens(apiary))
 
 # Specify own number
 SP$nVirginQueens <- 15
-addVirginQueens(colony1)
+addVirginQueens(colony)
 nVirginQueens(addVirginQueens(apiary))
 # nVirginQueens will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-addVirginQueens(colony1, nInd = nVirginQueensPoisson)
+addVirginQueens(colony, nInd = nVirginQueensPoisson)
 nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensPoisson))
 # nVirginQueens will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nVirginQueens <- nVirginQueensPoisson
-addVirginQueens(colony1)
+addVirginQueens(colony)
 nVirginQueens(addVirginQueens(apiary))
 # nVirginQueens will vary between function calls when a function is used
 }

@@ -96,7 +96,7 @@ the function `createDrones()` can work both with virgin queens or colonies (we
 will talk about colonies in the next section).
 
 ```{r base pop drones}
-baseDrones <- createDrones(x = baseQueens[1], nInd = 5)
+baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
 baseDrones
 ```
  
@@ -117,14 +117,14 @@ Before we look into the colony, lets mate the virgin queen, so that she becomes
 a queen and can start laying eggs for her own workers and drones.
 
 ```{r cross colony}
-colony <- crossColony(colony, drones = baseDrones[1:5], nFathers = 5)
+colony <- cross(colony, fathers = baseDrones)
 colony
 ```
 
 We build up colony with workers and drones using `buildUpColony()`. 
 
 ```{r build up colony}
-buildUpColony(colony, nWorkers = 10, nDrones = 7)
+buildUp(colony, nWorkers = 10, nDrones = 7)
 ```
 
 Of note, we have not saved the result of the `buildUpColony()` call, so our
@@ -143,7 +143,7 @@ SP$nDrones
 When we run SIMplyBee functions, such defaults are automatically used.
 
 ```{r build up colony with defaults}
-colony <- buildUpColony(colony)
+colony <- buildUp(colony)
 colony
 ```
 
@@ -265,7 +265,7 @@ current colony and mate her with her brothers. Oh, dear me.
 
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
-inbredColony <- crossColony(inbredColony, drones = drones, nFathers = 10)
+inbredColony <- cross(inbredColony, fathers = drones)
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 ```

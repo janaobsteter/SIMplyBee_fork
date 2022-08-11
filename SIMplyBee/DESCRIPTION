@@ -2,7 +2,8 @@ Package: SIMplyBee
 Type: Package
 Title: AlphaSimR extension for simulating honeybee populations and breeding programmes
 Version: 0.2.0
-Authors@R: c(person("Jana", "Obšteter", email = "obsteter.jana@gmail.com",
+Authors@R: c(
+  person("Jana", "Obšteter", email = "obsteter.jana@gmail.com",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1511-3916")),
   person("Laura", "Strachan", role = "aut", 
   comment = c(ORCID = "0000-0002-2569-0250")),

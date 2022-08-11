@@ -36,42 +36,46 @@ This function increases queen's \code{nWorkers} and \code{nHomBrood}
   counters.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-addWorkers(colony1, nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add workers
+addWorkers(colony, nInd = 20)
 nWorkers(addWorkers(apiary, nInd = 20))
 
 # Using a default in SP$nWorkers
 # (just to have some workers - change this to your needs!)
-addWorkers(colony1)
+addWorkers(colony)
 nWorkers(addWorkers(apiary))
 
 # Specify own number
 SP$nWorkers <- 15
-addWorkers(colony1)
+addWorkers(colony)
 nWorkers(addWorkers(apiary))
 # nWorkers will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-addWorkers(colony1, nInd = nWorkersPoisson)
+addWorkers(colony, nInd = nWorkersPoisson)
 nWorkers(addWorkers(apiary, nInd = nWorkersPoisson))
 # nWorkers will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nWorkers <- nWorkersPoisson
-addWorkers(colony1)
+addWorkers(colony)
 nWorkers(addWorkers(apiary))
 # nWorkers will vary between function calls when a function is used
 
 # Queen's counters
-getMisc(getQueen(addWorkers(colony1)))
-getMisc(getQueen(addWorkers(colony2)))
+getMisc(getQueen(addWorkers(colony)))
+
 }

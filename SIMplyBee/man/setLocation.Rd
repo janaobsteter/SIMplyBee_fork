@@ -24,36 +24,27 @@ Level 2 function that to set colony location to (x, y)
   coordinates.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(basePop[1], n = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:10], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-apiary <- c(colony1, colony2)
+# Create Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[3:8], n = 6)
+apiary <- cross(apiary, fathers = fatherGroups[2:7])
 
-getLocation(colony1)
-getLocation(colony2)
+getLocation(colony)
 getLocation(apiary)
 
 loc1 <- c(512, 722)
-colony1 <- setLocation(colony1, location = loc1)
-getLocation(colony1)
-
-loc2 <- c(189, 357)
-colony2 <- setLocation(colony2, location = loc2)
-getLocation(colony2)
-
-getLocation(c(colony1, colony2))
+colony <- setLocation(colony, location = loc1)
+getLocation(colony)
 
 # Assuming one location (as in bringing colonies to one place!)
 apiary <- setLocation(apiary, location = loc1)
 getLocation(apiary)
 
-# Assuming different locations (so tmp is not an apiary in one location!)
-tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
-getLocation(tmp)
 }

@@ -15,24 +15,40 @@ removeVirginQueens(x, p = 1, use = "rand")
 guides selection of virgins queens that will stay when \code{p < 1}}
 }
 \value{
-\code{\link{Colony-class}} without virgin queens
+\code{\link{Colony-class}} or \code{\link{Colonies-class}} without virgin queens
 }
 \description{
 Level 2 function that removes a proportion of virgin queens of a
   colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony <- addVirginQueens(colony, nInd = 10)
-getVirginQueens(colony)
+drones <- createDrones(x = basePop[1], nInd = 100)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
 
+# Create and cross Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[3:4])
+
+# Add virgin queens
+colony <- addVirginQueens(colony, nInd = 10)
+apiary <- addVirginQueens(apiary, nInd = 10)
+
+# Remove virgin queens
+nVirginQueens(colony)
+colony <- removeVirginQueens(colony, p = 0.5)
+nVirginQueens(colony)
 colony <- removeVirginQueens(colony)
-colony
-getVirginQueens(colony)
+nVirginQueens(colony)
+nVirginQueens(apiary)
+apiary <- removeVirginQueens(apiary, p = 0.3)
+nVirginQueens(apiary)
+apiary <- removeVirginQueens(apiary)
+nVirginQueens(apiary)
+
 }

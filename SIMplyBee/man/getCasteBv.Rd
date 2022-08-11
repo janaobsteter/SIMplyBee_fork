@@ -56,41 +56,46 @@ Level 0 function that returns breeding values of individuals in
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-getCasteBv(colony1, caste = "queen")
-getQueensBv(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteBv(colony1, caste = "fathers")
-getCasteBv(colony1, caste = "fathers", nInd = 2)
-getCasteBv(colony1, caste = "fathers", nInd = 2)
-getFathersBv(colony1)
-getFathersBv(colony1, nInd = 2)
+apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteBv(colony1, caste = "virginQueens")
-getVirginQueensBv(colony1)
+getCasteBv(colony, caste = "queen")
+getQueensBv(colony)
 
-getCasteBv(colony1, caste = "workers")
-getWorkersBv(colony1)
+getCasteBv(colony, caste = "fathers")
+getCasteBv(colony, caste = "fathers", nInd = 2)
+getCasteBv(colony, caste = "fathers", nInd = 2)
+getFathersBv(colony)
+getFathersBv(colony, nInd = 2)
 
-getCasteBv(colony1, caste = "drones")
-getDronesBv(colony1)
+getCasteBv(colony, caste = "virginQueens")
+getVirginQueensBv(colony)
 
-apiary <- c(colony1, colony2)
+getCasteBv(colony, caste = "workers")
+getWorkersBv(colony)
+
+getCasteBv(colony, caste = "drones")
+getDronesBv(colony)
+
 getCasteBv(apiary, caste = "queen")
 getQueensBv(apiary)
 

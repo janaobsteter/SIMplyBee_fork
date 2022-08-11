@@ -24,19 +24,22 @@ We could expand \code{isCsdHeterozygous} to work also with
   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 5)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-isCsdHeterozygous(getQueen(colony1))
+# Create a Colony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 4)
 
-isCsdHeterozygous(getWorkers(colony1))
-
-isCsdHeterozygous(getVirginQueens(colony1))
+# Use isCsdHeterozygous on a Population
+isCsdHeterozygous(getQueen(colony))
+isCsdHeterozygous(getWorkers(colony))
+isCsdHeterozygous(getVirginQueens(colony))
+isCsdHeterozygous(getDrones(colony))
 }

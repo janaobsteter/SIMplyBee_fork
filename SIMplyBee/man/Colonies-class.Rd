@@ -90,22 +90,14 @@ An object holding a collection of honeybee colonies. It behaves
 }}
 
 \examples{
-founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 50)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-colony3 <- createColony(x = basePop[4])
-colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-colony4 <- createColony(x = basePop[5])
-colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-colony5 <- createColony(x = basePop[6])
-colony5 <- crossColony(colony5, drones = drones[41:50], nFathers = 5)
-apiary <- c(colony1, colony2, colony3, colony4, colony5)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+apiary <- createColonies(basePop[1:6], n = 6)
+apiary <- cross(apiary, fathers = fatherGroups[1:6])
 apiary
 show(apiary)
 is(apiary)
@@ -149,8 +141,6 @@ getId(apiary1)
 getId(apiary2)
 apiary1[[1]] <- apiary2[[1]]
 getId(apiary1)
-apiary1[["4"]] <- apiary2[["5"]]
-getId(apiary1)
 try(apiary2[[1]] <- apiary2[[2]])
 
 apiary1 <- apiary[1:2]
@@ -165,8 +155,7 @@ try(apiary2[1:2] <- apiary1[[1]])
 
 apiary2 <- apiary[3:5]
 getId(apiary2)
-apiary2[c("4", "5")] <- apiary1
-getId(apiary2)
+try(apiary2[c("4", "5")] <- apiary1)
 try(apiary2[c("4", "5")] <- apiary1)
 }
 \seealso{

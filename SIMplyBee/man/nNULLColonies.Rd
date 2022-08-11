@@ -21,21 +21,16 @@ founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+apiary <- createColonies(basePop[2:3], n = 2)
+apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
 getId(apiary)
 
 nColonies(apiary)
-nColonies(selectColonies(apiary, ID = c("3", "4")))
-nColonies(selectColonies(apiary, ID = c("4", "5")))
-nColonies(selectColonies(apiary, ID = c("5", "6")))
+nColonies(selectColonies(apiary, ID = c("1", "2")))
 
 nNULLColonies(apiary)
-nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
-nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
-nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
+nNULLColonies(selectColonies(apiary, ID = c("1", "2")))
 }

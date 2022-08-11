@@ -16,20 +16,24 @@ integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
 Returns the number of drones in a colony
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addDrones(colony1, nInd = 100)
-colony2 <- addDrones(colony2, nInd = 200)
-nDrones(colony1)
-nDrones(colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-apiary <- c(colony1, colony2)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- addDrones(x = colony, nInd = 50)
+
+apiary <- createColonies(basePop[3:7], n = 5)
+apiary <- cross(x = apiary, fathers = fatherGroups[2:6])
+tmp <- addDrones(x = apiary[1:3], nInd = 100)
+tmp2 <- addDrones(x = apiary[4:5], nInd = 200)
+apiary <- c(tmp, tmp2)
+
+nDrones(colony)
 nDrones(apiary)
 }

@@ -48,7 +48,7 @@ SimParamBee <- R6Class(
     # nWorkers field ----
     #' @field nWorkers numeric or function, a number of workers generated in a
     #'   colony - used in \code{\link{createWorkers}}, \code{\link{addWorkers}},
-    #'   \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
+    #'   \code{\link{buildUp}}.
     #'
     #'   The default value is 100, that is, queen generates 100 workers - this
     #'   is for a down-scaled simulation (for efficiency) assuming that this
@@ -74,7 +74,7 @@ SimParamBee <- R6Class(
     # nDrones field ----
     #' @field nDrones numeric or function, a number of drones generated in a
     #'   colony - used in \code{\link{createDrones}}, \code{\link{addDrones}},
-    #'   \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
+    #'   \code{\link{buildUp}}.
     #'
     #'   The default value is 100, that is, queen generates 100 drones - this is
     #'   for a down-scaled simulation (for efficiency) assuming that this
@@ -125,8 +125,7 @@ SimParamBee <- R6Class(
     # nFathers field ----
     #' @field nFathers numeric or function, a number of drones a queen mates
     #'   with  - used in \code{\link{pullDroneGroupsFromDCA}},
-    #'   \code{\link{crossVirginQueen}}, \code{\link{crossColony}}, and
-    #'   \code{\link{crossColonies}}.
+    #'   \code{\link{cross}}.
     #'
     #'   The default value is 15, that is, a virging queen mates on average with
     #'   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
@@ -151,7 +150,7 @@ SimParamBee <- R6Class(
     # swarmP field ----
     #' @field swarmP numeric or a function, the swarm proportion - the proportion
     #'   of workers that leave with the old queen when the colony swarms - used
-    #'   in \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
+    #'   in \code{\link{swarm}}.
     #'
     #'   The default value is 0.50, that is, about a half of workers leave colony
     #'   in a swarm (Seeley, 2019). This value is set in \code{SimParamBee$new()}
@@ -175,7 +174,7 @@ SimParamBee <- R6Class(
     # splitP field ----
     #' @field splitP numeric or a function, the split proportion - the
     #'   proportion of workers removed in a managed split - used in
-    #'   \code{\link{splitColony}} and \code{\link{splitColonies}}.
+    #'   \code{\link{split}}.
     #'
     #'   The default value is 0.30, that is, about a third of workers is put into
     #'   a split colony from a strong colony (Seeley, 2019). This value is set
@@ -199,8 +198,7 @@ SimParamBee <- R6Class(
     # downsizeP field ----
     #' @field downsizeP numeric or a function, the downsize proportion - the
     #'   proportion of workers removed from the colony when downsizing, usually
-    #'   in autumn - used in \code{\link{downsizeColony}} and
-    #'   \code{\link{downsizeColonies}}.
+    #'   in autumn - used in \code{\link{downsize}}.
     #'
     #'   The default value is 0.85, that is, a majority of workers die before
     #'   autumn or all die but some winter workers are created (Seeley, 2019).
@@ -223,7 +221,7 @@ SimParamBee <- R6Class(
 
     # phenoColony field ----
     #' @field phenoColony function, to set colony phenotypes - used in
-    #'   \code{\link{setPhenoColony}} and \code{\link{setPhenoColonies}}.
+    #'   \code{\link{setColonyPheno}}.
     #'
     #'   This function should work with internals of others functions -
     #'   therefore the function MUST be defined like \code{function(colony, arg
@@ -378,7 +376,7 @@ SimParamBee <- R6Class(
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
     #' colony <- createColony(x = basePop[2])
-    #' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+    #' colony <- cross(colony, fathers = drones)
     #' colony <- addWorkers(colony, nInd = 5)
     #' colony <- addDrones(colony, nInd = 5)
     #' colony <- addVirginQueens(colony, nInd = 2)
@@ -408,7 +406,7 @@ SimParamBee <- R6Class(
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
     #' colony <- createColony(x = basePop[2])
-    #' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+    #' colony <- cross(colony, fathers = drones)
     #' SP$pedigree
     #' SP$caste
     changeCaste = function(id, caste) {
@@ -604,11 +602,12 @@ isSimParamBee <- function(x) {
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 #' SP$setVarE(varE = average * (1 - h2))
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 50)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-#' colony2 <- crossColony(colony2, drones = drones, nFathers = 5)
+#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
 #' colony1@queen@pheno
 #' colony2@queen@pheno
 #' createWorkers(colony1, nInd = nWorkersColonyPhenotype)
@@ -707,11 +706,12 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 #' SP$setVarE(varE = average * (1 - h2))
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 50)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
 #' colony1@queen@pheno
 #' colony2@queen@pheno
 #' createDrones(colony1, nInd = nDronesColonyPhenotype)
@@ -826,13 +826,14 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
 #' SP$setVarE(varE = varE)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 50)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-#' colony2 <- crossColony(colony2, drones = drones, nFathers = 5)
-#' colony1 <- buildUpColony(colony1)
-#' colony2 <- buildUpColony(colony2)
+#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+#' colony1 <- buildUp(colony1)
+#' colony2 <- buildUp(colony2)
 #' nVirginQueensColonyPhenotype(colony1)
 #' nVirginQueensColonyPhenotype(colony2)
 #' @export
@@ -962,9 +963,9 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
+#' colony <- cross(colony, fathers = drones)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
 #' swarmPColonyStrength(colony)
@@ -1057,9 +1058,9 @@ swarmPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
+#' colony <- cross(colony, fathers = drones)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
 #' splitPColonyStrength(colony)
@@ -1178,13 +1179,13 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' SP$setVarE(varE = varE)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- buildUpColony(colony, nWorkers = nWorkers)
+#' colony <- cross(colony, fathers = drones)
+#' colony <- buildUp(colony, nWorkers = nWorkers)
 #'
 #' # Set phenotypes for all colony individuals
-#' colony <- setPhenoColony(colony)
+#' colony <- setColonyPheno(colony)
 #'
 #' # Queen's phenotype for both traits
 #' pheno(getQueen(colony))
@@ -1200,7 +1201,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
 #' # Set phenotypes for all colony individuals AND colony
-#' colony <- setPhenoColony(colony,
+#' colony <- setColonyPheno(colony,
 #'   colonyFUN = phenoQueenPlusSumOfWorkers
 #' )
 #' pheno(colony)

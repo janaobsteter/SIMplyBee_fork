@@ -92,11 +92,12 @@ h2 <- 0.1
 SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 SP$setVarE(varE = average * (1 - h2))
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 50)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
 colony1 <- createColony(x = basePop[2])
 colony2 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-colony2 <- crossColony(colony2, drones = drones, nFathers = 5)
+colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+colony2 <- cross(colony2, fathers = fatherGroups[[2]])
 colony1@queen@pheno
 colony2@queen@pheno
 createWorkers(colony1, nInd = nWorkersColonyPhenotype)

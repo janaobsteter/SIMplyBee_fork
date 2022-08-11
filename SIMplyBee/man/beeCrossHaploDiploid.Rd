@@ -24,7 +24,7 @@ Level 1 function that crosses a queen and drones. Drones are
   recombination) from her and merge them with drone genomes (=gametes), where
   we randomly re-sample drones to get the desired number of progeny. This is
   an utility function, and you most likely want to use the
-  \code{\link{crossColony}} function.
+  \code{\link{cross}} function.
 }
 \details{
 This would be the right approach to handle haplo-diploid inheritance
@@ -32,10 +32,12 @@ This would be the right approach to handle haplo-diploid inheritance
   that individuals have the same ploidy. Hence, we don't use this function.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$setTrackRec(isTrackRec = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
 queen <- basePop[1]
