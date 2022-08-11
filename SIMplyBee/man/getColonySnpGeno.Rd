@@ -64,7 +64,7 @@ colony <- buildUp(x = colony)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
@@ -72,6 +72,7 @@ getColonySnpGeno(colony)
 getColonySnpGeno(colony, caste = c("queen", "fathers"))
 getColonySnpGeno(colony, nInd = 1)
 getColonySnpGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+
 getColonySnpGeno(apiary)
 getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 getColonySnpGeno(apiary, nInd = 1)

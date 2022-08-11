@@ -103,7 +103,7 @@ getFathers(matedQueen2)@id
 
 matedQueens <- cross(
   x = c(basePop[4], basePop[5]),
-  fathers = fatherGroups[c(3,4)]
+  fathers = fatherGroups[c(3, 4)]
 )
 matedQueens
 isQueen(matedQueens)

@@ -75,13 +75,13 @@ TODO: Mention that drones also get these values - they just don't express them
 
 ```{r basePop drones}
 # Base population drones
-drones <- createDrones(x = basePop[1:5], nInd = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
 head(drones@pheno)
 ```
 
 ```{r create colony}
 # Colony
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
+queen <- cross(x = basePop[6], fathers = drones)
 colony <- createColony(x = queen)
 colony
 colony@queen@pheno
@@ -92,7 +92,7 @@ colony@queen@pheno
 isProductive(colony)
 
 # Build up colony to reach productive stage
-colony <- buildUpColony(colony)
+colony <- buildUp(colony)
 isProductive(colony)
 ```
 
@@ -142,7 +142,7 @@ getFathers(colony)@gv
 ```{r colony pheno} 
 # Colony phenotype value
 help(phenoQueenPlusSumOfWorkers)
-colony <- setPhenoColony(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
 colony@pheno
 ```
 
@@ -175,10 +175,10 @@ SP$setCorE(corE = corE)
 
 ```{r base pop and colony}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1:5], nInd = 5)
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
+queen <- cross(x = basePop[6], fathers = drones)
 colony <- createColony(x = queen)
-colony <- buildUpColony(colony)
+colony <- buildUp(colony)
 colony
 colony@queen@pheno
 head(colony@workers@pheno)
@@ -195,7 +195,7 @@ colonyPheno <- function(colony) {
                                          checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
-colony <- setPhenoColony(colony, colonyFUN = colonyPheno)
+colony <- setColonyPheno(colony, colonyFUN = colonyPheno)
 colony@pheno
 ```
 
@@ -228,8 +228,8 @@ SP$setCorE(corE = corE)
 
 ```{r base pop and coLony}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1:5], nInd = 5)
-queen <- crossVirginQueen(pop = basePop[6], drones = drones, nFathers = 5)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
+queen <- cross(x = basePop[6], fathers = drones)
 colony <- createColony(x = queen)
 colony@queen@pheno
 ```
@@ -237,7 +237,7 @@ colony@queen@pheno
 ```{r colony strength}
 # Use already provided function in the package - read about it
 help(nWorkersColonyPhenotype)
-colony <- buildUpColony(colony, nWorkers = nWorkersColonyPhenotype)
+colony <- buildUp(colony, nWorkers = nWorkersColonyPhenotype)
 colony
 ```
 
@@ -248,7 +248,7 @@ colonyPheno <- function(colony) {
                                       workersTrait = 3)
   return(matrix(yield))
 }
-colony <- setPhenoColony(colony, colonyFUN = colonyPheno)
+colony <- setColonyPheno(colony, colonyFUN = colonyPheno)
 colony@pheno
 ```
 

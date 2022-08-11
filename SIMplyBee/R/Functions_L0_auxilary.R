@@ -135,11 +135,7 @@ nCaste <- function(x, caste = "all") {
       }
     } else {
       if (caste == "fathers") {
-        if (isQueenPresent(x)) {
           ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
-        } else {
-          ret <- 0
-        }
       } else {
         ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
       }
@@ -552,6 +548,19 @@ nHomBrood <- function(x) {
 #' isCaste(getWorkers(colony, nInd = 2), caste = "workers")
 #' isCaste(getDrones(colony, nInd = 2), caste = "drones")
 #' isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
+#'
+#' bees <- c(
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
+#' )
+#' isCaste(bees, caste = "queen")
+#' isCaste(bees, caste = "fathers")
+#' isCaste(bees, caste = "workers")
+#' isCaste(bees, caste = "drones")
+#' isCaste(bees, caste = "virginQueens")
 #' @export
 isCaste <- function(x, caste, simParamBee = NULL) {
   if (is.null(simParamBee)) {

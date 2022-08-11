@@ -31,8 +31,8 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony)
 
 isWorker(getQueen(colony))
-isWorker(getFathers(colony, nInd =2))
-isWorker(getWorkers(colony, nInd =2))
+isWorker(getFathers(colony, nInd = 2))
+isWorker(getWorkers(colony, nInd = 2))
 
 bees <- c(
   getQueen(colony),

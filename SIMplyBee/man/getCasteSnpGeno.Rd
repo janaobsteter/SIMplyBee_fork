@@ -109,7 +109,7 @@ colony <- buildUp(x = colony)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 

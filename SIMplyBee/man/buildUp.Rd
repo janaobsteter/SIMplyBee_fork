@@ -78,7 +78,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 isProductive(colony)
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 isProductive(apiary)
 
 # Build up
@@ -123,7 +123,7 @@ buildUp(colony)
 # nWorkers and nDrones will vary between function calls when a function is used
 # Same for MultiColony class
 apiary <- createColonies(basePop[7:8], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(6,7)])
+apiary <- cross(apiary, fathers = fatherGroups[c(6, 7)])
 buildUp(apiary)[[1]]
 buildUp(apiary)[[1]]
 

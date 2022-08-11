@@ -31,7 +31,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 
 isQueenPresent(colony)

@@ -45,6 +45,7 @@ colony <- buildUp(x = colony)
 # Use getSegSiteHaplo on a Population
 getSegSiteHaplo(getWorkers(colony))
 getSegSiteHaplo(getQueen(colony))
+
 }
 \seealso{
 \code{\link{pullSegSiteHaplo}}

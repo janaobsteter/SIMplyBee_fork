@@ -35,7 +35,7 @@ founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 3, nFather= 12)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 3, nFather = 12)
 
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
@@ -44,7 +44,7 @@ colony <- buildUp(colony)
 colony <- addVirginQueens(x = colony, nInd = 10)
 colony
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(apiary)
 apiary <- addVirginQueens(apiary, nInd = 10)
 apiary

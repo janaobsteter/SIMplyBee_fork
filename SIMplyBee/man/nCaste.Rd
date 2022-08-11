@@ -38,7 +38,7 @@ colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10)
 colony <- addVirginQueens(x = colony, nInd = 3)
 
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 apiary <- addVirginQueens(x = apiary, nInd = 3)
 

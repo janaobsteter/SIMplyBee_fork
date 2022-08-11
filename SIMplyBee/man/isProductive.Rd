@@ -33,7 +33,7 @@ colony <- buildUp(x = colony)
 isProductive(colony)
 
 apiary <- createColonies(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 isProductive(apiary)
 apiary <- buildUp(x = apiary)

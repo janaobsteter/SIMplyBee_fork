@@ -25,7 +25,7 @@ drones <- createDrones(x = basePop[1], nInd = 1000)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
 apiary <- createColonies(basePop[2:3], n = 2)
-apiary <- cross(x = apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
 getId(apiary)
 
 nColonies(apiary)

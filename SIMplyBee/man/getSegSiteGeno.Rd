@@ -42,6 +42,7 @@ colony <- buildUp(x = colony)
 getSegSiteGeno(getWorkers(colony))
 getSegSiteGeno(getQueen(colony))
 getSegSiteGeno(getDrones(colony))
+
 }
 \seealso{
 \code{\link{pullSegSiteHaplo}}

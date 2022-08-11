@@ -58,7 +58,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(colony, nWorkers = 10)
 apiary <- createColonies(basePop[3:5], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2,3)])
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = 10)
 
 # Set phenotypes for all colony individuals

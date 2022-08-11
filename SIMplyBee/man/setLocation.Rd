@@ -27,8 +27,8 @@ Level 2 function that to set colony location to (x, y)
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
-drones = createDrones(basePop[1], n = 1000)
-fatherGroups = pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+drones <- createDrones(basePop[1], n = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 
 # Create Colony and MultiColony class
 colony <- createColony(x = basePop[2])
