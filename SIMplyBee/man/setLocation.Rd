@@ -7,21 +7,21 @@
 setLocation(x, location)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{location}{numeric or list, location to be set for the
-\code{\link{Colony-class}} or for \code{\link{Colonies-class}}; when
+\code{\link{Colony-class}} or for \code{\link{MultiColony-class}}; when
 numeric the same location will be set for all colonies; when list different
 locations will be set for each colony - the list has to have the same
 length at there are colonies in \code{x})}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with set
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
   location
 }
 \description{
-Level 2 function that to set colony location to (x, y)
-  coordinates.
+Level 2 function that to set a Colony or MultiColony object
+  location to (x, y) coordinates.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -33,7 +33,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 # Create Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:8], n = 6)
+apiary <- createMultiColony(basePop[3:8], n = 6)
 apiary <- cross(apiary, fathers = fatherGroups[2:7])
 
 getLocation(colony)

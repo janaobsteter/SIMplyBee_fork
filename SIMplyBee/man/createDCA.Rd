@@ -7,7 +7,7 @@
 createDCA(x, nInd = NULL, removeFathers = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric, number of random drones to pull from each colony,
 if \code{NULL} all drones in a colony are pulled}
@@ -20,8 +20,8 @@ virgin queens, say via insemination}
 \code{\link{Pop-class}}
 }
 \description{
-Level 1 function that creates a population of drones from one or
-  multiple colonies. Such a population is often referred to as a drone
+Level 1 function that creates a population of drones from a colony
+  or multi-colony.  Such a population is often referred to as a drone
   congregation area (DCA).
 }
 \details{
@@ -47,7 +47,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 colony <- addDrones(colony, nInd = 10)

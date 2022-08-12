@@ -7,16 +7,16 @@
 collapse(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with the collapse
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the collapse
   event set to \code{TRUE}
 }
 \description{
-Level 2 function that collapses colony by setting the collapse
-  event slot to \code{TRUE}. The production status slot is also changed (to
-  \code{FALSE}).
+Level 2 function that collapses a Colony or MultiColony object
+  by setting the collapse event slot to \code{TRUE}. The production status
+  slot is also changed (to \code{FALSE}).
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -28,7 +28,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 # Create Colony and MultiColony class
 colony <- createColony(x = basePop[1])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(x = basePop[2:10], n = 9)
+apiary <- createMultiColony(x = basePop[2:10], n = 9)
 apiary <- cross(apiary, fathers = fatherGroups[2:10])
 
 # Collapse

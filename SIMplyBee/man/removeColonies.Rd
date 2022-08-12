@@ -2,22 +2,23 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{removeColonies}
 \alias{removeColonies}
-\title{Remove some colonies}
+\title{Remove some colonies from the MultiColony object}
 \usage{
-removeColonies(colonies, ID)
+removeColonies(multicolony, ID)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 
 \item{ID}{character or numeric, name of a colony (one or more) to be
 removed; if character (numeric) colonies are removed based on their name
 (position)}
 }
 \value{
-\code{\link{Colonies-class}} with some colonies removed
+\code{\link{MultiColony-class}} with some colonies removed
 }
 \description{
-Level 3 function that removes some colonies based on their ID.
+Level 3 function that removes some colonies
+  from the MultiColony object based on their ID.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -26,7 +27,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-apiary <- createColonies(basePop[2:5], n = 4)
+apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, fathers = fatherGroups[1:4])
 getId(apiary)
 

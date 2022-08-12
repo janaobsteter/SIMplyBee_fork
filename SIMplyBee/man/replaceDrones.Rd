@@ -7,7 +7,7 @@
 replaceDrones(x, p = 1, use = "rand")
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of drones to be replaced with new ones}
 
@@ -15,13 +15,13 @@ replaceDrones(x, p = 1, use = "rand")
 guides selection of drones that stay when \code{p < 1}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
   replaced drones
 }
 \description{
 Level 2 function that replaces a proportion of drones with new
-  drones from the colony. Useful after events like season change, swarming,
-  supersedure, etc. due to the short life span of the drones.
+  drones from the a Colony or MultiColony object. Useful after events like season change,
+  swarming, supersedure, etc. due to the short life span of the drones.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -34,7 +34,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add drones

@@ -22,7 +22,7 @@ getWorkers(x, nInd = NULL, use = "rand")
 getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
-\item{x}{Colony or Colonies}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
@@ -43,7 +43,7 @@ virgin queens, say via insemination}
 when \code{x} is \code{\link{Colony-class}} return is
   \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
   == "all"} with nodes named by caste; when \code{x} is
-  \code{\link{Colonies-class}} return is a named list of
+  \code{\link{MultiColony-class}} return is a named list of
   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
   \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
   all the populations in the list with \code{\link{mergePops}} function.
@@ -76,7 +76,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 # Using defaults in SP$nWorkers & SP$nDrones

@@ -12,7 +12,7 @@ getQueensYOB(x)
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
 \code{\link{Colony-class}} (one colony), or
-\code{\link{Colonies-class}} (more colonies)}
+\code{\link{MultiColony-class}} (more colonies)}
 }
 \value{
 numeric, the year of birth of the queen(s); named when theres is more
@@ -38,7 +38,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 queen <- getQueen(colony)

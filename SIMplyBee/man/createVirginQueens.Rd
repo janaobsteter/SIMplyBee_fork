@@ -15,11 +15,11 @@ createVirginQueens(
 }
 \arguments{
 \item{x}{\code{link{MapPop-class}} or \code{\link{Colony-class}} or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens; if \code{NULL} then
 \code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
-\code{\link{Colony-class}} or \code{\link{Colonies-class}}, when \code{x}
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}}, when \code{x}
 is \code{link{MapPop-class}} all individuals in \code{x} are converted
 into virgin queens}
 
@@ -46,7 +46,7 @@ when \code{x} is \code{link{MapPop-class}} returns
   \code{virginQueens} (a \code{\link{Pop-class}});
   when \code{x} is \code{\link{Colony-class}} returns
   \code{virginQueens} (a \code{\link{Pop-class}});
-  when \code{x} is \code{\link{Colonies-class}}
+  when \code{x} is \code{\link{MultiColony-class}}
   return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
   named by colony ID
 }
@@ -71,7 +71,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 # Using a default in SP$nVirginQueens

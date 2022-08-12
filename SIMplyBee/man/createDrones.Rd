@@ -8,7 +8,7 @@ createDrones(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
+\code{\link{MultiColony-class}}; with \code{\link{Pop-class}}, its individuals
 must be virgin queens or queens (see \code{\link{createVirginQueens}}) -
 this case is so that we can initiate simulation by simulating drones from
 founding queens before we can create colonies}
@@ -18,7 +18,7 @@ founding queens before we can create colonies}
 \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 the \code{x} (here population individuals serve as a queen, for example
 to initiate population from founding queens; see details). If \code{x}
-is a \code{\link{Colony-class}} or \code{\link{Colonies-class}}, then the
+is a \code{\link{Colony-class}} or \code{\link{MultiColony-class}}, then the
 \code{nInd} means the number of drones per colony.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
@@ -27,12 +27,13 @@ is a \code{\link{Colony-class}} or \code{\link{Colonies-class}}, then the
 when \code{x} is \code{\link{Pop-class}} or
   \code{\link{Colony-class}} return is a
   \code{\link{Pop-class}} with drones; when \code{x} is
-  \code{\link{Colonies-class}} return is a list of \code{\link{Pop-class}}
+  \code{\link{MultiColony-class}} return is a list of \code{\link{Pop-class}}
   with drones - list nodes are named by colony ID
 }
 \description{
-Level 1 function that creates drones from a population, colony,
-  or colonies. Drones are double haploid and created from the diploid genome
+Level 1 function that creates drones from a  \code{\link{Pop-class}},
+ \code{\link{Colony-class}} or \code{\link{MultiColony-class}}.
+  Drones are double haploid and created from the diploid genome
   of a queen with recombination. Queen ID is stored as the father and
   mother of drones.
 }
@@ -57,7 +58,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 basePop[1]@id

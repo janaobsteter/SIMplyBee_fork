@@ -2,19 +2,19 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nNULLColonies}
 \alias{nNULLColonies}
-\title{Number of NULL colonies}
+\title{Number of NULL colonies in a MultiColony object}
 \usage{
-nNULLColonies(colonies)
+nNULLColonies(multicolony)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 }
 \value{
 integer
 }
 \description{
 Level 0 function that returns the number of colonies in a
-  colonies object that are in fact empty \code{NULL}.
+  MultiColony object that are in fact empty \code{NULL}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -24,7 +24,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-apiary <- createColonies(basePop[2:3], n = 2)
+apiary <- createMultiColony(basePop[2:3], n = 2)
 apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
 getId(apiary)
 

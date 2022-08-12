@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{buildUp}
 \alias{buildUp}
-\title{Build up colony or colonies by adding (raising) workers and drones}
+\title{Build up Colony or MultiColony object by adding (raising) workers and drones}
 \usage{
 buildUp(
   x,
@@ -15,7 +15,7 @@ buildUp(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker to add to the colony,
 but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
@@ -39,12 +39,12 @@ build up}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with workers and
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and
    drones replaced or added
 }
 \description{
-Level 2 function that builds up colony by adding (raising)
-  workers and drones usually in spring or after events such as split or
+Level 2 function that builds up a Colony or MultiColony object by adding
+  (raising) workers and drones usually in spring or after events such as split or
   swarming.
 }
 \details{
@@ -77,7 +77,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 isProductive(colony)
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 isProductive(apiary)
 
@@ -122,7 +122,7 @@ buildUp(colony)
 buildUp(colony)
 # nWorkers and nDrones will vary between function calls when a function is used
 # Same for MultiColony class
-apiary <- createColonies(basePop[7:8], n = 2)
+apiary <- createMultiColony(basePop[7:8], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(6, 7)])
 buildUp(apiary)[[1]]
 buildUp(apiary)[[1]]

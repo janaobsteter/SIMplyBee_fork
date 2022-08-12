@@ -7,13 +7,13 @@
 removeQueen(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} without the queen
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} without the queen
 }
 \description{
-Level 2 function that removes the queen of a colony.
+Level 2 function that removes the queen of a Colony or MultiColony object
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -26,7 +26,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Remove the queen

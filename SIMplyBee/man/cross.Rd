@@ -14,7 +14,7 @@ cross(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{Colonies-class}},
+\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 one or more virgin queens / colonies to be mated;}
 
 \item{fathers}{\code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
@@ -42,10 +42,10 @@ Details)}
 \description{
 Level 1 function that crosses (mates) a virgin queen to a group
   of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
-  in a colony (\code{\link{Colony-class}}), or colonies (\code{\link{Colonies-class}}).
+  in a colony (\code{\link{Colony-class}}), or multi-colony (\code{\link{MultiColony-class}}).
   This function does not create any progeny, it only stores the
   mated drones (fathers) so we can later create progeny as needed.
-  When input is a  (\code{\link{Colony-class}}) or  (\code{\link{Colonies-class}}),
+  When input is a  (\code{\link{Colony-class}}) or  (\code{\link{MultiColony-class}}),
   one virgin queens is selected at random, mated, and promoted to the queen of the colony.
   Other virgin queens are destroyed. Mated drones (fathers) are stored for
   producing progeny at a later stage.
@@ -123,7 +123,7 @@ pHomBrood(matedQueen3)
 # Create Colony and MultiColony class
 colony <- createColony(basePop[6])
 isVirginQueen(getVirginQueens(colony))
-apiary <- createColonies(basePop[7:8], n = 2)
+apiary <- createMultiColony(basePop[7:8], n = 2)
 all(isVirginQueen(mergePops(getVirginQueens(apiary))))
 
 # Cross

@@ -7,19 +7,20 @@
 combine(strong, weak)
 }
 \arguments{
-\item{strong}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{strong}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{weak}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{weak}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-a combined \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+a combined \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 }
 \description{
-Level 2 function that combines two colony objects into one or
+Level 2 function that combines two Colony or MultiColony objects
+  into one or
   two colonies objects of the same length to one. For example, to combine a
-  weak and a strong colony (or colonies). Workers and drones of the weak
+  weak and a strong colony (or MultiColony). Workers and drones of the weak
   colony are added to the strong. User has to remove the weak colony (or
-  colonies) from the workspace.
+  MultiColony) from the workspace.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -33,9 +34,9 @@ colony1 <- createColony(x = basePop[2])
 colony1 <- cross(colony1, fathers = fatherGroups[[1]])
 colony2 <- createColony(x = basePop[3])
 colony2 <- cross(colony2, fathers = fatherGroups[[2]])
-apiary1 <- createColonies(basePop[4:6], n = 3)
+apiary1 <- createMultiColony(basePop[4:6], n = 3)
 apiary1 <- cross(apiary1, fathers = fatherGroups[3:5])
-apiary2 <- createColonies(basePop[7:9], n = 3)
+apiary2 <- createMultiColony(basePop[7:9], n = 3)
 apiary2 <- cross(apiary2, fathers = fatherGroups[6:8])
 
 # Build-up

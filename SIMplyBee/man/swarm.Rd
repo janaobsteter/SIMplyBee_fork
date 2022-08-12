@@ -7,7 +7,7 @@
 swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony;
 if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used}
@@ -22,12 +22,13 @@ is used}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-list with two \code{\link{Colony-class}} or \code{\link{Colonies-class}},
+list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
 outputs have the swarm event set to \code{TRUE}
 }
 \description{
-Level 2 function that swarms colony - an event where the queen
+Level 2 function that swarms a Colony or MultiColony object -
+  an event where the queen
   leaves with a proportion of workers to create a new colony (the swarm). The
   remnant colony retains the other proportion of workers and all drones, and
   the workers raise virgin queens, of which only one prevails. Location of
@@ -44,7 +45,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 (colony <- buildUp(colony, nWorkers = 100))
-apiary <- createColonies(basePop[3:8], n = 6)
+apiary <- createMultiColony(basePop[3:8], n = 6)
 apiary <- cross(apiary, fathers = fatherGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100)
 

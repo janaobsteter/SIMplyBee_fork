@@ -2,13 +2,13 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{downsize}
 \alias{downsize}
-\title{Reduce number of workers and remove all drones and virgin queens from a colony
-or colonies}
+\title{Reduce number of workers and remove all drones and virgin queens from
+  a Colony or MultiColony object}
 \usage{
 downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers to be removed from the colony; if
 \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used}
@@ -22,13 +22,13 @@ proportion anew (say, create winter workers)}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with workers reduced and
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
   drones/virgin queens removed
 }
 \description{
-Level 2 function that downsizes colony by removing a proportion
-  of workers, all drones and all virgin queens. Usually in the autumn, such
-  an event occurs in preparation for the winter months.
+Level 2 function that downsizes a Colony or MultiColony object
+  by removing a proportion of workers, all drones and all virgin queens.
+  Usually in the autumn, such an event occurs in preparation for the winter months.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -43,7 +43,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(colony)
 colony <- addVirginQueens(x = colony, nInd = 10)
 colony
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(apiary)
 apiary <- addVirginQueens(apiary, nInd = 10)

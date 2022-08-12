@@ -7,7 +7,7 @@
 addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric or function, number of workers to be added, but see
 \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used}
@@ -22,14 +22,14 @@ csd locus)}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
   workers added
 }
 \description{
 Level 2 function that adds (raises) the specified number of
-  workers in the colony by crossing the current queen and the fathers. If
-  there are already some workers present, new and present workers are
-  combined.
+  workers to a Colony or MultiColony object y by crossing the current queen
+  and the fathers. If there are already some workers present, new and present
+  workers are combined.
 }
 \details{
 This function increases queen's \code{nWorkers} and \code{nHomBrood}
@@ -46,7 +46,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add workers

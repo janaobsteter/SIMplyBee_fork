@@ -7,7 +7,7 @@
 setColonyPheno(x, colonyFUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{colonyFUN}{function, any function that can be run on \code{colony} and
 returns colony phenotypes; if \code{NULL} then
@@ -19,12 +19,12 @@ then colony phenotype is not set, but phenotypes of colony individuals are}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with phenotypes
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
 }
 \description{
-Level 2 function that sets phenotypes for all colony individuals
+Level 2 function that sets phenotypes for all Colony or MultiColony individuals
   (queen, workers, drones, and virgin queens) and for the colony or each colony in
-  the colonies.
+  a MultiColony object
 }
 \details{
 When this function is called on a colony, phenotypes for all colony
@@ -57,7 +57,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = 14)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(colony, nWorkers = 10)
-apiary <- createColonies(basePop[3:5], n = 2)
+apiary <- createMultiColony(basePop[3:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = 10)
 
@@ -80,10 +80,10 @@ lapply(getWorkers(apiary), FUN = pheno)
 # TODO: use getColonyPheno(colony) for all individuals
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
-# Set phenotypes for all colony individuals AND colony
+# Set phenotypes for all colony individuals AND Colony
 colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
 pheno(colony)
-# Set phenotypes for all colony individuals AND colonies
+# Set phenotypes for all colony individuals AND MultiColony
 apiary <- setColonyPheno(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
 lapply(apiary@colonies, FUN = pheno)
 # TODO: use getColonyPheno(colony) for all individuals and/or colony

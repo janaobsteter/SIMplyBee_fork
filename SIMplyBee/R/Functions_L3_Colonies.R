@@ -1,7 +1,7 @@
-# Level 3 Colonies Functions
+# Level 3 MultiColony Functions
 
-#' @rdname createColonies
-#' @title Create colonies
+#' @rdname createMultiColony
+#' @title Create MultiColony object
 #'
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
@@ -9,14 +9,14 @@
 #' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
 #'   (selected at random if there are more than \code{n} in \code{Pop})
 #' @param n integer, number of colonies to create (if only \code{nCol} is
-#'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
+#'   given then \code{\link{MultiColony-class}} is created with \code{nCol} empty
 #'   (\code{NULL}) individual colony) - this is mostly useful for programming)
 #' @param location list, location of the colonies as \code{c(x, y)}
 #'
 #' @details When both \code{x} and \code{nCol} are \code{NULL}, then an empty
-#'   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
+#'   \code{NULL} \code{\link{MultiColony-class}} is created with 0 colonies.
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -24,19 +24,19 @@
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' # Create 2 empty (NULL) colonies
-#' apiary <- createColonies(n = 2)
+#' apiary <- createMultiColony(n = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # Create 2 virgin colonies
-#' apiary <- createColonies(x = basePop, n = 2)
+#' apiary <- createMultiColony(x = basePop, n = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # Create mated colonies by crossing
-#' apiary <- createColonies(x = basePop[1:2], n = 2)
+#' apiary <- createMultiColony(x = basePop[1:2], n = 2)
 #' drones <- createDrones(x = basePop[3], n = 30)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
 #' apiary <- cross(apiary, fathers = fatherGroups)
@@ -44,12 +44,12 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-createColonies <- function(x = NULL, n = NULL, location = NULL) {
+createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
   if (is.null(x)) {
     if (is.null(n)) {
-      ret <- new(Class = "Colonies")
+      ret <- new(Class = "MultiColony")
     } else {
-      ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
+      ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     }
   } else {
     if (!isPop(x)) {
@@ -61,7 +61,7 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")
     }
-    ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
+    ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     for (colony in seq_len(n)) {
       ret[[colony]] <- createColony(
         x = x[colony],
@@ -74,12 +74,12 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 }
 
 #' @rdname selectColonies
-#' @title Select individual colonies
+#' @title Select individual colonies from MultiColony object
 #'
-#' @description Level 3 function that selects individual colonies based on
-#'   colony ID or random selection.
+#' @description Level 3 function that selects individual colonies from
+#'   MultiColony object based on colony ID or random selection.
 #'
-#' @param colonies \code{\link{Colonies-class}}
+#' @param multicolony \code{\link{MultiColony-class}}
 #' @param ID character or numeric, name of a colony (one or more) to be
 #'   selected; if character (numeric) colonies are selected based on their name
 #'   (position)
@@ -87,7 +87,7 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 #' @param p numeric, probability of a colony being selected (takes precedence
 #'   over \code{n})
 #'
-#' @return \code{\link{Colonies-class}} with selected colonies
+#' @return \code{\link{MultiColony-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -96,7 +96,7 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
@@ -120,29 +120,29 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' @export
-selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
+selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
     # Testing because a logical vector recycles on colonies[ID]
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
     }
-    ret <- colonies[ID]
+    ret <- multicolony[ID]
   } else if (!is.null(n) | !is.null(p)) {
-    nCol <- nColonies(colonies)
+    nCol <- nColonies(multicolony)
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
     lSel <- sample.int(n = nCol, size = n)
     message(paste0("Randomly selecting colonies: ", n))
     if (length(lSel) > 0) {
-      ret <- colonies[lSel]
+      ret <- multicolony[lSel]
     } else {
       ret <- NULL
     }
@@ -154,12 +154,12 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 }
 
 #' @rdname pullColonies
-#' @title Pull out some colonies
+#' @title Pull out some colonies from the MultiColony object
 #'
-#' @description Level 3 function that pulls out some colonies based on colony
-#'   ID or random selection.
+#' @description Level 3 function that pulls out some colonies
+#'   from the MultiColony based on colony ID or random selection.
 #'
-#' @param colonies \code{\link{Colonies-class}}
+#' @param multicolony \code{\link{MultiColony-class}}
 #' @param ID character or numeric, name of a colony (one or more) to be pulled
 #'   out; if character (numeric) colonies are pulled out based on their name
 #'   (position)
@@ -167,7 +167,7 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' @param p numeric, probability of a colony being pulled out (takes precedence
 #'   over \code{n})
 #'
-#' @return list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
+#' @return list with two \code{\link{MultiColony-class}}, the \code{pulledColonies}
 #'   and the \code{remainingColonies}
 #'
 #' @examples
@@ -177,7 +177,7 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
@@ -205,31 +205,31 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' getId(tmp$pulledColonies)
 #' getId(tmp$remainingColonies)
 #' @export
-pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
+pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #        trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    pulledColonies <- selectColonies(colonies, ID)
-    remainingColonies <- removeColonies(colonies, ID)
+    pulledColonies <- selectColonies(multicolony, ID)
+    remainingColonies <- removeColonies(multicolony, ID)
   } else if (!is.null(n) | !is.null(p)) {
-    nCol <- nColonies(colonies)
+    nCol <- nColonies(multicolony)
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
     lPull <- sample.int(n = nCol, size = n)
     message(paste0("Randomly pulling colonies: ", n))
     if (length(lPull) > 0) {
-      ids <- getId(colonies)
-      pulledColonies <- selectColonies(colonies, ids[lPull])
-      remainingColonies <- removeColonies(colonies, ids[lPull])
+      ids <- getId(multicolony)
+      pulledColonies <- selectColonies(multicolony, ids[lPull])
+      remainingColonies <- removeColonies(multicolony, ids[lPull])
     } else {
-      pulledColonies <- createColonies()
-      remainingColonies <- colonies
+      pulledColonies <- createMultiColony()
+      remainingColonies <- multicolony
     }
   } else {
     stop("You must provide either ID, n, or p!")
@@ -241,16 +241,17 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 }
 
 #' @rdname removeColonies
-#' @title Remove some colonies
+#' @title Remove some colonies from the MultiColony object
 #'
-#' @description Level 3 function that removes some colonies based on their ID.
+#' @description Level 3 function that removes some colonies
+#'   from the MultiColony object based on their ID.
 #'
-#' @param colonies \code{\link{Colonies-class}}
+#' @param multicolony \code{\link{MultiColony-class}}
 #' @param ID character or numeric, name of a colony (one or more) to be
 #'   removed; if character (numeric) colonies are removed based on their name
 #'   (position)
 #'
-#' @return \code{\link{Colonies-class}} with some colonies removed
+#' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -259,7 +260,7 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-#' apiary <- createColonies(basePop[2:5], n = 4)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, fathers = fatherGroups[1:4])
 #' getId(apiary)
 #'
@@ -277,14 +278,14 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #' nColonies(apiary)
 #'
 #' @export
-removeColonies <- function(colonies, ID) {
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+removeColonies <- function(multicolony, ID) {
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   if (is.character(ID)) {
-    ret <- colonies[!getId(colonies) %in% ID]
+    ret <- multicolony[!getId(multicolony) %in% ID]
   } else if (is.numeric(ID)) {
-    ret <- colonies[-ID]
+    ret <- multicolony[-ID]
   } else {
     stop("ID must be character or numeric!")
   }

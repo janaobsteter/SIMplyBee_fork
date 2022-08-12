@@ -7,10 +7,10 @@
 nVirginQueens(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Returns the number of virgin queens in a colony
@@ -28,7 +28,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- addVirginQueens(x = colony, nInd = 5)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- addVirginQueens(x = apiary, nInd = 3)
 

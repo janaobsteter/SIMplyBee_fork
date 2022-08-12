@@ -19,7 +19,7 @@ pullWorkers(x, nInd = NULL, use = "rand")
 pullDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "workers", "drones", or "virginQueens"}
 
@@ -36,8 +36,8 @@ virgin queens, say via insemination}
 list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
   when \code{x} is \code{\link{Colony-class}} and list of (a list of
   \code{\link{Pop-class}} named by colony id) and
-  \code{\link{Colonies-class}} when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}} when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 1 function that pulls individuals from a caste in a
@@ -73,7 +73,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10, exact = TRUE)
 colony <- addVirginQueens(x = colony, nInd = 3)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
 apiary <- addVirginQueens(x = apiary, nInd = 3)

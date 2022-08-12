@@ -7,11 +7,11 @@
 isVirginQueensPresent(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
 logical, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns virgin queen(s) presence status.
@@ -30,7 +30,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- addVirginQueens(x = colony, nInd = 4)
 isVirginQueensPresent(colony)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 isVirginQueensPresent(apiary)

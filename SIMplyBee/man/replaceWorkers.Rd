@@ -7,7 +7,7 @@
 replaceWorkers(x, p = 1, use = "rand", exact = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers to be replaced with new ones}
 
@@ -21,13 +21,13 @@ replace the workers with the exact specified number of only viable workers
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
   replaced workers
 }
 \description{
 Level 2 function that replaces a proportion of workers with new
-  workers from the colony. Useful after events like season change, swarming,
-  supersedure, etc. due to the short life span of the workers.
+  workers from the a Colony or MultiColony object. Useful after events like season change,
+  swarming, supersedure, etc. due to the short life span of the workers.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -40,7 +40,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add workers

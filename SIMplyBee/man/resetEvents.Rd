@@ -7,7 +7,7 @@
 resetEvents(x, collapse = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{collapse}{logical, reset the collapse event (only sensible in setting
 up a new colony, which the default of \code{NULL} caters for; otherwise, a
@@ -15,14 +15,14 @@ collapsed colony should be left collapsed forever, unless you force
 resetting this event with \code{collapse = TRUE})}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
   events reset
 }
 \description{
 Level 2 function that resets the slots swarm, split,
-  supersedure, collapsed, and production to FALSE. Useful at the end of a
-  yearly cycle to reset the events, allowing the user to track new events in
-  a new year.
+  supersedure, collapsed, and production to FALSE in a Colony or MultiColony object.
+  Useful at the end of a yearly cycle to reset the events, allowing the user to track
+  new events in a new year.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -35,7 +35,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Build-up - this sets Productive to TRUE
