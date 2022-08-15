@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{selectColonies}
 \alias{selectColonies}
-\title{Select individual colonies from MultiColony object}
+\title{Select colonies from MultiColony object}
 \usage{
 selectColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
@@ -22,7 +22,7 @@ over \code{n})}
 \code{\link{MultiColony-class}} with selected colonies
 }
 \description{
-Level 3 function that selects individual colonies from
+Level 3 function that selects colonies from
   MultiColony object based on colony ID or random selection.
 }
 \examples{

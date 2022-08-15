@@ -270,3 +270,36 @@ setReplaceMethod(
     x
   }
 )
+
+#' @describeIn MultiColony-class Assign Colony into MultiColony
+setReplaceMethod(
+  f = "[[",
+  signature(
+    x = "MultiColony", i = "integerOrNumericOrLogicalOrCharacter",
+    j = "ANY", value = "Colony"
+  ),
+  definition = function(x, i, j, value) {
+    if (is.numeric(i)) {
+      if (length(i) > 1) {
+        stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[[i]] <- value
+    } else if (is.logical(i)) {
+      if (sum(i) != 1) {
+        stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[i][[1L]] <- value
+    } else if (is.character(i)) {
+      if (length(i) > 1) {
+        stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
+      }
+      match <- getId(x) %in% i
+      if (sum(match) != 1) {
+        stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
+      }
+      x@colonies[match][[1L]] <- value
+    }
+    validObject(x)
+    x
+  }
+)

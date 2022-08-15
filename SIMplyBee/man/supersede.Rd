@@ -60,6 +60,6 @@ getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
 # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
-(supersede(tmp$pulledColonies))
+(supersede(tmp$pulled))
 
 }

@@ -57,6 +57,6 @@ tmp$remnant[[1]]
 # Split only specific colonies in the apiary
 tmp <- pullColonies(apiary, ID = c(4, 5))
 # Split only the pulled colonies
-(split(tmp$pulledColonies, p = 0.5))
+(split(tmp$pulled, p = 0.5))
 
 }

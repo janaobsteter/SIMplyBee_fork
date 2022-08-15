@@ -74,9 +74,9 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 }
 
 #' @rdname selectColonies
-#' @title Select individual colonies from MultiColony object
+#' @title Select colonies from MultiColony object
 #'
-#' @description Level 3 function that selects individual colonies from
+#' @description Level 3 function that selects colonies from
 #'   MultiColony object based on colony ID or random selection.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
@@ -167,8 +167,8 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' @param p numeric, probability of a colony being pulled out (takes precedence
 #'   over \code{n})
 #'
-#' @return list with two \code{\link{MultiColony-class}}, the \code{pulledColonies}
-#'   and the \code{remainingColonies}
+#' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
+#'   and the \code{remnant}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -182,28 +182,28 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, ID = c("5", "6"))
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, ID = 5)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, ID = "9")
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, n = 2)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnanet)
 #'
 #' tmp <- pullColonies(apiary, p = 0.75)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #' @export
 pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
@@ -214,8 +214,8 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    pulledColonies <- selectColonies(multicolony, ID)
-    remainingColonies <- removeColonies(multicolony, ID)
+    pulled <- selectColonies(multicolony, ID)
+    remnant <- removeColonies(multicolony, ID)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
     if (!is.null(p)) {
@@ -225,18 +225,18 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     message(paste0("Randomly pulling colonies: ", n))
     if (length(lPull) > 0) {
       ids <- getId(multicolony)
-      pulledColonies <- selectColonies(multicolony, ids[lPull])
-      remainingColonies <- removeColonies(multicolony, ids[lPull])
+      pulled <- selectColonies(multicolony, ids[lPull])
+      remnant <- removeColonies(multicolony, ids[lPull])
     } else {
-      pulledColonies <- createMultiColony()
-      remainingColonies <- multicolony
+      pulled <- createMultiColony()
+      remnant <- multicolony
     }
   } else {
     stop("You must provide either ID, n, or p!")
   }
-  ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
-  validObject(ret$pulledColonies)
-  validObject(ret$remainingColonies)
+  ret <- list(pulled = pulled, remnant = remnant)
+  validObject(ret$pulled)
+  validObject(ret$remnant)
   return(ret)
 }
 

@@ -21,7 +21,7 @@
 #' @export
 nColonies <- function(multicolony) {
   if (!"MultiColony" %in% class(multicolony)) {
-    stop("Argument colonies must be a MultiColony class object!")
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   n <- length(multicolony@colonies)
   return(n)
@@ -57,7 +57,7 @@ nColonies <- function(multicolony) {
 #' @export
 nNULLColonies <- function(multicolony) {
   if (!"MultiColony" %in% class(multicolony)) {
-    stop("Argument colonies must be a MultiColony class object!")
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   if (length(multicolony@colonies) == 0) {
     ret <- 0

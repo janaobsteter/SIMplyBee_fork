@@ -99,7 +99,7 @@ pullDrones(colony, nInd = 5)
 pullCastePop(apiary, caste = "queen")
 pullQueen(apiary)
 nQueens(apiary)
-nQueens(pullQueen(apiary)$colonies)
+nQueens(pullQueen(apiary)$remnant)
 
 pullCastePop(apiary, caste = "virginQueens")
 pullVirginQueens(apiary)
@@ -108,12 +108,12 @@ nVirginQueens(apiary)
 pullCastePop(apiary, caste = "workers")
 pullWorkers(apiary)
 nWorkers(apiary)
-nWorkers(pullWorkers(apiary)$colonies)
+nWorkers(pullWorkers(apiary)$remnant)
 
 pullCastePop(apiary, caste = "drones")
 pullDrones(apiary)
 nDrones(apiary)
-nDrones(pullDrones(apiary)$colonies)
+nDrones(pullDrones(apiary)$remnant)
 }
 \seealso{
 \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},

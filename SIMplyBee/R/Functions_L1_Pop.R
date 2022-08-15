@@ -994,7 +994,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
-#'   pulled individuals and a node \code{remainder)} holding \code{\link{Pop-class}}
+#'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
 #'   of remaining individuals
 #'
 #' @examples
@@ -1015,8 +1015,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
   }
   pulled <- selectInd(pop = pop, nInd = nInd, use = use)
   sel <- pop@id %in% pulled@id
-  remainder <- pop[!sel]
-  ret <- list(pulled = pulled, remainder = remainder)
+  remnant <- pop[!sel]
+  ret <- list(pulled = pulled, remnant = remnant)
   return(ret)
 }
 
@@ -1087,7 +1087,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     tmp <- pullInd(pop = DCA, nInd = nF)
     ret[[group]] <- tmp$pulled
-    DCA <- tmp$remainder
+    DCA <- tmp$remnant
   }
   return(ret)
 }
@@ -1161,7 +1161,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "queen")
 #' pullQueen(apiary)
 #' nQueens(apiary)
-#' nQueens(pullQueen(apiary)$colonies)
+#' nQueens(pullQueen(apiary)$remnant)
 #'
 #' pullCastePop(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
@@ -1170,24 +1170,24 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "workers")
 #' pullWorkers(apiary)
 #' nWorkers(apiary)
-#' nWorkers(pullWorkers(apiary)$colonies)
+#' nWorkers(pullWorkers(apiary)$remnant)
 #'
 #' pullCastePop(apiary, caste = "drones")
 #' pullDrones(apiary)
 #' nDrones(apiary)
-#' nDrones(pullDrones(apiary)$colonies)
+#' nDrones(pullDrones(apiary)$remnant)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                          removeFathers = TRUE) {
   if (isColony(x)) {
     if (is.null(slot(x, caste))) {
-      ret <- list(pulled = NULL, colony = x)
+      ret <- list(pulled = NULL, remnant = x)
     } else {
       if (is.null(nInd)) {
         nInd <- nInd(slot(x, caste))
       }
       tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
-      slot(x, caste) <- tmp$remainder
+      slot(x, caste) <- tmp$remnant
       if (caste == "drones") {
         if (removeFathers) {
           test <- isDrone(tmp$pulled)
@@ -1197,19 +1197,19 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
           }
         }
       }
-      ret <- list(pulled = tmp$pulled, colony = x)
+      ret <- list(pulled = tmp$pulled, remnant = x)
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = 2)
-    names(ret) <- c("pulled", "colonies")
+    names(ret) <- c("pulled", "remnant")
     ret$pulled <- vector(mode = "list", length = nCol)
     names(ret$pulled) <- getId(x)
-    ret$colonies <- x
+    ret$remnant <- x
     for (colony in seq_len(nCol)) {
       tmp <- pullCastePop(x = x[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
-      ret$colonies[[colony]] <- tmp$colony
+      ret$remnant[[colony]] <- tmp$remnant
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")

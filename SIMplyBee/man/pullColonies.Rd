@@ -19,8 +19,8 @@ out; if character (numeric) colonies are pulled out based on their name
 over \code{n})}
 }
 \value{
-list with two \code{\link{MultiColony-class}}, the \code{pulledColonies}
-  and the \code{remainingColonies}
+list with two \code{\link{MultiColony-class}}, the \code{pulled}
+  and the \code{remnant}
 }
 \description{
 Level 3 function that pulls out some colonies
@@ -38,26 +38,26 @@ apiary <- cross(apiary, fathers = fatherGroups[1:4])
 getId(apiary)
 
 tmp <- pullColonies(apiary, ID = c(1, 2))
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = c("5", "6"))
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = 5)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = "9")
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, n = 2)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnanet)
 
 tmp <- pullColonies(apiary, p = 0.75)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 }

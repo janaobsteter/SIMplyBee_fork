@@ -1427,9 +1427,9 @@ resetEvents <- function(x, collapse = NULL) {
 #' hasCollapsed(apiary)
 #' tmp <- pullColonies(apiary, n = 2)
 #' tmp
-#' apiaryLost <- collapse(tmp$pulledColonies)
+#' apiaryLost <- collapse(tmp$pulled)
 #' hasCollapsed(apiaryLost)
-#' apiaryLeft <- tmp$remainingColonies
+#' apiaryLeft <- tmp$remnant
 #' hasCollapsed(apiaryLeft)
 #'
 #' @export
@@ -1501,7 +1501,7 @@ collapse <- function(x) {
 #' # Sample colonies from the apiary that will swarm (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
-#' (swarm(tmp$pulledColonies, p = 0.6))
+#' (swarm(tmp$pulled, p = 0.6))
 #'
 #' @export
 swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
@@ -1546,7 +1546,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
 
     remnantColony <- createColony(x = tmpVirginQueen)
-    remnantColony@workers <- getWorkers(tmp$colony)
+    remnantColony@workers <- getWorkers(tmp$remnant)
     remnantColony@drones <- getDrones(x)
     # Workers raise virgin queens from eggs laid by the queen and one random
     #   virgin queen prevails, so we create just one
@@ -1647,7 +1647,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
-#' (supersede(tmp$pulledColonies))
+#' (supersede(tmp$pulled))
 #'
 #' @export
 supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
@@ -1751,7 +1751,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' # Split only specific colonies in the apiary
 #' tmp <- pullColonies(apiary, ID = c(4, 5))
 #' # Split only the pulled colonies
-#' (split(tmp$pulledColonies, p = 0.5))
+#' (split(tmp$pulled, p = 0.5))
 #'
 #' @export
 split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
@@ -1776,7 +1776,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     #       https://github.com/HighlanderLab/SIMplyBee/issues/179
     tmp <- pullWorkers(x = x, nInd = nWorkersSplit)
 
-    remnantColony <- tmp$colony
+    remnantColony <- tmp$remnant
 
     tmpVirginQueens <- createVirginQueens(
       x = x, nInd = 1,

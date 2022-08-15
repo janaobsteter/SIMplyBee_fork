@@ -39,9 +39,9 @@ hasCollapsed(colony)
 hasCollapsed(apiary)
 tmp <- pullColonies(apiary, n = 2)
 tmp
-apiaryLost <- collapse(tmp$pulledColonies)
+apiaryLost <- collapse(tmp$pulled)
 hasCollapsed(apiaryLost)
-apiaryLeft <- tmp$remainingColonies
+apiaryLeft <- tmp$remnant
 hasCollapsed(apiaryLeft)
 
 }

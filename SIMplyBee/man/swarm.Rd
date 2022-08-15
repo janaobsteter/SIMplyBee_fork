@@ -62,6 +62,6 @@ tmp$remnant[[1]]
 # Sample colonies from the apiary that will swarm (sample with probability of 0.2)
 tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
-(swarm(tmp$pulledColonies, p = 0.6))
+(swarm(tmp$pulled, p = 0.6))
 
 }
