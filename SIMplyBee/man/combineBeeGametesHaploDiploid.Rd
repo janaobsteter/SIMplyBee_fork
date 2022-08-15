@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{combineBeeGametesHaploDiploid}
 \alias{combineBeeGametesHaploDiploid}
-\title{Cross a queen and drones}
+\title{Create diploid gametes from a fertilised queen}
 \usage{
 combineBeeGametesHaploDiploid(queen, drones, nProgeny = 1, simParamBee = NULL)
 }
@@ -19,7 +19,7 @@ combineBeeGametesHaploDiploid(queen, drones, nProgeny = 1, simParamBee = NULL)
 \code{\link{Pop-class}} with diploid individuals
 }
 \description{
-Level 1 function that crosses a queen and drones. Drones are
+Level 1 function that produces diploid offspring from a mated queen. Drones are
   haploid, while the queen is diploid, so we first generate gametes (with
   recombination) from her and merge them with drone genomes (=gametes), where
   we randomly re-sample drones to get the desired number of progeny. This is

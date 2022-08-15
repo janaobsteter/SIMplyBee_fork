@@ -583,9 +583,9 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 }
 
 #' @rdname combineBeeGametes
-#' @title Cross a queen and drones
+#' @title Create diploid gametes from a fertilised queen
 #'
-#' @description Level 1 function that crosses a queen and drones. Queen is
+#' @description Level 1 function that produces diploid offspring from a mated queen. Queen is
 #'   diploid, while drones are double haploids so we use AlphaSimR diploid
 #'   functionality to make this cross, but since drones are double haploids we
 #'   get the desired outcome. This is an utility function, and you most likely
@@ -635,9 +635,9 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 }
 
 #' @rdname combineBeeGametesHaploDiploid
-#' @title Cross a queen and drones
+#' @title Create diploid gametes from a fertilised queen
 #'
-#' @description Level 1 function that crosses a queen and drones. Drones are
+#' @description Level 1 function that produces diploid offspring from a mated queen. Drones are
 #'   haploid, while the queen is diploid, so we first generate gametes (with
 #'   recombination) from her and merge them with drone genomes (=gametes), where
 #'   we randomly re-sample drones to get the desired number of progeny. This is
