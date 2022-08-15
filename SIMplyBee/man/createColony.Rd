@@ -4,12 +4,14 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x, location = NULL)
+createColony(x, location = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, one queen or virgin queen(s)}
 
 \item{location}{numeric, location of the colony as \code{c(x, y)}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 new \code{\link{Colony-class}}

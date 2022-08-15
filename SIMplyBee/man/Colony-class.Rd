@@ -40,7 +40,7 @@ An object holding honeybee colonyd
 \section{Slots}{
 
 \describe{
-\item{\code{id}}{character, ID of the colony, which is equal to the ID of the queen}
+\item{\code{id}}{integer, unique ID of the colony}
 
 \item{\code{location}}{numeric, location of the colony (x, y)}
 

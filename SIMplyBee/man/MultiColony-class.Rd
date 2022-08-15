@@ -13,7 +13,7 @@
 \alias{[[,MultiColony,character-method}
 \alias{[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony-method}
 \alias{[[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}
-\title{Honeybee multi-colony object}
+\title{Honeybee multicolony object}
 \usage{
 isMultiColony(x)
 

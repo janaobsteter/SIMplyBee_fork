@@ -280,6 +280,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 \item{\code{caste}}{character, caste information for every individual ever
 created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}}
 
+\item{\code{lastColonyId}}{integer, ID of the last Colony object
+created with \code{\link{createColony}}}
+
 \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
 \item{\code{csdPos}}{numeric, starting position of the csd locus on the
@@ -306,6 +309,7 @@ generate this object}
 \item \href{#method-SimParamBee-new}{\code{SimParamBee$new()}}
 \item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
 \item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
+\item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
 \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
 }
 }
@@ -508,6 +512,25 @@ SP$caste
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updateLastColonyId"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateLastColonyId}{}}}
+\subsection{Method \code{updateLastColonyId()}}{
+A function to update the colony last
+  ID everytime we create a Colony-class with createColony.
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{lastColonyId}}{integer, last colony ID assigned}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-clone"></a>}}
