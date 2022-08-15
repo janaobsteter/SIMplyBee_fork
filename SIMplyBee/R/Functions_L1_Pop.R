@@ -535,7 +535,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("workers", "nHomBrood")
-    workers <- beeCross(
+    workers <- combineBeeGametes(
       queen = getQueen(x), drones = getFathers(x),
       nProgeny = nInd, simParamBee = simParamBee
     )
@@ -547,7 +547,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
         if (nInd(ret$workers) < nInd) {
           nMiss <- nInd - nInd(ret$workers)
           while (0 < nMiss) {
-            workers <- beeCross(
+            workers <- combineBeeGametes(
               queen = getQueen(x),
               drones = getFathers(x),
               nProgeny = nMiss,
@@ -582,7 +582,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname beeCross
+#' @rdname combineBeeGametes
 #' @title Cross a queen and drones
 #'
 #' @description Level 1 function that crosses a queen and drones. Queen is
@@ -611,7 +611,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #'
 #' queen <- basePop[1]
 #' drones <- createDrones(x = basePop[2], nInd = 5)
-#' workers <- SIMplyBee:::beeCross(queen, drones, nProgeny = 4)
+#' workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
 #' workers@id
 #' workers@mother
 #' workers@father
@@ -619,7 +619,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 #' SP$recHist
 #' SP$recHist[[11]][[1]][1]
 #' SP$recHist[[11]][[1]][2]
-beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -634,7 +634,7 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname beeCrossHaploDiploid
+#' @rdname combineBeeGametesHaploDiploid
 #' @title Cross a queen and drones
 #'
 #' @description Level 1 function that crosses a queen and drones. Drones are
@@ -669,7 +669,7 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #'   pop = basePop[2], nProgeny = 5, keepParents = FALSE,
 #'   simRecomb = TRUE
 #' )
-#' workers <- SIMplyBee:::beeCrossHaploDiploid(queen, drones, nProgeny = 4)
+#' workers <- SIMplyBee:::combineBeeGametesHaploDiploid(queen, drones, nProgeny = 4)
 #' workers@id
 #' workers@mother
 #' workers@father
@@ -677,7 +677,7 @@ beeCross <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' SP$recHist
 #' SP$recHist[[11]][[1]][1]
 #' SP$recHist[[11]][[1]][2]
-beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
+combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   # An attempt to have drones properly haploid, but have hit AlphaSimR limits
   #   since a lot of the underlying C++ code assumes the same ploidy for all/most
   #   individuals, particularly for IBD tracking. Keeping the function here for
