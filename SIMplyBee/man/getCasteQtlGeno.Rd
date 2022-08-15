@@ -79,17 +79,17 @@ Level 0 function that returns QTL genotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlGeno()}: Access QTL genotype data of the queen
+\item \code{getQueensQtlGeno}: Access QTL genotype data of the queen
 
-\item \code{getFathersQtlGeno()}: Access QTL genotype data of fathers
+\item \code{getFathersQtlGeno}: Access QTL genotype data of fathers
 
-\item \code{getVirginQueensQtlGeno()}: Access QTL genotype data of virgin queens
+\item \code{getVirginQueensQtlGeno}: Access QTL genotype data of virgin queens
 
-\item \code{getWorkersQtlGeno()}: Access QTL genotype data of workers
+\item \code{getWorkersQtlGeno}: Access QTL genotype data of workers
 
-\item \code{getDronesQtlGeno()}: Access QTL genotype data of drones
-
+\item \code{getDronesQtlGeno}: Access QTL genotype data of drones
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

@@ -23,9 +23,9 @@ Level 0 function that returns the queen's year of birth.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensYOB()}: Access the queen's year of birth
-
+\item \code{getQueensYOB}: Access the queen's year of birth
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

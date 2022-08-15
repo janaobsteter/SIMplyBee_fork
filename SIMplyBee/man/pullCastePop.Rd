@@ -46,15 +46,15 @@ Level 1 function that pulls individuals from a caste in a
 }
 \section{Functions}{
 \itemize{
-\item \code{pullQueen()}: Pull queen from a colony
+\item \code{pullQueen}: Pull queen from a colony
 
-\item \code{pullVirginQueens()}: Pull virgin queens from a colony
+\item \code{pullVirginQueens}: Pull virgin queens from a colony
 
-\item \code{pullWorkers()}: Pull workers from a colony
+\item \code{pullWorkers}: Pull workers from a colony
 
-\item \code{pullDrones()}: Pull drones from a colony
-
+\item \code{pullDrones}: Pull drones from a colony
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

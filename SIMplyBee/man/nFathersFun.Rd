@@ -35,9 +35,9 @@ Sample a number of fathers - use when \code{nFathers = NULL}
 }
 \section{Functions}{
 \itemize{
-\item \code{nFathersTruncPoisson()}: Sample a non-zero number of fathers
-
+\item \code{nFathersTruncPoisson}: Sample a non-zero number of fathers
 }}
+
 \examples{
 nFathersPoisson()
 nFathersPoisson()

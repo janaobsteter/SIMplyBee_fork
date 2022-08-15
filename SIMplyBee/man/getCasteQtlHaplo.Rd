@@ -94,17 +94,17 @@ Level 0 function that returns QTL haplotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlHaplo()}: Access QTL haplotype data of the queen
+\item \code{getQueensQtlHaplo}: Access QTL haplotype data of the queen
 
-\item \code{getFathersQtlHaplo()}: Access QTL haplotype data of fathers
+\item \code{getFathersQtlHaplo}: Access QTL haplotype data of fathers
 
-\item \code{getVirginQueensQtlHaplo()}: Access QTL haplotype data of virgin queens
+\item \code{getVirginQueensQtlHaplo}: Access QTL haplotype data of virgin queens
 
-\item \code{getWorkersQtlHaplo()}: Access QTL haplotype of workers
+\item \code{getWorkersQtlHaplo}: Access QTL haplotype of workers
 
-\item \code{getDronesQtlHaplo()}: Access QTL haplotype data of drones
-
+\item \code{getDronesQtlHaplo}: Access QTL haplotype data of drones
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

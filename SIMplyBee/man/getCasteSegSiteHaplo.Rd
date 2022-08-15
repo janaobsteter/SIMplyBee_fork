@@ -88,17 +88,17 @@ Level 0 function that returns haplotypes for all segregating
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
+\item \code{getQueensSegSiteHaplo}: Access haplotype data for all segregating sites of the queen
 
-\item \code{getFathersSegSiteHaplo()}: Access haplotype data for all segregating sites of fathers
+\item \code{getFathersSegSiteHaplo}: Access haplotype data for all segregating sites of fathers
 
-\item \code{getVirginQueensSegSiteHaplo()}: Access haplotype data for all segregating sites of virgin queens
+\item \code{getVirginQueensSegSiteHaplo}: Access haplotype data for all segregating sites of virgin queens
 
-\item \code{getWorkersSegSiteHaplo()}: Access haplotype data for all segregating sites of workers
+\item \code{getWorkersSegSiteHaplo}: Access haplotype data for all segregating sites of workers
 
-\item \code{getDronesSegSiteHaplo()}: Access haplotype data for all segregating sites of drones
-
+\item \code{getDronesSegSiteHaplo}: Access haplotype data for all segregating sites of drones
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

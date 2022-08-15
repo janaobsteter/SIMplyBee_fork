@@ -55,10 +55,10 @@ Sample the swarm proportion - the proportion of workers that
 }
 \section{Functions}{
 \itemize{
-\item \code{swarmPColonyStrength()}: Sample the swarm proportion - the proportion of
+\item \code{swarmPColonyStrength}: Sample the swarm proportion - the proportion of
 workers that swarm based on the colony strength
-
 }}
+
 \examples{
 swarmPUnif()
 swarmPUnif()

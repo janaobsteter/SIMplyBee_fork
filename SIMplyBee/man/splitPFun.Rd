@@ -55,10 +55,10 @@ Sample the split proportion - proportion of removed workers in a
 }
 \section{Functions}{
 \itemize{
-\item \code{splitPColonyStrength()}: Sample the split proportion - the proportion of
+\item \code{splitPColonyStrength}: Sample the split proportion - the proportion of
 removed workers in a managed split based on the colony strength
-
 }}
+
 \examples{
 splitPUnif()
 splitPUnif()

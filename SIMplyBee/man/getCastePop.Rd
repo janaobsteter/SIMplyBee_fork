@@ -54,17 +54,17 @@ Level 1 function that returns individuals of a caste. These
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueen()}: Access the queen
+\item \code{getQueen}: Access the queen
 
-\item \code{getFathers()}: Access fathers (drones the queen mated with)
+\item \code{getFathers}: Access fathers (drones the queen mated with)
 
-\item \code{getVirginQueens()}: Access virgin queens
+\item \code{getVirginQueens}: Access virgin queens
 
-\item \code{getWorkers()}: Access workers
+\item \code{getWorkers}: Access workers
 
-\item \code{getDrones()}: Access drones
-
+\item \code{getDrones}: Access drones
 }}
+
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
