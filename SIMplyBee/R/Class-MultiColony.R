@@ -5,7 +5,7 @@ setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
 setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
 
 #' @rdname MultiColony-class
-#' @title Honeybee multi-colony object
+#' @title Honeybee multicolony object
 #'
 #' @description An object holding a collection of honeybee colonies. It behaves
 #'   like a list.

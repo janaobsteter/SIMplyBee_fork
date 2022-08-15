@@ -278,7 +278,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' @title Add (raise) workers in the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
-#'   workers to a Colony or MultiColony object y by crossing the current queen
+#'   workers to a Colony or MultiColony object by crossing the current queen
 #'   and the fathers. If there are already some workers present, new and present
 #'   workers are combined.
 #'
