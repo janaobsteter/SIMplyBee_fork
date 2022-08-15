@@ -6,11 +6,12 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
 setClassUnion("PopOrNULL", c("Pop", "NULL"))
+setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
 
 #' @rdname Colony-class
 #' @title Honeybee colony
 #'
-#' @description An object holding honeybee colony
+#' @description An object holding honeybee colonyd
 #'
 #' @slot id character, ID of the colony, which is equal to the ID of the queen
 #' @slot location numeric, location of the colony (x, y)
@@ -32,11 +33,11 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #' @param object \code{\link{Colony-class}}
 #' @param x \code{\link{Colony-class}}
 #' @param ... \code{NULL}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @seealso \code{\link{createColony}}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
@@ -59,7 +60,7 @@ setClassUnion("PopOrNULL", c("Pop", "NULL"))
 #'
 #' apiary <- c(colony1, colony2)
 #' is(apiary)
-#' isColonies(apiary)
+#' isMultiColony(apiary)
 #'
 #' c(apiary, colony3)
 #' c(colony3, apiary)
@@ -141,55 +142,24 @@ setMethod(
   signature(x = "ColonyOrNULL"),
   definition = function(x, ...) {
     if (is.null(x)) {
-      colonies <- new(Class = "Colonies")
+      multicolony <- new(Class = "MultiColony")
     } else {
-      colonies <- new(Class = "Colonies", colonies = list(x))
+      multicolony <- new(Class = "MultiColony", colonies = list(x))
     }
     for (y in list(...)) {
       if (is(y, class2 = "NULL")) {
         # Do nothing
       } else if (isColony(y)) {
-        colonies@colonies <- c(colonies@colonies, y)
-      } else if (isColonies(y)) {
-        colonies@colonies <- c(colonies@colonies, y@colonies)
+        multicolony@colonies <- c(multicolony@colonies, y)
+      } else if (isMultiColony(y)) {
+        multicolony@colonies <- c(multicolony@colonies, y@colonies)
       } else {
-        stop("... must be a NULL, Colony, or Colonies class object!")
+        stop("... must be a NULL, Colony, or MultiColony class object!")
       }
     }
-    validObject(colonies)
-    return(colonies)
+    validObject(multicolony)
+    return(multicolony)
   }
 )
 
-#' @describeIn Colonies-class Assign colony into colonies
-setReplaceMethod(
-  f = "[[",
-  signature(
-    x = "Colonies", i = "integerOrNumericOrLogicalOrCharacter",
-    j = "ANY", value = "Colony"
-  ),
-  definition = function(x, i, j, value) {
-    if (is.numeric(i)) {
-      if (length(i) > 1) {
-        stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
-      }
-      x@colonies[[i]] <- value
-    } else if (is.logical(i)) {
-      if (sum(i) != 1) {
-        stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
-      }
-      x@colonies[i][[1L]] <- value
-    } else if (is.character(i)) {
-      if (length(i) > 1) {
-        stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
-      }
-      match <- getId(x) %in% i
-      if (sum(match) != 1) {
-        stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
-      }
-      x@colonies[match][[1L]] <- value
-    }
-    validObject(x)
-    x
-  }
-)
+

@@ -6,7 +6,7 @@
 #' @description Level 1 function that returns individuals of a caste. These
 #'   individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 #'
-#' @param x Colony or Colonies
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -26,7 +26,7 @@
 #' @return when \code{x} is \code{\link{Colony-class}} return is
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
 #'   == "all"} with nodes named by caste; when \code{x} is
-#'   \code{\link{Colonies-class}} return is a named list of
+#'   \code{\link{MultiColony-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
 #'   all the populations in the list with \code{\link{mergePops}} function.
@@ -44,7 +44,7 @@
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' # Using defaults in SP$nWorkers & SP$nDrones
@@ -190,12 +190,12 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
     ret <- fun(X = x@colonies, FUN = getCastePop, caste = caste, nInd = nInd, use = use)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -203,10 +203,10 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
 #' @describeIn getCastePop Access the queen
 #' @export
 getQueen <- function(x) {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- getCastePop(x, caste = "queen", nInd = 1)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -232,10 +232,10 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
     if (nInd(x) == 1) {
       ret <- ret[[1]]
     }
-  } else if (isColony(x) | isColonies(x)) {
+  } else if (isColony(x) | isMultiColony(x)) {
     ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -243,10 +243,10 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCastePop Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -254,10 +254,10 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCastePop Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -265,13 +265,13 @@ getWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn getCastePop Access drones
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- getCastePop(x,
       caste = "drones", nInd = nInd, use = use,
       removeFathers = removeFathers
     )
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -285,10 +285,10 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   removed and counted towards homozygous brood.
 #'
 #' @param x \code{link{MapPop-class}} or \code{\link{Colony-class}} or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param nInd numeric or function, number of virgin queens; if \code{NULL} then
 #'   \code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
-#'   \code{\link{Colony-class}} or \code{\link{Colonies-class}}, when \code{x}
+#'   \code{\link{Colony-class}} or \code{\link{MultiColony-class}}, when \code{x}
 #'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
 #'   into virgin queens
 #' @param year numeric, year of birth for virgin queens
@@ -310,7 +310,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
 #'   when \code{x} is \code{\link{Colony-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
-#'   when \code{x} is \code{\link{Colonies-class}}
+#'   when \code{x} is \code{\link{MultiColony-class}}
 #'   return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
 #'   named by colony ID
 #'
@@ -329,7 +329,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' # Using a default in SP$nVirginQueens
@@ -414,7 +414,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     if (!is.null(year)) {
       ret <- setQueensYearOfBirth(x = ret, year = year)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -425,7 +425,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Map-Pop or Colony or Colonies class object!")
+    stop("Argument x must be a Map-Pop or Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -438,7 +438,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'   active, it takes it into account and any csd homozygotes are removed and
 #'   counted towards homozygous brood.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nInd numeric or function, number of workers created; if \code{NULL}
 #'   then \code{\link{SimParamBee}$nWorkers} is used
 #' @param exact logical, if the csd locus is active and exact is \code{TRUE},
@@ -448,7 +448,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is a list with two
 #'   nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{nHomBrood}
-#'   (a numeric); when \code{x} is \code{\link{Colonies-class}} return is a list
+#'   (a numeric); when \code{x} is \code{\link{MultiColony-class}} return is a list
 #'   of lists named by colony ID
 #'
 #' @examples
@@ -466,7 +466,7 @@ createVirginQueens <- function(x, nInd = NULL, year = NULL,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' (tmp <- createWorkers(colony, nInd = 10))
@@ -566,7 +566,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     ret$workers@sex[] <- "F"
     simParamBee$addToCaste(id = ret$workers@id, caste = "W")
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -577,7 +577,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -772,13 +772,13 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' @rdname createDrones
 #' @title Creates drones from the colony
 #'
-#' @description Level 1 function that creates drones from a population, colony,
-#'   or colonies. Drones are double haploid and created from the diploid genome
+#' @description Level 1 function that creates drones from a  \code{\link{Pop-class}},
+#'  \code{\link{Colony-class}} or \code{\link{MultiColony-class}}.
+#'   Drones are double haploid and created from the diploid genome
 #'   of a queen with recombination. Queen ID is stored as the father and
 #'   mother of drones.
-#'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}; with \code{\link{Pop-class}}, its individuals
+#'   \code{\link{MultiColony-class}}; with \code{\link{Pop-class}}, its individuals
 #'   must be virgin queens or queens (see \code{\link{createVirginQueens}}) -
 #'   this case is so that we can initiate simulation by simulating drones from
 #'   founding queens before we can create colonies
@@ -787,7 +787,7 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #'   \code{\link{Pop-class}} the \code{nInd} is applied to every individual in
 #'   the \code{x} (here population individuals serve as a queen, for example
 #'   to initiate population from founding queens; see details). If \code{x}
-#'   is a \code{\link{Colony-class}} or \code{\link{Colonies-class}}, then the
+#'   is a \code{\link{Colony-class}} or \code{\link{MultiColony-class}}, then the
 #'   \code{nInd} means the number of drones per colony.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
@@ -799,7 +799,7 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' @return when \code{x} is \code{\link{Pop-class}} or
 #'   \code{\link{Colony-class}} return is a
 #'   \code{\link{Pop-class}} with drones; when \code{x} is
-#'   \code{\link{Colonies-class}} return is a list of \code{\link{Pop-class}}
+#'   \code{\link{MultiColony-class}} return is a list of \code{\link{Pop-class}}
 #'   with drones - list nodes are named by colony ID
 #'
 #' @examples
@@ -817,7 +817,7 @@ beeCrossHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' basePop[1]@id
@@ -899,7 +899,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     )
     ret@sex[] <- "M"
     simParamBee$addToCaste(id = ret@id, caste = "D")
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -910,7 +910,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -918,11 +918,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @rdname createDCA
 #' @title Create a drone congregation area (DCA)
 #'
-#' @description Level 1 function that creates a population of drones from one or
-#'   multiple colonies. Such a population is often referred to as a drone
+#' @description Level 1 function that creates a population of drones from a colony
+#'   or multi-colony.  Such a population is often referred to as a drone
 #'   congregation area (DCA).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nInd numeric, number of random drones to pull from each colony,
 #'   if \code{NULL} all drones in a colony are pulled
 #' @param removeFathers logical, removes \code{drones} that have already mated;
@@ -953,7 +953,7 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' colony <- addDrones(colony, nInd = 10)
@@ -970,7 +970,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
     if (is.null(DCA)) {
       warning("No available drones!")
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
     DCA <- DCA[sapply(DCA, FUN = function(z) !is.null(z))]
     if (length(DCA) != 0) {
@@ -994,7 +994,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' @param use character, all options provided by \code{\link{selectInd}}
 #'
 #' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
-#'   pulled individuals and a node \code{remainder)} holding \code{\link{Pop-class}}
+#'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
 #'   of remaining individuals
 #'
 #' @examples
@@ -1015,8 +1015,8 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
   }
   pulled <- selectInd(pop = pop, nInd = nInd, use = use)
   sel <- pop@id %in% pulled@id
-  remainder <- pop[!sel]
-  ret <- list(pulled = pulled, remainder = remainder)
+  remnant <- pop[!sel]
+  ret <- list(pulled = pulled, remnant = remnant)
   return(ret)
 }
 
@@ -1087,7 +1087,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
     #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     tmp <- pullInd(pop = DCA, nInd = nF)
     ret[[group]] <- tmp$pulled
-    DCA <- tmp$remainder
+    DCA <- tmp$remnant
   }
   return(ret)
 }
@@ -1099,7 +1099,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #'   colony. These individuals are removed from the colony (compared to
 #'   \code{\link{getCaste}}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "workers", "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
 #'   individuals are pulled
@@ -1114,8 +1114,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' @return list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
 #'   when \code{x} is \code{\link{Colony-class}} and list of (a list of
 #'   \code{\link{Pop-class}} named by colony id) and
-#'   \code{\link{Colonies-class}} when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}} when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1135,7 +1135,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10, exact = TRUE)
 #' colony <- addVirginQueens(x = colony, nInd = 3)
 #'
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
 #' apiary <- addVirginQueens(x = apiary, nInd = 3)
@@ -1161,7 +1161,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "queen")
 #' pullQueen(apiary)
 #' nQueens(apiary)
-#' nQueens(pullQueen(apiary)$colonies)
+#' nQueens(pullQueen(apiary)$remnant)
 #'
 #' pullCastePop(apiary, caste = "virginQueens")
 #' pullVirginQueens(apiary)
@@ -1170,24 +1170,24 @@ pullDroneGroupsFromDCA <- function(DCA, n, nFathers = NULL,
 #' pullCastePop(apiary, caste = "workers")
 #' pullWorkers(apiary)
 #' nWorkers(apiary)
-#' nWorkers(pullWorkers(apiary)$colonies)
+#' nWorkers(pullWorkers(apiary)$remnant)
 #'
 #' pullCastePop(apiary, caste = "drones")
 #' pullDrones(apiary)
 #' nDrones(apiary)
-#' nDrones(pullDrones(apiary)$colonies)
+#' nDrones(pullDrones(apiary)$remnant)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                          removeFathers = TRUE) {
   if (isColony(x)) {
     if (is.null(slot(x, caste))) {
-      ret <- list(pulled = NULL, colony = x)
+      ret <- list(pulled = NULL, remnant = x)
     } else {
       if (is.null(nInd)) {
         nInd <- nInd(slot(x, caste))
       }
       tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
-      slot(x, caste) <- tmp$remainder
+      slot(x, caste) <- tmp$remnant
       if (caste == "drones") {
         if (removeFathers) {
           test <- isDrone(tmp$pulled)
@@ -1197,22 +1197,22 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
           }
         }
       }
-      ret <- list(pulled = tmp$pulled, colony = x)
+      ret <- list(pulled = tmp$pulled, remnant = x)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = 2)
-    names(ret) <- c("pulled", "colonies")
+    names(ret) <- c("pulled", "remnant")
     ret$pulled <- vector(mode = "list", length = nCol)
     names(ret$pulled) <- getId(x)
-    ret$colonies <- x
+    ret$remnant <- x
     for (colony in seq_len(nCol)) {
       tmp <- pullCastePop(x = x[[colony]], caste = caste, nInd = nInd, use = use)
       ret$pulled[[colony]] <- tmp$pulled
-      ret$colonies[[colony]] <- tmp$colony
+      ret$remnant[[colony]] <- tmp$remnant
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1220,10 +1220,10 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
 #' @describeIn pullCastePop Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- pullCastePop(x, caste = "queen")
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1231,10 +1231,10 @@ pullQueen <- function(x) {
 #' @describeIn pullCastePop Pull virgin queens from a colony
 #' @export
 pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1242,10 +1242,10 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn pullCastePop Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1253,13 +1253,13 @@ pullWorkers <- function(x, nInd = NULL, use = "rand") {
 #' @describeIn pullCastePop Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
-  if (isColony(x) | isColonies(x)) {
+  if (isColony(x) | isMultiColony(x)) {
     ret <- pullCastePop(x,
       caste = "drones", nInd = nInd, use = use,
       removeFathers = removeFathers
     )
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1270,15 +1270,15 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' @description Level 1 function that crosses (mates) a virgin queen to a group
 #'   of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
-#'   in a colony (\code{\link{Colony-class}}), or colonies (\code{\link{Colonies-class}}).
+#'   in a colony (\code{\link{Colony-class}}), or multi-colony (\code{\link{MultiColony-class}}).
 #'   This function does not create any progeny, it only stores the
 #'   mated drones (fathers) so we can later create progeny as needed.
-#'   When input is a  (\code{\link{Colony-class}}) or  (\code{\link{Colonies-class}}),
+#'   When input is a  (\code{\link{Colony-class}}) or  (\code{\link{MultiColony-class}}),
 #'   one virgin queens is selected at random, mated, and promoted to the queen of the colony.
 #'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
 #'   producing progeny at a later stage.
 #'
-#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{Colonies-class}},
+#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #'   one or more virgin queens / colonies to be mated;
 #' @param fathers \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
 #'   group(s) of drones that will be mated with virgin queen(s);
@@ -1373,7 +1373,7 @@ pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' # Create Colony and MultiColony class
 #' colony <- createColony(basePop[6])
 #' isVirginQueen(getVirginQueens(colony))
-#' apiary <- createColonies(basePop[7:8], n = 2)
+#' apiary <- createMultiColony(basePop[7:8], n = 2)
 #' all(isVirginQueen(mergePops(getVirginQueens(apiary))))
 #'
 #' # Cross
@@ -1468,12 +1468,12 @@ cross <- function(x, fathers,
       x <- removeVirginQueens(x)
     }
     ret <- x
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
-      ret <- createColonies()
+      ret <- createMultiColony()
     } else {
-      ret <- createColonies(n = nCol)
+      ret <- createMultiColony(n = nCol)
       if (nCol != length(fathers)) {
         stop("Length of argument fathers should match the number of colonies!")
       }
@@ -1499,11 +1499,11 @@ cross <- function(x, fathers,
 #'
 #' @param x \code{\link{Pop-class}} (one or more than one queen),
 #'   \code{\link{Colony-class}} (one colony), or
-#'   \code{\link{Colonies-class}} (more colonies)
+#'   \code{\link{MultiColony-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
 #'
 #' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}} with queens having the year of birth set
+#'   \code{\link{MultiColony-class}} with queens having the year of birth set
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1520,7 +1520,7 @@ cross <- function(x, fathers,
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(x = colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' # Example on Colony class
@@ -1550,7 +1550,7 @@ setQueensYearOfBirth <- function(x, year) {
     } else {
       stop("Missing queen!") # TODO: should this be a warning?: https://github.com/HighlanderLab/SIMplyBee/issues/159
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]]@queen <- setMisc(
@@ -1559,7 +1559,7 @@ setQueensYearOfBirth <- function(x, year) {
       )
     }
   } else {
-    stop("Argument x must be a Pop, Colony or Colonies class object!")
+    stop("Argument x must be a Pop, Colony or MultiColony class object!")
   }
   return(x)
 }

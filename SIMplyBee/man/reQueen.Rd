@@ -7,7 +7,7 @@
 reQueen(x, queen, removeVirginQueens = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{queen}{\code{\link{Pop-class}} with one individual that will be the
 queen of the colony; if she is not mated, she will be added as a virgin
@@ -19,12 +19,12 @@ queen that will have to be mated later; test will be run if the individual
 to ensure the provided queen prevails (see details)}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with new queen(s) (see details)
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with new queen(s) (see details)
 }
 \description{
-Level 2 function that re-queens a colony or colonies by adding a mated or a
-  virgin queen, removing the previous queen, and changing the colony id to
-  the new mated queen.
+Level 2 function that re-queens a Colony or
+  MultiColony object by adding a mated or a virgin queen, removing the
+  previous queen, and changing the colony id to the new mated queen.
 }
 \details{
 If the provided queen is mated, then she is saved in the queen slot
@@ -44,7 +44,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 7, nFathers = nFathersPoisson
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- addVirginQueens(colony)
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[2:3])
 apiary <- addVirginQueens(apiary)
 

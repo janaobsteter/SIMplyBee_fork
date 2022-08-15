@@ -50,7 +50,7 @@ getDronesQtlGeno(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -70,8 +70,8 @@ are retrieved}
 \value{
 matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
   list of matrices with genotypes when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns QTL genotypes of individuals in a
@@ -108,7 +108,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)

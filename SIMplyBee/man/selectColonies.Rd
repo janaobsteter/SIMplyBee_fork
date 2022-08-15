@@ -2,12 +2,12 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{selectColonies}
 \alias{selectColonies}
-\title{Select individual colonies}
+\title{Select colonies from MultiColony object}
 \usage{
-selectColonies(colonies, ID = NULL, n = NULL, p = NULL)
+selectColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 
 \item{ID}{character or numeric, name of a colony (one or more) to be
 selected; if character (numeric) colonies are selected based on their name
@@ -19,11 +19,11 @@ selected; if character (numeric) colonies are selected based on their name
 over \code{n})}
 }
 \value{
-\code{\link{Colonies-class}} with selected colonies
+\code{\link{MultiColony-class}} with selected colonies
 }
 \description{
-Level 3 function that selects individual colonies based on
-  colony ID or random selection.
+Level 3 function that selects colonies from
+  MultiColony object based on colony ID or random selection.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -32,7 +32,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-apiary <- createColonies(basePop[2:5], n = 4)
+apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, fathers = fatherGroups[1:4])
 getId(apiary)
 

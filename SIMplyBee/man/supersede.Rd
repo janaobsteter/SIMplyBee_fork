@@ -7,7 +7,7 @@
 supersede(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{year}{numeric, year of birth for virgin queens}
 
@@ -19,11 +19,12 @@ is used}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with the
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the
 supersede event set to \code{TRUE}
 }
 \description{
-Level 2 function that supersedes colony - an event where the
+Level 2 function that supersedes a Colony or MultiColony object -
+  an event where the
   queen dies. The workers and drones stay unchanged, but workers raise virgin
   queens, of which only one prevails.
 }
@@ -38,7 +39,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 (colony <- buildUp(colony, nWorkers = 100))
-apiary <- createColonies(basePop[3:8], n = 6)
+apiary <- createMultiColony(basePop[3:8], n = 6)
 apiary <- cross(apiary, fathers = fatherGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100)
 
@@ -59,6 +60,6 @@ getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
 # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
-(supersede(tmp$pulledColonies))
+(supersede(tmp$pulled))
 
 }

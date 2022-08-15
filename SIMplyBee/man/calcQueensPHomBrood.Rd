@@ -14,11 +14,11 @@ nHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 }
 \value{
 numeric, expected csd homozygosity named by colony id when \code{x}
-  is \code{\link{Colonies-class}}
+  is \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 functions that calculate or report the proportion of csd
@@ -54,7 +54,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 colony <- addVirginQueens(x = colony, nInd = 1)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 

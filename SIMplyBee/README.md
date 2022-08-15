@@ -21,7 +21,7 @@ accessed from the main and devel branches using:
     # New stable version of SIMplyBee before its submitted to CRAN
     devtools::install_github(repo="HighlanderLab/SIMplyBee@main", 
                              subdir = "SIMplyBee")
-    
+
     # Development version of SIMplyBee
     devtools::install_github(repo="HighlanderLab/SIMplyBee@devel",
                              subdir = "SIMplyBee")

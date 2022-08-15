@@ -7,7 +7,7 @@
 addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric or function, number of virgin queens to add; if
 \code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used}
@@ -20,12 +20,13 @@ currently present virgin queens in the colony)}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
   virgin queens added
 }
 \description{
 Level 2 function that adds (raises) the specified number of
-  virgin queens in the colony by crossing the current queen and the fathers.
+  virgin queens to a Colony or MultiColony object by crossing the current
+  queen and the fathers.
 }
 \details{
 \code{addVirginQueens} replaces any currently present virgin queens.
@@ -41,7 +42,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add virgin queens

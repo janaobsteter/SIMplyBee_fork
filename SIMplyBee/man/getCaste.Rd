@@ -8,7 +8,7 @@ getCaste(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -16,7 +16,7 @@ getCaste(x, simParamBee = NULL)
 When x is \code{\link{Pop-class}}, character of caste status; if you
   get \code{NA} note that this is not supposed to happen. When x is
   \code{\link{Colony-class}}, list with character vectors (list is named with
-  caste). When x is \code{\link{Colonies-class}}, list of lists with
+  caste). When x is \code{\link{MultiColony-class}}, list of lists with
   character vectors (list is named with colony id).
 }
 \description{
@@ -36,7 +36,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 colony <- addVirginQueens(colony, nInd = 5)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
 apiary <- addVirginQueens(apiary, nInd = 4)

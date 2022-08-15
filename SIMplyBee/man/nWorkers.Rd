@@ -7,10 +7,10 @@
 nWorkers(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Returns the number of workers in a colony
@@ -30,7 +30,7 @@ colony <- addWorkers(x = colony, nInd = 50, exact = TRUE)
 nWorkers(colony)
 
 # Create a Multicolony class
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 # If exact = TRUE, all 50 individuals are added

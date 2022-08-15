@@ -12,13 +12,13 @@ setQueensYOB(x, year)
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
 \code{\link{Colony-class}} (one colony), or
-\code{\link{Colonies-class}} (more colonies)}
+\code{\link{MultiColony-class}} (more colonies)}
 
 \item{year}{integer, the year of the birth of the queen}
 }
 \value{
 \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-  \code{\link{Colonies-class}} with queens having the year of birth set
+  \code{\link{MultiColony-class}} with queens having the year of birth set
 }
 \description{
 Level 1 function that sets the queen's year of birth.
@@ -43,7 +43,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(x = colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 # Example on Colony class

@@ -20,13 +20,13 @@ isColony(x)
 \item{object}{\code{\link{Colony-class}}}
 
 \item{...}{\code{NULL}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}}
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 }
 \description{
-An object holding honeybee colony
+An object holding honeybee colonyd
 }
 \section{Functions}{
 \itemize{
@@ -92,7 +92,7 @@ isColony(colony1)
 
 apiary <- c(colony1, colony2)
 is(apiary)
-isColonies(apiary)
+isMultiColony(apiary)
 
 c(apiary, colony3)
 c(colony3, apiary)

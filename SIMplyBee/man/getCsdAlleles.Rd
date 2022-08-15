@@ -16,7 +16,7 @@ getCsdAlleles(
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
@@ -28,7 +28,7 @@ allele}
 \item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
-csd alleles in either the entire population, colony, or colonies. Default
+csd alleles in either the entire population, colony, or multicolony. Default
 is \code{FALSE}.}
 
 \item{unique}{logical, return only the unique set of csd alleles. Default
@@ -40,8 +40,8 @@ is \code{FALSE}.}
 matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with haplotypes
-  when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+  when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
+  colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
   \code{x} is \code{NULL}
 }
 \description{
@@ -51,7 +51,7 @@ Level 0 function that returns alleles from the csd locus. See
 \details{
 If both collapse and unique are \code{TRUE}, the function
   returns a unique set of csd alleles in the entire population, colony, or
-  colonies.
+  multicolony
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -66,7 +66,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 

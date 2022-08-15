@@ -7,7 +7,7 @@
 replaceVirginQueens(x, p = 1, use = "rand", year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of virgin queens to be replaced with new ones}
 
@@ -19,13 +19,13 @@ guides selection of virgin queens that stay when \code{p < 1}}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Colony-class}} or  or \code{\link{Colonies-class}} with
+\code{\link{Colony-class}} or  or \code{\link{MultiColony-class}} with
   replaced virgin queens
 }
 \description{
 Level 2 function that replaces a proportion of virgin queens
-  with new virgin queens from the colony. Useful after events like season
-  change, swarming, supersedure, etc. due to the short life span of the
+  with new virgin queens from a Colony or MultiColony object. Useful after
+  events like season change, swarming, supersedure, etc. due to the short life span of the
   virgin queens.
 }
 \examples{
@@ -39,7 +39,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add virgin queens

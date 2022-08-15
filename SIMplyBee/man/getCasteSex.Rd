@@ -8,7 +8,7 @@ getCasteSex(x, caste = "all", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
@@ -21,7 +21,7 @@ when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
    when \code{x} is \code{\link{Colony-class}} return is a named list of
   \code{\link{Pop-class}} for \code{caste != "all"}
   or named list for \code{caste == "all"} indluding caste members sexes;
-   when \code{x} is \code{\link{Colonies-class}} return is a named list of
+   when \code{x} is \code{\link{MultiColony-class}} return is a named list of
   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members sexes
 }
@@ -44,7 +44,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 colony <- addVirginQueens(colony, nInd = 5)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
 apiary <- addVirginQueens(apiary, nInd = 4)

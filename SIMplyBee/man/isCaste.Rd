@@ -40,4 +40,17 @@ isCaste(getFathers(colony, nInd = 2), caste = "fathers")
 isCaste(getWorkers(colony, nInd = 2), caste = "workers")
 isCaste(getDrones(colony, nInd = 2), caste = "drones")
 isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
+
+bees <- c(
+  getQueen(colony),
+  getFathers(colony, nInd = 2),
+  getWorkers(colony, nInd = 2),
+  getDrones(colony, nInd = 2),
+  getVirginQueens(colony, nInd = 2)
+)
+isCaste(bees, caste = "queen")
+isCaste(bees, caste = "fathers")
+isCaste(bees, caste = "workers")
+isCaste(bees, caste = "drones")
+isCaste(bees, caste = "virginQueens")
 }

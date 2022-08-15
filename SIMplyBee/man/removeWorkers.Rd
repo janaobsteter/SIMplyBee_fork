@@ -7,7 +7,7 @@
 removeWorkers(x, p = 1, use = "rand")
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion to be removed}
 
@@ -15,11 +15,11 @@ removeWorkers(x, p = 1, use = "rand")
 guides selection of workers that will stay when \code{p < 1}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} without workers
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} without workers
 }
 \description{
-Level 2 function that removes a proportion of workers, for
-  example, as a preparation for winter.
+Level 2 function that removes a proportion of workers from
+a Colony or MultiColony object, for example, as a preparation for winter.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -32,7 +32,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[3:4])
 
 # Add workers

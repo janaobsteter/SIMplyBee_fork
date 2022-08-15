@@ -8,11 +8,11 @@ nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return the number
 of distinct csd alleles in either the entire population, colony, or
-colonies. Default is \code{FALSE}.}
+multicolony. Default is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -20,9 +20,9 @@ colonies. Default is \code{FALSE}.}
 integer representing the number of distinct csd alleles when \code{x}
   is \code{\link{Pop-class}} (or ), list of integer
   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
-  list of a list of integer when \code{x} is \code{\link{Colonies-class}},
+  list of a list of integer when \code{x} is \code{\link{MultiColony-class}},
   outer list is named by colony id when \code{x} is
-  \code{\link{Colonies-class}}; the integer rep
+  \code{\link{MultiColony-class}}; the integer rep
 }
 \description{
 Level 0 function that returns the number of distinct csd alleles
@@ -61,7 +61,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony)
 colony <- addVirginQueens(x = colony, nInd = 4)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)

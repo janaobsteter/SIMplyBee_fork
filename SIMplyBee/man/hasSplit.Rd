@@ -7,10 +7,10 @@
 hasSplit(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns colony split status. This will
@@ -29,7 +29,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 

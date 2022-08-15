@@ -21,7 +21,7 @@ Level 0 function that returns if individuals of a population are
 }
 \details{
 We could expand \code{isCsdHeterozygous} to work also with
-  \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
+  \code{\link{Colony-class}} and \code{\link{MultiColony-class}} if needed
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

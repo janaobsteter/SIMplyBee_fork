@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 nColonies; input colonies; return n
 
-nCaste; input Colony or Colonies; return n
+nCaste; input Colony or MultiColony; return n
 nQueen
 nVirginQueens
 nFathers
@@ -27,16 +27,16 @@ nWorkers
 nDrones 
 nHomDrones
 
-isQueenMated; input Pop, Colony, or Colonies; return logical
+isQueenMated; input Pop, Colony, or MultiColony; return logical
 
-getQueensYearOfBirth & getQueensYOB; input Pop, Colony or Colonies; return numeric
+getQueensYearOfBirth & getQueensYOB; input Pop, Colony or MultiColony; return numeric
 getQueensAge
 
-getId; input Colony or Colonies; return character or list of characters
-getCasteId; input Pop, Colony or Colonies; return character or list of characters
-getLocation; input Colony or Colonies; return numeric or list of numeric
+getId; input Colony or MultiColony; return character or list of characters
+getCasteId; input Pop, Colony or MultiColony; return character or list of characters
+getLocation; input Colony or v; return numeric or list of numeric
 
-hasSplit; input Colony or Colonies; return logical
+hasSplit; input Colony or MultiColony; return logical
 hasSwarmed
 hasSuperseded
 isProductive
@@ -45,7 +45,7 @@ getEvents
 SimParamBee
 simulateHoneyBeeGenomes TODO
 
-getCsdHaplo; input Pop, Colony or Colonies; return matrix, list of matrix, list of a list of matrix
+getCsdHaplo; input Pop, Colony or MultiColony; return matrix, list of matrix, list of a list of matrix
 getCsdGeno
 
 getIbdHaplo; input Pop; return matrix
@@ -56,106 +56,106 @@ getSegSiteGeno
 getSnpHaplo
 getSnpGeno
 
-getCasteIbdHaplo; input Colony or Colonies; return matrix or list of matrix
+getCasteIbdHaplo; input Colony or MultiColony; return matrix or list of matrix
 getQueensIbdHaplo
 getFathersIbdHaplo
 getVirginQueensIbdHaplo
 getWorkersIbdHaplo
 getDronesIbdHaplo
-getColonyIbdHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonyIbdHaplo; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteQtlHaplo; input Colony or Colonies; return matrix or list of matrix
+getCasteQtlHaplo; input Colony or MultiColony; return matrix or list of matrix
 getQueensQtlHaplo
 getFathersQtlHaplo
 getVirginQueensQtlHaplo
 getWorkersQtlHaplo
 getDronesQtlHaplo
-getColonyQtlHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonyQtlHaplo; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteQtlGeno; input Colony or Colonies; return matrix or list of matrix
+getCasteQtlGeno; input Colony or MultiColony; return matrix or list of matrix
 getQueensQtlGeno
 getFathersQtlGeno
 getVirginQueensQtlGeno
 getWorkersQtlGeno
 getDronesQtlGeno
-getColonyQtlGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonyQtlGeno; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteSegSiteHaplo; input Colony or Colonies; return matrix or list of matrix
+getCasteSegSiteHaplo; input Colony or MultiColony; return matrix or list of matrix
 getQueensSegSiteHaplo
 getFathersSegSiteHaplo
 getVirginQueensSegSiteHaplo
 getWorkersSegSiteHaplo
 getDronesSegSiteHaplo
-getColonySegSiteHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonySegSiteHaplo; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteSegSiteGeno; input Colony or Colonies; return matrix or list of matrix
+getCasteSegSiteGeno; input Colony or MultiColony; return matrix or list of matrix
 getQueensSegSiteGeno
 getFathersSegSiteGeno
 getVirginQueensSegSiteGeno
 getWorkersSegSiteGeno
 getDronesSegSiteGeno
-getColonySegSiteGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonySegSiteGeno; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteSnpHaplo; input Colony or Colonies; return matrix or list of matrix
+getCasteSnpHaplo; input Colony or MultiColony; return matrix or list of matrix
 getQueensSnpHaplo
 getFathersSnpHaplo
 getVirginQueensSnpHaplo
 getWorkersSnpHaplo
 getDronesSnpHaplo
-getColonySnpHaplo; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonySnpHaplo; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteSnpGeno; input Colony or Colonies; return matrix or list of matrix
+getCasteSnpGeno; input Colony or MultiColony; return matrix or list of matrix
 getQueensSnpGeno
 getFathersSnpGeno
 getVirginQueensSnpGeno
 getWorkersSnpGeno
 getDronesSnpGeno
-getColonySnpGeno; input Colony or Colonies; return list of matrix or list of a list of matrix
+getColonySnpGeno; input Colony or MultiColony; return list of matrix or list of a list of matrix
 
-getCasteGv; input Colony or Colonies; return vector or list of vector
+getCasteGv; input Colony or MultiColony; return vector or list of vector
 getQueensGv
 getFathersGv
 getVirginQueensGv
 getWorkersGv
 getDronesGv
-getColonyGv; input Colony or Colonies; return list of vector or list of a list of vector
+getColonyGv; input Colony or MultiColony; return list of vector or list of a list of vector
 
-getCasteBv; input Colony or Colonies; return vector or list of vector
+getCasteBv; input Colony or MultiColony; return vector or list of vector
 getQueensBv
 getFathersBv
 getVirginQueensBv
 getWorkersBv
 getDronesBv
-getColonyBv; input Colony or Colonies; return list of vector or list of a list of vector
+getColonyBv; input Colony or MultiColony; return list of vector or list of a list of vector
 
-getCasteDd; input Colony or Colonies; return vector or list of vector
+getCasteDd; input Colony or MultiColony; return vector or list of vector
 getQueensDd
 getFathersDd
 getVirginQueensDd
 getWorkersDd
 getDronesDd
-getColonyDd; input Colony or Colonies; return list of vector or list of a list of vector
+getColonyDd; input Colony or MultiColony; return list of vector or list of a list of vector
 
 # L1 functions
 
-getCaste; input Colony or Colonies; return Pop
+getCaste; input Colony or MultiColony; return Pop
 getQueen
 getFathers
 getVirginQueens
 getWorkers
 getDrones
 
-createWorkers; input Colony; return Pop; TODO work also with Colonies?
+createWorkers; input Colony; return Pop; TODO work also with MultiColony?
 createDrones
 createVirginQueens
 
-createDCA; input Colony or Colonies; return Pop
+createDCA; input Colony or MultiColony; return Pop
 
 pullInd; input Pop; return list of 2 Pop
 
 pullDroneGroupsFromDCA; input Pop; list of n Pop; TODO rename to pullIndGroups?
 
-pullCaste; input Colony or Colonies; return list of Pop and Colony
+pullCaste; input Colony or MultiColony; return list of Pop and Colony
 pullQueen
 pullVirginQueens
 pullWorkers
@@ -163,9 +163,9 @@ pullDrones
 
 crossVirginQueen; input 2 Pop; return Pop
 
-setLocation; input Colony or Colonies; return Colony or Colonies
+setLocation; input Colony or MultiColony; return Colony or MultiColony
 
-setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or Colonies; return Pop, Colony, or Colonies
+setQueensYearOfBirth & setQueensYOB; input Pop, Colony, or MultiColony; return Pop, Colony, or MultiColony
 
 # L2 functions
 
@@ -199,7 +199,7 @@ splitColony; TODO rename to split() (clash with other R func(s))?
 
 # L3 functions
 
-createColonies; input n or Pop; return Colonies; TODO how is this different to createColony?
+createMultiColony; input n or Pop; return MultiColony; TODO how is this different to createColony?
 
 addColonyToTheColonies; REMOVE input Colones and Colony; return Colonies; TODO rename to addColony() or just add()?
 assignColonyToColonies; TODO rename to assignColony() or just assign()?

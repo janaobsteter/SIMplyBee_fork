@@ -2,12 +2,12 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{split}
 \alias{split}
-\title{Split colony in two colonies}
+\title{Split colony in two MultiColony}
 \usage{
 split(x, p = NULL, year = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will go to the split colony; if
 \code{NULL} then \code{\link{SimParamBee}$splitP} is used}
@@ -17,12 +17,13 @@ split(x, p = NULL, year = NULL, simParamBee = NULL)
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-list with two  \code{\link{Colony-class}} or \code{\link{Colonies-class}},
+list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 the \code{split} and the \code{remnant} (see the description what each colony holds!);
 both outputs have the split even slot set do \code{TRUE}
 }
 \description{
-Level 2 function that splits colony into two new colonies to
+Level 2 function that splits a Colony or MultiColony object
+  into two new colonies to
   prevent swarming (in managed situation). The remnant colony retains the
   queen and a proportion of the workers and all drones. The split colony gets
   the other part of the workers, which raise virgin queens, of which only one
@@ -39,7 +40,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 (colony <- buildUp(colony, nWorkers = 100))
-apiary <- createColonies(basePop[3:8], n = 6)
+apiary <- createMultiColony(basePop[3:8], n = 6)
 apiary <- cross(apiary, fathers = fatherGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100)
 
@@ -56,6 +57,6 @@ tmp$remnant[[1]]
 # Split only specific colonies in the apiary
 tmp <- pullColonies(apiary, ID = c(4, 5))
 # Split only the pulled colonies
-(split(tmp$pulledColonies, p = 0.5))
+(split(tmp$pulled, p = 0.5))
 
 }

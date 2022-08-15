@@ -2,12 +2,12 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{pullColonies}
 \alias{pullColonies}
-\title{Pull out some colonies}
+\title{Pull out some colonies from the MultiColony object}
 \usage{
-pullColonies(colonies, ID = NULL, n = NULL, p = NULL)
+pullColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 
 \item{ID}{character or numeric, name of a colony (one or more) to be pulled
 out; if character (numeric) colonies are pulled out based on their name
@@ -19,12 +19,12 @@ out; if character (numeric) colonies are pulled out based on their name
 over \code{n})}
 }
 \value{
-list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
-  and the \code{remainingColonies}
+list with two \code{\link{MultiColony-class}}, the \code{pulled}
+  and the \code{remnant}
 }
 \description{
-Level 3 function that pulls out some colonies based on colony
-  ID or random selection.
+Level 3 function that pulls out some colonies
+  from the MultiColony based on colony ID or random selection.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -33,31 +33,31 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
-apiary <- createColonies(basePop[2:5], n = 4)
+apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, fathers = fatherGroups[1:4])
 getId(apiary)
 
 tmp <- pullColonies(apiary, ID = c(1, 2))
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = c("5", "6"))
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = 5)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, ID = "9")
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, n = 2)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnanet)
 
 tmp <- pullColonies(apiary, p = 0.75)
-getId(tmp$pulledColonies)
-getId(tmp$remainingColonies)
+getId(tmp$pulled)
+getId(tmp$remnant)
 }

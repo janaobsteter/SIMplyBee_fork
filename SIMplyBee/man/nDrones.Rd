@@ -7,10 +7,10 @@
 nDrones(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Returns the number of drones in a colony
@@ -28,7 +28,7 @@ colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- addDrones(x = colony, nInd = 50)
 
-apiary <- createColonies(basePop[3:7], n = 5)
+apiary <- createMultiColony(basePop[3:7], n = 5)
 apiary <- cross(x = apiary, fathers = fatherGroups[2:6])
 tmp <- addDrones(x = apiary[1:3], nInd = 100)
 tmp2 <- addDrones(x = apiary[4:5], nInd = 200)

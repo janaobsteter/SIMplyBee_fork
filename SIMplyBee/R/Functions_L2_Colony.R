@@ -62,11 +62,11 @@ createColony <- function(x, location = NULL) {
 #' @rdname reQueen
 #' @title Re-queen
 #'
-#' @description Level 2 function that re-queens a colony or colonies by adding a mated or a
-#'   virgin queen, removing the previous queen, and changing the colony id to
-#'   the new mated queen.
+#' @description Level 2 function that re-queens a Colony or
+#'   MultiColony object by adding a mated or a virgin queen, removing the
+#'   previous queen, and changing the colony id to the new mated queen.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param queen \code{\link{Pop-class}} with one individual that will be the
 #'   queen of the colony; if she is not mated, she will be added as a virgin
 #'   queen that will have to be mated later; test will be run if the individual
@@ -80,7 +80,7 @@ createColony <- function(x, location = NULL) {
 #'   slot (replacing any existing virgin queens) and once she is mated will be
 #'   promoted to the queen of the colony.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with new queen(s) (see details)
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with new queen(s) (see details)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
@@ -94,7 +94,7 @@ createColony <- function(x, location = NULL) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' colony <- addVirginQueens(colony)
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:3])
 #' apiary <- addVirginQueens(apiary)
 #'
@@ -154,7 +154,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
       x <- removeQueen(x)
       x@virginQueens <- queen
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nInd(queen) < nCol) {
       stop("Not enough queens provided!")
@@ -166,7 +166,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -176,9 +176,10 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #' @title Add (raise) virgin queens in the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
-#'   virgin queens in the colony by crossing the current queen and the fathers.
+#'   virgin queens to a Colony or MultiColony object by crossing the current
+#'   queen and the fathers.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nInd numeric or function, number of virgin queens to add; if
 #'   \code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used
 #' @param new logical, should the virgin queens be added a fresh (ignoring
@@ -188,7 +189,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #'
 #' @details \code{addVirginQueens} replaces any currently present virgin queens.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   virgin queens added
 #'
 #' @examples
@@ -202,7 +203,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add virgin queens
@@ -258,7 +259,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
         x@virginQueens <- c(x@virginQueens, newVirginQueens)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- addVirginQueens(
@@ -267,7 +268,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -277,11 +278,11 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' @title Add (raise) workers in the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
-#'   workers in the colony by crossing the current queen and the fathers. If
-#'   there are already some workers present, new and present workers are
-#'   combined.
+#'   workers to a Colony or MultiColony object by crossing the current queen
+#'   and the fathers. If there are already some workers present, new and present
+#'   workers are combined.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nInd numeric or function, number of workers to be added, but see
 #'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used
 #' @param new logical, should the number of workers be added anew or should we
@@ -294,7 +295,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
 #'   counters.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   workers added
 #'
 #' @examples
@@ -308,7 +309,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add workers
@@ -364,7 +365,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
       x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newWorkers$workers)
       x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- addWorkers(
@@ -373,7 +374,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -383,10 +384,10 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #' @title Add (raise) drones in the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
-#'   drones in the colony by crossing the current queen and the fathers. If
-#'   there are already some drones present, new and present drones are combined.
+#'   drones to a Colony or MultiColony object by crossing the current queen and the fathers.
+#'   If there are already some drones present, new and present drones are combined.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nInd numeric or function, number of drones to be added, but see
 #'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used
 #' @param new logical, should the number of drones be added anew or should we
@@ -395,7 +396,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #'
 #' @details This function increases queen's \code{nDrones} counter.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   drones added
 #'
 #' @examples
@@ -409,7 +410,7 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add drones
@@ -463,7 +464,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       }
       x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- addDrones(
@@ -472,20 +473,20 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
 }
 
 #' @rdname buildUp
-#' @title Build up colony or colonies by adding (raising) workers and drones
+#' @title Build up Colony or MultiColony object by adding (raising) workers and drones
 #'
-#' @description Level 2 function that builds up colony by adding (raising)
-#'   workers and drones usually in spring or after events such as split or
+#' @description Level 2 function that builds up a Colony or MultiColony object by adding
+#'   (raising) workers and drones usually in spring or after events such as split or
 #'   swarming.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nWorkers numeric or function, number of worker to add to the colony,
 #'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
 #'   is used
@@ -519,7 +520,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'       just now, but could be expanded.
 #'       https://github.com/HighlanderLab/SIMplyBee/issues/176
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with workers and
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and
 #'    drones replaced or added
 #'
 #' @examples
@@ -534,7 +535,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' isProductive(colony)
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' isProductive(apiary)
 #'
@@ -579,7 +580,7 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' buildUp(colony)
 #' # nWorkers and nDrones will vary between function calls when a function is used
 #' # Same for MultiColony class
-#' apiary <- createColonies(basePop[7:8], n = 2)
+#' apiary <- createMultiColony(basePop[7:8], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(6, 7)])
 #' buildUp(apiary)[[1]]
 #' buildUp(apiary)[[1]]
@@ -638,7 +639,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       x <- resetEvents(x)
     }
     x@production <- TRUE
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- buildUp(
@@ -652,7 +653,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(x)
@@ -660,14 +661,14 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 }
 
 #' @rdname downsize
-#' @title Reduce number of workers and remove all drones and virgin queens from a colony
-#' or colonies
+#' @title Reduce number of workers and remove all drones and virgin queens from
+#'   a Colony or MultiColony object
 #'
-#' @description Level 2 function that downsizes colony by removing a proportion
-#'   of workers, all drones and all virgin queens. Usually in the autumn, such
-#'   an event occurs in preparation for the winter months.
+#' @description Level 2 function that downsizes a Colony or MultiColony object
+#'   by removing a proportion of workers, all drones and all virgin queens.
+#'   Usually in the autumn, such an event occurs in preparation for the winter months.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers to be removed from the colony; if
 #'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used
 #' @param use character, all the options provided by \code{\link{selectInd}};
@@ -676,7 +677,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #'   proportion anew (say, create winter workers)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with workers reduced and
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
 #'   drones/virgin queens removed
 #'
 #' @examples
@@ -692,7 +693,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' colony <- buildUp(colony)
 #' colony <- addVirginQueens(x = colony, nInd = 10)
 #' colony
-#' apiary <- createColonies(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' apiary <- buildUp(apiary)
 #' apiary <- addVirginQueens(apiary, nInd = 10)
@@ -726,7 +727,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     x <- removeDrones(x = x, p = 1)
     x <- removeVirginQueens(x = x, p = 1)
     x@production <- FALSE
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- downsize(
@@ -738,7 +739,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(x)
@@ -749,18 +750,18 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' @title Replace a proportion of virgin queens with new ones
 #'
 #' @description Level 2 function that replaces a proportion of virgin queens
-#'   with new virgin queens from the colony. Useful after events like season
-#'   change, swarming, supersedure, etc. due to the short life span of the
+#'   with new virgin queens from a Colony or MultiColony object. Useful after
+#'   events like season change, swarming, supersedure, etc. due to the short life span of the
 #'   virgin queens.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of virgin queens to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgin queens that stay when \code{p < 1}
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}} or  or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or  or \code{\link{MultiColony-class}} with
 #'   replaced virgin queens
 #'
 #' @examples
@@ -774,7 +775,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add virgin queens
@@ -820,7 +821,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
         )
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- replaceVirginQueens(
@@ -830,7 +831,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -840,10 +841,10 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' @title Replace a proportion of workers with new ones
 #'
 #' @description Level 2 function that replaces a proportion of workers with new
-#'   workers from the colony. Useful after events like season change, swarming,
-#'   supersedure, etc. due to the short life span of the workers.
+#'   workers from the a Colony or MultiColony object. Useful after events like season change,
+#'   swarming, supersedure, etc. due to the short life span of the workers.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that stay when \code{p < 1}
@@ -852,7 +853,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #'   (heterozygous on the csd locus)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   replaced workers
 #'
 #' @examples
@@ -866,7 +867,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add workers
@@ -914,7 +915,7 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
         )
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- replaceWorkers(
@@ -923,7 +924,7 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -933,15 +934,15 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
 #' @title Replace a proportion of drones with new ones
 #'
 #' @description Level 2 function that replaces a proportion of drones with new
-#'   drones from the colony. Useful after events like season change, swarming,
-#'   supersedure, etc. due to the short life span of the drones.
+#'   drones from the a Colony or MultiColony object. Useful after events like season change,
+#'   swarming, supersedure, etc. due to the short life span of the drones.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of drones to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   replaced drones
 #'
 #' @examples
@@ -955,7 +956,7 @@ replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add drones
@@ -994,13 +995,13 @@ replaceDrones <- function(x, p = 1, use = "rand") {
         x <- addDrones(x = x, nInd = nDronesReplaced, new = TRUE)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- replaceDrones(x = x[[colony]], p = p, use = use)
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1009,11 +1010,11 @@ replaceDrones <- function(x, p = 1, use = "rand") {
 #' @rdname removeQueen
 #' @title Remove queen
 #'
-#' @description Level 2 function that removes the queen of a colony.
+#' @description Level 2 function that removes the queen of a Colony or MultiColony object
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} without the queen
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without the queen
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1026,7 +1027,7 @@ replaceDrones <- function(x, p = 1, use = "rand") {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Remove the queen
@@ -1041,13 +1042,13 @@ removeQueen <- function(x) {
   if (isColony(x)) {
     x@queen <- NULL
     x@id <- NULL
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- removeQueen(x = x[[colony]])
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(x)
@@ -1057,15 +1058,15 @@ removeQueen <- function(x) {
 #' @rdname removeVirginQueens
 #' @title Remove a proportion of virgin queens
 #'
-#' @description Level 2 function that removes a proportion of virgin queens of a
-#'   colony.
+#' @description Level 2 function that removes a proportion of virgin queens of
+#'   a Colony or MultiColony object
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} without virgin queens
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without virgin queens
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1078,7 +1079,7 @@ removeQueen <- function(x) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add virgin queens
@@ -1113,13 +1114,13 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
         nInd = nVirginQueensNew, use = use
       )
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- removeVirginQueens(x = x[[colony]], p = p, use = use)
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1128,15 +1129,15 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
 #' @rdname removeWorkers
 #' @title Remove a proportion of workers
 #'
-#' @description Level 2 function that removes a proportion of workers, for
-#'   example, as a preparation for winter.
+#' @description Level 2 function that removes a proportion of workers from
+#' a Colony or MultiColony object, for example, as a preparation for winter.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of workers that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} without workers
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without workers
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1149,7 +1150,7 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add workers
@@ -1184,13 +1185,13 @@ removeWorkers <- function(x, p = 1, use = "rand") {
         nInd = nWorkersNew, use = use
       )
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- removeWorkers(x = x[[colony]], p = p, use = use)
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1199,15 +1200,15 @@ removeWorkers <- function(x, p = 1, use = "rand") {
 #' @rdname removeDrones
 #' @title Remove a proportion of drones
 #'
-#' @description Level 2 function that removes a proportion of drones, for
-#'   example, at the end of summer.
+#' @description Level 2 function that removes a proportion of drones from a
+#' Colony or MultiColony object, for example, at the end of summer.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of drones that will stay when \code{p < 1}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} without drones
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without drones
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1220,7 +1221,7 @@ removeWorkers <- function(x, p = 1, use = "rand") {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Add drones
@@ -1256,13 +1257,13 @@ removeDrones <- function(x, p = 1, use = "rand") {
         nInd = nDronesNew, use = use
       )
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- removeDrones(x = x[[colony]], p = p, use = use)
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1272,17 +1273,17 @@ removeDrones <- function(x, p = 1, use = "rand") {
 #' @title Reset colony events
 #'
 #' @description Level 2 function that resets the slots swarm, split,
-#'   supersedure, collapsed, and production to FALSE. Useful at the end of a
-#'   yearly cycle to reset the events, allowing the user to track new events in
-#'   a new year.
+#'   supersedure, collapsed, and production to FALSE in a Colony or MultiColony object.
+#'   Useful at the end of a yearly cycle to reset the events, allowing the user to track
+#'   new events in a new year.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param collapse logical, reset the collapse event (only sensible in setting
 #'   up a new colony, which the default of \code{NULL} caters for; otherwise, a
 #'   collapsed colony should be left collapsed forever, unless you force
 #'   resetting this event with \code{collapse = TRUE})
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
 #'   events reset
 #'
 #' @examples
@@ -1296,7 +1297,7 @@ removeDrones <- function(x, p = 1, use = "rand") {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
 #' # Build-up - this sets Productive to TRUE
@@ -1378,7 +1379,7 @@ resetEvents <- function(x, collapse = NULL) {
     }
     x@production <- FALSE
     validObject(x)
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- resetEvents(
@@ -1388,7 +1389,7 @@ resetEvents <- function(x, collapse = NULL) {
     }
     validObject(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(x)
 }
@@ -1396,13 +1397,13 @@ resetEvents <- function(x, collapse = NULL) {
 #' @rdname collapse
 #' @title Collapse
 #'
-#' @description Level 2 function that collapses colony by setting the collapse
-#'   event slot to \code{TRUE}. The production status slot is also changed (to
-#'   \code{FALSE}).
+#' @description Level 2 function that collapses a Colony or MultiColony object
+#'   by setting the collapse event slot to \code{TRUE}. The production status
+#'   slot is also changed (to \code{FALSE}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with the collapse
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the collapse
 #'   event set to \code{TRUE}
 #'
 #' @examples
@@ -1415,7 +1416,7 @@ resetEvents <- function(x, collapse = NULL) {
 #' # Create Colony and MultiColony class
 #' colony <- createColony(x = basePop[1])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(x = basePop[2:10], n = 9)
+#' apiary <- createMultiColony(x = basePop[2:10], n = 9)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:10])
 #'
 #' # Collapse
@@ -1426,9 +1427,9 @@ resetEvents <- function(x, collapse = NULL) {
 #' hasCollapsed(apiary)
 #' tmp <- pullColonies(apiary, n = 2)
 #' tmp
-#' apiaryLost <- collapse(tmp$pulledColonies)
+#' apiaryLost <- collapse(tmp$pulled)
 #' hasCollapsed(apiaryLost)
-#' apiaryLeft <- tmp$remainingColonies
+#' apiaryLeft <- tmp$remnant
 #' hasCollapsed(apiaryLeft)
 #'
 #' @export
@@ -1436,13 +1437,13 @@ collapse <- function(x) {
   if (isColony(x)) {
     x@collapse <- TRUE
     x@production <- FALSE
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- collapse(x = x[[colony]])
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1451,13 +1452,14 @@ collapse <- function(x) {
 #' @rdname swarm
 #' @title Swarm
 #'
-#' @description Level 2 function that swarms colony - an event where the queen
+#' @description Level 2 function that swarms a Colony or MultiColony object -
+#'   an event where the queen
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
 #'   remnant colony retains the other proportion of workers and all drones, and
 #'   the workers raise virgin queens, of which only one prevails. Location of
 #'   the swarm is the same as for the remnant (for now).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
 #'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used
 #' @param year numeric, year of birth for virgin queens
@@ -1467,7 +1469,7 @@ collapse <- function(x) {
 #'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return list with two \code{\link{Colony-class}} or \code{\link{Colonies-class}},
+#' @return list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #' the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
 #' outputs have the swarm event set to \code{TRUE}
 #'
@@ -1482,7 +1484,7 @@ collapse <- function(x) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' (colony <- buildUp(colony, nWorkers = 100))
-#' apiary <- createColonies(basePop[3:8], n = 6)
+#' apiary <- createMultiColony(basePop[3:8], n = 6)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:7])
 #' apiary <- buildUp(apiary, nWorkers = 100)
 #'
@@ -1499,7 +1501,7 @@ collapse <- function(x) {
 #' # Sample colonies from the apiary that will swarm (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
-#' (swarm(tmp$pulledColonies, p = 0.6))
+#' (swarm(tmp$pulled, p = 0.6))
 #'
 #' @export
 swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
@@ -1544,7 +1546,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
 
     remnantColony <- createColony(x = tmpVirginQueen)
-    remnantColony@workers <- getWorkers(tmp$colony)
+    remnantColony@workers <- getWorkers(tmp$remnant)
     remnantColony@drones <- getDrones(x)
     # Workers raise virgin queens from eggs laid by the queen and one random
     #   virgin queen prevails, so we create just one
@@ -1563,17 +1565,17 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     swarmColony@production <- FALSE
 
     ret <- list(swarm = swarmColony, remnant = remnantColony)
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
       ret <- list(
-        swarms = createColonies(),
-        remnants = createColonies()
+        swarms = createMultiColony(),
+        remnants = createMultiColony()
       )
     } else {
       ret <- list(
-        swarms = createColonies(n = nCol),
-        remnants = createColonies(n = nCol)
+        swarms = createMultiColony(n = nCol),
+        remnants = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
         tmp <- swarm(x[[colony]],
@@ -1586,7 +1588,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       }
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(ret$swarmColony)
@@ -1597,11 +1599,12 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' @rdname supersede
 #' @title Supersede
 #'
-#' @description Level 2 function that supersedes colony - an event where the
+#' @description Level 2 function that supersedes a Colony or MultiColony object -
+#'   an event where the
 #'   queen dies. The workers and drones stay unchanged, but workers raise virgin
 #'   queens, of which only one prevails.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param year numeric, year of birth for virgin queens
 #' @param nVirginQueens integer, the number of virgin queens to be created in the
 #'   colony; of these one is randomly selected as the new virgin queen of the
@@ -1609,7 +1612,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return  \code{\link{Colony-class}} or \code{\link{Colonies-class}} with the
+#' @return  \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the
 #' supersede event set to \code{TRUE}
 #'
 #' @examples
@@ -1623,7 +1626,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' (colony <- buildUp(colony, nWorkers = 100))
-#' apiary <- createColonies(basePop[3:8], n = 6)
+#' apiary <- createMultiColony(basePop[3:8], n = 6)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:7])
 #' apiary <- buildUp(apiary, nWorkers = 100)
 #'
@@ -1644,7 +1647,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
-#' (supersede(tmp$pulledColonies))
+#' (supersede(tmp$pulled))
 #'
 #' @export
 supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
@@ -1670,10 +1673,10 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
     x <- removeQueen(x)
     x@last_event <- "superseded"
     x@supersedure <- TRUE
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
-      colonies <- createColonies()
+      x <- createMultiColony()
     } else {
       for (colony in seq_len(nCol)) {
         x[[colony]] <- supersede(x[[colony]],
@@ -1684,7 +1687,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
       }
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1701,21 +1704,22 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 }
 
 #' @rdname split
-#' @title Split colony in two colonies
+#' @title Split colony in two MultiColony
 #'
-#' @description Level 2 function that splits colony into two new colonies to
+#' @description Level 2 function that splits a Colony or MultiColony object
+#'   into two new colonies to
 #'   prevent swarming (in managed situation). The remnant colony retains the
 #'   queen and a proportion of the workers and all drones. The split colony gets
 #'   the other part of the workers, which raise virgin queens, of which only one
 #'   prevails. Location of the split is the same as for the remnant.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony; if
 #'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @return list with two  \code{\link{Colony-class}} or \code{\link{Colonies-class}},
+#' @return list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #' the \code{split} and the \code{remnant} (see the description what each colony holds!);
 #' both outputs have the split even slot set do \code{TRUE}
 #'
@@ -1730,7 +1734,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' (colony <- buildUp(colony, nWorkers = 100))
-#' apiary <- createColonies(basePop[3:8], n = 6)
+#' apiary <- createMultiColony(basePop[3:8], n = 6)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:7])
 #' apiary <- buildUp(apiary, nWorkers = 100)
 #'
@@ -1747,7 +1751,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' # Split only specific colonies in the apiary
 #' tmp <- pullColonies(apiary, ID = c(4, 5))
 #' # Split only the pulled colonies
-#' (split(tmp$pulledColonies, p = 0.5))
+#' (split(tmp$pulled, p = 0.5))
 #'
 #' @export
 split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
@@ -1772,7 +1776,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     #       https://github.com/HighlanderLab/SIMplyBee/issues/179
     tmp <- pullWorkers(x = x, nInd = nWorkersSplit)
 
-    remnantColony <- tmp$colony
+    remnantColony <- tmp$remnant
 
     tmpVirginQueens <- createVirginQueens(
       x = x, nInd = 1,
@@ -1800,17 +1804,17 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     splitColony@production <- FALSE
 
     ret <- list(split = splitColony, remnant = remnantColony)
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
       ret <- list(
-        splits = createColonies(),
-        remnants = createColonies()
+        splits = createMultiColony(),
+        remnants = createMultiColony()
       )
     } else {
       ret <- list(
-        splits = createColonies(n = nCol),
-        remnants = createColonies(n = nCol)
+        splits = createMultiColony(n = nCol),
+        remnants = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
         tmp <- split(x[[colony]],
@@ -1822,7 +1826,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
       }
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(ret$splitColony)
@@ -1833,16 +1837,17 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
 #' @rdname combine
 #' @title Combine two colony objects
 #'
-#' @description Level 2 function that combines two colony objects into one or
+#' @description Level 2 function that combines two Colony or MultiColony objects
+#'   into one or
 #'   two colonies objects of the same length to one. For example, to combine a
-#'   weak and a strong colony (or colonies). Workers and drones of the weak
+#'   weak and a strong colony (or MultiColony). Workers and drones of the weak
 #'   colony are added to the strong. User has to remove the weak colony (or
-#'   colonies) from the workspace.
+#'   MultiColony) from the workspace.
 #'
-#' @param strong \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param weak \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param strong \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param weak \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return a combined \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @return a combined \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -1856,9 +1861,9 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
 #' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
 #' colony2 <- createColony(x = basePop[3])
 #' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
-#' apiary1 <- createColonies(basePop[4:6], n = 3)
+#' apiary1 <- createMultiColony(basePop[4:6], n = 3)
 #' apiary1 <- cross(apiary1, fathers = fatherGroups[3:5])
-#' apiary2 <- createColonies(basePop[7:9], n = 3)
+#' apiary2 <- createMultiColony(basePop[7:9], n = 3)
 #' apiary2 <- cross(apiary2, fathers = fatherGroups[6:8])
 #'
 #' # Build-up
@@ -1897,17 +1902,17 @@ combine <- function(strong, weak) {
   if (isColony(strong) & isColony(weak)) {
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
-  } else if (isColonies(strong) & isColonies(weak)) {
+  } else if (isMultiColony(strong) & isMultiColony(weak)) {
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
       for (colony in seq_len(nCol)) {
         strong[[colony]] <- combine(strong = strong[[colony]], weak = weak[[colony]])
       }
     } else {
-      stop("Weak and strong colonies objects must be of the same length!")
+      stop("Weak and strong MultiColony objects must be of the same length!")
     }
   } else {
-    stop("Argument strong and weak must both be either a Colony or Colonies class objects!")
+    stop("Argument strong and weak must both be either a Colony or MultiColony class objects!")
   }
   return(strong)
 }
@@ -1915,17 +1920,17 @@ combine <- function(strong, weak) {
 #' @rdname setLocation
 #' @title Set colony location
 #'
-#' @description Level 2 function that to set colony location to (x, y)
-#'   coordinates.
+#' @description Level 2 function that to set a Colony or MultiColony object
+#'   location to (x, y) coordinates.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param location numeric or list, location to be set for the
-#'   \code{\link{Colony-class}} or for \code{\link{Colonies-class}}; when
+#'   \code{\link{Colony-class}} or for \code{\link{MultiColony-class}}; when
 #'   numeric the same location will be set for all colonies; when list different
 #'   locations will be set for each colony - the list has to have the same
 #'   length at there are colonies in \code{x})
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with set
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
 #'   location
 #'
 #' @examples
@@ -1938,7 +1943,7 @@ combine <- function(strong, weak) {
 #' # Create Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createColonies(basePop[3:8], n = 6)
+#' apiary <- createMultiColony(basePop[3:8], n = 6)
 #' apiary <- cross(apiary, fathers = fatherGroups[2:7])
 #'
 #' getLocation(colony)
@@ -1956,7 +1961,7 @@ combine <- function(strong, weak) {
 setLocation <- function(x, location) {
   if (isColony(x)) {
     x@location <- location
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (is.list(location)) {
       if (length(location) != nCol) {
@@ -1971,7 +1976,7 @@ setLocation <- function(x, location) {
       }
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   validObject(x)
   return(x)
@@ -1980,11 +1985,11 @@ setLocation <- function(x, location) {
 #' @rdname setColonyPheno
 #' @title Set colony phenotype
 #'
-#' @description Level 2 function that sets phenotypes for all colony individuals
+#' @description Level 2 function that sets phenotypes for all Colony or MultiColony individuals
 #'   (queen, workers, drones, and virgin queens) and for the colony or each colony in
-#'   the colonies.
+#'   a MultiColony object
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param colonyFUN function, any function that can be run on \code{colony} and
 #'   returns colony phenotypes; if \code{NULL} then
 #'   \code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
@@ -1995,7 +2000,7 @@ setLocation <- function(x, location) {
 #' @details When this function is called on a colony, phenotypes for all colony
 #'   individuals is set or reset if phenotypes already exist.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{Colonies-class}} with phenotypes
+#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -2024,7 +2029,7 @@ setLocation <- function(x, location) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' colony <- buildUp(colony, nWorkers = 10)
-#' apiary <- createColonies(basePop[3:5], n = 2)
+#' apiary <- createMultiColony(basePop[3:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' apiary <- buildUp(apiary, nWorkers = 10)
 #'
@@ -2047,10 +2052,10 @@ setLocation <- function(x, location) {
 #' # TODO: use getColonyPheno(colony) for all individuals
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
-#' # Set phenotypes for all colony individuals AND colony
+#' # Set phenotypes for all colony individuals AND Colony
 #' colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
 #' pheno(colony)
-#' # Set phenotypes for all colony individuals AND colonies
+#' # Set phenotypes for all colony individuals AND MultiColony
 #' apiary <- setColonyPheno(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
 #' lapply(apiary@colonies, FUN = pheno)
 #' # TODO: use getColonyPheno(colony) for all individuals and/or colony
@@ -2098,7 +2103,7 @@ setColonyPheno <- function(x, colonyFUN = NULL, ..., simParamBee = NULL) {
     if (!is.null(colonyFUN)) {
       x@pheno <- colonyFUN(x, ...)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- setColonyPheno(x[[colony]],
@@ -2109,7 +2114,7 @@ setColonyPheno <- function(x, colonyFUN = NULL, ..., simParamBee = NULL) {
       )
     }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
 
   validObject(x)

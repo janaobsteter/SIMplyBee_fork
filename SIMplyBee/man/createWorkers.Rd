@@ -7,7 +7,7 @@
 createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric or function, number of workers created; if \code{NULL}
 then \code{\link{SimParamBee}$nWorkers} is used}
@@ -21,7 +21,7 @@ csd locus)}
 \value{
 when \code{x} is \code{\link{Colony-class}} return is a list with two
   nodes named \code{workers} (a \code{\link{Pop-class}}) and \code{nHomBrood}
-  (a numeric); when \code{x} is \code{\link{Colonies-class}} return is a list
+  (a numeric); when \code{x} is \code{\link{MultiColony-class}} return is a list
   of lists named by colony ID
 }
 \description{
@@ -45,7 +45,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 (tmp <- createWorkers(colony, nInd = 10))

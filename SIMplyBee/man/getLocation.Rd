@@ -7,12 +7,12 @@
 getLocation(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
 numeric with two values when \code{x} is \code{\link{Colony-class}}
   and a list of numeric with two values when \code{x} is
-  \code{\link{Colonies-class}} (list named after colonies); \code{c(NA, NA)}
+  \code{\link{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
   when location not set
 }
 \description{
@@ -31,7 +31,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 
 getLocation(colony)

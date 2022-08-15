@@ -8,7 +8,7 @@
 nCaste(x, caste = "all")
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
@@ -16,7 +16,7 @@ nCaste(x, caste = "all")
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for
   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
-  by caste; when \code{x} is \code{\link{Colonies-class}} return is named
+  by caste; when \code{x} is \code{\link{MultiColony-class}} return is named
   integer for \code{caste != "all"} or named list of lists for
   \code{caste == "all"}
 }
@@ -37,7 +37,7 @@ colony <- cross(colony, fathers = fatherGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10)
 colony <- addVirginQueens(x = colony, nInd = 3)
 
-apiary <- createColonies(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 apiary <- addVirginQueens(x = apiary, nInd = 3)
