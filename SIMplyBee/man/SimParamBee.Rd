@@ -521,7 +521,7 @@ A function to update the colony last
   ID everytime we create a Colony-class with createColony.
   For internal use only.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId(lastColonyId)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId()}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

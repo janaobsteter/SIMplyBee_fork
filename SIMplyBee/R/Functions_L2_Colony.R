@@ -49,12 +49,11 @@ createColony <- function(x, location = NULL, simParamBee = NULL) {
     stop("Argument x must hold one queen or virgin queen(s)!")
   }
 
-  id = as.integer(simParamBee$lastColonyId + 1)
-  simParamBee$updateLastColonyId(id)
+  simParamBee$updateLastColonyId()
 
   colony <- new(
     Class = "Colony",
-    id = id,
+    id = simParamBee$lastColonyId,
     location = location,
     queen = queen,
     virginQueens = virginQueens

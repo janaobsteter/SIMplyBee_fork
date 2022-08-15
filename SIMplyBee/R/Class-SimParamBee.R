@@ -426,10 +426,8 @@ SimParamBee <- R6Class(
     #'   For internal use only.
     #'
     #' @param lastColonyId integer, last colony ID assigned
-    updateLastColonyId = function(lastColonyId) {
-      lastColonyId = as.integer(lastColonyId)
-      stopifnot(lastColonyId>=private$lastColonyId)
-      private$.lastColonyId = lastColonyId
+    updateLastColonyId = function() {
+      private$.lastColonyId = private$.lastColonyId + 1L
       invisible(self)
     }
   ),
