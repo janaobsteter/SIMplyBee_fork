@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{combineBeeGametes}
 \alias{combineBeeGametes}
-\title{Create diploid gametes from a fertilised queen}
+\title{Create diploid gametes from a mated queen}
 \usage{
 combineBeeGametes(queen, drones, nProgeny = 1, simParamBee = NULL)
 }

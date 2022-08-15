@@ -62,27 +62,27 @@ An object holding a collection of honeybee colonies. It behaves
 }
 \section{Functions}{
 \itemize{
-\item \code{isMultiColony}: Test if x is a MultiColony class object
+\item \code{isMultiColony()}: Test if x is a MultiColony class object
 
-\item \code{show,MultiColony-method}: Show MultiColony object
+\item \code{show(MultiColony)}: Show MultiColony object
 
-\item \code{c,MultiColony-method}: Combine multiple Colony and MultiColony objects
+\item \code{c(MultiColony)}: Combine multiple Colony and MultiColony objects
 
-\item \code{c,MultiColonyOrNULL-method}: Combine multiple Colony and MultiColony objects
+\item \code{c(MultiColonyOrNULL)}: Combine multiple Colony and MultiColony objects
 
-\item \code{[,MultiColony,integerOrNumericOrLogical-method}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{MultiColony-class}})
 
-\item \code{[,MultiColony,character-method}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{MultiColony-class}})
 
-\item \code{[[,MultiColony,integerOrNumericOrLogical-method}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
 
-\item \code{[[,MultiColony,character-method}: Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
 
-\item \code{[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony-method}: Assign colonies into MultiColony
+\item \code{`[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into MultiColony
 
-\item \code{[[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}: Assign Colony into MultiColony
+\item \code{`[[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign Colony into MultiColony
+
 }}
-
 \section{Slots}{
 
 \describe{

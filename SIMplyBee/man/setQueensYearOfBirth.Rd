@@ -25,9 +25,9 @@ Level 1 function that sets the queen's year of birth.
 }
 \section{Functions}{
 \itemize{
-\item \code{setQueensYOB}: Set the queen's year of birth
-}}
+\item \code{setQueensYOB()}: Set the queen's year of birth
 
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

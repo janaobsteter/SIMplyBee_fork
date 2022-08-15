@@ -44,17 +44,17 @@ Level 0 function that returns dominance deviations of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensDd}: Access dominance deviation of the queen
+\item \code{getQueensDd()}: Access dominance deviation of the queen
 
-\item \code{getFathersDd}: Access dominance deviations of fathers
+\item \code{getFathersDd()}: Access dominance deviations of fathers
 
-\item \code{getVirginQueensDd}: Access dominance deviations of virgin queens
+\item \code{getVirginQueensDd()}: Access dominance deviations of virgin queens
 
-\item \code{getWorkersDd}: Access dominance deviations of workers
+\item \code{getWorkersDd()}: Access dominance deviations of workers
 
-\item \code{getDronesDd}: Access dominance deviations of drones
+\item \code{getDronesDd()}: Access dominance deviations of drones
+
 }}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

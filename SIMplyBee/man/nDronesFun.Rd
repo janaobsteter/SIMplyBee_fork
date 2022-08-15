@@ -70,12 +70,12 @@ Sample a number of drones - used when \code{nDrones = NULL}
 }
 \section{Functions}{
 \itemize{
-\item \code{nDronesTruncPoisson}: Sample a non-zero number of drones
+\item \code{nDronesTruncPoisson()}: Sample a non-zero number of drones
 
-\item \code{nDronesColonyPhenotype}: Sample a non-zero number of drones based on
+\item \code{nDronesColonyPhenotype()}: Sample a non-zero number of drones based on
 colony phenotype, say queen's fecundity
-}}
 
+}}
 \examples{
 nDronesPoisson()
 nDronesPoisson()

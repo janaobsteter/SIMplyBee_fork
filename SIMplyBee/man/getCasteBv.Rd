@@ -44,17 +44,17 @@ Level 0 function that returns breeding values of individuals in
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensBv}: Access breeding value of the queen
+\item \code{getQueensBv()}: Access breeding value of the queen
 
-\item \code{getFathersBv}: Access breeding values of fathers
+\item \code{getFathersBv()}: Access breeding values of fathers
 
-\item \code{getVirginQueensBv}: Access breeding values of virgin queens
+\item \code{getVirginQueensBv()}: Access breeding values of virgin queens
 
-\item \code{getWorkersBv}: Access breeding values of workers
+\item \code{getWorkersBv()}: Access breeding values of workers
 
-\item \code{getDronesBv}: Access breeding values of drones
+\item \code{getDronesBv()}: Access breeding values of drones
+
 }}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

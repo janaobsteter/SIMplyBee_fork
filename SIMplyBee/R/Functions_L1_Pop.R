@@ -583,7 +583,7 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
 }
 
 #' @rdname combineBeeGametes
-#' @title Create diploid gametes from a fertilised queen
+#' @title Create diploid gametes from a mated queen
 #'
 #' @description Level 1 function that produces diploid offspring from a mated queen. Queen is
 #'   diploid, while drones are double haploids so we use AlphaSimR diploid
@@ -635,7 +635,7 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 }
 
 #' @rdname combineBeeGametesHaploDiploid
-#' @title Create diploid gametes from a fertilised queen
+#' @title Create diploid gametes from a mated queen
 #'
 #' @description Level 1 function that produces diploid offspring from a mated queen. Drones are
 #'   haploid, while the queen is diploid, so we first generate gametes (with

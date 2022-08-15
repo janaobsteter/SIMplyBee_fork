@@ -32,13 +32,13 @@ Level 0 functions that calculate or report the proportion of csd
 }
 \section{Functions}{
 \itemize{
-\item \code{pHomBrood}: Expected percentage of csd homozygous brood
+\item \code{pHomBrood()}: Expected percentage of csd homozygous brood
 of a queen / colony
 
-\item \code{nHomBrood}: Realised number of csd homozygous brood
+\item \code{nHomBrood()}: Realised number of csd homozygous brood
 produced by a queen
-}}
 
+}}
 \examples{
 # This is a bit long example - the key is at the end!
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

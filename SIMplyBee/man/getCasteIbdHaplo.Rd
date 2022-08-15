@@ -86,17 +86,17 @@ Level 0 function that returns IBD (identity by descent)
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensIbdHaplo}: Access IBD haplotype data of the queen
+\item \code{getQueensIbdHaplo()}: Access IBD haplotype data of the queen
 
-\item \code{getFathersIbdHaplo}: Access IBD haplotype data of fathers
+\item \code{getFathersIbdHaplo()}: Access IBD haplotype data of fathers
 
-\item \code{getVirginQueensIbdHaplo}: Access IBD haplotype data of virgin queens
+\item \code{getVirginQueensIbdHaplo()}: Access IBD haplotype data of virgin queens
 
-\item \code{getWorkersIbdHaplo}: Access IBD haplotype data of workers
+\item \code{getWorkersIbdHaplo()}: Access IBD haplotype data of workers
 
-\item \code{getDronesIbdHaplo}: Access IBD haplotype data of drones
+\item \code{getDronesIbdHaplo()}: Access IBD haplotype data of drones
+
 }}
-
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
