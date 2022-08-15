@@ -13,7 +13,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #'
 #' @description An object holding honeybee colonyd
 #'
-#' @slot id character, ID of the colony, which is equal to the ID of the queen
+#' @slot id integer, unique ID of the colony
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link{Pop-class}}, the queen of the colony (we use
 #'   its misc slot for queen's age and drones (fathers) she mated with)
@@ -68,7 +68,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 setClass(
   Class = "Colony",
   slots = c(
-    id = "characterOrNULL",
+    id = "integer",
     location = "numericOrNULL",
     queen = "PopOrNULL",
     workers = "PopOrNULL",
@@ -100,12 +100,6 @@ setValidity(Class = "Colony", method = function(object) {
   errors <- character()
   if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
     errors <- c(errors, "There can be only one queen per colony!")
-  }
-  if (!isQueenPresent(object) && !is.na(getId(object))) {
-    errors <- c(errors, "When queen is absent, the colony ID should be NA!")
-  }
-  if (isQueenPresent(object) && getId(object) != getQueen(object)@id) {
-    errors <- c(errors, "Colony and queen IDs don't match!")
   }
   if (length(errors) == 0) {
     return(TRUE)

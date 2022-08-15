@@ -8,6 +8,7 @@
 #'
 #' @param x \code{\link{Pop-class}}, one queen or virgin queen(s)
 #' @param location numeric, location of the colony as \code{c(x, y)}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
 #'
@@ -28,7 +29,10 @@
 #' colony1
 #'
 #' @export
-createColony <- function(x, location = NULL) {
+createColony <- function(x, location = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(x)) {
     stop("Argument x must be a Pop class object!")
   }
@@ -37,15 +41,16 @@ createColony <- function(x, location = NULL) {
       stop("You must provide just one queen for the colony!")
     }
     queen <- x
-    id <- queen@id
     virginQueens <- NULL
   } else if (all(isVirginQueen(x))) {
     queen <- NULL
-    id <- as.character(NA)
     virginQueens <- x
   } else {
     stop("Argument x must hold one queen or virgin queen(s)!")
   }
+
+  id = as.integer(simParamBee$lastColonyId + 1)
+  simParamBee$updateLastColonyId(id)
 
   colony <- new(
     Class = "Colony",
@@ -146,7 +151,6 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
         stop("You must provide just one queen for the colony!")
       }
       x@queen <- queen
-      x@id <- queen@id
       if (removeVirginQueens) {
         x <- removeVirginQueens(x)
       }
@@ -1041,7 +1045,6 @@ replaceDrones <- function(x, p = 1, use = "rand") {
 removeQueen <- function(x) {
   if (isColony(x)) {
     x@queen <- NULL
-    x@id <- NULL
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {

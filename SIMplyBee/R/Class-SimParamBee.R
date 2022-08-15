@@ -317,6 +317,10 @@ SimParamBee <- R6Class(
 
       private$.caste <- NULL
 
+      # last ID initialize ----
+
+      private$.lastColonyId <- 0L
+
       # csd initialize ----
 
       private$.csdChr <- NULL
@@ -415,14 +419,28 @@ SimParamBee <- R6Class(
       }
       private$.caste[id] <- caste[1]
       invisible(self)
+    },
+
+    #' @description A function to update the colony last
+    #'   ID everytime we create a Colony-class with createColony.
+    #'   For internal use only.
+    #'
+    #' @param lastColonyId integer, last colony ID assigned
+    updateLastColonyId = function(lastColonyId) {
+      lastColonyId = as.integer(lastColonyId)
+      stopifnot(lastColonyId>=private$lastColonyId)
+      private$.lastColonyId = lastColonyId
+      invisible(self)
     }
   ),
+
 
   # Private fields ----
 
   private = list(
     .versionSIMplyBee = "character",
     .caste = "character",
+    .lastColonyId = "integer",
     .csdChr = "integerOrNULL",
     .csdPos = "numeric",
     .nCsdAlleles = "integer",
@@ -445,6 +463,16 @@ SimParamBee <- R6Class(
         )
       } else {
         stop("`$caste` is read only", call. = FALSE)
+      }
+    },
+
+    #' @field lastColonyId integer, ID of the last Colony object
+    #'   created with \code{\link{createColony}}
+    lastColonyId = function(value) {
+      if (missing(value)) {
+          private$.lastColonyId
+      } else {
+        stop("`$lastColonyId` is read only", call. = FALSE)
       }
     },
 
