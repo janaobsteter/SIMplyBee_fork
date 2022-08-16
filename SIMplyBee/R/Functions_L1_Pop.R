@@ -982,6 +982,8 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
     } else {
       warning("No available drones!")
     }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(DCA)
 }
@@ -1568,6 +1570,3 @@ setQueensYearOfBirth <- function(x, year) {
   return(x)
 }
 
-#' @describeIn setQueensYearOfBirth Set the queen's year of birth
-#' @export
-setQueensYOB <- setQueensYearOfBirth
