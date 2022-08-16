@@ -994,10 +994,6 @@ getQueensYearOfBirth <- function(x) {
   return(ret)
 }
 
-#' @describeIn getQueensYearOfBirth Access the queen's year of birth
-#' @export
-getQueensYOB <- getQueensYearOfBirth
-
 #' @rdname getQueensAge
 #' @title Get (calculate) the queen's age
 #'
@@ -1025,13 +1021,13 @@ getQueensYOB <- getQueensYearOfBirth
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' queen <- getQueen(colony)
-#' queen <- setQueensYOB(queen, year = 2020)
+#' queen <- setQueensYearOfBirth(queen, year = 2020)
 #' getQueensAge(queen, currentYear = 2022)
 #'
-#' colony <- setQueensYOB(colony, year = 2021)
+#' colony <- setQueensYearOfBirth(colony, year = 2021)
 #' getQueensAge(colony, currentYear = 2022)
 #'
-#' apiary <- setQueensYOB(apiary, year = 2018)
+#' apiary <- setQueensYearOfBirth(apiary, year = 2018)
 #' getQueensAge(apiary, currentYear = 2022)
 #' @export
 getQueensAge <- function(x, currentYear) {
