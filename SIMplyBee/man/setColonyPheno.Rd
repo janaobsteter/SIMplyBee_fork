@@ -4,17 +4,17 @@
 \alias{setColonyPheno}
 \title{Set colony phenotype}
 \usage{
-setColonyPheno(x, colonyFUN = NULL, ..., simParamBee = NULL)
+setColonyPheno(x, FUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{colonyFUN}{function, any function that can be run on \code{colony} and
+\item{FUN}{function, any function that can be run on \code{colony} and
 returns colony phenotypes; if \code{NULL} then
-\code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+\code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
 then colony phenotype is not set, but phenotypes of colony individuals are}
 
-\item{...}{all arguments of \code{\link{setPheno}} and \code{colonyFUN}}
+\item{...}{all arguments of \code{\link{setPheno}} and \code{FUN}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -81,16 +81,16 @@ lapply(getWorkers(apiary), FUN = pheno)
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Set phenotypes for all colony individuals AND Colony
-colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+colony <- setColonyPheno(colony, FUN = phenoQueenPlusSumOfWorkers)
 pheno(colony)
 # Set phenotypes for all colony individuals AND MultiColony
-apiary <- setColonyPheno(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+apiary <- setColonyPheno(apiary, FUN = phenoQueenPlusSumOfWorkers)
 lapply(apiary@colonies, FUN = pheno)
 # TODO: use getColonyPheno(colony) for all individuals and/or colony
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Colony phenotype - store the colony function into the SP object
-SP$phenoColony <- phenoQueenPlusSumOfWorkers
+SP$colonyPheno <- phenoQueenPlusSumOfWorkers
 pheno(setColonyPheno(colony))
 pheno(setColonyPheno(colony))
 lapply(setColonyPheno(apiary)@colonies, FUN = pheno)

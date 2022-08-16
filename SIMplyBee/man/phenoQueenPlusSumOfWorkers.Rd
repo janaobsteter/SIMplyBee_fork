@@ -31,7 +31,7 @@ numeric matrix with a single value
 }
 \description{
 Sample colony phenotype - used when \code{colonyFUN = NULL} (see
-  \code{\link{SimParamBee}$phenoColony}).
+  \code{\link{SimParamBee}$colonyPheno}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -87,6 +87,6 @@ pheno(colony)
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{phenoColony} and
+\code{\link{SimParamBee}} field \code{colonyPheno} and
   \code{\link{getEvents}}
 }

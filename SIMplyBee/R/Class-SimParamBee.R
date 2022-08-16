@@ -219,8 +219,8 @@ SimParamBee <- R6Class(
     #'   You can provide your own functions that satisfy your needs!
     downsizeP = "numericOrFunction",
 
-    # phenoColony field ----
-    #' @field phenoColony function, to set colony phenotypes - used in
+    # colonyPheno field ----
+    #' @field colonyPheno function, to set colony phenotypes - used in
     #'   \code{\link{setColonyPheno}}.
     #'
     #'   This function should work with internals of others functions -
@@ -230,7 +230,7 @@ SimParamBee <- R6Class(
     #'   See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
     #'
     #'   You can provide your own functions that satisfy your needs!
-    phenoColony = "function",
+    colonyPheno = "function",
 
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population of genomes
@@ -259,7 +259,7 @@ SimParamBee <- R6Class(
     #'   then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
     #'   to 128, which is at the upper end of the reported number of csd alleles
     #'   (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).
-    #' @param phenoColony see \code{\link{SimParamBee}} field \code{phenoColony}
+    #' @param colonyPheno see \code{\link{SimParamBee}} field \code{colonyPheno}
     #'
     #' @references
     #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
@@ -298,7 +298,7 @@ SimParamBee <- R6Class(
                           nVirginQueens = 10, nFathers = 15,
                           swarmP = 0.5, splitP = 0.3, downsizeP = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
-                          phenoColony = NULL) {
+                          colonyPheno = NULL) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
       super$initialize(founderPop)
       private$.versionSIMplyBee <- packageDescription("SIMplyBee")$Version
@@ -354,12 +354,12 @@ SimParamBee <- R6Class(
         self$switchGenMap(genMap)
       }
 
-      # phenoColony initialize ----
+      # colonyPheno initialize ----
 
-      if (!is.null(phenoColony) && !is.function(phenoColony)) {
-        stop("Argument phenoColony must be a function or NULL!")
+      if (!is.null(colonyPheno) && !is.function(colonyPheno)) {
+        stop("Argument colonyPheno must be a function or NULL!")
       }
-      self$phenoColony <- phenoColony
+      self$colonyPheno <- colonyPheno
 
       invisible(self)
     },
@@ -1163,7 +1163,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @title Sample colony phenotype
 #'
 #' @description Sample colony phenotype - used when \code{colonyFUN = NULL} (see
-#'   \code{\link{SimParamBee}$phenoColony}).
+#'   \code{\link{SimParamBee}$colonyPheno}).
 #'
 #'   This is just an example. You can provide your own functions that satisfy
 #'   your needs!
@@ -1179,7 +1179,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   a 0
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{phenoColony} and
+#' @seealso \code{\link{SimParamBee}} field \code{colonyPheno} and
 #'   \code{\link{getEvents}}
 #'
 #' @return numeric matrix with a single value
@@ -1238,6 +1238,7 @@ phenoQueenPlusSumOfWorkers <- function(colony, queenTrait = 1,
                                        workersTrait = 2,
                                        checkProduction = TRUE) {
   # TODO: should we add checks for other events too? say swarming?
+  #       so that this function is useful for many traits
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
   if (is.null(queenTrait)) {
     queenEff <- 0

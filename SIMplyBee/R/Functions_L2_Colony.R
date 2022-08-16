@@ -1992,11 +1992,11 @@ setLocation <- function(x, location) {
 #'   a MultiColony object
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param colonyFUN function, any function that can be run on \code{colony} and
+#' @param FUN function, any function that can be run on \code{colony} and
 #'   returns colony phenotypes; if \code{NULL} then
-#'   \code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+#'   \code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
 #'   then colony phenotype is not set, but phenotypes of colony individuals are
-#' @param ... all arguments of \code{\link{setPheno}} and \code{colonyFUN}
+#' @param ... all arguments of \code{\link{setPheno}} and \code{FUN}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When this function is called on a colony, phenotypes for all colony
@@ -2055,16 +2055,16 @@ setLocation <- function(x, location) {
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
 #' # Set phenotypes for all colony individuals AND Colony
-#' colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+#' colony <- setColonyPheno(colony, FUN = phenoQueenPlusSumOfWorkers)
 #' pheno(colony)
 #' # Set phenotypes for all colony individuals AND MultiColony
-#' apiary <- setColonyPheno(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+#' apiary <- setColonyPheno(apiary, FUN = phenoQueenPlusSumOfWorkers)
 #' lapply(apiary@colonies, FUN = pheno)
 #' # TODO: use getColonyPheno(colony) for all individuals and/or colony
 #' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #'
 #' # Colony phenotype - store the colony function into the SP object
-#' SP$phenoColony <- phenoQueenPlusSumOfWorkers
+#' SP$colonyPheno <- phenoQueenPlusSumOfWorkers
 #' pheno(setColonyPheno(colony))
 #' pheno(setColonyPheno(colony))
 #' lapply(setColonyPheno(apiary)@colonies, FUN = pheno)
@@ -2077,12 +2077,12 @@ setLocation <- function(x, location) {
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
 #' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
 #' @export
-setColonyPheno <- function(x, colonyFUN = NULL, ..., simParamBee = NULL) {
+setColonyPheno <- function(x, FUN = NULL, ..., simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(colonyFUN)) {
-    colonyFUN <- simParamBee$phenoColony
+  if (is.null(FUN)) {
+    FUN <- simParamBee$colonyPheno
   }
   # TODO: how should we handle the creation of phenotypes when residual variance
   #       is set (then we get phenotypes automatically and we should not call
@@ -2102,14 +2102,14 @@ setColonyPheno <- function(x, colonyFUN = NULL, ..., simParamBee = NULL) {
     if (!is.null(x@virginQueens)) {
       x@virginQueens <- setPheno(x@virginQueens, ...)
     }
-    if (!is.null(colonyFUN)) {
-      x@pheno <- colonyFUN(x, ...)
+    if (!is.null(FUN)) {
+      x@pheno <- FUN(x, ...)
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- setColonyPheno(x[[colony]],
-        colonyFUN = colonyFUN, ...,
+        FUN = FUN, ...,
         # TODO: is ... really passed on to setPheno?
         #       https://github.com/HighlanderLab/SIMplyBee/issues/240
         simParamBee = simParamBee

@@ -261,7 +261,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{phenoColony}}{function, to set colony phenotypes - used in
+\item{\code{colonyPheno}}{function, to set colony phenotypes - used in
   \code{\link{setColonyPheno}}.
 
   This function should work with internals of others functions -
@@ -369,7 +369,7 @@ Starts the process of building a new simulation by creating
   csdChr = 3,
   csdPos = 0.865,
   nCsdAlleles = 128,
-  phenoColony = NULL
+  colonyPheno = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -410,7 +410,7 @@ then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
 
-\item{\code{phenoColony}}{see \code{\link{SimParamBee}} field \code{phenoColony}}
+\item{\code{colonyPheno}}{see \code{\link{SimParamBee}} field \code{colonyPheno}}
 }
 \if{html}{\out{</div>}}
 }
