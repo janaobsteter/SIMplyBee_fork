@@ -1564,6 +1564,3 @@ setQueensYearOfBirth <- function(x, year) {
   return(x)
 }
 
-#' @describeIn setQueensYearOfBirth Set the queen's year of birth
-#' @export
-setQueensYOB <- setQueensYearOfBirth
