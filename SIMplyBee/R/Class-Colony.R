@@ -155,5 +155,3 @@ setMethod(
     return(multicolony)
   }
 )
-
-

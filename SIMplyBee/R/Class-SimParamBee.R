@@ -227,7 +227,7 @@ SimParamBee <- R6Class(
     #'   therefore the function MUST be defined like \code{function(colony, arg
     #'   = default) someCode }, that is, the first argument MUST be
     #'   \code{colony} and any following arguments MUST have a default value.
-    #'   See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
+    #'   See \code{\link{calcColonyPhenoFromCaste}} for an example.
     #'
     #'   You can provide your own functions that satisfy your needs!
     colonyPheno = "function",
@@ -591,7 +591,7 @@ isSimParamBee <- function(x) {
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
-#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
+#' @param ... other arguments of \code{\link{calcColonyPhenoFromCaste}}
 #'
 #' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
 #'   given average, which can return a value 0. \code{nDronesTruncPoisson}
@@ -599,7 +599,7 @@ isSimParamBee <- function(x) {
 #'
 #'   \code{nWorkersColonyPhenotype} returns a number (above \code{lowerLimit})
 #'   as a function of colony phenotype, say queen's fecundity. Colony phenotype
-#'   is provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+#'   is provided by \code{\link{calcColonyPhenoFromCaste}}. You need to set up
 #'   traits influencing the colony phenotype and their parameters (mean and
 #'   variances) via \code{\link{SimParamBee}} (see examples).
 #'
@@ -655,7 +655,7 @@ nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
 nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
                                     checkProduction = FALSE, lowerLimit = 0,
                                     ...) {
-  ret <- round(phenoQueenPlusSumOfWorkers(
+  ret <- round(calcColonyPhenoFromCaste(
     colony = colony,
     queenTrait = queenTrait,
     workersTrait = workersTrait,
@@ -690,7 +690,7 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
-#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
+#' @param ... other arguments of \code{\link{calcColonyPhenoFromCaste}}
 #'
 #' @details \code{nDronesPoisson} samples from a Poisson distribution with a
 #'   given average, which can return a value 0.
@@ -700,7 +700,7 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #'
 #'   \code{nDronesColonyPhenotype} returns a number (above \code{lowerLimit}) as
 #'   a function of colony phenotype, say queen's fecundity. Colony phenotype is
-#'   provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+#'   provided by \code{\link{calcColonyPhenoFromCaste}}. You need to set up
 #'   traits influencing the colony phenotype and their parameters (mean and
 #'   variances) via \code{\link{SimParamBee}} (see examples).
 #'
@@ -764,7 +764,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
   if (isPop(x)) {
     ret <- round(x@pheno[, queenTrait])
   } else {
-    ret <- round(phenoQueenPlusSumOfWorkers(
+    ret <- round(calcColonyPhenoFromCaste(
       colony = x,
       queenTrait = queenTrait,
       workersTrait = workersTrait,
@@ -800,7 +800,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
-#' @param ... other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}
+#' @param ... other arguments of \code{\link{calcColonyPhenoFromCaste}}
 #'
 #' @details \code{nVirginQueensPoisson} samples from a Poisson distribution,
 #'   which can return a value 0 (that would mean a colony will fail to raise a
@@ -812,7 +812,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #'   \code{nVirginQueensColonyPhenotype} returns a number (above
 #'   \code{lowerLimit}) as a function of colony phenotype, say swarming
 #'   tendency. Colony phenotype is provided by
-#'   \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up traits
+#'   \code{\link{calcColonyPhenoFromCaste}}. You need to set up traits
 #'   influencing the colony phenotype and their parameters (mean and variances)
 #'   via \code{\link{SimParamBee}} (see examples).
 #'
@@ -880,7 +880,7 @@ nVirginQueensColonyPhenotype <- function(colony, queenTrait = 1,
                                          workersTrait = 2,
                                          checkProduction = FALSE,
                                          lowerLimit = 0, ...) {
-  ret <- round(phenoQueenPlusSumOfWorkers(
+  ret <- round(calcColonyPhenoFromCaste(
     colony = colony,
     queenTrait = queenTrait,
     workersTrait = workersTrait, ...
@@ -1159,98 +1159,69 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 
 # phenoFunctions ----
 
-#' @rdname phenoQueenPlusSumOfWorkers
-#' @title Sample colony phenotype
+#' @rdname calcColonyPhenoFromCaste
+#' @title Sample colony phenotype based on caste phenotypes
 #'
-#' @description Sample colony phenotype - used when \code{colonyFUN = NULL} (see
-#'   \code{\link{SimParamBee}$colonyPheno}).
+#' @description Sample colony phenotype based on caste phenotypes -
+#'   used when \code{colonyFUN = NULL} (see \code{\link{SimParamBee}$colonyPheno}).
 #'
-#'   This is just an example. You can provide your own functions that satisfy
-#'   your needs!
+#'   This is just an example - quite flexible one, though;) You can provide your
+#'   own functions that satisfy your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param queenTrait numeric, trait that represents queen's effect on the
+#' @param queenTrait numeric, trait that represents queen's effect on the colony
 #'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 #'   \code{NULL} then this effect is 0
-#' @param workersTrait numeric, trait that represents workers's effect on the
+#' @param queenFUN function, function that will be applied to the queen phenotype
+#' @param workersTrait numeric, trait that represents workers' effect on the colony
 #'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 #'   \code{NULL} then this effect is 0
+#' @param workersFUN function, function that will be applied to the worker phenotypes
+#' @param dronesTrait numeric, trait that represents drones' effect on the colony
+#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   \code{NULL} then this effect is 0
+#' @param dronesFUN function, function that will be applied to the drone phenotypes
+#' @param combineFUN, function that will combine the queen, worker, and drone effects
+#'   - the function expects that this function is defined as \code{function(q, w, d)}
+#'   where \code{q} represents queen's effect, \code{q} represents workers' effect,
+#'   \code{d} represents drones' effect
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   a 0
+#' @param ... arguments passed to \code{queenFUN}, \code{workersFUN}, or \code{combineFUN}
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{colonyPheno} and
-#'   \code{\link{getEvents}}
+#' @seealso \code{\link{SimParamBee}} field \code{colonyPheno}, and functions
+#'   \code{\link{getEvents}} and \code{\link{setColonyPheno}} (and its example!)
 #'
 #' @return numeric matrix with a single value
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#'
-#' # Define two traits that collectively affect colony honey yield:
-#' # 1) queen's effect on colony honey yield
-#' # 2) workers' effect on colony honey yield
-#' # The traits will have negative genetic correlation and heritability of 0.25
-#' meanP <- c(20, 0)
-#' nWorkers <- 10
-#' varA <- c(1, 1 / nWorkers)
-#' corA <- matrix(data = c(
-#'   1.0, -0.5,
-#'   -0.5, 1.0
-#' ), nrow = 2, byrow = TRUE)
-#' varE <- c(3, 3 / 10)
-#' varA / (varA + varE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-#' SP$setVarE(varE = varE)
-#'
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 15)
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = drones)
-#' colony <- buildUp(colony, nWorkers = nWorkers)
-#'
-#' # Set phenotypes for all colony individuals
-#' colony <- setColonyPheno(colony)
-#'
-#' # Queen's phenotype for both traits
-#' pheno(getQueen(colony))
-#' # TODO: use getQueensPheno(colony, caste = "queen")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # Workers' phenotype for both traits
-#' pheno(getWorkers(colony))
-#' # TODO: use getWorkersPheno(colony, caste = "queen")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # TODO: use getColonyPheno(colony) for all individuals
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # Set phenotypes for all colony individuals AND colony
-#' colony <- setColonyPheno(colony,
-#'   colonyFUN = phenoQueenPlusSumOfWorkers
-#' )
-#' pheno(colony)
-#' # TODO: use getColonyPheno(colony) for all individuals and/or colony
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 #' @export
-phenoQueenPlusSumOfWorkers <- function(colony, queenTrait = 1,
-                                       workersTrait = 2,
-                                       checkProduction = TRUE) {
+calcColonyPhenoFromCaste <- function(colony,
+                                     queenTrait = 1, queenFUN = function(x) x,
+                                     workersTrait = 2, workersFUN = sum,
+                                     dronesTrait = NULL, dronesFUN = NULL,
+                                     combineFUN = function(q, w, d) q + w,
+                                     checkProduction = TRUE,
+                                    ...) {
   # TODO: should we add checks for other events too? say swarming?
   #       so that this function is useful for many traits
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
   if (is.null(queenTrait)) {
     queenEff <- 0
   } else {
-    queenEff <- colony@queen@pheno[, queenTrait]
+    queenEff <- queenFUN(colony@queen@pheno[, queenTrait], ...)
   }
   if (is.null(workersTrait)) {
-    sumOfWorkersEff <- 0
+    workersEff <- 0
   } else {
-    sumOfWorkersEff <- sum(colony@workers@pheno[, workersTrait])
+    workersEff <- workersFUN(colony@workers@pheno[, workersTrait], ...)
   }
-  colonyPheno <- queenEff + sumOfWorkersEff
+  if (is.null(dronesTrait)) {
+    dronesEff <- 0
+  } else {
+    dronesEff <- dronesFUN(colony@drones@pheno[, dronesTrait], ...)
+  }
+  colonyPheno <- combineFUN(q = queenEff, w = workersEff, d = dronesEff, ...)
   if (checkProduction && !colony@production) {
     colonyPheno <- 0
   }

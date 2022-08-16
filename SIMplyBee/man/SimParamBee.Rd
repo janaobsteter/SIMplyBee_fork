@@ -268,7 +268,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   therefore the function MUST be defined like \code{function(colony, arg
   = default) someCode }, that is, the first argument MUST be
   \code{colony} and any following arguments MUST have a default value.
-  See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
+  See \code{\link{calcColonyPhenoFromCaste}} for an example.
 
   You can provide your own functions that satisfy your needs!}
 }
