@@ -8,11 +8,12 @@ createMultiColony(x = NULL, n = NULL, location = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
-(selected at random if there are more than \code{n} in \code{Pop})}
+(selected at random if there are more than \code{n} in \code{Pop}, while
+ all are used when \code{n} is \code{NULL})}
 
-\item{n}{integer, number of colonies to create (if only \code{nCol} is
-given then \code{\link{MultiColony-class}} is created with \code{nCol} empty
-(\code{NULL}) individual colony) - this is mostly useful for programming)}
+\item{n}{integer, number of colonies to create (if only \code{n} is
+given then \code{\link{MultiColony-class}} is created with \code{n}
+\code{NULL}) individual colony - this is mostly useful for programming)}
 
 \item{location}{list, location of the colonies as \code{c(x, y)}}
 }
@@ -24,8 +25,8 @@ Level 3 function that creates a set of colonies. Usually to
   start a simulation.
 }
 \details{
-When both \code{x} and \code{nCol} are \code{NULL}, then an empty
-  \code{NULL} \code{\link{MultiColony-class}} is created with 0 colonies.
+When both \code{x} and \code{n} are \code{NULL}, then a
+  \code{\link{MultiColony-class}} with 0 colonies is created.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
