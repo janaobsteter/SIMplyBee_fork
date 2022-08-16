@@ -156,7 +156,11 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
       }
     } else {
       if (caste == "fathers") {
-        pop <- x@queen@misc[[1]]$fathers
+        if (isQueenPresent(x)) {
+          pop <- x@queen@misc[[1]]$fathers
+        } else {
+          pop <- NULL
+        }
       } else {
         pop <- slot(x, caste)
       }
