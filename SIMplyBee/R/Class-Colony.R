@@ -158,7 +158,7 @@ setMethod(
 # This is a hack to combine NULL and a Pop object (Pop and NULL works already)
 setMethod(
   f = "c",
-  signature(x = "PopOrNULL"),
+  signature(x = "NULLOrPop"),
   definition = function(x, ...) {
     if (is.null(x)) {
       nList = length(list(...))
