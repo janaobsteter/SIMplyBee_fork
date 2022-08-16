@@ -29,35 +29,40 @@
 #' colony1
 #'
 #' @export
-createColony <- function(x, location = NULL, simParamBee = NULL) {
+createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (!isPop(x)) {
-    stop("Argument x must be a Pop class object!")
-  }
-  if (all(isQueen(x))) {
-    if (1 < nInd(x)) {
-      stop("You must provide just one queen for the colony!")
-    }
-    queen <- x
-    virginQueens <- NULL
-  } else if (all(isVirginQueen(x))) {
-    queen <- NULL
-    virginQueens <- x
-  } else {
-    stop("Argument x must hold one queen or virgin queen(s)!")
-  }
-
   simParamBee$updateLastColonyId()
+  if (is.null(x)) {
+    colony <- new(Class = "Colony",
+                  id = simParamBee$lastColonyId,
+                  location = location)
+  } else {
+    if (!isPop(x)) {
+      stop("Argument x must be a Pop class object!")
+    }
+    if (all(isQueen(x))) {
+      if (1 < nInd(x)) {
+        stop("You must provide just one queen for the colony!")
+      }
+      queen <- x
+      virginQueens <- NULL
+    } else if (all(isVirginQueen(x))) {
+      queen <- NULL
+      virginQueens <- x
+    } else {
+      stop("Argument x must hold one queen or virgin queen(s)!")
+    }
 
-  colony <- new(
-    Class = "Colony",
-    id = simParamBee$lastColonyId,
-    location = location,
-    queen = queen,
-    virginQueens = virginQueens
-  )
+    colony <- new(
+      Class = "Colony",
+      id = simParamBee$lastColonyId,
+      location = location,
+      queen = queen,
+      virginQueens = virginQueens
+    )
+  }
   colony <- resetEvents(colony)
   validObject(colony)
   return(colony)
@@ -1763,7 +1768,6 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(p)) {
     p <- simParamBee$splitP
   }
-
   if (isColony(x)) {
     if (is.function(p)) {
       p <- p(x)

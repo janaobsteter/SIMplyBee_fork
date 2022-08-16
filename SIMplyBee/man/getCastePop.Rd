@@ -22,7 +22,9 @@ getWorkers(x, nInd = NULL, use = "rand")
 getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+exceptionally \code{\link{Pop-class}} for calling \code{getFathers}
+on a queen population}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}

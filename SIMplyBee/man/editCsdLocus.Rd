@@ -19,7 +19,7 @@ virgin queen. The n columns span the length of the csd locus as specified
 in \code{\link{SimParamBee}}. The two csd alleles must be different to
 ensure heterozygosity at the csd locus.}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters.}
+\item{simParamBee}{global simulation parameters.}
 }
 \value{
 Returns an object of \code{\link{Pop-class}}

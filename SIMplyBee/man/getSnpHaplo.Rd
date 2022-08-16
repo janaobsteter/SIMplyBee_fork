@@ -26,6 +26,10 @@ Matrix of haplotypes
 \description{
 Level 0 function that returns SNP array haplotypes.
 }
+\details{
+This is an alias for the AlphaSimR function to distinguish between getting
+  and pulling
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
