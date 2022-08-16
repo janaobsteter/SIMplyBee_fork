@@ -982,6 +982,8 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
     } else {
       warning("No available drones!")
     }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(DCA)
 }
