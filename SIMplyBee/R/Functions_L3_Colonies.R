@@ -144,7 +144,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     if (length(lSel) > 0) {
       ret <- multicolony[lSel]
     } else {
-      ret <- NULL
+      ret <- createMultiColony()
     }
   } else {
     stop("Provide either ID, n, or p!")
@@ -199,7 +199,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'
 #' tmp <- pullColonies(apiary, n = 2)
 #' getId(tmp$pulled)
-#' getId(tmp$remnanet)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, p = 0.75)
 #' getId(tmp$pulled)
