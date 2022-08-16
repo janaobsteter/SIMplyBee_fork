@@ -131,7 +131,8 @@ setMethod(
   definition = function(object) {
     cat("An object of class", classLabel(class(object)), "\n")
     cat("Number of colonies:", nColonies(object), "\n")
-    cat("Number of empty (NULL) colonies:", nNULLColonies(object), "\n")
+    cat("Number of empty colonies:", nEmptyColonies(object), "\n")
+    cat("Number of NULL colonies:", nNULLColonies(object), "\n")
     invisible()
   }
 )

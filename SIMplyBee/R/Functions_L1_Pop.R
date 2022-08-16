@@ -6,7 +6,9 @@
 #' @description Level 1 function that returns individuals of a caste. These
 #'   individuals stay in the colony (compared to \code{\link{pullCastePop}}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#'   exceptionally \code{\link{Pop-class}} for calling \code{getFathers}
+#'   on a queen population
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -1422,7 +1424,7 @@ cross <- function(x, fathers,
       if (!all(isDrone(fathers))) {
         stop("Individuals in fathers must be drones!")
       }
-      if (fathers@nInd != 0) {
+      if (fathers@nInd > 0) {
         x@misc[[1]]$fathers <- fathers
         simParamBee$changeCaste(id = x@id, caste = "Q")
         simParamBee$changeCaste(id = fathers@id, caste = "F")

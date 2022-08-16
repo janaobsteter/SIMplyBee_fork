@@ -152,3 +152,37 @@ test_that("isGenoHeterozygous", {
   expect_false(SIMplyBee:::isGenoHeterozygous(geno[3, , drop = FALSE]))
   expect_equal(SIMplyBee:::isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
 })
+
+
+test_that("emptyNULL", {
+   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+   basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+
+   expect_true(isEmpty(new(Class = "Pop")))
+   expect_true(isEmpty(basePop[0]))
+   expect_false(isEmpty(basePop))
+
+   emptyColony <- createColony()
+   nonEmptyColony <- createColony(basePop[1])
+   expect_true(isEmpty(emptyColony))
+   expect_false(isEmpty(nonEmptyColony))
+
+   emptyApiary <- createMultiColony(n = 3)
+   emptyApiary1 <- c(createColony(), createColony())
+   nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+
+   expect_true(all(isEmpty(emptyApiary)))
+   expect_true(all(isEmpty(emptyApiary1)))
+   expect_true(!all(isEmpty(nonEmptyApiary)))
+   expect_true(all(isNULLColonies(emptyApiary)))
+   expect_true(!all(isNULLColonies(emptyApiary1)))
+   expect_true(!all(isNULLColonies(nonEmptyApiary)))
+
+   expect_equal(nEmptyColonies(emptyApiary), 3)
+   expect_equal(nEmptyColonies(emptyApiary1), 2)
+   expect_equal(nEmptyColonies(nonEmptyApiary), 0)
+   expect_equal(nNULLColonies(emptyApiary), 3)
+   expect_equal(nNULLColonies(emptyApiary1), 0)
+   expect_equal(nNULLColonies(nonEmptyApiary), 0)
+})

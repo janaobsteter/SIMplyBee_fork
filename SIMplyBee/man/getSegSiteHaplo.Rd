@@ -25,6 +25,10 @@ Matrix of haplotypes
 Level 0 function that returns haplotypes for all segregating
   sites.
 }
+\details{
+This is an alias for the AlphaSimR function to distinguish between getting
+  and pulling
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -45,7 +49,6 @@ colony <- buildUp(x = colony)
 # Use getSegSiteHaplo on a Population
 getSegSiteHaplo(getWorkers(colony))
 getSegSiteHaplo(getQueen(colony))
-
 }
 \seealso{
 \code{\link{pullSegSiteHaplo}}

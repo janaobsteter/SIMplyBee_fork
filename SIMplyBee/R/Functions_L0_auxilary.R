@@ -31,38 +31,89 @@ nColonies <- function(multicolony) {
 #' @title Number of NULL colonies in a MultiColony object
 #'
 #' @description Level 0 function that returns the number of colonies in a
-#'   MultiColony object that are in fact empty \code{NULL}.
+#'   MultiColony object that are in fact \code{NULL}.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @return integer
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 #'
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
-#' getId(apiary)
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
 #'
-#' nColonies(apiary)
-#' nColonies(selectColonies(apiary, ID = c("1", "2")))
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
 #'
-#' nNULLColonies(apiary)
-#' nNULLColonies(selectColonies(apiary, ID = c("1", "2")))
 #' @export
 nNULLColonies <- function(multicolony) {
   if (!"MultiColony" %in% class(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
-  if (length(multicolony@colonies) == 0) {
+  if (nColonies(multicolony) == 0) {
     ret <- 0
   } else {
-    ret <- sum(sapply(X = multicolony@colonies, FUN = is.null))
+    ret <- sum(isNULLColonies(multicolony))
+  }
+  return(ret)
+}
+
+#' @rdname nEmptyColonies
+#' @title Number of empty colonies in a MultiColony object
+#'
+#' @description Level 0 function that returns the number of empty colonies in a
+#'   MultiColony object
+#'
+#' @param multicolony \code{\link{MultiColony-class}}
+#'
+#' @return integer
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+#'
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
+#'
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#' @export
+nEmptyColonies <- function(multicolony) {
+  if (!"MultiColony" %in% class(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
+  if (nColonies(multicolony) == 0) {
+    ret <- 0
+  } else {
+    ret <- sum(isEmpty(multicolony))
   }
   return(ret)
 }
@@ -219,8 +270,8 @@ nQueens <- function(x) {
 #' @export
 nFathers <- function(x) {
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
-      stop("Individuals in x must be virgin queens or queens!")
+    if (any(!(isQueen(x)))) {
+      stop("Individuals in x must be queens!")
     }
     nInd <- nInd(x)
     ret <- rep(x = 0, times = nInd)
@@ -568,7 +619,7 @@ isCaste <- function(x, caste, simParamBee = NULL) {
   if (isPop(x)) {
     ret <- simParamBee$caste[x@id] == caste[1]
   } else if (is.null(x)) {
-    ret <- logical()
+    ret <- NULL
   } else {
     stop("Argument x must be a Pop class object or NULL!")
   }
@@ -1435,7 +1486,7 @@ getCaste <- function(x, simParamBee = NULL) {
 getLocation <- function(x) {
   if (isColony(x)) {
     if (is.null(x@location)) {
-      ret <- as.numeric(c(NA, NA))
+      ret <- NULL
     } else {
       ret <- x@location
     }
@@ -2386,7 +2437,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(x)) {
-    ret <- NA
+    ret <- NULL
   } else if (isPop(x)) {
     haplo <- getCsdAlleles(x = x, unique = TRUE, simParamBee = simParamBee)
     ret <- nrow(haplo)
@@ -2437,7 +2488,8 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @param snpChip integer, indicating which SNP array loci are to be retrieved,
 #'   if \code{NULL}, all sites are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @seealso \code{\link{pullIbdHaplo}}
 #' @return Matrix of haplotypes
 #'
@@ -2487,7 +2539,8 @@ getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
 #' @examples
@@ -2530,7 +2583,8 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @seealso \code{\link{pullQtlGeno}}
 #'
 #' @return Matrix of genotypes
@@ -2580,7 +2634,8 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
 #' @examples
@@ -2603,7 +2658,6 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' # Use getSegSiteHaplo on a Population
 #' getSegSiteHaplo(getWorkers(colony))
 #' getSegSiteHaplo(getQueen(colony))
-#'
 #' @export
 getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2626,7 +2680,8 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of genotypes
 #'
 #' @examples
@@ -2650,7 +2705,6 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' getSegSiteGeno(getWorkers(colony))
 #' getSegSiteGeno(getQueen(colony))
 #' getSegSiteGeno(getDrones(colony))
-#'
 #' @export
 getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2676,7 +2730,8 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
 #' @examples
@@ -2722,7 +2777,8 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of genotypes
 #'
 #' @examples
@@ -6441,7 +6497,7 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' @param alleles list, each element of the list contains a vector with twe two
 #' desired alleles for each individual at the segregating sites. The length of the list
 #' should match the number of individuals in the population
-#' @param simParam an object of \code{\link{SimParam}}
+#' @param simParamBee an object of \code{\link{SimParamBee}}
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
 #'
@@ -6459,9 +6515,9 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' )
 #' getSegSiteHaplo(pop)
 #' getSegSiteHaplo(pop2)
-editGenomeGeno <- function(pop, chr, segSite, alleles, simParam = NULL) {
-  if (is.null(simParam)) {
-    simParam <- get("SP", envir = .GlobalEnv)
+editGenomeGeno <- function(pop, chr, segSite, alleles, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get("SP", envir = .GlobalEnv)
   }
   chr <- as.integer(chr)
   segSite <- as.integer(segSite)
@@ -6482,7 +6538,7 @@ editGenomeGeno <- function(pop, chr, segSite, alleles, simParam = NULL) {
   }
   PHENO <- pop@pheno
   EBV <- pop@ebv
-  pop <- resetPop(pop = pop, simParam = simParam)
+  pop <- resetPop(pop = pop, simParam = simParamBee)
   pop@pheno <- PHENO
   pop@ebv <- EBV
   return(pop)
@@ -6507,7 +6563,7 @@ editGenomeGeno <- function(pop, chr, segSite, alleles, simParam = NULL) {
 #'   virgin queen. The n columns span the length of the csd locus as specified
 #'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters.
+#' @param simParamBee global simulation parameters.
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
 #'
@@ -6548,9 +6604,123 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
       chr = simParamBee$csdChr,
       segSite = site,
       alleles = siteAlleles,
-      simParam = simParamBee
+      simParamBee = simParamBee
     )
   }
 
   return(pop)
+}
+
+#' @rdname isEmpty
+#' @title Check whether a population, colony or a multicolony
+#'   object has no individuals within
+#'
+#' @description Check whether a population, colony or a multicolony
+#'   object has no individuals within.
+#'
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or
+#'   \code{\link{MultiColony-class}}
+#'
+#' @return boolean when \code{x} is \code{\link{Pop-class}} or
+#'   \code{\link{Colony-class}}, and named vector of boolean when
+#'   \code{x} is \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' isEmpty(new(Class = "Pop"))
+#' isEmpty(basePop[0])
+#' isEmpty(basePop)
+#'
+#' emptyColony <- createColony()
+#' nonEmptyColony <- createColony(basePop[1])
+#' isEmpty(emptyColony)
+#' isEmpty(nonEmptyColony)
+#'
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+#'
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
+#'
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#'
+#' @export
+isEmpty <- function(x) {
+  if (is.null(x)) {
+    ret <- TRUE
+  } else if (isPop(x)) {
+    if (length(x@nInd) == 0  || x@nInd == 0) {
+      ret <- TRUE
+    } else {
+      ret <- FALSE
+    }
+  } else if (isColony(x)) {
+    if (isEmpty(x@queen) & isEmpty(x@virginQueens) & isEmpty(x@workers) & isEmpty(x@drones)) {
+      ret <- TRUE
+    } else {
+      ret <- FALSE
+    }
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = isEmpty, simplify = TRUE)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @rdname isNULLColonies
+#' @title Check which of the colonies in a multicolony are NULL
+#'
+#' @description Check which of the colonies in a multicolony are NULL
+#'
+#' @param multicolony  \code{\link{MultiColony-class}}
+#'
+#' @return Named vector of boolean
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+#'
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
+#'
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#'
+#' @export
+isNULLColonies <- function(multicolony) {
+  if (isMultiColony(multicolony)) {
+    ret <- sapply(X = multicolony@colonies, FUN = is.null, simplify = TRUE)
+    names(ret) <- getId(multicolony)
+  } else {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
+  return(ret)
 }

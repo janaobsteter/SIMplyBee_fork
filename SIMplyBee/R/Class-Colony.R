@@ -6,6 +6,7 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
 setClassUnion("PopOrNULL", c("Pop", "NULL"))
+setClassUnion("NULLOrPop", c("NULL", "Pop"))
 setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
 
 #' @rdname Colony-class
@@ -75,11 +76,9 @@ setClass(
     drones = "PopOrNULL",
     virginQueens = "PopOrNULL",
     pheno = "matrix",
-    split = "logical",
-    # remnant = "",
+    split = "logicalOrNULL",
     swarm = "logicalOrNULL",
     supersedure = "logicalOrNULL",
-    # rob = "logical",
     collapse = "logicalOrNULL",
     production = "logicalOrNULL",
     last_event = "character",
@@ -153,6 +152,31 @@ setMethod(
     }
     validObject(multicolony)
     return(multicolony)
+  }
+)
+
+# This is a hack to combine NULL and a Pop object (Pop and NULL works already)
+setMethod(
+  f = "c",
+  signature(x = "NULLOrPop"),
+  definition = function(x, ...) {
+    if (is.null(x)) {
+      nList = length(list(...))
+      pop <- list(...)[[1]]
+      if (nList > 1) {
+        for (y in list(...)[[2:nList]]) {
+          if (is(y, class2 = "NULL")) {
+            # Do nothing
+          } else if (isPop(y)) {
+            pop <- c(pop, y)
+          } else {
+            stop("... must be a NULL or Pop class object!")
+          }
+        }
+      }
+    }
+    validObject(pop)
+    return(pop)
   }
 )
 
