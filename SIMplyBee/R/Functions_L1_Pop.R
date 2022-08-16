@@ -922,8 +922,8 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @rdname createDCA
 #' @title Create a drone congregation area (DCA)
 #'
-#' @description Level 1 function that creates a population of drones from a colony
-#'   or multi-colony.  Such a population is often referred to as a drone
+#' @description Level 1 function that creates a population of drones from a Colony
+#'   or MultiColony.  Such a population is often referred to as a drone
 #'   congregation area (DCA).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
