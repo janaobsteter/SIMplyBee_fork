@@ -59,7 +59,7 @@ apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 
 # Virgin queen
-calcQueensPHomBrood(basePop[5])
+try(calcQueensPHomBrood(basePop[5]))
 
 # Queens of colony
 calcQueensPHomBrood(colony)

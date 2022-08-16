@@ -403,7 +403,7 @@ nDrones <- function(x) {
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #'
 #' # Virgin queen
-#' calcQueensPHomBrood(basePop[5])
+#' try(calcQueensPHomBrood(basePop[5]))
 #'
 #' # Queens of colony
 #' calcQueensPHomBrood(colony)
@@ -428,8 +428,8 @@ calcQueensPHomBrood <- function(x) {
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (is.null(x@misc[[ind]]$fathers)) {
-        ret[ind] <- NA
+      if (!isQueen(x)) {
+        stop("calcQueensPHomBrood can only be used with queens!")
       } else {
         queensCsd <- apply(
           X = getCsdAlleles(x[ind]), MARGIN = 1,
