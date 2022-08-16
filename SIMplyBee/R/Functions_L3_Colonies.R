@@ -31,7 +31,8 @@
 #' apiary[[2]]
 #'
 #' # Create 2 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 2)
+#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
+#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
