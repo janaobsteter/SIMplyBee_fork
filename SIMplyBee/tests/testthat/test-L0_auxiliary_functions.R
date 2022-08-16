@@ -202,12 +202,14 @@ test_that("isCaste", {
   # get the queen that is a caste "queen" and ask if it is a caste "queen"
   # and drones and fathers
   expect_true(isCaste(getQueen(colony), caste = "queen"))
-  expect_true(isCaste(getDrones(colony), caste = "drones"))
+  expect_true(all(isCaste(getDrones(colony), caste = "drones")))
   expect_true(all(isCaste(getFathers(colony), caste = "fathers")))
-  # get the queen that is a caste "queen" and test if it is a caste "workers"
+  # get the queen that is a caste "queen" and test if it is a caste "workers",
+  #test on virgin queen that is not present in a colony
   expect_false(isCaste(getQueen(colony), caste = "workers"))
+  #test on virgin queen that is not present in a colony
   expect_null(isCaste(getVirginQueens(colony), caste = "virginQueens"))
-  #dodaj še trote in fotre, pa na nečem, kar ni v družini
+
 })
 
 # ---- calcQueensPHomBrood ----
@@ -227,9 +229,17 @@ test_that("calcQueensPHomBrood", {
     colony <- addVirginQueens(x = colony, nInd = 1)
 
  expect_error(calcQueensPHomBrood(colony@drones))
- expect_error(calcQueensPHomBrood(colony@drones))# zbriši
+ expect_error(calcQueensPHomBrood(colony@workers))
  expect_true(is.numeric(calcQueensPHomBrood(colony@queen)))
- #dodaj še če matice ni, še na colony, colonies, empty colony
+
+  colony@queen <- NULL
+ expect_error(calcQueensPHomBrood(colony@queen))
+  apiary <- createColonies()
+  colony@workers <- NULL
+  colony@drones <- NULL
+  colony@virginQueens <- NULL
+ expect_error(calcQueensPHomBrood(colony))
+ expect_error(calcQueensPHomBrood(apiary))
 })
 
 # ---- pHomBrood ----
@@ -252,7 +262,16 @@ test_that("pHomBrood", {
   expect_error(pHomBrood(colony@virginQueens))
   expect_error(pHomBrood(colony@drones))
   expect_true(is.numeric(pHomBrood(colony@queen)))
-  #dodaj še če matice ni, še na colony, colonies, empty colony
+
+    colony@queen <- NULL
+  expect_error(pHomBrood(colony@queen))
+    apiary <- createColonies()
+    colony@workers <- NULL
+    colony@drones <- NULL
+    colony@virginQueens <- NULL
+  expect_error(pHomBrood(colony))
+  expect_error(pHomBrood(apiary))
+
 })
 
 # ---- nHomBrood -----
@@ -275,7 +294,16 @@ test_that("nHomBrood", {
   expect_error(nHomBrood(colony@virginQueens))
   expect_error(nHomBrood(colony@drones))
   expect_true(is.numeric(nHomBrood(colony@queen)))
-  #dodaj še če matice ni, še na colony, colonies, empty colony
+
+    colony@queen <- NULL
+  expect_error(nHomBrood(colony@queen))
+    apiary <- createColonies()
+    colony@workers <- NULL
+    colony@drones <- NULL
+    colony@virginQueens <- NULL
+  expect_error(nHomBrood(colony))
+  expect_error(nHomBrood(apiary))
+
 })
 
 # ---- isQueenPresent ----
@@ -293,13 +321,14 @@ test_that("isQueenPresent", {
     colony <- cross(colony, fathers = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
-    apiary <- createMultiColony(n = 1)
+    apiary <- createColonies(n = 1)
     vec <- c(1,2,3,4)
+    apiary2 <- createColonies()
 
   expect_true(isQueenPresent(colony))
   expect_false(isQueenPresent(apiary))
   expect_error(isQueenPresent(vec))
-  #naredi še z multui koloni brz argumenta
+  expect_false(isQueenPresent(apiary2))
 })
 
 # ---- isVirginQueensPresent ----
@@ -605,4 +634,39 @@ test_that("editCsdLocus", {
 
 ##### za vsak error se uprašimo, če si ga res želimo, ali bi bilo bolje imeti NULL
 
+
+# ---- emptyNULL ----
+
+test_that("emptyNULL", {
+   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+   basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+
+   expect_true(isEmpty(new(Class = "Pop")))
+   expect_true(isEmpty(basePop[0]))
+   expect_false(isEmpty(basePop))
+
+   emptyColony <- createColony()
+   nonEmptyColony <- createColony(basePop[1])
+   expect_true(isEmpty(emptyColony))
+   expect_false(isEmpty(nonEmptyColony))
+
+   emptyApiary <- createMultiColony(n = 3)
+   emptyApiary1 <- c(createColony(), createColony())
+   nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+
+   expect_true(all(isEmpty(emptyApiary)))
+   expect_true(all(isEmpty(emptyApiary1)))
+   expect_true(!all(isEmpty(nonEmptyApiary)))
+   expect_true(all(isNULLColonies(emptyApiary)))
+   expect_true(!all(isNULLColonies(emptyApiary1)))
+   expect_true(!all(isNULLColonies(nonEmptyApiary)))
+
+   expect_equal(nEmptyColonies(emptyApiary), 3)
+   expect_equal(nEmptyColonies(emptyApiary1), 2)
+   expect_equal(nEmptyColonies(nonEmptyApiary), 0)
+   expect_equal(nNULLColonies(emptyApiary), 3)
+   expect_equal(nNULLColonies(emptyApiary1), 0)
+   expect_equal(nNULLColonies(nonEmptyApiary), 0)
+})
 
