@@ -55,7 +55,7 @@ getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, n = 2)
 getId(tmp$pulled)
-getId(tmp$remnanet)
+getId(tmp$remnant)
 
 tmp <- pullColonies(apiary, p = 0.75)
 getId(tmp$pulled)

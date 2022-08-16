@@ -4,7 +4,7 @@
 \alias{editGenomeGeno}
 \title{Edit genome at a single diploid site in a population}
 \usage{
-editGenomeGeno(pop, chr, segSite, alleles, simParam = NULL)
+editGenomeGeno(pop, chr, segSite, alleles, simParamBee = NULL)
 }
 \arguments{
 \item{pop}{an object of \code{\link{Pop-class}}}
@@ -17,7 +17,7 @@ editGenomeGeno(pop, chr, segSite, alleles, simParam = NULL)
 desired alleles for each individual at the segregating sites. The length of the list
 should match the number of individuals in the population}
 
-\item{simParam}{an object of \code{\link{SimParam}}}
+\item{simParamBee}{an object of \code{\link{SimParamBee}}}
 }
 \value{
 Returns an object of \code{\link{Pop-class}}
