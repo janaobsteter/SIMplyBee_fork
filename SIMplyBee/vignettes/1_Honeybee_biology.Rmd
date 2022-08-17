@@ -1,9 +1,9 @@
 ---
-title: "SIMplyBee - honeybee biology"
+title: "SIMplyBee - Honeybee biology"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - honeybee biology}
+  %\VignetteIndexEntry{SIMplyBee - Honeybee biology}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,10 +18,9 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette describes and demonstrates how SIMplyBee implements honeybee
-biology. Specifically, it describes:
+This vignette introduces SIMplyBee package by describing and demonstrating how SIMplyBee implements honeybee biology. Specifically, it describes:
 
-  1. Initiating with genomes and parameters,
+  1. Initiating simulation with founder genomes and simulation parameters,
 
   2. Creating and building up a colony,
   
@@ -29,13 +28,10 @@ biology. Specifically, it describes:
   
   4. Sex and caste,
   
-  5. Complementary sex determining (csd) locus,
+  5. Complementary sex determining (csd) locus, and
   
-  6. Inheritance system, and
+  6. Inheritance system.
   
-  7. Colony events. TODO: Move colony events to another vignette - this one is long already and events will have lots of pictures!
-https://github.com/HighlanderLab/SIMplyBee/issues/345
-
 Now load the package and dive in!
 
 ```{r load package}
@@ -47,9 +43,9 @@ TODO: Say something about the image (covering 1-4) and how you can use it as a g
 TODO: add colony creation image - not working yet 
 # knitr::include_graphics("~/Desktop/GitHub/SIMplyBee/SIMplyBee/vignettes/images/founderpop_diagram2.pdf", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
 
-# Initiating with genomes and parameters
+# Initiating simulation with founder genomes and global parameters,
 
-We initiate the simulation by simulating honeybee genomes. We can quickly generate
+We initiate the simulation by simulating founder honeybee genomes. We can quickly generate
 genomes using AlphaSimR's `quickHaplo()` or with SIMplyBee's `TODO()` with
 appropriate honeybee genome parameters and demography. We will use
 `quickHaplo()` and simulate genomes of two founding individuals. 
@@ -72,8 +68,8 @@ all SIMplyBee functions will use this object, if you don't directly specify
 SP <- SimParamBee$new(founderGenomes)
 ```
 
-As mentioned there is many options provided by `SimParamBee` of which we will
-not talk about. You can quickly take a peek into the information and functions stored in the `SP` object. This gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
+There are many options provided by `SimParamBee` of which we will
+not talk about now. You can quickly take a peek into the information and functions stored in the `SP` object. The following code gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
 
 ```{r SP, eval = FALSE}
 show(SP)
@@ -386,21 +382,9 @@ getDronesSegSiteGeno(inbredColony)[, 1:10]
 SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
 segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
 descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
-are all synonyms for a position in the genome. Oh, well. Study the index of
-available `get*()` functions in SIMplyBee.
+are all synonyms for a position in the genome. Study the index of
+available `get*()` functions in SIMplyBee and read the genomics vignette for more information.
 
 ```{r help II}
 help(SIMplyBee)
 ```
-
-# Colony events
-
-TODO: Move colony events to another vignette - this one is long already and events will have lots of pictures!
-https://github.com/HighlanderLab/SIMplyBee/issues/345
-
-TODO: add colony events image
-
-TODO: where do we describe L0, L1, L2, and L3? In the next vignette that dives
-      into these aspects (already?)?
-TODO: related to the above, where do we want to write a list of functions
-      grouped by some nice system (according to L0, L1, L2 and L3?)
