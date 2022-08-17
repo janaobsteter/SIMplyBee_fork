@@ -1,0 +1,28 @@
+---
+title: "SIMplyBee - Sampling functions"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - Sampling functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
+```
+
+# Introduction
+
+Describe the use of helper sampling functions, like
+
+nWorkersPoisson
+nDronesPossion
+etc.
+
+this will make then transition to quantitative genetics a bit easier too!
+
