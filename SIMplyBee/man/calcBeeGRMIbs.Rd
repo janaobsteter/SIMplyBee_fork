@@ -39,15 +39,13 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(10)
-SP$addSnpChip(5)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 apiary <- createMultiColony(basePop[2:3], n = 2)
 apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 genoQ <- getQueenSegSiteGeno(apiary[[1]])
