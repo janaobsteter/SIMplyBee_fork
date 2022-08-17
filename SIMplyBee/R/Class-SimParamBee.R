@@ -1163,7 +1163,8 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @title Sample colony phenotype based on caste phenotypes
 #'
 #' @description Sample colony phenotype based on caste phenotypes -
-#'   used when \code{colonyFUN = NULL} (see \code{\link{SimParamBee}$colonyPheno}).
+#'   used when \code{FUN = NULL} in \code{\link{setColonyPheno}} but
+#'   \code{\link{SimParamBee$colonyPheno}} is set.
 #'
 #'   This is just an example - quite flexible one, though;) You can provide your
 #'   own functions that satisfy your needs!
