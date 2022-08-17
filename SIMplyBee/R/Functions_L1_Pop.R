@@ -182,6 +182,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
         nIndRequested <- nInd
         nIndAvailable <- nInd(pop)
         if (nIndRequested > nIndAvailable) {
+          warning("You are requesting more individuals than available.")
           nIndRequested <- nIndAvailable
         }
         if (nIndAvailable == 0) {
@@ -1446,7 +1447,6 @@ cross <- function(x, fathers,
           stop(msg)
         }
       }
-
       ret <- x
     } else {
       ret <- list()
