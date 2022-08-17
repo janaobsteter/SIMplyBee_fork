@@ -59,7 +59,7 @@ If both collapse and unique are \code{TRUE}, the function
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
