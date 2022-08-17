@@ -209,7 +209,6 @@ test_that("isCaste", {
   expect_false(isCaste(getQueen(colony), caste = "workers"))
   #test on virgin queen that is not present in a colony
   expect_null(isCaste(getVirginQueens(colony), caste = "virginQueens"))
-
 })
 
 # ---- calcQueensPHomBrood ----
@@ -234,7 +233,7 @@ test_that("calcQueensPHomBrood", {
 
   colony@queen <- NULL
  expect_error(calcQueensPHomBrood(colony@queen))
-  apiary <- createColonies()
+  apiary <- createMultiColony()
   colony@workers <- NULL
   colony@drones <- NULL
   colony@virginQueens <- NULL
@@ -265,13 +264,12 @@ test_that("pHomBrood", {
 
     colony@queen <- NULL
   expect_error(pHomBrood(colony@queen))
-    apiary <- createColonies()
+    apiary <- createMultiColony()
     colony@workers <- NULL
     colony@drones <- NULL
     colony@virginQueens <- NULL
   expect_error(pHomBrood(colony))
   expect_error(pHomBrood(apiary))
-
 })
 
 # ---- nHomBrood -----
@@ -297,13 +295,12 @@ test_that("nHomBrood", {
 
     colony@queen <- NULL
   expect_error(nHomBrood(colony@queen))
-    apiary <- createColonies()
+    apiary <- createMultiColony()
     colony@workers <- NULL
     colony@drones <- NULL
     colony@virginQueens <- NULL
   expect_error(nHomBrood(colony))
   expect_error(nHomBrood(apiary))
-
 })
 
 # ---- isQueenPresent ----
@@ -321,14 +318,14 @@ test_that("isQueenPresent", {
     colony <- cross(colony, fathers = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
-    apiary <- createColonies(n = 1)
+    apiary <- createMultiColony(n = 1)
     vec <- c(1,2,3,4)
-    apiary2 <- createColonies()
+    apiary2 <- createMultiColony()
 
   expect_true(isQueenPresent(colony))
-  expect_false(isQueenPresent(apiary))
+  expect_error(isQueenPresent(apiary)) #TODO do we want error?
   expect_error(isQueenPresent(vec))
-  expect_false(isQueenPresent(apiary2))
+  expect_true(is.vector(isQueenPresent(apiary2)))
 })
 
 # ---- isVirginQueensPresent ----
@@ -346,13 +343,15 @@ test_that("isVirginQueensPresent", {
     colony <- cross(colony, fathers = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
-    colony2 <- createMultiColony(n = 1)
+    apiary <- createMultiColony(n = 1)
     vec <- c(1,2,3,4)
+    apiary2 <- createMultiColony()
+
 
   expect_true(isVirginQueensPresent(colony))
-  expect_false(isVirginQueensPresent(colony2))
+  expect_error(isVirginQueensPresent(apiary))
   expect_error(isQueenVirginPresent(vec))
-  #naredi še z multui koloni brz argumenta
+  expect_true(is.vector(isVirginQueensPresent(apiary2)))
 })
 
 # ---- isProductive ----
@@ -379,8 +378,14 @@ test_that("isProductive", {
    expect_false(all(isProductive(apiary)))
     apiary <- buildUp(x = apiary)
    expect_true(all(isProductive(apiary)))
-   #še tuki dodaj prazne colony in colonies
 
+   colony <- createColony()
+  expect_false(isProductive(colony))
+   colony <- NULL
+  expect_null(isProductive(colony))
+
+   apiary <- createMultiColony()
+  expect_true(is.list(isProductive(apiary)))
 })
 # ---- reduceDroneHaplo ----
 
@@ -399,7 +404,8 @@ test_that("reduceDroneHaplo", {
  expect_error(reduceDroneHaplo(haplo = vec, pop = drones))
  expect_error(reduceDroneHaplo(haplo = df, pop = drones))
  expect_true(is.matrix(reduceDroneHaplo(haplo = tmpD, pop = drones)))
- #preveri, če ima matrika same nule in 1
+  tmp <- reduceDroneHaplo(haplo = tmpD, pop = drones)
+ expect_true(all(rle(as.vector(tmp))$values %in% 0:1))
 })
 
 # ---- reduceDroneGeno ----
@@ -418,8 +424,9 @@ test_that("reduceDroneGeno", {
   expect_error(reduceDroneGeno(geno = tmp, pop = queens))
   expect_error(reduceDroneGeno(geno = vec, pop = drones))
   expect_error(reduceDroneGeno(geno =  df, pop = drones))
-  expect_true(is.matrix(reduceDroneHaplo(haplo = tmpD, pop = drones)))
-  #preveri, če ima matrika same nule in 1
+  expect_true(is.matrix(reduceDroneGeno(geno = tmpD, pop = drones)))
+   tmp <- reduceDroneGeno(geno = tmpD, pop = drones)
+  expect_true(all(rle(as.vector(tmp))$values %in% 0:1))
 })
 
 # ---- getCsdAlleles ----
@@ -453,7 +460,24 @@ test_that("getCsdAlleles", {
    colony <- buildUp(x = colony)
 
  expect_error(getCsdAlleles(colony))
- #test unique and colapsed
+
+   # test unique and colapse
+   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
+   basePop <- createVirginQueens(founderGenomes)
+
+   drones <- createDrones(x = basePop[1], nInd = 1000)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+   # Create a Colony class
+   colony <- createColony(x = basePop[2])
+   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- buildUp(x = colony)
+  expect_true(is.matrix(getCsdAlleles(colony, collapse = TRUE)))
+  expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE)),
+               sum(nQueens(colony)*2, nFathers(colony), nWorkers(colony)*2, nDrones(colony),
+                   nVirginQueens(colony)*2))
+  expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE)),
+               nrow(unique(getCsdAlleles(colony, collapse = TRUE))))
 })
 
 # ---- getCsdGeno ----
@@ -487,8 +511,7 @@ test_that("getCsdGeno", {
     colony <- buildUp(x = colony)
 
   expect_error(getCsdGeno(colony))
-  #test unique and colapsed
-})
+  })
 
 # ---- isCsdHeterozygous ----
 
@@ -507,6 +530,7 @@ test_that("isCsdHeterozygous", {
 
   expect_true(isCsdHeterozygous(colony@queen))
   expect_true(is.vector(isCsdHeterozygous(colony@workers)))
+  expect_true(all(isCsdHeterozygous(colony@drones)))
 
     # set CSD to NULL
     SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -521,7 +545,6 @@ test_that("isCsdHeterozygous", {
     colony <- buildUp(x = colony)
 
   expect_error(isCsdHeterozygous(colony@queen))
-  #test on drones, shuld be true
 })
 
 # ---- nCsdAlleles ----
@@ -557,7 +580,21 @@ test_that("nCsdAlleles", {
     colony <- buildUp(x = colony)
 
   expect_error(nCsdAlleles(colony@queen))
+
   #collapse argument
+  nCsdAlleles <- 5
+  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = nCsdAlleles)
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 1000)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+  # Create a Colony class
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(x = colony)
+  expect_true(is.numeric(nCsdAlleles(colony, collapse = TRUE)))
+  expect_true(nCsdAlleles(colony, collapse = TRUE) <= nCsdAlleles)
 })
 
 # ---- calcBeeGRMIbs ----
@@ -605,7 +642,7 @@ test_that("calcBeeGRMIbs", {
 
   expect_error(calcBeeGRMIbs(x = vec, sex = sex))
 
-   # added A and B into the sex sice it can contain only M and F
+   # added A and B into the sex since it can contain only M and F
 
     sex <- getCasteSex(x = apiary[[1]])
     sex <- c(
@@ -614,7 +651,6 @@ test_that("calcBeeGRMIbs", {
     )
 
   expect_error(calcBeeGRMIbs(x = GRM, sex = sex))
-
 })
 
 # ---- editCsdLocus ----
@@ -628,12 +664,8 @@ test_that("editCsdLocus", {
     basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
 
   expect_true(isPop(basePopEdited))
-  #test if all individuals are heterozygous after editing
-
+  expect_true(all(isCsdHeterozygous(basePopEdited)))
 })
-
-##### za vsak error se uprašimo, če si ga res želimo, ali bi bilo bolje imeti NULL
-
 
 # ---- emptyNULL ----
 
@@ -668,5 +700,80 @@ test_that("emptyNULL", {
    expect_equal(nNULLColonies(emptyApiary), 3)
    expect_equal(nNULLColonies(emptyApiary1), 0)
    expect_equal(nNULLColonies(nonEmptyApiary), 0)
+})
+
+# ---- isDronesPresent ----
+
+test_that("isDronesPresent", {
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 1000)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+  # Create a Colony class object
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+  colony <- addVirginQueens(x = colony, nInd = 1)
+  apiary <- createMultiColony(n = 1)
+  vec <- c(1,2,3,4)
+  apiary2 <- createMultiColony()
+
+  expect_true(isDronesPresent(colony))
+  expect_error(isDronesPresent(apiary)) #TODO do we want error?
+  expect_error(isDronesPresent(vec))
+  expect_true(is.vector(isDronesPresent(apiary2)))
+})
+
+# ---- isFathersPresent ----
+
+test_that("isFathersPresent", {
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 1000)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+  # Create a Colony class object
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+  colony <- addVirginQueens(x = colony, nInd = 1)
+  apiary <- createMultiColony(n = 1)
+  vec <- c(1,2,3,4)
+  apiary2 <- createMultiColony()
+
+  expect_true(isFathersPresent(colony))
+  expect_error(isFathersPresent(apiary)) #TODO do we want error?
+  expect_error(isFathersPresent(vec))
+  expect_true(is.vector(isFathersPresent(apiary2)))
+})
+
+# ---- isWorkersPresent ----
+
+test_that("isWorkersPresent", {
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 1000)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+  # Create a Colony class object
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+  colony <- addVirginQueens(x = colony, nInd = 1)
+  apiary <- createMultiColony(n = 1)
+  vec <- c(1,2,3,4)
+  apiary2 <- createMultiColony()
+
+  expect_true(isWorkersPresent(colony))
+  expect_error(isWorkersPresent(apiary)) #TODO do we want error?
+  expect_error(isWorkersPresent(vec))
+  expect_true(is.vector(isWorkersPresent(apiary2)))
 })
 
