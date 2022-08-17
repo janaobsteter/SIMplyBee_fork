@@ -79,7 +79,7 @@ getQueenPheno(colony)
 
 getCastePheno(colony, caste = "fathers")
 getCastePheno(colony, caste = "fathers", nInd = 2)
-getCastePheno(colony, caste = "fathers", nInd = 2)
+getCastePheno(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersPheno(colony)
 getFathersPheno(colony, nInd = 2)
 
@@ -97,7 +97,7 @@ getQueenPheno(apiary)
 
 getCastePheno(apiary, caste = "fathers")
 getCastePheno(apiary, caste = "fathers", nInd = 2)
-getCastePheno(apiary, caste = "fathers", nInd = 2)
+getCastePheno(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersPheno(apiary)
 getFathersPheno(apiary, nInd = 2)
 

@@ -125,7 +125,7 @@ getQueenSegSiteHaplo(colony)
 
 getCasteSegSiteHaplo(colony, caste = "fathers")
 getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
-getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteHaplo(colony)
 getFathersSegSiteHaplo(colony, nInd = 2)
 
@@ -143,7 +143,7 @@ getQueenSegSiteHaplo(apiary)
 
 getCasteSegSiteHaplo(apiary, caste = "fathers")
 getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteHaplo(apiary)
 getFathersSegSiteHaplo(apiary, nInd = 2)
 

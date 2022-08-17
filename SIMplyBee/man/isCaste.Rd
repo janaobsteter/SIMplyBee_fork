@@ -37,7 +37,7 @@ colony <- addVirginQueens(x = colony, nInd = 4)
 
 isCaste(getQueen(colony), caste = "queen")
 isCaste(getFathers(colony, nInd = 2), caste = "fathers")
-isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+isCaste(getWorkers(colony, nInd = 2), caste = "workers") # random sample!
 isCaste(getDrones(colony, nInd = 2), caste = "drones")
 isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
 

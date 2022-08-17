@@ -125,7 +125,7 @@ getQueenIbdHaplo(colony)
 
 getCasteIbdHaplo(colony, caste = "fathers")
 getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
-getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
+getCasteIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersIbdHaplo(colony)
 getFathersIbdHaplo(colony, nInd = 2)
 
@@ -143,7 +143,7 @@ getQueenIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "fathers")
 getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersIbdHaplo(apiary)
 getFathersIbdHaplo(apiary, nInd = 2)
 

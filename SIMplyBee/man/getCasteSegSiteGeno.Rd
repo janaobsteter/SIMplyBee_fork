@@ -106,7 +106,7 @@ getQueenSegSiteGeno(colony)
 
 getCasteSegSiteGeno(colony, caste = "fathers")
 getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
-getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
+getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteGeno(colony)
 getFathersSegSiteGeno(colony, nInd = 2)
 
@@ -124,7 +124,7 @@ getQueenSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "fathers")
 getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
+getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteGeno(apiary)
 getFathersSegSiteGeno(apiary, nInd = 2)
 

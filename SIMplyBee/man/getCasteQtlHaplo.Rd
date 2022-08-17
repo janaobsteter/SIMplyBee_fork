@@ -131,7 +131,7 @@ getQueenQtlHaplo(colony)
 
 getCasteQtlHaplo(colony, caste = "fathers")
 getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
-getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
+getCasteQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersQtlHaplo(colony)
 getFathersQtlHaplo(colony, nInd = 2)
 
@@ -149,7 +149,7 @@ getQueenQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "fathers")
 getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersQtlHaplo(apiary)
 getFathersQtlHaplo(apiary, nInd = 2)
 

@@ -601,7 +601,7 @@ nHomBrood <- function(x) {
 #'
 #' isCaste(getQueen(colony), caste = "queen")
 #' isCaste(getFathers(colony, nInd = 2), caste = "fathers")
-#' isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+#' isCaste(getWorkers(colony, nInd = 2), caste = "workers") # random sample!
 #' isCaste(getDrones(colony, nInd = 2), caste = "drones")
 #' isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
 #'
@@ -3123,7 +3123,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' getCasteIbdHaplo(colony, caste = "fathers")
 #' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
-#' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersIbdHaplo(colony)
 #' getFathersIbdHaplo(colony, nInd = 2)
 #'
@@ -3141,7 +3141,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' getCasteIbdHaplo(apiary, caste = "fathers")
 #' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersIbdHaplo(apiary)
 #' getFathersIbdHaplo(apiary, nInd = 2)
 #'
@@ -3472,7 +3472,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlHaplo(colony, caste = "fathers")
 #' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
-#' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlHaplo(colony)
 #' getFathersQtlHaplo(colony, nInd = 2)
 #'
@@ -3490,7 +3490,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlHaplo(apiary, caste = "fathers")
 #' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlHaplo(apiary)
 #' getFathersQtlHaplo(apiary, nInd = 2)
 #'
@@ -3815,7 +3815,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlGeno(colony, caste = "fathers")
 #' getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
-#' getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlGeno(colony)
 #' getFathersQtlGeno(colony, nInd = 2)
 #'
@@ -3833,7 +3833,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteQtlGeno(apiary, caste = "fathers")
 #' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlGeno(apiary)
 #' getFathersQtlGeno(apiary, nInd = 2)
 #'
@@ -4150,7 +4150,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #'
 #' getCasteSegSiteHaplo(colony, caste = "fathers")
 #' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
-#' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteHaplo(colony)
 #' getFathersSegSiteHaplo(colony, nInd = 2)
 #'
@@ -4168,7 +4168,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "fathers")
 #' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteHaplo(apiary)
 #' getFathersSegSiteHaplo(apiary, nInd = 2)
 #'
@@ -4483,7 +4483,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #'
 #' getCasteSegSiteGeno(colony, caste = "fathers")
 #' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
-#' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteGeno(colony)
 #' getFathersSegSiteGeno(colony, nInd = 2)
 #'
@@ -4501,7 +4501,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #'
 #' getCasteSegSiteGeno(apiary, caste = "fathers")
 #' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteGeno(apiary)
 #' getFathersSegSiteGeno(apiary, nInd = 2)
 #'
@@ -4812,7 +4812,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #'
 #' getCasteSnpHaplo(colony, caste = "fathers")
 #' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
-#' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpHaplo(colony)
 #' getFathersSnpHaplo(colony, nInd = 2)
 #'
@@ -4830,7 +4830,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #'
 #' getCasteSnpHaplo(apiary, caste = "fathers")
 #' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpHaplo(apiary)
 #' getFathersSnpHaplo(apiary, nInd = 2)
 #'
@@ -5146,7 +5146,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteSnpGeno(colony, caste = "fathers")
 #' getCasteSnpGeno(colony, caste = "fathers", nInd = 2)
-#' getCasteSnpGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpGeno(colony)
 #' getFathersSnpGeno(colony, nInd = 2)
 #'
@@ -5164,7 +5164,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' getCasteSnpGeno(apiary, caste = "fathers")
 #' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpGeno(apiary)
 #' getFathersSnpGeno(apiary, nInd = 2)
 #'
@@ -5912,7 +5912,7 @@ calcBeeGRMIbd <- function(x) {
 #'
 #' getCastePheno(colony, caste = "fathers")
 #' getCastePheno(colony, caste = "fathers", nInd = 2)
-#' getCastePheno(colony, caste = "fathers", nInd = 2)
+#' getCastePheno(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersPheno(colony)
 #' getFathersPheno(colony, nInd = 2)
 #'
@@ -5930,7 +5930,7 @@ calcBeeGRMIbd <- function(x) {
 #'
 #' getCastePheno(apiary, caste = "fathers")
 #' getCastePheno(apiary, caste = "fathers", nInd = 2)
-#' getCastePheno(apiary, caste = "fathers", nInd = 2)
+#' getCastePheno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersPheno(apiary)
 #' getFathersPheno(apiary, nInd = 2)
 #'
@@ -6168,7 +6168,7 @@ getColonyPheno <- function(x, caste = c("queen", "fathers", "workers", "drones",
 #'
 #' getCasteGv(colony, caste = "fathers")
 #' getCasteGv(colony, caste = "fathers", nInd = 2)
-#' getCasteGv(colony, caste = "fathers", nInd = 2)
+#' getCasteGv(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersGv(colony)
 #' getFathersGv(colony, nInd = 2)
 #'
@@ -6186,7 +6186,7 @@ getColonyPheno <- function(x, caste = c("queen", "fathers", "workers", "drones",
 #'
 #' getCasteGv(apiary, caste = "fathers")
 #' getCasteGv(apiary, caste = "fathers", nInd = 2)
-#' getCasteGv(apiary, caste = "fathers", nInd = 2)
+#' getCasteGv(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersGv(apiary)
 #' getFathersGv(apiary, nInd = 2)
 #'
@@ -6425,7 +6425,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteBv(colony, caste = "fathers")
 #' getCasteBv(colony, caste = "fathers", nInd = 2)
-#' getCasteBv(colony, caste = "fathers", nInd = 2)
+#' getCasteBv(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersBv(colony)
 #' getFathersBv(colony, nInd = 2)
 #'
@@ -6443,7 +6443,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteBv(apiary, caste = "fathers")
 #' getCasteBv(apiary, caste = "fathers", nInd = 2)
-#' getCasteBv(apiary, caste = "fathers", nInd = 2)
+#' getCasteBv(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersBv(apiary)
 #' getFathersBv(apiary, nInd = 2)
 #'
@@ -6724,7 +6724,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteDd(colony, caste = "fathers")
 #' getCasteDd(colony, caste = "fathers", nInd = 2)
-#' getCasteDd(colony, caste = "fathers", nInd = 2)
+#' getCasteDd(colony, caste = "fathers", nInd = 2) # random sample!
 #' getFathersDd(colony)
 #' getFathersDd(colony, nInd = 2)
 #'
@@ -6742,7 +6742,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' getCasteDd(apiary, caste = "fathers")
 #' getCasteDd(apiary, caste = "fathers", nInd = 2)
-#' getCasteDd(apiary, caste = "fathers", nInd = 2)
+#' getCasteDd(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersDd(apiary)
 #' getFathersDd(apiary, nInd = 2)
 #'

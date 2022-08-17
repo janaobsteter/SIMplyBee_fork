@@ -79,7 +79,7 @@ getQueenGv(colony)
 
 getCasteGv(colony, caste = "fathers")
 getCasteGv(colony, caste = "fathers", nInd = 2)
-getCasteGv(colony, caste = "fathers", nInd = 2)
+getCasteGv(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersGv(colony)
 getFathersGv(colony, nInd = 2)
 
@@ -97,7 +97,7 @@ getQueenGv(apiary)
 
 getCasteGv(apiary, caste = "fathers")
 getCasteGv(apiary, caste = "fathers", nInd = 2)
-getCasteGv(apiary, caste = "fathers", nInd = 2)
+getCasteGv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersGv(apiary)
 getFathersGv(apiary, nInd = 2)
 

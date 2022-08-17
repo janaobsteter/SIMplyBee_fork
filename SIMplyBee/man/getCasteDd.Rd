@@ -80,7 +80,7 @@ getQueenDd(colony)
 
 getCasteDd(colony, caste = "fathers")
 getCasteDd(colony, caste = "fathers", nInd = 2)
-getCasteDd(colony, caste = "fathers", nInd = 2)
+getCasteDd(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersDd(colony)
 getFathersDd(colony, nInd = 2)
 
@@ -98,7 +98,7 @@ getQueenDd(apiary)
 
 getCasteDd(apiary, caste = "fathers")
 getCasteDd(apiary, caste = "fathers", nInd = 2)
-getCasteDd(apiary, caste = "fathers", nInd = 2)
+getCasteDd(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersDd(apiary)
 getFathersDd(apiary, nInd = 2)
 

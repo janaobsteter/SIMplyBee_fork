@@ -131,7 +131,7 @@ getQueenSnpHaplo(colony)
 
 getCasteSnpHaplo(colony, caste = "fathers")
 getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersSnpHaplo(colony)
 getFathersSnpHaplo(colony, nInd = 2)
 
@@ -149,7 +149,7 @@ getQueenSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "fathers")
 getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSnpHaplo(apiary)
 getFathersSnpHaplo(apiary, nInd = 2)
 

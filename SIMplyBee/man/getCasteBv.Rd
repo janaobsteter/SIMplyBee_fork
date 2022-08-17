@@ -81,7 +81,7 @@ getQueenBv(colony)
 
 getCasteBv(colony, caste = "fathers")
 getCasteBv(colony, caste = "fathers", nInd = 2)
-getCasteBv(colony, caste = "fathers", nInd = 2)
+getCasteBv(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersBv(colony)
 getFathersBv(colony, nInd = 2)
 
@@ -99,7 +99,7 @@ getQueenBv(apiary)
 
 getCasteBv(apiary, caste = "fathers")
 getCasteBv(apiary, caste = "fathers", nInd = 2)
-getCasteBv(apiary, caste = "fathers", nInd = 2)
+getCasteBv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersBv(apiary)
 getFathersBv(apiary, nInd = 2)
 
