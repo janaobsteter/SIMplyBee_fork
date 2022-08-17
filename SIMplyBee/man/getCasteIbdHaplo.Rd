@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteIbdHaplo}
 \alias{getCasteIbdHaplo}
-\alias{getQueensIbdHaplo}
+\alias{getQueenIbdHaplo}
 \alias{getFathersIbdHaplo}
 \alias{getVirginQueensIbdHaplo}
 \alias{getWorkersIbdHaplo}
@@ -19,7 +19,7 @@ getCasteIbdHaplo(
   simParamBee = NULL
 )
 
-getQueensIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
+getQueenIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
 
 getFathersIbdHaplo(
   x,
@@ -86,7 +86,7 @@ Level 0 function that returns IBD (identity by descent)
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensIbdHaplo()}: Access IBD haplotype data of the queen
+\item \code{getQueenIbdHaplo()}: Access IBD haplotype data of the queen
 
 \item \code{getFathersIbdHaplo()}: Access IBD haplotype data of fathers
 
@@ -121,7 +121,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteIbdHaplo(x = colony, caste = "queen")
-getQueensIbdHaplo(colony)
+getQueenIbdHaplo(colony)
 
 getCasteIbdHaplo(colony, caste = "fathers")
 getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
@@ -139,7 +139,7 @@ getCasteIbdHaplo(colony, caste = "drones")
 getDronesIbdHaplo(colony)
 
 getCasteIbdHaplo(x = apiary, caste = "queen")
-getQueensIbdHaplo(apiary)
+getQueenIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "fathers")
 getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)

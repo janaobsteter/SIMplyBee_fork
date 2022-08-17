@@ -39,7 +39,7 @@ apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-haploQ <- getQueensIbdHaplo(apiary[[1]])
+haploQ <- getQueenIbdHaplo(apiary[[1]])
 haploF <- getFathersIbdHaplo(apiary[[1]])
 haploW <- getWorkersIbdHaplo(apiary[[1]])
 haploD <- getDronesIbdHaplo(apiary[[1]])

@@ -567,7 +567,7 @@ nHomBrood <- function(x) {
 }
 
 #' @rdname isCaste
-#' @title Is individual a member of specific caste
+#' @title Is individual a member of a specific caste
 #'
 #' @description Level 0 function that tests if individuals are members of a
 #'   specific caste
@@ -1065,7 +1065,7 @@ isVirginQueensPresent <- function(x) {
 #' @export
 areVirginQueensPresent <- isVirginQueensPresent
 
-#' @rdname getQueensYearOfBirth
+#' @rdname getQueenYearOfBirth
 #' @title Access the queen's year of birth
 #'
 #' @description Level 0 function that returns the queen's year of birth.
@@ -1094,16 +1094,16 @@ areVirginQueensPresent <- isVirginQueensPresent
 #'
 #' queen <- getQueen(colony)
 #' queen <- setQueensYearOfBirth(queen, year = 2022)
-#' getQueensYearOfBirth(queen)
+#' getQueenYearOfBirth(queen)
 #'
-#' getQueensYearOfBirth(getQueen(colony))
+#' getQueenYearOfBirth(getQueen(colony))
 #' colony <- setQueensYearOfBirth(colony, year = 2030)
-#' getQueensYearOfBirth(colony)
+#' getQueenYearOfBirth(colony)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
-#' getQueensYearOfBirth(apiary)
+#' getQueenYearOfBirth(apiary)
 #' @export
-getQueensYearOfBirth <- function(x) {
+getQueenYearOfBirth <- function(x) {
   if (isPop(x)) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
@@ -1121,7 +1121,7 @@ getQueensYearOfBirth <- function(x) {
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = getQueensYearOfBirth)
+    ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -1129,7 +1129,7 @@ getQueensYearOfBirth <- function(x) {
   return(ret)
 }
 
-#' @rdname getQueensAge
+#' @rdname getQueenAge
 #' @title Get (calculate) the queen's age
 #'
 #' @description Level 0 function that returns the queen's age.
@@ -1157,15 +1157,15 @@ getQueensYearOfBirth <- function(x) {
 #'
 #' queen <- getQueen(colony)
 #' queen <- setQueensYearOfBirth(queen, year = 2020)
-#' getQueensAge(queen, currentYear = 2022)
+#' getQueenAge(queen, currentYear = 2022)
 #'
 #' colony <- setQueensYearOfBirth(colony, year = 2021)
-#' getQueensAge(colony, currentYear = 2022)
+#' getQueenAge(colony, currentYear = 2022)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2018)
-#' getQueensAge(apiary, currentYear = 2022)
+#' getQueenAge(apiary, currentYear = 2022)
 #' @export
-getQueensAge <- function(x, currentYear) {
+getQueenAge <- function(x, currentYear) {
   if (isPop(x)) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
@@ -1187,7 +1187,7 @@ getQueensAge <- function(x, currentYear) {
       ret <- NA
     }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = getQueensAge, currentYear = currentYear)
+    ret <- sapply(X = x@colonies, FUN = getQueenAge, currentYear = currentYear)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -2996,7 +2996,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteIbdHaplo(x = colony, caste = "queen")
-#' getQueensIbdHaplo(colony)
+#' getQueenIbdHaplo(colony)
 #'
 #' getCasteIbdHaplo(colony, caste = "fathers")
 #' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
@@ -3014,7 +3014,7 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #' getDronesIbdHaplo(colony)
 #'
 #' getCasteIbdHaplo(x = apiary, caste = "queen")
-#' getQueensIbdHaplo(apiary)
+#' getQueenIbdHaplo(apiary)
 #'
 #' getCasteIbdHaplo(apiary, caste = "fathers")
 #' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
@@ -3074,7 +3074,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, snpChip = NULL,
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
 #' @export
-getQueensIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL) {
+getQueenIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3345,7 +3345,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteQtlHaplo(colony, caste = "queen")
-#' getQueensQtlHaplo(colony)
+#' getQueenQtlHaplo(colony)
 #'
 #' getCasteQtlHaplo(colony, caste = "fathers")
 #' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
@@ -3363,7 +3363,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' getDronesQtlHaplo(colony)
 #'
 #' getCasteQtlHaplo(apiary, caste = "queen")
-#' getQueensQtlHaplo(apiary)
+#' getQueenQtlHaplo(apiary)
 #'
 #' getCasteQtlHaplo(apiary, caste = "fathers")
 #' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
@@ -3421,7 +3421,7 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
 #' @export
-getQueensQtlHaplo <- function(x,
+getQueenQtlHaplo <- function(x,
                               trait = 1, haplo = "all", chr = NULL,
                               simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -3692,7 +3692,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteQtlGeno(colony, caste = "queen")
-#' getQueensQtlGeno(colony)
+#' getQueenQtlGeno(colony)
 #'
 #' getCasteQtlGeno(colony, caste = "fathers")
 #' getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
@@ -3710,7 +3710,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' getDronesQtlGeno(colony)
 #'
 #' getCasteQtlGeno(apiary, caste = "queen")
-#' getQueensQtlGeno(apiary)
+#' getQueenQtlGeno(apiary)
 #'
 #' getCasteQtlGeno(apiary, caste = "fathers")
 #' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
@@ -3768,7 +3768,7 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteQtlGeno Access QTL genotype data of the queen
 #' @export
-getQueensQtlGeno <- function(x,
+getQueenQtlGeno <- function(x,
                              trait = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -4029,7 +4029,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteSegSiteHaplo(colony, caste = "queen")
-#' getQueensSegSiteHaplo(colony)
+#' getQueenSegSiteHaplo(colony)
 #'
 #' getCasteSegSiteHaplo(colony, caste = "fathers")
 #' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
@@ -4047,7 +4047,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' getDronesSegSiteHaplo(colony)
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "queen")
-#' getQueensSegSiteHaplo(apiary)
+#' getQueenSegSiteHaplo(apiary)
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "fathers")
 #' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
@@ -4105,7 +4105,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteHaplo <- function(x,
+getQueenSegSiteHaplo <- function(x,
                                   haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -4366,7 +4366,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteSegSiteGeno(colony, caste = "queen")
-#' getQueensSegSiteGeno(colony)
+#' getQueenSegSiteGeno(colony)
 #'
 #' getCasteSegSiteGeno(colony, caste = "fathers")
 #' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
@@ -4384,7 +4384,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #' getDronesSegSiteGeno(colony)
 #'
 #' getCasteSegSiteGeno(apiary, caste = "queen")
-#' getQueensSegSiteGeno(apiary)
+#' getQueenSegSiteGeno(apiary)
 #'
 #' getCasteSegSiteGeno(apiary, caste = "fathers")
 #' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
@@ -4441,7 +4441,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteGeno <- function(x,
+getQueenSegSiteGeno <- function(x,
                                  chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -4697,7 +4697,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteSnpHaplo(colony, caste = "queen")
-#' getQueensSnpHaplo(colony)
+#' getQueenSnpHaplo(colony)
 #'
 #' getCasteSnpHaplo(colony, caste = "fathers")
 #' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
@@ -4715,7 +4715,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #' getDronesSnpHaplo(colony)
 #'
 #' getCasteSnpHaplo(apiary, caste = "queen")
-#' getQueensSnpHaplo(apiary)
+#' getQueenSnpHaplo(apiary)
 #'
 #' getCasteSnpHaplo(apiary, caste = "fathers")
 #' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
@@ -4773,7 +4773,7 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
 #' @export
-getQueensSnpHaplo <- function(x,
+getQueenSnpHaplo <- function(x,
                               snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -5035,7 +5035,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteSnpGeno(colony, caste = "queen")
-#' getQueensSnpGeno(colony)
+#' getQueenSnpGeno(colony)
 #'
 #' getCasteSnpGeno(colony, caste = "fathers")
 #' getCasteSnpGeno(colony, caste = "fathers", nInd = 2)
@@ -5053,7 +5053,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' getDronesSnpGeno(colony)
 #'
 #' getCasteSnpGeno(apiary, caste = "queen")
-#' getQueensSnpGeno(apiary)
+#' getQueenSnpGeno(apiary)
 #'
 #' getCasteSnpGeno(apiary, caste = "fathers")
 #' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
@@ -5111,7 +5111,7 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
 
 #' @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
 #' @export
-getQueensSnpGeno <- function(x,
+getQueenSnpGeno <- function(x,
                              snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -5353,7 +5353,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' genoQ <- getQueensSegSiteGeno(apiary[[1]])
+#' genoQ <- getQueenSegSiteGeno(apiary[[1]])
 #' genoF <- getFathersSegSiteGeno(apiary[[1]])
 #' genoW <- getWorkersSegSiteGeno(apiary[[1]])
 #' genoD <- getDronesSegSiteGeno(apiary[[1]])
@@ -5458,7 +5458,7 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' genoQ <- getQueensSegSiteGeno(apiary[[1]])
+#' genoQ <- getQueenSegSiteGeno(apiary[[1]])
 #' genoF <- getFathersSegSiteGeno(apiary[[1]])
 #' genoW <- getWorkersSegSiteGeno(apiary[[1]])
 #' genoD <- getDronesSegSiteGeno(apiary[[1]])
@@ -5631,7 +5631,7 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' haploQ <- getQueensIbdHaplo(apiary[[1]])
+#' haploQ <- getQueenIbdHaplo(apiary[[1]])
 #' haploF <- getFathersIbdHaplo(apiary[[1]])
 #' haploW <- getWorkersIbdHaplo(apiary[[1]])
 #' haploD <- getDronesIbdHaplo(apiary[[1]])
@@ -5805,7 +5805,7 @@ calcBeeGRMIbd <- function(x) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteGv(colony, caste = "queen")
-#' getQueensGv(colony)
+#' getQueenGv(colony)
 #'
 #' getCasteGv(colony, caste = "fathers")
 #' getCasteGv(colony, caste = "fathers", nInd = 2)
@@ -5823,7 +5823,7 @@ calcBeeGRMIbd <- function(x) {
 #' getDronesGv(colony)
 #'
 #' getCasteGv(apiary, caste = "queen")
-#' getQueensGv(apiary)
+#' getQueenGv(apiary)
 #'
 #' getCasteGv(apiary, caste = "fathers")
 #' getCasteGv(apiary, caste = "fathers", nInd = 2)
@@ -5868,7 +5868,7 @@ getCasteGv <- function(x, caste, nInd = NULL) {
 
 #' @describeIn getCasteGv Access genetic value of the queen
 #' @export
-getQueensGv <- function(x) {
+getQueenGv <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
     ret <- getCasteGv(x, caste = "queen")
   } else {
@@ -6064,7 +6064,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteBv(colony, caste = "queen")
-#' getQueensBv(colony)
+#' getQueenBv(colony)
 #'
 #' getCasteBv(colony, caste = "fathers")
 #' getCasteBv(colony, caste = "fathers", nInd = 2)
@@ -6082,7 +6082,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' getDronesBv(colony)
 #'
 #' getCasteBv(apiary, caste = "queen")
-#' getQueensBv(apiary)
+#' getQueenBv(apiary)
 #'
 #' getCasteBv(apiary, caste = "fathers")
 #' getCasteBv(apiary, caste = "fathers", nInd = 2)
@@ -6133,7 +6133,7 @@ getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
 
 #' @describeIn getCasteBv Access breeding value of the queen
 #' @export
-getQueensBv <- function(x, simParamBee = NULL) {
+getQueenBv <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -6363,7 +6363,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' getCasteDd(colony, caste = "queen")
-#' getQueensDd(colony)
+#' getQueenDd(colony)
 #'
 #' getCasteDd(colony, caste = "fathers")
 #' getCasteDd(colony, caste = "fathers", nInd = 2)
@@ -6381,7 +6381,7 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' getDronesDd(colony)
 #'
 #' getCasteDd(apiary, caste = "queen")
-#' getQueensDd(apiary)
+#' getQueenDd(apiary)
 #'
 #' getCasteDd(apiary, caste = "fathers")
 #' getCasteDd(apiary, caste = "fathers", nInd = 2)
@@ -6432,7 +6432,7 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
 
 #' @describeIn getCasteDd Access dominance deviation of the queen
 #' @export
-getQueensDd <- function(x, simParamBee = NULL) {
+getQueenDd <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }

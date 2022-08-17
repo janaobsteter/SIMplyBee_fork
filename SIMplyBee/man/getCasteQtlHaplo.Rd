@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteQtlHaplo}
 \alias{getCasteQtlHaplo}
-\alias{getQueensQtlHaplo}
+\alias{getQueenQtlHaplo}
 \alias{getFathersQtlHaplo}
 \alias{getVirginQueensQtlHaplo}
 \alias{getWorkersQtlHaplo}
@@ -20,7 +20,7 @@ getCasteQtlHaplo(
   simParamBee = NULL
 )
 
-getQueensQtlHaplo(x, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL)
+getQueenQtlHaplo(x, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersQtlHaplo(
   x,
@@ -94,7 +94,7 @@ Level 0 function that returns QTL haplotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlHaplo()}: Access QTL haplotype data of the queen
+\item \code{getQueenQtlHaplo()}: Access QTL haplotype data of the queen
 
 \item \code{getFathersQtlHaplo()}: Access QTL haplotype data of fathers
 
@@ -129,7 +129,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteQtlHaplo(colony, caste = "queen")
-getQueensQtlHaplo(colony)
+getQueenQtlHaplo(colony)
 
 getCasteQtlHaplo(colony, caste = "fathers")
 getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
@@ -147,7 +147,7 @@ getCasteQtlHaplo(colony, caste = "drones")
 getDronesQtlHaplo(colony)
 
 getCasteQtlHaplo(apiary, caste = "queen")
-getQueensQtlHaplo(apiary)
+getQueenQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "fathers")
 getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)

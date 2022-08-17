@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{isCaste}
 \alias{isCaste}
-\title{Is individual a member of specific caste}
+\title{Is individual a member of a specific caste}
 \usage{
 isCaste(x, caste, simParamBee = NULL)
 }

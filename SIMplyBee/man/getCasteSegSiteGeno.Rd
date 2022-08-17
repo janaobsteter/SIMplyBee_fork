@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSegSiteGeno}
 \alias{getCasteSegSiteGeno}
-\alias{getQueensSegSiteGeno}
+\alias{getQueenSegSiteGeno}
 \alias{getFathersSegSiteGeno}
 \alias{getVirginQueensSegSiteGeno}
 \alias{getWorkersSegSiteGeno}
@@ -19,7 +19,7 @@ getCasteSegSiteGeno(
   simParamBee = NULL
 )
 
-getQueensSegSiteGeno(x, chr = NULL, simParamBee = NULL)
+getQueenSegSiteGeno(x, chr = NULL, simParamBee = NULL)
 
 getFathersSegSiteGeno(
   x,
@@ -69,7 +69,7 @@ Level 0 function that returns genotypes for all segregating
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSegSiteGeno()}: Access genotype data for all segregating sites of the queen
+\item \code{getQueenSegSiteGeno()}: Access genotype data for all segregating sites of the queen
 
 \item \code{getFathersSegSiteGeno()}: Access genotype data for all segregating sites of fathers
 
@@ -104,7 +104,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteSegSiteGeno(colony, caste = "queen")
-getQueensSegSiteGeno(colony)
+getQueenSegSiteGeno(colony)
 
 getCasteSegSiteGeno(colony, caste = "fathers")
 getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
@@ -122,7 +122,7 @@ getCasteSegSiteGeno(colony, caste = "drones")
 getDronesSegSiteGeno(colony)
 
 getCasteSegSiteGeno(apiary, caste = "queen")
-getQueensSegSiteGeno(apiary)
+getQueenSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "fathers")
 getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)

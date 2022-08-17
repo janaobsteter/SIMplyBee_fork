@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSegSiteHaplo}
 \alias{getCasteSegSiteHaplo}
-\alias{getQueensSegSiteHaplo}
+\alias{getQueenSegSiteHaplo}
 \alias{getFathersSegSiteHaplo}
 \alias{getVirginQueensSegSiteHaplo}
 \alias{getWorkersSegSiteHaplo}
@@ -20,7 +20,7 @@ getCasteSegSiteHaplo(
   simParamBee = NULL
 )
 
-getQueensSegSiteHaplo(x, haplo = "all", chr = NULL, simParamBee = NULL)
+getQueenSegSiteHaplo(x, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersSegSiteHaplo(
   x,
@@ -88,7 +88,7 @@ Level 0 function that returns haplotypes for all segregating
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
+\item \code{getQueenSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
 
 \item \code{getFathersSegSiteHaplo()}: Access haplotype data for all segregating sites of fathers
 
@@ -123,7 +123,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteSegSiteHaplo(colony, caste = "queen")
-getQueensSegSiteHaplo(colony)
+getQueenSegSiteHaplo(colony)
 
 getCasteSegSiteHaplo(colony, caste = "fathers")
 getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
@@ -141,7 +141,7 @@ getCasteSegSiteHaplo(colony, caste = "drones")
 getDronesSegSiteHaplo(colony)
 
 getCasteSegSiteHaplo(apiary, caste = "queen")
-getQueensSegSiteHaplo(apiary)
+getQueenSegSiteHaplo(apiary)
 
 getCasteSegSiteHaplo(apiary, caste = "fathers")
 getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)

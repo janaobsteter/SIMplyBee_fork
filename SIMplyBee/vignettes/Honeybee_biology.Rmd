@@ -33,8 +33,9 @@ biology. Specifically, it describes:
   
   6. Inheritance system, and
   
-  7. Colony events.
-  
+  7. Colony events. TODO: Move colony events to another vignette - this one is long already and events will have lots of pictures!
+https://github.com/HighlanderLab/SIMplyBee/issues/345
+
 Now load the package and dive in!
 
 ```{r load package}
@@ -43,7 +44,8 @@ library(package = "SIMplyBee")
 
 TODO: Say something about the image (covering 1-4) and how you can use it as a guide?
 
-TODO: add colony creation image
+TODO: add colony creation image - not working yet 
+# knitr::include_graphics("~/Desktop/GitHub/SIMplyBee/SIMplyBee/vignettes/images/founderpop_diagram2.pdf", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
 
 # Initiating with genomes and parameters
 
@@ -71,8 +73,7 @@ SP <- SimParamBee$new(founderGenomes)
 ```
 
 As mentioned there is many options provided by `SimParamBee` of which we will
-not talk about. You can quickly take a peek into the information and functions
-stored in the `SP` object.
+not talk about. You can quickly take a peek into the information and functions stored in the `SP` object. This gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
 
 ```{r SP, eval = FALSE}
 show(SP)
@@ -128,7 +129,7 @@ buildUp(colony, nWorkers = 10, nDrones = 7)
 ```
 
 Of note, we have not saved the result of the `buildUpColony()` call, so our
-colony object `colony` still doesn't contain workers and drones.
+currently saved colony object `colony` still doesn't contain workers and drones.
 
 At this point, its worth mentioning that `SimParamBee` (saved as the `SP` 
 object) conveniently holds some defaults for the number of workers and drones. 
@@ -137,10 +138,13 @@ to your needs.
 
 ```{r SP n values}
 SP$nWorkers
+```
+
+```{r SP n values 2}
 SP$nDrones
 ```
 
-When we run SIMplyBee functions, such defaults are automatically used.
+When we run SIMplyBee functions, such defaults are automatically used. We show this now by calling the `buildUp()` function on our colony. Note that now we are saving the function output and rewriting the currently saved colony object.
 
 ```{r build up colony with defaults}
 colony <- buildUp(colony)
@@ -157,27 +161,54 @@ queen. We also store fathers, which represent drones that the queen mated with.
 Storing fathers enables us to generate colony members on demand.
 Let's count how many individuals we have for each caste.
 
-```{r colony numbers}
+```{r colony numbers 1}
 nQueens(colony)
+```
+
+```{r colony numbers 2}
 nFathers(colony)
+```
+
+```{r colony numbers 3}
 nWorkers(colony)
+```
+
+```{r colony numbers 4}
 nDrones(colony)
+```
+
+```{r colony numbers 5}
 nVirginQueens(colony)
 ```
 
-We can also access castes using `get*()` functions. Should you want to pull out,
-that is, remove castes, or their members, have a look at `pull*()` functions.
+We can also access castes using `get*()` functions.
 
-```{r colony castes via get}
+```{r colony castes via get 1}
 (queen <- getQueen(colony))
+```
+
+```{r colony castes via get 2}
 (fathers <- getFathers(colony))
+```
+
+```{r colony castes via get 3}
 (workers <- getWorkers(colony))
+```
+
+```{r colony castes via get 4}
 (drones <- getDrones(colony))
+```
+
+```{r colony castes via get 5}
 (virginQueens <- getVirginQueens(colony))
 ```
 
+As you see above, there are no virgin queens present in the colony at this moment, since the queen is active. Future colony events will change this.
+
+Should you want to pull out, that is, remove castes, or their members, have a look at `pull*()` functions.
+
 There is additional information that you can retrieve. Peek under the hood and
-view the complete colony data structure with `str()`.
+view the complete colony data structure with `str(colony)`. This gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
 
 ```{r colony structure, eval = FALSE}
 str(colony)
@@ -186,33 +217,13 @@ str(colony)
 To explore the various accessor or modification functions, study the SIMplyBee's
 index of functions.
 
+TODO: point to PkdDown too
+
 ```{r help, eval = FALSE}
 help(SIMplyBee)
 ```
 
-TODO: add colony creation image- not working yet 
-# knitr::include_graphics("~/Desktop/GitHub/SIMplyBee/SIMplyBee/vignettes/images/founderpop_diagram2.pdf", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
-
-
-Sex of the caste members is as you would expect.
-
-```{r sex queen}
-queen@sex
-```
-
-```{r sex fathers}
-fathers@sex
-```
-
-```{r sex workers}
-workers@sex
-```
-
-```{r sex drones}
-drones@sex
-```
-
-Furthermore, the caste information is also as you would expect:
+The caste information of colony members is as you would expect:
 
 ```{r caste queen}
 getCaste(queen)
@@ -222,18 +233,16 @@ getCaste(queen)
 getCaste(fathers)
 ```
 
-and so on. However, when you have a bunch of bees at hand and you might not
-know their source, the `getCaste()` can be very useful.
+and so on. When you have a bunch of bees at hand and you might not know their source, the `getCaste()` can be very useful.
 
 ```{r caste bees}
-bees <- c(queen, fathers, workers, drones)
-bees@sex
+bees <- c(queen, fathers[1:2], workers[1:2], drones[1:2])
 getCaste(bees)
 ```
 
 # Complementary sex determining locus
 
-TODO: add genome image (tree and inheritance and csd)
+TODO: add genome image (tree and inheritance and csd)?
 
 The complementary sex determining (csd) locus, well, complements sex
 determination. Fertilised eggs that are heterozygous at the csd locus develop
@@ -265,7 +274,8 @@ current colony and mate her with her brothers. Oh, dear me.
 
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
-inbredColony <- cross(inbredColony, fathers = drones)
+fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
+inbredColony <- cross(inbredColony, fathers = fathers)
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 ```
@@ -310,8 +320,8 @@ getMisc(getQueen(inbredColony))
 
 # Inheritance system
 
-TODO: add genome image (tree and inheritance and csd)
-TODO: mention recombination
+TODO: add genome image (tree and inheritance and csd)?
+TODO: mention recombination - why (I can't recall anymore)?
 
 Honeybees have the haplo-diploid inheritance system where queens and workers
 are diploid and drones are haploid. In SIMplyBee, we simulate drones as
@@ -326,22 +336,29 @@ sites in columns (limiting to the first ten sites). Genotypes are simply a sum
 of the two haplotypes. First the queen:
 
 ```{r queens haplo}
-getQueensSegSiteHaplo(inbredColony)[, 1:10]
-getQueensSegSiteGeno(inbredColony)[, 1:10]
+getQueenSegSiteHaplo(inbredColony)[, 1:10]
+```
+```{r queens geno}
+getQueenSegSiteGeno(inbredColony)[, 1:10]
 ```
 
 now all fathers:
 
 ```{r fathers haplo}
 getFathersSegSiteHaplo(inbredColony)[, 1:10]
+```
+
+```{r fathers geno}
 getFathersSegSiteGeno(inbredColony)[, 1:10]
 ```
 
-each father is listed once (one row per father), but we can retrieve the diploid
-state, if this is desired:
+each father is listed once (one row per father), but we can retrieve the diploid state, if this is desired (showing just one father to show this clearly):
 
-```{r fathers haplo II}
+```{r fathers haplo 2}
 getFathersSegSiteHaplo(inbredColony, nInd = 1, dronesHaploid = FALSE)[, 1:10]
+```
+
+```{r fathers geno 2}
 getFathersSegSiteGeno(inbredColony, nInd = 1, dronesHaploid = FALSE)[, 1:10, drop = FALSE]
 ```
 
@@ -349,6 +366,9 @@ now two workers:
 
 ```{r workers haplo}
 getWorkersSegSiteHaplo(inbredColony, nInd = 2)[, 1:10]
+```
+
+```{r workers geno}
 getWorkersSegSiteGeno(inbredColony, nInd = 2)[, 1:10]
 ```
 
@@ -357,6 +377,9 @@ and finally four drones:
 ```{r drones haplo}
 inbredColony <- addDrones(inbredColony, nInd = 4)
 getDronesSegSiteHaplo(inbredColony)[, 1:10]
+```
+
+```{r drones geno}
 getDronesSegSiteGeno(inbredColony)[, 1:10]
 ```
 
@@ -371,6 +394,9 @@ help(SIMplyBee)
 ```
 
 # Colony events
+
+TODO: Move colony events to another vignette - this one is long already and events will have lots of pictures!
+https://github.com/HighlanderLab/SIMplyBee/issues/345
 
 TODO: add colony events image
 

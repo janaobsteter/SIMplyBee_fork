@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteGv}
 \alias{getCasteGv}
-\alias{getQueensGv}
+\alias{getQueenGv}
 \alias{getFathersGv}
 \alias{getVirginQueensGv}
 \alias{getWorkersGv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteGv(x, caste, nInd = NULL)
 
-getQueensGv(x)
+getQueenGv(x)
 
 getFathersGv(x, nInd = NULL)
 
@@ -42,7 +42,7 @@ Level 0 function that returns genetic values of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensGv()}: Access genetic value of the queen
+\item \code{getQueenGv()}: Access genetic value of the queen
 
 \item \code{getFathersGv()}: Access genetic values of fathers
 
@@ -77,7 +77,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteGv(colony, caste = "queen")
-getQueensGv(colony)
+getQueenGv(colony)
 
 getCasteGv(colony, caste = "fathers")
 getCasteGv(colony, caste = "fathers", nInd = 2)
@@ -95,7 +95,7 @@ getCasteGv(colony, caste = "drones")
 getDronesGv(colony)
 
 getCasteGv(apiary, caste = "queen")
-getQueensGv(apiary)
+getQueenGv(apiary)
 
 getCasteGv(apiary, caste = "fathers")
 getCasteGv(apiary, caste = "fathers", nInd = 2)

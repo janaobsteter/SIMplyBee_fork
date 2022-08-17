@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteQtlGeno}
 \alias{getCasteQtlGeno}
-\alias{getQueensQtlGeno}
+\alias{getQueenQtlGeno}
 \alias{getFathersQtlGeno}
 \alias{getVirginQueensQtlGeno}
 \alias{getWorkersQtlGeno}
@@ -19,7 +19,7 @@ getCasteQtlGeno(
   simParamBee = NULL
 )
 
-getQueensQtlGeno(x, trait = 1, chr = NULL, simParamBee = NULL)
+getQueenQtlGeno(x, trait = 1, chr = NULL, simParamBee = NULL)
 
 getFathersQtlGeno(
   x,
@@ -79,7 +79,7 @@ Level 0 function that returns QTL genotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlGeno()}: Access QTL genotype data of the queen
+\item \code{getQueenQtlGeno()}: Access QTL genotype data of the queen
 
 \item \code{getFathersQtlGeno()}: Access QTL genotype data of fathers
 
@@ -114,7 +114,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteQtlGeno(colony, caste = "queen")
-getQueensQtlGeno(colony)
+getQueenQtlGeno(colony)
 
 getCasteQtlGeno(colony, caste = "fathers")
 getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
@@ -132,7 +132,7 @@ getCasteQtlGeno(colony, caste = "drones")
 getDronesQtlGeno(colony)
 
 getCasteQtlGeno(apiary, caste = "queen")
-getQueensQtlGeno(apiary)
+getQueenQtlGeno(apiary)
 
 getCasteQtlGeno(apiary, caste = "fathers")
 getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)

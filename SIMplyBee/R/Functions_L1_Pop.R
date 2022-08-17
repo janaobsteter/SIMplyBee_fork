@@ -1532,18 +1532,18 @@ cross <- function(x, fathers,
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #'
 #' # Example on Colony class
-#' getQueensYearOfBirth(colony)
-#' getQueensYearOfBirth(apiary)
+#' getQueenYearOfBirth(colony)
+#' getQueenYearOfBirth(apiary)
 #'
 #' queen1 <- getQueen(colony)
 #' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
-#' getQueensYearOfBirth(queen1)
+#' getQueenYearOfBirth(queen1)
 #'
 #' colony <- setQueensYearOfBirth(colony, year = 2022)
-#' getQueensYearOfBirth(colony)
+#' getQueenYearOfBirth(colony)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
-#' getQueensYearOfBirth(apiary)
+#' getQueenYearOfBirth(apiary)
 #' @export
 setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {

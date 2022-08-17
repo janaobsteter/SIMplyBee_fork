@@ -40,7 +40,7 @@ apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-genoQ <- getQueensSegSiteGeno(apiary[[1]])
+genoQ <- getQueenSegSiteGeno(apiary[[1]])
 genoF <- getFathersSegSiteGeno(apiary[[1]])
 genoW <- getWorkersSegSiteGeno(apiary[[1]])
 genoD <- getDronesSegSiteGeno(apiary[[1]])

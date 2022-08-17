@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteBv}
 \alias{getCasteBv}
-\alias{getQueensBv}
+\alias{getQueenBv}
 \alias{getFathersBv}
 \alias{getVirginQueensBv}
 \alias{getWorkersBv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteBv(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensBv(x, simParamBee = NULL)
+getQueenBv(x, simParamBee = NULL)
 
 getFathersBv(x, nInd = NULL, simParamBee = NULL)
 
@@ -44,7 +44,7 @@ Level 0 function that returns breeding values of individuals in
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensBv()}: Access breeding value of the queen
+\item \code{getQueenBv()}: Access breeding value of the queen
 
 \item \code{getFathersBv()}: Access breeding values of fathers
 
@@ -79,7 +79,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteBv(colony, caste = "queen")
-getQueensBv(colony)
+getQueenBv(colony)
 
 getCasteBv(colony, caste = "fathers")
 getCasteBv(colony, caste = "fathers", nInd = 2)
@@ -97,7 +97,7 @@ getCasteBv(colony, caste = "drones")
 getDronesBv(colony)
 
 getCasteBv(apiary, caste = "queen")
-getQueensBv(apiary)
+getQueenBv(apiary)
 
 getCasteBv(apiary, caste = "fathers")
 getCasteBv(apiary, caste = "fathers", nInd = 2)

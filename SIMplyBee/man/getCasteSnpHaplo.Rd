@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSnpHaplo}
 \alias{getCasteSnpHaplo}
-\alias{getQueensSnpHaplo}
+\alias{getQueenSnpHaplo}
 \alias{getFathersSnpHaplo}
 \alias{getVirginQueensSnpHaplo}
 \alias{getWorkersSnpHaplo}
@@ -20,13 +20,7 @@ getCasteSnpHaplo(
   simParamBee = NULL
 )
 
-getQueensSnpHaplo(
-  x,
-  snpChip = 1,
-  haplo = "all",
-  chr = NULL,
-  simParamBee = NULL
-)
+getQueenSnpHaplo(x, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersSnpHaplo(
   x,
@@ -100,7 +94,7 @@ Level 0 function that returns SNP array haplotypes of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSnpHaplo()}: Access SNP array haplotype data of the queen
+\item \code{getQueenSnpHaplo()}: Access SNP array haplotype data of the queen
 
 \item \code{getFathersSnpHaplo()}: Access SNP array haplotype data of fathers
 
@@ -135,7 +129,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteSnpHaplo(colony, caste = "queen")
-getQueensSnpHaplo(colony)
+getQueenSnpHaplo(colony)
 
 getCasteSnpHaplo(colony, caste = "fathers")
 getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
@@ -153,7 +147,7 @@ getCasteSnpHaplo(colony, caste = "drones")
 getDronesSnpHaplo(colony)
 
 getCasteSnpHaplo(apiary, caste = "queen")
-getQueensSnpHaplo(apiary)
+getQueenSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "fathers")
 getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)

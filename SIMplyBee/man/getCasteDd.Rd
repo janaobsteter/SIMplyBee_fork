@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteDd}
 \alias{getCasteDd}
-\alias{getQueensDd}
+\alias{getQueenDd}
 \alias{getFathersDd}
 \alias{getVirginQueensDd}
 \alias{getWorkersDd}
@@ -11,7 +11,7 @@
 \usage{
 getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensDd(x, simParamBee = NULL)
+getQueenDd(x, simParamBee = NULL)
 
 getFathersDd(x, nInd = NULL, simParamBee = NULL)
 
@@ -44,7 +44,7 @@ Level 0 function that returns dominance deviations of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensDd()}: Access dominance deviation of the queen
+\item \code{getQueenDd()}: Access dominance deviation of the queen
 
 \item \code{getFathersDd()}: Access dominance deviations of fathers
 
@@ -76,7 +76,7 @@ apiary <- buildUp(x = apiary)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteDd(colony, caste = "queen")
-getQueensDd(colony)
+getQueenDd(colony)
 
 getCasteDd(colony, caste = "fathers")
 getCasteDd(colony, caste = "fathers", nInd = 2)
@@ -94,7 +94,7 @@ getCasteDd(colony, caste = "drones")
 getDronesDd(colony)
 
 getCasteDd(apiary, caste = "queen")
-getQueensDd(apiary)
+getQueenDd(apiary)
 
 getCasteDd(apiary, caste = "fathers")
 getCasteDd(apiary, caste = "fathers", nInd = 2)

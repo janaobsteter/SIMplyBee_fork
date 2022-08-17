@@ -71,7 +71,7 @@ apiary <- setColonyPheno(apiary)
 # Queen's phenotype for both traits
 pheno(getQueen(colony))
 lapply(getQueen(apiary), FUN = pheno)
-# TODO: use getQueensPheno(colony, caste = "queen")
+# TODO: use getQueenPheno(colony, caste = "queen")
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Workers' phenotype for both traits
