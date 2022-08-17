@@ -93,8 +93,6 @@ Level 0 function that returns QTL genotypes of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)

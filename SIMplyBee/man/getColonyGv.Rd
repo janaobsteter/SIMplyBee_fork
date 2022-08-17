@@ -9,6 +9,12 @@ getColonyGv(
   caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
   nInd = NULL
 )
+
+getColonyGv(
+  x,
+  caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+  nInd = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -27,16 +33,52 @@ list of vector of genetic values when \code{x} is
   of vectors of genetic values when \code{x} is \code{\link{MultiColony-class}},
   outer list is named by colony id when \code{x} is
   \code{\link{MultiColony-class}}
+
+list of vector of genetic values when \code{x} is
+  \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+  of vectors of genetic values when \code{x} is \code{\link{MultiColony-class}},
+  outer list is named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
+Level 0 function that returns genetic values of individuals in
+  colony.
+
 Level 0 function that returns genetic values of individuals in
   colony.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- buildUp(x = colony)
+colony <- addVirginQueens(x = colony, nInd = 5)
+
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- buildUp(x = apiary)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+getColonyGv(colony)
+getColonyGv(colony, caste = c("queen", "fathers"))
+getColonyGv(colony, nInd = 1)
+getColonyGv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+
+getColonyGv(apiary)
+getColonyGv(apiary, caste = c("queen", "fathers"))
+getColonyGv(apiary, nInd = 1)
+getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
@@ -66,5 +108,7 @@ getColonyGv(apiary, nInd = 1)
 getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 }
 \seealso{
+\code{\link{gv}}
+
 \code{\link{gv}}
 }

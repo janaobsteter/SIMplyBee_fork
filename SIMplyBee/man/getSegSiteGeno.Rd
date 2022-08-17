@@ -28,8 +28,6 @@ This is an alias for the AlphaSimR function to distinguish between getting
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)

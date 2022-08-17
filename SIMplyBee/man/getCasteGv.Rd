@@ -20,6 +20,16 @@ getVirginQueensGv(x, nInd = NULL)
 getWorkersGv(x, nInd = NULL)
 
 getDronesGv(x, nInd = NULL)
+
+getQueenGv(x)
+
+getFathersGv(x, nInd = NULL)
+
+getVirginQueensGv(x, nInd = NULL)
+
+getWorkersGv(x, nInd = NULL)
+
+getDronesGv(x, nInd = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -52,12 +62,20 @@ Level 0 function that returns genetic values of individuals in a
 
 \item \code{getDronesGv()}: Access genetic values of drones
 
+\item \code{getQueenGv()}: Access genetic value of the queen
+
+\item \code{getFathersGv()}: Access genetic values of fathers
+
+\item \code{getVirginQueensGv()}: Access genetic values of virgin queens
+
+\item \code{getWorkersGv()}: Access genetic values of workers
+
+\item \code{getDronesGv()}: Access genetic values of drones
+
 }}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)

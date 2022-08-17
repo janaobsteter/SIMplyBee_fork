@@ -48,8 +48,6 @@ Level 0 function that returns SNP array genotypes of individuals
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)

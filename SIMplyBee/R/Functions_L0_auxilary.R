@@ -2686,8 +2686,6 @@ getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -2732,8 +2730,6 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -2781,8 +2777,6 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -2827,8 +2821,6 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -2877,8 +2869,6 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -2924,8 +2914,6 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -3329,8 +3317,6 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -3562,8 +3548,6 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -3676,8 +3660,6 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -3897,8 +3879,6 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4013,8 +3993,6 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4237,8 +4215,6 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4350,8 +4326,6 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4568,8 +4542,6 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4681,8 +4653,6 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4905,8 +4875,6 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -5019,8 +4987,6 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -5240,8 +5206,6 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -5345,8 +5309,6 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #'
@@ -5450,8 +5412,6 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #'
@@ -5789,8 +5749,6 @@ calcBeeGRMIbd <- function(x) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -6048,8 +6006,6 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -6247,8 +6203,6 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
 #' SP$addTraitA(10)
 #' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)

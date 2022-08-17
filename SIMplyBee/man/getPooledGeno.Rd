@@ -27,8 +27,6 @@ Level 0 function that returns a pooled genotype from true
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
 SP$addTraitA(10)
 SP$addSnpChip(5)
 
