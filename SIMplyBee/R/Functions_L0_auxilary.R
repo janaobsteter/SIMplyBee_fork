@@ -187,7 +187,7 @@ nCaste <- function(x, caste = "all") {
       if (caste == "fathers") {
           ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
       } else {
-        ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+        ret <- ifelse(!is.null(slot(x, caste)), nInd(slot(x, caste)), 0)
       }
     }
   } else if (isMultiColony(x)) {
@@ -870,16 +870,150 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' isQueenPresent(colony)
 #' @export
 isQueenPresent <- function(x) {
-  if (isColony(x)) {
-    ret <- !is.null(x@queen)
-  } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenPresent)
-    names(ret) <- getId(x)
+  if (isColony(x) | isMultiColony(x)) {
+    ret <- nQueens(x) > 0
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+
+#' @rdname isFathersPresent
+#' @title Are fathers present (=queen mated)
+#'
+#' @description Level 0 function that returns fathers presence status (are they
+#'   present or not, which means the queen is mated).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' isFathersPresent(colony)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' isFathersPresent(apiary)
+#'
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' isFathersPresent(removeDrones(colony))
+#'
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' isFathersPresent(removeDrones(apiary))
+#' @export
+isFathersPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    ret <- nFathers(x) > 0
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isFathersPresent Are fathers present
+#' @export
+areFathersPresent <- isFathersPresent
+
+#' @rdname isWorkersPresent
+#' @title Are workers present
+#'
+#' @description Level 0 function that returns workers presence status (are they
+#'   present or not).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#'
+#' isWorkersPresent(colony)
+#' isWorkersPresent(removeWorkers(colony))
+#' isWorkersPresent(apiary)
+#' isWorkersPresent(removeWorkers(apiary))
+#' @export
+isWorkersPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    ret <- nWorkers(x) > 0
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isWorkersPresent Are workers present
+#' @export
+areWorkersPresent <- isWorkersPresent
+
+#' @rdname isDronesPresent
+#' @title Are drones present
+#'
+#' @description Level 0 function that returns drones presence status (are they
+#'   present or not).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#'
+#' isDronesPresent(colony)
+#' isDronesPresent(removeDrones(colony))
+#' isDronesPresent(apiary)
+#' isDronesPresent(removeDrones(apiary))
+#' @export
+isDronesPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    ret <- nDrones(x) > 0
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isWorkersPresent Are drones present
+#' @export
+areDronesPresent <- isDronesPresent
 
 #' @rdname isVirginQueensPresent
 #' @title Are virgin queen(s) present
@@ -904,31 +1038,32 @@ isQueenPresent <- function(x) {
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
 #' colony <- addVirginQueens(x = colony, nInd = 4)
 #' isVirginQueensPresent(colony)
+#' isVirginQueensPresent(pullVirginQueens(colony)$remnant)
+#' isVirginQueensPresent(removeQueen(colony))
+#' # TODO: Should removeQueen() initiate creation of virginQueens #339
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/339
 #'
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #' isVirginQueensPresent(apiary)
 #'
-#' colony <- removeQueen(colony)
-#' isVirginQueensPresent(colony)
-#'
 #' tmp <- swarm(x = apiary)
 #' isVirginQueensPresent(tmp$swarm)
 #' isVirginQueensPresent(tmp$remnant)
 #' @export
 isVirginQueensPresent <- function(x) {
-  if (isColony(x)) {
-    ret <- !is.null(x@virginQueens)
-  } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = isVirginQueensPresent)
-    names(ret) <- getId(x)
+  if (isColony(x) | isMultiColony(x)) {
+    ret <- nVirginQueens(x) > 0
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+areVirginQueensPresent <- isVirginQueensPresent
 
 #' @rdname getQueensYearOfBirth
 #' @title Access the queen's year of birth

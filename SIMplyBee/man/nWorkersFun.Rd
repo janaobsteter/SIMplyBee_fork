@@ -40,7 +40,7 @@ colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{...}{other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}}
+\item{...}{other arguments of \code{\link{calcColonyPhenoFromCaste}}}
 }
 \value{
 numeric, number of workers
@@ -59,7 +59,7 @@ Sample a number of workers - used when \code{nInd = NULL}
 
   \code{nWorkersColonyPhenotype} returns a number (above \code{lowerLimit})
   as a function of colony phenotype, say queen's fecundity. Colony phenotype
-  is provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+  is provided by \code{\link{calcColonyPhenoFromCaste}}. You need to set up
   traits influencing the colony phenotype and their parameters (mean and
   variances) via \code{\link{SimParamBee}} (see examples).
 }
