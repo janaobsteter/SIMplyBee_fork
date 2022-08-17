@@ -2166,15 +2166,20 @@ reduceDroneGeno <- function(geno, pop) {
 #'   allele
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if \code{TRUE}, the function will return a set of
-#'   csd alleles in either the entire population, colony, or multicolony. Default
-#'   is \code{FALSE}.
-#' @param unique logical, return only the unique set of csd alleles. Default
-#'   is \code{FALSE}.
+#'   csd alleles across the entire population, colony, or multicolony (not
+#'   separately for each caste when \code{x} is a colony or each caste of
+#'   each colony when \code{x} is a multicolony. This is a way to get one single
+#'   object as an output across castes or colonies. Default is \code{FALSE}. See
+#'   examples about this behaviour.
+#' @param unique logical, return only the unique set of csd alleles. This argument
+#'   interacts with \code{collapse}. Default is \code{FALSE}. See examples about
+#'   this behaviour.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details  If both collapse and unique are \code{TRUE}, the function
 #'   returns a unique set of csd alleles in the entire population, colony, or
 #'   multicolony
+#'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
