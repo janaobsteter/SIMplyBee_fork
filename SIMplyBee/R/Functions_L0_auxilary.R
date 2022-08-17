@@ -187,7 +187,7 @@ nCaste <- function(x, caste = "all") {
       }
     } else {
       if (caste == "fathers") {
-          ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
+        ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
       } else {
         ret <- ifelse(!is.null(slot(x, caste)), nInd(slot(x, caste)), 0)
       }
@@ -235,11 +235,7 @@ nCaste <- function(x, caste = "all") {
 #' nQueens(apiary)
 #' @export
 nQueens <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- nCaste(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- nCaste(x, caste = "queen")
   return(ret)
 }
 
@@ -282,10 +278,8 @@ nFathers <- function(x) {
         ret[ind] <- nInd(x@misc[[ind]]$fathers)
       }
     }
-  } else if (isColony(x) | isMultiColony(x)) {
-    ret <- nCaste(x, caste = "fathers")
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    ret <- nCaste(x, caste = "fathers")
   }
   return(ret)
 }
@@ -320,11 +314,7 @@ nFathers <- function(x) {
 #' nVirginQueens(apiary)
 #' @export
 nVirginQueens <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- nCaste(x, caste = "virginQueens")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- nCaste(x, caste = "virginQueens")
   return(ret)
 }
 
@@ -367,11 +357,7 @@ nVirginQueens <- function(x) {
 #' nWorkers(apiary)
 #' @export
 nWorkers <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- nCaste(x, caste = "workers")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- nCaste(x, caste = "workers")
   return(ret)
 }
 
@@ -407,11 +393,7 @@ nWorkers <- function(x) {
 #' nDrones(apiary)
 #' @export
 nDrones <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- nCaste(x, caste = "drones")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- nCaste(x, caste = "drones")
   return(ret)
 }
 
@@ -619,6 +601,9 @@ nHomBrood <- function(x) {
 #' isCaste(bees, caste = "virginQueens")
 #' @export
 isCaste <- function(x, caste, simParamBee = NULL) {
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -664,9 +649,6 @@ isCaste <- function(x, caste, simParamBee = NULL) {
 #' isQueen(bees)
 #' @export
 isQueen <- function(x, simParamBee = NULL) {
-  if (!isPop(x)) {
-    stop("Argument x must be a Pop class object!")
-  }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -3191,16 +3173,12 @@ getQueenIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL) 
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "queen",
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "queen",
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3212,16 +3190,12 @@ getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "fathers", nInd = nInd, chr = chr,
-      snpChip = snpChip,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "fathers", nInd = nInd, chr = chr,
+                          snpChip = snpChip,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3232,17 +3206,13 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "virginQueens",
-      nInd = nInd,
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "virginQueens",
+                          nInd = nInd,
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3253,17 +3223,13 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "workers",
-      nInd = nInd,
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "workers",
+                          nInd = nInd,
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3275,17 +3241,13 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "drones",
-      nInd = nInd, chr = chr,
-      snpChip = snpChip,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "drones",
+                          nInd = nInd, chr = chr,
+                          snpChip = snpChip,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3532,20 +3494,16 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
 #' @export
 getQueenQtlHaplo <- function(x,
-                              trait = 1, haplo = "all", chr = NULL,
-                              simParamBee = NULL) {
+                             trait = 1, haplo = "all", chr = NULL,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "queen",
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "queen",
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3558,16 +3516,12 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "fathers", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "fathers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3579,15 +3533,11 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "virginQueens", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3599,16 +3549,11 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "workers", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "workers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3621,16 +3566,12 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "drones", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "drones", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3873,18 +3814,14 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteQtlGeno Access QTL genotype data of the queen
 #' @export
 getQueenQtlGeno <- function(x,
-                             trait = 1, chr = NULL, simParamBee = NULL) {
+                            trait = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "queen",
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "queen",
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3896,16 +3833,12 @@ getFathersQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "fathers", nInd = nInd,
-      trait = trait, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "fathers", nInd = nInd,
+                         trait = trait, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3916,14 +3849,10 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "virginQueens", nInd = nInd,
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3934,14 +3863,10 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "workers", nInd = nInd,
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "workers", nInd = nInd,
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3953,16 +3878,12 @@ getDronesQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "drones", nInd = nInd,
-      trait = trait, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "drones", nInd = nInd,
+                         trait = trait, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4205,18 +4126,14 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
 #' @export
 getQueenSegSiteHaplo <- function(x,
-                                  haplo = "all", chr = NULL, simParamBee = NULL) {
+                                 haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "queen",
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "queen",
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4228,16 +4145,12 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "fathers", nInd = nInd,
-      haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "fathers", nInd = nInd,
+                              haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4248,14 +4161,10 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "virginQueens", nInd = nInd,
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4266,14 +4175,10 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "workers", nInd = nInd,
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "workers", nInd = nInd,
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4285,16 +4190,12 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "drones", nInd = nInd,
-      haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "drones", nInd = nInd,
+                              haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4533,18 +4434,14 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
 #' @export
 getQueenSegSiteGeno <- function(x,
-                                 chr = NULL, simParamBee = NULL) {
+                                chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "queen",
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "queen",
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4556,15 +4453,11 @@ getFathersSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "fathers", nInd = nInd,
-      chr = chr, dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "fathers", nInd = nInd,
+                             chr = chr, dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4575,14 +4468,10 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "virginQueens", nInd = nInd,
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4593,14 +4482,10 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "workers", nInd = nInd,
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "workers", nInd = nInd,
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4612,15 +4497,11 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "drones", nInd = nInd,
-      chr = chr, dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "drones", nInd = nInd,
+                             chr = chr, dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4860,18 +4741,14 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
 #' @export
 getQueenSnpHaplo <- function(x,
-                              snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+                             snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "queen",
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "queen",
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4883,16 +4760,12 @@ getFathersSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "fathers", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "fathers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4903,14 +4776,10 @@ getVirginQueensSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "virginQueens", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4921,14 +4790,10 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "workers", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "workers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4940,16 +4805,12 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "drones", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "drones", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5192,18 +5053,14 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
 #' @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
 #' @export
 getQueenSnpGeno <- function(x,
-                             snpChip = 1, chr = NULL, simParamBee = NULL) {
+                            snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "queen",
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "queen",
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5215,16 +5072,12 @@ getFathersSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "fathers", nInd = nInd,
-      snpChip = snpChip, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "fathers", nInd = nInd,
+                         snpChip = snpChip, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5235,14 +5088,10 @@ getVirginQueensSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "virginQueens", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5253,14 +5102,10 @@ getWorkersSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "workers", nInd = nInd,
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "workers", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5272,16 +5117,12 @@ getDronesSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "drones", nInd = nInd,
-      snpChip = snpChip, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "drones", nInd = nInd,
+                         snpChip = snpChip, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5944,55 +5785,35 @@ getCastePheno <- function(x, caste, nInd = NULL) {
 #' @describeIn getCastePheno Access phenotype value of the queen
 #' @export
 getQueenPheno <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePheno(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePheno(x, caste = "queen")
   return(ret)
 }
 
 #' @describeIn getCastePheno Access phenotype values of fathers
 #' @export
 getFathersPheno <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePheno(x, caste = "fathers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePheno(x, caste = "fathers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCastePheno Access phenotype values of virgin queens
 #' @export
 getVirginQueensPheno <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePheno(x, caste = "virginQueens", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePheno(x, caste = "virginQueens", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCastePheno Access phenotype values of workers
 #' @export
 getWorkersPheno <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePheno(x, caste = "workers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePheno(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCastePheno Access phenotype values of drones
 #' @export
 getDronesPheno <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePheno(x, caste = "drones", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePheno(x, caste = "drones", nInd = nInd)
   return(ret)
 }
 
@@ -6217,55 +6038,35 @@ getCasteGv <- function(x, caste, nInd = NULL) {
 #' @describeIn getCasteGv Access genetic value of the queen
 #' @export
 getQueenGv <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteGv(x, caste = "queen")
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of fathers
 #' @export
 getFathersGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of virgin queens
 #' @export
 getVirginQueensGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of workers
 #' @export
 getWorkersGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "workers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteGv(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of drones
 #' @export
 getDronesGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "drones", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteGv(x, caste = "drones", nInd = nInd)
   return(ret)
 }
 
@@ -6483,14 +6284,10 @@ getQueenBv <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteBv(x,
-      caste = "queen",
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6500,14 +6297,10 @@ getFathersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteBv(x,
-      caste = "fathers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6517,14 +6310,10 @@ getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteBv(x,
-      caste = "virginQueens", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6534,14 +6323,10 @@ getWorkersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteBv(x,
-      caste = "workers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6551,14 +6336,10 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteBv(x,
-      caste = "drones", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6782,14 +6563,10 @@ getQueenDd <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteDd(x,
-      caste = "queen",
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6799,14 +6576,10 @@ getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteDd(x,
-      caste = "fathers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6816,14 +6589,10 @@ getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteDd(x,
-      caste = "virginQueens", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6833,14 +6602,10 @@ getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteDd(x,
-      caste = "workers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6850,14 +6615,10 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteDd(x,
-      caste = "drones", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -6953,6 +6714,284 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
       ret[[colony]] <- getColonyDd(
+        x = x[[colony]], caste = caste,
+        nInd = nInd, simParamBee = simParamBee
+      )
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+# get*Aa ----
+
+#' @rdname getCasteAa
+#' @title Access epistasis deviations of individuals in a caste
+#'
+#' @description Level 0 function that returns epistasis deviations of
+#'   individuals in a caste.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, "queen", "fathers", "workers", "drones", or
+#'   "virginQueens"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#'   individuals are accessed, otherwise a random sample
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @seealso \code{\link{dd}}
+#'
+#' @return vector of epistasis deviations when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of epistasis deviations when
+#'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
+#'   is \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' getCasteAa(colony, caste = "queen")
+#' getQueenAa(colony)
+#'
+#' getCasteAa(colony, caste = "fathers")
+#' getCasteAa(colony, caste = "fathers", nInd = 2)
+#' getCasteAa(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersAa(colony)
+#' getFathersAa(colony, nInd = 2)
+#'
+#' getCasteAa(colony, caste = "virginQueens")
+#' getVirginQueensAa(colony)
+#'
+#' getCasteAa(colony, caste = "workers")
+#' getWorkersAa(colony)
+#'
+#' getCasteAa(colony, caste = "drones")
+#' getDronesAa(colony)
+#'
+#' getCasteAa(apiary, caste = "queen")
+#' getQueenAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "fathers")
+#' getCasteAa(apiary, caste = "fathers", nInd = 2)
+#' getCasteAa(apiary, caste = "fathers", nInd = 2) # random sample!
+#' getFathersAa(apiary)
+#' getFathersAa(apiary, nInd = 2)
+#'
+#' getCasteAa(apiary, caste = "virginQueens")
+#' getVirginQueensAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "workers")
+#' getWorkersAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "drones")
+#' getDronesAa(apiary)
+#' @export
+getCasteAa <- function(x, caste, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isColony(x)) {
+    tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+    if (is.null(tmp)) {
+      ret <- NULL
+    } else {
+      ret <- aa(pop = tmp, simParam = simParamBee)
+    }
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in seq_len(nCol)) {
+      tmp <- getCasteAa(
+        x = x[[colony]], caste = caste, nInd = nInd,
+        simParamBee = simParamBee
+      )
+      if (is.null(tmp)) {
+        ret[colony] <- list(NULL)
+      } else {
+        ret[[colony]] <- tmp
+      }
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis deviation of the queen
+#' @export
+getQueenAa <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis deviations of fathers
+#' @export
+getFathersAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis deviations of virgin queens
+#' @export
+getVirginQueensAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis deviations of workers
+#' @export
+getWorkersAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis deviations of drones
+#' @export
+getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @rdname getColonyAa
+#' @title Access epistasis deviations of individuals in colony
+#'
+#' @description Level 0 function that returns epistasis deviations of
+#'   individuals in colony.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, a combination of "queen", "fathers", "workers",
+#'   "drones", or "virginQueens"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#'   individuals are accessed, otherwise a random sample; can be a list to
+#'   access different number of different caste - when this is the case
+#'   \code{nInd} takes precedence over \code{caste} (see examples)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
+#' @seealso \code{\link{aa}}
+#'
+#' @return list of vector of epistasis deviations when \code{x} is
+#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
+#'   of vectors of epistasis deviations when \code{x} is
+#'   \code{\link{MultiColony-class}}, outer list is named by colony id when
+#'   \code{x} is \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' getColonyAa(colony)
+#' getColonyAa(colony, caste = c("queen", "fathers"))
+#' getColonyAa(colony, nInd = 1)
+#' getColonyAa(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
+#' getColonyAa(apiary)
+#' getColonyAa(apiary, caste = c("queen", "fathers"))
+#' getColonyAa(apiary, nInd = 1)
+#' getColonyAa(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @export
+getColonyAa <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+                        nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isColony(x)) {
+    if (is.list(nInd)) {
+      caste <- names(nInd)
+    } else {
+      if (length(nInd) > 1) {
+        warning("Using only the first value of nInd!")
+      }
+      nIndOrig <- nInd
+      nInd <- vector(mode = "list", length = length(caste))
+      if (!is.null(nIndOrig)) {
+        for (node in seq_along(caste)) {
+          nInd[[node]] <- nIndOrig
+        }
+      }
+      names(nInd) <- caste
+    }
+    ret <- vector(mode = "list", length = length(caste))
+    names(ret) <- caste
+    for (caste in names(ret)) {
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
+      if (is.null(tmp)) {
+        ret[caste] <- list(NULL)
+      } else {
+        ret[[caste]] <- aa(pop = tmp, simParam = simParamBee)
+      }
+    }
+    # TODO: should we add colony node here too or will that be done elsewhere?
+    #       we might need some theoretical development first to derive it first!
+    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in seq_len(nCol)) {
+      ret[[colony]] <- getColonyAa(
         x = x[[colony]], caste = caste,
         nInd = nInd, simParamBee = simParamBee
       )
