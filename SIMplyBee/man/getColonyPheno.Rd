@@ -38,6 +38,12 @@ founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$setVarE(varE = 1)
+# TODO: how should we handle the creation of phenotypes when residual variance
+#       is set (then we get phenotypes automatically and we should not call
+#       setPheno() below - this overwrites previous phenotypes), but when the
+#       residual variance is not set, we have to call setPheno()
+#       https://github.com/HighlanderLab/SIMplyBee/issues/235
+
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -54,24 +60,26 @@ apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getColonyPheno(colony)
-getColonyPheno(colony, caste = c("queen", "fathers"))
-getColonyPheno(colony, nInd = 1)
-getColonyPheno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
-getColonyPheno(apiary)
-getColonyPheno(apiary, caste = c("queen", "fathers"))
-getColonyPheno(apiary, nInd = 1)
-getColonyPheno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-
 colonyPheno <- function(colony) {
  ret <- calcColonyPhenoFromCaste(colony,
                                  queenTrait = 1,
                                  workersTrait = 1)
  return(ret)
 }
-colony <- setColonyPheno(colony, FUN = colonyPheno, varE = )
+colony <- setColonyPheno(colony, FUN = colonyPheno)
+apiary <- setColonyPheno(apiary, FUN = colonyPheno)
+
+getColonyPheno(colony)$colony
 getColonyPheno(colony)
+getColonyPheno(colony, nInd = 1)
+getColonyPheno(colony, caste = c("colony", "queen", "workers"))
+getColonyPheno(colony, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
+
+sapply(getColonyPheno(apiary), FUN = function(x) x$colony)
+getColonyPheno(apiary)
+getColonyPheno(apiary, nInd = 1)
+getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
+getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
 }
 \seealso{
 \code{\link{gv}}

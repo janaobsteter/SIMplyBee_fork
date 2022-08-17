@@ -58,6 +58,12 @@ founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$setVarE(varE = 1)
+# TODO: how should we handle the creation of phenotypes when residual variance
+#       is set (then we get phenotypes automatically and we should not call
+#       setPheno() below - this overwrites previous phenotypes), but when the
+#       residual variance is not set, we have to call setPheno()
+#       https://github.com/HighlanderLab/SIMplyBee/issues/235
+
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
