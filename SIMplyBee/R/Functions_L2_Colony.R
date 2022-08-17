@@ -1,4 +1,4 @@
-# Level 2 Colony Functions
+# ---- Level 2 Colony Functions ----
 
 #' @rdname createColony
 #' @title Create a new Colony

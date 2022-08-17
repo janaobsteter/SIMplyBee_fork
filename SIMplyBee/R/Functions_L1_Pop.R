@@ -1,4 +1,4 @@
-# Level 1 Pop Functions
+# ---- Level 1 Pop Functions  ----
 
 #' @rdname getCastePop
 #' @title Access individuals of a caste

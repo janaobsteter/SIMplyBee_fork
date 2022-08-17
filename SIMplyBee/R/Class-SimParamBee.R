@@ -14,6 +14,8 @@ isMapPop <- function(x) {
   return(ret)
 }
 
+# ---- Class SimParamBee ----
+
 setClassUnion("numericOrFunction", c("numeric", "function"))
 
 #' @rdname SimParamBee

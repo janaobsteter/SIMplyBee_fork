@@ -1,4 +1,4 @@
-# Class Colony ----
+# ---- Class Colony ----
 
 setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
@@ -107,6 +107,7 @@ setValidity(Class = "Colony", method = function(object) {
   }
 })
 
+# show ----
 #' @describeIn Colony-class Show colony object
 setMethod(
   f = "show",
@@ -129,6 +130,7 @@ setMethod(
   }
 )
 
+# c ----
 #' @describeIn Colony-class Combine multiple colony objects
 setMethod(
   f = "c",
