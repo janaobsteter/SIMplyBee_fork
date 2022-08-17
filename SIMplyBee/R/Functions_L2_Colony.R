@@ -1988,30 +1988,38 @@ setLocation <- function(x, location) {
   return(x)
 }
 
-#' @rdname setColonyPheno
-#' @title Set colony phenotype
+# setColonyValue ----
+
+#' @rdname setColonyValue
+#' @title Set colony value
 #'
-#' @description Level 2 function that sets phenotypes for all colony individuals
+#' @description Level 2 function that sets value for all colony individuals
 #'   (queen, workers, drones, and virgin queens) and for the colony, or each
 #'   colony in a MultiColony object.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param value character, one of \code{pheno}, \code{gv}, \code{bv}, \code{dd},
+#'   or \code{aa}
 #' @param FUN function, any function that can be run on \code{colony} and
-#'   returns colony phenotypes; if \code{NULL} then
-#'   \code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
-#'   then colony phenotype is not set, but phenotypes of colony individuals are
-#'   (see \code{reset} though!)
+#'   returns colony values; if \code{NULL} then
+#'   \code{\link{SimParamBee}$colonyValue} (Value being one of \code{value}) is
+#'   used - if even this is \code{NULL}, then colony value is not set, but
+#'   values of colony individuals are if \code{value = "pheno"} (see \code{reset}
+#'   though!)
 #' @param reset logical, should previous phenotype values for individuals in the
-#'   castes be used or sampled anew?
+#'   castes be used or sampled anew? Active only with \code{value = "pheno"}.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#' @param ... arguments passed to \code{\link{setPheno}}
+#' @param ... arguments passed to \code{\link{setPheno}} when \code{value = "pheno"}
 #'
-#' @details When this function is called on a colony, phenotypes for all colony
-#'   individuals and possibly the whole colony are set (or reset if phenotypes
-#'   already exist).
+#' @details When this function is called on a colony and \code{value = "pheno"},
+#'   phenotypes for all colony individuals and possibly the whole colony are set
+#'   (or reset if phenotypes already exist). When \code{value != "pheno"} then
+#'   only colony value is set.
 #'
-#' @seealso \code{\link{calcColonyPhenoFromCaste}} as an example for \code{FUN}
-#'   and \code{\link{setPheno}} for the basic population phenotyping
+#' @seealso \code{\link{calcColonyValueFromCaste}} as an example for \code{FUN},
+#'   \code{\link{setPheno}} for the basic population phenotyping, and
+#'   \code{\link{pheno}}, \code{\link{gv}}, \code{\link{bv}}, \code{\link{dd}},
+#'   and \code{\link{aa}} for population values.
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
 #'
@@ -2033,7 +2041,11 @@ setLocation <- function(x, location) {
 #' ), nrow = 2, byrow = TRUE)
 #' varE <- c(3, 3 / nWorkers)
 #' varA / (varA + varE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = meanP,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 100)
@@ -2047,9 +2059,10 @@ setLocation <- function(x, location) {
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 #' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 #'
+#' # ---- Phenotype values (for individuals and colony) ----
+#'
 #' # Set phenotypes for all colony individuals
 #' colony <- setColonyPheno(colony, varE = varE)
-#'
 #' apiary <- setColonyPheno(apiary, varE = varE)
 #'
 #' # Queen's phenotype for both traits
@@ -2079,34 +2092,84 @@ setLocation <- function(x, location) {
 #' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
 #' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
 #' # phenotype will vary between function calls by default (see reset)
+#'
+#' # ---- Genetic values (only for whole colony) ----
+#'
+#' getColonyGv(colony)$colony
+#' colony <- setColonyGv(colony, FUN = calcColonyGvFromCaste)
+#' getColonyGv(colony)$colony
+#'
+#' sapply(X = getColonyGv(apiary), FUN = function(x) x$colony)
+#' apiary <- setColonyGv(apiary, FUN = calcColonyGvFromCaste)
+#' sapply(X = getColonyGv(apiary), FUN = function(x) x$colony)
+#'
+#' getColonyBv(colony)$colony
+#' # TODO: Error in dimnames(x) <- dn : length of 'dimnames' [2] not equal to array extent
+#' colony <- setColonyBv(colony, FUN = calcColonyBvFromCaste)
+#' # TODO: Error in dimnames(x) <- dn : length of 'dimnames' [2] not equal to array extent
+#' getColonyBv(colony)$colony
+#'
+#' sapply(X = getColonyBv(apiary), FUN = function(x) x$colony)
+#' apiary <- setColonyBv(apiary, FUN = calcColonyBvFromCaste)
+#' sapply(X = getColonyBv(apiary), FUN = function(x) x$colony)
 #' @export
-setColonyPheno <- function(x, FUN = NULL, reset = TRUE, simParamBee = NULL, ...) {
+setColonyValue <- function(x,
+                           value = "pheno",
+                           FUN = NULL, reset = TRUE, simParamBee = NULL, ...) {
+  if (1 < length(value)) {
+    stop("Argument value must be of length 1!")
+  }
+  if (!(value %in% c("pheno", "gv", "bv", "dd", "aa"))) {
+    stop("Argument value must be one of pheno, gv, bv, dd, or aa!")
+  }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(FUN)) {
-    FUN <- simParamBee$colonyPheno
+    if (value == "pheno") {
+      tmpFUNName <- "colonyPheno"
+    } else if (value == "gv") {
+      tmpFUNName <- "colonyGv"
+    } else if (value == "bv") {
+      tmpFUNName <- "colonyBv"
+    } else if (value == "dd") {
+      tmpFUNName <- "colonyDd"
+    } else if (value == "aa") {
+      tmpFUNName <- "colonyAa"
+    }
+    FUN <- simParamBee[[tmpFUNName]]
   }
   if (isColony(x)) {
-    if (isQueenPresent(x) && reset) {
+    if (isQueenPresent(x) && value == "pheno" && reset) {
       x@queen <- setPheno(x@queen, ..., simParam = simParamBee)
     }
-    if (isWorkersPresent(x) && reset) {
+    if (isWorkersPresent(x) && value == "pheno" && reset) {
       x@workers <- setPheno(x@workers, ..., simParam = simParamBee)
     }
-    if (isDronesPresent(x) && reset) {
+    if (isDronesPresent(x) && value == "pheno" && reset) {
       x@drones <- setPheno(x@drones, ..., simParam = simParamBee)
     }
-    if (isVirginQueensPresent(x) && reset) {
+    if (isVirginQueensPresent(x) && value == "pheno" && reset) {
       x@virginQueens <- setPheno(x@virginQueens, ..., simParam = simParamBee)
     }
     if (!is.null(FUN)) {
-      x@pheno <- FUN(x)
+      if (value == "pheno") {
+        x@pheno <- FUN(x, simParamBee = simParamBee)
+      } else if (value == "gv") {
+        x@gv <- FUN(x, simParamBee = simParamBee)
+      } else if (value == "bv") {
+        x@bv <- FUN(x, simParamBee = simParamBee)
+      } else if (value == "dd") {
+        x@dd <- FUN(x, simParamBee = simParamBee)
+      } else if (value == "aa") {
+        x@aa <- FUN(x, simParamBee = simParamBee)
+      }
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- setColonyPheno(x[[colony]],
+      x[[colony]] <- setColonyValue(x[[colony]],
+        value = value,
         FUN = FUN,
         reset = reset,
         ...,
@@ -2118,4 +2181,49 @@ setColonyPheno <- function(x, FUN = NULL, reset = TRUE, simParamBee = NULL, ...)
   }
   validObject(x)
   return(x)
+}
+
+#' @describeIn setColonyValue Set colony phenotype value
+#' @export
+setColonyPheno <- function(x, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  setColonyValue(x = x, value = "pheno", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn setColonyValue Set colony genetic value
+#' @export
+setColonyGv <- function(x, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  setColonyValue(x = x, value = "gv", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn setColonyValue Set colony breeding value
+#' @export
+setColonyBv <- function(x, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  setColonyValue(x = x, value = "bv", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn setColonyValue Set colony dominance deviation
+#' @export
+setColonyDd <- function(x, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  setColonyValue(x = x, value = "dd", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn setColonyValue Set colony epistasis deviation
+#' @export
+setColonyAa <- function(x, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  setColonyValue(x = x, value = "aa", ..., simParamBee = simParamBee)
 }

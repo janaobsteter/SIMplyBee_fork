@@ -261,7 +261,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{colonyPheno}}{function, to set colony phenotypes - used in
+\item{\code{colonyPheno}}{function, to set colony phenotype values - used in
   \code{\link{setColonyPheno}}.
 
   This function should work with internals of others functions -
@@ -269,6 +269,50 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   = default) someCode }, that is, the first argument MUST be
   \code{colony} and any following arguments MUST have a default value.
   See \code{\link{calcColonyPhenoFromCaste}} for an example.
+
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{colonyGv}}{function, to set colony genetic values - used in
+  \code{\link{setColonyGv}}.
+
+  This function should work with internals of others functions -
+  therefore the function MUST be defined like \code{function(colony, arg
+  = default) someCode }, that is, the first argument MUST be
+  \code{colony} and any following arguments MUST have a default value.
+  See \code{\link{calcColonyGvFromCaste}} for an example.
+
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{colonyBv}}{function, to set colony breeding values - used in
+  \code{\link{setColonyBv}}.
+
+  This function should work with internals of others functions -
+  therefore the function MUST be defined like \code{function(colony, arg
+  = default) someCode }, that is, the first argument MUST be
+  \code{colony} and any following arguments MUST have a default value.
+  See \code{\link{calcColonyBvFromCaste}} for an example.
+
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{colonyDd}}{function, to set colony dominance deviations - used in
+  \code{\link{setColonyDd}}.
+
+  This function should work with internals of others functions -
+  therefore the function MUST be defined like \code{function(colony, arg
+  = default) someCode }, that is, the first argument MUST be
+  \code{colony} and any following arguments MUST have a default value.
+  See \code{\link{calcColonyDdFromCaste}} for an example.
+
+  You can provide your own functions that satisfy your needs!}
+
+\item{\code{colonyAa}}{function, to set colony epistatic deviations - used in
+  \code{\link{setColonyAa}}.
+
+  This function should work with internals of others functions -
+  therefore the function MUST be defined like \code{function(colony, arg
+  = default) someCode }, that is, the first argument MUST be
+  \code{colony} and any following arguments MUST have a default value.
+  See \code{\link{calcColonyAaFromCaste}} for an example.
 
   You can provide your own functions that satisfy your needs!}
 }

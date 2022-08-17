@@ -222,7 +222,7 @@ SimParamBee <- R6Class(
     downsizeP = "numericOrFunction",
 
     # colonyPheno field ----
-    #' @field colonyPheno function, to set colony phenotypes - used in
+    #' @field colonyPheno function, to set colony phenotype values - used in
     #'   \code{\link{setColonyPheno}}.
     #'
     #'   This function should work with internals of others functions -
@@ -233,6 +233,58 @@ SimParamBee <- R6Class(
     #'
     #'   You can provide your own functions that satisfy your needs!
     colonyPheno = "function",
+
+    # colonyGv field ----
+    #' @field colonyGv function, to set colony genetic values - used in
+    #'   \code{\link{setColonyGv}}.
+    #'
+    #'   This function should work with internals of others functions -
+    #'   therefore the function MUST be defined like \code{function(colony, arg
+    #'   = default) someCode }, that is, the first argument MUST be
+    #'   \code{colony} and any following arguments MUST have a default value.
+    #'   See \code{\link{calcColonyGvFromCaste}} for an example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    colonyGv = "function",
+
+    # colonyBv field ----
+    #' @field colonyBv function, to set colony breeding values - used in
+    #'   \code{\link{setColonyBv}}.
+    #'
+    #'   This function should work with internals of others functions -
+    #'   therefore the function MUST be defined like \code{function(colony, arg
+    #'   = default) someCode }, that is, the first argument MUST be
+    #'   \code{colony} and any following arguments MUST have a default value.
+    #'   See \code{\link{calcColonyBvFromCaste}} for an example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    colonyBv = "function",
+
+    # colonyDd field ----
+    #' @field colonyDd function, to set colony dominance deviations - used in
+    #'   \code{\link{setColonyDd}}.
+    #'
+    #'   This function should work with internals of others functions -
+    #'   therefore the function MUST be defined like \code{function(colony, arg
+    #'   = default) someCode }, that is, the first argument MUST be
+    #'   \code{colony} and any following arguments MUST have a default value.
+    #'   See \code{\link{calcColonyDdFromCaste}} for an example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    colonyDd = "function",
+
+    # colonyAa field ----
+    #' @field colonyAa function, to set colony epistatic deviations - used in
+    #'   \code{\link{setColonyAa}}.
+    #'
+    #'   This function should work with internals of others functions -
+    #'   therefore the function MUST be defined like \code{function(colony, arg
+    #'   = default) someCode }, that is, the first argument MUST be
+    #'   \code{colony} and any following arguments MUST have a default value.
+    #'   See \code{\link{calcColonyAaFromCaste}} for an example.
+    #'
+    #'   You can provide your own functions that satisfy your needs!
+    colonyAa = "function",
 
     #' @description Starts the process of building a new simulation by creating
     #'   a new SimParamBee object and assigning a founder population of genomes
@@ -1159,72 +1211,225 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
   return(runif(n = n, min = min, max = max))
 }
 
-# phenoFunctions ----
+# valueFunctions ----
 
-#' @rdname calcColonyPhenoFromCaste
-#' @title Sample colony phenotype based on caste phenotypes
+#' @rdname calcColonyValueFromCaste
+#' @title Calculate colony value from caste values
 #'
-#' @description Sample colony phenotype based on caste phenotypes -
-#'   used when \code{FUN = NULL} in \code{\link{setColonyPheno}} but
-#'   \code{SimParamBee$colonyPheno} is set.
+#' @description Calculate colony value from caste values -
+#'   used when \code{FUN = NULL} in \code{\link{setColonyValue}} but
+#'   \code{SimParamBee$colonyValue} is set, where value can be phenotype (pheno),
+#'   or genetic value (gv, bv, dd, and aa).
 #'
 #'   This is just an example - quite flexible one, though;) You can provide your
 #'   own functions that satisfy your needs!
 #'
 #' @param colony \code{\link{Colony-class}}
+#' @param value character, one of \code{pheno}, \code{gv}, \code{bv}, \code{dd},
+#'   or \code{aa}
 #' @param queenTrait numeric, trait that represents queen's effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   value (defined in \code{\link{SimParamBee}} - see examples); if
 #'   \code{NULL} then this effect is 0
-#' @param queenFUN function, function that will be applied to the queen phenotype
+#' @param queenFUN function, function that will be applied to the queen value
 #' @param workersTrait numeric, trait that represents workers' effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   value (defined in \code{\link{SimParamBee}} - see examples); if
 #'   \code{NULL} then this effect is 0
-#' @param workersFUN function, function that will be applied to the worker phenotypes
+#' @param workersFUN function, function that will be applied to the worker values
 #' @param dronesTrait numeric, trait that represents drones' effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
+#'   value (defined in \code{\link{SimParamBee}} - see examples); if
 #'   \code{NULL} then this effect is 0
-#' @param dronesFUN function, function that will be applied to the drone phenotypes
+#' @param dronesFUN function, function that will be applied to the drone values
 #' @param combineFUN, function that will combine the queen, worker, and drone effects
 #'   - the function expects that this function is defined as \code{function(q, w, d)}
 #'   where \code{q} represents queen's effect, \code{q} represents workers' effect,
 #'   \code{d} represents drones' effect
-#' @param checkProduction logical, does the phenotype depend on the production
+#' @param checkProduction logical, does the value depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   a 0
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{colonyPheno}, and functions
-#'   \code{\link{getEvents}} and \code{\link{setColonyPheno}} (and its example!)
+#' @seealso \code{\link{SimParamBee}} fields \code{colonyPheno}, \code{colonyGv},
+#'   \code{colonyBv}, \code{colonyDd}, \code{colonyAa} and functions
+#'   \code{\link{setColonyPheno}}, \code{\link{setColonyGv}},
+#'   \code{\link{setColonyBv}}, \code{\link{setColonyDd}},
+#'   \code{\link{setColonyAa}}, \code{\link{getEvents}},
+#'   \code{\link{pheno}}, \code{\link{gv}}, \code{\link{bv}}, \code{\link{dd}},
+#'   and \code{\link{aa}}
 #'
 #' @return numeric matrix with a single value
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#'
+#' # Define two traits that collectively affect colony honey yield:
+#' # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
+#' # 2) workers' effect on colony honey yield, say via foraging phenotype
+#' # The traits will have a negative genetic correlation of -0.5 and heritability
+#' # of 0.25 (on an individual level)
+#' meanP <- c(20, 0)
+#' nWorkers <- 10
+#' varA <- c(1, 1 / nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = meanP,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#'
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 100)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = 14)
+#'
+#' # Create and cross Colony and MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, fathers = fatherGroups[[1]])
+#' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
+#' apiary <- createMultiColony(basePop[3:5], n = 2)
+#' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+#' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
+#'
+#' # Set phenotypes for all colony individuals
+#' colony <- setColonyPheno(colony, varE = varE)
+#' colony <- setColonyGv(colony)
+#' colony <- setColonyBv(colony)
+#' colony <- setColonyDd(colony)
+#' colony <- setColonyAa(colony)
+#'
+#' apiary <- setColonyPheno(apiary, varE = varE)
+#' apiary <- setColonyGv(apiary)
+#' apiary <- setColonyBv(apiary)
+#' apiary <- setColonyDd(apiary)
+#' apiary <- setColonyAa(apiary)
+#'
+#' # Queen's phenotype for both traits
+#' getQueenPheno(colony)
+#' getQueenPheno(apiary)
+#'
+#' # Workers' phenotype for both traits
+#' getWorkersPheno(colony)
+#' getWorkersPheno(apiary)
+#'
+#' # For the whole colony
+#' getColonyPheno(colony)
+#' getColonyPheno(apiary)
+#'
+#' # Set phenotypes for all colony individuals AND Colony
+#' colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste, varE = varE)
+#' getColonyPheno(colony)$colony
+#'
+#' # Set phenotypes for all colony individuals AND MultiColony
+#' apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste, varE = varE)
+#' sapply(X = getColonyPheno(apiary), FUN = function(x) x$colony)
+#'
+#' # Colony phenotype - store the colony function into the SP object
+#' SP$colonyPheno <- calcColonyPhenoFromCaste
+#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+#'
 #' @export
-calcColonyPhenoFromCaste <- function(colony,
+# TODO: Do we need to do anything to add GxE to colony values? #353
+#       https://github.com/HighlanderLab/SIMplyBee/issues/353
+calcColonyValueFromCaste <- function(colony,
+                                     value = "pheno",
                                      queenTrait = 1, queenFUN = function(x) x,
                                      workersTrait = 2, workersFUN = sum,
                                      dronesTrait = NULL, dronesFUN = NULL,
                                      combineFUN = function(q, w, d) q + w,
-                                     checkProduction = TRUE) {
+                                     checkProduction = TRUE,
+                                     simParamBee = NULL) {
   # TODO: should we add checks for other events too? say swarming?
   #       so that this function is useful for many traits
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
+  if (1 < length(value)) {
+    stop("Argument value must be of length 1!")
+  }
+  if (!(value %in% c("pheno", "gv", "bv", "dd", "aa"))) {
+    stop("Argument value must be one of pheno, gv, bv, dd, or aa!")
+  }
+  valueFUN <- get(x = value)
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (is.null(queenTrait)) {
     queenEff <- 0
   } else {
-    queenEff <- queenFUN(colony@queen@pheno[, queenTrait])
+    if (value %in% c("pheno", "gv")) {
+      tmp <- valueFUN(colony@queen)[, queenTrait, drop = FALSE]
+    } else { # bv, dd, and aa
+      tmp <- valueFUN(colony@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
+    }
+    queenEff <- queenFUN(tmp)
   }
   if (is.null(workersTrait)) {
     workersEff <- 0
   } else {
-    workersEff <- workersFUN(colony@workers@pheno[, workersTrait])
+    if (value %in% c("pheno", "gv")) {
+      tmp <- valueFUN(colony@workers)[, workersTrait, drop = FALSE]
+    } else { # bv, dd, and aa
+      tmp <- valueFUN(colony@workers, simParam = simParamBee)[, workersTrait, drop = FALSE]
+    }
+    workersEff <- workersFUN(tmp)
   }
   if (is.null(dronesTrait)) {
     dronesEff <- 0
   } else {
-    dronesEff <- dronesFUN(colony@drones@pheno[, dronesTrait])
+    if (value %in% c("pheno", "gv")) {
+      tmp <- valueFUN(colony@drones)[, dronesTrait, drop = FALSE]
+    } else { # bv, dd, and aa
+      tmp <- valueFUN(colony@drones, simParam = simParamBee)[, dronesTrait, drop = FALSE]
+    }
+    dronesEff <- dronesFUN(tmp)
   }
-  colonyPheno <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
+  colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
   if (checkProduction && !colony@production) {
-    colonyPheno <- 0
+    colonyValue <- 0
   }
-  return(matrix(colonyPheno))
+  return(colonyValue)
+}
+
+#' @describeIn calcColonyValueFromCaste Calculate colony phenotype value from caste phenotype values
+#' @export
+calcColonyPhenoFromCaste <- function(colony, ..., simParamBee = NULL) {
+  calcColonyValueFromCaste(colony, value = "pheno", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn calcColonyValueFromCaste Calculate colony genetic value from caste genetic values
+#' @export
+calcColonyGvFromCaste <- function(colony, ..., simParamBee = NULL) {
+  calcColonyValueFromCaste(colony, value = "gv", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn calcColonyValueFromCaste Calculate colony breeding value from caste breeding values
+#' @export
+calcColonyBvFromCaste <- function(colony, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  calcColonyValueFromCaste(colony, value = "bv", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn calcColonyValueFromCaste Calculate colony dominance deviation from caste dominance deviations
+#' @export
+calcColonyDdFromCaste <- function(colony, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  calcColonyValueFromCaste(colony, value = "dd", ..., simParamBee = simParamBee)
+}
+
+#' @describeIn calcColonyValueFromCaste Calculate colony epistasis deviation from caste epistasis deviations
+#' @export
+calcColonyAaFromCaste <- function(colony, ..., simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  calcColonyValueFromCaste(colony, value = "aa", ..., simParamBee = simParamBee)
 }
