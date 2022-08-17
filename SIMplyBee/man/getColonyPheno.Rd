@@ -37,12 +37,7 @@ Level 0 function that returns phenotype values of individuals in
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10, var = 1)
-SP$setVarE(varE = 1)
-# TODO: how should we handle the creation of phenotypes when residual variance
-#       is set (then we get phenotypes automatically and we should not call
-#       setPheno() below - this overwrites previous phenotypes), but when the
-#       residual variance is not set, we have to call setPheno()
-#       https://github.com/HighlanderLab/SIMplyBee/issues/235
+varE <- 1
 
 basePop <- createVirginQueens(founderGenomes)
 
@@ -66,8 +61,8 @@ colonyPheno <- function(colony) {
                                  workersTrait = 1)
  return(ret)
 }
-colony <- setColonyPheno(colony, FUN = colonyPheno)
-apiary <- setColonyPheno(apiary, FUN = colonyPheno)
+colony <- setColonyPheno(colony, FUN = colonyPheno, varE = varE)
+apiary <- setColonyPheno(apiary, FUN = colonyPheno, varE = varE)
 
 getColonyPheno(colony)$colony
 getColonyPheno(colony)
@@ -80,6 +75,9 @@ getColonyPheno(apiary)
 getColonyPheno(apiary, nInd = 1)
 getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
 getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
 }
 \seealso{
 \code{\link{gv}}

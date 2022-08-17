@@ -31,8 +31,9 @@ allele}
 csd alleles across the entire population, colony, or multicolony (not
 separately for each caste when \code{x} is a colony or each caste of
 each colony when \code{x} is a multicolony. This is a way to get one single
-object as an output across castes or colonies. Default is \code{FALSE}. See
-examples about this behaviour.}
+object as an output across castes or colonies. Note this has nothing to do
+with the colony collapse. It's like \code{paste(..., collapse = TRUE)}.
+Default is \code{FALSE}. See examples about this behaviour.}
 
 \item{unique}{logical, return only the unique set of csd alleles. This argument
 interacts with \code{collapse}. Default is \code{FALSE}. See examples about
@@ -53,9 +54,8 @@ Level 0 function that returns alleles from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
 }
 \details{
-If both collapse and unique are \code{TRUE}, the function
-  returns a unique set of csd alleles in the entire population, colony, or
-  multicolony
+If both collapse and unique are \code{TRUE}, the function returns a
+  unique set of csd alleles in the entire population, colony, or multicolony
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

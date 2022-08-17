@@ -1191,7 +1191,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   a 0
-#' @param ... arguments passed to \code{queenFUN}, \code{workersFUN}, or \code{combineFUN}
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{colonyPheno}, and functions
 #'   \code{\link{getEvents}} and \code{\link{setColonyPheno}} (and its example!)
@@ -1204,27 +1203,26 @@ calcColonyPhenoFromCaste <- function(colony,
                                      workersTrait = 2, workersFUN = sum,
                                      dronesTrait = NULL, dronesFUN = NULL,
                                      combineFUN = function(q, w, d) q + w,
-                                     checkProduction = TRUE,
-                                    ...) {
+                                     checkProduction = TRUE) {
   # TODO: should we add checks for other events too? say swarming?
   #       so that this function is useful for many traits
   #       https://github.com/HighlanderLab/SIMplyBee/issues/255
   if (is.null(queenTrait)) {
     queenEff <- 0
   } else {
-    queenEff <- queenFUN(colony@queen@pheno[, queenTrait], ...)
+    queenEff <- queenFUN(colony@queen@pheno[, queenTrait])
   }
   if (is.null(workersTrait)) {
     workersEff <- 0
   } else {
-    workersEff <- workersFUN(colony@workers@pheno[, workersTrait], ...)
+    workersEff <- workersFUN(colony@workers@pheno[, workersTrait])
   }
   if (is.null(dronesTrait)) {
     dronesEff <- 0
   } else {
-    dronesEff <- dronesFUN(colony@drones@pheno[, dronesTrait], ...)
+    dronesEff <- dronesFUN(colony@drones@pheno[, dronesTrait])
   }
-  colonyPheno <- combineFUN(q = queenEff, w = workersEff, d = dronesEff, ...)
+  colonyPheno <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
   if (checkProduction && !colony@production) {
     colonyPheno <- 0
   }

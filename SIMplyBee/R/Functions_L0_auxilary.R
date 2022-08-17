@@ -2295,16 +2295,16 @@ reduceDroneGeno <- function(geno, pop) {
 #'   csd alleles across the entire population, colony, or multicolony (not
 #'   separately for each caste when \code{x} is a colony or each caste of
 #'   each colony when \code{x} is a multicolony. This is a way to get one single
-#'   object as an output across castes or colonies. Default is \code{FALSE}. See
-#'   examples about this behaviour.
+#'   object as an output across castes or colonies. Note this has nothing to do
+#'   with the colony collapse. It's like \code{paste(..., collapse = TRUE)}.
+#'   Default is \code{FALSE}. See examples about this behaviour.
 #' @param unique logical, return only the unique set of csd alleles. This argument
 #'   interacts with \code{collapse}. Default is \code{FALSE}. See examples about
 #'   this behaviour.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details  If both collapse and unique are \code{TRUE}, the function
-#'   returns a unique set of csd alleles in the entire population, colony, or
-#'   multicolony
+#' @details If both collapse and unique are \code{TRUE}, the function returns a
+#'   unique set of csd alleles in the entire population, colony, or multicolony
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
@@ -2640,7 +2640,9 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   \code{\link{MultiColony-class}}
 #' @param collapse logical, if \code{TRUE}, the function will return the number
 #'   of distinct csd alleles in either the entire population, colony, or
-#'   multicolony. Default is \code{FALSE}.
+#'   multicolony. Note this has nothing to do with the colony collapse. It's
+#'   like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
+#'   examples about this behaviour.Default is \code{FALSE}.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details Queen has 2 distinct csd alleles, since she has to be heterozygous
@@ -6021,12 +6023,7 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10, var = 1)
-#' SP$setVarE(varE = 1)
-#' # TODO: how should we handle the creation of phenotypes when residual variance
-#' #       is set (then we get phenotypes automatically and we should not call
-#' #       setPheno() below - this overwrites previous phenotypes), but when the
-#' #       residual variance is not set, we have to call setPheno()
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/235
+#' varE <- 1
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -6050,8 +6047,8 @@ getDronesPheno <- function(x, nInd = NULL) {
 #'                                  workersTrait = 1)
 #'  return(ret)
 #' }
-#' colony <- setColonyPheno(colony, FUN = colonyPheno)
-#' apiary <- setColonyPheno(apiary, FUN = colonyPheno)
+#' colony <- setColonyPheno(colony, FUN = colonyPheno, varE = varE)
+#' apiary <- setColonyPheno(apiary, FUN = colonyPheno, varE = varE)
 #'
 #' getColonyPheno(colony)$colony
 #' getColonyPheno(colony)
@@ -6064,6 +6061,9 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' getColonyPheno(apiary, nInd = 1)
 #' getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
 #' getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # TODO: Add collapse argument to the many get* functions with the idea to get
+#' #       collapsed output across castes or colonies #96
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/96
 #' @export
 getColonyPheno <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                            nInd = NULL) {

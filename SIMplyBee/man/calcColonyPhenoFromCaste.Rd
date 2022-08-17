@@ -13,8 +13,7 @@ calcColonyPhenoFromCaste(
   dronesTrait = NULL,
   dronesFUN = NULL,
   combineFUN = function(q, w, d) q + w,
-  checkProduction = TRUE,
-  ...
+  checkProduction = TRUE
 )
 }
 \arguments{
@@ -46,8 +45,6 @@ where \code{q} represents queen's effect, \code{q} represents workers' effect,
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
 a 0}
-
-\item{...}{arguments passed to \code{queenFUN}, \code{workersFUN}, or \code{combineFUN}}
 }
 \value{
 numeric matrix with a single value

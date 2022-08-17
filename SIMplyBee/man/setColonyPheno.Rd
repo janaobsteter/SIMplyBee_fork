@@ -4,7 +4,7 @@
 \alias{setColonyPheno}
 \title{Set colony phenotype}
 \usage{
-setColonyPheno(x, FUN = NULL, ..., simParamBee = NULL)
+setColonyPheno(x, FUN = NULL, reset = TRUE, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -12,11 +12,15 @@ setColonyPheno(x, FUN = NULL, ..., simParamBee = NULL)
 \item{FUN}{function, any function that can be run on \code{colony} and
 returns colony phenotypes; if \code{NULL} then
 \code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
-then colony phenotype is not set, but phenotypes of colony individuals are}
+then colony phenotype is not set, but phenotypes of colony individuals are
+(see \code{reset} though!)}
 
-\item{...}{arguments passed to \code{\link{setPheno}} and \code{FUN}}
+\item{reset}{logical, should previous phenotype values for individuals in the
+castes be used or sampled anew?}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{arguments passed to \code{\link{setPheno}}}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
@@ -50,12 +54,6 @@ corA <- matrix(data = c(
 varE <- c(3, 3 / nWorkers)
 varA / (varA + varE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-SP$setVarE(varE = varE)
-# TODO: how should we handle the creation of phenotypes when residual variance
-#       is set (then we get phenotypes automatically and we should not call
-#       setPheno() below - this overwrites previous phenotypes), but when the
-#       residual variance is not set, we have to call setPheno()
-#       https://github.com/HighlanderLab/SIMplyBee/issues/235
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 100)
@@ -70,8 +68,9 @@ apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
 # Set phenotypes for all colony individuals
-colony <- setColonyPheno(colony)
-apiary <- setColonyPheno(apiary)
+colony <- setColonyPheno(colony, varE = varE)
+
+apiary <- setColonyPheno(apiary, varE = varE)
 
 # Queen's phenotype for both traits
 getQueenPheno(colony)
@@ -86,21 +85,22 @@ getColonyPheno(colony)
 getColonyPheno(apiary)
 
 # Set phenotypes for all colony individuals AND Colony
-colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste)
+colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste, varE = varE)
 getColonyPheno(colony)$colony
 
 # Set phenotypes for all colony individuals AND MultiColony
-apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste)
+apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste, varE = varE)
 sapply(X = getColonyPheno(apiary), FUN = function(x) x$colony)
 
 # Colony phenotype - store the colony function into the SP object
 SP$colonyPheno <- calcColonyPhenoFromCaste
-getColonyPheno(setColonyPheno(colony))$colony
-getColonyPheno(setColonyPheno(colony))$colony
-sapply(X = getColonyPheno(setColonyPheno(apiary)), FUN = function(x) x$colony)
-sapply(X = getColonyPheno(setColonyPheno(apiary)), FUN = function(x) x$colony)
-# phenotype will vary between function calls
+getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+# phenotype will vary between function calls by default (see reset)
 }
 \seealso{
 \code{\link{calcColonyPhenoFromCaste}} as an example for \code{FUN}
+  and \code{\link{setPheno}} for the basic population phenotyping
 }

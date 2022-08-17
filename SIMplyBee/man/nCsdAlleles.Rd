@@ -12,7 +12,9 @@ nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 
 \item{collapse}{logical, if \code{TRUE}, the function will return the number
 of distinct csd alleles in either the entire population, colony, or
-multicolony. Default is \code{FALSE}.}
+multicolony. Note this has nothing to do with the colony collapse. It's
+like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
+examples about this behaviour.Default is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
