@@ -81,6 +81,8 @@ setClass(
     virginQueens = "PopOrNULL",
     pheno = "matrix",
     gv = "matrix",
+    # TODO: Should we store bv, dd, and aa into colony or not?
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/355
     bv = "matrix",
     dd = "matrix",
     aa = "matrix",

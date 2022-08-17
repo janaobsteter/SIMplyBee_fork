@@ -5882,10 +5882,10 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' getColonyPheno(apiary, nInd = 1)
 #' getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
 #' getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#' # TODO: Add collapse argument to the many get* functions with the idea to get
-#' #       collapsed output across castes or colonies #96
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/96
 #' @export
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
 getColonyPheno <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                            nInd = NULL) {
   if (isColony(x)) {
@@ -6077,8 +6077,9 @@ getDronesGv <- function(x, nInd = NULL) {
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#' "drones", or "virginQueens"
+#' @param caste character, a combination of "colony", "queen", "fathers",
+#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+#'   but is a way to get colony-based phenotype such as honey-yield
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
@@ -6123,7 +6124,10 @@ getDronesGv <- function(x, nInd = NULL) {
 #' getColonyGv(apiary, nInd = 1)
 #' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #' @export
-getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
+getColonyGv <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                         nInd = NULL) {
   if (isColony(x)) {
     if (is.list(nInd)) {
@@ -6144,16 +6148,17 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
+      if (caste != "colony") {
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- gv(pop = tmp)
+        }
       } else {
-        ret[[caste]] <- gv(pop = tmp)
+        ret[[caste]] <- x@gv
       }
     }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/28 (for gv)
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29 (for bv and dd)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -6350,8 +6355,9 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#'   "drones", or "virginQueens"
+#' @param caste character, a combination of "colony", "queen", "fathers",
+#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+#'   but is a way to get colony-based phenotype such as honey-yield
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
@@ -6397,7 +6403,10 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 #' getColonyBv(apiary, nInd = 1)
 #' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #' @export
-getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
+getColonyBv <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                         nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6421,16 +6430,19 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
+      if (caste != "colony") {
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- bv(pop = tmp, simParam = simParamBee)
+        }
       } else {
-        ret[[caste]] <- bv(pop = tmp, simParam = simParamBee)
+        ret[[caste]] <- x@bv
+        # TODO: Should we store bv, dd, and aa into colony or not?
+        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
       }
     }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -6629,8 +6641,9 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#'   "drones", or "virginQueens"
+#' @param caste character, a combination of "colony", "queen", "fathers",
+#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+#'   but is a way to get colony-based phenotype such as honey-yield
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
@@ -6675,7 +6688,10 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
 #' getColonyDd(apiary, nInd = 1)
 #' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #' @export
-getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
+getColonyDd <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                         nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6699,16 +6715,19 @@ getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
+      if (caste != "colony") {
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- dd(pop = tmp, simParam = simParamBee)
+        }
       } else {
-        ret[[caste]] <- dd(pop = tmp, simParam = simParamBee)
+        ret[[caste]] <- x@dd
+        # TODO: Should we store bv, dd, and aa into colony or not?
+        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
       }
     }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -6907,8 +6926,9 @@ getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
 #'   individuals in colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#'   "drones", or "virginQueens"
+#' @param caste character, a combination of "colony", "queen", "fathers",
+#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+#'   but is a way to get colony-based phenotype such as honey-yield
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
@@ -6953,7 +6973,10 @@ getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
 #' getColonyAa(apiary, nInd = 1)
 #' getColonyAa(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #' @export
-getColonyAa <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+# TODO: Add collapse argument to the many get* functions with the idea to get
+#       collapsed output across castes or colonies #96
+#       https://github.com/HighlanderLab/SIMplyBee/issues/96
+getColonyAa <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
                         nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6977,16 +7000,19 @@ getColonyAa <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     ret <- vector(mode = "list", length = length(caste))
     names(ret) <- caste
     for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
+      if (caste != "colony") {
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
+        if (is.null(tmp)) {
+          ret[caste] <- list(NULL)
+        } else {
+          ret[[caste]] <- aa(pop = tmp, simParam = simParamBee)
+        }
       } else {
-        ret[[caste]] <- aa(pop = tmp, simParam = simParamBee)
+        ret[[caste]] <- x@aa
+        # TODO: Should we store bv, dd, and aa into colony or not?
+        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
       }
     }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)

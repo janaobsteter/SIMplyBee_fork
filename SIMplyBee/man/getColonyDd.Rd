@@ -6,7 +6,7 @@
 \usage{
 getColonyDd(
   x,
-  caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+  caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
   nInd = NULL,
   simParamBee = NULL
 )
@@ -14,8 +14,9 @@ getColonyDd(
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, a combination of "queen", "fathers", "workers",
-"drones", or "virginQueens"}
+\item{caste}{character, a combination of "colony", "queen", "fathers",
+"workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+but is a way to get colony-based phenotype such as honey-yield}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample; can be a list to

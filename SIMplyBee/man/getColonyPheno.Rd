@@ -75,9 +75,6 @@ getColonyPheno(apiary)
 getColonyPheno(apiary, nInd = 1)
 getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
 getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
 }
 \seealso{
 \code{\link{gv}}
