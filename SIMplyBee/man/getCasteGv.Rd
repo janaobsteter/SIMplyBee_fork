@@ -20,16 +20,6 @@ getVirginQueensGv(x, nInd = NULL)
 getWorkersGv(x, nInd = NULL)
 
 getDronesGv(x, nInd = NULL)
-
-getQueenGv(x)
-
-getFathersGv(x, nInd = NULL)
-
-getVirginQueensGv(x, nInd = NULL)
-
-getWorkersGv(x, nInd = NULL)
-
-getDronesGv(x, nInd = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -41,27 +31,17 @@ getDronesGv(x, nInd = NULL)
 individuals are accessed, otherwise a random sample}
 }
 \value{
-vector of genetic values when \code{x} is \code{\link{Colony-class}}
+vector of phenotype values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of genetic values when \code{x} is
   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
   \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns genetic values of individuals in a
-  caste.
+Level 0 function that returns genetic values of individuals
+  in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueenGv()}: Access genetic value of the queen
-
-\item \code{getFathersGv()}: Access genetic values of fathers
-
-\item \code{getVirginQueensGv()}: Access genetic values of virgin queens
-
-\item \code{getWorkersGv()}: Access genetic values of workers
-
-\item \code{getDronesGv()}: Access genetic values of drones
-
 \item \code{getQueenGv()}: Access genetic value of the queen
 
 \item \code{getFathersGv()}: Access genetic values of fathers

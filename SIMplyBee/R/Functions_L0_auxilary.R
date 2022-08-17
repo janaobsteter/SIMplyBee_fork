@@ -5867,10 +5867,10 @@ calcBeeGRMIbd <- function(x) {
 
 # get*Pheno ----
 
-#' @rdname getCasteGv
-#' @title Access genetic values of individuals in a caste
+#' @rdname getCastePheno
+#' @title Access phenotype values of individuals in a caste
 #'
-#' @description Level 0 function that returns genetic values of individuals in a
+#' @description Level 0 function that returns phenotype values of individuals in a
 #'   caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
@@ -5879,7 +5879,7 @@ calcBeeGRMIbd <- function(x) {
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #'
-#' @seealso \code{\link{gv}}
+#' @seealso \code{\link{pheno}}
 #'
 #' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
@@ -5907,55 +5907,55 @@ calcBeeGRMIbd <- function(x) {
 #' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteGv(colony, caste = "queen")
-#' getQueenGv(colony)
+#' getCastePheno(colony, caste = "queen")
+#' getQueenPheno(colony)
 #'
-#' getCasteGv(colony, caste = "fathers")
-#' getCasteGv(colony, caste = "fathers", nInd = 2)
-#' getCasteGv(colony, caste = "fathers", nInd = 2)
-#' getFathersGv(colony)
-#' getFathersGv(colony, nInd = 2)
+#' getCastePheno(colony, caste = "fathers")
+#' getCastePheno(colony, caste = "fathers", nInd = 2)
+#' getCastePheno(colony, caste = "fathers", nInd = 2)
+#' getFathersPheno(colony)
+#' getFathersPheno(colony, nInd = 2)
 #'
-#' getCasteGv(colony, caste = "virginQueens")
-#' getVirginQueensGv(colony)
+#' getCastePheno(colony, caste = "virginQueens")
+#' getVirginQueensPheno(colony)
 #'
-#' getCasteGv(colony, caste = "workers")
-#' getWorkersGv(colony)
+#' getCastePheno(colony, caste = "workers")
+#' getWorkersPheno(colony)
 #'
-#' getCasteGv(colony, caste = "drones")
-#' getDronesGv(colony)
+#' getCastePheno(colony, caste = "drones")
+#' getDronesPheno(colony)
 #'
-#' getCasteGv(apiary, caste = "queen")
-#' getQueenGv(apiary)
+#' getCastePheno(apiary, caste = "queen")
+#' getQueenPheno(apiary)
 #'
-#' getCasteGv(apiary, caste = "fathers")
-#' getCasteGv(apiary, caste = "fathers", nInd = 2)
-#' getCasteGv(apiary, caste = "fathers", nInd = 2)
-#' getFathersGv(apiary)
-#' getFathersGv(apiary, nInd = 2)
+#' getCastePheno(apiary, caste = "fathers")
+#' getCastePheno(apiary, caste = "fathers", nInd = 2)
+#' getCastePheno(apiary, caste = "fathers", nInd = 2)
+#' getFathersPheno(apiary)
+#' getFathersPheno(apiary, nInd = 2)
 #'
-#' getCasteGv(apiary, caste = "virginQueens")
-#' getVirginQueensGv(apiary)
+#' getCastePheno(apiary, caste = "virginQueens")
+#' getVirginQueensPheno(apiary)
 #'
-#' getCasteGv(apiary, caste = "workers")
-#' getWorkersGv(apiary)
+#' getCastePheno(apiary, caste = "workers")
+#' getWorkersPheno(apiary)
 #'
-#' getCasteGv(apiary, caste = "drones")
-#' getDronesGv(apiary)
+#' getCastePheno(apiary, caste = "drones")
+#' getDronesPheno(apiary)
 #' @export
-getCasteGv <- function(x, caste, nInd = NULL) {
+getCastePheno <- function(x, caste, nInd = NULL) {
   if (isColony(x)) {
     tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
     if (is.null(tmp)) {
       ret <- NULL
     } else {
-      ret <- gv(pop = tmp)
+      ret <- pheno(pop = tmp)
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getCasteGv(x = x[[colony]], caste = caste, nInd = nInd)
+      tmp <- getCastePheno(x = x[[colony]], caste = caste, nInd = nInd)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -5969,70 +5969,70 @@ getCasteGv <- function(x, caste, nInd = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteGv Access genetic value of the queen
+#' @describeIn getCastePheno Access phenotype value of the queen
 #' @export
-getQueenGv <- function(x) {
+getQueenPheno <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "queen")
+    ret <- getCastePheno(x, caste = "queen")
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getCasteGv Access genetic values of fathers
+#' @describeIn getCastePheno Access phenotype values of fathers
 #' @export
-getFathersGv <- function(x, nInd = NULL) {
+getFathersPheno <- function(x, nInd = NULL) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
+    ret <- getCastePheno(x, caste = "fathers", nInd = nInd)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getCasteGv Access genetic values of virgin queens
+#' @describeIn getCastePheno Access phenotype values of virgin queens
 #' @export
-getVirginQueensGv <- function(x, nInd = NULL) {
+getVirginQueensPheno <- function(x, nInd = NULL) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
+    ret <- getCastePheno(x, caste = "virginQueens", nInd = nInd)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getCasteGv Access genetic values of workers
+#' @describeIn getCastePheno Access phenotype values of workers
 #' @export
-getWorkersGv <- function(x, nInd = NULL) {
+getWorkersPheno <- function(x, nInd = NULL) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "workers", nInd = nInd)
+    ret <- getCastePheno(x, caste = "workers", nInd = nInd)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getCasteGv Access genetic values of drones
+#' @describeIn getCastePheno Access phenotype values of drones
 #' @export
-getDronesGv <- function(x, nInd = NULL) {
+getDronesPheno <- function(x, nInd = NULL) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- getCasteGv(x, caste = "drones", nInd = nInd)
+    ret <- getCastePheno(x, caste = "drones", nInd = nInd)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @rdname getColonyGv
-#' @title Access genetic values of individuals in colony
+#' @rdname getColonyPheno
+#' @title Access phenotype values of individuals in colony
 #'
-#' @description Level 0 function that returns genetic values of individuals in
-#'   colony.
+#' @description Level 0 function that returns phenotype values of individuals in
+#'   a colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
-#' "drones", or "virginQueens"
+#'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample; can be a list to
 #'   access different number of different caste - when this is the case
@@ -6040,9 +6040,9 @@ getDronesGv <- function(x, nInd = NULL) {
 #'
 #' @seealso \code{\link{gv}}
 #'
-#' @return list of vector of genetic values when \code{x} is
+#' @return list of vector of phenotype values when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of genetic values when \code{x} is \code{\link{MultiColony-class}},
+#'   of vectors of phenotype values when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
 #'
@@ -6067,18 +6067,18 @@ getDronesGv <- function(x, nInd = NULL) {
 #' apiary <- buildUp(x = apiary)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getColonyGv(colony)
-#' getColonyGv(colony, caste = c("queen", "fathers"))
-#' getColonyGv(colony, nInd = 1)
-#' getColonyGv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' getColonyPheno(colony)
+#' getColonyPheno(colony, caste = c("queen", "fathers"))
+#' getColonyPheno(colony, nInd = 1)
+#' getColonyPheno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #'
-#' getColonyGv(apiary)
-#' getColonyGv(apiary, caste = c("queen", "fathers"))
-#' getColonyGv(apiary, nInd = 1)
-#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' getColonyPheno(apiary)
+#' getColonyPheno(apiary, caste = c("queen", "fathers"))
+#' getColonyPheno(apiary, nInd = 1)
+#' getColonyPheno(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
 #' @export
-getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL) {
+getColonyPheno <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+                           nInd = NULL) {
   if (isColony(x)) {
     if (is.list(nInd)) {
       caste <- names(nInd)
@@ -6102,7 +6102,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- gv(pop = tmp)
+        ret[[caste]] <- pheno(pop = tmp)
       }
     }
     # TODO: should we add colony node here too or will that be done elsewhere?
@@ -6112,7 +6112,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyGv(x = x[[colony]], caste = caste, nInd = nInd)
+      ret[[colony]] <- getColonyPheno(x = x[[colony]], caste = caste, nInd = nInd)
     }
     names(ret) <- getId(x)
   } else {
@@ -6123,10 +6123,10 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 
 # get*Gv ----
 
-#' @rdname getCastePheno
-#' @title Access phenotype values of individuals in a caste
+#' @rdname getCasteGv
+#' @title Access genetic values of individuals in a caste
 #'
-#' @description Level 0 function that returns phenotype values of individuals
+#' @description Level 0 function that returns genetic values of individuals
 #'   in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
@@ -6135,7 +6135,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #'
-#' @seealso \code{\link{pheno}}
+#' @seealso \code{\link{gv}}
 #'
 #' @return vector of phenotype values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
