@@ -178,7 +178,10 @@ test_that("pullCastePop", {
   apiary <- addWorkers(apiary, nInd = 100)
 
   apiary1 <- createMultiColony(x = basePop[1], n = 0)
-
+  apiary2 <- createMultiColony(n = 2)
+  # test on empty apiary
+  expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1)$pulled, "list")
+  expect_error(pullCastePop(apiary2, caste = "queen", nInd = 1))
   # Warning- if pulling drones, pulls drones that are not yet mated
   expect_warning(pullCastePop(colony, caste = "drones"))
   suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones")$pulled, "Pop"))
@@ -195,8 +198,7 @@ test_that("pullCastePop", {
   # Error is "caste" argument is missing
   expect_error(pullCastePop(colony))
   expect_error(pullCastePop(apiary))
-  # test on empty apiary
-  expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1)$pulled, "list")
+
   # type
   expect_type(pullCastePop(colony, caste = "workers"), "list")
   expect_type(pullCastePop(colony, caste = "queen"), "list")
