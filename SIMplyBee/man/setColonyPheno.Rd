@@ -4,17 +4,17 @@
 \alias{setColonyPheno}
 \title{Set colony phenotype}
 \usage{
-setColonyPheno(x, colonyFUN = NULL, ..., simParamBee = NULL)
+setColonyPheno(x, FUN = NULL, ..., simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{colonyFUN}{function, any function that can be run on \code{colony} and
+\item{FUN}{function, any function that can be run on \code{colony} and
 returns colony phenotypes; if \code{NULL} then
-\code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
+\code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
 then colony phenotype is not set, but phenotypes of colony individuals are}
 
-\item{...}{all arguments of \code{\link{setPheno}} and \code{colonyFUN}}
+\item{...}{arguments passed to \code{\link{setPheno}} and \code{FUN}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -22,29 +22,32 @@ then colony phenotype is not set, but phenotypes of colony individuals are}
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
 }
 \description{
-Level 2 function that sets phenotypes for all Colony or MultiColony individuals
-  (queen, workers, drones, and virgin queens) and for the colony or each colony in
-  a MultiColony object
+Level 2 function that sets phenotypes for all colony individuals
+  (queen, workers, drones, and virgin queens) and for the colony, or each
+  colony in a MultiColony object.
 }
 \details{
 When this function is called on a colony, phenotypes for all colony
-  individuals is set or reset if phenotypes already exist.
+  individuals and possibly the whole colony are set (or reset if phenotypes
+  already exist).
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 
 # Define two traits that collectively affect colony honey yield:
-# 1) queen's effect on colony honey yield
-# 2) workers' effect on colony honey yield
-# The traits will have negative genetic correlation and heritability of 0.25
+# 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
+# 2) workers' effect on colony honey yield, say via foraging phenotype
+# The traits will have a negative genetic correlation of -0.5 and heritability
+# of 0.25 (on an individual level)
 meanP <- c(20, 0)
-varA <- c(1, 1 / 10)
+nWorkers <- 10
+varA <- c(1, 1 / nWorkers)
 corA <- matrix(data = c(
   1.0, -0.5,
   -0.5, 1.0
 ), nrow = 2, byrow = TRUE)
-varE <- c(3, 3 / 10)
+varE <- c(3, 3 / nWorkers)
 varA / (varA + varE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
 SP$setVarE(varE = varE)
@@ -56,10 +59,10 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = 14)
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(colony, nWorkers = 10)
+colony <- buildUp(colony, nWorkers = nWorkers)
 apiary <- createMultiColony(basePop[3:5], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(apiary, nWorkers = 10)
+apiary <- buildUp(apiary, nWorkers = nWorkers)
 
 # Set phenotypes for all colony individuals
 colony <- setColonyPheno(colony)
@@ -81,25 +84,33 @@ lapply(getWorkers(apiary), FUN = pheno)
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Set phenotypes for all colony individuals AND Colony
-colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste)
 pheno(colony)
+# TODO: use getColonyPheno(colony) for all individuals and/or colony
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
+
 # Set phenotypes for all colony individuals AND MultiColony
-apiary <- setColonyPheno(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
+apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste)
 lapply(apiary@colonies, FUN = pheno)
 # TODO: use getColonyPheno(colony) for all individuals and/or colony
 #       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # Colony phenotype - store the colony function into the SP object
-SP$phenoColony <- phenoQueenPlusSumOfWorkers
+SP$colonyPheno <- calcColonyPhenoFromCaste
 pheno(setColonyPheno(colony))
 pheno(setColonyPheno(colony))
 lapply(setColonyPheno(apiary)@colonies, FUN = pheno)
 lapply(setColonyPheno(apiary)@colonies, FUN = pheno)
 # phenotype will vary between function calls
+# TODO: use getColonyPheno(colony) for all individuals and/or colony
+#       https://github.com/HighlanderLab/SIMplyBee/issues/26
 
 # TODO:
 # See
 #     https://github.com/HighlanderLab/SIMplyBee/issues/26
 #     https://github.com/HighlanderLab/SIMplyBee/issues/28
 #     https://github.com/HighlanderLab/SIMplyBee/issues/32
+}
+\seealso{
+\code{\link{calcColonyPhenoFromCaste}} as an example for \code{FUN}
 }

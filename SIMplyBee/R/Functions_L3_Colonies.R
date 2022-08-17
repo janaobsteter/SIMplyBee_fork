@@ -7,14 +7,15 @@
 #'   start a simulation.
 #'
 #' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
-#'   (selected at random if there are more than \code{n} in \code{Pop})
-#' @param n integer, number of colonies to create (if only \code{nCol} is
-#'   given then \code{\link{MultiColony-class}} is created with \code{nCol} empty
-#'   (\code{NULL}) individual colony) - this is mostly useful for programming)
+#'   (selected at random if there are more than \code{n} in \code{Pop}, while
+#'    all are used when \code{n} is \code{NULL})
+#' @param n integer, number of colonies to create (if only \code{n} is
+#'   given then \code{\link{MultiColony-class}} is created with \code{n}
+#'   \code{NULL}) individual colony - this is mostly useful for programming)
 #' @param location list, location of the colonies as \code{c(x, y)}
 #'
-#' @details When both \code{x} and \code{nCol} are \code{NULL}, then an empty
-#'   \code{NULL} \code{\link{MultiColony-class}} is created with 0 colonies.
+#' @details When both \code{x} and \code{n} are \code{NULL}, then a
+#'   \code{\link{MultiColony-class}} with 0 colonies is created.
 #'
 #' @return \code{\link{MultiColony-class}}
 #'
@@ -30,7 +31,8 @@
 #' apiary[[2]]
 #'
 #' # Create 2 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 2)
+#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
+#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -57,6 +59,9 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
     }
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
+    }
+    if (is.null(n)) {
+      n <- nInd(x)
     }
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")

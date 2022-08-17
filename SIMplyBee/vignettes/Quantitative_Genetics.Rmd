@@ -141,8 +141,8 @@ getFathers(colony)@gv
 
 ```{r colony pheno} 
 # Colony phenotype value
-help(phenoQueenPlusSumOfWorkers)
-colony <- setColonyPheno(colony, colonyFUN = phenoQueenPlusSumOfWorkers)
+help(calcColonyPhenoFromCaste)
+colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste)
 colony@pheno
 ```
 
@@ -186,16 +186,16 @@ head(colony@workers@pheno)
 
 ```{r colony pheno II}
 colonyPheno <- function(colony) {
-  yield <- phenoQueenPlusSumOfWorkers(colony,
-                                      queenTrait = 1,
-                                      workersTrait = 2)
-  calmness <- phenoQueenPlusSumOfWorkers(colony,
-                                         queenTrait = 3,
-                                         workersTrait = 4,
-                                         checkProduction = FALSE)
+  yield <- calcColonyPhenoFromCaste(colony,
+                                    queenTrait = 1,
+                                    workersTrait = 2)
+  calmness <- calcColonyPhenoFromCaste(colony,
+                                       queenTrait = 3,
+                                       workersTrait = 4,
+                                       checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
-colony <- setColonyPheno(colony, colonyFUN = colonyPheno)
+colony <- setColonyPheno(colony, FUN = colonyPheno)
 colony@pheno
 ```
 
@@ -243,12 +243,12 @@ colony
 
 ```{r colony pheno III}
 colonyPheno <- function(colony) {
-  yield <- phenoQueenPlusSumOfWorkers(colony,
-                                      queenTrait = 2,
-                                      workersTrait = 3)
+  yield <- calcColonyPhenoFromCaste(colony,
+                                   queenTrait = 2,
+                                   workersTrait = 3)
   return(matrix(yield))
 }
-colony <- setColonyPheno(colony, colonyFUN = colonyPheno)
+colony <- setColonyPheno(colony, FUN = colonyPheno)
 colony@pheno
 ```
 

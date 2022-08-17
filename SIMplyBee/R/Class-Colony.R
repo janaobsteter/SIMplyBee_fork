@@ -12,7 +12,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @rdname Colony-class
 #' @title Honeybee colony
 #'
-#' @description An object holding honeybee colonyd
+#' @description An object holding honeybee colony
 #'
 #' @slot id integer, unique ID of the colony
 #' @slot location numeric, location of the colony (x, y)
@@ -155,7 +155,12 @@ setMethod(
   }
 )
 
-# This is a hack to combine NULL and a Pop object (Pop and NULL works already)
+#' @rdname combineNULLAndPop
+#' @title Combine a NULL and AlphaSimR population
+#'
+#' @description This combine \code{c()} method is a hack to combine NULL and an
+#'   AlphaSimR population object \code{c(NULL, pop)} (\code{c(pop, NULL)} works
+#'   already with AlphaSimR package code).
 setMethod(
   f = "c",
   signature(x = "NULLOrPop"),
@@ -179,5 +184,3 @@ setMethod(
     return(pop)
   }
 )
-
-

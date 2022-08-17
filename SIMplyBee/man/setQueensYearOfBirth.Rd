@@ -2,12 +2,9 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{setQueensYearOfBirth}
 \alias{setQueensYearOfBirth}
-\alias{setQueensYOB}
 \title{Set the queen's year of birth}
 \usage{
 setQueensYearOfBirth(x, year)
-
-setQueensYOB(x, year)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
@@ -23,11 +20,6 @@ setQueensYOB(x, year)
 \description{
 Level 1 function that sets the queen's year of birth.
 }
-\section{Functions}{
-\itemize{
-\item \code{setQueensYOB()}: Set the queen's year of birth
-
-}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)

@@ -2,12 +2,9 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getQueensYearOfBirth}
 \alias{getQueensYearOfBirth}
-\alias{getQueensYOB}
 \title{Access the queen's year of birth}
 \usage{
 getQueensYearOfBirth(x)
-
-getQueensYOB(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
@@ -21,11 +18,6 @@ numeric, the year of birth of the queen(s); named when theres is more
 \description{
 Level 0 function that returns the queen's year of birth.
 }
-\section{Functions}{
-\itemize{
-\item \code{getQueensYOB()}: Access the queen's year of birth
-
-}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
