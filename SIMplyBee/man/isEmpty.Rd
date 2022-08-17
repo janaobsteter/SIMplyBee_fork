@@ -22,8 +22,8 @@ Check whether a population, colony or a multicolony
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- createVirginQueens(founderGenomes)
 
 isEmpty(new(Class = "Pop"))
 isEmpty(basePop[0])

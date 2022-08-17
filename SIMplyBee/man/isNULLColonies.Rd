@@ -17,8 +17,8 @@ Check which of the colonies in a multicolony are NULL
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- createVirginQueens(founderGenomes)
 
 emptyApiary <- createMultiColony(n = 3)
 emptyApiary1 <- c(createColony(), createColony())

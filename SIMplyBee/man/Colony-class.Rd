@@ -26,7 +26,7 @@ isColony(x)
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 }
 \description{
-An object holding honeybee colonyd
+An object holding honeybee colony
 }
 \section{Functions}{
 \itemize{
