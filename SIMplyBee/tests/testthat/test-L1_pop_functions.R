@@ -349,6 +349,7 @@ test_that("pullDroneGroupsFromDCA", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
+  expect_length(pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson), 10)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
   # Create a Colony and a MultiColony class
