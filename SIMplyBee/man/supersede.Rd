@@ -61,5 +61,4 @@ getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
 tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
 (supersede(tmp$pulled))
-
 }

@@ -81,5 +81,4 @@ getCasteId(apiary, caste = "queen")
 getCasteId(apiary, caste = "virginQueens")
 getCasteId(apiary, caste = "queen")
 getCasteId(apiary, caste = "virginQueens")
-
 }

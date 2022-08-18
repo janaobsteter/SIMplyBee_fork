@@ -46,5 +46,4 @@ getLocation(colony)
 # Assuming one location (as in bringing colonies to one place!)
 apiary <- setLocation(apiary, location = loc1)
 getLocation(apiary)
-
 }

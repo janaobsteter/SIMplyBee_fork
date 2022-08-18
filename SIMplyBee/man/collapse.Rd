@@ -43,5 +43,4 @@ apiaryLost <- collapse(tmp$pulled)
 hasCollapsed(apiaryLost)
 apiaryLeft <- tmp$remnant
 hasCollapsed(apiaryLeft)
-
 }
