@@ -54,16 +54,6 @@ colony}
 
 \item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
 
-\item{\code{pheno}}{matrix, phenotype values of the colony}
-
-\item{\code{gv}}{matrix, genetic values of the colony}
-
-\item{\code{bv}}{matrix, breeding values of the colony}
-
-\item{\code{dd}}{matrix, dominance values of the colony}
-
-\item{\code{aa}}{matrix, epistasis values of the colony}
-
 \item{\code{split}}{logical, has colony split}
 
 \item{\code{swarm}}{logical, has colony swarmed}
