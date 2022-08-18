@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{isCaste}
 \alias{isCaste}
-\title{Is individual a member of specific caste}
+\title{Is individual a member of a specific caste}
 \usage{
 isCaste(x, caste, simParamBee = NULL)
 }
@@ -37,7 +37,7 @@ colony <- addVirginQueens(x = colony, nInd = 4)
 
 isCaste(getQueen(colony), caste = "queen")
 isCaste(getFathers(colony, nInd = 2), caste = "fathers")
-isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+isCaste(getWorkers(colony, nInd = 2), caste = "workers") # random sample!
 isCaste(getDrones(colony, nInd = 2), caste = "drones")
 isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
 

@@ -12,7 +12,9 @@ nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 
 \item{collapse}{logical, if \code{TRUE}, the function will return the number
 of distinct csd alleles in either the entire population, colony, or
-multicolony. Default is \code{FALSE}.}
+multicolony. Note this has nothing to do with the colony collapse. It's
+like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
+examples about this behaviour.Default is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -58,12 +60,12 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 4)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 nCsdAlleles(getQueen(colony))

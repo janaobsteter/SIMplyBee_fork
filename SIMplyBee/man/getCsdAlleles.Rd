@@ -28,11 +28,16 @@ allele}
 \item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
-csd alleles in either the entire population, colony, or multicolony. Default
-is \code{FALSE}.}
+csd alleles across the entire population, colony, or multicolony (not
+separately for each caste when \code{x} is a colony or each caste of
+each colony when \code{x} is a multicolony. This is a way to get one single
+object as an output across castes or colonies. Note this has nothing to do
+with the colony collapse. It's like \code{paste(..., collapse = TRUE)}.
+Default is \code{FALSE}. See examples about this behaviour.}
 
-\item{unique}{logical, return only the unique set of csd alleles. Default
-is \code{FALSE}.}
+\item{unique}{logical, return only the unique set of csd alleles. This argument
+interacts with \code{collapse}. Default is \code{FALSE}. See examples about
+this behaviour.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -49,13 +54,12 @@ Level 0 function that returns alleles from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
 }
 \details{
-If both collapse and unique are \code{TRUE}, the function
-  returns a unique set of csd alleles in the entire population, colony, or
-  multicolony
+If both collapse and unique are \code{TRUE}, the function returns a
+  unique set of csd alleles in the entire population, colony, or multicolony
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -64,11 +68,11 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 
 # Use getCsdAlleles on a Population
 getCsdAlleles(getQueen(colony))

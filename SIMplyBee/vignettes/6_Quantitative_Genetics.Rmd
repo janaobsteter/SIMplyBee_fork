@@ -1,9 +1,9 @@
 ---
-title: "SIMplyBee - quantitative genetics"
+title: "SIMplyBee - Quantitative genetics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - quantitative genetics}
+  %\VignetteIndexEntry{SIMplyBee - Quantitative genetics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -59,6 +59,7 @@ varE <- c(3, 3 / SP$nWorkers)
 # TODO: what is a reasonable environmental correlation between queen and worker effects?
 corE <- matrix(data = c( 1.0, -0.3, 
                         -0.3,  1.0), nrow = 2, byrow = TRUE)
+# TODO: Move this to passing setColonyPheno()!
 SP$setVarE(varE = varE)
 SP$setCorE(corE = corE)
 ```

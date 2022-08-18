@@ -1,4 +1,4 @@
-# Level 3 MultiColony Functions
+# ---- Level 3 MultiColony Functions ----
 
 #' @rdname createMultiColony
 #' @title Create MultiColony object

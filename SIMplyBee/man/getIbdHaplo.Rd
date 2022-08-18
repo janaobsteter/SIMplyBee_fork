@@ -33,8 +33,6 @@ founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
-SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -43,7 +41,7 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
 # Use getIbdHaplo on a Population
 getIbdHaplo(getWorkers(colony))

@@ -1,0 +1,26 @@
+---
+title: "SIMplyBee - Colony events"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - Colony events}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
+```
+
+# Introduction
+
+TODO: add colony events images!
+
+TODO: where do we describe L0, L1, L2, and L3? In the next vignette that dives
+      into these aspects (already?)?
+TODO: related to the above, where do we want to write a list of functions
+      grouped by some nice system (according to L0, L1, L2 and L3?)

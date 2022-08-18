@@ -1,4 +1,4 @@
-# Level 2 Colony Functions
+# ---- Level 2 Colony Functions ----
 
 #' @rdname createColony
 #' @title Create a new Colony
@@ -2000,14 +2000,18 @@ setLocation <- function(x, location) {
 #'   returns colony phenotypes; if \code{NULL} then
 #'   \code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
 #'   then colony phenotype is not set, but phenotypes of colony individuals are
-#' @param ... arguments passed to \code{\link{setPheno}} and \code{FUN}
+#'   (see \code{reset} though!)
+#' @param reset logical, should previous phenotype values for individuals in the
+#'   castes be used or sampled anew?
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... arguments passed to \code{\link{setPheno}}
 #'
 #' @details When this function is called on a colony, phenotypes for all colony
 #'   individuals and possibly the whole colony are set (or reset if phenotypes
 #'   already exist).
 #'
 #' @seealso \code{\link{calcColonyPhenoFromCaste}} as an example for \code{FUN}
+#'   and \code{\link{setPheno}} for the basic population phenotyping
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
 #'
@@ -2030,7 +2034,6 @@ setLocation <- function(x, location) {
 #' varE <- c(3, 3 / nWorkers)
 #' varA / (varA + varE)
 #' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-#' SP$setVarE(varE = varE)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 100)
@@ -2039,93 +2042,74 @@ setLocation <- function(x, location) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' colony <- buildUp(colony, nWorkers = nWorkers)
+#' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 #' apiary <- createMultiColony(basePop[3:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-#' apiary <- buildUp(apiary, nWorkers = nWorkers)
+#' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 #'
 #' # Set phenotypes for all colony individuals
-#' colony <- setColonyPheno(colony)
-#' apiary <- setColonyPheno(apiary)
+#' colony <- setColonyPheno(colony, varE = varE)
+#'
+#' apiary <- setColonyPheno(apiary, varE = varE)
 #'
 #' # Queen's phenotype for both traits
-#' pheno(getQueen(colony))
-#' lapply(getQueen(apiary), FUN = pheno)
-#' # TODO: use getQueensPheno(colony, caste = "queen")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' getQueenPheno(colony)
+#' getQueenPheno(apiary)
 #'
 #' # Workers' phenotype for both traits
-#' pheno(getWorkers(colony))
-#' lapply(getWorkers(apiary), FUN = pheno)
-#' # TODO: use getWorkersPheno(colony, caste = "queen")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' getWorkersPheno(colony)
+#' getWorkersPheno(apiary)
 #'
-#' # TODO: use getColonyPheno(colony) for all individuals
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' # For the whole colony
+#' getColonyPheno(colony)
+#' getColonyPheno(apiary)
 #'
 #' # Set phenotypes for all colony individuals AND Colony
-#' colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste)
-#' pheno(colony)
-#' # TODO: use getColonyPheno(colony) for all individuals and/or colony
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste, varE = varE)
+#' getColonyPheno(colony)$colony
 #'
 #' # Set phenotypes for all colony individuals AND MultiColony
-#' apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste)
-#' lapply(apiary@colonies, FUN = pheno)
-#' # TODO: use getColonyPheno(colony) for all individuals and/or colony
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
+#' apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste, varE = varE)
+#' sapply(X = getColonyPheno(apiary), FUN = function(x) x$colony)
 #'
 #' # Colony phenotype - store the colony function into the SP object
 #' SP$colonyPheno <- calcColonyPhenoFromCaste
-#' pheno(setColonyPheno(colony))
-#' pheno(setColonyPheno(colony))
-#' lapply(setColonyPheno(apiary)@colonies, FUN = pheno)
-#' lapply(setColonyPheno(apiary)@colonies, FUN = pheno)
-#' # phenotype will vary between function calls
-#' # TODO: use getColonyPheno(colony) for all individuals and/or colony
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # TODO:
-#' # See
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/26
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
+#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
+#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+#' # phenotype will vary between function calls by default (see reset)
 #' @export
-setColonyPheno <- function(x, FUN = NULL, ..., simParamBee = NULL) {
+setColonyPheno <- function(x, FUN = NULL, reset = TRUE, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(FUN)) {
     FUN <- simParamBee$colonyPheno
   }
-  # TODO: how should we handle the creation of phenotypes when residual variance
-  #       is set (then we get phenotypes automatically and we should not call
-  #       setPheno() below - this overwrittes previous phenotypes), but when the
-  #       residual variance is not set, we have to call setPheno()
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/235
   if (isColony(x)) {
-    if (!is.null(x@queen)) {
-      x@queen <- setPheno(x@queen, ...)
+    if (isQueenPresent(x) && reset) {
+      x@queen <- setPheno(x@queen, ..., simParam = simParamBee)
     }
-    if (!is.null(x@workers)) {
-      x@workers <- setPheno(x@workers, ...)
+    if (isWorkersPresent(x) && reset) {
+      x@workers <- setPheno(x@workers, ..., simParam = simParamBee)
     }
-    if (!is.null(x@drones)) {
-      x@drones <- setPheno(x@drones, ...)
+    if (isDronesPresent(x) && reset) {
+      x@drones <- setPheno(x@drones, ..., simParam = simParamBee)
     }
-    if (!is.null(x@virginQueens)) {
-      x@virginQueens <- setPheno(x@virginQueens, ...)
+    if (isVirginQueensPresent(x) && reset) {
+      x@virginQueens <- setPheno(x@virginQueens, ..., simParam = simParamBee)
     }
     if (!is.null(FUN)) {
-      x@pheno <- FUN(x, ...)
+      x@pheno <- FUN(x)
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- setColonyPheno(x[[colony]],
-        FUN = FUN, ...,
-        # TODO: is ... really passed on to setPheno?
-        #       https://github.com/HighlanderLab/SIMplyBee/issues/240
+        FUN = FUN,
+        reset = reset,
+        ...,
         simParamBee = simParamBee
       )
     }
