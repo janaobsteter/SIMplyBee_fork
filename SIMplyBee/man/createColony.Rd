@@ -35,5 +35,4 @@ colony2
 # Create a mated Colony
 colony1 <- cross(colony1, fathers = drones)
 colony1
-
 }

@@ -27,45 +27,46 @@
 #' # Create a mated Colony
 #' colony1 <- cross(colony1, fathers = drones)
 #' colony1
-#'
 #' @export
 createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+if (is.null(simParamBee)) {
+  simParamBee <- get(x = "SP", envir = .GlobalEnv)
+}
+simParamBee$updateLastColonyId()
+if (is.null(x)) {
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location
+  )
+} else {
+  if (!isPop(x)) {
+    stop("Argument x must be a Pop class object!")
   }
-  simParamBee$updateLastColonyId()
-  if (is.null(x)) {
-    colony <- new(Class = "Colony",
-                  id = simParamBee$lastColonyId,
-                  location = location)
+  if (all(isQueen(x))) {
+    if (1 < nInd(x)) {
+      stop("You must provide just one queen for the colony!")
+    }
+    queen <- x
+    virginQueens <- NULL
+  } else if (all(isVirginQueen(x))) {
+    queen <- NULL
+    virginQueens <- x
   } else {
-    if (!isPop(x)) {
-      stop("Argument x must be a Pop class object!")
-    }
-    if (all(isQueen(x))) {
-      if (1 < nInd(x)) {
-        stop("You must provide just one queen for the colony!")
-      }
-      queen <- x
-      virginQueens <- NULL
-    } else if (all(isVirginQueen(x))) {
-      queen <- NULL
-      virginQueens <- x
-    } else {
-      stop("Argument x must hold one queen or virgin queen(s)!")
-    }
-
-    colony <- new(
-      Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location,
-      queen = queen,
-      virginQueens = virginQueens
-    )
+    stop("Argument x must hold one queen or virgin queen(s)!")
   }
-  colony <- resetEvents(colony)
-  validObject(colony)
-  return(colony)
+
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location,
+    queen = queen,
+    virginQueens = virginQueens
+  )
+}
+colony <- resetEvents(colony)
+validObject(colony)
+return(colony)
 }
 
 #' @rdname reQueen
@@ -140,164 +141,63 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
 #' getCasteId(apiary, caste = "virginQueens")
 #' getCasteId(apiary, caste = "queen")
 #' getCasteId(apiary, caste = "virginQueens")
-#'
 #' @export
 reQueen <- function(x, queen, removeVirginQueens = TRUE) {
-  if (!isPop(queen)) {
-    stop("Argument queen must be a Pop class object!")
-  }
-  if (!all(isVirginQueen(queen) | isQueen(queen))) {
-    stop("Individual in queen must be a virgin queen or a queen!")
-  }
-  if (isColony(x)) {
-    if (isQueen(queen)) {
-      if (nInd(queen) > 1) {
-        stop("You must provide just one queen for the colony!")
-      }
-      x@queen <- queen
-      if (removeVirginQueens) {
-        x <- removeVirginQueens(x)
-      }
-    } else {
-      x <- removeQueen(x)
-      x@virginQueens <- queen
+if (!isPop(queen)) {
+  stop("Argument queen must be a Pop class object!")
+}
+if (!all(isVirginQueen(queen) | isQueen(queen))) {
+  stop("Individual in queen must be a virgin queen or a queen!")
+}
+if (isColony(x)) {
+  if (all(isQueen(queen))) {
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
     }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    if (nInd(queen) < nCol) {
-      stop("Not enough queens provided!")
-    }
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- reQueen(
-        x = x[[colony]],
-        queen = queen[colony]
-      )
+    x@queen <- queen
+    if (removeVirginQueens) {
+      x <- removeVirginQueens(x)
     }
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    x <- removeQueen(x)
+    x@virginQueens <- queen
   }
-  validObject(x)
-  return(x)
+} else if (isMultiColony(x)) {
+  nCol <- nColonies(x)
+  if (nInd(queen) < nCol) {
+    stop("Not enough queens provided!")
+  }
+  for (colony in seq_len(nCol)) {
+    x[[colony]] <- reQueen(
+      x = x[[colony]],
+      queen = queen[colony]
+    )
+  }
+} else {
+  stop("Argument x must be a Colony or MultiColony class object!")
+}
+validObject(x)
+return(x)
 }
 
-#' @rdname addVirginQueens
-#' @title Add (raise) virgin queens in the colony
+#' @rdname addCastePop
+#' @title Add caste individuals to the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
-#'   virgin queens to a Colony or MultiColony object by crossing the current
-#'   queen and the fathers.
+#'   a specific caste individuals to a Colony or MultiColony object by producing
+#'   offspring from a mated queen. If there are already some individuals present
+#'   in the caste, new and present individuals are combined.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param nInd numeric or function, number of virgin queens to add; if
-#'   \code{NULL} then \code{\link{SimParamBee}$nVirginQueens} is used
-#' @param new logical, should the virgin queens be added a fresh (ignoring
-#'   currently present virgin queens in the colony)
-#' @param year numeric, year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @details \code{addVirginQueens} replaces any currently present virgin queens.
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
-#'   virgin queens added
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add virgin queens
-#' addVirginQueens(colony, nInd = 20)
-#' nVirginQueens(addVirginQueens(apiary, nInd = 20))
-#'
-#' # Using a default in SP$nVirginQueens
-#' # (just to have some workers - change this to your needs!)
-#' addVirginQueens(colony)
-#' nVirginQueens(addVirginQueens(apiary))
-#'
-#' # Specify own number
-#' SP$nVirginQueens <- 15
-#' addVirginQueens(colony)
-#' nVirginQueens(addVirginQueens(apiary))
-#' # nVirginQueens will NOT vary between function calls when a constant is used
-#'
-#' # Specify a function that will give a number
-#' addVirginQueens(colony, nInd = nVirginQueensPoisson)
-#' nVirginQueens(addVirginQueens(apiary, nInd = nVirginQueensPoisson))
-#' # nVirginQueens will vary between function calls when a function is used
-#'
-#' # Store a function or a value in the SP object
-#' SP$nVirginQueens <- nVirginQueensPoisson
-#' addVirginQueens(colony)
-#' nVirginQueens(addVirginQueens(apiary))
-#' # nVirginQueens will vary between function calls when a function is used
-#' @export
-addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
-                            simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nInd)) {
-    nInd <- simParamBee$nVirginQueens
-  }
-  # doing "if (is.function(nInd))" below
-  if (isColony(x)) {
-    if (!isQueenPresent(x)) {
-      stop("Missing queen!")
-    }
-    if (is.function(nInd)) {
-      nInd <- nInd(colony = x) # see nVirginQueensPoissonColonyStrength
-    }
-    if (0 < nInd) {
-      newVirginQueens <- createVirginQueens(
-        x = x, nInd = nInd, year = year,
-        simParamBee = simParamBee
-      )
-      if (is.null(x@virginQueens) | new) {
-        x@virginQueens <- newVirginQueens
-      } else {
-        x@virginQueens <- c(x@virginQueens, newVirginQueens)
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- addVirginQueens(
-        x = x[[colony]], nInd = nInd, new = new,
-        year = year, simParamBee = simParamBee
-      )
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
-}
-
-#' @rdname addWorkers
-#' @title Add (raise) workers in the colony
-#'
-#' @description Level 2 function that adds (raises) the specified number of
-#'   workers to a Colony or MultiColony object by crossing the current queen
-#'   and the fathers. If there are already some workers present, new and present
-#'   workers are combined.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, "workers", "drones", or "virginQueens"
 #' @param nInd numeric or function, number of workers to be added, but see
 #'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used
-#' @param new logical, should the number of workers be added anew or should we
-#'   only top-up the existing number of workers to \code{nInd}
-#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   we add the exact specified number of viable workers (heterozygous at the
-#'   csd locus)
+#' @param new logical, should the number of individuals be added to the caste population
+#'   anew or should we only top-up the existing number of individuals to \code{nInd}
+#' @param exact logical, only relevant when adding workers - if the csd locus is turned
+#'  on and exact is \code{TRUE}, we add the exact specified number of viable workers
+#'  (heterozygous at the csd locus)
+#' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
@@ -320,64 +220,110 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE, year = NULL,
 #' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
+#' # Add virgin queens
+#' addCastePop(colony, caste = "virginQueens", nInd = 20)
+#' # Or use a alias function
+#' addVirginQueens(colony, nInd = 20)
+#' nVirginQueens(addVirginQueens(apiary, nInd = 20))
+#'
 #' # Add workers
+#' addCastePop(colony, caste = "workers", nInd = 20)
+#' # Or use a alias function
 #' addWorkers(colony, nInd = 20)
 #' nWorkers(addWorkers(apiary, nInd = 20))
 #'
+#' # Add drones
+#' addCastePop(colony, caste = "drones", nInd = 20)
+#' # Or use a alias function
+#' addDrones(colony, nInd = 20)
+#' nDrones(addDrones(apiary, nInd = 20))
+#'
 #' # Using a default in SP$nWorkers
-#' # (just to have some workers - change this to your needs!)
+#' # (just to have some individuals - change this to your needs!)
+#' addVirginQueens(colony)
+#' addDrones(colony)
 #' addWorkers(colony)
 #' nWorkers(addWorkers(apiary))
 #'
 #' # Specify own number
+#' SP$nVirginQueens <- 2
 #' SP$nWorkers <- 15
-#' addWorkers(colony)
-#' nWorkers(addWorkers(apiary))
-#' # nWorkers will NOT vary between function calls when a constant is used
+#' SP$nDrones <- 3
+#' nVirginQueens(addVirginQueens(colony))
+#' nWorkers(addWorkers(colony))
+#' nDrones(addDrones(colony))
+#' # nVirginQueens/nWorkers/nDrones will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' addWorkers(colony, nInd = nWorkersPoisson)
-#' nWorkers(addWorkers(apiary, nInd = nWorkersPoisson))
-#' # nWorkers will vary between function calls when a function is used
+#' nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
+#' nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
+#' nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
+#' nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
+#' nDrones(addDrones(colony, nInd = nDronesPoisson))
+#' nDrones(addDrones(colony, nInd = nDronesPoisson))
+#' # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
+#' SP$nVirginQueens <- nVirginQueensPoisson
 #' SP$nWorkers <- nWorkersPoisson
-#' addWorkers(colony)
-#' nWorkers(addWorkers(apiary))
-#' # nWorkers will vary between function calls when a function is used
+#' SP$nDrones <- nDronesPoisson
+#' (addVirginQueens(colony))
+#' (addWorkers(colony))
+#' (addDrones(colony))
+#' # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 #'
 #' # Queen's counters
 #' getMisc(getQueen(addWorkers(colony)))
-#'
 #' @export
-addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
-                       simParamBee = NULL) {
+addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
+                        exact = FALSE, year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (length(caste) != 1) {
+    stop("Argument caste must be of length 1!")
+  }
   if (is.null(nInd)) {
-    nInd <- simParamBee$nWorkers
+    if (caste == "workers") {
+      nInd <- simParamBee$nWorkers
+    } else if (caste == "drones") {
+      nInd <- simParamBee$nDrones
+    }  else if (caste == "virginQueens") {
+      nInd <- simParamBee$nVirginQueens
+    }
   }
   # doing "if (is.function(nInd))" below
   if (isColony(x)) {
+    if (!isQueenPresent(x)) {
+      stop("Missing queen!")
+    }
     if (is.function(nInd)) {
-      nInd <- nInd(colony = x) # see nWorkersPoissonQueenFecundity
+      nInd <- nInd(x)
     }
     if (0 < nInd) {
-      newWorkers <- createWorkers(x, nInd, exact = exact, simParamBee = simParamBee)
-      if (is.null(x@workers) | new) {
-        x@workers <- newWorkers$workers
-      } else {
-        x@workers <- c(x@workers, newWorkers$workers)
+      newInds <- createCastePop(x, nInd,
+                                caste = caste, exact = exact,
+                                year = year, simParamBee = simParamBee
+      )
+      if (caste == "workers") {
+        homInds <- newInds$nHomBrood
+        newInds <- newInds$workers
+        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
+        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
       }
-      x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newWorkers$workers)
-      x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + newWorkers$nHomBrood
+      if (is.null(slot(x, caste)) | new) {
+        slot(x, caste) <- newInds
+      } else {
+        slot(x, caste) <- c(slot(x, caste), newInds)
+      }
+    } else {
+      warning("The number of individuals to add is less than 0, hence adding nothing.")
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- addWorkers(
-        x = x[[colony]], nInd = nInd, new = new,
+      x[[colony]] <- addCastePop(
+        x = x[[colony]], caste = caste, nInd = nInd, new = new,
         exact = exact, simParamBee = simParamBee
       )
     }
@@ -388,103 +334,36 @@ addWorkers <- function(x, nInd = NULL, new = FALSE, exact = FALSE,
   return(x)
 }
 
-#' @rdname addDrones
-#' @title Add (raise) drones in the colony
-#'
-#' @description Level 2 function that adds (raises) the specified number of
-#'   drones to a Colony or MultiColony object by crossing the current queen and the fathers.
-#'   If there are already some drones present, new and present drones are combined.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param nInd numeric or function, number of drones to be added, but see
-#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones} is used
-#' @param new logical, should the number of drones be added anew or should we
-#'   only top-up the existing number of drones to \code{nInd}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @details This function increases queen's \code{nDrones} counter.
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
-#'   drones added
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add drones
-#' addDrones(colony, nInd = 20)
-#' nDrones(addDrones(apiary, nInd = 20))
-#'
-#' # Using defaults in SP$nWorkers
-#' # (just to have some workers - change this to your needs!)
-#' addDrones(colony)
-#' nDrones(addDrones(apiary))
-#'
-#' # Specifying own number
-#' SP$nDrones <- 15
-#' addDrones(colony)
-#' nDrones(addDrones(apiary))
-#' # nDrones will NOT vary between function calls when a constant is used
-#'
-#' # Specify a function that will give a number
-#' addDrones(colony, nInd = nDronesPoisson)
-#' nDrones(addDrones(apiary, nInd = nDronesPoisson))
-#' # nDrones will vary between function calls when a function is used
-#'
-#' # Store a function or a value in the SP object
-#' SP$nDrones <- nDronesPoisson
-#' addDrones(colony)
-#' nDrones(addDrones(apiary))
-#' # nDrones will vary between function calls when a function is used
-#'
-#' # Queen's counters
-#' getMisc(getQueen(addDrones(colony)))
-#'
+#' @describeIn addCastePop Add workers to a colony
+#' @export
+addWorkers <- function(x, nInd = NULL, new = FALSE,
+                       exact = FALSE, simParamBee = NULL) {
+  ret <- addCastePop(
+    x = x, caste = "workers", nInd = nInd, new = new,
+    exact = exact, simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn addCastePop Add drones to a colony
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nInd)) {
-    nInd <- simParamBee$nDrones
-  }
-  # doing "if (is.function(nInd))" below
-  if (isColony(x)) {
-    if (is.function(nInd)) {
-      nInd <- nInd(x = x) # see nDronesPoissonQueenFecundity
-    }
-    if (0 < nInd) {
-      newDrones <- createDrones(x, nInd)
-      if (is.null(x@drones) | new) {
-        x@drones <- newDrones
-      } else {
-        x@drones <- c(x@drones, newDrones)
-      }
-      x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- addDrones(
-        x = x[[colony]], nInd = nInd, new = new,
-        simParamBee = simParamBee
-      )
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
+  ret <- addCastePop(
+    x = x, caste = "drones", nInd = nInd, new = new,
+    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn addCastePop Add virgin queens to a colony
+#' @export
+addVirginQueens <- function(x, nInd = NULL, new = FALSE,
+                            year = NULL, simParamBee = NULL) {
+  ret <- addCastePop(
+    x = x, caste = "virginQueens", nInd = nInd, new = new,
+    year = year, simParamBee = simParamBee
+  )
+  return(ret)
 }
 
 #' @rdname buildUp
@@ -595,7 +474,6 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #'
 #' # Queen's counters
 #' getMisc(getQueen(buildUp(colony)))
-#'
 #' @export
 buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
                     new = TRUE, exact = FALSE, resetEvents = FALSE,
@@ -616,12 +494,11 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     } else {
       n <- nWorkers - nWorkers(x)
     }
-    if (n > 0) {
-      x <- addWorkers(
-        x = x, nInd = n, new = new,
-        exact = exact, simParamBee = simParamBee
-      )
-    }
+
+    x <- addWorkers(
+      x = x, nInd = n, new = new,
+      exact = exact, simParamBee = simParamBee
+    )
 
     # Drones
     if (is.null(nDrones)) {
@@ -635,12 +512,10 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     } else {
       n <- nDrones - nDrones(x)
     }
-    if (n > 0) {
-      x <- addDrones(
-        x = x, nInd = n, new = new,
-        simParamBee = simParamBee
-      )
-    }
+    x <- addDrones(
+      x = x, nInd = n, new = new,
+      simParamBee = simParamBee
+    )
 
     # Events
     if (resetEvents) {
@@ -712,12 +587,14 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' colony
 #' apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 #' apiary[[1]]
-#'
 #' @export
 downsize <- function(x, p = NULL, use = "rand", new = FALSE,
                      simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!is.logical(new)) {
+    stop("Parameter new must be logical!")
   }
   if (isColony(x)) {
     if (is.null(p)) {
@@ -754,19 +631,25 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
   return(x)
 }
 
-#' @rdname replaceVirginQueens
-#' @title Replace a proportion of virgin queens with new ones
+#' @rdname replaceCastePop
+#' @title Replace a proportion of caste individuals with new ones
 #'
-#' @description Level 2 function that replaces a proportion of virgin queens
-#'   with new virgin queens from a Colony or MultiColony object. Useful after
-#'   events like season change, swarming, supersedure, etc. due to the short life span of the
-#'   virgin queens.
+#' @description Level 2 function that replaces a proportion of caste individuals
+#'   with new individuals from a Colony or MultiColony object. Useful after
+#'   events like season change, swarming, supersedure, etc. due to the short life span
+#'   honeybees.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param p numeric, proportion of virgin queens to be replaced with new ones
+#' @param caste character, "workers", "drones", or "virginQueens"
+#' @param p numeric, proportion of caste individuals to be replaced with new ones
 #' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   guides selection of virgin queens that stay when \code{p < 1}
-#' @param year numeric, year of birth for virgin queens
+#'   guides selection of caste individuals that stay when \code{p < 1}
+#' @param exact logical, only relevant when adding workers - if the csd locus is turned
+#'  on and exact is \code{TRUE}, we replace the exact specified number of viable workers
+#'  (heterozygous at the csd locus). You probably want this set to TRUE since you want to
+#'  replace with the same number of workers.
+#' @param year numeric, only relevant when replacing virgin queens,
+#'   year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or  or \code{\link{MultiColony-class}} with
@@ -786,45 +669,76 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, fathers = fatherGroups[3:4])
 #'
-#' # Add virgin queens
-#' colony <- addVirginQueens(colony, nInd = 20)
+#' # Add individuals
+#' colony <- buildUp(colony, nWorkers = 10, nDrones = 10)
+#' colony <- addVirginQueens(colony, nInd = 5)
+#' apiary <- buildUp(apiary, nWorkers = 10, nDrones = 10)
 #' apiary <- addVirginQueens(apiary, nInd = 20)
 #'
-#' # Replace virgin queens
+#' # Replace individuals in a colony
 #' getVirginQueens(colony)@id
-#' colony <- replaceVirginQueens(colony, p = 0.5)
+#' colony <- replaceCastePop(colony, caste = "virginQueens", p = 0.5)
+#' # or alias: replaceVirginQueens(colony, p = 0.5)
 #' getVirginQueens(colony)@id
-#' colony <- replaceVirginQueens(colony, p = 1.5)
-#' getVirginQueens(colony)@id
+#' getWorkers(colony)@id
+#' colony <- replaceCastePop(colony, caste = "workers", p = 0.5)
+#' # or alias: replaceWorkers(colony, p = 0.5)
+#' getWorkers(colony)@id
+#' getDrones(colony)@id
+#' colony <- replaceCastePop(colony, caste = "drones", p = 0.5)
+#' # or alias: replaceDrones(colony, p = 0.5)
+#' getDrones(colony)@id
 #'
 #' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 #' apiary <- replaceVirginQueens(apiary, p = 0.5)
 #' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-#' apiary <- replaceVirginQueens(apiary, p = 1.5)
-#' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
+#' apiary <- replaceWorkers(apiary, p = 1)
+#' lapply(getWorkers(apiary), FUN = function(x) x@id)
+#' apiary <- replaceDrones(apiary, p = 1)
+#' lapply(getDrones(apiary), FUN = function(x) x@id)
 #' @export
-replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
-                                simParamBee = NULL) {
+replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
+                            year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  if (length(caste) != 1) {
+    stop("Argument caste must be of length 1!")
+  }
+  if (1 < p) {
+    stop("p must not be higher than 1!")
+  } else if (p < 0) {
+    stop("p must not be less than 0!")
+  }
   if (isColony(x)) {
-    nVirginQueens <- nVirginQueens(x)
-    if (nVirginQueens > 0) {
-      nVirginQueensReplaced <- round(nVirginQueens * p)
-      if (nVirginQueensReplaced < nVirginQueens) {
-        nVirginQueensStay <- nVirginQueens - nVirginQueensReplaced
-        tmp <- createVirginQueens(x,
-          nInd = nVirginQueensReplaced,
-          year = year, simParamBee = simParamBee
-        )
-        x@virginQueens <- c(
-          selectInd(x@virginQueens, nInd = nVirginQueensStay, use = use),
-          tmp
-        )
+    if (!isQueenPresent(x)) {
+      stop("Missing queen!")
+    }
+    nInd <- nCaste(x, caste)
+    if (nInd > 0) {
+      nIndReplaced <- round(nInd * p)
+      if (nIndReplaced < nInd) {
+        nIndStay <- nInd - nIndReplaced
+        if (nIndReplaced > 0) {
+          tmp <- createCastePop(x,
+                                caste = caste,
+                                nInd = nIndReplaced, exact = exact,
+                                year = year, simParamBee = simParamBee
+          )
+          if (caste == "workers") {
+            x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
+            x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
+            tmp <- tmp$workers
+          }
+
+          slot(x, caste) <- c(
+            selectInd(slot(x, caste), nInd = nIndStay, use = use),
+            tmp
+          )
+        }
       } else {
-        x <- addVirginQueens(
-          x = x, nInd = nVirginQueensReplaced, new = TRUE,
+        x <- addCastePop(
+          x = x, caste = caste, nInd = nIndReplaced, new = TRUE,
           year = year, simParamBee = simParamBee
         )
       }
@@ -832,8 +746,8 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- replaceVirginQueens(
-        x = x[[colony]], p = p,
+      x[[colony]] <- replaceCastePop(
+        x = x[[colony]], caste = caste, p = p,
         use = use, year = year,
         simParamBee = simParamBee
       )
@@ -845,230 +759,45 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", year = NULL,
   return(x)
 }
 
-#' @rdname replaceWorkers
-#' @title Replace a proportion of workers with new ones
-#'
-#' @description Level 2 function that replaces a proportion of workers with new
-#'   workers from the a Colony or MultiColony object. Useful after events like season change,
-#'   swarming, supersedure, etc. due to the short life span of the workers.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param p numeric, proportion of workers to be replaced with new ones
-#' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   guides selection of workers that stay when \code{p < 1}
-#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   replace the workers with the exact specified number of only viable workers
-#'   (heterozygous on the csd locus)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
-#'   replaced workers
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add workers
-#' colony <- addWorkers(colony, nInd = 20)
-#' apiary <- addWorkers(apiary, nInd = 20)
-#'
-#' # Replace workers
-#' getWorkers(colony)@id
-#' colony <- replaceWorkers(colony, p = 0.5)
-#' getWorkers(colony)@id
-#' colony <- replaceWorkers(colony, p = 1.5)
-#' getWorkers(colony)@id
-#'
-#' lapply(getWorkers(apiary), FUN = function(x) x@id)
-#' apiary <- replaceWorkers(apiary, p = 0.5)
-#' lapply(getWorkers(apiary), FUN = function(x) x@id)
-#' apiary <- replaceWorkers(apiary, p = 1.5)
-#' lapply(getWorkers(apiary), FUN = function(x) x@id)
+#' @describeIn replaceCastePop Replaces some workers in a colony
 #' @export
-replaceWorkers <- function(x, p = 1, use = "rand", exact = FALSE,
-                           simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isColony(x)) {
-    if (!(p > 0)) {
-      stop("p must be greater than 0")
-    }
-    nWorkers <- nWorkers(x)
-    if (nWorkers > 0) {
-      nWorkersReplaced <- round(nWorkers * p)
-      if (nWorkersReplaced < nWorkers) {
-        nWorkersStay <- nWorkers - nWorkersReplaced
-        tmp <- createWorkers(x, nInd = nWorkersReplaced, exact = exact, simParamBee = simParamBee)
-        x@workers <- c(
-          selectInd(x@workers, nInd = nWorkersStay, use = use),
-          tmp$workers
-        )
-        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nWorkersReplaced
-        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
-      } else {
-        x <- addWorkers(
-          x = x, nInd = nWorkersReplaced, new = TRUE,
-          exact = exact, simParamBee = simParamBee
-        )
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- replaceWorkers(
-        x = x[[colony]], p = p, use = use,
-        exact = exact, simParamBee = simParamBee
-      )
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
+replaceWorkers <- function(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL) {
+  ret <- replaceCastePop(
+    x = x, caste = "workers", p = p,
+    use = use, exact = exact,
+    simParamBee = simParamBee
+  )
+  return(ret)
 }
 
-#' @rdname replaceDrones
-#' @title Replace a proportion of drones with new ones
-#'
-#' @description Level 2 function that replaces a proportion of drones with new
-#'   drones from the a Colony or MultiColony object. Useful after events like season change,
-#'   swarming, supersedure, etc. due to the short life span of the drones.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param p numeric, proportion of drones to be replaced with new ones
-#' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   guides selection of drones that stay when \code{p < 1}
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
-#'   replaced drones
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add drones
-#' colony <- addDrones(colony, nInd = 20)
-#' apiary <- addDrones(apiary, nInd = 20)
-#'
-#' # Replace drones
-#' getDrones(colony)@id
-#' colony <- replaceDrones(colony, p = 0.5)
-#' getDrones(colony)@id
-#' colony <- replaceDrones(colony, p = 1.5)
-#' getDrones(colony)@id
-#'
-#' lapply(getDrones(apiary), FUN = function(x) x@id)
-#' apiary <- replaceDrones(apiary, p = 0.5)
-#' lapply(getDrones(apiary), FUN = function(x) x@id)
-#' apiary <- replaceDrones(apiary, p = 1.5)
-#' lapply(getDrones(apiary), FUN = function(x) x@id)
+#' @describeIn replaceCastePop Replaces some drones in a colony
 #' @export
-replaceDrones <- function(x, p = 1, use = "rand") {
-  if (isColony(x)) {
-    if (!(0 < p)) {
-      stop("Argument p must be greater than 0")
-    }
-    nDrones <- nDrones(x)
-    if (0 < nDrones) {
-      nDronesReplaced <- round(nDrones * p)
-      if (nDronesReplaced < nDrones) {
-        nDronesStay <- nDrones - nDronesReplaced
-        x@drones <- c(
-          selectInd(x@drones, nInd = nDronesStay, use = use),
-          createDrones(x, nInd = nDronesReplaced)
-        )
-        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nDronesReplaced
-      } else {
-        x <- addDrones(x = x, nInd = nDronesReplaced, new = TRUE)
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- replaceDrones(x = x[[colony]], p = p, use = use)
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
+replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- replaceCastePop(
+    x = x, caste = "drones", p = p,
+    use = use, simParamBee = simParamBee
+  )
+  return(ret)
 }
 
-#' @rdname removeQueen
-#' @title Remove queen
-#'
-#' @description Level 2 function that removes the queen of a Colony or MultiColony object
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without the queen
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Remove the queen
-#' nQueens(colony)
-#' colony <- removeQueen(colony)
-#' nQueens(colony)
-#' nQueens(apiary)
-#' apiary <- removeQueen(apiary)
-#' nQueens(apiary)
+#' @describeIn replaceCastePop Replaces some virgin queens in a colony
 #' @export
-removeQueen <- function(x) {
-  if (isColony(x)) {
-    x@queen <- NULL
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- removeQueen(x = x[[colony]])
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-
-  validObject(x)
-  return(x)
+replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- replaceCastePop(
+    x = x, caste = "virginQueens", p = p,
+    use = use, simParamBee = simParamBee
+  )
+  return(ret)
 }
 
-#' @rdname removeVirginQueens
-#' @title Remove a proportion of virgin queens
+#' @rdname removeCastePop
+#' @title Remove a proportion of caste individuals from a colony
 #'
 #' @description Level 2 function that removes a proportion of virgin queens of
 #'   a Colony or MultiColony object
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, "queen", "workers", "drones", or "virginQueens"
 #' @param p numeric, proportion to be removed
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
@@ -1095,36 +824,63 @@ removeQueen <- function(x) {
 #'
 #' # Remove virgin queens
 #' nVirginQueens(colony)
-#' colony <- removeVirginQueens(colony, p = 0.5)
+#' colony <- removeCastePop(colony, caste = "virginQueens", p = 0.5)
+#' # or alias: removeVirginQueens(colony, p = 0.5)
 #' nVirginQueens(colony)
-#' colony <- removeVirginQueens(colony)
+#' colony <- removeCastePop(colony, caste = "virginQueens")
+#' # or alias: colony <- removeVirginQueens(colony)
 #' nVirginQueens(colony)
-#' nVirginQueens(apiary)
-#' apiary <- removeVirginQueens(apiary, p = 0.3)
-#' nVirginQueens(apiary)
-#' apiary <- removeVirginQueens(apiary)
-#' nVirginQueens(apiary)
+#' nWorkers(colony)
+#' nDrones(colony)
+#' colony <- removeCastePop(colony, caste = "workers", p = 0.3)
+#' # or alias: colony <- removeWorkers(colony, p = 0.3)
+#' colony <- removeCastePop(colony, caste = "drones", p = 0.3)
+#' # or alias: colony <- removeDrones(colony, p = 0.3)
 #'
+#' nVirginQueens(apiary)
+#' nWorkers(apiary)
+#' nDrones(apiary)
+#' apiary <- removeCastePop(apiary, caste = "virginQueens", p = 0.3)
+#' # or alias: removeVirginQueens(apiary, p = 0.3)
+#' nVirginQueens(apiary)
+#' apiary <- removeCastePop(apiary, caste = "workers", p = 0.3)
+#' # or alias: removeWorkers(apiary, p = 0.3)
+#' nWorkers(apiary)
+#' #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
+#' # or alias: removeDrones(apiary, p = 0.3)
+#' nDrones(apiary)
 #' @export
-removeVirginQueens <- function(x, p = 1, use = "rand") {
+removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
+  if (length(caste) != 1) {
+    stop("Argument caste must be of length 1!")
+  }
+  if (1 < p) {
+    stop("p must not be higher than 1!")
+  } else if (p < 0) {
+    stop("p must not be less than 0!")
+  }
   if (isColony(x)) {
-    if (1 < p) {
-      stop("p must not be higher than 1!")
-    } else if (p < 0) {
-      stop("p must not be less than 0!")
-    } else if (p == 1) {
-      x@virginQueens <- NULL
+    if (p == 1) {
+      slot(x, caste) <- NULL
     } else {
-      nVirginQueensNew <- round(nVirginQueens(x) * (1 - p))
-      x@virginQueens <- selectInd(
-        pop = x@virginQueens,
-        nInd = nVirginQueensNew, use = use
-      )
+      nIndStay <- round(nCaste(x, caste) * (1 - p))
+      if (nIndStay > 0) {
+        slot(x, caste) <- selectInd(
+          pop = slot(x, caste),
+          nInd = nIndStay,
+          use = use
+        )
+      } else {
+        removeCastePop(x, caste)
+      }
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
-      x[[colony]] <- removeVirginQueens(x = x[[colony]], p = p, use = use)
+      x[[colony]] <- removeCastePop(
+        x = x[[colony]], caste = caste,
+        p = p, use = use
+      )
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1133,147 +889,32 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
   return(x)
 }
 
-#' @rdname removeWorkers
-#' @title Remove a proportion of workers
-#'
-#' @description Level 2 function that removes a proportion of workers from
-#' a Colony or MultiColony object, for example, as a preparation for winter.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param p numeric, proportion to be removed
-#' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   guides selection of workers that will stay when \code{p < 1}
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without workers
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add workers
-#' colony <- addWorkers(colony, nInd = 10)
-#' apiary <- addWorkers(apiary, nInd = 10)
-#'
-#' # Remove workers
-#' nWorkers(colony)
-#' colony <- removeWorkers(x = colony, p = 0.5)
-#' nWorkers(colony)
-#' colony <- removeWorkers(x = colony)
-#' nWorkers(colony)
-#' nWorkers(apiary)
-#' apiary <- removeWorkers(apiary, p = 0.5)
-#' nWorkers(apiary)
-#' apiary <- removeWorkers(apiary)
-#' nWorkers(apiary)
-#'
+#' @describeIn removeCastePop Remove queen from a colony
+#' @export
+removeQueen <- function(x) {
+  ret <- removeCastePop(x = x, caste = "queen", p = 1)
+  return(ret)
+}
+
+#' @describeIn removeCastePop Remove workers from a colony
 #' @export
 removeWorkers <- function(x, p = 1, use = "rand") {
-  if (isColony(x)) {
-    if (1 < p) {
-      stop("p must not be higher than 1!")
-    } else if (p < 0) {
-      stop("p must not be less than 0!")
-    } else if (p == 1) {
-      x@workers <- NULL
-    } else {
-      nWorkersNew <- round(nWorkers(x) * (1 - p))
-      x@workers <- selectInd(
-        pop = x@workers,
-        nInd = nWorkersNew, use = use
-      )
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- removeWorkers(x = x[[colony]], p = p, use = use)
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
+  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use)
+  return(ret)
 }
 
-#' @rdname removeDrones
-#' @title Remove a proportion of drones
-#'
-#' @description Level 2 function that removes a proportion of drones from a
-#' Colony or MultiColony object, for example, at the end of summer.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param p numeric, proportion to be removed
-#' @param use character, all the options provided by \code{\link{selectInd}} -
-#'   guides selection of drones that will stay when \code{p < 1}
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without drones
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = fatherGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
-#' apiary <- cross(apiary, fathers = fatherGroups[3:4])
-#'
-#' # Add drones
-#' colony <- addDrones(colony, nInd = 10)
-#' apiary <- addDrones(apiary, nInd = 10)
-#'
-#' # Remove drones
-#' nDrones(colony)
-#' colony <- removeDrones(colony, p = 0.5)
-#' nDrones(colony)
-#' colony <- removeDrones(colony)
-#' nDrones(colony)
-#'
-#' nDrones(apiary)
-#' apiary <- removeDrones(apiary, p = 0.5)
-#' nDrones(apiary)
-#' apiary <- removeDrones(apiary)
-#' nDrones(apiary)
-#'
+#' @describeIn removeCastePop Remove workers from a colony
 #' @export
 removeDrones <- function(x, p = 1, use = "rand") {
-  if (isColony(x)) {
-    if (1 < p) {
-      stop("p must not be higher than 1!")
-    } else if (p < 0) {
-      stop("p must not be less than 0!")
-    } else if (p == 1) {
-      x@drones <- NULL
-    } else {
-      nDronesNew <- round(nDrones(x) * (1 - p))
-      x@drones <- selectInd(
-        pop = x@drones,
-        nInd = nDronesNew, use = use
-      )
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- removeDrones(x = x[[colony]], p = p, use = use)
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
+  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use)
+  return(ret)
+}
+
+#' @describeIn removeCastePop Remove virgin queens from a colony
+#' @export
+removeVirginQueens <- function(x, p = 1, use = "rand") {
+  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use)
+  return(ret)
 }
 
 #' @rdname resetEvents
@@ -1369,7 +1010,6 @@ removeDrones <- function(x, p = 1, use = "rand") {
 #' hasCollapsed(tmp[[1]])
 #' resetEvents(tmp)[[1]]
 #' resetEvents(tmp, collapse = TRUE)[[1]]
-#'
 #' @export
 resetEvents <- function(x, collapse = NULL) {
   if (isColony(x)) {
@@ -1438,7 +1078,6 @@ resetEvents <- function(x, collapse = NULL) {
 #' hasCollapsed(apiaryLost)
 #' apiaryLeft <- tmp$remnant
 #' hasCollapsed(apiaryLeft)
-#'
 #' @export
 collapse <- function(x) {
   if (isColony(x)) {
@@ -1509,7 +1148,6 @@ collapse <- function(x) {
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
 #' (swarm(tmp$pulled, p = 0.6))
-#'
 #' @export
 swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1530,7 +1168,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       stop("p must be between 0 and 1 (inclusive)!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens()
+      nVirginQueens <- nVirginQueens(x)
     }
     nWorkers <- nWorkers(x)
     nWorkersSwarm <- round(nWorkers * p)
@@ -1586,9 +1224,9 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       )
       for (colony in seq_len(nCol)) {
         tmp <- swarm(x[[colony]],
-          p = p, year = year,
-          nVirginQueens = nVirginQueens,
-          simParamBee = simParamBee
+                     p = p, year = year,
+                     nVirginQueens = nVirginQueens,
+                     simParamBee = simParamBee
         )
         ret$swarms[[colony]] <- tmp$swarm
         ret$remnants[[colony]] <- tmp$remnant
@@ -1655,7 +1293,6 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' tmp <- pullColonies(apiary, p = 0.2)
 #' # Swarm only the pulled colonies
 #' (supersede(tmp$pulled))
-#'
 #' @export
 supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1669,7 +1306,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
       stop("No queen present in the colony!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens()
+      nVirginQueens <- nVirginQueens(x)
     }
 
     tmpVirginQueen <- createVirginQueens(
@@ -1687,9 +1324,9 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
     } else {
       for (colony in seq_len(nCol)) {
         x[[colony]] <- supersede(x[[colony]],
-          year = year,
-          nVirginQueens = nVirginQueens,
-          simParamBee = simParamBee
+                                 year = year,
+                                 nVirginQueens = nVirginQueens,
+                                 simParamBee = simParamBee
         )
       }
     }
@@ -1759,7 +1396,6 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' tmp <- pullColonies(apiary, ID = c(4, 5))
 #' # Split only the pulled colonies
 #' (split(tmp$pulled, p = 0.5))
-#'
 #' @export
 split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -1824,8 +1460,8 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
       )
       for (colony in seq_len(nCol)) {
         tmp <- split(x[[colony]],
-          p = p, year = year,
-          simParamBee = simParamBee
+                     p = p, year = year,
+                     simParamBee = simParamBee
         )
         ret$splits[[colony]] <- tmp$split
         ret$remnants[[colony]] <- tmp$remnant
@@ -1902,7 +1538,6 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
 #' nDrones(apiary1)
 #' nDrones(apiary2)
 #' rm(apiary2)
-#'
 #' @export
 combine <- function(strong, weak) {
   if (isColony(strong) & isColony(weak)) {
@@ -1962,7 +1597,6 @@ combine <- function(strong, weak) {
 #' # Assuming one location (as in bringing colonies to one place!)
 #' apiary <- setLocation(apiary, location = loc1)
 #' getLocation(apiary)
-#'
 #' @export
 setLocation <- function(x, location) {
   if (isColony(x)) {

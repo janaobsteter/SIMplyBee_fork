@@ -54,5 +54,4 @@ colony <- downsize(x = colony, new = TRUE, use = "rand")
 colony
 apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 apiary[[1]]
-
 }
