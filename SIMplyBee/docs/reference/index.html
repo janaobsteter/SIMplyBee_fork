@@ -44,10 +44,22 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/Honeybee_biology.html">Quantitative Genetics</a>
+      <a href="../articles/2_Colony_events.html">Colony Events</a>
+    </li>
+    <li>
+      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+    </li>
+    <li>
+      <a href="../articles/4_Genomics.html">Genomics</a>
+    </li>
+    <li>
+      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+    </li>
+    <li>
+      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
     </li>
   </ul></li>
 <li>
@@ -87,270 +99,90 @@
           <p><code><a href="SimParamBee.html">SimParamBee</a></code> </p>
         </td>
         <td><p>Honeybee simulation parameters</p></td>
+      </tr><tr><td>
+          <p><code><a href="combineNULLAndPop.html">c(<i>&lt;NULLOrPop&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Combine a NULL and AlphaSimR population</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-qtl-haplotype-information">Get QTL haplotype information <a href="#get-qtl-haplotype-information" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="colony-and-multicolony-operations">Colony and MultiColony operations <a href="#colony-and-multicolony-operations" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="utility">Utility <a href="#utility" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteQtlHaplo.html">getCasteQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getQueenQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getFathersQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getVirginQueensQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getWorkersQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getDronesQtlHaplo()</a></code> </p>
+          <p><code><a href="createColony.html">createColony()</a></code> </p>
         </td>
-        <td><p>Access QTL haplotypes of individuals in a caste</p></td>
+        <td><p>Create a new Colony</p></td>
       </tr><tr><td>
-          <p><code><a href="getQtlHaplo.html">getQtlHaplo()</a></code> </p>
+          <p><code><a href="setLocation.html">setLocation()</a></code> </p>
         </td>
-        <td><p>Access QTL haplotypes</p></td>
+        <td><p>Set colony location</p></td>
       </tr><tr><td>
-          <p><code><a href="getColonyQtlHaplo.html">getColonyQtlHaplo()</a></code> </p>
+          <p><code><a href="setQueensYearOfBirth.html">setQueensYearOfBirth()</a></code> </p>
         </td>
-        <td><p>Access QTL haplotypes of individuals in colony</p></td>
+        <td><p>Set the queen's year of birth</p></td>
+      </tr><tr><td>
+          <p><code><a href="createMultiColony.html">createMultiColony()</a></code> </p>
+        </td>
+        <td><p>Create MultiColony object</p></td>
+      </tr><tr><td>
+          <p><code><a href="selectColonies.html">selectColonies()</a></code> </p>
+        </td>
+        <td><p>Select colonies from MultiColony object</p></td>
+      </tr><tr><td>
+          <p><code><a href="pullColonies.html">pullColonies()</a></code> </p>
+        </td>
+        <td><p>Pull out some colonies from the MultiColony object</p></td>
+      </tr><tr><td>
+          <p><code><a href="removeColonies.html">removeColonies()</a></code> </p>
+        </td>
+        <td><p>Remove some colonies from the MultiColony object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-qtl-genotype-information">Get QTL genotype information <a href="#get-qtl-genotype-information" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="events">Events <a href="#events" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteQtlGeno.html">getCasteQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getQueenQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getFathersQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getVirginQueensQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getWorkersQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getDronesQtlGeno()</a></code> </p>
+          <p><code><a href="cross.html">cross()</a></code> </p>
         </td>
-        <td><p>Access QTL genotypes of individuals in a caste</p></td>
+        <td><p>Cross (mate) virgin queen(s) as a population, of a colony, or
+  of all given colonies</p></td>
       </tr><tr><td>
-          <p><code><a href="getQtlGeno.html">getQtlGeno()</a></code> </p>
+          <p><code><a href="buildUp.html">buildUp()</a></code> </p>
         </td>
-        <td><p>Access QTL genotypes</p></td>
+        <td><p>Build up Colony or MultiColony object by adding (raising) workers and drones</p></td>
       </tr><tr><td>
-          <p><code><a href="getColonyQtlGeno.html">getColonyQtlGeno()</a></code> </p>
+          <p><code><a href="downsize.html">downsize()</a></code> </p>
         </td>
-        <td><p>Access QTL genotypes of individuals in colony</p></td>
+        <td><p>Reduce number of workers and remove all drones and virgin queens from
+  a Colony or MultiColony object</p></td>
+      </tr><tr><td>
+          <p><code><a href="supersede.html">supersede()</a></code> </p>
+        </td>
+        <td><p>Supersede</p></td>
+      </tr><tr><td>
+          <p><code><a href="split.html">split()</a></code> </p>
+        </td>
+        <td><p>Split colony in two MultiColony</p></td>
+      </tr><tr><td>
+          <p><code><a href="swarm.html">swarm()</a></code> </p>
+        </td>
+        <td><p>Swarm</p></td>
+      </tr><tr><td>
+          <p><code><a href="collapse.html">collapse()</a></code> </p>
+        </td>
+        <td><p>Collapse</p></td>
+      </tr><tr><td>
+          <p><code><a href="combine.html">combine()</a></code> </p>
+        </td>
+        <td><p>Combine two colony objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="resetEvents.html">resetEvents()</a></code> </p>
+        </td>
+        <td><p>Reset colony events</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-segregating-sites-haplotype-information">Get segregating sites’ haplotype information <a href="#get-segregating-sites-haplotype-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteSegSiteHaplo.html">getCasteSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getQueenSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getFathersSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getVirginQueensSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getWorkersSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getDronesSegSiteHaplo()</a></code> </p>
-        </td>
-        <td><p>Access haplotypes for all segregating sites of individuals in a
-  caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonySegSiteHaplo.html">getColonySegSiteHaplo()</a></code> </p>
-        </td>
-        <td><p>Access haplotypes for all segregating sites of individuals in
-  colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getSegSiteHaplo.html">getSegSiteHaplo()</a></code> </p>
-        </td>
-        <td><p>Access haplotypes for all segregating sites</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-segregating-sites-genotype-information">Get segregating sites’ genotype information <a href="#get-segregating-sites-genotype-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteSegSiteGeno.html">getCasteSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getQueenSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getFathersSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getVirginQueensSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getWorkersSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getDronesSegSiteGeno()</a></code> </p>
-        </td>
-        <td><p>Access genotypes for all segregating sites of individuals in a
-  caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonySegSiteGeno.html">getColonySegSiteGeno()</a></code> </p>
-        </td>
-        <td><p>Access genotypes for all segregating sites of individuals in
-  colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getSegSiteGeno.html">getSegSiteGeno()</a></code> </p>
-        </td>
-        <td><p>Access genotypes for all segregating sites</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-snp-halpotype-information">Get SNP halpotype information <a href="#get-snp-halpotype-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteSnpHaplo.html">getCasteSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getQueenSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getFathersSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getVirginQueensSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getWorkersSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getDronesSnpHaplo()</a></code> </p>
-        </td>
-        <td><p>Access SNP array haplotypes of individuals in a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getSnpHaplo.html">getSnpHaplo()</a></code> </p>
-        </td>
-        <td><p>Access SNP array haplotypes</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonySnpHaplo.html">getColonySnpHaplo()</a></code> </p>
-        </td>
-        <td><p>Access SNP array haplotypes of individuals in colony</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-snp-genotype-information">Get SNP genotype information <a href="#get-snp-genotype-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getSnpGeno.html">getSnpGeno()</a></code> </p>
-        </td>
-        <td><p>Access SNP array genotypes</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCasteSnpGeno.html">getCasteSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getQueenSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getFathersSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getVirginQueensSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getWorkersSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getDronesSnpGeno()</a></code> </p>
-        </td>
-        <td><p>Access SNP array genotypes of individuals in a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonySnpGeno.html">getColonySnpGeno()</a></code> </p>
-        </td>
-        <td><p>Access SNP array genotypes of individuals in colony</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-genetic-value">Get Genetic value <a href="#get-genetic-value" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getColonyGv.html">getColonyGv()</a></code> </p>
-        </td>
-        <td><p>Access genetic values of individuals in colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCasteGv.html">getCasteGv()</a></code> <code><a href="getCasteGv.html">getQueenGv()</a></code> <code><a href="getCasteGv.html">getFathersGv()</a></code> <code><a href="getCasteGv.html">getVirginQueensGv()</a></code> <code><a href="getCasteGv.html">getWorkersGv()</a></code> <code><a href="getCasteGv.html">getDronesGv()</a></code> </p>
-        </td>
-        <td><p>Access genetic values of individuals in a caste</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-breeding-value">Get Breeding value <a href="#get-breeding-value" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteBv.html">getCasteBv()</a></code> <code><a href="getCasteBv.html">getQueenBv()</a></code> <code><a href="getCasteBv.html">getFathersBv()</a></code> <code><a href="getCasteBv.html">getVirginQueensBv()</a></code> <code><a href="getCasteBv.html">getWorkersBv()</a></code> <code><a href="getCasteBv.html">getDronesBv()</a></code> </p>
-        </td>
-        <td><p>Access breeding values of individuals in a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonyBv.html">getColonyBv()</a></code> </p>
-        </td>
-        <td><p>Access breeding values of individuals in colony</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-domiance-deviation">Get Domiance deviation <a href="#get-domiance-deviation" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteDd.html">getCasteDd()</a></code> <code><a href="getCasteDd.html">getQueenDd()</a></code> <code><a href="getCasteDd.html">getFathersDd()</a></code> <code><a href="getCasteDd.html">getVirginQueensDd()</a></code> <code><a href="getCasteDd.html">getWorkersDd()</a></code> <code><a href="getCasteDd.html">getDronesDd()</a></code> </p>
-        </td>
-        <td><p>Access dominance deviations of individuals in a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonyDd.html">getColonyDd()</a></code> </p>
-        </td>
-        <td><p>Access dominance deviations of individuals in colony</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-ibd-identity-by-descent-haplotype">Get IBD (Identity-by-descent) haplotype <a href="#get-ibd-identity-by-descent-haplotype" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCasteIbdHaplo.html">getCasteIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getQueenIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getFathersIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getVirginQueensIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getWorkersIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getDronesIbdHaplo()</a></code> </p>
-        </td>
-        <td><p>Access IBD haplotypes of individuals in a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getColonyIbdHaplo.html">getColonyIbdHaplo()</a></code> </p>
-        </td>
-        <td><p>Access IBD haplotypes of individuals in colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getIbdHaplo.html">getIbdHaplo()</a></code> </p>
-        </td>
-        <td><p>Access IBD haplotypes</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="misc-genotype-functions">Misc genotype functions <a href="#misc-genotype-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="isGenoHeterozygous.html">isGenoHeterozygous()</a></code> </p>
-        </td>
-        <td><p>Test if a multilocus genotype is heterozygous</p></td>
-      </tr><tr><td>
-          <p><code><a href="editGenomeGeno.html">editGenomeGeno()</a></code> </p>
-        </td>
-        <td><p>Edit genome at a single diploid site in a population</p></td>
-      </tr><tr><td>
-          <p><code><a href="simulateHoneyBeeGenomes.html">simulateHoneyBeeGenomes()</a></code> </p>
-        </td>
-        <td><p>Simulate the Honey bee genome</p></td>
-      </tr><tr><td>
-          <p><code><a href="getPooledGeno.html">getPooledGeno()</a></code> </p>
-        </td>
-        <td><p>Get a pooled genotype from true genotypes</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="calculate-genotype-related-information">Calculate genotype related information <a href="#calculate-genotype-related-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="calcBeeGRMIbs.html">calcBeeGRMIbs()</a></code> <code><a href="calcBeeGRMIbs.html">calcBeeAlleleFreq()</a></code> </p>
-        </td>
-        <td><p>Calculate Genomic Relatedness Matrix (GRM) for honeybees from
-  Identical By State genomic data</p></td>
-      </tr><tr><td>
-          <p><code><a href="calcBeeGRMIbd.html">calcBeeGRMIbd()</a></code> </p>
-        </td>
-        <td><p>Calculate Genomic Relatedness Matrix (GRM) for honeybees from
-  Identical By Descent genomic data</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="csd-related-information">Csd related information <a href="#csd-related-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="calcQueensPHomBrood.html">calcQueensPHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">pHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">nHomBrood()</a></code> </p>
-        </td>
-        <td><p>The expected proportion and a realised number of csd homozygous brood</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCsdAlleles.html">getCsdAlleles()</a></code> </p>
-        </td>
-        <td><p>Get csd alleles</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCsdGeno.html">getCsdGeno()</a></code> </p>
-        </td>
-        <td><p>Get genotypes from the csd locus</p></td>
-      </tr><tr><td>
-          <p><code><a href="isCsdHeterozygous.html">isCsdHeterozygous()</a></code> </p>
-        </td>
-        <td><p>Test if individuals are heterozygous at the csd locus</p></td>
-      </tr><tr><td>
-          <p><code><a href="isCsdActive.html">isCsdActive()</a></code> </p>
-        </td>
-        <td><p>Is csd locus activated</p></td>
-      </tr><tr><td>
-          <p><code><a href="editCsdLocus.html">editCsdLocus()</a></code> </p>
-        </td>
-        <td><p>Edit the csd locus</p></td>
-      </tr><tr><td>
-          <p><code><a href="nCsdAlleles.html">nCsdAlleles()</a></code> </p>
-        </td>
-        <td><p>Report the number of distinct csd alleles</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-information">Get information <a href="#get-information" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getId.html">getId()</a></code> </p>
-        </td>
-        <td><p>Get the colony ID</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCaste.html">getCaste()</a></code> </p>
-        </td>
-        <td><p>Report caste of an individual</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> </p>
-        </td>
-        <td><p>Access individuals of a caste</p></td>
-      </tr><tr><td>
-          <p><code><a href="getQueenYearOfBirth.html">getQueenYearOfBirth()</a></code> </p>
-        </td>
-        <td><p>Access the queen's year of birth</p></td>
-      </tr><tr><td>
-          <p><code><a href="getQueenAge.html">getQueenAge()</a></code> </p>
-        </td>
-        <td><p>Get (calculate) the queen's age</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCasteId.html">getCasteId()</a></code> </p>
-        </td>
-        <td><p>Get IDs of individuals of a caste, or ID of all members of colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getCasteSex.html">getCasteSex()</a></code> </p>
-        </td>
-        <td><p>Get sex of individuals of a caste, or sex of all members of colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="getLocation.html">getLocation()</a></code> </p>
-        </td>
-        <td><p>Get the colony location</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-individual">Get individual <a href="#get-individual" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> </p>
-        </td>
-        <td><p>Access individuals of a caste</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="event-information">Event information <a href="#event-information" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="event-information">Event information <a href="#event-information" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -373,18 +205,190 @@
           <p><code><a href="hasSwarmed.html">hasSwarmed()</a></code> </p>
         </td>
         <td><p>Test if colony has swarmed</p></td>
+      </tr><tr><td>
+          <p><code><a href="isProductive.html">isProductive()</a></code> </p>
+        </td>
+        <td><p>Test if colony is currently productive</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="are-caste-members-present">Are caste members present <a href="#are-caste-members-present" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="caste-specific-events-add">Caste specific events - Add <a href="#caste-specific-events-add" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="addWorkers.html">addWorkers()</a></code> </p>
+        </td>
+        <td><p>Add (raise) workers in the colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="addDrones.html">addDrones()</a></code> </p>
+        </td>
+        <td><p>Add (raise) drones in the colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="addVirginQueens.html">addVirginQueens()</a></code> </p>
+        </td>
+        <td><p>Add (raise) virgin queens in the colony</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="caste-specific-events-replace">Caste specific events - Replace <a href="#caste-specific-events-replace" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="reQueen.html">reQueen()</a></code> </p>
+        </td>
+        <td><p>Re-queen</p></td>
+      </tr><tr><td>
+          <p><code><a href="replaceWorkers.html">replaceWorkers()</a></code> </p>
+        </td>
+        <td><p>Replace a proportion of workers with new ones</p></td>
+      </tr><tr><td>
+          <p><code><a href="replaceDrones.html">replaceDrones()</a></code> </p>
+        </td>
+        <td><p>Replace a proportion of drones with new ones</p></td>
+      </tr><tr><td>
+          <p><code><a href="replaceVirginQueens.html">replaceVirginQueens()</a></code> </p>
+        </td>
+        <td><p>Replace a proportion of virgin queens with new ones</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="caste-specific-events-remove">Caste specific events - Remove <a href="#caste-specific-events-remove" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="removeQueen.html">removeQueen()</a></code> </p>
+        </td>
+        <td><p>Remove queen</p></td>
+      </tr><tr><td>
+          <p><code><a href="removeWorkers.html">removeWorkers()</a></code> </p>
+        </td>
+        <td><p>Remove a proportion of workers</p></td>
+      </tr><tr><td>
+          <p><code><a href="removeDrones.html">removeDrones()</a></code> </p>
+        </td>
+        <td><p>Remove a proportion of drones</p></td>
+      </tr><tr><td>
+          <p><code><a href="removeVirginQueens.html">removeVirginQueens()</a></code> </p>
+        </td>
+        <td><p>Remove a proportion of virgin queens</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="caste-operations">Caste operations <a href="#caste-operations" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="create">Create <a href="#create" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p><p>(output is Population)</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="createWorkers.html">createWorkers()</a></code> </p>
+        </td>
+        <td><p>Creates workers from the colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="createDrones.html">createDrones()</a></code> </p>
+        </td>
+        <td><p>Creates drones from the colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="createVirginQueens.html">createVirginQueens()</a></code> </p>
+        </td>
+        <td><p>Creates virgin queens from the colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="createDCA.html">createDCA()</a></code> </p>
+        </td>
+        <td><p>Create a drone congregation area (DCA)</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="get">Get <a href="#get" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p><p>(output is Population)</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> </p>
+        </td>
+        <td><p>Access individuals of a caste</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="pull">Pull <a href="#pull" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p><p>(output is list of Populations)</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="pullInd.html">pullInd()</a></code> </p>
+        </td>
+        <td><p>Pull individuals from a population</p></td>
+      </tr><tr><td>
+          <p><code><a href="pullCastePop.html">pullCastePop()</a></code> <code><a href="pullCastePop.html">pullQueen()</a></code> <code><a href="pullCastePop.html">pullVirginQueens()</a></code> <code><a href="pullCastePop.html">pullWorkers()</a></code> <code><a href="pullCastePop.html">pullDrones()</a></code> </p>
+        </td>
+        <td><p>Pull individuals from a caste in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA()</a></code> </p>
+        </td>
+        <td><p>Pulls drone groups from a Drone Congregation Area (DCA)</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="get-information">Get information <a href="#get-information" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="getId.html">getId()</a></code> </p>
+        </td>
+        <td><p>Get the colony ID</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCaste.html">getCaste()</a></code> </p>
+        </td>
+        <td><p>Report caste of an individual</p></td>
+      </tr><tr><td>
+          <p><code><a href="getQueenYearOfBirth.html">getQueenYearOfBirth()</a></code> </p>
+        </td>
+        <td><p>Access the queen's year of birth</p></td>
+      </tr><tr><td>
+          <p><code><a href="getQueenAge.html">getQueenAge()</a></code> </p>
+        </td>
+        <td><p>Get (calculate) the queen's age</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCasteId.html">getCasteId()</a></code> </p>
+        </td>
+        <td><p>Get IDs of individuals of a caste, or ID of all members of colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCasteSex.html">getCasteSex()</a></code> </p>
+        </td>
+        <td><p>Get sex of individuals of a caste, or sex of all members of colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="getLocation.html">getLocation()</a></code> </p>
+        </td>
+        <td><p>Get the colony location</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="is-are-functions">Is/are functions <a href="#is-are-functions" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="individuals">Individuals <a href="#individuals" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="isCaste.html">isCaste()</a></code> </p>
+        </td>
+        <td><p>Is individual a member of a specific caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="isQueen.html">isQueen()</a></code> </p>
+        </td>
+        <td><p>Is individual a queen</p></td>
+      </tr><tr><td>
+          <p><code><a href="isFather.html">isFather()</a></code> </p>
+        </td>
+        <td><p>Is individual a father</p></td>
+      </tr><tr><td>
+          <p><code><a href="isWorker.html">isWorker()</a></code> </p>
+        </td>
+        <td><p>Is individual a worker</p></td>
+      </tr><tr><td>
+          <p><code><a href="isDrone.html">isDrone()</a></code> </p>
+        </td>
+        <td><p>Is individual a drone</p></td>
+      </tr><tr><td>
+          <p><code><a href="isVirginQueen.html">isVirginQueen()</a></code> </p>
+        </td>
+        <td><p>Is individual a virgin queen</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="is-caste-present">Is caste present <a href="#is-caste-present" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="isQueenPresent.html">isQueenPresent()</a></code> </p>
+        </td>
+        <td><p>Is the queen present</p></td>
+      </tr><tr><td>
           <p><code><a href="isFathersPresent.html">isFathersPresent()</a></code> <code><a href="isFathersPresent.html">areFathersPresent()</a></code> </p>
         </td>
         <td><p>Are fathers present (=queen mated)</p></td>
-      </tr><tr><td>
-          <p><code><a href="isVirginQueensPresent.html">isVirginQueensPresent()</a></code> <code><a href="isVirginQueensPresent.html">areVirginQueensPresent()</a></code> </p>
-        </td>
-        <td><p>Are virgin queen(s) present</p></td>
       </tr><tr><td>
           <p><code><a href="isWorkersPresent.html">isWorkersPresent()</a></code> <code><a href="isWorkersPresent.html">areWorkersPresent()</a></code> <code><a href="isWorkersPresent.html">areDronesPresent()</a></code> </p>
         </td>
@@ -394,18 +398,14 @@
         </td>
         <td><p>Are drones present</p></td>
       </tr><tr><td>
-          <p><code><a href="isQueenPresent.html">isQueenPresent()</a></code> </p>
+          <p><code><a href="isVirginQueensPresent.html">isVirginQueensPresent()</a></code> <code><a href="isVirginQueensPresent.html">areVirginQueensPresent()</a></code> </p>
         </td>
-        <td><p>Is the queen present</p></td>
+        <td><p>Are virgin queen(s) present</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="is-functions">Is functions <a href="#is-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="colony-and-multicolony">Colony and MultiColony <a href="#colony-and-multicolony" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="isCaste.html">isCaste()</a></code> </p>
-        </td>
-        <td><p>Is individual a member of a specific caste</p></td>
-      </tr><tr><td>
           <p><code><a href="Colony-class.html">isColony()</a></code> <code><a href="Colony-class.html">show(<i>&lt;Colony&gt;</i>)</a></code> <code><a href="Colony-class.html">c(<i>&lt;ColonyOrNULL&gt;</i>)</a></code> </p>
         </td>
         <td><p>Honeybee colony</p></td>
@@ -422,40 +422,16 @@
           <p><code><a href="isNULLColonies.html">isNULLColonies()</a></code> </p>
         </td>
         <td><p>Check which of the colonies in a multicolony are NULL</p></td>
-      </tr><tr><td>
-          <p><code><a href="isProductive.html">isProductive()</a></code> </p>
-        </td>
-        <td><p>Test if colony is currently productive</p></td>
-      </tr><tr><td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="other">Other <a href="#other" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="isSimParamBee.html">isSimParamBee()</a></code> </p>
         </td>
         <td><p>Test if x is a SimParamBee class object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="is-individuals">Is individuals <a href="#is-individuals" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="isVirginQueen.html">isVirginQueen()</a></code> </p>
-        </td>
-        <td><p>Is individual a virgin queen</p></td>
-      </tr><tr><td>
-          <p><code><a href="isDrone.html">isDrone()</a></code> </p>
-        </td>
-        <td><p>Is individual a drone</p></td>
-      </tr><tr><td>
-          <p><code><a href="isFather.html">isFather()</a></code> </p>
-        </td>
-        <td><p>Is individual a father</p></td>
-      </tr><tr><td>
-          <p><code><a href="isQueen.html">isQueen()</a></code> </p>
-        </td>
-        <td><p>Is individual a queen</p></td>
-      </tr><tr><td>
-          <p><code><a href="isWorker.html">isWorker()</a></code> </p>
-        </td>
-        <td><p>Is individual a worker</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="n-functions">n functions <a href="#n-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="individuals">Individuals <a href="#individuals" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -464,6 +440,54 @@
         <td><p>Level 0 function that returns the number of individuals of a caste in a
   colony</p></td>
       </tr><tr><td>
+          <p><code><a href="nQueens.html">nQueens()</a></code> </p>
+        </td>
+        <td><p>Number of queens in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="nFathers.html">nFathers()</a></code> </p>
+        </td>
+        <td><p>Number of fathers in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="nWorkers.html">nWorkers()</a></code> </p>
+        </td>
+        <td><p>Number of workers in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="nDrones.html">nDrones()</a></code> </p>
+        </td>
+        <td><p>Number of drones in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="nVirginQueens.html">nVirginQueens()</a></code> </p>
+        </td>
+        <td><p>Number of virgin queens in a colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="calcQueensPHomBrood.html">calcQueensPHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">pHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">nHomBrood()</a></code> </p>
+        </td>
+        <td><p>The expected proportion and a realised number of csd homozygous brood</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="sampling-individuals">Sampling individuals <a href="#sampling-individuals" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="nFathersFun.html">nFathersPoisson()</a></code> <code><a href="nFathersFun.html">nFathersTruncPoisson()</a></code> </p>
+        </td>
+        <td><p>Sample a number of fathers</p></td>
+      </tr><tr><td>
+          <p><code><a href="nWorkersFun.html">nWorkersPoisson()</a></code> <code><a href="nWorkersFun.html">nWorkersTruncPoisson()</a></code> <code><a href="nWorkersFun.html">nWorkersColonyPhenotype()</a></code> </p>
+        </td>
+        <td><p>Sample a number of workers</p></td>
+      </tr><tr><td>
+          <p><code><a href="nDronesFun.html">nDronesPoisson()</a></code> <code><a href="nDronesFun.html">nDronesTruncPoisson()</a></code> <code><a href="nDronesFun.html">nDronesColonyPhenotype()</a></code> </p>
+        </td>
+        <td><p>Sample a number of drones</p></td>
+      </tr><tr><td>
+          <p><code><a href="nVirginQueensFun.html">nVirginQueensPoisson()</a></code> <code><a href="nVirginQueensFun.html">nVirginQueensTruncPoisson()</a></code> <code><a href="nVirginQueensFun.html">nVirginQueensColonyPhenotype()</a></code> </p>
+        </td>
+        <td><p>Sample a number of virgin queens</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="colony-and-multicolony">Colony and MultiColony <a href="#colony-and-multicolony" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="nColonies.html">nColonies()</a></code> </p>
         </td>
         <td><p>Number of colonies in a MultiColony object</p></td>
@@ -476,261 +500,219 @@
         </td>
         <td><p>Number of empty colonies in a MultiColony object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="n-individuals">n individuals <a href="#n-individuals" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="proportion-functions">Proportion functions <a href="#proportion-functions" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="nDrones.html">nDrones()</a></code> </p>
+          <p><code><a href="downsizePFun.html">downsizePUnif()</a></code> </p>
         </td>
-        <td><p>Number of drones in a colony</p></td>
+        <td><p>Sample the downsize proportion - proportion of removed workers in
+  downsizing</p></td>
       </tr><tr><td>
-          <p><code><a href="nFathers.html">nFathers()</a></code> </p>
+          <p><code><a href="splitPFun.html">splitPUnif()</a></code> <code><a href="splitPFun.html">splitPColonyStrength()</a></code> </p>
         </td>
-        <td><p>Number of fathers in a colony</p></td>
+        <td><p>Sample the split proportion - proportion of removed workers in a
+  managed split</p></td>
       </tr><tr><td>
-          <p><code><a href="nQueens.html">nQueens()</a></code> </p>
+          <p><code><a href="swarmPFun.html">swarmPUnif()</a></code> <code><a href="swarmPFun.html">swarmPColonyStrength()</a></code> </p>
         </td>
-        <td><p>Number of queens in a colony</p></td>
+        <td><p>Sample the swarm proportion - the proportion of workers that swarm</p></td>
       </tr><tr><td>
-          <p><code><a href="nVirginQueens.html">nVirginQueens()</a></code> </p>
+          <p><code><a href="calcQueensPHomBrood.html">calcQueensPHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">pHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">nHomBrood()</a></code> </p>
         </td>
-        <td><p>Number of virgin queens in a colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="nWorkers.html">nWorkers()</a></code> </p>
-        </td>
-        <td><p>Number of workers in a colony</p></td>
+        <td><p>The expected proportion and a realised number of csd homozygous brood</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="n-individuals-sample-functions">n individuals sample functions <a href="#n-individuals-sample-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="genome">Genome <a href="#genome" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="nDronesFun.html">nDronesPoisson()</a></code> <code><a href="nDronesFun.html">nDronesTruncPoisson()</a></code> <code><a href="nDronesFun.html">nDronesColonyPhenotype()</a></code> </p>
-        </td>
-        <td><p>Sample a number of drones</p></td>
-      </tr><tr><td>
-          <p><code><a href="nFathersFun.html">nFathersPoisson()</a></code> <code><a href="nFathersFun.html">nFathersTruncPoisson()</a></code> </p>
-        </td>
-        <td><p>Sample a number of fathers</p></td>
-      </tr><tr><td>
-          <p><code><a href="nVirginQueensFun.html">nVirginQueensPoisson()</a></code> <code><a href="nVirginQueensFun.html">nVirginQueensTruncPoisson()</a></code> <code><a href="nVirginQueensFun.html">nVirginQueensColonyPhenotype()</a></code> </p>
-        </td>
-        <td><p>Sample a number of virgin queens</p></td>
-      </tr><tr><td>
-          <p><code><a href="nWorkersFun.html">nWorkersPoisson()</a></code> <code><a href="nWorkersFun.html">nWorkersTruncPoisson()</a></code> <code><a href="nWorkersFun.html">nWorkersColonyPhenotype()</a></code> </p>
-        </td>
-        <td><p>Sample a number of workers</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="special-operations-on-drone-genome">Special operations on drone genome <a href="#special-operations-on-drone-genome" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="general">General <a href="#general" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="reduceDroneGeno.html">reduceDroneGeno()</a></code> </p>
+          <p><code><a href="simulateHoneyBeeGenomes.html">simulateHoneyBeeGenomes()</a></code> </p>
         </td>
-        <td><p>Reduce drones' genotype to a single haplotype</p></td>
+        <td><p>Simulate the Honey bee genome</p></td>
       </tr><tr><td>
+          <p><code><a href="getPooledGeno.html">getPooledGeno()</a></code> </p>
+        </td>
+        <td><p>Get a pooled genotype from true genotypes</p></td>
+      </tr><tr><td>
+          <p><code><a href="editGenomeGeno.html">editGenomeGeno()</a></code> </p>
+        </td>
+        <td><p>Edit genome at a single diploid site in a population</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="csd">Csd <a href="#csd" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="isCsdActive.html">isCsdActive()</a></code> </p>
+        </td>
+        <td><p>Is csd locus activated</p></td>
+      </tr><tr><td>
+          <p><code><a href="nCsdAlleles.html">nCsdAlleles()</a></code> </p>
+        </td>
+        <td><p>Report the number of distinct csd alleles</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCsdAlleles.html">getCsdAlleles()</a></code> </p>
+        </td>
+        <td><p>Get csd alleles</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCsdGeno.html">getCsdGeno()</a></code> </p>
+        </td>
+        <td><p>Get genotypes from the csd locus</p></td>
+      </tr><tr><td>
+          <p><code><a href="isCsdHeterozygous.html">isCsdHeterozygous()</a></code> </p>
+        </td>
+        <td><p>Test if individuals are heterozygous at the csd locus</p></td>
+      </tr><tr><td>
+          <p><code><a href="isGenoHeterozygous.html">isGenoHeterozygous()</a></code> </p>
+        </td>
+        <td><p>Test if a multilocus genotype is heterozygous</p></td>
+      </tr><tr><td>
+          <p><code><a href="calcQueensPHomBrood.html">calcQueensPHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">pHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">nHomBrood()</a></code> </p>
+        </td>
+        <td><p>The expected proportion and a realised number of csd homozygous brood</p></td>
+      </tr><tr><td>
+          <p><code><a href="editCsdLocus.html">editCsdLocus()</a></code> </p>
+        </td>
+        <td><p>Edit the csd locus</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="haploid-drone-genome">Haploid drone genome <a href="#haploid-drone-genome" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="reduceDroneHaplo.html">reduceDroneHaplo()</a></code> </p>
         </td>
         <td><p>Reduce drone's double haplotypes to a single haplotype</p></td>
+      </tr><tr><td>
+          <p><code><a href="reduceDroneGeno.html">reduceDroneGeno()</a></code> </p>
+        </td>
+        <td><p>Reduce drones' genotype to a single haplotype</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="create">Create <a href="#create" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="get-segregating-sites-haplotypes-or-genotypes">Get segregating sites’ haplotypes or genotypes <a href="#get-segregating-sites-haplotypes-or-genotypes" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="createWorkers.html">createWorkers()</a></code> </p>
+          <p><code><a href="getCasteSegSiteHaplo.html">getCasteSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getQueenSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getFathersSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getVirginQueensSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getWorkersSegSiteHaplo()</a></code> <code><a href="getCasteSegSiteHaplo.html">getDronesSegSiteHaplo()</a></code> </p>
         </td>
-        <td><p>Creates workers from the colony</p></td>
+        <td><p>Access haplotypes for all segregating sites of individuals in a
+  caste</p></td>
       </tr><tr><td>
-          <p><code><a href="createDCA.html">createDCA()</a></code> </p>
+          <p><code><a href="getSegSiteHaplo.html">getSegSiteHaplo()</a></code> </p>
         </td>
-        <td><p>Create a drone congregation area (DCA)</p></td>
+        <td><p>Access haplotypes for all segregating sites</p></td>
       </tr><tr><td>
-          <p><code><a href="createVirginQueens.html">createVirginQueens()</a></code> </p>
+          <p><code><a href="getColonySegSiteHaplo.html">getColonySegSiteHaplo()</a></code> </p>
         </td>
-        <td><p>Creates virgin queens from the colony</p></td>
+        <td><p>Access haplotypes for all segregating sites of individuals in
+  colony</p></td>
       </tr><tr><td>
-          <p><code><a href="createDrones.html">createDrones()</a></code> </p>
+          <p><code><a href="getCasteSegSiteGeno.html">getCasteSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getQueenSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getFathersSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getVirginQueensSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getWorkersSegSiteGeno()</a></code> <code><a href="getCasteSegSiteGeno.html">getDronesSegSiteGeno()</a></code> </p>
         </td>
-        <td><p>Creates drones from the colony</p></td>
+        <td><p>Access genotypes for all segregating sites of individuals in a
+  caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getSegSiteGeno.html">getSegSiteGeno()</a></code> </p>
+        </td>
+        <td><p>Access genotypes for all segregating sites</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonySegSiteGeno.html">getColonySegSiteGeno()</a></code> </p>
+        </td>
+        <td><p>Access genotypes for all segregating sites of individuals in
+  colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="pull">Pull <a href="#pull" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="get-qtl-haplotypes-or-genotypes">Get QTL haplotypes or genotypes <a href="#get-qtl-haplotypes-or-genotypes" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="pullCastePop.html">pullCastePop()</a></code> <code><a href="pullCastePop.html">pullQueen()</a></code> <code><a href="pullCastePop.html">pullVirginQueens()</a></code> <code><a href="pullCastePop.html">pullWorkers()</a></code> <code><a href="pullCastePop.html">pullDrones()</a></code> </p>
+          <p><code><a href="getCasteQtlHaplo.html">getCasteQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getQueenQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getFathersQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getVirginQueensQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getWorkersQtlHaplo()</a></code> <code><a href="getCasteQtlHaplo.html">getDronesQtlHaplo()</a></code> </p>
         </td>
-        <td><p>Pull individuals from a caste in a colony</p></td>
+        <td><p>Access QTL haplotypes of individuals in a caste</p></td>
       </tr><tr><td>
-          <p><code><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA()</a></code> </p>
+          <p><code><a href="getQtlHaplo.html">getQtlHaplo()</a></code> </p>
         </td>
-        <td><p>Pulls drone groups from a Drone Congregation Area (DCA)</p></td>
+        <td><p>Access QTL haplotypes</p></td>
       </tr><tr><td>
-          <p><code><a href="pullInd.html">pullInd()</a></code> </p>
+          <p><code><a href="getColonyQtlHaplo.html">getColonyQtlHaplo()</a></code> </p>
         </td>
-        <td><p>Pull individuals from a population</p></td>
+        <td><p>Access QTL haplotypes of individuals in colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCasteQtlGeno.html">getCasteQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getQueenQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getFathersQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getVirginQueensQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getWorkersQtlGeno()</a></code> <code><a href="getCasteQtlGeno.html">getDronesQtlGeno()</a></code> </p>
+        </td>
+        <td><p>Access QTL genotypes of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getQtlGeno.html">getQtlGeno()</a></code> </p>
+        </td>
+        <td><p>Access QTL genotypes</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonyQtlGeno.html">getColonyQtlGeno()</a></code> </p>
+        </td>
+        <td><p>Access QTL genotypes of individuals in colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get">Get <a href="#get" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="get-snp-haplotypes-or-genotypes">Get SNP haplotypes or genotypes <a href="#get-snp-haplotypes-or-genotypes" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> </p>
+          <p><code><a href="getCasteSnpHaplo.html">getCasteSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getQueenSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getFathersSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getVirginQueensSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getWorkersSnpHaplo()</a></code> <code><a href="getCasteSnpHaplo.html">getDronesSnpHaplo()</a></code> </p>
         </td>
-        <td><p>Access individuals of a caste</p></td>
+        <td><p>Access SNP array haplotypes of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getSnpHaplo.html">getSnpHaplo()</a></code> </p>
+        </td>
+        <td><p>Access SNP array haplotypes</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonySnpHaplo.html">getColonySnpHaplo()</a></code> </p>
+        </td>
+        <td><p>Access SNP array haplotypes of individuals in colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="getSnpGeno.html">getSnpGeno()</a></code> </p>
+        </td>
+        <td><p>Access SNP array genotypes</p></td>
+      </tr><tr><td>
+          <p><code><a href="getCasteSnpGeno.html">getCasteSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getQueenSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getFathersSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getVirginQueensSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getWorkersSnpGeno()</a></code> <code><a href="getCasteSnpGeno.html">getDronesSnpGeno()</a></code> </p>
+        </td>
+        <td><p>Access SNP array genotypes of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonySnpGeno.html">getColonySnpGeno()</a></code> </p>
+        </td>
+        <td><p>Access SNP array genotypes of individuals in colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="combine">Combine <a href="#combine" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="get-ibd-identity-by-descent-haplotypes">Get IBD (Identity-By-Descent) haplotypes <a href="#get-ibd-identity-by-descent-haplotypes" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="combineBeeGametesHaploDiploid.html">combineBeeGametesHaploDiploid()</a></code> </p>
+          <p><code><a href="getCasteIbdHaplo.html">getCasteIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getQueenIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getFathersIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getVirginQueensIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getWorkersIbdHaplo()</a></code> <code><a href="getCasteIbdHaplo.html">getDronesIbdHaplo()</a></code> </p>
         </td>
-        <td><p>Create diploid gametes from a mated queen</p></td>
+        <td><p>Access IBD haplotypes of individuals in a caste</p></td>
       </tr><tr><td>
-          <p><code><a href="combineBeeGametes.html">combineBeeGametes()</a></code> </p>
+          <p><code><a href="getIbdHaplo.html">getIbdHaplo()</a></code> </p>
         </td>
-        <td><p>Create diploid gametes from a mated queen</p></td>
+        <td><p>Access IBD haplotypes</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonyIbdHaplo.html">getColonyIbdHaplo()</a></code> </p>
+        </td>
+        <td><p>Access IBD haplotypes of individuals in colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="misc">Misc <a href="#misc" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="calculate-genomic-information">Calculate genomic information <a href="#calculate-genomic-information" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="cross.html">cross()</a></code> </p>
+          <p><code><a href="calcBeeGRMIbs.html">calcBeeGRMIbs()</a></code> <code><a href="calcBeeGRMIbs.html">calcBeeAlleleFreq()</a></code> </p>
         </td>
-        <td><p>Cross (mate) virgin queen(s) as a population, of a colony, or
-  of all given colonies</p></td>
+        <td><p>Calculate Genomic Relatedness Matrix (GRM) for honeybees from
+  Identical By State genomic data</p></td>
       </tr><tr><td>
-          <p><code><a href="setQueensYearOfBirth.html">setQueensYearOfBirth()</a></code> </p>
+          <p><code><a href="calcBeeGRMIbd.html">calcBeeGRMIbd()</a></code> </p>
         </td>
-        <td><p>Set the queen's year of birth</p></td>
+        <td><p>Calculate Genomic Relatedness Matrix (GRM) for honeybees from
+  Identical By Descent genomic data</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="replace">Replace <a href="#replace" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="quantitative-genetics">Quantitative Genetics <a href="#quantitative-genetics" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="replaceVirginQueens.html">replaceVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Replace a proportion of virgin queens with new ones</p></td>
-      </tr><tr><td>
-          <p><code><a href="replaceDrones.html">replaceDrones()</a></code> </p>
-        </td>
-        <td><p>Replace a proportion of drones with new ones</p></td>
-      </tr><tr><td>
-          <p><code><a href="replaceWorkers.html">replaceWorkers()</a></code> </p>
-        </td>
-        <td><p>Replace a proportion of workers with new ones</p></td>
-      </tr><tr><td>
-          <p><code><a href="reQueen.html">reQueen()</a></code> </p>
-        </td>
-        <td><p>Re-queen</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="remove">Remove <a href="#remove" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="removeDrones.html">removeDrones()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of drones</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeWorkers.html">removeWorkers()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of workers</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeVirginQueens.html">removeVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of virgin queens</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeQueen.html">removeQueen()</a></code> </p>
-        </td>
-        <td><p>Remove queen</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="colony-functions">Colony functions <a href="#colony-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="downsize.html">downsize()</a></code> </p>
-        </td>
-        <td><p>Reduce number of workers and remove all drones and virgin queens from
-  a Colony or MultiColony object</p></td>
-      </tr><tr><td>
-          <p><code><a href="buildUp.html">buildUp()</a></code> </p>
-        </td>
-        <td><p>Build up Colony or MultiColony object by adding (raising) workers and drones</p></td>
-      </tr><tr><td>
-          <p><code><a href="createColony.html">createColony()</a></code> </p>
-        </td>
-        <td><p>Create a new Colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="setColonyPheno.html">setColonyPheno()</a></code> </p>
-        </td>
-        <td><p>Set colony phenotype</p></td>
-      </tr><tr><td>
-          <p><code><a href="setLocation.html">setLocation()</a></code> </p>
-        </td>
-        <td><p>Set colony location</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="colony-events">Colony events <a href="#colony-events" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="supersede.html">supersede()</a></code> </p>
-        </td>
-        <td><p>Supersede</p></td>
-      </tr><tr><td>
-          <p><code><a href="split.html">split()</a></code> </p>
-        </td>
-        <td><p>Split colony in two MultiColony</p></td>
-      </tr><tr><td>
-          <p><code><a href="resetEvents.html">resetEvents()</a></code> </p>
-        </td>
-        <td><p>Reset colony events</p></td>
-      </tr><tr><td>
-          <p><code><a href="combine.html">combine()</a></code> </p>
-        </td>
-        <td><p>Combine two colony objects</p></td>
-      </tr><tr><td>
-          <p><code><a href="swarm.html">swarm()</a></code> </p>
-        </td>
-        <td><p>Swarm</p></td>
-      </tr><tr><td>
-          <p><code><a href="collapse.html">collapse()</a></code> </p>
-        </td>
-        <td><p>Collapse</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="add">Add <a href="#add" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="addDrones.html">addDrones()</a></code> </p>
-        </td>
-        <td><p>Add (raise) drones in the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="addWorkers.html">addWorkers()</a></code> </p>
-        </td>
-        <td><p>Add (raise) workers in the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="addVirginQueens.html">addVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Add (raise) virgin queens in the colony</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="multicolony-functions">MultiColony functions <a href="#multicolony-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="selectColonies.html">selectColonies()</a></code> </p>
-        </td>
-        <td><p>Select colonies from MultiColony object</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeColonies.html">removeColonies()</a></code> </p>
-        </td>
-        <td><p>Remove some colonies from the MultiColony object</p></td>
-      </tr><tr><td>
-          <p><code><a href="createMultiColony.html">createMultiColony()</a></code> </p>
-        </td>
-        <td><p>Create MultiColony object</p></td>
-      </tr><tr><td>
-          <p><code><a href="pullColonies.html">pullColonies()</a></code> </p>
-        </td>
-        <td><p>Pull out some colonies from the MultiColony object</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="pheno-functions">Pheno functions <a href="#pheno-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="phenotype-values">Phenotype values <a href="#phenotype-values" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -745,8 +727,48 @@
           <p><code><a href="getColonyPheno.html">getColonyPheno()</a></code> </p>
         </td>
         <td><p>Access phenotype values of individuals in colony</p></td>
+      </tr><tr><td>
+          <p><code><a href="setColonyPheno.html">setColonyPheno()</a></code> </p>
+        </td>
+        <td><p>Set colony phenotype</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="get-additive-effects">Get Additive effects <a href="#get-additive-effects" class="anchor" aria-hidden="true"></a></h2>
+          <h3 id="genetic-values">Genetic values <a href="#genetic-values" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="getCasteGv.html">getCasteGv()</a></code> <code><a href="getCasteGv.html">getQueenGv()</a></code> <code><a href="getCasteGv.html">getFathersGv()</a></code> <code><a href="getCasteGv.html">getVirginQueensGv()</a></code> <code><a href="getCasteGv.html">getWorkersGv()</a></code> <code><a href="getCasteGv.html">getDronesGv()</a></code> </p>
+        </td>
+        <td><p>Access genetic values of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonyGv.html">getColonyGv()</a></code> </p>
+        </td>
+        <td><p>Access genetic values of individuals in colony</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="breeding-values">Breeding values <a href="#breeding-values" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="getCasteBv.html">getCasteBv()</a></code> <code><a href="getCasteBv.html">getQueenBv()</a></code> <code><a href="getCasteBv.html">getFathersBv()</a></code> <code><a href="getCasteBv.html">getVirginQueensBv()</a></code> <code><a href="getCasteBv.html">getWorkersBv()</a></code> <code><a href="getCasteBv.html">getDronesBv()</a></code> </p>
+        </td>
+        <td><p>Access breeding values of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonyBv.html">getColonyBv()</a></code> </p>
+        </td>
+        <td><p>Access breeding values of individuals in colony</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="dominance-deviations">Dominance deviations <a href="#dominance-deviations" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="getCasteDd.html">getCasteDd()</a></code> <code><a href="getCasteDd.html">getQueenDd()</a></code> <code><a href="getCasteDd.html">getFathersDd()</a></code> <code><a href="getCasteDd.html">getVirginQueensDd()</a></code> <code><a href="getCasteDd.html">getWorkersDd()</a></code> <code><a href="getCasteDd.html">getDronesDd()</a></code> </p>
+        </td>
+        <td><p>Access dominance deviations of individuals in a caste</p></td>
+      </tr><tr><td>
+          <p><code><a href="getColonyDd.html">getColonyDd()</a></code> </p>
+        </td>
+        <td><p>Access dominance deviations of individuals in colony</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="epistatic-deviations">Epistatic deviations <a href="#epistatic-deviations" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -758,27 +780,17 @@
         </td>
         <td><p>Access epistasis deviations of individuals in colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="tbd">TBD <a href="#tbd" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="combine-remove-export-and-delete">Combine REMOVE EXPORT AND DELETE <a href="#combine-remove-export-and-delete" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="combineNULLAndPop.html">c(<i>&lt;NULLOrPop&gt;</i>)</a></code> </p>
+          <p><code><a href="combineBeeGametesHaploDiploid.html">combineBeeGametesHaploDiploid()</a></code> </p>
         </td>
-        <td><p>Combine a NULL and AlphaSimR population</p></td>
+        <td><p>Create diploid gametes from a mated queen</p></td>
       </tr><tr><td>
-          <p><code><a href="downsizePFun.html">downsizePUnif()</a></code> </p>
+          <p><code><a href="combineBeeGametes.html">combineBeeGametes()</a></code> </p>
         </td>
-        <td><p>Sample the downsize proportion - proportion of removed workers in
-  downsizing</p></td>
-      </tr><tr><td>
-          <p><code><a href="splitPFun.html">splitPUnif()</a></code> <code><a href="splitPFun.html">splitPColonyStrength()</a></code> </p>
-        </td>
-        <td><p>Sample the split proportion - proportion of removed workers in a
-  managed split</p></td>
-      </tr><tr><td>
-          <p><code><a href="swarmPFun.html">swarmPUnif()</a></code> <code><a href="swarmPFun.html">swarmPColonyStrength()</a></code> </p>
-        </td>
-        <td><p>Sample the swarm proportion - the proportion of workers that swarm</p></td>
+        <td><p>Create diploid gametes from a mated queen</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
