@@ -210,18 +210,14 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
 #' @describeIn getCastePop Access the queen
 #' @export
 getQueen <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x, caste = "queen", nInd = 1)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePop(x, caste = "queen", nInd = 1)
   return(ret)
 }
 
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand") {
-  if (isPop(x)) {
+  if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
       FUN = function(z) {
@@ -247,42 +243,29 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
   return(ret)
 }
 
-#' @describeIn getCastePop Access virgin queens
-#' @export
-getVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
 #' @describeIn getCastePop Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use)
   return(ret)
 }
 
 #' @describeIn getCastePop Access drones
 #' @export
 getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x,
-      caste = "drones", nInd = nInd, use = use,
-      removeFathers = removeFathers
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- getCastePop(x,
+                     caste = "drones", nInd = nInd, use = use,
+                     removeFathers = removeFathers
+  )
   return(ret)
 }
 
+#' @describeIn getCastePop Access virgin queens
+#' @export
+getVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
+  return(ret)
+}
 
 #' @rdname createCastePop
 #' @title Creates caste population individuals from the colony
@@ -436,7 +419,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
   }
   # doing "if (is.function(nInd))" below
   if (isMapPop(x)) {
-    if (caste != "virginQueens") {
+    if (caste != "virginQueens") { # Creating virgin queens if input  is a MapPop
       stop("MapPop-class can only be used to create virgin queens!")
     }
     ret <- newPop(x)
@@ -451,7 +434,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- setQueensYearOfBirth(x = ret, year = year)
     }
   } else if (isPop(x)) {
-    if (caste != "drones") {
+    if (caste != "drones") { #Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
     }
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
@@ -499,15 +482,15 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
       ret$workers@sex[] <- "F"
       simParamBee$addToCaste(id = ret$workers@id, caste = "W")
-    } else if (caste == "virginQueens") {
+    } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
       ret <- createCastePop(x = x, caste = "workers",
-                              nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
+                            nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
       ret@sex[] <- "F"
       simParamBee$changeCaste(id = ret@id, caste = "V")
       if (!is.null(year)) {
         ret <- setQueensYearOfBirth(x = ret, year = year)
       }
-    } else if (caste == "drones") {
+    } else if (caste == "drones") { # Creating drones if input is a Colony
       ret <- makeDH(
         pop = getQueen(x), nDH = nInd, keepParents = FALSE,
         simParam = simParamBee
@@ -529,7 +512,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Map-Pop, Pop, Colony, or MultiColony class object!")
+    stop("Argument x must be a Map-Pop (only for virgin queens),
+         Pop (only for drones), Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -537,24 +521,16 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 #' @describeIn createCastePop Create workers from a colony
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- createCastePop(x, caste = "workers", nInd = nInd,
-                          exact = exact, simParamBee = simParamBee)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- createCastePop(x, caste = "workers", nInd = nInd,
+                        exact = exact, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn createCastePop Create drones from a colony
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
-  if (isPop(x) | isColony(x) | isMultiColony(x)) {
-    ret <- createCastePop(x, caste = "drones", nInd = nInd,
-                          simParamBee = simParamBee)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- createCastePop(x, caste = "drones", nInd = nInd,
+                        simParamBee = simParamBee)
   return(ret)
 }
 
@@ -564,13 +540,9 @@ createVirginQueens <- function(x, nInd = NULL,
                                year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL) {
-  if (isMapPop(x) | isColony(x) | isMultiColony(x)) {
-    ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
-                          year = year, editCsd = editCsd,
-                          csdAlleles = csdAlleles, simParamBee = simParamBee)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
+                        year = year, editCsd = editCsd,
+                        csdAlleles = csdAlleles, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1069,47 +1041,31 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
 #' @describeIn pullCastePop Pull queen from a colony
 #' @export
 pullQueen <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- pullCastePop(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
-#' @describeIn pullCastePop Pull virgin queens from a colony
-#' @export
-pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- pullCastePop(x, caste = "queen")
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull workers from a colony
 #' @export
 pullWorkers <- function(x, nInd = NULL, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use)
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull drones from a colony
 #' @export
 pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- pullCastePop(x,
-      caste = "drones", nInd = nInd, use = use,
-      removeFathers = removeFathers
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- pullCastePop(x,
+                      caste = "drones", nInd = nInd, use = use,
+                      removeFathers = removeFathers
+  )
+  return(ret)
+}
+
+#' @describeIn pullCastePop Pull virgin queens from a colony
+#' @export
+pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
+  ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
   return(ret)
 }
 
@@ -1292,8 +1248,8 @@ cross <- function(x, fathers,
       ret <- list()
       for (queen in seq_len(nVirginQueen)) {
         ret[[queen]] <- cross(x[queen],
-          fathers = fathers[[queen]],
-          checkMating = checkMating, simParamBee = simParamBee
+                              fathers = fathers[[queen]],
+                              checkMating = checkMating, simParamBee = simParamBee
         )
       }
       ret <- mergePops(ret)
