@@ -1608,11 +1608,15 @@ setLocation <- function(x, location) {
         stop("The length of location list and the number of colonies must match!")
       }
       for (colony in seq_len(nCol)) {
-        x[[colony]]@location <- location[[colony]]
+        if (!is.null(x[[colony]])) {
+          x[[colony]]@location <- location[[colony]]
+        }
       }
     } else {
       for (colony in seq_len(nCol)) {
-        x[[colony]]@location <- location
+        if (!is.null(x[[colony]])) {
+          x[[colony]]@location <- location
+        }
       }
     }
   } else {
