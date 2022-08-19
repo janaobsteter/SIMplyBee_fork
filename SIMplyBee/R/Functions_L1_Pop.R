@@ -289,7 +289,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'
 #' @description Level 1 function that creates the specified number of caste
 #'   individuals from the colony with a mated queens. If csd
-#'   locus is active, it takes it into account and any csd homozygotes (workers) are
+#'   locus is active, it takes it into account and any csd homozygotes are
 #'   removed and counted towards homozygous brood.
 #'
 #' @param x \code{link{MapPop-class}} (only if caste is "virginQueens"), or
@@ -297,10 +297,11 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   or \code{\link{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
 #' @param nInd numeric or function, number of caste individuals; if \code{NULL} then
-#'   \code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
-#'   \code{\link{Colony-class}} or \code{\link{MultiColony-class}}, when \code{x}
-#'   is \code{link{MapPop-class}} all individuals in \code{x} are converted
-#'   into virgin queens
+#'   \code{\link{SimParamBee}$nWorkers},  \code{\link{SimParamBee}$nDrones}
+#'   or \code{\link{SimParamBee}$nVirginQueens} is used depending on the caste;
+#'   only used when \code{x} is \code{\link{Colony-class}} or
+#'   \code{\link{MultiColony-class}}, when \code{x} is \code{link{MapPop-class}}
+#'   all individuals in \code{x} are converted into virgin queens
 #' @param exact logical, only relevant when creating workers,
 #'   if the csd locus is active and exact is \code{TRUE},
 #'   create the exactly specified number of viable workers (heterozygous on the
@@ -320,9 +321,6 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #'   ensure heterozygosity at the csd locus.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details The package includes shortcut functions: createVirginQueens,
-#'   createWorkers, and createDrones
-#'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
 #'   when \code{x} is \code{\link{Colony-class}} returns
@@ -338,11 +336,11 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' SP$setTrackPed(isTrackPed = TRUE)
 #' # Create virgin queens on a MapPop
 #' basePop <- createCastePop(founderGenomes, caste = "virginQueens")
-#' # Or shortcut function: createVirginQueens(founderGenomes)
+#' # Or alias function: createVirginQueens(founderGenomes)
 #'
 #' #Create drones on a Pop
 #' drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
-#' # Or shrotcut: createDrones(x = basePop[1], nInd = 100)
+#' # Or alias: createDrones(x = basePop[1], nInd = 100)
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 #'
 #' # Create a Colony and a MultiColony class
@@ -389,7 +387,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' createWorkers(apiary, nInd = nWorkersPoisson)
 #' createDrones(colony, nInd = nDronesPoisson)
 #' createDrones(apiary, nInd = nDronesPoisson)
-#' # No individuals will vary between function calls when a function is used
+#' # No. of individuals will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
 #' SP$nVirginQueens <- nVirginQueensPoisson
@@ -401,7 +399,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
 #' createWorkers(apiary)
 #' createDrones(colony)
 #' createDrones(apiary)
-#' # no individuals will vary between function calls when a function is used
+#' # No. of individuals will vary between function calls when a function is used
 #'
 #' # csd homozygosity - relevant when creating virgin queens
 #' founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
@@ -531,23 +529,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Map-Pop or Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
-#' @describeIn createCastePop Create virgin queens from a colony
-#' @export
-createVirginQueens <- function(x, nInd = NULL,
-                               year = NULL,
-                               editCsd = TRUE, csdAlleles = NULL,
-                               simParamBee = NULL) {
-  if (isMapPop(x) | isColony(x) | isMultiColony(x)) {
-    ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
-                          year = year, editCsd = editCsd,
-                          csdAlleles = csdAlleles, simParamBee = simParamBee)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    stop("Argument x must be a Map-Pop, Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -576,6 +558,21 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
+#' @describeIn createCastePop Create virgin queens from a colony
+#' @export
+createVirginQueens <- function(x, nInd = NULL,
+                               year = NULL,
+                               editCsd = TRUE, csdAlleles = NULL,
+                               simParamBee = NULL) {
+  if (isMapPop(x) | isColony(x) | isMultiColony(x)) {
+    ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
+                          year = year, editCsd = editCsd,
+                          csdAlleles = csdAlleles, simParamBee = simParamBee)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
 
 #' @rdname combineBeeGametes
 #' @title Create diploid gametes from a mated queen

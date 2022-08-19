@@ -181,7 +181,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 }
 
 #' @rdname addCastePop
-#' @title Add caste population individuals to the colony
+#' @title Add caste individuals to the colony
 #'
 #' @description Level 2 function that adds (raises) the specified number of
 #'   a specific caste individuals to a Colony or MultiColony object by producing
@@ -222,19 +222,19 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #'
 #' # Add virgin queens
 #' addCastePop(colony, caste = "virginQueens", nInd = 20)
-#' # Or use a shortcut function
+#' # Or use a alias function
 #' addVirginQueens(colony, nInd = 20)
 #' nVirginQueens(addVirginQueens(apiary, nInd = 20))
 #'
 #' # Add workers
 #' addCastePop(colony, caste = "workers", nInd = 20)
-#' # Or use a shortcut function
+#' # Or use a alias function
 #' addWorkers(colony, nInd = 20)
 #' nWorkers(addWorkers(apiary, nInd = 20))
 #'
 #' # Add drones
 #' addCastePop(colony, caste = "drones", nInd = 20)
-#' # Or use a shortcut function
+#' # Or use a alias function
 #' addDrones(colony, nInd = 20)
 #' nDrones(addDrones(apiary, nInd = 20))
 #'
@@ -284,13 +284,12 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     stop("Argument caste must be of length 1!")
   }
   if (is.null(nInd)) {
-    if (caste == "virginQueens") {
-      nInd <- simParamBee$nVirginQueens
-    } else if (caste == "workers") {
+    if (caste == "workers") {
       nInd <- simParamBee$nWorkers
     } else if (caste == "drones") {
       nInd <- simParamBee$nDrones
-    }
+    }  else if (caste == "virginQueens") {
+      nInd <- simParamBee$nVirginQueens
   }
   # doing "if (is.function(nInd))" below
   if (isColony(x)) {
@@ -311,10 +310,10 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
         x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
         x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
       }
-      if (is.null(getCastePop(x, caste)) | new) {
+      if (is.null(slot(x, caste)) | new) {
         slot(x, caste) <- newInds
       } else {
-        slot(x, caste) <- c(getCastePop(x, caste), newInds)
+        slot(x, caste) <- c(slot(x, caste), newInds)
       }
     } else {
       warning("The number of individuals to add is less than 0, hence adding nothing.")
@@ -644,12 +643,12 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 }
 
 #' @rdname replaceCastePop
-#' @title Replace a proportion of caste population individuals with new ones
+#' @title Replace a proportion of caste individuals with new ones
 #'
 #' @description Level 2 function that replaces a proportion of caste individuals
 #'   with new individuals from a Colony or MultiColony object. Useful after
 #'   events like season change, swarming, supersedure, etc. due to the short life span
-#'  honeybees.
+#'   honeybees.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
@@ -690,15 +689,15 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' # Replace individuals in a colony
 #' getVirginQueens(colony)@id
 #' colony <- replaceCastePop(colony, caste = "virginQueens", p = 0.5)
-#' # or shortcut: replaceVirginQueens(colony, p = 0.5)
+#' # or alias: replaceVirginQueens(colony, p = 0.5)
 #' getVirginQueens(colony)@id
 #' getWorkers(colony)@id
 #' colony <- replaceCastePop(colony, caste = "workers", p = 0.5)
-#' # or shortcut: replaceWorkers(colony, p = 0.5)
+#' # or alias: replaceWorkers(colony, p = 0.5)
 #' getWorkers(colony)@id
 #' getDrones(colony)@id
 #' colony <- replaceCastePop(colony, caste = "drones", p = 0.5)
-#' # or shortcut: replaceDrones(colony, p = 0.5)
+#' # or alias: replaceDrones(colony, p = 0.5)
 #' getDrones(colony)@id
 #'
 #' lapply(getVirginQueens(apiary), FUN = function(x) x@id)
@@ -813,7 +812,7 @@ replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 }
 
 #' @rdname removeCastePop
-#' @title Remove a proportion of caste population individuals from a colony
+#' @title Remove a proportion of caste individuals from a colony
 #'
 #' @description Level 2 function that removes a proportion of virgin queens of
 #'   a Colony or MultiColony object
@@ -847,29 +846,29 @@ replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' # Remove virgin queens
 #' nVirginQueens(colony)
 #' colony <- removeCastePop(colony, caste = "virginQueens", p = 0.5)
-#' # or shortcut: removeVirginQueens(colony, p = 0.5)
+#' # or alias: removeVirginQueens(colony, p = 0.5)
 #' nVirginQueens(colony)
 #' colony <- removeCastePop(colony, caste = "virginQueens")
-#' # or shortcut: colony <- removeVirginQueens(colony)
+#' # or alias: colony <- removeVirginQueens(colony)
 #' nVirginQueens(colony)
 #' nWorkers(colony)
 #' nDrones(colony)
 #' colony <- removeCastePop(colony, caste = "workers", p = 0.3)
-#' # or shortcut: colony <- removeWorkers(colony, p = 0.3)
+#' # or alias: colony <- removeWorkers(colony, p = 0.3)
 #' colony <- removeCastePop(colony, caste = "drones", p = 0.3)
-#' # or shortcut: colony <- removeDrones(colony, p = 0.3)
+#' # or alias: colony <- removeDrones(colony, p = 0.3)
 #'
 #' nVirginQueens(apiary)
 #' nWorkers(apiary)
 #' nDrones(apiary)
 #' apiary <- removeCastePop(apiary, caste = "virginQueens", p = 0.3)
-#' # or shortcut: removeVirginQueens(apiary, p = 0.3)
+#' # or alias: removeVirginQueens(apiary, p = 0.3)
 #' nVirginQueens(apiary)
 #' apiary <- removeCastePop(apiary, caste = "workers", p = 0.3)
-#' # or shortcut: removeWorkers(apiary, p = 0.3)
+#' # or alias: removeWorkers(apiary, p = 0.3)
 #' nWorkers(apiary)
 #' #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
-#' # or shortcut: removeDrones(apiary, p = 0.3)
+#' # or alias: removeDrones(apiary, p = 0.3)
 #' nDrones(apiary)
 #' @export
 removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
@@ -1206,7 +1205,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       stop("p must be between 0 and 1 (inclusive)!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens(colony = x)
+      nVirginQueens <- nVirginQueens(x)
     }
     nWorkers <- nWorkers(x)
     nWorkersSwarm <- round(nWorkers * p)
@@ -1344,7 +1343,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
       stop("No queen present in the colony!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens(colony = x)
+      nVirginQueens <- nVirginQueens(x)
     }
 
     tmpVirginQueen <- createVirginQueens(
