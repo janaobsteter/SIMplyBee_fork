@@ -63,5 +63,4 @@ tmp$remnant[[1]]
 tmp <- pullColonies(apiary, p = 0.2)
 # Swarm only the pulled colonies
 (swarm(tmp$pulled, p = 0.6))
-
 }

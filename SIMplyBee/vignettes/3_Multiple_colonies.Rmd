@@ -1,0 +1,25 @@
+---
+title: "SIMplyBee - Multiple colonies"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - Multiple colonies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
+```
+
+# Introduction
+
+Introduce MultiColony class for apiaries and broader sets of colonies, say per age group.
+
+Then basic functions to work with a multicolony.
+
+Then show how most colony functions work on multicolony as well.

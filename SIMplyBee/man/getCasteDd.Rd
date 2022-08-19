@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteDd}
 \alias{getCasteDd}
-\alias{getQueensDd}
+\alias{getQueenDd}
 \alias{getFathersDd}
 \alias{getVirginQueensDd}
 \alias{getWorkersDd}
@@ -11,7 +11,7 @@
 \usage{
 getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensDd(x, simParamBee = NULL)
+getQueenDd(x, simParamBee = NULL)
 
 getFathersDd(x, nInd = NULL, simParamBee = NULL)
 
@@ -44,7 +44,7 @@ Level 0 function that returns dominance deviations of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensDd()}: Access dominance deviation of the queen
+\item \code{getQueenDd()}: Access dominance deviation of the queen
 
 \item \code{getFathersDd()}: Access dominance deviations of fathers
 
@@ -67,20 +67,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteDd(colony, caste = "queen")
-getQueensDd(colony)
+getQueenDd(colony)
 
 getCasteDd(colony, caste = "fathers")
 getCasteDd(colony, caste = "fathers", nInd = 2)
-getCasteDd(colony, caste = "fathers", nInd = 2)
+getCasteDd(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersDd(colony)
 getFathersDd(colony, nInd = 2)
 
@@ -94,11 +94,11 @@ getCasteDd(colony, caste = "drones")
 getDronesDd(colony)
 
 getCasteDd(apiary, caste = "queen")
-getQueensDd(apiary)
+getQueenDd(apiary)
 
 getCasteDd(apiary, caste = "fathers")
 getCasteDd(apiary, caste = "fathers", nInd = 2)
-getCasteDd(apiary, caste = "fathers", nInd = 2)
+getCasteDd(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersDd(apiary)
 getFathersDd(apiary, nInd = 2)
 

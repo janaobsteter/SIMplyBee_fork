@@ -209,6 +209,11 @@ test_that("isCaste", {
   expect_false(isCaste(getQueen(colony), caste = "workers"))
   #test on virgin queen that is not present in a colony
   expect_null(isCaste(getVirginQueens(colony), caste = "virginQueens"))
+   malePop <- c(getDrones(colony), getFathers(colony))
+  expect_true(any(isCaste(malePop, caste = "fathers")))
+  expect_true(any(isCaste(malePop, caste = "drones")))
+  expect_false(all(isCaste(malePop, caste = "fathers")))
+  expect_false(all(isCaste(malePop, caste = "drones")))
 })
 
 # ---- calcQueensPHomBrood ----
@@ -316,7 +321,6 @@ test_that("isQueenPresent", {
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
     colony <- cross(colony, fathers = fatherGroups[[1]])
-    colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
     apiary <- createMultiColony(n = 1)
     vec <- c(1,2,3,4)
@@ -478,7 +482,9 @@ test_that("getCsdAlleles", {
                    nVirginQueens(colony)*2))
   expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE)),
                nrow(unique(getCsdAlleles(colony, collapse = TRUE))))
-})
+  expect_equal(length(getCsdAlleles(colony)), 5)
+#Maybe you can change this test to check whether the number of rows if less then SP$nCsdAlleles (its called something like this)?
+  })
 
 # ---- getCsdGeno ----
 
@@ -511,7 +517,8 @@ test_that("getCsdGeno", {
     colony <- buildUp(x = colony)
 
   expect_error(getCsdGeno(colony))
-  })
+  expect_true(nCsdAlleles(colony, collapse = TRUE) <= SP$nCsdAlleles)
+})
 
 # ---- isCsdHeterozygous ----
 
@@ -531,7 +538,7 @@ test_that("isCsdHeterozygous", {
   expect_true(isCsdHeterozygous(colony@queen))
   expect_true(is.vector(isCsdHeterozygous(colony@workers)))
   expect_true(all(isCsdHeterozygous(colony@drones)))
-
+  # Could you add a test whether the virgin queens are homozygous?
     # set CSD to NULL
     SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
     basePop <- createVirginQueens(founderGenomes)
@@ -581,18 +588,18 @@ test_that("nCsdAlleles", {
 
   expect_error(nCsdAlleles(colony@queen))
 
-  #collapse argument
-  nCsdAlleles <- 5
-  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = nCsdAlleles)
-  basePop <- createVirginQueens(founderGenomes)
+    #collapse argument
+    nCsdAlleles <- 5
+    SP <- SimParamBee$new(founderGenomes, nCsdAlleles = nCsdAlleles)
+    basePop <- createVirginQueens(founderGenomes)
 
-  drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    drones <- createDrones(x = basePop[1], nInd = 1000)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
 
-  # Create a Colony class
-  colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
-  colony <- buildUp(x = colony)
+    # Create a Colony class
+    colony <- createColony(x = basePop[2])
+    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- buildUp(x = colony)
   expect_true(is.numeric(nCsdAlleles(colony, collapse = TRUE)))
   expect_true(nCsdAlleles(colony, collapse = TRUE) <= nCsdAlleles)
 })
@@ -654,6 +661,7 @@ test_that("calcBeeGRMIbs", {
 })
 
 # ---- editCsdLocus ----
+
 test_that("editCsdLocus", {
     founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -750,6 +758,8 @@ test_that("isFathersPresent", {
   expect_error(isFathersPresent(apiary)) #TODO do we want error?
   expect_error(isFathersPresent(vec))
   expect_true(is.vector(isFathersPresent(apiary2)))
+   queen <- colony@queen
+  expect_error(isFathersPresent(queen))
 })
 
 # ---- isWorkersPresent ----
@@ -777,3 +787,20 @@ test_that("isWorkersPresent", {
   expect_true(is.vector(isWorkersPresent(apiary2)))
 })
 
+# ---- nEmptyColonies ----
+
+test_that("nEmptyColonies", {
+    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+    SP <- SimParamBee$new(founderGenomes)
+    basePop <- createVirginQueens(founderGenomes)
+
+    emptyApiary <- createMultiColony(n = 3)
+    emptyApiary1 <- c(createColony(), createColony())
+    nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+    emptyColony <- createColony()
+
+  expect_equal(nEmptyColonies(emptyApiary),3)
+  expect_equal(nEmptyColonies(emptyApiary1), 2)
+  expect_equal(nEmptyColonies(nonEmptyApiary), 0)
+  expect_error(nEmptyColonies(emptyColony))
+})

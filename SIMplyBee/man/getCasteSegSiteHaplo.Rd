@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSegSiteHaplo}
 \alias{getCasteSegSiteHaplo}
-\alias{getQueensSegSiteHaplo}
+\alias{getQueenSegSiteHaplo}
 \alias{getFathersSegSiteHaplo}
 \alias{getVirginQueensSegSiteHaplo}
 \alias{getWorkersSegSiteHaplo}
@@ -20,7 +20,7 @@ getCasteSegSiteHaplo(
   simParamBee = NULL
 )
 
-getQueensSegSiteHaplo(x, haplo = "all", chr = NULL, simParamBee = NULL)
+getQueenSegSiteHaplo(x, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersSegSiteHaplo(
   x,
@@ -88,7 +88,7 @@ Level 0 function that returns haplotypes for all segregating
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
+\item \code{getQueenSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
 
 \item \code{getFathersSegSiteHaplo()}: Access haplotype data for all segregating sites of fathers
 
@@ -102,10 +102,6 @@ Level 0 function that returns haplotypes for all segregating
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
-SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -114,20 +110,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteSegSiteHaplo(colony, caste = "queen")
-getQueensSegSiteHaplo(colony)
+getQueenSegSiteHaplo(colony)
 
 getCasteSegSiteHaplo(colony, caste = "fathers")
 getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
-getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteHaplo(colony)
 getFathersSegSiteHaplo(colony, nInd = 2)
 
@@ -141,11 +137,11 @@ getCasteSegSiteHaplo(colony, caste = "drones")
 getDronesSegSiteHaplo(colony)
 
 getCasteSegSiteHaplo(apiary, caste = "queen")
-getQueensSegSiteHaplo(apiary)
+getQueenSegSiteHaplo(apiary)
 
 getCasteSegSiteHaplo(apiary, caste = "fathers")
 getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteHaplo(apiary)
 getFathersSegSiteHaplo(apiary, nInd = 2)
 

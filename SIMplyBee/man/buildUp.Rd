@@ -129,5 +129,4 @@ buildUp(apiary)[[1]]
 
 # Queen's counters
 getMisc(getQueen(buildUp(colony)))
-
 }

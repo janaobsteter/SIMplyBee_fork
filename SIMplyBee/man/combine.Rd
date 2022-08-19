@@ -69,5 +69,4 @@ nWorkers(apiary2)
 nDrones(apiary1)
 nDrones(apiary2)
 rm(apiary2)
-
 }

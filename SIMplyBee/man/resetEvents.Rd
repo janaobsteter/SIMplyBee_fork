@@ -100,5 +100,4 @@ resetEvents(tmp, collapse = TRUE)
 hasCollapsed(tmp[[1]])
 resetEvents(tmp)[[1]]
 resetEvents(tmp, collapse = TRUE)[[1]]
-
 }

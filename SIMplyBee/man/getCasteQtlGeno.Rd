@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteQtlGeno}
 \alias{getCasteQtlGeno}
-\alias{getQueensQtlGeno}
+\alias{getQueenQtlGeno}
 \alias{getFathersQtlGeno}
 \alias{getVirginQueensQtlGeno}
 \alias{getWorkersQtlGeno}
@@ -19,7 +19,7 @@ getCasteQtlGeno(
   simParamBee = NULL
 )
 
-getQueensQtlGeno(x, trait = 1, chr = NULL, simParamBee = NULL)
+getQueenQtlGeno(x, trait = 1, chr = NULL, simParamBee = NULL)
 
 getFathersQtlGeno(
   x,
@@ -79,7 +79,7 @@ Level 0 function that returns QTL genotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlGeno()}: Access QTL genotype data of the queen
+\item \code{getQueenQtlGeno()}: Access QTL genotype data of the queen
 
 \item \code{getFathersQtlGeno()}: Access QTL genotype data of fathers
 
@@ -93,10 +93,7 @@ Level 0 function that returns QTL genotypes of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
-SP$addSnpChip(5)
+SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -105,20 +102,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteQtlGeno(colony, caste = "queen")
-getQueensQtlGeno(colony)
+getQueenQtlGeno(colony)
 
 getCasteQtlGeno(colony, caste = "fathers")
 getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
-getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
+getCasteQtlGeno(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersQtlGeno(colony)
 getFathersQtlGeno(colony, nInd = 2)
 
@@ -132,11 +129,11 @@ getCasteQtlGeno(colony, caste = "drones")
 getDronesQtlGeno(colony)
 
 getCasteQtlGeno(apiary, caste = "queen")
-getQueensQtlGeno(apiary)
+getQueenQtlGeno(apiary)
 
 getCasteQtlGeno(apiary, caste = "fathers")
 getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
-getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
+getCasteQtlGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersQtlGeno(apiary)
 getFathersQtlGeno(apiary, nInd = 2)
 
