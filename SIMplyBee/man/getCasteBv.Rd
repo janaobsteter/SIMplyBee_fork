@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteBv}
 \alias{getCasteBv}
-\alias{getQueensBv}
+\alias{getQueenBv}
 \alias{getFathersBv}
 \alias{getVirginQueensBv}
 \alias{getWorkersBv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteBv(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensBv(x, simParamBee = NULL)
+getQueenBv(x, simParamBee = NULL)
 
 getFathersBv(x, nInd = NULL, simParamBee = NULL)
 
@@ -44,7 +44,7 @@ Level 0 function that returns breeding values of individuals in
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensBv()}: Access breeding value of the queen
+\item \code{getQueenBv()}: Access breeding value of the queen
 
 \item \code{getFathersBv()}: Access breeding values of fathers
 
@@ -58,9 +58,7 @@ Level 0 function that returns breeding values of individuals in
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
+SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -70,20 +68,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteBv(colony, caste = "queen")
-getQueensBv(colony)
+getQueenBv(colony)
 
 getCasteBv(colony, caste = "fathers")
 getCasteBv(colony, caste = "fathers", nInd = 2)
-getCasteBv(colony, caste = "fathers", nInd = 2)
+getCasteBv(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersBv(colony)
 getFathersBv(colony, nInd = 2)
 
@@ -97,11 +95,11 @@ getCasteBv(colony, caste = "drones")
 getDronesBv(colony)
 
 getCasteBv(apiary, caste = "queen")
-getQueensBv(apiary)
+getQueenBv(apiary)
 
 getCasteBv(apiary, caste = "fathers")
 getCasteBv(apiary, caste = "fathers", nInd = 2)
-getCasteBv(apiary, caste = "fathers", nInd = 2)
+getCasteBv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersBv(apiary)
 getFathersBv(apiary, nInd = 2)
 

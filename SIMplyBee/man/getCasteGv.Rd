@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteGv}
 \alias{getCasteGv}
-\alias{getQueensGv}
+\alias{getQueenGv}
 \alias{getFathersGv}
 \alias{getVirginQueensGv}
 \alias{getWorkersGv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteGv(x, caste, nInd = NULL)
 
-getQueensGv(x)
+getQueenGv(x)
 
 getFathersGv(x, nInd = NULL)
 
@@ -31,18 +31,18 @@ getDronesGv(x, nInd = NULL)
 individuals are accessed, otherwise a random sample}
 }
 \value{
-vector of genetic values when \code{x} is \code{\link{Colony-class}}
+vector of phenotype values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of genetic values when \code{x} is
   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
   \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns genetic values of individuals in a
-  caste.
+Level 0 function that returns genetic values of individuals
+  in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensGv()}: Access genetic value of the queen
+\item \code{getQueenGv()}: Access genetic value of the queen
 
 \item \code{getFathersGv()}: Access genetic values of fathers
 
@@ -56,9 +56,7 @@ Level 0 function that returns genetic values of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
+SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -68,20 +66,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteGv(colony, caste = "queen")
-getQueensGv(colony)
+getQueenGv(colony)
 
 getCasteGv(colony, caste = "fathers")
 getCasteGv(colony, caste = "fathers", nInd = 2)
-getCasteGv(colony, caste = "fathers", nInd = 2)
+getCasteGv(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersGv(colony)
 getFathersGv(colony, nInd = 2)
 
@@ -95,11 +93,11 @@ getCasteGv(colony, caste = "drones")
 getDronesGv(colony)
 
 getCasteGv(apiary, caste = "queen")
-getQueensGv(apiary)
+getQueenGv(apiary)
 
 getCasteGv(apiary, caste = "fathers")
 getCasteGv(apiary, caste = "fathers", nInd = 2)
-getCasteGv(apiary, caste = "fathers", nInd = 2)
+getCasteGv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersGv(apiary)
 getFathersGv(apiary, nInd = 2)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSnpHaplo}
 \alias{getCasteSnpHaplo}
-\alias{getQueensSnpHaplo}
+\alias{getQueenSnpHaplo}
 \alias{getFathersSnpHaplo}
 \alias{getVirginQueensSnpHaplo}
 \alias{getWorkersSnpHaplo}
@@ -20,13 +20,7 @@ getCasteSnpHaplo(
   simParamBee = NULL
 )
 
-getQueensSnpHaplo(
-  x,
-  snpChip = 1,
-  haplo = "all",
-  chr = NULL,
-  simParamBee = NULL
-)
+getQueenSnpHaplo(x, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersSnpHaplo(
   x,
@@ -100,7 +94,7 @@ Level 0 function that returns SNP array haplotypes of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSnpHaplo()}: Access SNP array haplotype data of the queen
+\item \code{getQueenSnpHaplo()}: Access SNP array haplotype data of the queen
 
 \item \code{getFathersSnpHaplo()}: Access SNP array haplotype data of fathers
 
@@ -114,10 +108,7 @@ Level 0 function that returns SNP array haplotypes of
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
-SP$addSnpChip(5)
+SP$addSnpChip(nSnpPerChr = 5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -126,20 +117,20 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getCasteSnpHaplo(colony, caste = "queen")
-getQueensSnpHaplo(colony)
+getQueenSnpHaplo(colony)
 
 getCasteSnpHaplo(colony, caste = "fathers")
 getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersSnpHaplo(colony)
 getFathersSnpHaplo(colony, nInd = 2)
 
@@ -153,11 +144,11 @@ getCasteSnpHaplo(colony, caste = "drones")
 getDronesSnpHaplo(colony)
 
 getCasteSnpHaplo(apiary, caste = "queen")
-getQueensSnpHaplo(apiary)
+getQueenSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "fathers")
 getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSnpHaplo(apiary)
 getFathersSnpHaplo(apiary, nInd = 2)
 

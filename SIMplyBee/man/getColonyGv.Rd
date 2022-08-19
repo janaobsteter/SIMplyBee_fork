@@ -6,15 +6,16 @@
 \usage{
 getColonyGv(
   x,
-  caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
+  caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
   nInd = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, a combination of "queen", "fathers", "workers",
-"drones", or "virginQueens"}
+\item{caste}{character, a combination of "colony", "queen", "fathers",
+"workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
+but is a way to get colony-based phenotype such as honey-yield}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample; can be a list to
@@ -35,9 +36,7 @@ Level 0 function that returns genetic values of individuals in
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
+SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -47,12 +46,12 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisso
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, fathers = fatherGroups[[1]])
-colony <- buildUp(x = colony)
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(x = apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 getColonyGv(colony)
