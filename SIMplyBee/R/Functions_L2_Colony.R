@@ -29,44 +29,44 @@
 #' colony1
 #' @export
 createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+if (is.null(simParamBee)) {
+  simParamBee <- get(x = "SP", envir = .GlobalEnv)
+}
+simParamBee$updateLastColonyId()
+if (is.null(x)) {
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location
+  )
+} else {
+  if (!isPop(x)) {
+    stop("Argument x must be a Pop class object!")
   }
-  simParamBee$updateLastColonyId()
-  if (is.null(x)) {
-    colony <- new(
-      Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location
-    )
+  if (all(isQueen(x))) {
+    if (1 < nInd(x)) {
+      stop("You must provide just one queen for the colony!")
+    }
+    queen <- x
+    virginQueens <- NULL
+  } else if (all(isVirginQueen(x))) {
+    queen <- NULL
+    virginQueens <- x
   } else {
-    if (!isPop(x)) {
-      stop("Argument x must be a Pop class object!")
-    }
-    if (all(isQueen(x))) {
-      if (1 < nInd(x)) {
-        stop("You must provide just one queen for the colony!")
-      }
-      queen <- x
-      virginQueens <- NULL
-    } else if (all(isVirginQueen(x))) {
-      queen <- NULL
-      virginQueens <- x
-    } else {
-      stop("Argument x must hold one queen or virgin queen(s)!")
-    }
-
-    colony <- new(
-      Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location,
-      queen = queen,
-      virginQueens = virginQueens
-    )
+    stop("Argument x must hold one queen or virgin queen(s)!")
   }
-  colony <- resetEvents(colony)
-  validObject(colony)
-  return(colony)
+
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location,
+    queen = queen,
+    virginQueens = virginQueens
+  )
+}
+colony <- resetEvents(colony)
+validObject(colony)
+return(colony)
 }
 
 #' @rdname reQueen
@@ -143,41 +143,41 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
 #' getCasteId(apiary, caste = "virginQueens")
 #' @export
 reQueen <- function(x, queen, removeVirginQueens = TRUE) {
-  if (!isPop(queen)) {
-    stop("Argument queen must be a Pop class object!")
-  }
-  if (!all(isVirginQueen(queen) | isQueen(queen))) {
-    stop("Individual in queen must be a virgin queen or a queen!")
-  }
-  if (isColony(x)) {
-    if (all(isQueen(queen))) {
-      if (nInd(queen) > 1) {
-        stop("You must provide just one queen for the colony!")
-      }
-      x@queen <- queen
-      if (removeVirginQueens) {
-        x <- removeVirginQueens(x)
-      }
-    } else {
-      x <- removeQueen(x)
-      x@virginQueens <- queen
+if (!isPop(queen)) {
+  stop("Argument queen must be a Pop class object!")
+}
+if (!all(isVirginQueen(queen) | isQueen(queen))) {
+  stop("Individual in queen must be a virgin queen or a queen!")
+}
+if (isColony(x)) {
+  if (all(isQueen(queen))) {
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
     }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    if (nInd(queen) < nCol) {
-      stop("Not enough queens provided!")
-    }
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- reQueen(
-        x = x[[colony]],
-        queen = queen[colony]
-      )
+    x@queen <- queen
+    if (removeVirginQueens) {
+      x <- removeVirginQueens(x)
     }
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    x <- removeQueen(x)
+    x@virginQueens <- queen
   }
-  validObject(x)
-  return(x)
+} else if (isMultiColony(x)) {
+  nCol <- nColonies(x)
+  if (nInd(queen) < nCol) {
+    stop("Not enough queens provided!")
+  }
+  for (colony in seq_len(nCol)) {
+    x[[colony]] <- reQueen(
+      x = x[[colony]],
+      queen = queen[colony]
+    )
+  }
+} else {
+  stop("Argument x must be a Colony or MultiColony class object!")
+}
+validObject(x)
+return(x)
 }
 
 #' @rdname addCastePop
