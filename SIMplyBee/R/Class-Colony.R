@@ -1,4 +1,4 @@
-# Class Colony ----
+# ---- Class Colony ----
 
 setClassUnion("characterOrNULL", c("character", "NULL"))
 setClassUnion("integerOrNULL", c("integer", "NULL"))
@@ -22,7 +22,11 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #'   colony
 #' @slot drones \code{\link{Pop-class}}, drones of the colony
 #' @slot workers \code{\link{Pop-class}}, workers of the colony
-#' @slot pheno matrix, phenotypes of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/156
+#' @slot pheno matrix, phenotype values of the colony
+#' @slot gv matrix, genetic values of the colony
+#' @slot bv matrix, breeding values of the colony
+#' @slot dd matrix, dominance values of the colony
+#' @slot aa matrix, epistasis values of the colony
 #' @slot split logical, has colony split
 #' @slot swarm logical, has colony swarmed
 #' @slot supersedure logical, has colony superseded
@@ -76,6 +80,12 @@ setClass(
     drones = "PopOrNULL",
     virginQueens = "PopOrNULL",
     pheno = "matrix",
+    gv = "matrix",
+    # TODO: Should we store bv, dd, and aa into colony or not?
+    #       https://github.com/HighlanderLab/SIMplyBee/issues/355
+    bv = "matrix",
+    dd = "matrix",
+    aa = "matrix",
     split = "logicalOrNULL",
     swarm = "logicalOrNULL",
     supersedure = "logicalOrNULL",
@@ -107,6 +117,7 @@ setValidity(Class = "Colony", method = function(object) {
   }
 })
 
+# show ----
 #' @describeIn Colony-class Show colony object
 setMethod(
   f = "show",
@@ -129,6 +140,7 @@ setMethod(
   }
 )
 
+# c ----
 #' @describeIn Colony-class Combine multiple colony objects
 setMethod(
   f = "c",

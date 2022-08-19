@@ -1,4 +1,4 @@
-# Class MultiColony ----
+# ---- Class MultiColony ----
 
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
@@ -124,6 +124,7 @@ setValidity(Class = "MultiColony", method = function(object) {
   }
 })
 
+# show ----
 #' @describeIn MultiColony-class Show MultiColony object
 setMethod(
   f = "show",
@@ -137,6 +138,7 @@ setMethod(
   }
 )
 
+# c ----
 #' @describeIn MultiColony-class Combine multiple Colony and MultiColony objects
 setMethod(
   f = "c",
@@ -184,6 +186,7 @@ setMethod(
   }
 )
 
+# [ ----
 #' @describeIn MultiColony-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{MultiColony-class}})
 setMethod(
   f = "[",
@@ -207,6 +210,7 @@ setMethod(
   }
 )
 
+# [[ ----
 #' @describeIn MultiColony-class Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
 setMethod(
   f = "[[",
@@ -240,6 +244,7 @@ setMethod(
   }
 )
 
+# [<- ----
 #' @describeIn MultiColony-class Assign colonies into MultiColony
 # There is also [[<- method for colony in Class-Colony.R
 setReplaceMethod(
@@ -272,6 +277,7 @@ setReplaceMethod(
   }
 )
 
+# [[<- ----
 #' @describeIn MultiColony-class Assign Colony into MultiColony
 setReplaceMethod(
   f = "[[",
