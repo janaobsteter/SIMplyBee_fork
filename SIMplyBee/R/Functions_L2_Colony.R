@@ -29,44 +29,44 @@
 #' colony1
 #' @export
 createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+if (is.null(simParamBee)) {
+  simParamBee <- get(x = "SP", envir = .GlobalEnv)
+}
+simParamBee$updateLastColonyId()
+if (is.null(x)) {
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location
+  )
+} else {
+  if (!isPop(x)) {
+    stop("Argument x must be a Pop class object!")
   }
-  simParamBee$updateLastColonyId()
-  if (is.null(x)) {
-    colony <- new(
-      Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location
-    )
+  if (all(isQueen(x))) {
+    if (1 < nInd(x)) {
+      stop("You must provide just one queen for the colony!")
+    }
+    queen <- x
+    virginQueens <- NULL
+  } else if (all(isVirginQueen(x))) {
+    queen <- NULL
+    virginQueens <- x
   } else {
-    if (!isPop(x)) {
-      stop("Argument x must be a Pop class object!")
-    }
-    if (all(isQueen(x))) {
-      if (1 < nInd(x)) {
-        stop("You must provide just one queen for the colony!")
-      }
-      queen <- x
-      virginQueens <- NULL
-    } else if (all(isVirginQueen(x))) {
-      queen <- NULL
-      virginQueens <- x
-    } else {
-      stop("Argument x must hold one queen or virgin queen(s)!")
-    }
-
-    colony <- new(
-      Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location,
-      queen = queen,
-      virginQueens = virginQueens
-    )
+    stop("Argument x must hold one queen or virgin queen(s)!")
   }
-  colony <- resetEvents(colony)
-  validObject(colony)
-  return(colony)
+
+  colony <- new(
+    Class = "Colony",
+    id = simParamBee$lastColonyId,
+    location = location,
+    queen = queen,
+    virginQueens = virginQueens
+  )
+}
+colony <- resetEvents(colony)
+validObject(colony)
+return(colony)
 }
 
 #' @rdname reQueen
@@ -143,41 +143,41 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
 #' getCasteId(apiary, caste = "virginQueens")
 #' @export
 reQueen <- function(x, queen, removeVirginQueens = TRUE) {
-  if (!isPop(queen)) {
-    stop("Argument queen must be a Pop class object!")
-  }
-  if (!all(isVirginQueen(queen) | isQueen(queen))) {
-    stop("Individual in queen must be a virgin queen or a queen!")
-  }
-  if (isColony(x)) {
-    if (all(isQueen(queen))) {
-      if (nInd(queen) > 1) {
-        stop("You must provide just one queen for the colony!")
-      }
-      x@queen <- queen
-      if (removeVirginQueens) {
-        x <- removeVirginQueens(x)
-      }
-    } else {
-      x <- removeQueen(x)
-      x@virginQueens <- queen
+if (!isPop(queen)) {
+  stop("Argument queen must be a Pop class object!")
+}
+if (!all(isVirginQueen(queen) | isQueen(queen))) {
+  stop("Individual in queen must be a virgin queen or a queen!")
+}
+if (isColony(x)) {
+  if (all(isQueen(queen))) {
+    if (nInd(queen) > 1) {
+      stop("You must provide just one queen for the colony!")
     }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    if (nInd(queen) < nCol) {
-      stop("Not enough queens provided!")
-    }
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- reQueen(
-        x = x[[colony]],
-        queen = queen[colony]
-      )
+    x@queen <- queen
+    if (removeVirginQueens) {
+      x <- removeVirginQueens(x)
     }
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    x <- removeQueen(x)
+    x@virginQueens <- queen
   }
-  validObject(x)
-  return(x)
+} else if (isMultiColony(x)) {
+  nCol <- nColonies(x)
+  if (nInd(queen) < nCol) {
+    stop("Not enough queens provided!")
+  }
+  for (colony in seq_len(nCol)) {
+    x[[colony]] <- reQueen(
+      x = x[[colony]],
+      queen = queen[colony]
+    )
+  }
+} else {
+  stop("Argument x must be a Colony or MultiColony class object!")
+}
+validObject(x)
+return(x)
 }
 
 #' @rdname addCastePop
@@ -276,20 +276,20 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #' getMisc(getQueen(addWorkers(colony)))
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
-                        exact = FALSE, year = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (length(caste) != 1) {
-    stop("Argument caste must be of length 1!")
-  }
-  if (is.null(nInd)) {
-    if (caste == "workers") {
-      nInd <- simParamBee$nWorkers
-    } else if (caste == "drones") {
-      nInd <- simParamBee$nDrones
-    }  else if (caste == "virginQueens") {
-      nInd <- simParamBee$nVirginQueens
+                      exact = FALSE, year = NULL, simParamBee = NULL) {
+if (is.null(simParamBee)) {
+  simParamBee <- get(x = "SP", envir = .GlobalEnv)
+}
+if (length(caste) != 1) {
+  stop("Argument caste must be of length 1!")
+}
+if (is.null(nInd)) {
+  if (caste == "workers") {
+    nInd <- simParamBee$nWorkers
+  } else if (caste == "drones") {
+    nInd <- simParamBee$nDrones
+  }  else if (caste == "virginQueens") {
+    nInd <- simParamBee$nVirginQueens
   }
   # doing "if (is.function(nInd))" below
   if (isColony(x)) {
@@ -301,8 +301,8 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     }
     if (0 < nInd) {
       newInds <- createCastePop(x, nInd,
-        caste = caste, exact = exact,
-        year = year, simParamBee = simParamBee
+                                caste = caste, exact = exact,
+                                year = year, simParamBee = simParamBee
       )
       if (caste == "workers") {
         homInds <- newInds$nHomBrood
@@ -333,47 +333,35 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
   return(x)
 }
 
-#' @describeIn addCastePop Add virgin queens to a colony
-#' @export
-addVirginQueens <- function(x, nInd = NULL, new = FALSE,
-                            year = NULL, simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- addCastePop(
-      x = x, caste = "virginQueens", nInd = nInd, new = new,
-      year = year, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
 #' @describeIn addCastePop Add workers to a colony
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE,
                        exact = FALSE, simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- addCastePop(
-      x = x, caste = "workers", nInd = nInd, new = new,
-      exact = exact, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- addCastePop(
+    x = x, caste = "workers", nInd = nInd, new = new,
+    exact = exact, simParamBee = simParamBee
+  )
   return(ret)
 }
 
 #' @describeIn addCastePop Add drones to a colony
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- addCastePop(
-      x = x, caste = "drones", nInd = nInd, new = new,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- addCastePop(
+    x = x, caste = "drones", nInd = nInd, new = new,
+    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn addCastePop Add virgin queens to a colony
+#' @export
+addVirginQueens <- function(x, nInd = NULL, new = FALSE,
+                            year = NULL, simParamBee = NULL) {
+  ret <- addCastePop(
+    x = x, caste = "virginQueens", nInd = nInd, new = new,
+    year = year, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -731,9 +719,9 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
       if (nIndReplaced < nInd) {
         nIndStay <- nInd - nIndReplaced
         tmp <- createCastePop(x,
-          caste = caste,
-          nInd = nIndReplaced, exact = exact,
-          year = year, simParamBee = simParamBee
+                              caste = caste,
+                              nInd = nIndReplaced, exact = exact,
+                              year = year, simParamBee = simParamBee
         )
         if (caste == "workers") {
           x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
@@ -768,46 +756,34 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
   return(x)
 }
 
-#' @describeIn replaceCastePop Replaces some virgin queens in a colony
-#' @export
-replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- replaceCastePop(
-      x = x, caste = "virginQueens", p = p,
-      use = use, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
 #' @describeIn replaceCastePop Replaces some workers in a colony
 #' @export
 replaceWorkers <- function(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- replaceCastePop(
-      x = x, caste = "workers", p = p,
-      use = use, exact = exact,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- replaceCastePop(
+    x = x, caste = "workers", p = p,
+    use = use, exact = exact,
+    simParamBee = simParamBee
+  )
   return(ret)
 }
 
 #' @describeIn replaceCastePop Replaces some drones in a colony
 #' @export
 replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- replaceCastePop(
-      x = x, caste = "drones", p = p,
-      use = use, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- replaceCastePop(
+    x = x, caste = "drones", p = p,
+    use = use, simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn replaceCastePop Replaces some virgin queens in a colony
+#' @export
+replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- replaceCastePop(
+    x = x, caste = "virginQueens", p = p,
+    use = use, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -913,44 +889,28 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
 removeQueen <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- removeCastePop(x = x, caste = "queen", p = 1)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
-}
-
-#' @describeIn removeCastePop Remove virgin queens from a colony
-#' @export
-removeVirginQueens <- function(x, p = 1, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- removeCastePop(x = x, caste = "queen", p = 1)
   return(ret)
 }
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
 removeWorkers <- function(x, p = 1, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- removeCastePop(x = x, caste = "workers", p = p, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use)
   return(ret)
 }
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
 removeDrones <- function(x, p = 1, use = "rand") {
-  if (isColony(x) | isMultiColony(x)) {
-    ret <- removeCastePop(x = x, caste = "drones", p = p, use = use)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
+  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use)
+  return(ret)
+}
+
+#' @describeIn removeCastePop Remove virgin queens from a colony
+#' @export
+removeVirginQueens <- function(x, p = 1, use = "rand") {
+  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use)
   return(ret)
 }
 
@@ -1261,9 +1221,9 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       )
       for (colony in seq_len(nCol)) {
         tmp <- swarm(x[[colony]],
-          p = p, year = year,
-          nVirginQueens = nVirginQueens,
-          simParamBee = simParamBee
+                     p = p, year = year,
+                     nVirginQueens = nVirginQueens,
+                     simParamBee = simParamBee
         )
         ret$swarms[[colony]] <- tmp$swarm
         ret$remnants[[colony]] <- tmp$remnant
@@ -1361,9 +1321,9 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
     } else {
       for (colony in seq_len(nCol)) {
         x[[colony]] <- supersede(x[[colony]],
-          year = year,
-          nVirginQueens = nVirginQueens,
-          simParamBee = simParamBee
+                                 year = year,
+                                 nVirginQueens = nVirginQueens,
+                                 simParamBee = simParamBee
         )
       }
     }
@@ -1497,8 +1457,8 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
       )
       for (colony in seq_len(nCol)) {
         tmp <- split(x[[colony]],
-          p = p, year = year,
-          simParamBee = simParamBee
+                     p = p, year = year,
+                     simParamBee = simParamBee
         )
         ret$splits[[colony]] <- tmp$split
         ret$remnants[[colony]] <- tmp$remnant
@@ -1794,10 +1754,10 @@ setColonyPheno <- function(x, FUN = NULL, ..., simParamBee = NULL) {
     nCol <- nColonies(x)
     for (colony in seq_len(nCol)) {
       x[[colony]] <- setColonyPheno(x[[colony]],
-        FUN = FUN, ...,
-        # TODO: is ... really passed on to setPheno?
-        #       https://github.com/HighlanderLab/SIMplyBee/issues/240
-        simParamBee = simParamBee
+                                    FUN = FUN, ...,
+                                    # TODO: is ... really passed on to setPheno?
+                                    #       https://github.com/HighlanderLab/SIMplyBee/issues/240
+                                    simParamBee = simParamBee
       )
     }
   } else {
