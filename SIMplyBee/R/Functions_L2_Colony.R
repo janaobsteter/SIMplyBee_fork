@@ -311,6 +311,9 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
         x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
         x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
       }
+      if (caste == "drones") {
+        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd(newInds)
+      }
       if (is.null(slot(x, caste)) | new) {
         slot(x, caste) <- newInds
       } else {
@@ -729,6 +732,9 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
             x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
             x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
             tmp <- tmp$workers
+          }
+          if (caste == "drones") {
+            x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nIndReplaced
           }
 
           slot(x, caste) <- c(
@@ -1405,6 +1411,12 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     p <- simParamBee$splitP
   }
   if (isColony(x)) {
+    if (!isQueenPresent(x)) {
+      stop("No queen present in the colony!")
+    }
+    if (!isWorkersPresent(x)) {
+      stop("No workers present in the colony!")
+    }
     if (is.function(p)) {
       p <- p(x)
     }
