@@ -18,23 +18,311 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-We have already mentioned csd locus in honeybee biology, but now we dive more into all things genomics in SIMplyBee.
+===== QUESTION =====  Are we including SimParamBee Information in this section? 
 
-Topics to cover:
 
-* genome simulation?
+This vignette introduces SIMplyBee package by describing and demonstrating how SIMplyBee implements honeybee biology. Specifically, it describes: 
 
-* csd locus on chr 3
+* Genome simulation
 
-* all the get functions
+* Complementary sex determining (csd) locus on chr 3
 
-We have this text in 1_Honeybee_biology already - we show get*SegSite* - maybe we dive into the actual implementation of doubled-haploid drones to make it clear what is going on?!
+* A description/demonstration of ALL of the get functions - excluding Quant Gen functions
+
+
+Now load the package and dive in!
+
+```{r load package}
+library(package = "SIMplyBee")
+```
+
+
+# Simulating the genome
+
+# Initiating simulation with founder genomes and global parameters,
+
+We initiate the simulation by simulating founder honeybee genomes. We can quickly generate
+genomes using AlphaSimR's `quickHaplo()` or with SIMplyBee's `simulateHoneybeeGenomes()` with
+appropriate honeybee genome parameters and demography.
+
+
+As a first demonstration, we will use `quickHaplo()` and simulate genomes of two founding individuals. 
+In this example, the genomes will be represented by only three chromosomes
+and 1000 segregating sites per chromosome. Honeybees have 16 chromosomes 
+and far more segregating sites per chromosome, but we want a quick simulation here.
+
+```{r founder genomes}
+founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+```
+
+Now we are ready to setup global simulation parameters using `SimParamBee`.
+`SimParamBee` enables the user to tweak many simulation settings, which you can read
+about in the help pages (`help(SimParamBee)` and `help(SimParam)`). Here we will
+point out that we recommend saving this object with the name `SP`. Namely,
+all SIMplyBee functions will use this object, if you don't directly specify
+`simParamBee` argument.
+
+```{r SimParamBee}
+SP <- SimParamBee$new(founderGenomes)
+```
+
+There are many options provided by `SimParamBee` of which we will
+not talk about now. You can quickly take a peek into the information and functions stored in the `SP` object. The following code gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
+
+```{r SP, eval = FALSE}
+show(SP)
+```
+
+
+
+Alternatively as a second demonstration, SIMplyBee's `simulateHoneybeeGenomes()` allows you to simulate a realistic honeybee genome of three subspecies according to the demographic model described in Wallberg et al. (2014). 
+
+Currently `simulateHoneybeeGenomes()` allows you to simulate the genomes of three subspecies:
+* Apis mellifera mellifera 
+* Apis mellifera carnica
+* Apis mellifera ligustica
+
+ 
+In this example, we will create a founder population containing the genomes of 100 A.m.m (North) individuals and 50 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 100 segregating sites per chromosome in this example. 
+
+TODO : do we need to explain the nThreads? 
+TODO: mention the amount of time this chunk will take (even though the numbers are small)- and explain why this part of the process takes so long 
+TODO: should we provide the Rdata we already have as an example to download? 
+```{r simulate honeybee genomes}
+founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 100,
+                                          nCar = 50,
+                                          nChr = 3,
+                                          nSegSites = 100,
+                                          nThreads = 16)
+```
+
+Due to the complexity of this function, the computing power required is high and timely. We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is much easier to load into your environment and work with. 
+
+```{r save Rdata file}
+save(founderGenomes2, file="FounderGenomes2_3chr.RData")
+```
+
+
+There are many arguments provided by `simulateHoneybeeGenome()` of which we will not talk about now.
+Most arguments have a provided default values, however these values can be changed to personalize your founder population genomes. If this is something you're interested in, we recommend you return back to this point once you are comfortable with the basic functionality.
+
+```{r deeper looking to the arguements}
+??simulateHoneybeeGenomes
+```
+
+
+TODO : functions that we could write about: 
+
+    - editGenomeGeno - is this going to be in the quan gen? 
+     - reduceDroneHaplo
+     - reduceDroneGeno
+     
+
+
+# Complementary sex determining locus
+
+TODO: add genome image (tree and inheritance and csd)?
+
+The complementary sex determining (csd) locus, well, complements sex
+determination. Fertilised eggs that are heterozygous at the csd locus develop
+into workers. On the other hand, homozygous eggs develop into unviable drones.
+These drones are usually discarded by workers. SIMplyBee doesn't store these
+unviable drones, but it does store their number.
+
+However, before we looking into an csd functions, we need to quickly build up our colony in our R environment. 
+```{r quickly make a colony}
+
+baseQueens <- createVirginQueens(founderGenomes)
+baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
+colony <- createColony(x = baseQueens[2])
+colony <- cross(colony, fathers = baseDrones)
+buildUp(colony, nWorkers = 10, nDrones = 7)
+
+```
+ 
+Now we can retrieve information about csd variation with `getCsdAlleles()`. For
+details on where the csd locus is and the number of distinct alleles, see
+`help(SimParamBee)`. The output below shows two sequences (in two rows) of 0s
+and 1s representing respectively ancestral and mutation alleles along the csd
+locus for the queen. You can see that the two sequences are different, meaning
+that she is heterozygous, as expected.
+
+```{r csd}
+getCsdAlleles(queen)
+```
+
+Technically, SIMplyBee represents the csd locus as a series of bi-allelic 
+single nucleotide polymorphisms that don't recombine. So, the csd locus is 
+represented as a haplotype and different haplotypes represent different csd 
+alleles. By varying the number of sites within the csd locus we can control the
+number of distinct alleles (see `help(SimParamBee)`).
+
+A keen geneticist would immediately inspect csd alleles of fathers to check for
+any similarity with the queen's csd alleles. Lets boost a chance of such an
+event by creating an inbreed colony. We will create a virgin queen from the
+current colony and mate her with her brothers. Oh, dear me.
+
+```{r inbred colony}
+inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
+fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
+inbredColony <- cross(inbredColony, fathers = fathers)
+getCsdAlleles(inbredColony)
+getCsdAlleles(inbredColony, unique = TRUE)
+```
+
+Can you spot any matches? Let's calculate the expected proportion of homozygous
+brood from this mating.
+
+```{r pHomBrood}
+pHomBrood(inbredColony)
+```
+
+Let's see how many homozygotes will we observe. Note that inheritance is
+a random process, so a realised number of homozygotes will deviate from the
+expected proportion.
+
+```{r hHomBrood}
+inbredColony <- addWorkers(inbredColony, nInd = 100)
+inbredColony
+nHomBrood(inbredColony)
+```
+
+We tried adding 100 workers, but we only got `r nWorkers(inbredColony)`. The
+difference of `r nHomBrood(inbredColony)` is due to csd homozygous brood. Let's
+add another set of workers to show variation in realised numbers and
+accumulation of information.
+
+```{r hHomBrood II}
+inbredColony <- addWorkers(inbredColony, nInd = 100)
+inbredColony
+nHomBrood(inbredColony)
+```
+
+In total we tried adding 200 workers. We got `r nWorkers(inbredColony)` workers
+and `r nHomBrood(inbredColony)` homozygous brood. To see all this information,
+we can inspect the miscellaneous slot of the queen that contains the fathers
+population as well as the cumulative number of workers, drones, homozygous brood,
+and the expected proportion of homozygous brood.
+
+```{r queens counters}
+getMisc(getQueen(inbredColony))
+```
+
+# Other functions we could talk about: 
+    contents:
+    - isCsdActive
+    - nCsdAlleles
+    - getCsdGeno
+    - isCsdHeterozygous
+    - isGenoHeterozygous
+    - calcQueensPHomBrood
+    - editCsdLocus
+    
+
+# all the 'get' functions
 
 SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
 segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
 descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
 are all synonyms for a position in the genome. Study the index of
 available `get*()` functions in SIMplyBee and read the genomics vignette for more information.
+
+
+TODO: work out which functions we want to demonstrate/describe
+    - getEvents
+Output is a Pop 
+    - getCastePop
+    - getQueen
+    - getFathers
+    - getWorkers
+    - getDrones
+    - getVirginQueens
+Get information 
+    - getId
+    - getCaste
+    - getQueenYearOfBirth
+    - getQueenAge
+    - getCasteId
+    - getCasteSex
+    - getLocation
+    
+     
+  - subtitle: Get segregating sites' haplotypes or genotypes
+    contents:
+     - getCasteSegSiteHaplo
+     - getSegSiteHaplo
+     - getQueenSegSiteHaplo
+     - getFathersSegSiteHaplo
+     - getWorkersSegSiteHaplo
+     - getDronesSegSiteHaplo
+     - getVirginQueensSegSiteHaplo
+     - getColonySegSiteHaplo
+
+     - getCasteSegSiteGeno
+     - getSegSiteGeno
+     - getQueenSegSiteGeno
+     - getFathersSegSiteGeno
+     - getWorkersSegSiteGeno
+     - getDronesSegSiteGeno
+     - getVirginQueensSegSiteGeno
+     - getColonySegSiteGeno
+
+  - subtitle: Get QTL haplotypes or genotypes
+    contents:
+    - getCasteQtlHaplo
+    - getQtlHaplo
+    - getQueenQtlHaplo
+    - getFathersQtlHaplo
+    - getWorkersQtlHaplo
+    - getDronesQtlHaplo
+    - getVirginQueensQtlHaplo
+    - getColonyQtlHaplo
+
+    - getCasteQtlGeno
+    - getQtlGeno
+    - getQueenQtlGeno
+    - getFathersQtlGeno
+    - getWorkersQtlGeno
+    - getDronesQtlGeno
+    - getVirginQueensQtlGeno
+    - getColonyQtlGeno
+
+  - subtitle: Get SNP haplotypes or genotypes
+    contents:
+    - getCasteSnpHaplo
+    - getSnpHaplo
+    - getQueenSnpHaplo
+    - getFathersSnpHaplo
+    - getWorkersSnpHaplo
+    - getDronesSnpHaplo
+    - getVirginQueensSnpHaplo
+    - getColonySnpHaplo
+
+    - getSnpGeno
+    - getCasteSnpGeno
+    - getQueenSnpGeno
+    - getFathersSnpGeno
+    - getWorkersSnpGeno
+    - getDronesSnpGeno
+    - getVirginQueensSnpGeno
+    - getColonySnpGeno
+
+  - subtitle: Get IBD (Identity-By-Descent) haplotypes
+    contents:
+    - getCasteIbdHaplo
+    - getIbdHaplo
+    - getQueenIbdHaplo
+    - getFathersIbdHaplo
+    - getWorkersIbdHaplo
+    - getDronesIbdHaplo
+    - getVirginQueensIbdHaplo
+    - getColonyIbdHaplo
+
+  - subtitle: Calculate genomic information
+    contents:
+    - calcBeeGRMIbs
+    - calcBeeGRMIbd
+    - calcBeeAlleleFreq
 
 
 
