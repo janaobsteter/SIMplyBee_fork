@@ -20,8 +20,8 @@ virgin queens, say via insemination}
 \code{\link{Pop-class}}
 }
 \description{
-Level 1 function that creates a population of drones from a colony
-  or multi-colony.  Such a population is often referred to as a drone
+Level 1 function that creates a population of drones from a Colony
+  or MultiColony.  Such a population is often referred to as a drone
   congregation area (DCA).
 }
 \details{

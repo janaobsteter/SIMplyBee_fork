@@ -41,15 +41,7 @@ tmp <- pullColonies(apiary, ID = c(1, 2))
 getId(tmp$pulled)
 getId(tmp$remnant)
 
-tmp <- pullColonies(apiary, ID = c("5", "6"))
-getId(tmp$pulled)
-getId(tmp$remnant)
-
-tmp <- pullColonies(apiary, ID = 5)
-getId(tmp$pulled)
-getId(tmp$remnant)
-
-tmp <- pullColonies(apiary, ID = "9")
+tmp <- pullColonies(apiary, ID = c("3", "4"))
 getId(tmp$pulled)
 getId(tmp$remnant)
 

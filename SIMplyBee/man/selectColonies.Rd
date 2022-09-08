@@ -24,6 +24,8 @@ over \code{n})}
 \description{
 Level 3 function that selects colonies from
   MultiColony object based on colony ID or random selection.
+  Whilst user can provide can all arguments ID, p and n, not all are carried out.
+  ID takes first priority. If no ID is provided, p takes precedence over n.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -37,20 +39,18 @@ apiary <- cross(apiary, fathers = fatherGroups[1:4])
 getId(apiary)
 
 getId(selectColonies(apiary, ID = 1))
-getId(selectColonies(apiary, ID = "5"))
+getId(selectColonies(apiary, ID = "4"))
 getId(selectColonies(apiary, ID = c(1, 2)))
-getId(selectColonies(apiary, ID = c("5", "6")))
-getId(selectColonies(apiary, ID = 5))
-getId(selectColonies(apiary, ID = "9"))
+getId(selectColonies(apiary, ID = c("3", "4")))
+getId(selectColonies(apiary, ID = 3))
 # ... alternative
 getId(apiary[1])
 getId(apiary[[1]])
-getId(apiary["5"])
-getId(apiary[["5"]])
+getId(apiary["4"])
+getId(apiary[["4"]])
 getId(apiary[c(1, 2)])
-getId(apiary[c("5", "6")])
-getId(apiary[5])
-getId(apiary["9"])
+getId(apiary[c("3", "4")])
+getId(apiary[3])
 
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))

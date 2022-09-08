@@ -1,19 +1,3 @@
-
-#createColony
-#reQueen
-#Add functions
-#Builup
-#downsize
-#Reaplce functions
-#Remove functions
-#Reset events & collapse
-#swarm
-#supersede
-#Split
-#Combine
-#setLocation
-#setColonyPheno
-
 test_that("createColony", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -105,9 +89,10 @@ test_that("Add functions", {
    colony <- addWorkers(colony, nInd = 5)
    colony <- addDrones(colony, nInd = 5)
    # Adding 0 individuals doesn't change the number
-   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 0)), 5)
-   expect_equal(nWorkers(addWorkers(colony, nInd = 0)), 5)
-   expect_equal(nDrones(addDrones(colony, nInd = 0)), 5)
+   suppressWarnings(expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 0)), 5))
+   expect_warning(nWorkers(addWorkers(colony, nInd = 0)))
+   suppressWarnings(expect_equal(nWorkers(addWorkers(colony, nInd = 0)), 5))
+   expect_warning(nDrones(addDrones(colony, nInd = 0)))
    # Adding them in sums the number expect when new is TRUE
    expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5)), 10)
    expect_equal(nWorkers(addWorkers(colony, nInd = 5)), 10)
@@ -193,54 +178,110 @@ test_that("replaceFunctions", {
   emptyColony <- createColony()
   colony <- createColony(x = basePop[2])
   colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(colony, nWorkers = 100, nDrones = 10)
+  colony <- addVirginQueens(colony, nInd = 10)
   emptyApiary <- createMultiColony()
   apiary <- createMultiColony(basePop[4:5], n = 2)
   apiary <- cross(apiary, fathers = fatherGroups[3:4])
+  apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10)
+  apiary <- addVirginQueens(apiary, nInd = 10)
 
-  # Add virgin queens to an empty colony --> missing queen error
-  expect_error(replaceWorkers(emptyColony, p = 0.5))
-  expect_error(addWorkers(emptyColony, nInd = 10))
-  expect_error(addDrones(emptyColony, nInd = 10))
-  expect_s4_class(addVirginQueens(apiary, nInd = 5), "MultiColony")
-  expect_s4_class(addWorkers(apiary, nInd = 5), "MultiColony")
-  expect_s4_class(addDrones(apiary, nInd = 5), "MultiColony")
+  # Replace individuals in an empty colony/apiary --> missing queen error for Colony
+  expect_error(replaceVirginQueens(emptyColony, p = 0.5))
+  expect_error(replaceWorkers(emptyColony, p = 0))
+  expect_error(replaceDrones(emptyColony, p = 1))
+  expect_s4_class(replaceVirginQueens(emptyApiary, p = 0.5), "MultiColony")
+  expect_s4_class(replaceWorkers(emptyApiary, p = 0), "MultiColony")
+  expect_s4_class(replaceDrones(emptyApiary, p = 1), "MultiColony")
 
-  # Add virgin queens in the colony
-  expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5)), 5)
-  expect_equal(nWorkers(addWorkers(colony, nInd = 5)), 5)
-  expect_equal(nDrones(addDrones(colony, nInd = 5)), 5)
-  colony <- addVirginQueens(colony, nInd = 5)
-  colony <- addWorkers(colony, nInd = 5)
-  colony <- addDrones(colony, nInd = 5)
-  # Adding 0 individuals doesn't change the number
-  expect_warning(nVirginQueens(addVirginQueens(colony, nInd = 0)))
-  expect_warning(nWorkers(addWorkers(colony, nInd = 0)))
-  expect_warning(nDrones(addDrones(colony, nInd = 0)))
-  suppressWarnings(expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 0)), 5))
-  suppressWarnings(expect_equal(nWorkers(addWorkers(colony, nInd = 0)), 5))
-  suppressWarnings(expect_equal(nDrones(addDrones(colony, nInd = 0)), 5))
-  # Adding them in sums the number expect when new is TRUE
-  expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5)), 10)
-  expect_equal(nWorkers(addWorkers(colony, nInd = 5)), 10)
-  expect_equal(nDrones(addDrones(colony, nInd = 5)), 10)
-  expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, new = TRUE)), 5)
-  expect_equal(nWorkers(addWorkers(colony, nInd = 5, new = TRUE)), 5)
-  expect_equal(nDrones(addDrones(colony, nInd = 5, new = TRUE)), 5)
-  # If input is an apiary
-  # Empty apiary - you can add, but nothing happens - returns an empty apiary
-  expect_s4_class(addVirginQueens(emptyApiary, nInd = 5), "MultiColony")
-  expect_equal(nColonies(addVirginQueens(emptyApiary, nInd = 5)), 0)
-  expect_s4_class(addWorkers(emptyApiary, nInd = 5), "MultiColony")
-  expect_equal(nColonies(addWorkers(emptyApiary, nInd = 5)), 0)
-  expect_s4_class(addDrones(emptyApiary, nInd = 5), "MultiColony")
-  expect_equal(nColonies(addDrones(emptyApiary, nInd = 5)), 0)
-  # Non-empty apiary
-  expect_s4_class(addVirginQueens(apiary, nInd = 5), "MultiColony")
-  expect_s4_class(addWorkers(apiary, nInd = 5), "MultiColony")
-  expect_s4_class(addDrones(apiary, nInd = 5), "MultiColony")
-
+  # Replace individuals in the non-empty colony/apiary
+  expect_s4_class(replaceVirginQueens(colony), "Colony")
+  expect_s4_class(replaceWorkers(colony), "Colony")
+  expect_s4_class(replaceDrones(colony), "Colony")
+  expect_equal(nVirginQueens(replaceVirginQueens(colony, p = 1)), nVirginQueens(colony))
+  expect_equal(nWorkers(replaceWorkers(colony, p = 0.5)), nWorkers(colony))
+  expect_equal(nDrones(replaceDrones(colony, p = 0)), nDrones(colony))
+  virginQueensIDs <- getId(colony@virginQueens)
+  workerIDs <- getId(colony@workers)
+  droneIDs <- getId(colony@drones)
+  expect_length(intersect(getId(replaceVirginQueens(colony, p = 1)@virginQueens),
+                         virginQueensIDs), 0)
+  expect_length(intersect(getId(replaceWorkers(colony, p = 0.5)@workers),
+                          workerIDs), nWorkers(colony)/2)
+  expect_length(intersect(getId(replaceDrones(colony, p = 0)@drones),
+                          droneIDs), nDrones(colony))
+  expect_s4_class(replaceVirginQueens(apiary), "MultiColony")
+  expect_s4_class(replaceWorkers(apiary), "MultiColony")
+  expect_s4_class(replaceDrones(apiary), "MultiColony")
+  expect_equal(nColonies(replaceVirginQueens(apiary, p = 1)), nColonies(apiary))
+  expect_equal(nColonies(replaceWorkers(apiary, p = 0.5)), nColonies(apiary))
+  expect_equal(nColonies(replaceDrones(apiary, p = 0)), nColonies(apiary))
 })
 
+test_that("removeFunctions", {
+  founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 100)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+
+  # Create and cross Colony and MultiColony class
+  emptyColony <- createColony()
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- buildUp(colony, nWorkers = 100, nDrones = 10)
+  colony <- addVirginQueens(colony, nInd = 10)
+  emptyApiary <- createMultiColony()
+  apiary <- createMultiColony(basePop[4:5], n = 2)
+  apiary <- cross(apiary, fathers = fatherGroups[3:4])
+  apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10)
+  apiary <- addVirginQueens(apiary, nInd = 10)
+
+  # Remove individuals in an empty colony/apiary --> missing queen error for Colony
+  expect_s4_class(removeVirginQueens(emptyColony, p = 0.5), "Colony")
+  expect_s4_class(removeWorkers(emptyColony, p = 0), "Colony")
+  expect_s4_class(removeDrones(emptyColony, p = 1), "Colony")
+  expect_s4_class(removeVirginQueens(emptyApiary, p = 0.5), "MultiColony")
+  expect_s4_class(removeWorkers(emptyApiary, p = 0), "MultiColony")
+  expect_s4_class(removeDrones(emptyApiary, p = 1), "MultiColony")
+
+  # Remove individuals in the non-empty colony/apiary
+  expect_s4_class(removeVirginQueens(colony), "Colony")
+  expect_s4_class(removeWorkers(colony), "Colony")
+  expect_s4_class(removeDrones(colony), "Colony")
+  expect_equal(nVirginQueens(removeVirginQueens(colony, p = 1)), 0)
+  expect_equal(nWorkers(removeVirginQueens(colony, p = 0.5)), nWorkers(colony)/2)
+  expect_equal(nDrones(removeDrones(colony, p = 0)), nDrones(colony))
+
+  expect_s4_class(removeVirginQueens(apiary), "MultiColony")
+  expect_s4_class(removeWorkers(apiary), "MultiColony")
+  expect_s4_class(removeDrones(apiary), "MultiColony")
+  expect_equal(nColonies(removeVirginQueens(apiary, p = 1)), nColonies(apiary))
+  expect_equal(nColonies(removeWorkers(apiary, p = 0.5)), nColonies(apiary))
+  expect_equal(nColonies(removeDrones(apiary, p = 0)), nColonies(apiary))
+})
+
+
+test_that("setLocation", {
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes)
+
+  colony <- createColony()
+  expect_s4_class(setLocation(emptyColony, location = c(1,1)), "Colony")
+  expect_equal(setLocation(emptyColony, location = c(1,1))@location, c(1,1))
+
+  emptyApiary <- createMultiColony(n = 3)
+  apiary <- createMultiColony(basePop[1:3])
+
+  expect_s4_class(setLocation(emptyApiary, location = c(1,2)), "MultiColony")
+  expect_error(setLocation(emptyApiary, location = list(1,2))) # Lengths do not match
+  expect_s4_class(setLocation(emptyApiary, location = list(1:2, 3:4, 4:5))) #Not setting anything, if all are NULL!!!!
+  expect_s4_class(setLocation(apiary, location = c(1,2)), "MultiColony")
+  expect_error(setLocation(apiary, location = list(1,2))) # Lengths do not match
+  expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5)), "MultiColony")
+})
 
 
 

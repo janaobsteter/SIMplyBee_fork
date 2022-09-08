@@ -2,10 +2,10 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{replaceCastePop}
 \alias{replaceCastePop}
-\alias{replaceVirginQueens}
 \alias{replaceWorkers}
 \alias{replaceDrones}
-\title{Replace a proportion of caste population individuals with new ones}
+\alias{replaceVirginQueens}
+\title{Replace a proportion of caste individuals with new ones}
 \usage{
 replaceCastePop(
   x,
@@ -17,11 +17,11 @@ replaceCastePop(
   simParamBee = NULL
 )
 
-replaceVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
-
 replaceWorkers(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL)
 
 replaceDrones(x, p = 1, use = "rand", simParamBee = NULL)
+
+replaceVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -51,15 +51,15 @@ year of birth for virgin queens}
 Level 2 function that replaces a proportion of caste individuals
   with new individuals from a Colony or MultiColony object. Useful after
   events like season change, swarming, supersedure, etc. due to the short life span
- honeybees.
+  honeybees.
 }
 \section{Functions}{
 \itemize{
-\item \code{replaceVirginQueens()}: Replaces some virgin queens in a colony
-
 \item \code{replaceWorkers()}: Replaces some workers in a colony
 
 \item \code{replaceDrones()}: Replaces some drones in a colony
+
+\item \code{replaceVirginQueens()}: Replaces some virgin queens in a colony
 
 }}
 \examples{
@@ -85,15 +85,15 @@ apiary <- addVirginQueens(apiary, nInd = 20)
 # Replace individuals in a colony
 getVirginQueens(colony)@id
 colony <- replaceCastePop(colony, caste = "virginQueens", p = 0.5)
-# or shortcut: replaceVirginQueens(colony, p = 0.5)
+# or alias: replaceVirginQueens(colony, p = 0.5)
 getVirginQueens(colony)@id
 getWorkers(colony)@id
 colony <- replaceCastePop(colony, caste = "workers", p = 0.5)
-# or shortcut: replaceWorkers(colony, p = 0.5)
+# or alias: replaceWorkers(colony, p = 0.5)
 getWorkers(colony)@id
 getDrones(colony)@id
 colony <- replaceCastePop(colony, caste = "drones", p = 0.5)
-# or shortcut: replaceDrones(colony, p = 0.5)
+# or alias: replaceDrones(colony, p = 0.5)
 getDrones(colony)@id
 
 lapply(getVirginQueens(apiary), FUN = function(x) x@id)
