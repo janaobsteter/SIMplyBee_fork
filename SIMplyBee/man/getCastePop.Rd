@@ -4,9 +4,9 @@
 \alias{getCastePop}
 \alias{getQueen}
 \alias{getFathers}
-\alias{getVirginQueens}
 \alias{getWorkers}
 \alias{getDrones}
+\alias{getVirginQueens}
 \title{Access individuals of a caste}
 \usage{
 getCastePop(x, caste = "all", nInd = NULL, use = "order", removeFathers = TRUE)
@@ -15,11 +15,11 @@ getQueen(x)
 
 getFathers(x, nInd = NULL, use = "rand")
 
-getVirginQueens(x, nInd = NULL, use = "rand")
-
 getWorkers(x, nInd = NULL, use = "rand")
 
 getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+
+getVirginQueens(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -60,11 +60,11 @@ Level 1 function that returns individuals of a caste. These
 
 \item \code{getFathers()}: Access fathers (drones the queen mated with)
 
-\item \code{getVirginQueens()}: Access virgin queens
-
 \item \code{getWorkers()}: Access workers
 
 \item \code{getDrones()}: Access drones
+
+\item \code{getVirginQueens()}: Access virgin queens
 
 }}
 \examples{

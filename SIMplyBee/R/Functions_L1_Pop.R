@@ -1010,7 +1010,11 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
         nInd <- nInd(slot(x, caste))
       }
       tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
-      slot(x, caste) <- tmp$remnant
+      if (caste == "queen") {
+        slot(x, caste) <- NULL
+      } else {
+        slot(x, caste) <- tmp$remnant
+      }
       if (caste == "drones" && removeFathers) {
         test <- isDrone(tmp$pulled)
         if (any(!test)) {

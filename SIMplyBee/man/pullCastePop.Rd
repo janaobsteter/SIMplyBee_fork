@@ -3,20 +3,20 @@
 \name{pullCastePop}
 \alias{pullCastePop}
 \alias{pullQueen}
-\alias{pullVirginQueens}
 \alias{pullWorkers}
 \alias{pullDrones}
+\alias{pullVirginQueens}
 \title{Pull individuals from a caste in a colony}
 \usage{
 pullCastePop(x, caste, nInd = NULL, use = "rand", removeFathers = TRUE)
 
 pullQueen(x)
 
-pullVirginQueens(x, nInd = NULL, use = "rand")
-
 pullWorkers(x, nInd = NULL, use = "rand")
 
 pullDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+
+pullVirginQueens(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -48,11 +48,11 @@ Level 1 function that pulls individuals from a caste in a
 \itemize{
 \item \code{pullQueen()}: Pull queen from a colony
 
-\item \code{pullVirginQueens()}: Pull virgin queens from a colony
-
 \item \code{pullWorkers()}: Pull workers from a colony
 
 \item \code{pullDrones()}: Pull drones from a colony
+
+\item \code{pullVirginQueens()}: Pull virgin queens from a colony
 
 }}
 \examples{
