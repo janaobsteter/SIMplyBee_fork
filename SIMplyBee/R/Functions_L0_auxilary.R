@@ -861,7 +861,11 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' @export
 isQueenPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- ifelse(length(nQueens(x)) > 0, nQueens(x) > 0, FALSE)
+    if (length(nQueens(x)) > 0) {
+      ret <- nQueens(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -902,7 +906,11 @@ isQueenPresent <- function(x) {
 #' @export
 isFathersPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <-  ifelse(length(nFathers(x)) > 0, nFathers(x) > 0, FALSE)
+    if (length(nFathers(x)) > 0) {
+      ret <- nFathers(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -948,7 +956,11 @@ areFathersPresent <- isFathersPresent
 #' @export
 isWorkersPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- ifelse(length(nWorkers(x)) > 0, nWorkers(x) > 0, FALSE)
+    if (length(nWorkers(x)) > 0) {
+      ret <- nWorkers(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -994,7 +1006,11 @@ areWorkersPresent <- isWorkersPresent
 #' @export
 isDronesPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- ifelse(length(nDrones(x)) > 0, nDrones(x) > 0, FALSE)
+    if (length(nDrones(x)) > 0) {
+      ret <- nDrones(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -1044,7 +1060,11 @@ areDronesPresent <- isDronesPresent
 #' @export
 isVirginQueensPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- ifelse(length(nVirginQueens(x)) > 0, nVirginQueens(x) > 0, FALSE)
+    if (length(nVirginQueens(x)) > 0) {
+      ret <- nVirginQueens(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
