@@ -7051,69 +7051,6 @@ getColonyAa <- function(x, caste = c("colony", "queen", "fathers", "workers", "d
   return(ret)
 }
 
-# editGenome (will be removed) ----
-
-#' @title Edit genome at a single diploid site in a population
-#'
-#' @description Edits a single selected diploid locus in an entire population
-#'   of individuals to the desired diploid genotype. The gv slot is recalculated
-#'   to reflect the any changes due to editing, but other slots remain the same.
-#'   (modification of AlphaSimR::editGenome to edit desired genotype instead of
-#'   a homozygote for a given allele).
-#'
-#' @param pop an object of \code{\link{Pop-class}}
-#' @param chr integer, the chromosomes to edit.
-#' @param segSite integer, the position of the segregating site to edit
-#' @param alleles list, each element of the list contains a vector with twe two
-#' desired alleles for each individual at the segregating sites. The length of the list
-#' should match the number of individuals in the population
-#' @param simParamBee an object of \code{\link{SimParamBee}}
-#'
-#' @return Returns an object of \code{\link{Pop-class}}
-#'
-#' @examples
-#' # Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 5)
-#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-#' pop <- createVirginQueens(founderGenomes)
-#'
-#' # Change individual 1 to homozygous for the 1 allele at locus 1, chromosome 1
-#' pop2 <- SIMplyBee:::editGenomeGeno(pop,
-#'   chr = 1, segSite = 1,
-#'   alleles = list(c(1, 1), c(0, 1)),
-#'   simParam = SP
-#' )
-#' getSegSiteHaplo(pop)
-#' getSegSiteHaplo(pop2)
-editGenomeGeno <- function(pop, chr, segSite, alleles, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get("SP", envir = .GlobalEnv)
-  }
-  chr <- as.integer(chr)
-  segSite <- as.integer(segSite)
-  stopifnot(all(sapply(alleles, FUN = function(x) x == 0L | x == 1L)))
-  if (!all(sapply(alleles, FUN = function(x) length(x) == pop@ploidy))) {
-    stop("You must provide two alleles for a diploid genome.")
-  }
-  BYTE <- (segSite - 1L) %/% 8L + 1L
-  BIT <- (segSite - 1L) %% 8L + 1L
-  for (ind in 1:pop@nInd) {
-    for (j in 1:pop@ploidy) {
-      TMP <- pop@geno[[chr]][BYTE, j, ind]
-      TMP <- rawToBits(TMP)
-      TMP[BIT] <- as.raw(alleles[[ind]][j])
-      TMP <- packBits(TMP)
-      pop@geno[[chr]][BYTE, j, ind] <- TMP
-    }
-  }
-  PHENO <- pop@pheno
-  EBV <- pop@ebv
-  pop <- resetPop(pop = pop, simParam = simParamBee)
-  pop@pheno <- PHENO
-  pop@ebv <- EBV
-  return(pop)
-}
-
 #' @title Edit the csd locus
 #'
 #' @description Edits the csd locus in an entire population of individuals to
@@ -7167,16 +7104,13 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
     stop("You must provide two different alleles for each individual!")
   }
 
-  for (site in csdSites) {
-    siteAlleles <- lapply(alleles, FUN = function(x) x[, which(site == csdSites)])
-    pop <- editGenomeGeno(
-      pop = pop,
-      chr = simParamBee$csdChr,
-      segSite = site,
-      alleles = siteAlleles,
-      simParamBee = simParamBee
-    )
-  }
+  # Pull out csd haplotype matrix
+  csdH = pullMarkerHaplo(pop, markers = paste(simParamBee$csdChr, csdSites, sep="_"))
+  # Prepare the haplotype matrix
+  alleles <- as.matrix(do.call(rbind, alleles))
+  rownames(alleles) <- rownames(csdH)
+  colnames(alleles) <- colnames(csdH)
 
+  pop <- setMarkerHaplo(pop, haplo=alleles)
   return(pop)
 }
