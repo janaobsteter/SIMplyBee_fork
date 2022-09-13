@@ -108,20 +108,18 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' getId(apiary)
 #'
 #' getId(selectColonies(apiary, ID = 1))
-#' getId(selectColonies(apiary, ID = "5"))
+#' getId(selectColonies(apiary, ID = "4"))
 #' getId(selectColonies(apiary, ID = c(1, 2)))
-#' getId(selectColonies(apiary, ID = c("5", "6")))
-#' getId(selectColonies(apiary, ID = 5))
-#' getId(selectColonies(apiary, ID = "9"))
+#' getId(selectColonies(apiary, ID = c("3", "4")))
+#' getId(selectColonies(apiary, ID = 3))
 #' # ... alternative
 #' getId(apiary[1])
 #' getId(apiary[[1]])
-#' getId(apiary["5"])
-#' getId(apiary[["5"]])
+#' getId(apiary["4"])
+#' getId(apiary[["4"]])
 #' getId(apiary[c(1, 2)])
-#' getId(apiary[c("5", "6")])
-#' getId(apiary[5])
-#' getId(apiary["9"])
+#' getId(apiary[c("3", "4")])
+#' getId(apiary[3])
 #'
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
@@ -132,6 +130,25 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
+  if (!is.null(ID)) {
+    if (!all(ID %in% getId(multicolony))) {
+      stop("Invalid IDs!")
+    }
+  }
+  if (!is.null(n)) {
+    if (n > nColonies(multicolony)) {
+      stop("n must not be larger than the number of colonies in multicolony!")
+    } else if (n < 0) {
+      stop("n must be non-negative!")
+    }
+  }
+  if (!is.null(p)) {
+    if (1 < p) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    }
+  }
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -192,15 +209,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' getId(tmp$pulled)
 #' getId(tmp$remnant)
 #'
-#' tmp <- pullColonies(apiary, ID = c("5", "6"))
-#' getId(tmp$pulled)
-#' getId(tmp$remnant)
-#'
-#' tmp <- pullColonies(apiary, ID = 5)
-#' getId(tmp$pulled)
-#' getId(tmp$remnant)
-#'
-#' tmp <- pullColonies(apiary, ID = "9")
+#' tmp <- pullColonies(apiary, ID = c("3", "4"))
 #' getId(tmp$pulled)
 #' getId(tmp$remnant)
 #'

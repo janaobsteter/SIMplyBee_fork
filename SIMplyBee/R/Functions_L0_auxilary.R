@@ -168,15 +168,17 @@ nCaste <- function(x, caste = "all") {
       }
     } else {
       if (caste == "fathers") {
-        ret <- ifelse(isQueenPresent(x), nInd(x@queen@misc[[1]]$fathers), 0)
+        ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
+      } else if (caste == "drones") {
+        ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x@drones)), 0)
       } else {
         ret <- ifelse(!is.null(slot(x, caste)), nInd(slot(x, caste)), 0)
       }
     }
   } else if (isMultiColony(x)) {
-    fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
-    names(ret) <- getId(x)
+      fun <- ifelse(caste == "all", lapply, sapply)
+      ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
+      names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
   }
@@ -560,7 +562,7 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' @export
 isQueenPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- nQueens(x) > 0
+    ret <- ifelse(length(nQueens(x)) > 0, nQueens(x) > 0, FALSE)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -601,7 +603,7 @@ isQueenPresent <- function(x) {
 #' @export
 isFathersPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- nFathers(x) > 0
+    ret <-  ifelse(length(nFathers(x)) > 0, nFathers(x) > 0, FALSE)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -647,7 +649,7 @@ areFathersPresent <- isFathersPresent
 #' @export
 isWorkersPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- nWorkers(x) > 0
+    ret <- ifelse(length(nWorkers(x)) > 0, nWorkers(x) > 0, FALSE)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -693,7 +695,7 @@ areWorkersPresent <- isWorkersPresent
 #' @export
 isDronesPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- nDrones(x) > 0
+    ret <- ifelse(length(nDrones(x)) > 0, nDrones(x) > 0, FALSE)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -743,7 +745,7 @@ areDronesPresent <- isDronesPresent
 #' @export
 isVirginQueensPresent <- function(x) {
   if (isColony(x) | isMultiColony(x)) {
-    ret <- nVirginQueens(x) > 0
+    ret <- ifelse(length(nVirginQueens(x)) > 0, nVirginQueens(x) > 0, FALSE)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }

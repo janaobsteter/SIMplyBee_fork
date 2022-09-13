@@ -3,20 +3,20 @@
 \name{removeCastePop}
 \alias{removeCastePop}
 \alias{removeQueen}
-\alias{removeVirginQueens}
 \alias{removeWorkers}
 \alias{removeDrones}
-\title{Remove a proportion of caste population individuals from a colony}
+\alias{removeVirginQueens}
+\title{Remove a proportion of caste individuals from a colony}
 \usage{
 removeCastePop(x, caste = NULL, p = 1, use = "rand")
 
 removeQueen(x)
 
-removeVirginQueens(x, p = 1, use = "rand")
-
 removeWorkers(x, p = 1, use = "rand")
 
 removeDrones(x, p = 1, use = "rand")
+
+removeVirginQueens(x, p = 1, use = "rand")
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -39,11 +39,11 @@ Level 2 function that removes a proportion of virgin queens of
 \itemize{
 \item \code{removeQueen()}: Remove queen from a colony
 
-\item \code{removeVirginQueens()}: Remove virgin queens from a colony
-
 \item \code{removeWorkers()}: Remove workers from a colony
 
 \item \code{removeDrones()}: Remove workers from a colony
+
+\item \code{removeVirginQueens()}: Remove virgin queens from a colony
 
 }}
 \examples{
@@ -67,28 +67,28 @@ apiary <- addVirginQueens(apiary, nInd = 10)
 # Remove virgin queens
 nVirginQueens(colony)
 colony <- removeCastePop(colony, caste = "virginQueens", p = 0.5)
-# or shortcut: removeVirginQueens(colony, p = 0.5)
+# or alias: removeVirginQueens(colony, p = 0.5)
 nVirginQueens(colony)
 colony <- removeCastePop(colony, caste = "virginQueens")
-# or shortcut: colony <- removeVirginQueens(colony)
+# or alias: colony <- removeVirginQueens(colony)
 nVirginQueens(colony)
 nWorkers(colony)
 nDrones(colony)
 colony <- removeCastePop(colony, caste = "workers", p = 0.3)
-# or shortcut: colony <- removeWorkers(colony, p = 0.3)
+# or alias: colony <- removeWorkers(colony, p = 0.3)
 colony <- removeCastePop(colony, caste = "drones", p = 0.3)
-# or shortcut: colony <- removeDrones(colony, p = 0.3)
+# or alias: colony <- removeDrones(colony, p = 0.3)
 
 nVirginQueens(apiary)
 nWorkers(apiary)
 nDrones(apiary)
 apiary <- removeCastePop(apiary, caste = "virginQueens", p = 0.3)
-# or shortcut: removeVirginQueens(apiary, p = 0.3)
+# or alias: removeVirginQueens(apiary, p = 0.3)
 nVirginQueens(apiary)
 apiary <- removeCastePop(apiary, caste = "workers", p = 0.3)
-# or shortcut: removeWorkers(apiary, p = 0.3)
+# or alias: removeWorkers(apiary, p = 0.3)
 nWorkers(apiary)
 #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
-# or shortcut: removeDrones(apiary, p = 0.3)
+# or alias: removeDrones(apiary, p = 0.3)
 nDrones(apiary)
 }
