@@ -89,11 +89,10 @@ TODO : do we need to explain the nThreads?
 TODO: mention the amount of time this chunk will take (even though the numbers are small)- and explain why this part of the process takes so long 
 TODO: should we provide the Rdata we already have as an example to download? 
 ```{r simulate honeybee genomes}
-founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 100,
-                                          nCar = 50,
+founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 10,
+                                          nCar = 5,
                                           nChr = 3,
-                                          nSegSites = 100,
-                                          nThreads = 16)
+                                          nSegSites = 10)
 ```
 
 Due to the complexity of this function, the computing power required is high and timely. We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is much easier to load into your environment and work with. 
