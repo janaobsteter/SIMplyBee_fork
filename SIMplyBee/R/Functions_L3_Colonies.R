@@ -87,9 +87,8 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'   ID takes first priority. If no ID is provided, p takes precedence over n.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   selected; if character (numeric) colonies are selected based on their name
-#'   (position)
+#' @param ID character or numeric, ID of a colony (one or more) to be
+#'   selected
 #' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being selected (takes precedence
 #'   over \code{n})
@@ -105,7 +104,9 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, fathers = fatherGroups[1:4])
-#' getId(apiary)
+#' apiary2 <- createMultiColony(basePop[6:8])
+#' getId(apiary1)
+#' getId(apiary2)
 #'
 #' getId(selectColonies(apiary, ID = 1))
 #' getId(selectColonies(apiary, ID = "4"))
@@ -153,10 +154,11 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    # Testing because a logical vector recycles on colonies[ID]
+        # Testing because a logical vector recycles on colonies[ID]
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
     }
+    ID <- as.character(ID)
     ret <- multicolony[ID]
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
@@ -184,9 +186,8 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony based on colony ID or random selection.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be pulled
-#'   out; if character (numeric) colonies are pulled out based on their name
-#'   (position)
+#' @param ID character, ID of a colony (one or more) to be pulled
+#'   out
 #' @param n numeric, number of colonies to select
 #' @param p numeric, probability of a colony being pulled out (takes precedence
 #'   over \code{n})
@@ -240,9 +241,8 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     lPull <- sample.int(n = nCol, size = n)
     message(paste0("Randomly pulling colonies: ", n))
     if (length(lPull) > 0) {
-      ids <- getId(multicolony)
-      pulled <- selectColonies(multicolony, ids[lPull])
-      remnant <- removeColonies(multicolony, ids[lPull])
+      pulled <- multicolony[lPull]
+      remnant <- multicolony[-lPull]
     } else {
       pulled <- createMultiColony()
       remnant <- multicolony
@@ -263,10 +263,8 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony object based on their ID.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   removed; if character (numeric) colonies are removed based on their name
-#'   (position)
-#'
+#' @param ID character, ID of a colony (one or more) to be
+#'   removed
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
@@ -298,12 +296,13 @@ removeColonies <- function(multicolony, ID) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
-  if (is.character(ID)) {
+  if (!is.null(ID)) {
+    # Testing because a logical vector recycles on colonies[ID]
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
+    ID <- as.character(ID)
     ret <- multicolony[!getId(multicolony) %in% ID]
-  } else if (is.numeric(ID)) {
-    ret <- multicolony[-ID]
-  } else {
-    stop("ID must be character or numeric!")
   }
   validObject(ret)
   return(ret)

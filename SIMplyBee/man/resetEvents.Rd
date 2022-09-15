@@ -57,10 +57,10 @@ hasSplit(remnant)
 resetEvents(remnant)
 
 tmp <- split(apiary)
-(splits <- tmp$splits)
+(splits <- tmp$split)
 hasSplit(splits[[1]])
 resetEvents(splits)[[1]]
-(remnants <- tmp$remnants)
+(remnants <- tmp$remnant)
 hasSplit(remnants[[1]])
 resetEvents(remnants)[[1]]
 
@@ -74,10 +74,10 @@ hasSwarmed(remnant)
 resetEvents(remnant)
 
 tmp <- swarm(apiary)
-(swarms <- tmp$swarms)
+(swarms <- tmp$swarm)
 hasSwarmed(swarms[[1]])
 resetEvents(swarms)[[1]]
-(remnants <- tmp$remnants)
+(remnants <- tmp$remnant)
 hasSwarmed(remnants[[1]])
 resetEvents(remnants)[[1]]
 
