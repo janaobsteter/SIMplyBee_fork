@@ -49,8 +49,8 @@ apiary[[2]]
 # Create mated colonies by crossing
 apiary <- createMultiColony(x = basePop[1:2], n = 2)
 drones <- createDrones(x = basePop[3], n = 30)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
-apiary <- cross(apiary, fathers = fatherGroups)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
+apiary <- cross(apiary, drones = droneGroups)
 apiary
 apiary[[1]]
 apiary[[2]]

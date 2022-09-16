@@ -382,7 +382,7 @@ SimParamBee <- R6Class(
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
     #' colony <- createColony(x = basePop[2])
-    #' colony <- cross(colony, fathers = drones)
+    #' colony <- cross(colony, drones = drones)
     #' colony <- addWorkers(colony, nInd = 5)
     #' colony <- addDrones(colony, nInd = 5)
     #' colony <- addVirginQueens(colony, nInd = 2)
@@ -412,7 +412,7 @@ SimParamBee <- R6Class(
     #'
     #' drones <- createDrones(x = basePop[1], nInd = 10)
     #' colony <- createColony(x = basePop[2])
-    #' colony <- cross(colony, fathers = drones)
+    #' colony <- cross(colony, drones = drones)
     #' SP$pedigree
     #' SP$caste
     changeCaste = function(id, caste) {
@@ -631,11 +631,11 @@ isSimParamBee <- function(x) {
 #' SP$setVarE(varE = average * (1 - h2))
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 50)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
-#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+#' colony1 <- cross(colony1, drones = fatherGroups[[1]])
+#' colony2 <- cross(colony2, drones = fatherGroups[[2]])
 #' colony1@queen@pheno
 #' colony2@queen@pheno
 #' createWorkers(colony1, nInd = nWorkersColonyPhenotype)
@@ -735,11 +735,11 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' SP$setVarE(varE = average * (1 - h2))
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 50)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
-#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+#' colony1 <- cross(colony1, drones = fatherGroups[[1]])
+#' colony2 <- cross(colony2, drones = fatherGroups[[2]])
 #' colony1@queen@pheno
 #' colony2@queen@pheno
 #' createDrones(colony1, nInd = nDronesColonyPhenotype)
@@ -855,11 +855,11 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' SP$setVarE(varE = varE)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 50)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
+#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 #' colony1 <- createColony(x = basePop[2])
 #' colony2 <- createColony(x = basePop[3])
-#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
-#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+#' colony1 <- cross(colony1, drones = fatherGroups[[1]])
+#' colony2 <- cross(colony2, drones = fatherGroups[[2]])
 #' colony1 <- buildUp(colony1)
 #' colony2 <- buildUp(colony2)
 #' nVirginQueensColonyPhenotype(colony1)
@@ -993,7 +993,7 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = drones)
+#' colony <- cross(colony, drones = drones)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
 #' swarmPColonyStrength(colony)
@@ -1088,7 +1088,7 @@ swarmPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = drones)
+#' colony <- cross(colony, drones = drones)
 #' colony <- addWorkers(colony, nInd = 10)
 #' nWorkers(colony) # weak colony
 #' splitPColonyStrength(colony)

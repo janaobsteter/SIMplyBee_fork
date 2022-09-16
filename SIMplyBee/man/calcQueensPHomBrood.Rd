@@ -46,16 +46,16 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 colony <- addVirginQueens(x = colony, nInd = 1)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 
 # Virgin queen
@@ -69,7 +69,7 @@ calcQueensPHomBrood(apiary)
 
 # Inbreed virgin queen with her brothers to generate csd homozygous brood
 colony2 <- createColony(x = getVirginQueens(colony))
-colony2 <- cross(x = colony2, fathers = pullDrones(x = colony, nInd = nFathersPoisson())[[1]])
+colony2 <- cross(x = colony2, drones = pullDrones(x = colony, nInd = nFathersPoisson())[[1]])
 
 # Calculate the expected csd homozygosity
 calcQueensPHomBrood(getQueen(colony2))

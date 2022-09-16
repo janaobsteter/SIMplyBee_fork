@@ -33,6 +33,6 @@ colony2 <- createColony(x = basePop[3:4])
 colony2
 
 # Create a mated Colony
-colony1 <- cross(colony1, fathers = drones)
+colony1 <- cross(colony1, drones = drones)
 colony1
 }

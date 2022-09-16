@@ -40,8 +40,8 @@
 #' # Create mated colonies by crossing
 #' apiary <- createMultiColony(x = basePop[1:2], n = 2)
 #' drones <- createDrones(x = basePop[3], n = 30)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
-#' apiary <- cross(apiary, fathers = fatherGroups)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
+#' apiary <- cross(apiary, drones = droneGroups)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -101,11 +101,11 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' apiary2 <- createMultiColony(basePop[6:8])
-#' getId(apiary1)
+#' getId(apiary)
 #' getId(apiary2)
 #'
 #' getId(selectColonies(apiary, ID = 1))
@@ -201,9 +201,9 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
@@ -273,9 +273,9 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))

@@ -27,17 +27,17 @@ founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(basePop[1], n = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
 # Create weak and strong Colony and MultiColony class
 colony1 <- createColony(x = basePop[2])
-colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+colony1 <- cross(colony1, drones = droneGroups[[1]])
 colony2 <- createColony(x = basePop[3])
-colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+colony2 <- cross(colony2, drones = droneGroups[[2]])
 apiary1 <- createMultiColony(basePop[4:6], n = 3)
-apiary1 <- cross(apiary1, fathers = fatherGroups[3:5])
+apiary1 <- cross(apiary1, drones = droneGroups[3:5])
 apiary2 <- createMultiColony(basePop[7:9], n = 3)
-apiary2 <- cross(apiary2, fathers = fatherGroups[6:8])
+apiary2 <- cross(apiary2, drones = droneGroups[6:8])
 
 # Build-up
 colony1 <- buildUp(x = colony1, nWorkers = 100, nDrones = 20)

@@ -21,17 +21,17 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- addWorkers(x = colony, nInd = 50, exact = TRUE)
 nWorkers(colony)
 
 # Create a Multicolony class
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 # If exact = TRUE, all 50 individuals are added
 tmp <- addWorkers(x = apiary[1], nInd = 100, exact = TRUE)
