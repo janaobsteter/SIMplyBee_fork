@@ -90,7 +90,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' @param ID character or numeric, ID of a colony (one or more) to be
 #'   selected
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being selected (takes precedence
+#' @param p numeric, percentage of colonies selected (takes precedence
 #'   over \code{n})
 #'
 #' @return \code{\link{MultiColony-class}} with selected colonies
@@ -122,6 +122,13 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' getId(apiary[c("3", "4")])
 #' getId(apiary[3])
 #'
+#' # Select a random number of colonies
+#' selectColonies(apiary, n = 3)
+#' # Select a percentage of colonies
+#' selectColonies(apiary, p = 0.2)
+#'
+#' # Since selection is random, you would get a different set of colonies with
+#' # each function call
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
@@ -132,8 +139,12 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!is.null(ID)) {
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
     if (!all(ID %in% getId(multicolony))) {
-      stop("Invalid IDs!")
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
     }
   }
   if (!is.null(n)) {
@@ -154,10 +165,6 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-        # Testing because a logical vector recycles on colonies[ID]
-    if (!(is.character(ID) | is.numeric(ID))) {
-      stop("ID must be character or numeric!")
-    }
     ID <- as.character(ID)
     ret <- multicolony[ID]
   } else if (!is.null(n) | !is.null(p)) {
@@ -186,10 +193,10 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony based on colony ID or random selection.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character, ID of a colony (one or more) to be pulled
+#' @param ID character or numeric, ID of a colony (one or more) to be pulled
 #'   out
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being pulled out (takes precedence
+#' @param p numeric, percentage of colonies pulled out (takes precedence
 #'   over \code{n})
 #'
 #' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
@@ -231,7 +238,11 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    pulled <- selectColonies(multicolony, ID)
+    if (!all(ID %in% getId(multicolony))) {
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
+    }
+    pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
     remnant <- removeColonies(multicolony, ID)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
@@ -263,8 +274,11 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony object based on their ID.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character, ID of a colony (one or more) to be
+#' @param ID character or numeric, ID of a colony (one or more) to be
 #'   removed
+#' @param n numeric, number of colonies to remove
+#' @param p numeric, percentage of colonies removed (takes precedence
+#'   over \code{n})
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
@@ -292,17 +306,24 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' nColonies(apiary)
 #'
 #' @export
-removeColonies <- function(multicolony, ID) {
+removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    # Testing because a logical vector recycles on colonies[ID]
-    if (!(is.character(ID) | is.numeric(ID))) {
-      stop("ID must be character or numeric!")
+    if (!all(ID %in% getId(multicolony))) {
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
     }
-    ID <- as.character(ID)
-    ret <- multicolony[!getId(multicolony) %in% ID]
+    ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])
+  } else if (!is.null(n) | !is.null(p)) {
+    nCol <- nColonies(multicolony)
+    if (!is.null(p)) {
+      n <- round(nCol * p)
+    }
+    ret <- selectColonies(multicolony, n = (nCol - n))
+  } else {
+    stop("You must provide either ID, n, or p!")
   }
   validObject(ret)
   return(ret)
