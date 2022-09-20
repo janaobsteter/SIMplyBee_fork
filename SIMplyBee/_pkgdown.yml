@@ -1,0 +1,332 @@
+title: SIMplyBee
+url: ~
+
+navbar:
+  structure:
+    left: [home, reference, articles, news]
+    right: [github]
+  components:
+    home:
+      icon: fa-home
+      href: index.html
+    reference:
+      icon: fa-question-circle
+      text: Reference
+      href: reference/index.html
+    articles:
+      icon: fa-book
+      text: Articles
+      menu:
+      - text: Honeybee Biology
+        href: articles/1_Honeybee_biology.html
+      - text: Colony Events
+        href: articles/2_Colony_events.html
+      - text: Multiple colonies
+        href: articles/3_Multiple_colonies.html
+      - text: Genomics
+        href: articles/4_Genomics.html
+      - text: Sampling functions
+        href: articles/5_Sampling_functions.html
+      - text: Quantitative Genetics
+        href: articles/6_Quantitative_Genetics.html
+
+reference:
+  - title: Class
+    contents:
+    - Colony-class
+    - MultiColony-class
+    - SimParamBee
+    - c,NULLOrPop-method
+
+  - title: Colony and MultiColony operations
+  - subtitle: Utility
+    contents:
+    - createColony
+    - setLocation
+    - setQueensYearOfBirth
+    - createMultiColony
+    - selectColonies
+    - pullColonies
+    - removeColonies
+  - subtitle: Events
+  - contents:
+    - cross
+    - buildUp
+    - downsize
+    - supersede
+    - split
+    - swarm
+    - collapse
+    - combine
+    - resetEvents
+  - subtitle: Event information
+    contents:
+    - getEvents
+    - hasCollapsed
+    - hasSplit
+    - hasSuperseded
+    - hasSwarmed
+    - isProductive
+  - subtitle: Caste specific events - Add
+  - contents:
+    - addWorkers
+    - addDrones
+    - addVirginQueens
+  - subtitle: Caste specific events - Replace
+    contents:
+    - reQueen
+    - replaceWorkers
+    - replaceDrones
+    - replaceVirginQueens
+  - subtitle:  Caste specific events - Remove
+    contents:
+    - removeQueen
+    - removeWorkers
+    - removeDrones
+    - removeVirginQueens
+
+
+  - title: Caste operations
+  - subtitle: Create
+    desc : (output is Population)
+    contents:
+    - createWorkers
+    - createDrones
+    - createVirginQueens
+    - createDCA
+  - subtitle: Get
+    desc : (output is Population)
+    contents:
+    - getCastePop
+    - getQueen
+    - getFathers
+    - getWorkers
+    - getDrones
+    - getVirginQueens
+  - subtitle: Pull
+    desc : (output is list of Populations)
+    contents:
+    - pullInd
+    - pullCastePop
+    - pullQueen
+    - pullWorkers
+    - pullDrones
+    - pullVirginQueens
+    - pullDroneGroupsFromDCA
+  - subtitle: Get information
+  - contents:
+    - getId
+    - getCaste
+    - getQueenYearOfBirth
+    - getQueenAge
+    - getCasteId
+    - getCasteSex
+    - getLocation
+
+
+
+  - title: Is/are functions
+  - subtitle: Individuals
+  - contents:
+    - isCaste
+    - isQueen
+    - isFather
+    - isWorker
+    - isDrone
+    - isVirginQueen
+  - subtitle: Is caste present
+    contents:
+    - isQueenPresent
+    - areFathersPresent
+    - areWorkersPresent
+    - areDronesPresent
+    - isDronesPresent
+    - areVirginQueensPresent
+  - subtitle: Colony and MultiColony
+    contents:
+    - isColony
+    - isEmpty
+    - isMultiColony
+    - isNULLColonies
+  - subtitle: Other
+    contents:
+    - isSimParamBee
+
+
+  - Title: Numbers functions
+  - subtitle: Individuals
+  - contents:
+    - nCaste
+    - nQueens
+    - nFathers
+    - nWorkers
+    - nDrones
+    - nVirginQueens
+    - nHomBrood
+  - subtitle: Sampling individuals
+    contents:
+    - nFathersPoisson
+    - nWorkersPoisson
+    - nDronesPoisson
+    - nVirginQueensPoisson
+  - subtitle: Colony and MultiColony
+    contents:
+    - nColonies
+    - nNULLColonies
+    - nEmptyColonies
+  - subtitle: Proportion functions
+    contents:
+    - downsizePUnif
+    - splitPUnif
+    - swarmPUnif
+    - pHomBrood
+
+
+
+
+  - title: Genome
+  - subtitle: General
+  - contents:
+    - simulateHoneyBeeGenomes
+    - getPooledGeno
+    - editGenomeGeno
+  - subtitle: Csd
+    contents:
+    - isCsdActive
+    - nCsdAlleles
+    - getCsdAlleles
+    - getCsdGeno
+    - isCsdHeterozygous
+    - isGenoHeterozygous
+    - calcQueensPHomBrood
+    - nHomBrood
+    - pHomBrood
+    - editCsdLocus
+  - subtitle: Haploid drone genome
+    contents:
+     - reduceDroneHaplo
+     - reduceDroneGeno
+  - subtitle: Get segregating sites' haplotypes or genotypes
+    contents:
+     - getCasteSegSiteHaplo
+     - getSegSiteHaplo
+     - getQueenSegSiteHaplo
+     - getFathersSegSiteHaplo
+     - getWorkersSegSiteHaplo
+     - getDronesSegSiteHaplo
+     - getVirginQueensSegSiteHaplo
+     - getColonySegSiteHaplo
+
+     - getCasteSegSiteGeno
+     - getSegSiteGeno
+     - getQueenSegSiteGeno
+     - getFathersSegSiteGeno
+     - getWorkersSegSiteGeno
+     - getDronesSegSiteGeno
+     - getVirginQueensSegSiteGeno
+     - getColonySegSiteGeno
+
+  - subtitle: Get QTL haplotypes or genotypes
+    contents:
+    - getCasteQtlHaplo
+    - getQtlHaplo
+    - getQueenQtlHaplo
+    - getFathersQtlHaplo
+    - getWorkersQtlHaplo
+    - getDronesQtlHaplo
+    - getVirginQueensQtlHaplo
+    - getColonyQtlHaplo
+
+    - getCasteQtlGeno
+    - getQtlGeno
+    - getQueenQtlGeno
+    - getFathersQtlGeno
+    - getWorkersQtlGeno
+    - getDronesQtlGeno
+    - getVirginQueensQtlGeno
+    - getColonyQtlGeno
+
+  - subtitle: Get SNP haplotypes or genotypes
+    contents:
+    - getCasteSnpHaplo
+    - getSnpHaplo
+    - getQueenSnpHaplo
+    - getFathersSnpHaplo
+    - getWorkersSnpHaplo
+    - getDronesSnpHaplo
+    - getVirginQueensSnpHaplo
+    - getColonySnpHaplo
+
+    - getSnpGeno
+    - getCasteSnpGeno
+    - getQueenSnpGeno
+    - getFathersSnpGeno
+    - getWorkersSnpGeno
+    - getDronesSnpGeno
+    - getVirginQueensSnpGeno
+    - getColonySnpGeno
+
+  - subtitle: Get IBD (Identity-By-Descent) haplotypes
+    contents:
+    - getCasteIbdHaplo
+    - getIbdHaplo
+    - getQueenIbdHaplo
+    - getFathersIbdHaplo
+    - getWorkersIbdHaplo
+    - getDronesIbdHaplo
+    - getVirginQueensIbdHaplo
+    - getColonyIbdHaplo
+
+  - subtitle: Calculate genomic information
+    contents:
+    - calcBeeGRMIbs
+    - calcBeeGRMIbd
+    - calcBeeAlleleFreq
+
+  - title: Quantitative Genetics
+  - subtitle: Phenotype values
+    contents:
+    - calcColonyPhenoFromCaste
+    - getCastePheno
+    - getColonyPheno
+    - setColonyPheno
+  - subtitle: Genetic values
+    contents:
+    - getCasteGv
+    - getQueenGv
+    - getFathersGv
+    - getWorkersGv
+    - getDronesGv
+    - getVirginQueensGv
+    - getWorkersGv
+    - getColonyGv
+  - subtitle: Breeding values
+    contents:
+    - getCasteBv
+    - getQueenBv
+    - getFathersBv
+    - getWorkersBv
+    - getDronesBv
+    - getVirginQueensBv
+    - getColonyBv
+  - subtitle: Dominance deviations
+    contents:
+    - getCasteDd
+    - getQueenDd
+    - getFathersDd
+    - getWorkersDd
+    - getDronesDd
+    - getVirginQueensDd
+    - getColonyDd
+  - subtitle: Epistatic deviations
+    contents:
+    - getCasteAa
+    - getColonyAa
+
+
+
+  - title: Combine REMOVE EXPORT AND DELETE
+    contents:
+    - combineBeeGametesHaploDiploid
+    - combineBeeGametes
+
