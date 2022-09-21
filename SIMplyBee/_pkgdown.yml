@@ -43,11 +43,11 @@ reference:
     contents:
     - createColony
     - setLocation
-    - setQueensYearOfBirth
     - createMultiColony
     - selectColonies
     - pullColonies
     - removeColonies
+    - getId
   - subtitle: Events
   - contents:
     - cross
@@ -115,13 +115,17 @@ reference:
     - pullDroneGroupsFromDCA
   - subtitle: Get information
   - contents:
-    - getId
     - getCaste
-    - getQueenYearOfBirth
     - getQueenAge
     - getCasteId
     - getCasteSex
     - getLocation
+  - subtitle: Queen's birth
+  - contents:
+    - setQueensYearOfBirth
+    - getQueenYearOfBirth
+
+
 
 
 
@@ -179,9 +183,6 @@ reference:
     - downsizePUnif
     - splitPUnif
     - swarmPUnif
-    - pHomBrood
-
-
 
 
   - title: Genome
