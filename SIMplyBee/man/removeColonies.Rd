@@ -4,13 +4,18 @@
 \alias{removeColonies}
 \title{Remove some colonies from the MultiColony object}
 \usage{
-removeColonies(multicolony, ID)
+removeColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character, ID of a colony (one or more) to be
+\item{ID}{character or numeric, ID of a colony (one or more) to be
 removed}
+
+\item{n}{numeric, number of colonies to remove}
+
+\item{p}{numeric, percentage of colonies removed (takes precedence
+over \code{n})}
 }
 \value{
 \code{\link{MultiColony-class}} with some colonies removed

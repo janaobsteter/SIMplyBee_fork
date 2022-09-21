@@ -14,7 +14,7 @@ selected}
 
 \item{n}{numeric, number of colonies to select}
 
-\item{p}{numeric, probability of a colony being selected (takes precedence
+\item{p}{numeric, percentage of colonies selected (takes precedence
 over \code{n})}
 }
 \value{

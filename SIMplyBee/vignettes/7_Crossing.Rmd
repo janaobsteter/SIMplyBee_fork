@@ -24,19 +24,125 @@ This vignette shows how you can cross virgin queens in SIMplyBee. Here, we prese
 
 Here I define some functions for this vignette to work - until they are incorporated into SIMplyBee.
 ```{r}
-# A function that creates a multiple DPQs from one colony --> and drones from them, which
-# forms a DCA at a mating station (will go in Level 1 functions)
+#' @rdname createMatingStationDCA
+#' @title Create a DCA of drones at a mating stations
+#'
+#' @description Level 1 function that creates a DCA at a classical honeybee
+#'   mating station of several sister drone producing queens. The 
+#'   functions first creates multiple drone producing queens (DPQs) from one colony; 
+#'   and second, produces drones from the DPQs. All the created drones forms a 
+#'   DCA at a mating station.
+#'
+#' @param colony \code{\link{Colony-class}} to produce drone producing queens from
+#' @param nDPQs integer, the number of drone producing queens
+#' @param nDronePerDPQ integer, number of drones each DPQ contributed to the DCA
+#'
+#' @return \code{\link{Pop-class}} with created drones resembling a DCA at a mating station
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(basePop[1], n = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#'
+#' # Create a colony and cross it
+#' colony1 <- createColony(x = basePop[2])
+#' colony1 <- cross(colony1, drones = droneGroups[[1]])
+#'
+#' # Create a empty colony
+#' colony2 <- createColony(x = basePop[3])
+#' 
+#' # Create a mating station from colony1
+#' matingStation <- createMatingStation(colony1, nDPQs = 20, nDronesPerDPQ = 10)
+#' 
+#' # Cross colony2 on the mating station
+#' fathers <- pullDroneGroupsFromDCA(matingStation, n = 1, nDrones = 15)
+#' colony2 <- cross(colony2, drones = fathers) 
+#' nFathers(colony2)
+#' 
+#' @export
 createMatingStationDCA <- function(colony, nDPQs = 30, nDronePerDPQ = 100) {
   DPQs <- createVirginQueens(colony, nInd = nDPQs)
   drones <- createDrones(DPQs, nInd = nDronePerDPQ)
   return(drones)
 }
 
-# This is a function to create a cross plan by randomly sampling
-# a desired number of drones from a DCA and assigning them to either
-# virgin queen or colony ID (will go in Level 0 functions)
-# The output of this functions is a named list (names being virgin queen/colony IDs)
-# IDs could be virgin queen or colony IDs
+
+#' @rdname createRandomCrossPlan
+#' @title Create a cross plan by randomly sampling drones for each queen
+#'   from a drone population
+#'
+#' @description Level 0 function that creates a cross plan by randomly sampling
+#'   a desired number of drones from a DCA and assigning them to either
+#'   virgin queen or colony ID
+#'
+#' @param IDs numeric, IDs of either the virgin queens OR the colonies (can't have both
+#'   in the same cross plan!)
+#' @param drones \code{\link{Pop-class}}, drone population available for mating (DCA)
+#' @param nFathers integer or function, number of drones to be mated with each virgin
+#'   queen
+#'
+#' @return named list with names being virgin queen or colony input IDs with each
+#'   list element holding the IDs of selected drones
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 15, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(basePop[1], n = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#'
+#' # Create an apiary of colonies and cross it
+#' apiary <- createMultiColony(x = basePop[2:5])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary <- buildUp(apiary, nWorkers = 100, nDrones = 100)
+#'
+#' # Create a DCA from the drones from the apiary
+#' DCA <- createDCA(apiary)
+#' DCA # Inspect the DCA
+#' 
+#' # Create virgin queens, a virgin colony, and a virgin apiary
+#' virginQueen1 <- basePop[6]
+#' virginQueen2 <- basePop[7]
+#' colony1 <- createColony(basePop[7])
+#' apiary1 <- createMultiColony(basePop[8:10])
+#' 
+#' # Create a combined cross plan for mating the virgin queens (with virgin queen IDs)
+#' crossPlanVirginQueens <- createRandomCrossPlan(IDs = c(virginQueen1@id, virginQueen2@id),
+#'                                                        drones = DCA,
+#'                                                        nFathers = nFathersPoisson)
+#' 
+#' # Cross the virgin queens according to the cross plan
+#' virginQueen1 <- cross(virginQueen1, drones = DCA, crossPlan = crossPlanColonies)
+#' virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanColonies)
+#' 
+#' # Create a cross plan for mating the virgin colonies and the virgin apiary (with colony IDs)
+#' crossPlanColonies <- createRandomCrossPlan(IDs = getId(c(colony1, apiary1)),
+#'                                            drones = DCA,
+#'                                            nFathers = nFathersPoisson)
+#' 
+#' # Cross the colonies according to the cross plan
+#' colony1 <- cross(colony1, drones = DCA, crossPlan = crossPlanColonies)
+#' apiary1 <- cross(apiary1, drones = DCA, crossPlan = crossPlanColonies)
+#' nFathers(colony1)
+#' nFathers(apiary1)
+#' 
+#' # You can mate virgin queens and colonies on the same way on the mating stations's DCA
+#' # Create a mating station from colony1
+#' matingStationDCA <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 10)
+#' 
+#' # Create another virgin apiary
+#' apiary2 <- createMultiColony(basePop[11:13])
+#' 
+#' # Create a cross plan for crossing the apiary on the mating station
+#' crossPlanApiary <- createRandomCrossPlan(IDs = getId(apiary2), drones = matingStationDCA, nFathers = nFathersPoisson)
+#' 
+#' # Cross the apiary
+#' apiary2 <- cross(apiary2, drones = matingStationDCA, crossPlan = crossPlanApiary)
+#' nFathers(apiary2)
+#' 
+#' @export
 createRandomCrossPlan <- function(IDs, drones, nFathers) { # Do we want nFathers or nDrones???!!!
   if (!isPop(drones)) {
     stop("Argument drones must be a Pop class!")

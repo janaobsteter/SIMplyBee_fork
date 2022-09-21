@@ -2065,6 +2065,11 @@ isProductive <- function(x) {
 #' @param nMelS integer, number of Apis mellifera mellifera South individuals to simulate
 #' @param nCar integer, number of Apis mellifera carnica individuals to simulate
 #' @param nLig integer, number of Apis mellifera ligustica individuals to simulate
+#' @param Ne integer, effective size of the simulated population. Currently set to
+#'   170,000, according to Wallberg et al., 2014. Would discourage you to change it
+#'   since it is linked to the parameters of the demographic model we use for the simulation.
+#'   However, there might be some edge cases when using a different Ne is necessary,
+#'   but proceed with caution.
 #' @param ploidy integer, the ploidy of the individuals
 #' @param nChr integer, number of chromosomes to simulate
 #' @param nSegSites integer, number of segregating sites to keep per chromosome
@@ -2107,6 +2112,7 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     nMelS = 0L,
                                     nCar = 0L,
                                     nLig = 0L,
+                                    Ne = 170000L,
                                     ploidy = 2L,
                                     nChr = 16L,
                                     nSegSites = 100L,
@@ -2123,7 +2129,6 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
   }
 
   # For now, the user cannot change this since all the model was specified with these numbers
-  Ne <- 170000L # Wallberg et al. (2014)
   genInt <- 1
 
   nInd <- (nMelN + nMelS + nCar + nLig) / 2

@@ -1167,6 +1167,12 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
   }
 
   if (isColony(x)) {
+    if (!isQueenPresent(x)) {
+      stop("No queen present in the colony!")
+    }
+    if (!isWorkersPresent(x)) {
+      stop("No workers present in the colony!")
+    }
     if (is.function(p)) {
       p <- p(x)
     }

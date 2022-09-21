@@ -9,12 +9,12 @@ pullColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character, ID of a colony (one or more) to be pulled
+\item{ID}{character or numeric, ID of a colony (one or more) to be pulled
 out}
 
 \item{n}{numeric, number of colonies to select}
 
-\item{p}{numeric, probability of a colony being pulled out (takes precedence
+\item{p}{numeric, percentage of colonies pulled out (takes precedence
 over \code{n})}
 }
 \value{
