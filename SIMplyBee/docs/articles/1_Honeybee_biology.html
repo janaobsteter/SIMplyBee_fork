@@ -53,7 +53,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -107,7 +107,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>SIMplyBee - Honeybee biology</h1>
             
-            <h4 data-toc-skip class="date">2022-08-19</h4>
+            <h4 data-toc-skip class="date">2022-09-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HighlanderLab/SIMplyBee/blob/HEAD/vignettes/1_Honeybee_biology.Rmd" class="external-link"><code>vignettes/1_Honeybee_biology.Rmd</code></a></small>
       <div class="hidden name"><code>1_Honeybee_biology.Rmd</code></div>
@@ -152,20 +152,20 @@ auto_pdf = getOption(“knitr.graphics.auto_pdf”,FALSE))</p>
 parameters,<a class="anchor" aria-label="anchor" href="#initiating-simulation-with-founder-genomes-and-global-parameters"></a>
 </h2>
 <p>We initiate the simulation by simulating founder honeybee genomes. We
-can quickly generate genomes using AlphaSimR’s <code><a href="https://rdrr.io/pkg/AlphaSimR/man/quickHaplo.html" class="external-link">quickHaplo()</a></code>
+can quickly generate genomes using AlphaSimR’s <code><a href="https://gaynorr.github.io/AlphaSimR/reference/quickHaplo.html" class="external-link">quickHaplo()</a></code>
 or with SIMplyBee’s <code>TODO()</code> with appropriate honeybee genome
-parameters and demography. We will use <code><a href="https://rdrr.io/pkg/AlphaSimR/man/quickHaplo.html" class="external-link">quickHaplo()</a></code> and
+parameters and demography. We will use <code><a href="https://gaynorr.github.io/AlphaSimR/reference/quickHaplo.html" class="external-link">quickHaplo()</a></code> and
 simulate genomes of two founding individuals. In this example, the
 genomes will be represented by only three chromosomes and 1000
 segregating sites per chromosome. Honeybees have 16 chromosomes and far
 more segregating sites per chromosome, but we want a quick simulation
 here.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AlphaSimR/man/quickHaplo.html" class="external-link">quickHaplo</a></span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">3</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://gaynorr.github.io/AlphaSimR/reference/quickHaplo.html" class="external-link">quickHaplo</a></span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">3</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p>Now we are ready to setup global simulation parameters using
 <code>SimParamBee</code>. <code>SimParamBee</code> enables the user to
 tweak many simulation settings, which you can read about in the help
-pages (<code><a href="../reference/SimParamBee.html">help(SimParamBee)</a></code> and <code><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html" class="external-link">help(SimParam)</a></code>).
+pages (<code><a href="../reference/SimParamBee.html">help(SimParamBee)</a></code> and <code><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html" class="external-link">help(SimParam)</a></code>).
 Here we will point out that we recommend saving this object with the
 name <code>SP</code>. Namely, all SIMplyBee functions will use this
 object, if you don’t directly specify <code>simParamBee</code>
@@ -420,8 +420,8 @@ she is heterozygous, as expected.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCsdAlleles.html">getCsdAlleles</a></span><span class="op">(</span><span class="va">queen</span><span class="op">)</span></span>
 <span><span class="co">#     3_86 3_87 3_88 3_89 3_90 3_91 3_92</span></span>
-<span><span class="co"># 2_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 2_2    1    1    0    0    0    0    1</span></span></code></pre></div>
+<span><span class="co"># 2_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 2_2    1    1    1    0    1    0    0</span></span></code></pre></div>
 <p>Technically, SIMplyBee represents the csd locus as a series of
 bi-allelic single nucleotide polymorphisms that don’t recombine. So, the
 csd locus is represented as a haplotype and different haplotypes
@@ -435,31 +435,31 @@ virgin queen from the current colony and mate her with her brothers. Oh,
 dear me.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inbredColony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="../reference/createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">fathers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AlphaSimR/man/selectInd.html" class="external-link">selectInd</a></span><span class="op">(</span><span class="va">drones</span>, nInd <span class="op">=</span> <span class="va">SP</span><span class="op">$</span><span class="va">nFathers</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
+<span><span class="va">fathers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://gaynorr.github.io/AlphaSimR/reference/selectInd.html" class="external-link">selectInd</a></span><span class="op">(</span><span class="va">drones</span>, nInd <span class="op">=</span> <span class="va">SP</span><span class="op">$</span><span class="va">nFathers</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
 <span><span class="va">inbredColony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">inbredColony</span>, fathers <span class="op">=</span> <span class="va">fathers</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getCsdAlleles.html">getCsdAlleles</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span></span>
 <span><span class="co"># $queen</span></span>
 <span><span class="co">#       3_86 3_87 3_88 3_89 3_90 3_91 3_92</span></span>
-<span><span class="co"># 235_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 235_2    0    1    0    1    0    1    1</span></span>
+<span><span class="co"># 235_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 235_2    0    1    1    0    0    0    0</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># $fathers</span></span>
 <span><span class="co">#       3_86 3_87 3_88 3_89 3_90 3_91 3_92</span></span>
-<span><span class="co"># 167_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 150_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 142_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 153_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 220_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 191_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 199_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 156_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 146_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 158_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 198_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 178_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 227_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 202_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 157_1    1    1    0    0    0    0    1</span></span>
+<span><span class="co"># 174_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 151_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 191_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 165_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 154_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 207_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 178_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 166_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 143_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 231_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 162_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 201_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 199_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 145_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 222_1    0    0    0    1    0    0    1</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># $workers</span></span>
 <span><span class="co"># NULL</span></span>
@@ -472,13 +472,13 @@ dear me.</p>
 <span><span class="fu"><a href="../reference/getCsdAlleles.html">getCsdAlleles</a></span><span class="op">(</span><span class="va">inbredColony</span>, unique <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># $queen</span></span>
 <span><span class="co">#       3_86 3_87 3_88 3_89 3_90 3_91 3_92</span></span>
-<span><span class="co"># 235_1    1    0    1    0    0    1    0</span></span>
-<span><span class="co"># 235_2    0    1    0    1    0    1    1</span></span>
+<span><span class="co"># 235_1    0    0    0    1    0    0    1</span></span>
+<span><span class="co"># 235_2    0    1    1    0    0    0    0</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># $fathers</span></span>
 <span><span class="co">#       3_86 3_87 3_88 3_89 3_90 3_91 3_92</span></span>
-<span><span class="co"># 167_1    1    1    0    0    0    0    1</span></span>
-<span><span class="co"># 150_1    1    0    1    0    0    1    0</span></span>
+<span><span class="co"># 174_1    1    1    1    0    1    0    0</span></span>
+<span><span class="co"># 151_1    0    0    0    1    0    0    1</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># $workers</span></span>
 <span><span class="co"># NULL</span></span>
@@ -504,7 +504,7 @@ from the expected proportion.</p>
 <span><span class="co"># Location: </span></span>
 <span><span class="co"># Queen: 235 </span></span>
 <span><span class="co"># Number of fathers: 15 </span></span>
-<span><span class="co"># Number of workers: 79 </span></span>
+<span><span class="co"># Number of workers: 84 </span></span>
 <span><span class="co"># Number of drones: 0 </span></span>
 <span><span class="co"># Number of virgin queens: 0 </span></span>
 <span><span class="co"># Has split: FALSE </span></span>
@@ -513,8 +513,8 @@ from the expected proportion.</p>
 <span><span class="co"># Has collapsed: FALSE </span></span>
 <span><span class="co"># Is productive: FALSE</span></span>
 <span><span class="fu"><a href="../reference/calcQueensPHomBrood.html">nHomBrood</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span></span>
-<span><span class="co"># [1] 21</span></span></code></pre></div>
-<p>We tried adding 100 workers, but we only got 79. The difference of 21
+<span><span class="co"># [1] 16</span></span></code></pre></div>
+<p>We tried adding 100 workers, but we only got 84. The difference of 16
 is due to csd homozygous brood. Let’s add another set of workers to show
 variation in realised numbers and accumulation of information.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
@@ -525,7 +525,7 @@ variation in realised numbers and accumulation of information.</p>
 <span><span class="co"># Location: </span></span>
 <span><span class="co"># Queen: 235 </span></span>
 <span><span class="co"># Number of fathers: 15 </span></span>
-<span><span class="co"># Number of workers: 159 </span></span>
+<span><span class="co"># Number of workers: 157 </span></span>
 <span><span class="co"># Number of drones: 0 </span></span>
 <span><span class="co"># Number of virgin queens: 0 </span></span>
 <span><span class="co"># Has split: FALSE </span></span>
@@ -534,14 +534,14 @@ variation in realised numbers and accumulation of information.</p>
 <span><span class="co"># Has collapsed: FALSE </span></span>
 <span><span class="co"># Is productive: FALSE</span></span>
 <span><span class="fu"><a href="../reference/calcQueensPHomBrood.html">nHomBrood</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span></span>
-<span><span class="co"># [1] 41</span></span></code></pre></div>
-<p>In total we tried adding 200 workers. We got 159 workers and 41
+<span><span class="co"># [1] 43</span></span></code></pre></div>
+<p>In total we tried adding 200 workers. We got 157 workers and 43
 homozygous brood. To see all this information, we can inspect the
 miscellaneous slot of the queen that contains the fathers population as
 well as the cumulative number of workers, drones, homozygous brood, and
 the expected proportion of homozygous brood.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AlphaSimR/man/getMisc.html" class="external-link">getMisc</a></span><span class="op">(</span><span class="fu"><a href="../reference/getCastePop.html">getQueen</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://gaynorr.github.io/AlphaSimR/reference/getMisc.html" class="external-link">getMisc</a></span><span class="op">(</span><span class="fu"><a href="../reference/getCastePop.html">getQueen</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># [[1]]</span></span>
 <span><span class="co"># [[1]]$fathers</span></span>
 <span><span class="co"># An object of class "Pop" </span></span>
@@ -552,13 +552,13 @@ the expected proportion of homozygous brood.</p>
 <span><span class="co"># Traits: 0 </span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># [[1]]$nWorkers</span></span>
-<span><span class="co"># [1] 159</span></span>
+<span><span class="co"># [1] 157</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># [[1]]$nDrones</span></span>
 <span><span class="co"># [1] 0</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># [[1]]$nHomBrood</span></span>
-<span><span class="co"># [1] 41</span></span>
+<span><span class="co"># [1] 43</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># [[1]]$pHomBrood</span></span>
 <span><span class="co"># [1] 0.2333333</span></span></code></pre></div>
@@ -583,90 +583,90 @@ queen:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteHaplo.html">getQueenSegSiteHaplo</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#       1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 235_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 235_2   0   1   1   1   0   1   1   1   0    1</span></span></code></pre></div>
+<span><span class="co"># 235_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 235_2   1   1   1   1   1   1   0   1   1    0</span></span></code></pre></div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteGeno.html">getQueenSegSiteGeno</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#  1_1  1_2  1_3  1_4  1_5  1_6  1_7  1_8  1_9 1_10 </span></span>
-<span><span class="co">#    1    1    1    1    1    1    2    1    0    1</span></span></code></pre></div>
+<span><span class="co">#    2    1    1    1    2    2    1    2    2    1</span></span></code></pre></div>
 <p>now all fathers:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteHaplo.html">getFathersSegSiteHaplo</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#       1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 167_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 150_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 142_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 153_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 220_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 191_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 199_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 156_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 146_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 158_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 198_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 178_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 227_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 202_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 157_1   1   0   0   0   1   0   1   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 174_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 151_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 191_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 165_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 154_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 207_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 178_1   1   0   0   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 166_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 143_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 231_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 162_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 201_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 199_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 145_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 222_1   1   0   0   0   1   1   1   1   1    1</span></span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteGeno.html">getFathersSegSiteGeno</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#     1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 167   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 150   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 142   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 153   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 220   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 191   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 199   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 156   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 146   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 158   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 198   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 178   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 227   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 202   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 157   1   0   0   0   1   0   1   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 174   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 151   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 191   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 165   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 154   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 207   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 178   1   0   0   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 166   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 143   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 231   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 162   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 201   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 199   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 145   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 222   1   0   0   0   1   1   1   1   1    1</span></span></code></pre></div>
 <p>each father is listed once (one row per father), but we can retrieve
 the diploid state, if this is desired (showing just one father to show
 this clearly):</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteHaplo.html">getFathersSegSiteHaplo</a></span><span class="op">(</span><span class="va">inbredColony</span>, nInd <span class="op">=</span> <span class="fl">1</span>, dronesHaploid <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#       1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 167_1   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 167_2   1   0   1   1   1   0   1   1   1    1</span></span></code></pre></div>
+<span><span class="co"># 174_1   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 174_2   1   1   1   0   0   0   1   1   1    0</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteGeno.html">getFathersSegSiteGeno</a></span><span class="op">(</span><span class="va">inbredColony</span>, nInd <span class="op">=</span> <span class="fl">1</span>, dronesHaploid <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="co">#     1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 167   2   0   2   2   2   0   2   2   2    2</span></span></code></pre></div>
+<span><span class="co"># 174   2   2   2   0   0   0   2   2   2    0</span></span></code></pre></div>
 <p>now two workers:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteHaplo.html">getWorkersSegSiteHaplo</a></span><span class="op">(</span><span class="va">inbredColony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#       1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 236_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 236_2   1   0   1   1   1   0   1   1   1    1</span></span>
-<span><span class="co"># 237_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 237_2   1   0   0   0   1   0   1   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 237_1   1   1   1   1   1   1   0   1   1    0</span></span>
+<span><span class="co"># 237_2   1   1   1   0   0   0   1   1   1    0</span></span>
+<span><span class="co"># 238_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 238_2   1   0   0   0   1   1   1   1   1    1</span></span></code></pre></div>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteGeno.html">getWorkersSegSiteGeno</a></span><span class="op">(</span><span class="va">inbredColony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#     1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 236   2   0   1   1   2   0   2   1   1    1</span></span>
-<span><span class="co"># 237   2   0   0   0   2   0   2   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 237   2   2   2   1   1   1   1   2   2    0</span></span>
+<span><span class="co"># 238   2   0   0   0   2   2   2   2   2    2</span></span></code></pre></div>
 <p>and finally four drones:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inbredColony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addDrones.html">addDrones</a></span><span class="op">(</span><span class="va">inbredColony</span>, nInd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getCasteSegSiteHaplo.html">getDronesSegSiteHaplo</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#       1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 436_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 437_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 438_1   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 439_1   1   0   0   0   1   0   1   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 436_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 437_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 438_1   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 439_1   1   0   0   0   1   1   1   1   1    1</span></span></code></pre></div>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getCasteSegSiteGeno.html">getDronesSegSiteGeno</a></span><span class="op">(</span><span class="va">inbredColony</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#     1_1 1_2 1_3 1_4 1_5 1_6 1_7 1_8 1_9 1_10</span></span>
-<span><span class="co"># 436   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 437   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 438   1   0   0   0   1   0   1   0   0    0</span></span>
-<span><span class="co"># 439   1   0   0   0   1   0   1   0   0    0</span></span></code></pre></div>
+<span><span class="co"># 436   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 437   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 438   1   0   0   0   1   1   1   1   1    1</span></span>
+<span><span class="co"># 439   1   0   0   0   1   1   1   1   1    1</span></span></code></pre></div>
 <p>SIMplyBee has the same genome retrieval functions as AlphaSimR, for
 all segregating sites (<code>segSite</code>), quantitative trait loci
 (<code>qtl</code>), identity by descent (<code>ibd</code>), and marker
