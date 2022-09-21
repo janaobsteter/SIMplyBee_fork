@@ -973,10 +973,10 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
 #' resetEvents(remnant)
 #'
 #' tmp <- split(apiary)
-#' (splits <- tmp$splits)
+#' (splits <- tmp$split)
 #' hasSplit(splits[[1]])
 #' resetEvents(splits)[[1]]
-#' (remnants <- tmp$remnants)
+#' (remnants <- tmp$remnant)
 #' hasSplit(remnants[[1]])
 #' resetEvents(remnants)[[1]]
 #'
@@ -990,10 +990,10 @@ removeVirginQueens <- function(x, p = 1, use = "rand") {
 #' resetEvents(remnant)
 #'
 #' tmp <- swarm(apiary)
-#' (swarms <- tmp$swarms)
+#' (swarms <- tmp$swarm)
 #' hasSwarmed(swarms[[1]])
 #' resetEvents(swarms)[[1]]
-#' (remnants <- tmp$remnants)
+#' (remnants <- tmp$remnant)
 #' hasSwarmed(remnants[[1]])
 #' resetEvents(remnants)[[1]]
 #'
@@ -1220,13 +1220,13 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     nCol <- nColonies(x)
     if (nCol == 0) {
       ret <- list(
-        swarms = createMultiColony(),
-        remnants = createMultiColony()
+        swarm = createMultiColony(),
+        remnant = createMultiColony()
       )
     } else {
       ret <- list(
-        swarms = createMultiColony(n = nCol),
-        remnants = createMultiColony(n = nCol)
+        swarm = createMultiColony(n = nCol),
+        remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
         tmp <- swarm(x[[colony]],
@@ -1234,8 +1234,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
                      nVirginQueens = nVirginQueens,
                      simParamBee = simParamBee
         )
-        ret$swarms[[colony]] <- tmp$swarm
-        ret$remnants[[colony]] <- tmp$remnant
+        ret$swarm[[colony]] <- tmp$swarm
+        ret$remnant[[colony]] <- tmp$remnant
       }
     }
   } else {
@@ -1462,21 +1462,21 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     nCol <- nColonies(x)
     if (nCol == 0) {
       ret <- list(
-        splits = createMultiColony(),
-        remnants = createMultiColony()
+        split = createMultiColony(),
+        remnant = createMultiColony()
       )
     } else {
       ret <- list(
-        splits = createMultiColony(n = nCol),
-        remnants = createMultiColony(n = nCol)
+        split = createMultiColony(n = nCol),
+        remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
         tmp <- split(x[[colony]],
                      p = p, year = year,
                      simParamBee = simParamBee
         )
-        ret$splits[[colony]] <- tmp$split
-        ret$remnants[[colony]] <- tmp$remnant
+        ret$split[[colony]] <- tmp$split
+        ret$remnant[[colony]] <- tmp$remnant
       }
     }
   } else {

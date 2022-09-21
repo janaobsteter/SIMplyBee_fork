@@ -9,9 +9,8 @@ selectColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character or numeric, name of a colony (one or more) to be
-selected; if character (numeric) colonies are selected based on their name
-(position)}
+\item{ID}{character or numeric, ID of a colony (one or more) to be
+selected}
 
 \item{n}{numeric, number of colonies to select}
 
@@ -36,7 +35,9 @@ drones <- createDrones(x = basePop[1:4], nInd = 100)
 fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
 apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, fathers = fatherGroups[1:4])
-getId(apiary)
+apiary2 <- createMultiColony(basePop[6:8])
+getId(apiary1)
+getId(apiary2)
 
 getId(selectColonies(apiary, ID = 1))
 getId(selectColonies(apiary, ID = "4"))

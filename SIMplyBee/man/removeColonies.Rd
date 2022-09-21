@@ -9,9 +9,8 @@ removeColonies(multicolony, ID)
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character or numeric, name of a colony (one or more) to be
-removed; if character (numeric) colonies are removed based on their name
-(position)}
+\item{ID}{character, ID of a colony (one or more) to be
+removed}
 }
 \value{
 \code{\link{MultiColony-class}} with some colonies removed
