@@ -53,6 +53,13 @@ getId(apiary[c(1, 2)])
 getId(apiary[c("3", "4")])
 getId(apiary[3])
 
+# Select a random number of colonies
+selectColonies(apiary, n = 3)
+# Select a percentage of colonies
+selectColonies(apiary, p = 0.2)
+
+# Since selection is random, you would get a different set of colonies with
+# each function call
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))

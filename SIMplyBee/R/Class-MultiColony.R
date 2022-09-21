@@ -33,9 +33,9 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #' apiary <- createMultiColony(basePop[1:6], n = 6)
-#' apiary <- cross(apiary, drones = fatherGroups[1:6])
+#' apiary <- cross(apiary, drones = droneGroups[1:6])
 #' apiary
 #' show(apiary)
 #' is(apiary)

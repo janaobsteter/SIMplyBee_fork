@@ -5,16 +5,16 @@
 test_that("createMultiColony", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 100)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 100, simParamBee = SP)
   # Error if individuals x are not vq or q
   expect_error(createMultiColony(drones, n = 2))
   # Error if nInd x is < n
   expect_error(createMultiColony(basePop[3], n = 3))
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
-  colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = drones)
+  colony <- createColony(basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = drones, simParamBee = SP)
   # Error if x is not a Pop
   expect_error(createMultiColony(colony, n = 2))
 
@@ -26,9 +26,9 @@ test_that("createMultiColony", {
   apiary <- createMultiColony(x = basePop[3:4], n = 2)
   # Create mated colonies by crossing
   apiary <- createMultiColony(x = basePop[4:5], n = 2)
-  drones <- createDrones(x = basePop[6], n = 30)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 5)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  drones <- createDrones(x = basePop[6], n = 30, simParamBee = SP)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 5, simParamBee = SP)
+  apiary <- cross(apiary, drones = droneGroups, simParamBee = SP)
   # Error if x is not a Pop
   expect_error(createMultiColony(apiary, n = 2))
 
@@ -41,12 +41,12 @@ test_that("createMultiColony", {
 test_that("selectColonies", {
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- createVirginQueens(founderGenomes)
+basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
-drones <- createDrones(x = basePop[1:4], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+drones <- createDrones(x = basePop[1:4], nInd = 100, simParamBee = SP)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 apiary <- createMultiColony(basePop[2:5], n = 4)
-apiary <- cross(apiary, fathers = fatherGroups[1:4])
+apiary <- cross(apiary, drones = droneGroups[1:4], simParamBee = SP)
 
 # Error if argument multicolony isn't a multicolony class
 expect_error(selectColonies(basePop))
@@ -85,14 +85,14 @@ expect_equal(selectColonies(apiary, n = 1)[[1]]@queen@nInd, 1)
 test_that("pullColonies", {
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- createVirginQueens(founderGenomes)
+basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 # Error if argument multicolony isn't a multicolony class
 expect_error(pullColonies(basePop))
 
-drones <- createDrones(x = basePop[1:4], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+drones <- createDrones(x = basePop[1:4], nInd = 100, simParamBee = SP)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 apiary <- createMultiColony(basePop[2:5], n = 4)
-apiary <- cross(apiary, fathers = fatherGroups[1:4])
+apiary <- cross(apiary, drones = droneGroups[1:4], simParamBee = SP)
 
 # Error: argument ID must be a character or numeric
 expect_error(pullColonies(apiary, ID = TRUE))
@@ -125,14 +125,14 @@ expect_equal(nColonies(pullColonies(apiary, p = 0.25)$pulled), 1)
 test_that("removeColonies", {
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-basePop <- createVirginQueens(founderGenomes)
+basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 # Error if argument multicolony isn't a multicolony class
 expect_error(removeColonies(basePop))
 
-drones <- createDrones(x = basePop[1:4], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+drones <- createDrones(x = basePop[1:4], nInd = 100, simParamBee = SP)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 apiary <- createMultiColony(basePop[2:5], n = 4)
-apiary <- cross(apiary, fathers = fatherGroups[1:4])
+apiary <- cross(apiary, drones = droneGroups[1:4], simParamBee = SP)
 apiary2 <- createMultiColony(n = 0)
 
 # Error: argument ID must be a character or numeric
@@ -143,6 +143,4 @@ expect_s4_class(removeColonies(apiary, ID = 1), "MultiColony")
 expect_equal(nColonies(removeColonies(apiary, ID = 1)), 3)
 expect_s4_class(removeColonies(apiary, ID = "1"), "MultiColony")
 expect_equal(nColonies(removeColonies(apiary, ID = "1")), 3)
-
-
 })
