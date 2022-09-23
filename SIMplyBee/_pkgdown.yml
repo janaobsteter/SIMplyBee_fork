@@ -38,6 +38,7 @@ reference:
     - SimParamBee
     - c,NULLOrPop-method
 
+
   - title: Colony and MultiColony operations
   - subtitle: Utility
     contents:
@@ -49,7 +50,7 @@ reference:
     - removeColonies
     - getId
   - subtitle: Events
-  - contents:
+    contents:
     - cross
     - buildUp
     - downsize
@@ -68,7 +69,7 @@ reference:
     - hasSwarmed
     - isProductive
   - subtitle: Caste specific events - Add
-  - contents:
+    contents:
     - addWorkers
     - addDrones
     - addVirginQueens
@@ -88,14 +89,14 @@ reference:
 
   - title: Caste operations
   - subtitle: Create
-    desc : (output is Population)
+    desc: (output is Population)
     contents:
     - createWorkers
     - createDrones
     - createVirginQueens
     - createDCA
   - subtitle: Get
-    desc : (output is Population)
+    desc: (output is Population)
     contents:
     - getCastePop
     - getQueen
@@ -104,7 +105,7 @@ reference:
     - getDrones
     - getVirginQueens
   - subtitle: Pull
-    desc : (output is list of Populations)
+    desc: (output is list of Populations)
     contents:
     - pullInd
     - pullCastePop
@@ -114,24 +115,21 @@ reference:
     - pullVirginQueens
     - pullDroneGroupsFromDCA
   - subtitle: Get information
-  - contents:
+    contents:
     - getCaste
     - getQueenAge
     - getCasteId
     - getCasteSex
     - getLocation
   - subtitle: Queen's birth
-  - contents:
+    contents:
     - setQueensYearOfBirth
     - getQueenYearOfBirth
 
 
-
-
-
   - title: Is/are functions
   - subtitle: Individuals
-  - contents:
+    contents:
     - isCaste
     - isQueen
     - isFather
@@ -159,7 +157,7 @@ reference:
 
   - Title: Numbers functions
   - subtitle: Individuals
-  - contents:
+    contents:
     - nCaste
     - nQueens
     - nFathers
@@ -185,12 +183,12 @@ reference:
     - swarmPUnif
 
 
+
   - title: Genome
   - subtitle: General
-  - contents:
+    contents:
     - simulateHoneyBeeGenomes
     - getPooledGeno
-    - editGenomeGeno
   - subtitle: Csd
     contents:
     - isCsdActive
@@ -226,7 +224,6 @@ reference:
      - getDronesSegSiteGeno
      - getVirginQueensSegSiteGeno
      - getColonySegSiteGeno
-
   - subtitle: Get QTL haplotypes or genotypes
     contents:
     - getCasteQtlHaplo
@@ -246,7 +243,6 @@ reference:
     - getDronesQtlGeno
     - getVirginQueensQtlGeno
     - getColonyQtlGeno
-
   - subtitle: Get SNP haplotypes or genotypes
     contents:
     - getCasteSnpHaplo
@@ -266,7 +262,6 @@ reference:
     - getDronesSnpGeno
     - getVirginQueensSnpGeno
     - getColonySnpGeno
-
   - subtitle: Get IBD (Identity-By-Descent) haplotypes
     contents:
     - getCasteIbdHaplo
@@ -277,12 +272,15 @@ reference:
     - getDronesIbdHaplo
     - getVirginQueensIbdHaplo
     - getColonyIbdHaplo
-
   - subtitle: Calculate genomic information
     contents:
     - calcBeeGRMIbs
     - calcBeeGRMIbd
     - calcBeeAlleleFreq
+
+
+
+
 
   - title: Quantitative Genetics
   - subtitle: Phenotype values
