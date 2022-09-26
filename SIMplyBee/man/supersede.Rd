@@ -4,7 +4,7 @@
 \alias{supersede}
 \title{Supersede}
 \usage{
-supersede(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
+supersede(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -17,6 +17,9 @@ remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nVirginQueens} when this
+argument is a function}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the

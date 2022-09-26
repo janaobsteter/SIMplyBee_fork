@@ -252,10 +252,8 @@ colony@queen@pheno
 ```
 
 ```{r colony_strength}
-# Use already provided function in the package - read about it
-# TODO: All functions using n*() functions should get ... so we can pass arguments to them
-#       https://github.com/HighlanderLab/SIMplyBee/issues/405
-colony <- buildUp(colony, nWorkers = nWorkersColonyPhenotype)
+colony <- buildUp(colony, nWorkers = nWorkersColonyPhenotype,
+                  queenTrait = "strengthQueenTrait")
 colony
 help(nWorkersColonyPhenotype)
 ```

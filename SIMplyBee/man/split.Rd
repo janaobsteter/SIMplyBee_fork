@@ -4,7 +4,7 @@
 \alias{split}
 \title{Split colony in two MultiColony}
 \usage{
-split(x, p = NULL, year = NULL, simParamBee = NULL)
+split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -15,6 +15,9 @@ split(x, p = NULL, year = NULL, simParamBee = NULL)
 \item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{p} when this argument is a
+function}
 }
 \value{
 list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},

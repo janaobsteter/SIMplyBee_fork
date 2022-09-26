@@ -15,12 +15,13 @@ createCastePop(
   year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 
-createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
+createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...)
 
-createDrones(x, nInd = NULL, simParamBee = NULL)
+createDrones(x, nInd = NULL, simParamBee = NULL, ...)
 
 createVirginQueens(
   x,
@@ -28,7 +29,8 @@ createVirginQueens(
   year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 }
 \arguments{
@@ -67,6 +69,8 @@ in \code{\link{SimParamBee}}. The two csd alleles must be different to
 ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
 when \code{x} is \code{link{MapPop-class}} returns

@@ -303,6 +303,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
 #' @return when \code{x} is \code{link{MapPop-class}} returns
 #'   \code{virginQueens} (a \code{\link{Pop-class}});
@@ -401,7 +402,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 createCastePop <- function(x, caste = NULL, nInd = NULL,
                            exact = TRUE, year = NULL,
                            editCsd = TRUE, csdAlleles = NULL,
-                           simParamBee = NULL) {
+                           simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -415,7 +416,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
   }
   if (is.function(nInd)) {
-    nInd <- nInd(x)
+    nInd <- nInd(x, ...)
   }
   # doing "if (is.function(nInd))" below
   if (isMapPop(x)) {
@@ -507,7 +508,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         nInd = nInd, exact = exact,
         year = year,
         editCsd = TRUE, csdAlleles = NULL,
-        simParamBee = simParamBee
+        simParamBee = simParamBee, ...
       )
     }
     names(ret) <- getId(x)
@@ -520,17 +521,17 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
 #' @describeIn createCastePop Create workers from a colony
 #' @export
-createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL) {
+createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...) {
   ret <- createCastePop(x, caste = "workers", nInd = nInd,
-                        exact = exact, simParamBee = simParamBee)
+                        exact = exact, simParamBee = simParamBee, ...)
   return(ret)
 }
 
 #' @describeIn createCastePop Create drones from a colony
 #' @export
-createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
+createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
   ret <- createCastePop(x, caste = "drones", nInd = nInd,
-                        simParamBee = simParamBee)
+                        simParamBee = simParamBee, ...)
   return(ret)
 }
 
@@ -539,10 +540,10 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL) {
 createVirginQueens <- function(x, nInd = NULL,
                                year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
-                               simParamBee = NULL) {
+                               simParamBee = NULL, ...) {
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
-                        csdAlleles = csdAlleles, simParamBee = simParamBee)
+                        csdAlleles = csdAlleles, simParamBee = simParamBee, ...)
   return(ret)
 }
 
@@ -854,6 +855,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @param nDrones numeric of function, number of drones that a virgin queen
 #'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{nDrones} when this argument is a function
 #'
 #' @return list of \code{\link{Pop-class}}
 #'
@@ -877,7 +879,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #'
 #' @export
 pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
-                                   simParamBee = NULL) {
+                                   simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -892,11 +894,11 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
   if (is.null(nDrones)) {
     nDrones <- simParamBee$nFathers
   }
-  # doing "if (is.function(nFathers))" below
+  # doing "if (is.function(nDrones))" below
   ret <- vector(mode = "list", length = n)
   for (group in seq_len(n)) {
     if (is.function(nDrones)) {
-      nD <- nDrones() # see nFathersPoisson
+      nD <- nDrones(...) # see nFathersPoisson
     } else {
       nD <- nDrones
     }
