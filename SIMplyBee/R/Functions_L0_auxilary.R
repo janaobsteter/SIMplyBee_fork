@@ -5789,7 +5789,7 @@ getCastePheno <- function(x, caste, nInd = NULL) {
     if (is.null(tmp)) {
       ret <- NULL
     } else {
-      ret <- pheno(pop = tmp)
+      ret <- tmp@pheno
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
@@ -5844,118 +5844,131 @@ getDronesPheno <- function(x, nInd = NULL) {
   return(ret)
 }
 
-#' @rdname getColonyPheno
-#' @title Access phenotype values of individuals in colony
+#' @rdname calcColonyValue
+#' @title Calculate colony value(s)
 #'
-#' @description Level 0 function that returns phenotype values of individuals in
-#'   a colony.
+#' @description Level 0 function that calculate value(s) of a colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "colony", "queen", "fathers",
-#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
-#'   but is a way to get colony-based phenotype such as honey-yield
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
+#' @param FUN function, that calculates colony value from values of
+#'   colony members
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... other arguments of \code{\link{FUN}}
 #'
-#' @seealso \code{\link{gv}}
+#' @seealso \code{\link{calcColonyValueFromCaste}} as an example of \code{FUN}
 #'
-#' @return list of vector of phenotype values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of phenotype values when \code{x} is \code{\link{MultiColony-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#' @return a matrix with one value or a row of values when \code{x} is
+#'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
+#'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10, var = 1)
-#' varE <- 1
+#'
+#' # Define two traits that collectively affect colony honey yield:
+#' # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
+#' # 2) workers' effect on colony honey yield, say via foraging ability phenotype
+#' # The traits will have a negative genetic correlation of -0.5 and heritability
+#' # of 0.25 (on an individual level)
+#' mean <- c(20, 0)
+#' nWorkers <- 10
+#' varA <- c(1, 1 / nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = mean,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#' SP$setVarE(varE = varE)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' # Create a Colony and a MultiColony class
+#' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
+#' apiary <- createMultiColony(basePop[3:5], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 #'
-#' colonyPheno <- function(colony) {
-#'  ret <- calcColonyPhenoFromCaste(colony,
-#'                                  queenTrait = 1,
-#'                                  workersTrait = 1)
-#'  return(ret)
-#' }
-#' colony <- setColonyPheno(colony, FUN = colonyPheno, varE = varE)
-#' apiary <- setColonyPheno(apiary, FUN = colonyPheno, varE = varE)
+#' # Colony value - shorthand version
+#' # (using default calcColony*FromCaste() functions - you can provide yours instead!)
+#' # ... phenotype value
+#' calcColonyPheno(colony)
+#' calcColonyPheno(apiary)
+#' # ... genetic value
+#' calcColonyGv(colony)
+#' calcColonyGv(apiary)
+#' # ... breeding value
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyBv(colony)
+#' # calcColonyBv(apiary)
+#' # ... dominance deviation
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyDd(colony)
+#' # calcColonyDd(apiary)
+#' # ... epistasis deviation
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyAa(colony)
+#' # calcColonyAa(apiary)
 #'
-#' getColonyPheno(colony)$colony
-#' getColonyPheno(colony)
-#' getColonyPheno(colony, nInd = 1)
-#' getColonyPheno(colony, caste = c("colony", "queen", "workers"))
-#' getColonyPheno(colony, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Colony value - long version
+#' # (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
+#' calcColonyValue(colony, FUN = calcColonyPhenoFromCaste)
+#' calcColonyValue(apiary, FUN = calcColonyPhenoFromCaste)
 #'
-#' sapply(getColonyPheno(apiary), FUN = function(x) x$colony)
-#' getColonyPheno(apiary)
-#' getColonyPheno(apiary, nInd = 1)
-#' getColonyPheno(apiary, caste = c("colony", "queen", "workers"))
-#' getColonyPheno(apiary, nInd = list("colony" = 1, "queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Colony value - long version - using a function stored in SimParamBee (SP)
+#' # (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
+#' SP$calcColonyValue <- calcColonyPhenoFromCaste
+#' calcColonyValue(colony)
+#' calcColonyValue(apiary)
+#'
 #' @export
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
-getColonyPheno <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
-                           nInd = NULL) {
+calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(FUN)) {
+    FUN <- simParamBee$calcColonyValue
+  }
+  if (is.null(FUN)) {
+    stop("You must provide FUN or set it in the SimParamBee object!")
+  }
   if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      if (caste != "colony") {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-        if (is.null(tmp)) {
-          ret[caste] <- list(NULL)
-        } else {
-          ret[[caste]] <- pheno(pop = tmp)
-        }
-      } else {
-        ret[[caste]] <- x@pheno
-      }
-    }
+    ret <- FUN(colony = x)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    # We could create a matrix output container here, BUT we don't know the output
+    # dimension of FUN() so we create list and row bind the list nodes later
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyPheno(x = x[[colony]], caste = caste, nInd = nInd)
+      ret[[colony]] <- FUN(colony = x[[colony]])
     }
-    names(ret) <- getId(x)
+    ret <- do.call("rbind", ret)
+    rownames(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
+}
+
+#' @describeIn calcColonyValue Calculate colony phenotype value from caste individuals' phenotype values
+#' @export
+calcColonyPheno <- function(x, FUN = calcColonyPhenoFromCaste, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Gv ----
@@ -6097,106 +6110,10 @@ getDronesGv <- function(x, nInd = NULL) {
   return(ret)
 }
 
-#' @rdname getColonyGv
-#' @title Access genetic values of individuals in colony
-#'
-#' @description Level 0 function that returns genetic values of individuals in
-#'   colony.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "colony", "queen", "fathers",
-#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
-#'   but is a way to get colony-based phenotype such as honey-yield
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#'
-#' @seealso \code{\link{gv}}
-#'
-#' @return list of vector of genetic values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of genetic values when \code{x} is \code{\link{MultiColony-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10, var = 1)
-#' SP$addSnpChip(5)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' getColonyGv(colony)
-#' getColonyGv(colony, caste = c("queen", "fathers"))
-#' getColonyGv(colony, nInd = 1)
-#' getColonyGv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyGv(apiary)
-#' getColonyGv(apiary, caste = c("queen", "fathers"))
-#' getColonyGv(apiary, nInd = 1)
-#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony genetic value from caste individuals' genetic values
 #' @export
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
-getColonyGv <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL) {
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      if (caste != "colony") {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-        if (is.null(tmp)) {
-          ret[caste] <- list(NULL)
-        } else {
-          ret[[caste]] <- gv(pop = tmp)
-        }
-      } else {
-        ret[[caste]] <- x@gv
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyGv(x = x[[colony]], caste = caste, nInd = nInd)
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
+calcColonyGv <- function(x, FUN = calcColonyGvFromCaste, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Bv ----
@@ -6375,115 +6292,10 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname getColonyBv
-#' @title Access breeding values of individuals in colony
-#'
-#' @description Level 0 function that returns breeding values of individuals in
-#'   colony.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "colony", "queen", "fathers",
-#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
-#'   but is a way to get colony-based phenotype such as honey-yield
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @seealso \code{\link{bv}}
-#'
-#' @return list of vector of breeding values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of breeding values when \code{x} is
-#'   \code{\link{MultiColony-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{MultiColony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10, var = 1)
-#' SP$addSnpChip(5)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' getColonyBv(colony)
-#' getColonyBv(colony, caste = c("queen", "fathers"))
-#' getColonyBv(colony, nInd = 1)
-#' getColonyBv(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyBv(apiary)
-#' getColonyBv(apiary, caste = c("queen", "fathers"))
-#' getColonyBv(apiary, nInd = 1)
-#' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
 #' @export
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
-getColonyBv <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      if (caste != "colony") {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-        if (is.null(tmp)) {
-          ret[caste] <- list(NULL)
-        } else {
-          ret[[caste]] <- bv(pop = tmp, simParam = simParamBee)
-        }
-      } else {
-        ret[[caste]] <- x@bv
-        # TODO: Should we store bv, dd, and aa into colony or not?
-        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyBv(
-        x = x[[colony]], caste = caste,
-        nInd = nInd, simParamBee = simParamBee
-      )
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
+calcColonyBv <- function(x, FUN = calcColonyBvFromCaste, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Dd ----
@@ -6661,114 +6473,10 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname getColonyDd
-#' @title Access dominance deviations of individuals in colony
-#'
-#' @description Level 0 function that returns dominance deviations of
-#'   individuals in colony.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "colony", "queen", "fathers",
-#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
-#'   but is a way to get colony-based phenotype such as honey-yield
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @seealso \code{\link{dd}}
-#'
-#' @return list of vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of dominance deviations when \code{x} is
-#'   \code{\link{MultiColony-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{MultiColony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' getColonyDd(colony)
-#' getColonyDd(colony, caste = c("queen", "fathers"))
-#' getColonyDd(colony, nInd = 1)
-#' getColonyDd(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyDd(apiary)
-#' getColonyDd(apiary, caste = c("queen", "fathers"))
-#' getColonyDd(apiary, nInd = 1)
-#' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony dominance deviation from caste individuals' dominance deviations
 #' @export
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
-getColonyDd <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      if (caste != "colony") {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-        if (is.null(tmp)) {
-          ret[caste] <- list(NULL)
-        } else {
-          ret[[caste]] <- dd(pop = tmp, simParam = simParamBee)
-        }
-      } else {
-        ret[[caste]] <- x@dd
-        # TODO: Should we store bv, dd, and aa into colony or not?
-        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyDd(
-        x = x[[colony]], caste = caste,
-        nInd = nInd, simParamBee = simParamBee
-      )
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
+calcColonyDd <- function(x, FUN = calcColonyDdFromCaste, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Aa ----
@@ -6946,114 +6654,10 @@ getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @rdname getColonyAa
-#' @title Access epistasis deviations of individuals in colony
-#'
-#' @description Level 0 function that returns epistasis deviations of
-#'   individuals in colony.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param caste character, a combination of "colony", "queen", "fathers",
-#'   "workers", "drones", or "virginQueens" - obviously "colony" is not a caste,
-#'   but is a way to get colony-based phenotype such as honey-yield
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @seealso \code{\link{aa}}
-#'
-#' @return list of vector of epistasis deviations when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of epistasis deviations when \code{x} is
-#'   \code{\link{MultiColony-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{MultiColony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' getColonyAa(colony)
-#' getColonyAa(colony, caste = c("queen", "fathers"))
-#' getColonyAa(colony, nInd = 1)
-#' getColonyAa(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyAa(apiary)
-#' getColonyAa(apiary, caste = c("queen", "fathers"))
-#' getColonyAa(apiary, nInd = 1)
-#' getColonyAa(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony epistasis deviation from caste individuals' epistasis deviations
 #' @export
-# TODO: Add collapse argument to the many get* functions with the idea to get
-#       collapsed output across castes or colonies #96
-#       https://github.com/HighlanderLab/SIMplyBee/issues/96
-getColonyAa <- function(x, caste = c("colony", "queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      if (caste != "colony") {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-        if (is.null(tmp)) {
-          ret[caste] <- list(NULL)
-        } else {
-          ret[[caste]] <- aa(pop = tmp, simParam = simParamBee)
-        }
-      } else {
-        ret[[caste]] <- x@aa
-        # TODO: Should we store bv, dd, and aa into colony or not?
-        #       https://github.com/HighlanderLab/SIMplyBee/issues/355
-      }
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyAa(
-        x = x[[colony]], caste = caste,
-        nInd = nInd, simParamBee = simParamBee
-      )
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  return(ret)
+calcColonyAa <- function(x, FUN = calcColonyAaFromCaste, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 #' @title Edit the csd locus
