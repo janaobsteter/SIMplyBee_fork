@@ -5943,7 +5943,7 @@ getDronesPheno <- function(x, nInd = NULL) {
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
 #       https://github.com/HighlanderLab/SIMplyBee/issues/403
-calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL) {
+calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -5954,14 +5954,14 @@ calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL) {
     stop("You must provide FUN or set it in the SimParamBee object!")
   }
   if (isColony(x)) {
-    ret <- FUN(colony = x)
+    ret <- FUN(colony = x, ...)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     # We could create a matrix output container here, BUT we don't know the output
     # dimension of FUN() so we create list and row bind the list nodes later
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- FUN(colony = x[[colony]])
+      ret[[colony]] <- FUN(colony = x[[colony]], ...)
     }
     ret <- do.call("rbind", ret)
     rownames(ret) <- getId(x)

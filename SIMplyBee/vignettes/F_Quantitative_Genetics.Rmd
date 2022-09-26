@@ -32,7 +32,7 @@ examples where we simulate:
   4. Swarming and Honey yield - two colony traits where one trait impacts the
      other one via a colony event (swarming).
 
-```{r load packages}
+```{r load_packages}
 library(package = "SIMplyBee")
 library(package = "ggplot2")
 ```
@@ -42,44 +42,50 @@ library(package = "ggplot2")
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 ```
 
-# Honey yield 
+# Honey yield
+
+TODO: say more and show some equations
 
 ```{r SimParamBee}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 
-# Quantitative genetic parameters - for a single trait with queen and worker genetic effects
+# Quantitative genetic parameters - for a single colony trait that is impacted
+# by queen and worker genetic effects - each represented by a different trait
 mean <- c(20, 0)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA)
+SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
+             name = c("queenTrait", "workersTrait"))
 
 varE <- c(3, 3 / SP$nWorkers)
 # TODO: what is a reasonable environmental correlation between queen and worker effects?
-corE <- matrix(data = c( 1.0,  0.3, 
-                         0.3,  1.0), nrow = 2, byrow = TRUE)
+corE <- matrix(data = c(1.0, 0.3, 
+                        0.3, 1.0), nrow = 2, byrow = TRUE)
 SP$setVarE(varE = varE, corE = corE)
 ```
 
-```{r basePop virgin queens}
+```{r basePop_virgin_queens}
 # Base population virgin queens
 basePop <- createVirginQueens(founderGenomes, n = 20)
 head(basePop@gv)
+# TODO: We lose trait names in createVirginQueens() #404
+#       https://github.com/HighlanderLab/SIMplyBee/issues/404
 head(basePop@pheno)
-hist(basePop@pheno[, 1])
-hist(basePop@pheno[, 2])
+hist(basePop@pheno[, "queenTrait"])
+hist(basePop@pheno[, "workersTrait"])
 ```
 
 TODO: Mention that drones also get these values - they just don't express them
 
-```{r basePop drones}
+```{r basePop_drones}
 # Base population drones
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 head(drones@pheno)
 ```
 
-```{r create colony}
+```{r create_colony}
 # Colony
 queen <- cross(x = basePop[6], drones = drones)
 colony <- createColony(x = queen)
@@ -87,7 +93,7 @@ colony
 colony@queen@pheno
 ```
 
-```{r build up colony}
+```{r build_up_colony}
 # Check if colony is productive
 isProductive(colony)
 
@@ -96,7 +102,7 @@ colony <- buildUp(colony)
 isProductive(colony)
 ```
 
-```{r queen and workers values}
+```{r queen_and_workers_values}
 head(colony@workers@pheno)
 ```
 
@@ -104,52 +110,54 @@ head(colony@workers@pheno)
 # Collate genetic and phenotype values
 df <- data.frame(id = colony@workers@id,
                  father = colony@workers@father,
-                 gvQueenEff = colony@workers@gv[, 1],
-                 gvWorkerEff = colony@workers@gv[, 2],
-                 pvQueenEff =  colony@workers@pheno[, 1],
-                 pvWorkerEff = colony@workers@pheno[, 2])
+                 gvQueenTrait = colony@workers@gv[, "queenTrait"],
+                 gvWorkersTrait = colony@workers@gv[, "workersTrait"],
+                 pvQueenTrait =  colony@workers@pheno[, "queenTrait"],
+                 pvWorkersTrait = colony@workers@pheno[, "workersTrait"])
 head(df)
 ```
 
-```{r plot queen vs worker values}
-# Covariation between queen and worker effects in workers
-p <- ggplot(data = df, aes(x = gvQueenEff, y = gvWorkerEff)) +
+```{r plot_queen_vs_worker_values}
+# Covariation between queen and worker trait genetic values in workers
+p <- ggplot(data = df, aes(x = gvQueenTrait, y = gvWorkersTrait)) +
   geom_point() +
   theme_classic()
 print(p)
 ```
 
-```{r distribution by patriline}
-# Variation in worker genetic values by patriline - for queen effects
-p <- ggplot(data = df, aes(x = gvQueenEff, colour = father)) +
+```{r distribution_by_patriline}
+# Variation in worker genetic values by patriline - for queen trait
+p <- ggplot(data = df, aes(x = gvQueenTrait, colour = father)) +
   geom_density() +
   theme_classic()
 print(p)
 ```
 
-```{r distribution by patriline II}
-# Variation in worker genetic values by patriline - for worker effects
-p <- ggplot(df, aes(x = gvWorkerEff, colour = father)) +
+```{r distribution_by_patriline_2}
+# Variation in worker genetic values by patriline - for workers trait
+p <- ggplot(df, aes(x = gvWorkersTrait, colour = father)) +
   geom_density() +
   theme_classic()
 print(p)
 ```
 
-```{r fathers values}
+```{r fathers_values}
 # Variation in patriline genetic values
 getFathers(colony)@gv
 ```
 
-```{r colony pheno} 
+```{r colony_pheno} 
 # Colony phenotype value
-calcColonyPheno(colony)
+calcColonyPheno(colony, queenTrait = "queenTrait", workersTrait = "workersTrait")
 help(calcColonyPheno)
 help(calcColonyPhenoFromCaste)
 ```
 
 # Honey yield and Calmness
 
-```{r SimParamBee II}
+TODO: say more and show some equations
+
+```{r SimParamBee_2}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 
@@ -162,19 +170,20 @@ corA <- matrix(data = c( 1.0, -0.5, 0.0, 0.0,
                         -0.5,  1.0, 0.0, 0.0,
                          0.0,  0.0, 1.0, 0.4,
                          0.0,  0.0, 0.4, 1.0), nrow = 4, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA,
+             name = c("yieldQueenTrait", "yieldWorkersTrait",
+                      "calmQueenTrait", "calmWorkersTrait"))
 
 # TODO: revise covariances (I made them up!)
 varE <- c(3, 3 / SP$nWorkers, 3, 3 / SP$nWorkers)
-corE <- matrix(data = c( 1.0, -0.3, 0.0, 0.0,
-                        -0.3,  1.0, 0.0, 0.0,
-                         0.0,  0.0, 1.0, 0.2,
-                         0.0,  0.0, 0.2, 1.0), nrow = 4, byrow = TRUE)
-SP$setVarE(varE = varE)
-SP$setCorE(corE = corE)
+corE <- matrix(data = c(1.0, 0.3, 0.0, 0.0,
+                        0.3, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.2,
+                        0.0, 0.0, 0.2, 1.0), nrow = 4, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
 ```
 
-```{r base pop and colony}
+```{r base_pop_and_colony}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 queen <- cross(x = basePop[6], drones = drones)
@@ -185,14 +194,14 @@ colony@queen@pheno
 head(colony@workers@pheno)
 ```
 
-```{r colony pheno II}
+```{r colony_pheno_2}
 calcMyColonyPheno <- function(colony) {
   yield <- calcColonyPhenoFromCaste(colony,
-                                    queenTrait = 1,
-                                    workersTrait = 2)
+                                    queenTrait = "yieldQueenTrait",
+                                    workersTrait = "yieldWorkersTrait")
   calmness <- calcColonyPhenoFromCaste(colony,
-                                       queenTrait = 3,
-                                       workersTrait = 4,
+                                       queenTrait = "calmQueenTrait",
+                                       workersTrait = "calmWorkersTrait",
                                        checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
@@ -206,29 +215,35 @@ environmentally influence the colony strength and with this honey yield.
 
 TODO: describe which trait is which (nWorkersColonyPhenotype has queenTrait = 1!)
 
-```{r SimParamBee III}
+TODO: say more and show some equations
+
+say that this is just an example assuming that workers don't contribute to how many eggs a queen lays phenotypically!
+
+```{r SimParamBee_3}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 
-# Quantitative genetic parameters - for two traits with queen and worker genetic effects
+# Quantitative genetic parameters
+# - the first trait has only the queen effect
+# - the second trait has both queen and workers effects
 mean <- c(100, 20, 0)
 # TODO: revise covariances (I made them up!)
 varA <- c(100, 1, 1 / mean[1]) # mean[1] will be average nWorkers
 corA <- matrix(data = c(1.0,  0.0,  0.0,
                         0.0,  1.0, -0.5, 
                         0.0, -0.5,  1.0), nrow = 3, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA)
+SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
+             name = c("strengthQueenTrait", "yieldQueenTrait", "yieldWorkersTrait"))
 
 # TODO: revise covariances (I made them up!)
 varE <- c(300, 3, 3 / SP$nWorkers)
-corE <- matrix(data = c(1.0,  0.0,  0.0,
-                        0.0,  1.0, -0.3,
-                        0.0, -0.3,  1.0), nrow = 3, byrow = TRUE)
-SP$setVarE(varE = varE)
-SP$setCorE(corE = corE)
+corE <- matrix(data = c(1.0, 0.0, 0.0,
+                        0.0, 1.0, 0.3,
+                        0.0, 0.3, 1.0), nrow = 3, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
 ```
 
-```{r base pop and coLony}
+```{r base_pop_and_colony}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 queen <- cross(x = basePop[6], drones = drones)
@@ -236,18 +251,20 @@ colony <- createColony(x = queen)
 colony@queen@pheno
 ```
 
-```{r colony strength}
+```{r colony_strength}
 # Use already provided function in the package - read about it
-help(nWorkersColonyPhenotype)
+# TODO: All functions using n*() functions should get ... so we can pass arguments to them
+#       https://github.com/HighlanderLab/SIMplyBee/issues/405
 colony <- buildUp(colony, nWorkers = nWorkersColonyPhenotype)
 colony
+help(nWorkersColonyPhenotype)
 ```
 
-```{r colony pheno III}
+```{r colony_pheno_3}
 calcMyColonyPheno <- function(colony) {
   yield <- calcColonyPhenoFromCaste(colony,
-                                    queenTrait = 2,
-                                    workersTrait = 3)
+                                    queenTrait = "yieldQueenTrait",
+                                    workersTrait = "yieldWorkersTrait")
   return(matrix(yield))
 }
 calcColonyPheno(colony, FUN = calcMyColonyPheno)
@@ -257,6 +274,8 @@ calcColonyPheno(colony, FUN = calcMyColonyPheno)
 
 TODO: show how we could genetically and environmentally influence if colony will swarm (can we do this?) and with this honey yield. https://github.com/HighlanderLab/SIMplyBee/issues/105
 
-```{r SimParamBee IV}
+TODO: say more and show some equations
+
+```{r SimParamBee_4}
 # TODO
 ```

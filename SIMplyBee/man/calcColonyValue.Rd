@@ -9,7 +9,7 @@
 \alias{calcColonyAa}
 \title{Calculate colony value(s)}
 \usage{
-calcColonyValue(x, FUN = NULL, simParamBee = NULL)
+calcColonyValue(x, FUN = NULL, simParamBee = NULL, ...)
 
 calcColonyPheno(x, FUN = calcColonyPhenoFromCaste, simParamBee = NULL, ...)
 
