@@ -7,7 +7,7 @@
 \alias{calcColonyBvFromCaste}
 \alias{calcColonyDdFromCaste}
 \alias{calcColonyAaFromCaste}
-\title{Calculate colony value from caste values}
+\title{Calculate colony value from caste individuals' values}
 \usage{
 calcColonyValueFromCaste(
   colony,
@@ -20,18 +20,19 @@ calcColonyValueFromCaste(
   dronesFUN = NULL,
   combineFUN = function(q, w, d) q + w,
   checkProduction = TRUE,
+  checkProductionFALSEValue = 0,
   simParamBee = NULL
 )
 
-calcColonyPhenoFromCaste(colony, ..., simParamBee = NULL)
+calcColonyPhenoFromCaste(colony, simParamBee = NULL, ...)
 
-calcColonyGvFromCaste(colony, ..., simParamBee = NULL)
+calcColonyGvFromCaste(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 
-calcColonyBvFromCaste(colony, ..., simParamBee = NULL)
+calcColonyBvFromCaste(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 
-calcColonyDdFromCaste(colony, ..., simParamBee = NULL)
+calcColonyDdFromCaste(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 
-calcColonyAaFromCaste(colony, ..., simParamBee = NULL)
+calcColonyAaFromCaste(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -66,31 +67,43 @@ where \code{q} represents queen's effect, \code{q} represents workers' effect,
 status of colony; if yes and production is not \code{TRUE}, the result is
 a 0}
 
+\item{checkProductionFALSEValue}{scalar, value used when colony is not productive}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{other arguments of \code{calcColonyValueFromCaste}}
 }
 \value{
-numeric matrix with a single value
+numeric matrix with a row of values
 }
 \description{
-Calculate colony value from caste values -
-  used when \code{FUN = NULL} in \code{\link{setColonyValue}} but
-  \code{SimParamBee$colonyValue} is set, where value can be phenotype (pheno),
-  or genetic value (gv, bv, dd, and aa).
+Calculate colony value from caste individuals' values - can be
+  used as \code{FUN} argument in \code{\link{calcColonyValue}} functions. It
+  can also be saved in \code{SimParamBee$calcColonyValue}.
 
   This is just an example - quite flexible one, though;) You can provide your
-  own functions that satisfy your needs!
+  own "caste functions" that satisfy your needs within this function (see below)
+  or provide a complete replacement of this function! For example, this function
+  does not cater for indirect (social) genetic effects where colony individuals
+  genetic value impacts phenotype value of other colony individuals. Note though
+  that you can achieve this also via multiple correlated traits, such as a queen
+  and a workers trait.
+}
+\details{
+This function works on a single colony! If you want to apply it on
+  a collection of colonies, such as apiary, use \code{\link{calcColonyValue}}.
 }
 \section{Functions}{
 \itemize{
-\item \code{calcColonyPhenoFromCaste()}: Calculate colony phenotype value from caste phenotype values
+\item \code{calcColonyPhenoFromCaste()}: Calculate colony phenotype value from caste individuals' phenotype values
 
-\item \code{calcColonyGvFromCaste()}: Calculate colony genetic value from caste genetic values
+\item \code{calcColonyGvFromCaste()}: Calculate colony genetic value from caste individuals' genetic values
 
-\item \code{calcColonyBvFromCaste()}: Calculate colony breeding value from caste breeding values
+\item \code{calcColonyBvFromCaste()}: Calculate colony breeding value from caste individuals' breeding values
 
-\item \code{calcColonyDdFromCaste()}: Calculate colony dominance deviation from caste dominance deviations
+\item \code{calcColonyDdFromCaste()}: Calculate colony dominance deviation from caste individuals' dominance deviations
 
-\item \code{calcColonyAaFromCaste()}: Calculate colony epistasis deviation from caste epistasis deviations
+\item \code{calcColonyAaFromCaste()}: Calculate colony epistasis deviation from caste individuals' epistasis deviations
 
 }}
 \examples{
@@ -99,10 +112,10 @@ SP <- SimParamBee$new(founderGenomes)
 
 # Define two traits that collectively affect colony honey yield:
 # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
-# 2) workers' effect on colony honey yield, say via foraging phenotype
+# 2) workers' effect on colony honey yield, say via foraging ability phenotype
 # The traits will have a negative genetic correlation of -0.5 and heritability
 # of 0.25 (on an individual level)
-meanP <- c(20, 0)
+mean <- c(20, 0)
 nWorkers <- 10
 varA <- c(1, 1 / nWorkers)
 corA <- matrix(data = c(
@@ -112,70 +125,65 @@ corA <- matrix(data = c(
 varE <- c(3, 3 / nWorkers)
 varA / (varA + varE)
 SP$addTraitADE(nQtlPerChr = 100,
-               mean = meanP,
+               mean = mean,
                var = varA, corA = corA,
                meanDD = 0.1, varDD = 0.2, corD = corA,
                relAA = 0.1, corAA = corA)
+SP$setVarE(varE = varE)
 
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = 14)
-
-# Create and cross Colony and MultiColony class
+drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, fathers = drones)
 colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
-apiary <- createMultiColony(basePop[3:5], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
-apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
-# Set phenotypes for all colony individuals
-colony <- setColonyPheno(colony, varE = varE)
-colony <- setColonyGv(colony)
-colony <- setColonyBv(colony)
-colony <- setColonyDd(colony)
-colony <- setColonyAa(colony)
+# Colony value
+calcColonyPhenoFromCaste(colony)
+calcColonyGvFromCaste(colony)
+# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#   https://github.com/gaynorr/AlphaSimR/issues/83
+#   https://github.com/HighlanderLab/SIMplyBee/issues/399
+# calcColonyBvFromCaste(colony)
+# calcColonyBvFromCaste(colony)
 
-apiary <- setColonyPheno(apiary, varE = varE)
-colony <- setColonyGv(apiary)
-colony <- setColonyBv(apiary)
-colony <- setColonyDd(apiary)
-colony <- setColonyAa(apiary)
+# To understand where the above values come from, study the contents of
+# calcColonyValueFromCaste() and the below values:
 
-# Queen's phenotype for both traits
+# Phenotype values
 getQueenPheno(colony)
-getQueenPheno(apiary)
-
-# Workers' phenotype for both traits
 getWorkersPheno(colony)
-getWorkersPheno(apiary)
 
-# For the whole colony
-getColonyPheno(colony)
-getColonyPheno(apiary)
+# Genetic values
+getQueenGv(colony)
+getWorkersGv(colony)
 
-# Set phenotypes for all colony individuals AND Colony
-colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste, varE = varE)
-getColonyPheno(colony)$colony
+# Breeding values
+# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#   https://github.com/gaynorr/AlphaSimR/issues/83
+#   https://github.com/HighlanderLab/SIMplyBee/issues/399
+# getQueenBv(colony)
+getWorkersBv(colony)
 
-# Set phenotypes for all colony individuals AND MultiColony
-apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste, varE = varE)
-sapply(X = getColonyPheno(apiary), FUN = function(x) x$colony)
+# Dominance deviations
+# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#   https://github.com/gaynorr/AlphaSimR/issues/83
+#   https://github.com/HighlanderLab/SIMplyBee/issues/399
+# getQueenDd(colony)
+getWorkersDd(colony)
 
-# Colony phenotype - store the colony function into the SP object
-SP$colonyPheno <- calcColonyPhenoFromCaste
-getColonyPheno(setColonyPheno(colony, varE = varE))$colony
-getColonyPheno(setColonyPheno(colony, varE = varE))$colony
-sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
-sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
+# Epistasis deviations
+# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#   https://github.com/gaynorr/AlphaSimR/issues/83
+#   https://github.com/HighlanderLab/SIMplyBee/issues/399
+# getQueenAa(colony)
+getWorkersAa(colony)
 
 }
 \seealso{
-\code{\link{SimParamBee}} fields \code{colonyPheno}, \code{colonyGv},
-  \code{colonyBv}, \code{colonyDd}, \code{colonyAa} and functions
-  \code{\link{setColonyPheno}}, \code{\link{setColonyGv}},
-  \code{\link{setColonyBv}}, \code{\link{setColonyDd}},
-  \code{\link{setColonyAa}}, \code{\link{getEvents}},
+\code{\link{SimParamBee}} field \code{calcColonyValue} and functions
+  \code{\link{calcColonyPheno}}, \code{\link{calcColonyGv}},
+  \code{\link{calcColonyBv}}, \code{\link{calcColonyDd}},
+  \code{\link{calcColonyAa}}, \code{\link{getEvents}},
   \code{\link{pheno}}, \code{\link{gv}}, \code{\link{bv}}, \code{\link{dd}},
   and \code{\link{aa}}
 }

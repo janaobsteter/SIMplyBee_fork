@@ -49,25 +49,24 @@ founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 SP <- SimParamBee$new(founderGenomes)
 
 # Quantitative genetic parameters - for a single trait with queen and worker genetic effects
-meanP <- c(20, 0)
+mean <- c(20, 0)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA)
 
 varE <- c(3, 3 / SP$nWorkers)
 # TODO: what is a reasonable environmental correlation between queen and worker effects?
-corE <- matrix(data = c( 1.0, -0.3, 
-                        -0.3,  1.0), nrow = 2, byrow = TRUE)
-# TODO: Move this to passing setColonyPheno()!
-SP$setVarE(varE = varE)
-SP$setCorE(corE = corE)
+corE <- matrix(data = c( 1.0,  0.3, 
+                         0.3,  1.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
 ```
 
 ```{r basePop virgin queens}
 # Base population virgin queens
 basePop <- createVirginQueens(founderGenomes)
 head(basePop@gv)
+head(basePop@pheno)
 hist(basePop@pheno[, 1])
 hist(basePop@pheno[, 2])
 ```
@@ -142,9 +141,9 @@ getFathers(colony)@gv
 
 ```{r colony pheno} 
 # Colony phenotype value
+calcColonyPheno(colony)
+help(calcColonyPheno)
 help(calcColonyPhenoFromCaste)
-colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste)
-colony@pheno
 ```
 
 # Honey yield and Calmness
@@ -186,7 +185,7 @@ head(colony@workers@pheno)
 ```
 
 ```{r colony pheno II}
-colonyPheno <- function(colony) {
+calcMyColonyPheno <- function(colony) {
   yield <- calcColonyPhenoFromCaste(colony,
                                     queenTrait = 1,
                                     workersTrait = 2)
@@ -196,8 +195,7 @@ colonyPheno <- function(colony) {
                                        checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
-colony <- setColonyPheno(colony, FUN = colonyPheno)
-colony@pheno
+calcColonyPheno(colony, FUN = calcMyColonyPheno)
 ```
 
 # Strength and honey yield
@@ -205,18 +203,20 @@ colony@pheno
 Here we will show how to use `nWorkers` function to genetically and
 environmentally influence the colony strength and with this honey yield.
 
+TODO: describe which trait is which (nWorkersColonyPhenotype has queenTrait = 1!)
+
 ```{r SimParamBee III}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 
 # Quantitative genetic parameters - for two traits with queen and worker genetic effects
-meanP <- c(100, 20, 0)
+mean <- c(100, 20, 0)
 # TODO: revise covariances (I made them up!)
-varA <- c(100, 1, 1 / meanP[1]) # meanP[1] will be average nWorkers
+varA <- c(100, 1, 1 / mean[1]) # mean[1] will be average nWorkers
 corA <- matrix(data = c(1.0,  0.0,  0.0,
                         0.0,  1.0, -0.5, 
                         0.0, -0.5,  1.0), nrow = 3, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
+SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA)
 
 # TODO: revise covariances (I made them up!)
 varE <- c(300, 3, 3 / SP$nWorkers)
@@ -243,14 +243,13 @@ colony
 ```
 
 ```{r colony pheno III}
-colonyPheno <- function(colony) {
+calcMyColonyPheno <- function(colony) {
   yield <- calcColonyPhenoFromCaste(colony,
-                                   queenTrait = 2,
-                                   workersTrait = 3)
+                                    queenTrait = 2,
+                                    workersTrait = 3)
   return(matrix(yield))
 }
-colony <- setColonyPheno(colony, FUN = colonyPheno)
-colony@pheno
+calcColonyPheno(colony, FUN = calcMyColonyPheno)
 ```
 
 # Swarming and honey yield
