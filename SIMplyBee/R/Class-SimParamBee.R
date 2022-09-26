@@ -1290,8 +1290,12 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' getWorkersAa(colony)
 #'
 #' @export
+# TODO: Calculate inheritance, selection and production criteria in the Colony #23
+#       https://github.com/HighlanderLab/SIMplyBee/issues/23
 # TODO: Do we need to do anything to add GxE to colony values? #353
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
+# TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
+#       https://github.com/HighlanderLab/SIMplyBee/issues/403
 calcColonyValueFromCaste <- function(colony,
                                      value = "pheno",
                                      queenTrait = 1, queenFUN = function(x) x,

@@ -5937,6 +5937,12 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' calcColonyValue(apiary)
 #'
 #' @export
+# TODO: Calculate inheritance, selection and production criteria in the Colony #23
+#       https://github.com/HighlanderLab/SIMplyBee/issues/23
+# TODO: Do we need to do anything to add GxE to colony values? #353
+#       https://github.com/HighlanderLab/SIMplyBee/issues/353
+# TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
+#       https://github.com/HighlanderLab/SIMplyBee/issues/403
 calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
