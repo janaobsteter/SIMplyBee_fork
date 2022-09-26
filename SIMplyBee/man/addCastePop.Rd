@@ -2,10 +2,10 @@
 % Please edit documentation in R/Functions_L2_Colony.R
 \name{addCastePop}
 \alias{addCastePop}
-\alias{addVirginQueens}
 \alias{addWorkers}
 \alias{addDrones}
-\title{Add caste population individuals to the colony}
+\alias{addVirginQueens}
+\title{Add caste individuals to the colony}
 \usage{
 addCastePop(
   x,
@@ -17,11 +17,11 @@ addCastePop(
   simParamBee = NULL
 )
 
-addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
-
 addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
 
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
+
+addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -58,11 +58,11 @@ This function increases queen's \code{nWorkers} and \code{nHomBrood}
 }
 \section{Functions}{
 \itemize{
-\item \code{addVirginQueens()}: Add virgin queens to a colony
-
 \item \code{addWorkers()}: Add workers to a colony
 
 \item \code{addDrones()}: Add drones to a colony
+
+\item \code{addVirginQueens()}: Add virgin queens to a colony
 
 }}
 \examples{
@@ -71,29 +71,29 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[4:5], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[3:4])
+apiary <- cross(apiary, drones = droneGroups[3:4])
 
 # Add virgin queens
 addCastePop(colony, caste = "virginQueens", nInd = 20)
-# Or use a shortcut function
+# Or use a alias function
 addVirginQueens(colony, nInd = 20)
 nVirginQueens(addVirginQueens(apiary, nInd = 20))
 
 # Add workers
 addCastePop(colony, caste = "workers", nInd = 20)
-# Or use a shortcut function
+# Or use a alias function
 addWorkers(colony, nInd = 20)
 nWorkers(addWorkers(apiary, nInd = 20))
 
 # Add drones
 addCastePop(colony, caste = "drones", nInd = 20)
-# Or use a shortcut function
+# Or use a alias function
 addDrones(colony, nInd = 20)
 nDrones(addDrones(apiary, nInd = 20))
 

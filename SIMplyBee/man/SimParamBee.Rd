@@ -51,7 +51,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 colony <- addWorkers(colony, nInd = 5)
 colony <- addDrones(colony, nInd = 5)
 colony <- addVirginQueens(colony, nInd = 2)
@@ -72,7 +72,7 @@ SP$caste
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 SP$pedigree
 SP$caste
 }
@@ -461,7 +461,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 colony <- addWorkers(colony, nInd = 5)
 colony <- addDrones(colony, nInd = 5)
 colony <- addVirginQueens(colony, nInd = 2)
@@ -504,7 +504,7 @@ SP$caste
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 SP$pedigree
 SP$caste
 }

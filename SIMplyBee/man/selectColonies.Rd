@@ -9,13 +9,12 @@ selectColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character or numeric, name of a colony (one or more) to be
-selected; if character (numeric) colonies are selected based on their name
-(position)}
+\item{ID}{character or numeric, ID of a colony (one or more) to be
+selected}
 
 \item{n}{numeric, number of colonies to select}
 
-\item{p}{numeric, probability of a colony being selected (takes precedence
+\item{p}{numeric, percentage of colonies selected (takes precedence
 over \code{n})}
 }
 \value{
@@ -24,6 +23,8 @@ over \code{n})}
 \description{
 Level 3 function that selects colonies from
   MultiColony object based on colony ID or random selection.
+  Whilst user can provide can all arguments ID, p and n, not all are carried out.
+  ID takes first priority. If no ID is provided, p takes precedence over n.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -31,27 +32,34 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 apiary <- createMultiColony(basePop[2:5], n = 4)
-apiary <- cross(apiary, fathers = fatherGroups[1:4])
+apiary <- cross(apiary, drones = droneGroups[1:4])
+apiary2 <- createMultiColony(basePop[6:8])
 getId(apiary)
+getId(apiary2)
 
 getId(selectColonies(apiary, ID = 1))
-getId(selectColonies(apiary, ID = "5"))
+getId(selectColonies(apiary, ID = "4"))
 getId(selectColonies(apiary, ID = c(1, 2)))
-getId(selectColonies(apiary, ID = c("5", "6")))
-getId(selectColonies(apiary, ID = 5))
-getId(selectColonies(apiary, ID = "9"))
+getId(selectColonies(apiary, ID = c("3", "4")))
+getId(selectColonies(apiary, ID = 3))
 # ... alternative
 getId(apiary[1])
 getId(apiary[[1]])
-getId(apiary["5"])
-getId(apiary[["5"]])
+getId(apiary["4"])
+getId(apiary[["4"]])
 getId(apiary[c(1, 2)])
-getId(apiary[c("5", "6")])
-getId(apiary[5])
-getId(apiary["9"])
+getId(apiary[c("3", "4")])
+getId(apiary[3])
 
+# Select a random number of colonies
+selectColonies(apiary, n = 3)
+# Select a percentage of colonies
+selectColonies(apiary, p = 0.2)
+
+# Since selection is random, you would get a different set of colonies with
+# each function call
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))

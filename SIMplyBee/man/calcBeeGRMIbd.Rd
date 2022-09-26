@@ -31,9 +31,9 @@ SP$setTrackPed(isTrackPed = TRUE)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 apiary <- createMultiColony(basePop[2:3], n = 2)
-apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 

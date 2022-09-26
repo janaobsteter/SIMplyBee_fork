@@ -71,14 +71,14 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 isProductive(colony)
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 isProductive(apiary)
 
 # Build up
@@ -107,7 +107,7 @@ getWorkers(colony)@id
 
 # The user can also specify a function that will give a number
 colony <- createColony(x = basePop[5])
-colony <- cross(colony, fathers = fatherGroups[[4]])
+colony <- cross(colony, drones = droneGroups[[4]])
 buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 # nWorkers and nDrones will vary between function calls when a function is used
@@ -117,13 +117,13 @@ SP$nWorkers <- nWorkersPoisson
 SP$nDrones <- nDronesPoisson
 # Create new drones and a new colony
 colony <- createColony(x = basePop[6])
-colony <- cross(colony, fathers = fatherGroups[[5]])
+colony <- cross(colony, drones = droneGroups[[5]])
 buildUp(colony)
 buildUp(colony)
 # nWorkers and nDrones will vary between function calls when a function is used
 # Same for MultiColony class
 apiary <- createMultiColony(basePop[7:8], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(6, 7)])
+apiary <- cross(apiary, drones = droneGroups[c(6, 7)])
 buildUp(apiary)[[1]]
 buildUp(apiary)[[1]]
 

@@ -30,13 +30,13 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[4:5], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[3:4])
+apiary <- cross(apiary, drones = droneGroups[3:4])
 
 # Build-up - this sets Productive to TRUE
 (colony <- buildUp(colony, nWorkers = 100))
@@ -57,10 +57,10 @@ hasSplit(remnant)
 resetEvents(remnant)
 
 tmp <- split(apiary)
-(splits <- tmp$splits)
+(splits <- tmp$split)
 hasSplit(splits[[1]])
 resetEvents(splits)[[1]]
-(remnants <- tmp$remnants)
+(remnants <- tmp$remnant)
 hasSplit(remnants[[1]])
 resetEvents(remnants)[[1]]
 
@@ -74,10 +74,10 @@ hasSwarmed(remnant)
 resetEvents(remnant)
 
 tmp <- swarm(apiary)
-(swarms <- tmp$swarms)
+(swarms <- tmp$swarm)
 hasSwarmed(swarms[[1]])
 resetEvents(swarms)[[1]]
-(remnants <- tmp$remnants)
+(remnants <- tmp$remnant)
 hasSwarmed(remnants[[1]])
 resetEvents(remnants)[[1]]
 

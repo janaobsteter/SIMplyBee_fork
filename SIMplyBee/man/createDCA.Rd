@@ -20,8 +20,8 @@ virgin queens, say via insemination}
 \code{\link{Pop-class}}
 }
 \description{
-Level 1 function that creates a population of drones from a colony
-  or multi-colony.  Such a population is often referred to as a drone
+Level 1 function that creates a population of drones from a Colony
+  or MultiColony.  Such a population is often referred to as a drone
   congregation area (DCA).
 }
 \details{
@@ -42,13 +42,13 @@ SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 colony <- addDrones(colony, nInd = 10)
 createDCA(colony)

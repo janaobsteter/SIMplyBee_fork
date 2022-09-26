@@ -4,9 +4,9 @@
 \alias{getCastePop}
 \alias{getQueen}
 \alias{getFathers}
-\alias{getVirginQueens}
 \alias{getWorkers}
 \alias{getDrones}
+\alias{getVirginQueens}
 \title{Access individuals of a caste}
 \usage{
 getCastePop(x, caste = "all", nInd = NULL, use = "order", removeFathers = TRUE)
@@ -15,11 +15,11 @@ getQueen(x)
 
 getFathers(x, nInd = NULL, use = "rand")
 
-getVirginQueens(x, nInd = NULL, use = "rand")
-
 getWorkers(x, nInd = NULL, use = "rand")
 
 getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+
+getVirginQueens(x, nInd = NULL, use = "rand")
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -60,11 +60,11 @@ Level 1 function that returns individuals of a caste. These
 
 \item \code{getFathers()}: Access fathers (drones the queen mated with)
 
-\item \code{getVirginQueens()}: Access virgin queens
-
 \item \code{getWorkers()}: Access workers
 
 \item \code{getDrones()}: Access drones
+
+\item \code{getVirginQueens()}: Access virgin queens
 
 }}
 \examples{
@@ -73,13 +73,13 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 # Using defaults in SP$nWorkers & SP$nDrones
 colony <- buildUp(x = colony, exact = TRUE)

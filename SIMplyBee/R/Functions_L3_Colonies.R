@@ -40,8 +40,8 @@
 #' # Create mated colonies by crossing
 #' apiary <- createMultiColony(x = basePop[1:2], n = 2)
 #' drones <- createDrones(x = basePop[3], n = 30)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nFathers = 15)
-#' apiary <- cross(apiary, fathers = fatherGroups)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
+#' apiary <- cross(apiary, drones = droneGroups)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -87,11 +87,10 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'   ID takes first priority. If no ID is provided, p takes precedence over n.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   selected; if character (numeric) colonies are selected based on their name
-#'   (position)
+#' @param ID character or numeric, ID of a colony (one or more) to be
+#'   selected
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being selected (takes precedence
+#' @param p numeric, percentage of colonies selected (takes precedence
 #'   over \code{n})
 #'
 #' @return \code{\link{MultiColony-class}} with selected colonies
@@ -102,27 +101,34 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary2 <- createMultiColony(basePop[6:8])
 #' getId(apiary)
+#' getId(apiary2)
 #'
 #' getId(selectColonies(apiary, ID = 1))
-#' getId(selectColonies(apiary, ID = "5"))
+#' getId(selectColonies(apiary, ID = "4"))
 #' getId(selectColonies(apiary, ID = c(1, 2)))
-#' getId(selectColonies(apiary, ID = c("5", "6")))
-#' getId(selectColonies(apiary, ID = 5))
-#' getId(selectColonies(apiary, ID = "9"))
+#' getId(selectColonies(apiary, ID = c("3", "4")))
+#' getId(selectColonies(apiary, ID = 3))
 #' # ... alternative
 #' getId(apiary[1])
 #' getId(apiary[[1]])
-#' getId(apiary["5"])
-#' getId(apiary[["5"]])
+#' getId(apiary["4"])
+#' getId(apiary[["4"]])
 #' getId(apiary[c(1, 2)])
-#' getId(apiary[c("5", "6")])
-#' getId(apiary[5])
-#' getId(apiary["9"])
+#' getId(apiary[c("3", "4")])
+#' getId(apiary[3])
 #'
+#' # Select a random number of colonies
+#' selectColonies(apiary, n = 3)
+#' # Select a percentage of colonies
+#' selectColonies(apiary, p = 0.2)
+#'
+#' # Since selection is random, you would get a different set of colonies with
+#' # each function call
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
@@ -132,14 +138,34 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
+  if (!is.null(ID)) {
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
+    if (!all(ID %in% getId(multicolony))) {
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
+    }
+  }
+  if (!is.null(n)) {
+    if (n > nColonies(multicolony)) {
+      stop("n must not be larger than the number of colonies in multicolony!")
+    } else if (n < 0) {
+      stop("n must be non-negative!")
+    }
+  }
+  if (!is.null(p)) {
+    if (1 < p) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    }
+  }
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    # Testing because a logical vector recycles on colonies[ID]
-    if (!(is.character(ID) | is.numeric(ID))) {
-      stop("ID must be character or numeric!")
-    }
+    ID <- as.character(ID)
     ret <- multicolony[ID]
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
@@ -167,11 +193,10 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony based on colony ID or random selection.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be pulled
-#'   out; if character (numeric) colonies are pulled out based on their name
-#'   (position)
+#' @param ID character or numeric, ID of a colony (one or more) to be pulled
+#'   out
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being pulled out (takes precedence
+#' @param p numeric, percentage of colonies pulled out (takes precedence
 #'   over \code{n})
 #'
 #' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
@@ -183,24 +208,16 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
 #' getId(tmp$pulled)
 #' getId(tmp$remnant)
 #'
-#' tmp <- pullColonies(apiary, ID = c("5", "6"))
-#' getId(tmp$pulled)
-#' getId(tmp$remnant)
-#'
-#' tmp <- pullColonies(apiary, ID = 5)
-#' getId(tmp$pulled)
-#' getId(tmp$remnant)
-#'
-#' tmp <- pullColonies(apiary, ID = "9")
+#' tmp <- pullColonies(apiary, ID = c("3", "4"))
 #' getId(tmp$pulled)
 #' getId(tmp$remnant)
 #'
@@ -221,7 +238,11 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    pulled <- selectColonies(multicolony, ID)
+    if (!all(ID %in% getId(multicolony))) {
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
+    }
+    pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
     remnant <- removeColonies(multicolony, ID)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
@@ -231,9 +252,8 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     lPull <- sample.int(n = nCol, size = n)
     message(paste0("Randomly pulling colonies: ", n))
     if (length(lPull) > 0) {
-      ids <- getId(multicolony)
-      pulled <- selectColonies(multicolony, ids[lPull])
-      remnant <- removeColonies(multicolony, ids[lPull])
+      pulled <- multicolony[lPull]
+      remnant <- multicolony[-lPull]
     } else {
       pulled <- createMultiColony()
       remnant <- multicolony
@@ -254,10 +274,11 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #'   from the MultiColony object based on their ID.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   removed; if character (numeric) colonies are removed based on their name
-#'   (position)
-#'
+#' @param ID character or numeric, ID of a colony (one or more) to be
+#'   removed
+#' @param n numeric, number of colonies to remove
+#' @param p numeric, percentage of colonies removed (takes precedence
+#'   over \code{n})
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
@@ -266,9 +287,9 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
-#' apiary <- cross(apiary, fathers = fatherGroups[1:4])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))
@@ -285,16 +306,24 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' nColonies(apiary)
 #'
 #' @export
-removeColonies <- function(multicolony, ID) {
+removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
-  if (is.character(ID)) {
-    ret <- multicolony[!getId(multicolony) %in% ID]
-  } else if (is.numeric(ID)) {
-    ret <- multicolony[-ID]
+  if (!is.null(ID)) {
+    if (!all(ID %in% getId(multicolony))) {
+      ID <- ID[ID %in% getId(multicolony)]
+      warning("ID parameter contains come invalid IDs!")
+    }
+    ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])
+  } else if (!is.null(n) | !is.null(p)) {
+    nCol <- nColonies(multicolony)
+    if (!is.null(p)) {
+      n <- round(nCol * p)
+    }
+    ret <- selectColonies(multicolony, n = (nCol - n))
   } else {
-    stop("ID must be character or numeric!")
+    stop("You must provide either ID, n, or p!")
   }
   validObject(ret)
   return(ret)

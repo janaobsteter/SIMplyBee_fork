@@ -4,14 +4,14 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(DCA, n, nFathers = NULL, simParamBee = NULL)
+pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones}
 
 \item{n}{integer, number of drone groups to be created}
 
-\item{nFathers}{numeric of function, number of drones that a virgin queen
+\item{nDrones}{numeric of function, number of drones that a virgin queen
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
@@ -32,16 +32,16 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- addDrones(colony, nInd = 100)
 
 # Create colony DCA
 DCA <- createDCA(colony)
-pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
-pullDroneGroupsFromDCA(DCA, n = 5, nFathers = nFathersPoisson)
+pullDroneGroupsFromDCA(DCA, n = 4, nDrones = 5)
+pullDroneGroupsFromDCA(DCA, n = 5, nDrones = nFathersPoisson)
 
 }

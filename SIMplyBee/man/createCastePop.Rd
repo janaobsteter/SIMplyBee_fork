@@ -2,9 +2,9 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{createCastePop}
 \alias{createCastePop}
-\alias{createVirginQueens}
 \alias{createWorkers}
 \alias{createDrones}
+\alias{createVirginQueens}
 \title{Creates caste population individuals from the colony}
 \usage{
 createCastePop(
@@ -18,6 +18,10 @@ createCastePop(
   simParamBee = NULL
 )
 
+createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
+
+createDrones(x, nInd = NULL, simParamBee = NULL)
+
 createVirginQueens(
   x,
   nInd = NULL,
@@ -26,10 +30,6 @@ createVirginQueens(
   csdAlleles = NULL,
   simParamBee = NULL
 )
-
-createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
-
-createDrones(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{link{MapPop-class}} (only if caste is "virginQueens"), or
@@ -39,10 +39,11 @@ or \code{\link{MultiColony-class}}}
 \item{caste}{character, "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric or function, number of caste individuals; if \code{NULL} then
-\code{\link{SimParamBee}$nVirginQueens} is used; only used when \code{x} is
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}}, when \code{x}
-is \code{link{MapPop-class}} all individuals in \code{x} are converted
-into virgin queens}
+\code{\link{SimParamBee}$nWorkers},  \code{\link{SimParamBee}$nDrones}
+or \code{\link{SimParamBee}$nVirginQueens} is used depending on the caste;
+only used when \code{x} is \code{\link{Colony-class}} or
+\code{\link{MultiColony-class}}, when \code{x} is \code{link{MapPop-class}}
+all individuals in \code{x} are converted into virgin queens}
 
 \item{exact}{logical, only relevant when creating workers,
 if the csd locus is active and exact is \code{TRUE},
@@ -79,20 +80,16 @@ when \code{x} is \code{link{MapPop-class}} returns
 \description{
 Level 1 function that creates the specified number of caste
   individuals from the colony with a mated queens. If csd
-  locus is active, it takes it into account and any csd homozygotes (workers) are
+  locus is active, it takes it into account and any csd homozygotes are
   removed and counted towards homozygous brood.
-}
-\details{
-The package includes shortcut functions: createVirginQueens,
-  createWorkers, and createDrones
 }
 \section{Functions}{
 \itemize{
-\item \code{createVirginQueens()}: Create virgin queens from a colony
-
 \item \code{createWorkers()}: Create workers from a colony
 
 \item \code{createDrones()}: Create drones from a colony
+
+\item \code{createVirginQueens()}: Create virgin queens from a colony
 
 }}
 \examples{
@@ -102,18 +99,18 @@ SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 # Create virgin queens on a MapPop
 basePop <- createCastePop(founderGenomes, caste = "virginQueens")
-# Or shortcut function: createVirginQueens(founderGenomes)
+# Or alias function: createVirginQueens(founderGenomes)
 
 #Create drones on a Pop
 drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
-# Or shrotcut: createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+# Or alias: createDrones(x = basePop[1], nInd = 100)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 # Using default nInd in SP
 colony@virginQueens <- createVirginQueens(colony)
@@ -153,7 +150,7 @@ createWorkers(colony, nInd = nWorkersPoisson)
 createWorkers(apiary, nInd = nWorkersPoisson)
 createDrones(colony, nInd = nDronesPoisson)
 createDrones(apiary, nInd = nDronesPoisson)
-# No individuals will vary between function calls when a function is used
+# No. of individuals will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
 SP$nVirginQueens <- nVirginQueensPoisson
@@ -165,7 +162,7 @@ createWorkers(colony)
 createWorkers(apiary)
 createDrones(colony)
 createDrones(apiary)
-# no individuals will vary between function calls when a function is used
+# No. of individuals will vary between function calls when a function is used
 
 # csd homozygosity - relevant when creating virgin queens
 founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
