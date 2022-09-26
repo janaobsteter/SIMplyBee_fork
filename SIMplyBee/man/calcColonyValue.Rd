@@ -29,10 +29,10 @@ colony members}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 
-\item{...}{other arguments of \code{\link{FUN}}}
+\item{...}{other arguments of \code{FUN}}
 }
 \value{
-a row matrix of values when \code{x} is
+a matrix with one value or a row of values when \code{x} is
   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
   \code{\link{MultiColony-class}}, where names are colony IDs
 }
@@ -83,10 +83,10 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, drones = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 apiary <- createMultiColony(basePop[3:5], n = 2)
-apiary <- cross(apiary, drones = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
 # Colony value - shorthand version

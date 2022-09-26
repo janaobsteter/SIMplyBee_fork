@@ -1245,7 +1245,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 10)
 #' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, fathers = drones)
+#' colony <- cross(colony, drones = drones)
 #' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 #'
 #' # Colony value

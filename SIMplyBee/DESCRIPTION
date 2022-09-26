@@ -23,15 +23,16 @@ Description: SIMplyBee is an extension of the AlphaSimR package
   extended for honeybees, including haplo-diploidy, csd locus, colony events
   (swarming, supersedure, etc.), and colony phenotype values.
 URL: https://github.com/HighlanderLab/SIMplyBee
-License: MIT + file LICENCE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1), ggplot2
+Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1)
 Depends: R (>= 3.3.0), AlphaSimR (>= 1.1.2)
 RoxygenNote: 7.2.1
 Suggests: 
     rmarkdown,
     knitr,
+    ggplot2,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr

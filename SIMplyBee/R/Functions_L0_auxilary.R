@@ -5853,7 +5853,7 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' @param FUN function, that calculates colony value from values of
 #'   colony members
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#' @param ... other arguments of \code{\link{FUN}}
+#' @param ... other arguments of \code{FUN}
 #'
 #' @seealso \code{\link{calcColonyValueFromCaste}} as an example of \code{FUN}
 #'

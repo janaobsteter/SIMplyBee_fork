@@ -74,7 +74,7 @@ a 0}
 \item{...}{other arguments of \code{calcColonyValueFromCaste}}
 }
 \value{
-numeric matrix with a row of values
+numeric matrix with one value or a row of values
 }
 \description{
 Calculate colony value from caste individuals' values - can be
@@ -134,7 +134,7 @@ SP$setVarE(varE = varE)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 
 # Colony value
