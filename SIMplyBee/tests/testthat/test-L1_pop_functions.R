@@ -8,14 +8,14 @@ test_that("getCastePop", {
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = drones)
+  colony <- cross(colony, drones = drones)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
   # Colony without workers
   colony1 <- removeWorkers(colony)
 
-  fatherGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nDrones = 15)
   apiary <- createMultiColony(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  apiary <- cross(apiary, drones = dronesGroups)
   apiary <- addWorkers(apiary, nInd = 100)
 
   expect_warning(getCastePop(colony, caste = "drones"))
@@ -47,16 +47,16 @@ test_that("createVirginQueens", {
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = drones)
+  colony <- cross(colony, drones = drones)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
 
   colony1 <- createColony(basePop[3])
   # If no queen in colony - queen is missing
   expect_error(createVirginQueens(x= colony1, nInd = 5))
 
-  fatherGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nDrones = 15)
   apiary <- createMultiColony(basePop[4:5], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  apiary <- cross(apiary, drones = dronesGroups)
   # Input = multicolony       Output = named list (by colony ID) of pop class
   expect_type(createVirginQueens(x= apiary, nInd = 7), "list")
   expect_length(createVirginQueens(x= apiary), 2)
@@ -97,7 +97,7 @@ test_that("createDrones", {
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[3])
-  colony <- cross(colony, fathers = drones)
+  colony <- cross(colony, drones = drones)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
   # Expect error if x is not virgin queen or queen
   expect_error(createDrones(colony@workers))
@@ -108,11 +108,11 @@ test_that("createDrones", {
   expect_false(all(isDrone(colony@queen@misc[[1]]$fathers)))
 
   colony1  <- createColony(basePop[4])
-  colony1 <- cross(colony1, fathers = drones2)
+  colony1 <- cross(colony1, drones = drones2)
 
-  fatherGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nDrones = 15)
   apiary <- createMultiColony(basePop[5:6], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  apiary <- cross(apiary, drones = dronesGroups)
 
   # Expect error if x = colony and queen isn't present
   colony <- removeQueen(colony)
@@ -137,20 +137,20 @@ test_that("combineBeeGametes", {
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = drones)
+  colony <- cross(colony, drones = drones)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
 
-  fatherGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nDrones = 15)
   apiary <- createMultiColony(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  apiary <- cross(apiary, drones = dronesGroups)
 
   # Error if used on multicolony or colony class
-  expect_error(combineBeeGametes(queen = apiary, drones = fatherGroups))
+  expect_error(combineBeeGametes(queen = apiary, drones = dronesGroups))
   expect_error(combineBeeGametes(queen = colony, drones = drones))
   #Error if more than one queen is provided
   expect_error(combineBeeGametes(queen = basePop[5:6], drones = drones))
   # AlphaSimR error - invalid crossPlan
-  expect_error(combineBeeGametes(queen = basePop[0], drones = fatherGroups[[1]]))
+  expect_error(combineBeeGametes(queen = basePop[0], drones = dronesGroups[[1]]))
   #check the class
   expect_s4_class(combineBeeGametes(basePop[5], drones = drones), "Pop")
   expect_equal(combineBeeGametes(basePop[5], drones = drones, nProgeny = 5)@nInd, 5)
@@ -167,14 +167,14 @@ test_that("pullCastePop", {
 
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = drones)
+  colony <- cross(colony, drones = drones)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
   # Colony without workers
   colony1 <- removeWorkers(colony)
 
-  fatherGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony), n = 2, nDrones = 15)
   apiary <- createMultiColony(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups)
+  apiary <- cross(apiary, drones = dronesGroups)
   apiary <- addWorkers(apiary, nInd = 100)
 
   apiary1 <- createMultiColony(x = basePop[1], n = 0)
@@ -218,16 +218,16 @@ test_that("cross", {
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes, nInd = 100)
   drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 7, nFathers = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(drones, n = 7, nDrones = 15)
 
   # Create Colony and MultiColony class
   colony <- createColony(basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = dronesGroups[[1]])
   colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
   #remove queen
   colony <- removeQueen(colony)
   # If x = colony virgin queens must be present
-  expect_error(cross(colony, fathers = fatherGroups))
+  expect_error(cross(colony, drones = dronesGroups))
   expect_null(isVirginQueen(colony@virginQueens))
 
   apiary <- createMultiColony(basePop[3:4], n = 2)
@@ -237,42 +237,42 @@ test_that("cross", {
   virginQueen2 <- basePop[8]
 
   # Error if x = pop and are not virgin queens
-  expect_error(cross(colony@workers, fathers = fatherGroups[[2]]))
+  expect_error(cross(colony@workers, drones = dronesGroups[[2]]))
   expect_null(isVirginQueen(colony@virginQueens))
   # Error if fathers is not a pop
-  expect_error(cross(colony1, fathers = colony))
+  expect_error(cross(colony1, drones = colony))
   expect_true(isVirginQueen(colony1@virginQueens))
   # Error if fathers are not drones
-  expect_error(cross(colony1, fathers = colony@workers))
+  expect_error(cross(colony1, drones = colony@workers))
   expect_true(isVirginQueen(colony1@virginQueens))
   # Error if length of fathers doesn't match virginqueens
-  expect_error(cross(basePop[3:4], fathers = fatherGroups[1]))
+  expect_error(cross(basePop[3:4], drones = dronesGroups[1]))
   expect_true(all(isVirginQueen(basePop[3:4])))
   # If x = colony, queen must not be present
-  expect_error(cross(colony, nFathers[1]))
+  expect_error(cross(colony, drones = nFathers[1]))
   expect_null(isVirginQueen(colony@virginQueens))
 
   # If x = multicolony, length of fathers must match length of colonies
-  expect_error(cross(apiary, fathers = fatherGroups[1]))
+  expect_error(cross(apiary, drones = dronesGroups[1]))
   expect_true(all(isVirginQueensPresent(apiary)))
   # Cannot mate with already-mated drones
-  expect_error(cross(colony1, fathers = drones))
+  expect_error(cross(colony1, drones = drones))
   expect_true(isVirginQueen(colony1@virginQueens))
 
   # Must mate prior to S4 class check to change SP
-  colony2 <- cross(colony2, fathers = fatherGroups[[3]])
+  colony2 <- cross(colony2, drones = dronesGroups[[3]])
   expect_s4_class(colony2,"Colony")
-  virginQueen <- cross(virginQueen, fathers = fatherGroups[[4]])
+  virginQueen <- cross(virginQueen, drones = dronesGroups[[4]])
   expect_s4_class(virginQueen, "Pop")
-  apiary <- cross(apiary, fathers = fatherGroups[c(5,6)])
+  apiary <- cross(apiary, drones = dronesGroups[c(5,6)])
   expect_s4_class(apiary, "MultiColony")
 
   # Error when mating a mated queen
-  expect_error(cross(colony2, fatherGroups[7]))
+  expect_error(cross(colony2, drones = dronesGroups[7]))
 
   # Message if fathers == 0 "Mating failed"
-  expect_error(cross(virginQueen2, fathers= selectInd(colony@drones,nInd = 0, use = "rand")))
-  expect_warning(cross(virginQueen2, fathers= selectInd(colony@drones,nInd = 0, use = "rand"), checkMating = "warning"))
+  expect_error(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand")))
+  expect_warning(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand"), checkMating = "warning"))
 })
 
 # ---- setQueensYearOfBirth ----
@@ -281,10 +281,10 @@ test_that("setQueensYearOfBirth", {
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes, nInd = 100)
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  dronesGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
   colony <- createColony(x = basePop[2])
-  colony <- cross(x = colony, fathers = fatherGroups[[1]])
+  colony <- cross(x = colony, drones = dronesGroups[[1]])
   colony <- buildUp(colony)
   # Error if x = pop, and not a vq or q
   expect_error(setQueensYearOfBirth(colony@workers))
@@ -295,10 +295,10 @@ test_that("setQueensYearOfBirth", {
   expect_error(setQueensYearOfBirth(colony))
 
   apiary <- createMultiColony(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+  apiary <- cross(apiary, drones = dronesGroups[c(2, 3)])
 
   colony1 <- createColony(x = basePop[5])
-  colony1 <- cross(colony1, fathers = fatherGroups[[4]])
+  colony1 <- cross(colony1, drones = dronesGroups[[4]])
   queen1 <- getQueen(colony1)
 
   expect_s4_class(setQueensYearOfBirth(queen1, year = 2022), "Pop")
@@ -313,13 +313,13 @@ test_that("createDCA", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  dronesGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
   # Create a Colony and a MultiColony class
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = dronesGroups[[1]])
   apiary <- createMultiColony(basePop[3:4], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+  apiary <- cross(apiary, drones = dronesGroups[c(2, 3)])
   # Warning if x = colony/multicolony and no drones available
   expect_warning(createDCA(colony))
   expect_warning(createDCA(apiary))
@@ -330,7 +330,7 @@ test_that("createDCA", {
   colony1 <- addDrones(colony, nInd = 100)
 
   colony2 <- createColony(x = basePop[6])
-  colony2 <- cross(colony2, fathers = selectInd(colony1@drones, nInd = 1, use = "rand"))
+  colony2 <- cross(colony2, drones = selectInd(colony1@drones, nInd = 1, use = "rand"))
   # Warning : Taking only drones that have not yet mated
   expect_warning(createDCA(colony1))
 
@@ -349,12 +349,12 @@ test_that("pullDroneGroupsFromDCA", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  expect_length(pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson), 10)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  expect_length(pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson), 10)
+  dronesGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
   # Create a Colony and a MultiColony class
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = dronesGroups[[1]])
   colony <- addDrones(colony, nInd = 100)
 
   DCA <- createDCA(colony, nInd = 80)
@@ -363,11 +363,11 @@ test_that("pullDroneGroupsFromDCA", {
   # Error, n must be provided
   expect_error(pullDroneGroupsFromDCA(DCA))
 
-  expect_type(pullDroneGroupsFromDCA(DCA, n = 5, nFathers = 8), "list")
-  expect_s4_class(pullDroneGroupsFromDCA(DCA, n = 5, nFathers = 8)[[1]], "Pop")
-  expect_true(all(isDrone(pullDroneGroupsFromDCA(DCA, n = 1, nFathers = 70)[[1]])))
+  expect_type(pullDroneGroupsFromDCA(DCA, n = 5, nDrones = 8), "list")
+  expect_s4_class(pullDroneGroupsFromDCA(DCA, n = 5, nDrones = 8)[[1]], "Pop")
+  expect_true(all(isDrone(pullDroneGroupsFromDCA(DCA, n = 1, nDrones = 70)[[1]])))
 
   suppressWarnings(DCA2 <- createDCA(colony, nInd = 4))
   # Error, if nInd in DCA is smaller than nFathers
-  expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nFathers = 20))
+  expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nDrones = 20))
 })

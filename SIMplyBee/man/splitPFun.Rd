@@ -71,7 +71,7 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 15)
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = drones)
+colony <- cross(colony, drones = drones)
 colony <- addWorkers(colony, nInd = 10)
 nWorkers(colony) # weak colony
 splitPColonyStrength(colony)

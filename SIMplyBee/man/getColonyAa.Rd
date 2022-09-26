@@ -43,16 +43,16 @@ SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 colony <- addVirginQueens(x = colony, nInd = 5)
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 

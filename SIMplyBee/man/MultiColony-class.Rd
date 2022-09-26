@@ -13,7 +13,7 @@
 \alias{[[,MultiColony,character-method}
 \alias{[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony-method}
 \alias{[[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}
-\title{Honeybee multi-colony object}
+\title{Honeybee multicolony object}
 \usage{
 isMultiColony(x)
 
@@ -32,6 +32,8 @@ isMultiColony(x)
 \S4method{[[}{MultiColony,character}(x, i)
 
 \S4method{[}{MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony}(x, i, j) <- value
+
+\S4method{[[}{MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony}(x, i, j) <- value
 
 isMultiColony(x)
 
@@ -103,6 +105,8 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{`[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into MultiColony
 
+\item \code{`[[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign Colony into MultiColony
+
 \item \code{isMultiColony()}: Test if x is a MultiColony class object
 
 \item \code{show(MultiColony)}: Show MultiColony object
@@ -138,9 +142,9 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 apiary <- createMultiColony(basePop[1:6], n = 6)
-apiary <- cross(apiary, fathers = fatherGroups[1:6])
+apiary <- cross(apiary, drones = fatherGroups[1:6])
 apiary
 show(apiary)
 is(apiary)
@@ -205,9 +209,9 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 apiary <- createMultiColony(basePop[1:6], n = 6)
-apiary <- cross(apiary, fathers = fatherGroups[1:6])
+apiary <- cross(apiary, drones = fatherGroups[1:6])
 apiary
 show(apiary)
 is(apiary)

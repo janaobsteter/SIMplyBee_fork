@@ -25,13 +25,13 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 queen <- getQueen(colony)
 queen <- setQueensYearOfBirth(queen, year = 2020)
