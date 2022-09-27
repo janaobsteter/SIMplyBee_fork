@@ -3,7 +3,7 @@ test_that("createColony", {
    SP <- SimParamBee$new(founderGenomes)
    basePop <- createVirginQueens(founderGenomes)
    drones <- createDrones(x = basePop[1], nInd = 15)
-   matedQueen <- cross(basePop[2], fathers = drones)
+   matedQueen <- cross(basePop[2], drones = drones)
 
    # Create empty colony
    expect_s4_class(createColony(), "Colony")
@@ -24,8 +24,8 @@ test_that("reQueen", {
   drones <- createDrones(x = basePop[1], nInd = 30)
   virginQueen <- basePop[2]
   virginQueen1 <- basePop[3]
-  matedQueen <- cross(basePop[4], fathers = drones[1:15])
-  matedQueen1 <- cross(basePop[5], fathers = drones[16:30])
+  matedQueen <- cross(basePop[4], drones = drones[1:15])
+  matedQueen1 <- cross(basePop[5], drones = drones[16:30])
 
   # Create virgin colony
   virginColony <- createColony(x = virginQueen)
@@ -63,15 +63,15 @@ test_that("Add functions", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 100)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+   droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 
    # Create and cross Colony and MultiColony class
    emptyColony <- createColony()
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = droneGroups[[1]])
    emptyApiary <- createMultiColony()
    apiary <- createMultiColony(basePop[4:5], n = 2)
-   apiary <- cross(apiary, fathers = fatherGroups[3:4])
+   apiary <- cross(apiary, drones = droneGroups[3:4])
 
    # Add virgin queens to an empty colony --> missing queen error
    expect_error(addVirginQueens(emptyColony, nInd = 10))
@@ -117,15 +117,15 @@ test_that("BuildUpDownsize", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
    # Create a Colony and a MultiColony class
    emptyColony <- createColony()
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = droneGroups[[1]])
    emptyApiary <- createMultiColony()
    apiary <- createMultiColony(basePop[3:4], n = 2)
-   apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+   apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
    #BuildUp empty colony - missing queen error
    expect_error(buildUp(emptyColony))
@@ -172,17 +172,17 @@ test_that("replaceFunctions", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 100)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 
   # Create and cross Colony and MultiColony class
   emptyColony <- createColony()
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = droneGroups[[1]])
   colony <- buildUp(colony, nWorkers = 100, nDrones = 10)
   colony <- addVirginQueens(colony, nInd = 10)
   emptyApiary <- createMultiColony()
   apiary <- createMultiColony(basePop[4:5], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups[3:4])
+  apiary <- cross(apiary, drones = droneGroups[3:4])
   apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10)
   apiary <- addVirginQueens(apiary, nInd = 10)
 
@@ -224,17 +224,17 @@ test_that("removeFunctions", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 100)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 
   # Create and cross Colony and MultiColony class
   emptyColony <- createColony()
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = droneGroups[[1]])
   colony <- buildUp(colony, nWorkers = 100, nDrones = 10)
   colony <- addVirginQueens(colony, nInd = 10)
   emptyApiary <- createMultiColony()
   apiary <- createMultiColony(basePop[4:5], n = 2)
-  apiary <- cross(apiary, fathers = fatherGroups[3:4])
+  apiary <- cross(apiary, drones = droneGroups[3:4])
   apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10)
   apiary <- addVirginQueens(apiary, nInd = 10)
 

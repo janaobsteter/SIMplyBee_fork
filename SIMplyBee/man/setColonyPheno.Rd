@@ -57,14 +57,14 @@ SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = 14)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = 14)
 
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- cross(colony, fathers = fatherGroups[[1]])
+colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 apiary <- createMultiColony(basePop[3:5], n = 2)
-apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
 # Set phenotypes for all colony individuals

@@ -4,13 +4,18 @@
 \alias{removeColonies}
 \title{Remove some colonies from the MultiColony object}
 \usage{
-removeColonies(multicolony, ID)
+removeColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character, ID of a colony (one or more) to be
+\item{ID}{character or numeric, ID of a colony (one or more) to be
 removed}
+
+\item{n}{numeric, number of colonies to remove}
+
+\item{p}{numeric, percentage of colonies removed (takes precedence
+over \code{n})}
 }
 \value{
 \code{\link{MultiColony-class}} with some colonies removed
@@ -25,9 +30,9 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 apiary <- createMultiColony(basePop[2:5], n = 4)
-apiary <- cross(apiary, fathers = fatherGroups[1:4])
+apiary <- cross(apiary, drones = droneGroups[1:4])
 getId(apiary)
 
 getId(removeColonies(apiary, ID = 1))

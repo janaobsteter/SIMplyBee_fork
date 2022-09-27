@@ -7,7 +7,7 @@
 \usage{
 cross(
   x,
-  fathers,
+  drones,
   removeFathers = TRUE,
   checkMating = "error",
   simParamBee = NULL
@@ -17,7 +17,7 @@ cross(
 \item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 one or more virgin queens / colonies to be mated;}
 
-\item{fathers}{\code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
+\item{drones}{\code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
 group(s) of drones that will be mated with virgin queen(s);
 if there is more than one virgin queen, the user has to provide
 a list of drone \code{\link{Pop-class}}. For this, the user can use
@@ -69,14 +69,14 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 200)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 8, nFathers = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 8, nDrones = nFathersPoisson)
 
 # If input is a Pop class of virgin queen(s)
 virginQueen1 <- basePop[2]
 isQueen(virginQueen1)
 (matedQueen1 <- cross(
   x = virginQueen1,
-  fathers = fatherGroups[[1]]
+  drones = droneGroups[[1]]
 ))
 
 isQueen(virginQueen1)
@@ -94,7 +94,7 @@ isQueen(matedQueen1)
 virginQueen2 <- basePop[3]
 (matedQueen2 <- cross(
   x = virginQueen2,
-  fathers = fatherGroups[[2]]
+  drones = droneGroups[[2]]
 ))
 isQueen(virginQueen2)
 isQueen(matedQueen2)
@@ -103,7 +103,7 @@ getFathers(matedQueen2)@id
 
 matedQueens <- cross(
   x = c(basePop[4], basePop[5]),
-  fathers = fatherGroups[c(3, 4)]
+  drones = droneGroups[c(3, 4)]
 )
 matedQueens
 isQueen(matedQueens)
@@ -114,7 +114,7 @@ getFathers(matedQueens)
 # Inbred mated queen (mated with her own sons)
 matedQueen3 <- cross(
   x = basePop[1],
-  fathers = fatherGroups[[5]]
+  drones = droneGroups[[5]]
 )
 # Check the expected csd homozygosity
 pHomBrood(matedQueen3)
@@ -127,20 +127,20 @@ apiary <- createMultiColony(basePop[7:8], n = 2)
 all(isVirginQueen(mergePops(getVirginQueens(apiary))))
 
 # Cross
-colony <- cross(colony, fathers = fatherGroups[[6]])
+colony <- cross(colony, drones = droneGroups[[6]])
 isQueenPresent(colony)
-apiary <- cross(apiary, fathers = fatherGroups[c(7, 8)])
+apiary <- cross(apiary, drones = droneGroups[c(7, 8)])
 all(isQueenPresent(apiary))
 nFathers(apiary)
 
 # Try mating with drones that were already used for mating
 colony <- createColony(basePop[9])
-try((matedColony <- cross(x = colony, fathers = fatherGroups[[1]])))
+try((matedColony <- cross(x = colony, drones = droneGroups[[1]])))
 # Create new drones and mate the colony with them
 drones <- createDrones(x = basePop[1], nInd = 15)
 all(isDrone(drones))
 any(isFather(drones))
-(matedColony <- cross(x = colony, fathers = drones))
+(matedColony <- cross(x = colony, drones = drones))
 isQueenPresent(matedColony)
 
 }

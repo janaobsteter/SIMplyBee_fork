@@ -114,7 +114,7 @@ Before we look into the colony, lets mate the virgin queen, so that she becomes
 a queen and can start laying eggs for her own workers and drones.
 
 ```{r cross colony}
-colony <- cross(colony, fathers = baseDrones)
+colony <- cross(colony, drones = baseDrones)
 colony
 ```
 
@@ -271,7 +271,7 @@ current colony and mate her with her brothers. Oh, dear me.
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
 fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
-inbredColony <- cross(inbredColony, fathers = fathers)
+inbredColony <- cross(inbredColony, drones = fathers)
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 ```

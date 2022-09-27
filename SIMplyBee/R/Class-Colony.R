@@ -50,13 +50,13 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #' colony1 <- createColony(x = basePop[2])
-#' colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+#' colony1 <- cross(colony1, drones = droneGroups[[1]])
 #' colony2 <- createColony(x = basePop[3])
-#' colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+#' colony2 <- cross(colony2, drones = droneGroups[[2]])
 #' colony3 <- createColony(x = basePop[4])
-#' colony3 <- cross(colony3, fathers = fatherGroups[[3]])
+#' colony3 <- cross(colony3, drones = droneGroups[[3]])
 #'
 #' colony1
 #' show(colony1)
@@ -169,6 +169,9 @@ setMethod(
 
 #' @rdname combineNULLAndPop
 #' @title Combine a NULL and AlphaSimR population
+#'
+#' @param x NULL or \code{\link{Pop-class}}
+#' @param ... list of NULL or \code{\link{Pop-class}} objects
 #'
 #' @description This combine \code{c()} method is a hack to combine NULL and an
 #'   AlphaSimR population object \code{c(NULL, pop)} (\code{c(pop, NULL)} works

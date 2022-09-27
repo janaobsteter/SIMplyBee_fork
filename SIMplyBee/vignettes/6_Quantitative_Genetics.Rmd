@@ -66,7 +66,7 @@ SP$setCorE(corE = corE)
 
 ```{r basePop virgin queens}
 # Base population virgin queens
-basePop <- createVirginQueens(founderGenomes)
+basePop <- createVirginQueens(founderGenomes, n = 20)
 head(basePop@gv)
 hist(basePop@pheno[, 1])
 hist(basePop@pheno[, 2])
@@ -82,7 +82,7 @@ head(drones@pheno)
 
 ```{r create colony}
 # Colony
-queen <- cross(x = basePop[6], fathers = drones)
+queen <- cross(x = basePop[6], drones = drones)
 colony <- createColony(x = queen)
 colony
 colony@queen@pheno
@@ -177,7 +177,7 @@ SP$setCorE(corE = corE)
 ```{r base pop and colony}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 3)
-queen <- cross(x = basePop[6], fathers = drones)
+queen <- cross(x = basePop[6], drones = drones)
 colony <- createColony(x = queen)
 colony <- buildUp(colony)
 colony
@@ -230,7 +230,7 @@ SP$setCorE(corE = corE)
 ```{r base pop and coLony}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 3)
-queen <- cross(x = basePop[6], fathers = drones)
+queen <- cross(x = basePop[6], drones = drones)
 colony <- createColony(x = queen)
 colony@queen@pheno
 ```

@@ -85,13 +85,13 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 colony1 <- createColony(x = basePop[2])
-colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+colony1 <- cross(colony1, drones = fatherGroups[[1]])
 colony2 <- createColony(x = basePop[3])
-colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+colony2 <- cross(colony2, drones = fatherGroups[[2]])
 colony3 <- createColony(x = basePop[4])
-colony3 <- cross(colony3, fathers = fatherGroups[[3]])
+colony3 <- cross(colony3, drones = fatherGroups[[3]])
 
 colony1
 show(colony1)
