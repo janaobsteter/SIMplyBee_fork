@@ -4,7 +4,7 @@
 \alias{swarm}
 \title{Swarm}
 \usage{
-swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
+swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -20,6 +20,9 @@ remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{p} or \code{nVirginQueens}
+when these arguments are functions}
 }
 \value{
 list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},

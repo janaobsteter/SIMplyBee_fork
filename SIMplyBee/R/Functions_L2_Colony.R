@@ -199,6 +199,7 @@ return(x)
 #'  (heterozygous at the csd locus)
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
 #' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
 #'   counters.
@@ -276,7 +277,7 @@ return(x)
 #' getMisc(getQueen(addWorkers(colony)))
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
-                        exact = FALSE, year = NULL, simParamBee = NULL) {
+                        exact = FALSE, year = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -298,7 +299,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       stop("Missing queen!")
     }
     if (is.function(nInd)) {
-      nInd <- nInd(x)
+      nInd <- nInd(x, ...)
     }
     if (0 < nInd) {
       newInds <- createCastePop(x, nInd,
@@ -327,7 +328,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     for (colony in seq_len(nCol)) {
       x[[colony]] <- addCastePop(
         x = x[[colony]], caste = caste, nInd = nInd, new = new,
-        exact = exact, simParamBee = simParamBee
+        exact = exact, simParamBee = simParamBee, ...
       )
     }
   } else {
@@ -340,20 +341,20 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
 #' @describeIn addCastePop Add workers to a colony
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE,
-                       exact = FALSE, simParamBee = NULL) {
+                       exact = FALSE, simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "workers", nInd = nInd, new = new,
-    exact = exact, simParamBee = simParamBee
+    exact = exact, simParamBee = simParamBee, ...
   )
   return(ret)
 }
 
 #' @describeIn addCastePop Add drones to a colony
 #' @export
-addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
+addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "drones", nInd = nInd, new = new,
-    simParamBee = simParamBee
+    simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -361,10 +362,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE, simParamBee = NULL) {
 #' @describeIn addCastePop Add virgin queens to a colony
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE,
-                            year = NULL, simParamBee = NULL) {
+                            year = NULL, simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "virginQueens", nInd = nInd, new = new,
-    year = year, simParamBee = simParamBee
+    year = year, simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -392,6 +393,8 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
 #'   build up
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{nWorkers} or \code{nDrones}
+#'   when these arguments are a function
 #'
 #' @details This function increases queen's \code{nWorkers}, \code{nHomBrood},
 #'   and \code{nDrones} counters. It also turns production on.
@@ -480,7 +483,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @export
 buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
                     new = TRUE, exact = FALSE, resetEvents = FALSE,
-                    simParamBee = NULL) {
+                    simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -490,7 +493,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x)
+      nWorkers <- nWorkers(colony = x, ...)
     }
     if (new) {
       n <- nWorkers
@@ -508,7 +511,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nDrones <- simParamBee$nDrones
     }
     if (is.function(nDrones)) {
-      nDrones <- nDrones(x = x)
+      nDrones <- nDrones(x = x, ...)
     }
     if (new) {
       n <- nDrones
@@ -535,7 +538,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
         new = new,
         exact = exact,
         resetEvents = resetEvents,
-        simParamBee = simParamBee
+        simParamBee = simParamBee, ...
       )
     }
   } else {
@@ -562,6 +565,8 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{p} when this argument is a
+#'   function
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
 #'   drones/virgin queens removed
@@ -592,7 +597,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' apiary[[1]]
 #' @export
 downsize <- function(x, p = NULL, use = "rand", new = FALSE,
-                     simParamBee = NULL) {
+                     simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -604,7 +609,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
       p <- simParamBee$downsizeP
     }
     if (is.function(p)) {
-      p <- p(x)
+      p <- p(x, ...)
     }
     if (new == TRUE) {
       n <- round(nWorkers(x) * (1 - p))
@@ -623,7 +628,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
         p = p,
         use = use,
         new = new,
-        simParamBee = simParamBee
+        simParamBee = simParamBee, ...
       )
     }
   } else {
@@ -1120,6 +1125,8 @@ collapse <- function(x) {
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
+#'   when these arguments are functions
 #'
 #' @return list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #' the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
@@ -1155,7 +1162,7 @@ collapse <- function(x) {
 #' # Swarm only the pulled colonies
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
-swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
+swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1174,13 +1181,13 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       stop("No workers present in the colony!")
     }
     if (is.function(p)) {
-      p <- p(x)
+      p <- p(x, ...)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens(x)
+      nVirginQueens <- nVirginQueens(x, ...)
     }
     nWorkers <- nWorkers(x)
     nWorkersSwarm <- round(nWorkers * p)
@@ -1238,7 +1245,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
         tmp <- swarm(x[[colony]],
                      p = p, year = year,
                      nVirginQueens = nVirginQueens,
-                     simParamBee = simParamBee
+                     simParamBee = simParamBee, ...
         )
         ret$swarm[[colony]] <- tmp$swarm
         ret$remnant[[colony]] <- tmp$remnant
@@ -1268,6 +1275,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{nVirginQueens} when this
+#'   argument is a function
 #'
 #' @return  \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the
 #' supersede event set to \code{TRUE}
@@ -1306,7 +1315,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' # Swarm only the pulled colonies
 #' (supersede(tmp$pulled))
 #' @export
-supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
+supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1318,7 +1327,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
       stop("No queen present in the colony!")
     }
     if (is.function(nVirginQueens)) {
-      nVirginQueens <- nVirginQueens(x)
+      nVirginQueens <- nVirginQueens(x, ...)
     }
 
     tmpVirginQueen <- createVirginQueens(
@@ -1338,7 +1347,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
         x[[colony]] <- supersede(x[[colony]],
                                  year = year,
                                  nVirginQueens = nVirginQueens,
-                                 simParamBee = simParamBee
+                                 simParamBee = simParamBee, ...
         )
       }
     }
@@ -1374,6 +1383,8 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... additional arguments passed to \code{p} when this argument is a
+#'   function
 #'
 #' @return list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #' the \code{split} and the \code{remnant} (see the description what each colony holds!);
@@ -1409,7 +1420,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' # Split only the pulled colonies
 #' (split(tmp$pulled, p = 0.5))
 #' @export
-split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
+split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1424,7 +1435,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
       stop("No workers present in the colony!")
     }
     if (is.function(p)) {
-      p <- p(x)
+      p <- p(x, ...)
     }
     if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
@@ -1479,7 +1490,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
       for (colony in seq_len(nCol)) {
         tmp <- split(x[[colony]],
                      p = p, year = year,
-                     simParamBee = simParamBee
+                     simParamBee = simParamBee, ...
         )
         ret$split[[colony]] <- tmp$split
         ret$remnant[[colony]] <- tmp$remnant
@@ -1636,138 +1647,6 @@ setLocation <- function(x, location) {
           x[[colony]]@location <- location
         }
       }
-    }
-  } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
-  }
-  validObject(x)
-  return(x)
-}
-
-#' @rdname setColonyPheno
-#' @title Set colony phenotype
-#'
-#' @description Level 2 function that sets phenotypes for all colony individuals
-#'   (queen, workers, drones, and virgin queens) and for the colony, or each
-#'   colony in a MultiColony object.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param FUN function, any function that can be run on \code{colony} and
-#'   returns colony phenotypes; if \code{NULL} then
-#'   \code{\link{SimParamBee}$colonyPheno} is used - if even this is \code{NULL},
-#'   then colony phenotype is not set, but phenotypes of colony individuals are
-#'   (see \code{reset} though!)
-#' @param reset logical, should previous phenotype values for individuals in the
-#'   castes be used or sampled anew?
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#' @param ... arguments passed to \code{\link{setPheno}}
-#'
-#' @details When this function is called on a colony, phenotypes for all colony
-#'   individuals and possibly the whole colony are set (or reset if phenotypes
-#'   already exist).
-#'
-#' @seealso \code{\link{calcColonyPhenoFromCaste}} as an example for \code{FUN}
-#'   and \code{\link{setPheno}} for the basic population phenotyping
-#'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with phenotypes
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#'
-#' # Define two traits that collectively affect colony honey yield:
-#' # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
-#' # 2) workers' effect on colony honey yield, say via foraging phenotype
-#' # The traits will have a negative genetic correlation of -0.5 and heritability
-#' # of 0.25 (on an individual level)
-#' meanP <- c(20, 0)
-#' nWorkers <- 10
-#' varA <- c(1, 1 / nWorkers)
-#' corA <- matrix(data = c(
-#'   1.0, -0.5,
-#'   -0.5, 1.0
-#' ), nrow = 2, byrow = TRUE)
-#' varE <- c(3, 3 / nWorkers)
-#' varA / (varA + varE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-#'
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 100)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = 14)
-#'
-#' # Create and cross Colony and MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
-#' apiary <- createMultiColony(basePop[3:5], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
-#'
-#' # Set phenotypes for all colony individuals
-#' colony <- setColonyPheno(colony, varE = varE)
-#'
-#' apiary <- setColonyPheno(apiary, varE = varE)
-#'
-#' # Queen's phenotype for both traits
-#' getQueenPheno(colony)
-#' getQueenPheno(apiary)
-#'
-#' # Workers' phenotype for both traits
-#' getWorkersPheno(colony)
-#' getWorkersPheno(apiary)
-#'
-#' # For the whole colony
-#' getColonyPheno(colony)
-#' getColonyPheno(apiary)
-#'
-#' # Set phenotypes for all colony individuals AND Colony
-#' colony <- setColonyPheno(colony, FUN = calcColonyPhenoFromCaste, varE = varE)
-#' getColonyPheno(colony)$colony
-#'
-#' # Set phenotypes for all colony individuals AND MultiColony
-#' apiary <- setColonyPheno(apiary, FUN = calcColonyPhenoFromCaste, varE = varE)
-#' sapply(X = getColonyPheno(apiary), FUN = function(x) x$colony)
-#'
-#' # Colony phenotype - store the colony function into the SP object
-#' SP$colonyPheno <- calcColonyPhenoFromCaste
-#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
-#' getColonyPheno(setColonyPheno(colony, varE = varE))$colony
-#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
-#' sapply(X = getColonyPheno(setColonyPheno(apiary, varE = varE)), FUN = function(x) x$colony)
-#' # phenotype will vary between function calls by default (see reset)
-#' @export
-setColonyPheno <- function(x, FUN = NULL, reset = TRUE, simParamBee = NULL, ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(FUN)) {
-    FUN <- simParamBee$colonyPheno
-  }
-  if (isColony(x)) {
-    if (isQueenPresent(x) && reset) {
-      x@queen <- setPheno(x@queen, ..., simParam = simParamBee)
-    }
-    if (isWorkersPresent(x) && reset) {
-      x@workers <- setPheno(x@workers, ..., simParam = simParamBee)
-    }
-    if (isDronesPresent(x) && reset) {
-      x@drones <- setPheno(x@drones, ..., simParam = simParamBee)
-    }
-    if (isVirginQueensPresent(x) && reset) {
-      x@virginQueens <- setPheno(x@virginQueens, ..., simParam = simParamBee)
-    }
-    if (!is.null(FUN)) {
-      x@pheno <- FUN(x)
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]] <- setColonyPheno(x[[colony]],
-        FUN = FUN,
-        reset = reset,
-        ...,
-        simParamBee = simParamBee
-      )
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")

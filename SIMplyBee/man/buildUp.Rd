@@ -11,7 +11,8 @@ buildUp(
   new = TRUE,
   exact = FALSE,
   resetEvents = FALSE,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ the csd locus)}
 build up}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
+when these arguments are a function}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and

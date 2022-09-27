@@ -14,14 +14,22 @@ addCastePop(
   new = FALSE,
   exact = FALSE,
   year = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 
-addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL)
+addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL, ...)
 
-addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL)
+addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
-addVirginQueens(x, nInd = NULL, new = FALSE, year = NULL, simParamBee = NULL)
+addVirginQueens(
+  x,
+  nInd = NULL,
+  new = FALSE,
+  year = NULL,
+  simParamBee = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -41,6 +49,8 @@ on and exact is \code{TRUE}, we add the exact specified number of viable workers
 \item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with

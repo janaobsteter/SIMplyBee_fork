@@ -7,7 +7,7 @@
 \alias{getVirginQueensDd}
 \alias{getWorkersDd}
 \alias{getDronesDd}
-\title{Access dominance deviations of individuals in a caste}
+\title{Access dominance values of individuals in a caste}
 \usage{
 getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
 
@@ -33,26 +33,26 @@ individuals are accessed, otherwise a random sample}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-vector of dominance deviations when \code{x} is
-  \code{\link{Colony-class}} and list of vectors of dominance deviations when
+vector of dominance values when \code{x} is
+  \code{\link{Colony-class}} and list of vectors of dominance values when
   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
   is \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns dominance deviations of
+Level 0 function that returns dominance values of
   individuals in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueenDd()}: Access dominance deviation of the queen
+\item \code{getQueenDd()}: Access dominance value of the queen
 
-\item \code{getFathersDd()}: Access dominance deviations of fathers
+\item \code{getFathersDd()}: Access dominance values of fathers
 
-\item \code{getVirginQueensDd()}: Access dominance deviations of virgin queens
+\item \code{getVirginQueensDd()}: Access dominance values of virgin queens
 
-\item \code{getWorkersDd()}: Access dominance deviations of workers
+\item \code{getWorkersDd()}: Access dominance values of workers
 
-\item \code{getDronesDd()}: Access dominance deviations of drones
+\item \code{getDronesDd()}: Access dominance values of drones
 
 }}
 \examples{

@@ -5,7 +5,7 @@
 \title{Reduce number of workers and remove all drones and virgin queens from
   a Colony or MultiColony object}
 \usage{
-downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL)
+downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -20,6 +20,9 @@ it guides the selection of workers that will be removed}
 proportion anew (say, create winter workers)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{p} when this argument is a
+function}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
