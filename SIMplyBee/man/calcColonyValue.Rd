@@ -11,15 +11,15 @@
 \usage{
 calcColonyValue(x, FUN = NULL, simParamBee = NULL, ...)
 
-calcColonyPheno(x, FUN = calcColonyPhenoFromCaste, simParamBee = NULL, ...)
+calcColonyPheno(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, ...)
 
-calcColonyGv(x, FUN = calcColonyGvFromCaste, simParamBee = NULL, ...)
+calcColonyGv(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...)
 
-calcColonyBv(x, FUN = calcColonyBvFromCaste, simParamBee = NULL, ...)
+calcColonyBv(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...)
 
-calcColonyDd(x, FUN = calcColonyDdFromCaste, simParamBee = NULL, ...)
+calcColonyDd(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...)
 
-calcColonyAa(x, FUN = calcColonyAaFromCaste, simParamBee = NULL, ...)
+calcColonyAa(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -47,9 +47,9 @@ Level 0 function that calculate value(s) of a colony.
 
 \item \code{calcColonyBv()}: Calculate colony breeding value from caste individuals' breeding values
 
-\item \code{calcColonyDd()}: Calculate colony dominance deviation from caste individuals' dominance deviations
+\item \code{calcColonyDd()}: Calculate colony dominance value from caste individuals' dominance values
 
-\item \code{calcColonyAa()}: Calculate colony epistasis deviation from caste individuals' epistasis deviations
+\item \code{calcColonyAa()}: Calculate colony epistasis value from caste individuals' epistasis value
 
 }}
 \examples{
@@ -90,7 +90,7 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
 # Colony value - shorthand version
-# (using default calcColony*FromCaste() functions - you can provide yours instead!)
+# (using the default mapCasteToColony*() functions - you can provide yours instead!)
 # ... phenotype value
 calcColonyPheno(colony)
 calcColonyPheno(apiary)
@@ -103,13 +103,13 @@ calcColonyGv(apiary)
 #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 # calcColonyBv(colony)
 # calcColonyBv(apiary)
-# ... dominance deviation
+# ... dominance value
 # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #   https://github.com/gaynorr/AlphaSimR/issues/83
 #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 # calcColonyDd(colony)
 # calcColonyDd(apiary)
-# ... epistasis deviation
+# ... epistasis value
 # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #   https://github.com/gaynorr/AlphaSimR/issues/83
 #   https://github.com/HighlanderLab/SIMplyBee/issues/399
@@ -117,17 +117,17 @@ calcColonyGv(apiary)
 # calcColonyAa(apiary)
 
 # Colony value - long version
-# (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
-calcColonyValue(colony, FUN = calcColonyPhenoFromCaste)
-calcColonyValue(apiary, FUN = calcColonyPhenoFromCaste)
+# (using the default mapCasteToColony*() function - you can provide yours instead!)
+calcColonyValue(colony, FUN = mapCasteToColonyPheno)
+calcColonyValue(apiary, FUN = mapCasteToColonyPheno)
 
 # Colony value - long version - using a function stored in SimParamBee (SP)
-# (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
-SP$calcColonyValue <- calcColonyPhenoFromCaste
+# (using the default mapCasteToColony*() function - you can provide yours instead!)
+SP$colonyValueFUN <- mapCasteToColonyPheno
 calcColonyValue(colony)
 calcColonyValue(apiary)
 
 }
 \seealso{
-\code{\link{calcColonyValueFromCaste}} as an example of \code{FUN}
+\code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
 }

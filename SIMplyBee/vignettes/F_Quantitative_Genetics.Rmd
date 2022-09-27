@@ -107,7 +107,7 @@ head(colony@workers@pheno)
 ```
 
 ```{r data.frame}
-# Collate genetic and phenotype values
+# Collate genetic and phenotype values of workers
 df <- data.frame(id = colony@workers@id,
                  father = colony@workers@father,
                  gvQueenTrait = colony@workers@gv[, "queenTrait"],
@@ -150,7 +150,7 @@ getFathers(colony)@gv
 # Colony phenotype value
 calcColonyPheno(colony, queenTrait = "queenTrait", workersTrait = "workersTrait")
 help(calcColonyPheno)
-help(calcColonyPhenoFromCaste)
+help(mapCasteToColonyPheno)
 ```
 
 # Honey yield and Calmness
@@ -196,13 +196,13 @@ head(colony@workers@pheno)
 
 ```{r colony_pheno_2}
 calcMyColonyPheno <- function(colony) {
-  yield <- calcColonyPhenoFromCaste(colony,
-                                    queenTrait = "yieldQueenTrait",
-                                    workersTrait = "yieldWorkersTrait")
-  calmness <- calcColonyPhenoFromCaste(colony,
-                                       queenTrait = "calmQueenTrait",
-                                       workersTrait = "calmWorkersTrait",
-                                       checkProduction = FALSE)
+  yield <- mapCasteToColonyPheno(colony,
+                                 queenTrait = "yieldQueenTrait",
+                                 workersTrait = "yieldWorkersTrait")
+  calmness <- mapCasteToColonyPheno(colony,
+                                    queenTrait = "calmQueenTrait",
+                                    workersTrait = "calmWorkersTrait",
+                                    checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
 calcColonyPheno(colony, FUN = calcMyColonyPheno)
@@ -260,9 +260,9 @@ help(nWorkersColonyPhenotype)
 
 ```{r colony_pheno_3}
 calcMyColonyPheno <- function(colony) {
-  yield <- calcColonyPhenoFromCaste(colony,
-                                    queenTrait = "yieldQueenTrait",
-                                    workersTrait = "yieldWorkersTrait")
+  yield <- mapCasteToColonyPheno(colony,
+                                 queenTrait = "yieldQueenTrait",
+                                 workersTrait = "yieldWorkersTrait")
   return(matrix(yield))
 }
 calcColonyPheno(colony, FUN = calcMyColonyPheno)

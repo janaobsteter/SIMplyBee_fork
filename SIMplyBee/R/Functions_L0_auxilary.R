@@ -5855,7 +5855,7 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{calcColonyValueFromCaste}} as an example of \code{FUN}
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
 #'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
@@ -5899,7 +5899,7 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 #'
 #' # Colony value - shorthand version
-#' # (using default calcColony*FromCaste() functions - you can provide yours instead!)
+#' # (using the default mapCasteToColony*() functions - you can provide yours instead!)
 #' # ... phenotype value
 #' calcColonyPheno(colony)
 #' calcColonyPheno(apiary)
@@ -5912,13 +5912,13 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 #' # calcColonyBv(colony)
 #' # calcColonyBv(apiary)
-#' # ... dominance deviation
+#' # ... dominance value
 #' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #' #   https://github.com/gaynorr/AlphaSimR/issues/83
 #' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 #' # calcColonyDd(colony)
 #' # calcColonyDd(apiary)
-#' # ... epistasis deviation
+#' # ... epistasis value
 #' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #' #   https://github.com/gaynorr/AlphaSimR/issues/83
 #' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
@@ -5926,13 +5926,13 @@ getDronesPheno <- function(x, nInd = NULL) {
 #' # calcColonyAa(apiary)
 #'
 #' # Colony value - long version
-#' # (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
-#' calcColonyValue(colony, FUN = calcColonyPhenoFromCaste)
-#' calcColonyValue(apiary, FUN = calcColonyPhenoFromCaste)
+#' # (using the default mapCasteToColony*() function - you can provide yours instead!)
+#' calcColonyValue(colony, FUN = mapCasteToColonyPheno)
+#' calcColonyValue(apiary, FUN = mapCasteToColonyPheno)
 #'
 #' # Colony value - long version - using a function stored in SimParamBee (SP)
-#' # (using default calcColonyPhenoFromCaste() function - you can provide yours instead!)
-#' SP$calcColonyValue <- calcColonyPhenoFromCaste
+#' # (using the default mapCasteToColony*() function - you can provide yours instead!)
+#' SP$colonyValueFUN <- mapCasteToColonyPheno
 #' calcColonyValue(colony)
 #' calcColonyValue(apiary)
 #'
@@ -5948,7 +5948,7 @@ calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(FUN)) {
-    FUN <- simParamBee$calcColonyValue
+    FUN <- simParamBee$colonyValueFUN
   }
   if (is.null(FUN)) {
     stop("You must provide FUN or set it in the SimParamBee object!")
@@ -5973,7 +5973,7 @@ calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
 
 #' @describeIn calcColonyValue Calculate colony phenotype value from caste individuals' phenotype values
 #' @export
-calcColonyPheno <- function(x, FUN = calcColonyPhenoFromCaste, simParamBee = NULL, ...) {
+calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -6118,7 +6118,7 @@ getDronesGv <- function(x, nInd = NULL) {
 
 #' @describeIn calcColonyValue Calculate colony genetic value from caste individuals' genetic values
 #' @export
-calcColonyGv <- function(x, FUN = calcColonyGvFromCaste, simParamBee = NULL, ...) {
+calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -6300,16 +6300,16 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
 
 #' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
 #' @export
-calcColonyBv <- function(x, FUN = calcColonyBvFromCaste, simParamBee = NULL, ...) {
+calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Dd ----
 
 #' @rdname getCasteDd
-#' @title Access dominance deviations of individuals in a caste
+#' @title Access dominance values of individuals in a caste
 #'
-#' @description Level 0 function that returns dominance deviations of
+#' @description Level 0 function that returns dominance values of
 #'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
@@ -6321,8 +6321,8 @@ calcColonyBv <- function(x, FUN = calcColonyBvFromCaste, simParamBee = NULL, ...
 #'
 #' @seealso \code{\link{dd}}
 #'
-#' @return vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of dominance deviations when
+#' @return vector of dominance values when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of dominance values when
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
@@ -6414,7 +6414,7 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviation of the queen
+#' @describeIn getCasteDd Access dominance value of the queen
 #' @export
 getQueenDd <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6427,7 +6427,7 @@ getQueenDd <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of fathers
+#' @describeIn getCasteDd Access dominance values of fathers
 #' @export
 getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6440,7 +6440,7 @@ getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of virgin queens
+#' @describeIn getCasteDd Access dominance values of virgin queens
 #' @export
 getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6453,7 +6453,7 @@ getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of workers
+#' @describeIn getCasteDd Access dominance values of workers
 #' @export
 getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6466,7 +6466,7 @@ getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of drones
+#' @describeIn getCasteDd Access dominance values of drones
 #' @export
 getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6479,18 +6479,18 @@ getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn calcColonyValue Calculate colony dominance deviation from caste individuals' dominance deviations
+#' @describeIn calcColonyValue Calculate colony dominance value from caste individuals' dominance values
 #' @export
-calcColonyDd <- function(x, FUN = calcColonyDdFromCaste, simParamBee = NULL, ...) {
+calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 # get*Aa ----
 
 #' @rdname getCasteAa
-#' @title Access epistasis deviations of individuals in a caste
+#' @title Access epistasis values of individuals in a caste
 #'
-#' @description Level 0 function that returns epistasis deviations of
+#' @description Level 0 function that returns epistasis values of
 #'   individuals in a caste.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
@@ -6502,8 +6502,8 @@ calcColonyDd <- function(x, FUN = calcColonyDdFromCaste, simParamBee = NULL, ...
 #'
 #' @seealso \code{\link{dd}}
 #'
-#' @return vector of epistasis deviations when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of epistasis deviations when
+#' @return vector of epistasis values when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of epistasis values when
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
@@ -6595,7 +6595,7 @@ getCasteAa <- function(x, caste, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteAa Access epistasis deviation of the queen
+#' @describeIn getCasteAa Access epistasis value of the queen
 #' @export
 getQueenAa <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6608,7 +6608,7 @@ getQueenAa <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteAa Access epistasis deviations of fathers
+#' @describeIn getCasteAa Access epistasis values of fathers
 #' @export
 getFathersAa <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6621,7 +6621,7 @@ getFathersAa <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteAa Access epistasis deviations of virgin queens
+#' @describeIn getCasteAa Access epistasis values of virgin queens
 #' @export
 getVirginQueensAa <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6634,7 +6634,7 @@ getVirginQueensAa <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteAa Access epistasis deviations of workers
+#' @describeIn getCasteAa Access epistasis values of workers
 #' @export
 getWorkersAa <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6647,7 +6647,7 @@ getWorkersAa <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn getCasteAa Access epistasis deviations of drones
+#' @describeIn getCasteAa Access epistasis values of drones
 #' @export
 getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -6660,9 +6660,9 @@ getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn calcColonyValue Calculate colony epistasis deviation from caste individuals' epistasis deviations
+#' @describeIn calcColonyValue Calculate colony epistasis value from caste individuals' epistasis value
 #' @export
-calcColonyAa <- function(x, FUN = calcColonyAaFromCaste, simParamBee = NULL, ...) {
+calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 

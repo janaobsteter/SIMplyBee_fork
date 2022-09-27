@@ -40,7 +40,7 @@ colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{...}{other arguments of \code{\link{calcColonyPhenoFromCaste}}}
+\item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
 \value{
 numeric, number of virgin queens
@@ -63,7 +63,7 @@ Sample a number of virgin queens - used when
   \code{nVirginQueensColonyPhenotype} returns a number (above
   \code{lowerLimit}) as a function of colony phenotype, say swarming
   tendency. Colony phenotype is provided by
-  \code{\link{calcColonyPhenoFromCaste}}. You need to set up traits
+  \code{\link{mapCasteToColonyPheno}}. You need to set up traits
   influencing the colony phenotype and their parameters (mean and variances)
   via \code{\link{SimParamBee}} (see examples).
 }
