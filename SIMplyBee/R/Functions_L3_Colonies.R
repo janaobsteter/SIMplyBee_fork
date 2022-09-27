@@ -142,8 +142,9 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
     }
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
   }
@@ -238,8 +239,9 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
     pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
@@ -311,8 +313,9 @@ removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
     ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])

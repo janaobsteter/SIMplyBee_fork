@@ -31,7 +31,7 @@ colony <- createColony(x = baseQueens[2])
 colony
 
 ## ----cross colony-------------------------------------------------------------
-colony <- cross(colony, fathers = baseDrones)
+colony <- cross(colony, drones = baseDrones)
 colony
 
 ## ----build up colony----------------------------------------------------------
@@ -99,7 +99,7 @@ getCsdAlleles(queen)
 ## ----inbred colony------------------------------------------------------------
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
 fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
-inbredColony <- cross(inbredColony, fathers = fathers)
+inbredColony <- cross(inbredColony, drones = fathers)
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 

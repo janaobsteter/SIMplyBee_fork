@@ -2369,10 +2369,9 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
   if (is.null(x)) {
     ret <- NULL
   } else if (isPop(x)) {
-    ret <- pullSegSiteHaplo(
-      pop = x, haplo = allele, chr = simParamBee$csdChr,
-      simParam = simParamBee
-    )[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
+    ret <- pullMarkerHaplo(x, markers = paste(simParamBee$csdChr,
+                                              simParamBee$csdPosStart:simParamBee$csdPosStop,
+                                              sep="_"))
     if (dronesHaploid && any(x@sex == "M")) {
       ret <- reduceDroneHaplo(haplo = ret, pop = x)
     }
@@ -2498,10 +2497,9 @@ getCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
   if (is.null(x)) {
     ret <- NULL
   } else if (isPop(x)) {
-    ret <- pullSegSiteGeno(
-      pop = x, chr = simParamBee$csdChr,
-      simParam = simParamBee
-    )[, simParamBee$csdPosStart:simParamBee$csdPosStop, drop = FALSE]
+    ret <- pullMarkerGeno(x, markers = paste(simParamBee$csdChr,
+                                             simParamBee$csdPosStart:simParamBee$csdPosStop,
+                                             sep="_"))
     if (dronesHaploid && any(x@sex == "M")) {
       ret <- reduceDroneGeno(geno = ret, pop = x)
     }

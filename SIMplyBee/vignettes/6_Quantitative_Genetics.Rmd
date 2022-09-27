@@ -60,8 +60,7 @@ varE <- c(3, 3 / SP$nWorkers)
 corE <- matrix(data = c( 1.0, -0.3, 
                         -0.3,  1.0), nrow = 2, byrow = TRUE)
 # TODO: Move this to passing setColonyPheno()!
-SP$setVarE(varE = varE)
-SP$setCorE(corE = corE)
+SP$setVarE(varE = varE, corE = corE)
 ```
 
 ```{r basePop virgin queens}

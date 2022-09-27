@@ -23,7 +23,9 @@ removeVirginQueens(x, p = 1, use = "rand")
 
 \item{caste}{character, "queen", "workers", "drones", or "virginQueens"}
 
-\item{p}{numeric, proportion to be removed}
+\item{p}{numeric, proportion to be removed; if input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of virgins queens that will stay when \code{p < 1}}
@@ -91,4 +93,9 @@ nWorkers(apiary)
 #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
 # or alias: removeDrones(apiary, p = 0.3)
 nDrones(apiary)
+# Remove with unequal proportions
+apiary <- buildUp(apiary)
+nWorkers(apiary); nDrones(apiary)
+nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
+nDrones(removeDrones(apiary, p = c(0.1, 0.9)))
 }

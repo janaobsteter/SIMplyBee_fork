@@ -24,7 +24,9 @@ pullVirginQueens(x, nInd = NULL, use = "rand")
 \item{caste}{character, "queen", "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric, number of individuals to pull, if \code{NULL} all
-individuals are pulled}
+individuals are pulled. If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies.}
 
 \item{use}{character, all options provided by \code{\link{selectInd}}}
 
@@ -106,11 +108,15 @@ pullVirginQueens(apiary)
 nVirginQueens(apiary)
 
 pullCastePop(apiary, caste = "workers")
+# Or pull out unequal number of workers from colonies
+pullCastePop(apiary, caste = "workers", nInd = c(10, 20))
 pullWorkers(apiary)
 nWorkers(apiary)
 nWorkers(pullWorkers(apiary)$remnant)
 
 pullCastePop(apiary, caste = "drones")
+# Or pull out unequal number of drones from colonies
+pullCastePop(apiary, caste = "drones", nInd = c(5, 3))
 pullDrones(apiary)
 nDrones(apiary)
 nDrones(pullDrones(apiary)$remnant)
