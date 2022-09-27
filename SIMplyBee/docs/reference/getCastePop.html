@@ -98,11 +98,11 @@
 <span></span>
 <span><span class="fu">getFathers</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">getDrones</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, removeFathers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">getDrones</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, removeFathers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -157,9 +157,9 @@ virgin queens, say via insemination</p></dd>
     
 <ul><li><p><code>getQueen()</code>: Access the queen</p></li>
 <li><p><code>getFathers()</code>: Access fathers (drones the queen mated with)</p></li>
-<li><p><code>getVirginQueens()</code>: Access virgin queens</p></li>
 <li><p><code>getWorkers()</code>: Access workers</p></li>
 <li><p><code>getDrones()</code>: Access drones</p></li>
+<li><p><code>getVirginQueens()</code>: Access virgin queens</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -173,10 +173,10 @@ virgin queens, say via insemination</p></dd>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">8</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDrones.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">fatherGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nFathers <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -198,9 +198,9 @@ virgin queens, say via insemination</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Using a default in SP$nVirginQueens</span></span></span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addVirginQueens.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="addVirginQueens.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'colony' not found</span>
