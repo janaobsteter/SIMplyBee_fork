@@ -134,7 +134,7 @@
 #' mergePops(getWorkers(apiary))
 #'
 #' getCastePop(apiary, caste = "drones")
-#' # Get unequal number from colonies
+#' # Get different number of drones per colony
 #' getCastePop(apiary, caste = "drones", nInd = c(10, 50))
 #' getDrones(apiary)
 #' getDrones(apiary)[[1]]@id
@@ -152,11 +152,11 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
     stop("Argument caste can be only of length 1!")
   }
   if (any(nInd < 0)) {
-    stop("nInd must not be negative!")
+    stop("nInd must be non-negative or NULL!")
   }
   if (isColony(x)) {
     if (length(nInd) > 1) {
-      warning("Too many value in the nInd parameter, taking only the first value!")
+      warning("More than one value in the nInd argument, taking only the first value!")
       nInd <- nInd[1]
     }
     if (caste == "all") {
@@ -215,24 +215,24 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
     nCol <- nColonies(x)
     nNInd <- length(nInd)
     if (nNInd > 1 && nNInd < nCol) {
-      stop("Too few values in the nInd parameter!")
+      stop("Too few values in the nInd argument!")
     }
     if (nNInd > 1 && nNInd > nCol) {
-      warning(paste0("Too many values in the nInd parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
       nInd <- nInd[1:nCol]
     }
     ret <- vector(mode = "list", length = nCol)
-    names(ret) <- getId(x)
     for (colony in seq_len(nCol)) {
-      if (!is.null(nInd)) {
-        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      if (is.null(nInd)) {
+        nIndColony <- NULL
       } else {
-        nIndColony <- nInd
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       }
       ret[[colony]] <- getCastePop(x = x[[colony]],
                                    caste = caste,
                                    nInd = nIndColony,
-                                   use = use)
+                                   use = use,
+                                   removeFathers = removeFathers)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -262,7 +262,6 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
           }
           ret <- selectInd(pop = z$fathers, nInd = n, use = use)
         }
-        return(ret)
       }
     )
     if (nInd(x) == 1) {
@@ -354,7 +353,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand") {
 #' basePop <- createCastePop(founderGenomes, caste = "virginQueens")
 #' # Or alias function: createVirginQueens(founderGenomes)
 #'
-#' #Create drones on a Pop
+#' # Create drones on a Pop
 #' drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
 #' # Or create unequal number of drones from multiple virgin queens
 #' drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
@@ -475,7 +474,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- setQueensYearOfBirth(x = ret, year = year)
     }
   } else if (isPop(x)) {
-    if (caste != "drones") { #Creating drones if input is a Pop
+    if (caste != "drones") { # Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
     }
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
@@ -486,10 +485,10 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
     } else {
       if (length(nInd) < nInd(x)) {
-        stop("Too few values in the nInd parameter!")
+        stop("Too few values in the nInd argument!")
       }
       if (length(nInd) > 1 && length(nInd) > nInd(x)) {
-        warning(paste0("Too many values in the nInd parameter, talking only the first ", nInd(x), "!"))
+        warning(paste0("Too many values in the nInd argument, taking only the first ", nInd(x), "values!"))
         nInd <- nInd[1:nInd(x)]
       }
       ret <- list()
@@ -505,7 +504,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       stop("Missing queen!")
     }
     if (length(nInd) > 1) {
-      warning("Too many value in the nInd parameter, taking only the first value!")
+      warning("More than one value in the nInd argument, taking only the first value!")
       nInd <- nInd[1]
     }
     if (caste == "workers") {
@@ -562,18 +561,18 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     nCol <- nColonies(x)
     nNInd <- length(nInd)
     if (nNInd > 1 && nNInd < nCol) {
-      stop("Too few values in the nInd parameter!")
+      stop("Too few values in the nInd argument!")
     }
     if (nNInd > 1 && nNInd > nCol) {
-      warning(paste0("Too many values in the nInd parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
       nInd <- nInd[1:nCol]
     }
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      if (!is.null(nInd)) {
-        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      if (is.null(nInd)) {
+        nIndColony <- NULL
       } else {
-        nIndColony <- nInd
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       }
       ret[[colony]] <- createCastePop(
         x = x[[colony]], caste = caste,
@@ -1083,11 +1082,11 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     stop("Argument caste can be only of length 1!")
   }
   if (any(nInd < 0)) {
-    stop("nInd must not be negative!")
+    stop("nInd must be non-negative or NULL!")
   }
   if (isColony(x)) {
     if (length(nInd) > 1) {
-      warning("Too many value in the nInd parameter, taking only the first value!")
+      warning("More than one value in the nInd argument, taking only the first value!")
       nInd <- nInd[1]
     }
     if (is.null(slot(x, caste))) {
@@ -1115,10 +1114,10 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     nCol <- nColonies(x)
     nNInd <- length(nInd)
     if (nNInd > 1 && nNInd < nCol) {
-      stop("Too few values in the nInd parameter!")
+      stop("Too few values in the nInd argument!")
     }
     if (nNInd > 1 && nNInd > nCol) {
-      warning(paste0("Too many values in the nInd parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
       nInd <- nInd[1:nCol]
     }
     ret <- vector(mode = "list", length = 2)
@@ -1127,18 +1126,20 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     names(ret$pulled) <- getId(x)
     ret$remnant <- x
     for (colony in seq_len(nCol)) {
-      if (!is.null(nInd)) {
-        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      if (is.null(nInd)) {
+        nIndColony <- NULL
       } else {
-        nIndColony <- nInd
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       }
       tmp <- pullCastePop(x = x[[colony]],
                           caste = caste,
                           nInd = nIndColony,
-                          use = use)
+                          use = use,
+                          removeFathers = removeFathers)
       ret$pulled[[colony]] <- tmp$pulled
       ret$remnant[[colony]] <- tmp$remnant
     }
+    names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }

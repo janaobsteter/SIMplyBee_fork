@@ -281,7 +281,7 @@ return(x)
 #' # Add individuals to a MultiColony object
 #' nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
 #' nDrones(addDrones(apiary, nInd = 10))
-#' # Add with unequal number of workers per colony
+#' # Add different number of workers to colonies
 #' nWorkers(addWorkers(apiary, nInd = c(50, 100)))
 #' nDrones(addDrones(apiary, nInd = c(100, 10)))
 #'
@@ -309,14 +309,14 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       stop("Missing queen!")
     }
     if (length(nInd) > 1) {
-      warning("Too many value in the nInd parameter, taking only the first value!")
+      warning("More than one value in the nInd argument, taking only the first value!")
       p <- p[1]
     }
     if (is.function(nInd)) {
       nInd <- nInd(x)
     } else {
       if (!is.null(nInd) && nInd < 0) {
-        stop("Parameter nInd can not be negative!")
+        stop("nInd must be non-negative or NULL!")
       }
     }
     if (0 < nInd) {
@@ -345,17 +345,17 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     nCol <- nColonies(x)
     nNInd <- length(nInd)
     if (nNInd > 1 && nNInd < nCol) {
-      stop("Too few values in the nInd parameter!")
+      stop("Too few values in the nInd argument!")
     }
     if (nNInd > 1 && nNInd > nCol) {
-      warning(paste0("Too many values in the nInd parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
       nInd <- nInd[1:nCol]
     }
     for (colony in seq_len(nCol)) {
-      if (!is.null(nInd)) {
-        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      if (is.null(nInd)) {
+        nIndColony <- NULL
       } else {
-        nIndColony <- nInd
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       }
       x[[colony]] <- addCastePop(
         x = x[[colony]], caste = caste,
@@ -482,7 +482,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' # we got new workers since new = TRUE
 #' # Build up a MultiColony class
 #' apiary <- buildUp(apiary, nWorkers = 250)
-#' # Build up with unequal numbers
+#' # Build up with different numbers
 #' apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
 #' nWorkers(apiary)
 #' nDrones(apiary)
@@ -535,7 +535,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- nWorkers(colony = x)
     }
     if (length(nWorkers) > 1) {
-      warning("Too many value in the nWorkers parameter, taking only the first value!")
+      warning("More than one value in the nWorkers argument, taking only the first value!")
       nWorkers <- nWorkers[1]
     }
     if (new) {
@@ -557,7 +557,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nDrones <- nDrones(x = x)
     }
     if (length(nDrones) > 1) {
-      warning("Too many value in the nDrones parameter, taking only the first value!")
+      warning("More than one value in the nDrones argument, taking only the first value!")
       nDrones <- nDrones[1]
     }
     if (new) {
@@ -580,29 +580,29 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     nNWorkers <- length(nWorkers)
     nNDrones <- length(nDrones)
     if (nNWorkers > 1 && nNWorkers < nCol) {
-      stop("Too few values in the nWorkers parameter!")
+      stop("Too few values in the nWorkers argument!")
     }
     if (nNDrones > 1 && nNDrones < nCol) {
-      stop("Too few values in the nDrones parameter!")
+      stop("Too few values in the nDrones argument!")
     }
     if (nNWorkers > 1 && nNWorkers > nCol) {
-      warning(paste0("Too many values in the nNWorkers parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nWorkers argument, taking only the first ", nCol, "values!"))
       nWorkers <- nWorkers[1:nCol]
     }
     if (nNDrones > 1 && nNDrones > nCol) {
-      warning(paste0("Too many values in the nNDrones parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nDrones argument, taking only the first ", nCol, "values!"))
       nNDrones <- nNDrones[1:nCol]
     }
     for (colony in seq_len(nCol)) {
-      if (!is.null(nWorkers)) {
+      if (is.null(nWorkers)) {
+        nWorkersColony <- NULL
+      } else {
         nWorkersColony <- ifelse(nNWorkers == 1, nWorkers, nWorkers[colony])
-      } else {
-        nWorkersColony <- nWorkers
       }
-      if (!is.null(nDrones)) {
-        nDronesColony <- ifelse(nNDrones == 1, nDrones, nDrones[colony])
+      if (is.null(nDrones)) {
+        nDronesColony <- NULL
       } else {
-        nDronesColony <- nDrones
+        nDronesColony <- ifelse(nNDrones == 1, nDrones, nDrones[colony])
       }
       x[[colony]] <- buildUp(
         x = x[[colony]],
@@ -670,7 +670,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' colony
 #' apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 #' apiary[[1]]
-#' # Downsize with unequal numbers
+#' # Downsize with different numbers
 #' nWorkers(apiary); nDrones(apiary)
 #' apiary <- downsize(x = apiary, p = c(0.5, 0.1), new = TRUE, use = "rand")
 #' nWorkers(apiary); nDrones(apiary)
@@ -681,7 +681,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.logical(new)) {
-    stop("Parameter new must be logical!")
+    stop("Argument new must be logical!")
   }
   if (any(1 < p)) {
     stop("p must not be higher than 1!")
@@ -696,7 +696,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
       p <- p(x)
     }
     if (length(p) > 1) {
-      warning("Too many value in the p parameter, taking only the first value!")
+      warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
     }
     if (new == TRUE) {
@@ -712,17 +712,17 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
-      stop("Too few values in the p parameter!")
+      stop("Too few values in the p argument!")
     }
     if (nP > 1 && nP > nCol) {
-      warning(paste0("Too many values in the p parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
     for (colony in seq_len(nCol)) {
-      if (!is.null(p)) {
-        pColony <- ifelse(nP == 1, p, p[colony])
+      if (is.null(p)) {
+        pColony <- NULL
       } else {
-        pColony <- p
+        pColony <- ifelse(nP == 1, p, p[colony])
       }
       x[[colony]] <- downsize(
         x = x[[colony]],
@@ -808,7 +808,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #' apiary <- replaceDrones(apiary, p = 1)
 #' lapply(getDrones(apiary), FUN = function(x) x@id)
-#' # Replace with unequal proportions
+#' # Replace with different proportions
 #' apiary <- replaceWorkers(apiary, p = c(1, 0.7))
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #' apiary <- replaceDrones(apiary, p = c(1, 0.1))
@@ -832,7 +832,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
       stop("Missing queen!")
     }
     if (length(p) > 1) {
-      warning("Too many value in the p parameter, taking only the first value!")
+      warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
     }
     nInd <- nCaste(x, caste)
@@ -871,17 +871,17 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
-      stop("Too few values in the p parameter!")
+      stop("Too few values in the p argument!")
     }
     if (nP > 1 && nP > nCol) {
-      warning(paste0("Too many values in the p parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
     for (colony in seq_len(nCol)) {
-      if (!is.null(p)) {
-        pColony <- ifelse(nP == 1, p, p[colony])
+      if (is.null(p)) {
+        pColony <- NULL
       } else {
-        pColony <- p
+        pColony <- ifelse(nP == 1, p, p[colony])
       }
       x[[colony]] <- replaceCastePop(
         x = x[[colony]], caste = caste,
@@ -989,7 +989,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
 #' # or alias: removeDrones(apiary, p = 0.3)
 #' nDrones(apiary)
-#' # Remove with unequal proportions
+#' # Remove different proportions
 #' apiary <- buildUp(apiary)
 #' nWorkers(apiary); nDrones(apiary)
 #' nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
@@ -1006,7 +1006,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
   }
   if (isColony(x)) {
     if (length(p) > 1) {
-      warning("Too many value in the p parameter, taking only the first value!")
+      warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
     }
     if (p == 1) {
@@ -1027,17 +1027,17 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
-      stop("Too few values in the p parameter!")
+      stop("Too few values in the p argument!")
     }
     if (nP > 1 && nP > nCol) {
-      warning(paste0("Too many values in the p parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
     for (colony in seq_len(nCol)) {
-      if (!is.null(p)) {
-        pColony <- ifelse(nP == 1, p, p[colony])
+      if (is.null(p)) {
+        pColony <- NULL
       } else {
-        pColony <- p
+        pColony <- ifelse(nP == 1, p, p[colony])
       }
       x[[colony]] <- removeCastePop(
         x = x[[colony]], caste = caste,
@@ -1309,7 +1309,7 @@ collapse <- function(x) {
 #' tmp <- swarm(apiary, p = 0.6)
 #' tmp$swarm[[1]]
 #' tmp$remnant[[1]]
-#' # Swarm with unequal percentages
+#' # Swarm with different proportions
 #' nWorkers(apiary)
 #' tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))
 #' nWorkers(tmp$swarm)
@@ -1344,7 +1344,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       stop("p must be between 0 and 1 (inclusive)!")
         }
       if (length(p) > 1) {
-        warning("Too many value in the p parameter, taking only the first value!")
+        warning("More than one value in the p argument, taking only the first value!")
         p <- p[1]
       }
     }
@@ -1395,10 +1395,10 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
-      stop("Too few values in the p parameter!")
+      stop("Too few values in the p argument!")
     }
     if (nP > 1 && nP > nCol) {
-      warning(paste0("Too many values in the p parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
     if (nCol == 0) {
@@ -1412,10 +1412,10 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
         remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
-        if (!is.null(p)) {
-          pColony <- ifelse(nP == 1, p, p[colony])
+        if (is.null(p)) {
+          pColony <- NULL
         } else {
-          pColony <- p
+          pColony <- ifelse(nP == 1, p, p[colony])
         }
         tmp <- swarm(x[[colony]],
                      p = pColony,
@@ -1589,7 +1589,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL) 
 #' tmp <- split(apiary, p = 0.5)
 #' tmp$split[[1]]
 #' tmp$remnant[[1]]
-#' # Split with variables percentages
+#' # Split with different proportions
 #' nWorkers(apiary)
 #' tmp <- split(apiary, p = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6))
 #' nWorkers(tmp$split)
@@ -1621,7 +1621,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
         stop("p must be between 0 and 1 (inclusive)!")
       }
       if (length(p) > 1) {
-        warning("Too many value in the p parameter, taking only the first value!")
+        warning("More than one value in the p argument, taking only the first value!")
         p <- p[1]
       }
     }
@@ -1664,10 +1664,10 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
-      stop("Too few values in the p parameter!")
+      stop("Too few values in the p argument!")
     }
     if (nP > 1 && nP > nCol) {
-      warning(paste0("Too many values in the p parameter, talking only the first ", nCol, "values!"))
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
     if (nCol == 0) {
@@ -1681,10 +1681,10 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL) {
         remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
-        if (!is.null(p)) {
-          pColony <- ifelse(nP == 1, p, p[colony])
+        if (is.null(p)) {
+          pColony <- NULL
         } else {
-          pColony <- p
+          pColony <- ifelse(nP == 1, p, p[colony])
         }
         tmp <- split(x[[colony]],
                      p = pColony,
