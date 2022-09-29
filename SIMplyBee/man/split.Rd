@@ -10,7 +10,10 @@ split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will go to the split colony; if
-\code{NULL} then \code{\link{SimParamBee}$splitP} is used}
+\code{NULL} then \code{\link{SimParamBee}$splitP} is used.
+If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies}
 
 \item{year}{numeric, year of birth for virgin queens}
 
@@ -56,6 +59,11 @@ tmp$remnant
 tmp <- split(apiary, p = 0.5)
 tmp$split[[1]]
 tmp$remnant[[1]]
+# Split with variables percentages
+nWorkers(apiary)
+tmp <- split(apiary, p = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6))
+nWorkers(tmp$split)
+nWorkers(tmp$remnant)
 
 # Split only specific colonies in the apiary
 tmp <- pullColonies(apiary, ID = c(4, 5))

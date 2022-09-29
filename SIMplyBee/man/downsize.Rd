@@ -11,7 +11,10 @@ downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL, ...)
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers to be removed from the colony; if
-\code{NULL} then \code{\link{SimParamBee}$downsizeP} is used}
+\code{NULL} then \code{\link{SimParamBee}$downsizeP} is used.
+If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}};
 it guides the selection of workers that will be removed}
@@ -49,6 +52,7 @@ colony
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary)
+nWorkers(apiary); nDrones(apiary)
 apiary <- addVirginQueens(apiary, nInd = 10)
 apiary
 
@@ -57,4 +61,8 @@ colony <- downsize(x = colony, new = TRUE, use = "rand")
 colony
 apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 apiary[[1]]
+# Downsize with unequal numbers
+nWorkers(apiary); nDrones(apiary)
+apiary <- downsize(x = apiary, p = c(0.5, 0.1), new = TRUE, use = "rand")
+nWorkers(apiary); nDrones(apiary)
 }

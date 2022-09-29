@@ -191,7 +191,10 @@ return(x)
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
 #' @param nInd numeric or function, number of workers to be added, but see
-#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used
+#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used.
+#'   If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be used for all the colonies.
 #' @param new logical, should the number of individuals be added to the caste population
 #'   anew or should we only top-up the existing number of individuals to \code{nInd}
 #' @param exact logical, only relevant when adding workers - if the csd locus is turned
@@ -275,6 +278,14 @@ return(x)
 #'
 #' # Queen's counters
 #' getMisc(getQueen(addWorkers(colony)))
+#'
+#' # Add individuals to a MultiColony object
+#' nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
+#' nDrones(addDrones(apiary, nInd = 10))
+#' # Add different number of workers to colonies
+#' nWorkers(addWorkers(apiary, nInd = c(50, 100)))
+#' nDrones(addDrones(apiary, nInd = c(100, 10)))
+#'
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
                         exact = FALSE, year = NULL, simParamBee = NULL, ...) {
@@ -298,8 +309,16 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
+    if (length(nInd) > 1) {
+      warning("More than one value in the nInd argument, taking only the first value!")
+      p <- p[1]
+    }
     if (is.function(nInd)) {
       nInd <- nInd(x, ...)
+    } else {
+      if (!is.null(nInd) && nInd < 0) {
+        stop("nInd must be non-negative or NULL!")
+      }
     }
     if (0 < nInd) {
       newInds <- createCastePop(x, nInd,
@@ -325,9 +344,24 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nNInd <- length(nInd)
+    if (nNInd > 1 && nNInd < nCol) {
+      stop("Too few values in the nInd argument!")
+    }
+    if (nNInd > 1 && nNInd > nCol) {
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
+      nInd <- nInd[1:nCol]
+    }
     for (colony in seq_len(nCol)) {
+      if (is.null(nInd)) {
+        nIndColony <- NULL
+      } else {
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      }
       x[[colony]] <- addCastePop(
-        x = x[[colony]], caste = caste, nInd = nInd, new = new,
+        x = x[[colony]], caste = caste,
+        nInd = nIndColony,
+        new = new,
         exact = exact, simParamBee = simParamBee, ...
       )
     }
@@ -380,10 +414,14 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param nWorkers numeric or function, number of worker to add to the colony,
 #'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
-#'   is used
+#'   is used. If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies.
 #' @param nDrones numeric or function, number of drones to add to the colony,
 #'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
-#'   is used
+#'   is used. If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies.
 #' @param new logical, should the number of workers and drones be added anew or
 #'   should we only top-up the existing number of workers and drones to
 #'   \code{nWorkers} and \code{nDrones} (see details)
@@ -447,6 +485,10 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' # we got new workers since new = TRUE
 #' # Build up a MultiColony class
 #' apiary <- buildUp(apiary, nWorkers = 250)
+#' # Build up with different numbers
+#' apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
+#' nWorkers(apiary)
+#' nDrones(apiary)
 #'
 #' colony <- buildUp(colony, nWorkers = 100, new = FALSE)
 #' getWorkers(colony)@id
@@ -495,6 +537,10 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (is.function(nWorkers)) {
       nWorkers <- nWorkers(colony = x, ...)
     }
+    if (length(nWorkers) > 1) {
+      warning("More than one value in the nWorkers argument, taking only the first value!")
+      nWorkers <- nWorkers[1]
+    }
     if (new) {
       n <- nWorkers
     } else {
@@ -513,6 +559,10 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (is.function(nDrones)) {
       nDrones <- nDrones(x = x, ...)
     }
+    if (length(nDrones) > 1) {
+      warning("More than one value in the nDrones argument, taking only the first value!")
+      nDrones <- nDrones[1]
+    }
     if (new) {
       n <- nDrones
     } else {
@@ -530,11 +580,37 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     x@production <- TRUE
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nNWorkers <- length(nWorkers)
+    nNDrones <- length(nDrones)
+    if (nNWorkers > 1 && nNWorkers < nCol) {
+      stop("Too few values in the nWorkers argument!")
+    }
+    if (nNDrones > 1 && nNDrones < nCol) {
+      stop("Too few values in the nDrones argument!")
+    }
+    if (nNWorkers > 1 && nNWorkers > nCol) {
+      warning(paste0("Too many values in the nWorkers argument, taking only the first ", nCol, "values!"))
+      nWorkers <- nWorkers[1:nCol]
+    }
+    if (nNDrones > 1 && nNDrones > nCol) {
+      warning(paste0("Too many values in the nDrones argument, taking only the first ", nCol, "values!"))
+      nNDrones <- nNDrones[1:nCol]
+    }
     for (colony in seq_len(nCol)) {
+      if (is.null(nWorkers)) {
+        nWorkersColony <- NULL
+      } else {
+        nWorkersColony <- ifelse(nNWorkers == 1, nWorkers, nWorkers[colony])
+      }
+      if (is.null(nDrones)) {
+        nDronesColony <- NULL
+      } else {
+        nDronesColony <- ifelse(nNDrones == 1, nDrones, nDrones[colony])
+      }
       x[[colony]] <- buildUp(
         x = x[[colony]],
-        nWorkers = nWorkers,
-        nDrones = nDrones,
+        nWorkers = nWorkersColony,
+        nDrones = nDronesColony,
         new = new,
         exact = exact,
         resetEvents = resetEvents,
@@ -559,7 +635,10 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers to be removed from the colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used
+#'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used.
+#'   If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
@@ -587,6 +666,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(apiary)
+#' nWorkers(apiary); nDrones(apiary)
 #' apiary <- addVirginQueens(apiary, nInd = 10)
 #' apiary
 #'
@@ -595,6 +675,10 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' colony
 #' apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 #' apiary[[1]]
+#' # Downsize with different numbers
+#' nWorkers(apiary); nDrones(apiary)
+#' apiary <- downsize(x = apiary, p = c(0.5, 0.1), new = TRUE, use = "rand")
+#' nWorkers(apiary); nDrones(apiary)
 #' @export
 downsize <- function(x, p = NULL, use = "rand", new = FALSE,
                      simParamBee = NULL, ...) {
@@ -602,7 +686,12 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.logical(new)) {
-    stop("Parameter new must be logical!")
+    stop("Argument new must be logical!")
+  }
+  if (any(1 < p)) {
+    stop("p must not be higher than 1!")
+  } else if (any(p < 0)) {
+    stop("p must not be less than 0!")
   }
   if (isColony(x)) {
     if (is.null(p)) {
@@ -610,6 +699,10 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     }
     if (is.function(p)) {
       p <- p(x, ...)
+    }
+    if (length(p) > 1) {
+      warning("More than one value in the p argument, taking only the first value!")
+      p <- p[1]
     }
     if (new == TRUE) {
       n <- round(nWorkers(x) * (1 - p))
@@ -622,10 +715,23 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     x@production <- FALSE
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nP <- length(p)
+    if (nP > 1 && nP < nCol) {
+      stop("Too few values in the p argument!")
+    }
+    if (nP > 1 && nP > nCol) {
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
+      p <- p[1:nCol]
+    }
     for (colony in seq_len(nCol)) {
+      if (is.null(p)) {
+        pColony <- NULL
+      } else {
+        pColony <- ifelse(nP == 1, p, p[colony])
+      }
       x[[colony]] <- downsize(
         x = x[[colony]],
-        p = p,
+        p = pColony,
         use = use,
         new = new,
         simParamBee = simParamBee, ...
@@ -649,7 +755,10 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
-#' @param p numeric, proportion of caste individuals to be replaced with new ones
+#' @param p numeric, proportion of caste individuals to be replaced with new ones;
+#'   if input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of caste individuals that stay when \code{p < 1}
 #' @param exact logical, only relevant when adding workers - if the csd locus is turned
@@ -704,6 +813,11 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' lapply(getWorkers(apiary), FUN = function(x) x@id)
 #' apiary <- replaceDrones(apiary, p = 1)
 #' lapply(getDrones(apiary), FUN = function(x) x@id)
+#' # Replace with different proportions
+#' apiary <- replaceWorkers(apiary, p = c(1, 0.7))
+#' lapply(getWorkers(apiary), FUN = function(x) x@id)
+#' apiary <- replaceDrones(apiary, p = c(1, 0.1))
+#' lapply(getDrones(apiary), FUN = function(x) x@id)
 #' @export
 replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
                             year = NULL, simParamBee = NULL) {
@@ -713,14 +827,18 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
   }
-  if (1 < p) {
+  if (any(1 < p)) {
     stop("p must not be higher than 1!")
-  } else if (p < 0) {
+  } else if (any(p < 0)) {
     stop("p must not be less than 0!")
   }
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
+    }
+    if (length(p) > 1) {
+      warning("More than one value in the p argument, taking only the first value!")
+      p <- p[1]
     }
     nInd <- nCaste(x, caste)
     if (nInd > 0) {
@@ -756,9 +874,23 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nP <- length(p)
+    if (nP > 1 && nP < nCol) {
+      stop("Too few values in the p argument!")
+    }
+    if (nP > 1 && nP > nCol) {
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
+      p <- p[1:nCol]
+    }
     for (colony in seq_len(nCol)) {
+      if (is.null(p)) {
+        pColony <- NULL
+      } else {
+        pColony <- ifelse(nP == 1, p, p[colony])
+      }
       x[[colony]] <- replaceCastePop(
-        x = x[[colony]], caste = caste, p = p,
+        x = x[[colony]], caste = caste,
+        p = pColony,
         use = use, year = year,
         simParamBee = simParamBee
       )
@@ -809,7 +941,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "workers", "drones", or "virginQueens"
-#' @param p numeric, proportion to be removed
+#' @param p numeric, proportion to be removed; if input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
 #'
@@ -860,17 +994,26 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
 #' # or alias: removeDrones(apiary, p = 0.3)
 #' nDrones(apiary)
+#' # Remove different proportions
+#' apiary <- buildUp(apiary)
+#' nWorkers(apiary); nDrones(apiary)
+#' nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
+#' nDrones(removeDrones(apiary, p = c(0.1, 0.9)))
 #' @export
 removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
   }
-  if (1 < p) {
+  if (any(1 < p)) {
     stop("p must not be higher than 1!")
-  } else if (p < 0) {
+  } else if (any(p < 0)) {
     stop("p must not be less than 0!")
   }
   if (isColony(x)) {
+    if (length(p) > 1) {
+      warning("More than one value in the p argument, taking only the first value!")
+      p <- p[1]
+    }
     if (p == 1) {
       slot(x, caste) <- NULL
     } else {
@@ -887,10 +1030,24 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nP <- length(p)
+    if (nP > 1 && nP < nCol) {
+      stop("Too few values in the p argument!")
+    }
+    if (nP > 1 && nP > nCol) {
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
+      p <- p[1:nCol]
+    }
     for (colony in seq_len(nCol)) {
+      if (is.null(p)) {
+        pColony <- NULL
+      } else {
+        pColony <- ifelse(nP == 1, p, p[colony])
+      }
       x[[colony]] <- removeCastePop(
         x = x[[colony]], caste = caste,
-        p = p, use = use
+        p = pColony,
+        use = use
       )
     }
   } else {
@@ -1118,7 +1275,10 @@ collapse <- function(x) {
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
-#'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used
+#'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used.
+#'   If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies
 #' @param year numeric, year of birth for virgin queens
 #' @param nVirginQueens integer, the number of virgin queens to be created in the
 #'   colony; of these one is randomly selected as the new virgin queen of the
@@ -1156,6 +1316,11 @@ collapse <- function(x) {
 #' tmp <- swarm(apiary, p = 0.6)
 #' tmp$swarm[[1]]
 #' tmp$remnant[[1]]
+#' # Swarm with different proportions
+#' nWorkers(apiary)
+#' tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))
+#' nWorkers(tmp$swarm)
+#' nWorkers(tmp$remnant)
 #'
 #' # Sample colonies from the apiary that will swarm (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
@@ -1172,7 +1337,6 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
   }
-
   if (isColony(x)) {
     if (!isQueenPresent(x)) {
       stop("No queen present in the colony!")
@@ -1182,9 +1346,14 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     }
     if (is.function(p)) {
       p <- p(x, ...)
-    }
-    if (p < 0 | 1 < p) {
+    } else  {
+      if (p < 0 | 1 < p) {
       stop("p must be between 0 and 1 (inclusive)!")
+        }
+      if (length(p) > 1) {
+        warning("More than one value in the p argument, taking only the first value!")
+        p <- p[1]
+      }
     }
     if (is.function(nVirginQueens)) {
       nVirginQueens <- nVirginQueens(x, ...)
@@ -1231,6 +1400,14 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     ret <- list(swarm = swarmColony, remnant = remnantColony)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nP <- length(p)
+    if (nP > 1 && nP < nCol) {
+      stop("Too few values in the p argument!")
+    }
+    if (nP > 1 && nP > nCol) {
+      warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
+      p <- p[1:nCol]
+    }
     if (nCol == 0) {
       ret <- list(
         swarm = createMultiColony(),
@@ -1242,8 +1419,14 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
         remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
+        if (is.null(p)) {
+          pColony <- NULL
+        } else {
+          pColony <- ifelse(nP == 1, p, p[colony])
+        }
         tmp <- swarm(x[[colony]],
-                     p = p, year = year,
+                     p = pColony,
+                     year = year,
                      nVirginQueens = nVirginQueens,
                      simParamBee = simParamBee, ...
         )
@@ -1380,7 +1563,10 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used
+#'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used.
+#'   If input is \code{\link{MultiColony-class}},
+#'   the input could also be a vector of the same length as the number of colonies. If
+#'   a single value is provided, the same value will be applied to all the colonies
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} when this argument is a
@@ -1414,6 +1600,11 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
 #' tmp <- split(apiary, p = 0.5)
 #' tmp$split[[1]]
 #' tmp$remnant[[1]]
+#' # Split with different proportions
+#' nWorkers(apiary)
+#' tmp <- split(apiary, p = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6))
+#' nWorkers(tmp$split)
+#' nWorkers(tmp$remnant)
 #'
 #' # Split only specific colonies in the apiary
 #' tmp <- pullColonies(apiary, ID = c(4, 5))
@@ -1436,9 +1627,14 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     }
     if (is.function(p)) {
       p <- p(x, ...)
-    }
-    if (p < 0 | 1 < p) {
-      stop("p must be between 0 and 1 (inclusive)!")
+    } else  {
+      if (p < 0 | 1 < p) {
+        stop("p must be between 0 and 1 (inclusive)!")
+      }
+      if (length(p) > 1) {
+        warning("More than one value in the p argument, taking only the first value!")
+        p <- p[1]
+      }
     }
     nWorkers <- nWorkers(x)
     nWorkersSplit <- round(nWorkers * p)
@@ -1477,6 +1673,14 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     ret <- list(split = splitColony, remnant = remnantColony)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
+    nP <- length(p)
+    if (nP > 1 && nP < nCol) {
+      stop("Too few values in the p argument!")
+    }
+    if (nP > 1 && nP > nCol) {
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
+      p <- p[1:nCol]
+    }
     if (nCol == 0) {
       ret <- list(
         split = createMultiColony(),
@@ -1488,8 +1692,14 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
         remnant = createMultiColony(n = nCol)
       )
       for (colony in seq_len(nCol)) {
+        if (is.null(p)) {
+          pColony <- NULL
+        } else {
+          pColony <- ifelse(nP == 1, p, p[colony])
+        }
         tmp <- split(x[[colony]],
-                     p = p, year = year,
+                     p = pColony,
+                     year = year,
                      simParamBee = simParamBee, ...
         )
         ret$split[[colony]] <- tmp$split
