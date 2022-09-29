@@ -37,7 +37,10 @@ addVirginQueens(
 \item{caste}{character, "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric or function, number of workers to be added, but see
-\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used}
+\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used.
+If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be used for all the colonies.}
 
 \item{new}{logical, should the number of individuals be added to the caste population
 anew or should we only top-up the existing number of individuals to \code{nInd}}
@@ -143,4 +146,12 @@ SP$nDrones <- nDronesPoisson
 
 # Queen's counters
 getMisc(getQueen(addWorkers(colony)))
+
+# Add individuals to a MultiColony object
+nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
+nDrones(addDrones(apiary, nInd = 10))
+# Add with unequal number of workers per colony
+nWorkers(addWorkers(apiary, nInd = c(50, 100)))
+nDrones(addDrones(apiary, nInd = c(100, 10)))
+
 }
