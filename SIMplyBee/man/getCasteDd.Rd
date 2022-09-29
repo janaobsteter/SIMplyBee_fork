@@ -2,16 +2,16 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteDd}
 \alias{getCasteDd}
-\alias{getQueensDd}
+\alias{getQueenDd}
 \alias{getFathersDd}
 \alias{getVirginQueensDd}
 \alias{getWorkersDd}
 \alias{getDronesDd}
-\title{Access dominance deviations of individuals in a caste}
+\title{Access dominance values of individuals in a caste}
 \usage{
 getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensDd(x, simParamBee = NULL)
+getQueenDd(x, simParamBee = NULL)
 
 getFathersDd(x, nInd = NULL, simParamBee = NULL)
 
@@ -22,7 +22,7 @@ getWorkersDd(x, nInd = NULL, simParamBee = NULL)
 getDronesDd(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -33,70 +33,72 @@ individuals are accessed, otherwise a random sample}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-vector of dominance deviations when \code{x} is
-  \code{\link{Colony-class}} and list of vectors of dominance deviations when
-  \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-  is \code{\link{Colonies-class}}
+vector of dominance values when \code{x} is
+  \code{\link{Colony-class}} and list of vectors of dominance values when
+  \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
+  is \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns dominance deviations of
+Level 0 function that returns dominance values of
   individuals in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensDd()}: Access dominance deviation of the queen
+\item \code{getQueenDd()}: Access dominance value of the queen
 
-\item \code{getFathersDd()}: Access dominance deviations of fathers
+\item \code{getFathersDd()}: Access dominance values of fathers
 
-\item \code{getVirginQueensDd()}: Access dominance deviations of virgin queens
+\item \code{getVirginQueensDd()}: Access dominance values of virgin queens
 
-\item \code{getWorkersDd()}: Access dominance deviations of workers
+\item \code{getWorkersDd()}: Access dominance values of workers
 
-\item \code{getDronesDd()}: Access dominance deviations of drones
+\item \code{getDronesDd()}: Access dominance values of drones
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteDd(colony1, caste = "queen")
-getQueensDd(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteDd(colony1, caste = "fathers")
-getCasteDd(colony1, caste = "fathers", nInd = 2)
-getCasteDd(colony1, caste = "fathers", nInd = 2)
-getFathersDd(colony1)
-getFathersDd(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteDd(colony1, caste = "virginQueens")
-getVirginQueensDd(colony1)
+getCasteDd(colony, caste = "queen")
+getQueenDd(colony)
 
-getCasteDd(colony1, caste = "workers")
-getWorkersDd(colony1)
+getCasteDd(colony, caste = "fathers")
+getCasteDd(colony, caste = "fathers", nInd = 2)
+getCasteDd(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersDd(colony)
+getFathersDd(colony, nInd = 2)
 
-getCasteDd(colony1, caste = "drones")
-getDronesDd(colony1)
+getCasteDd(colony, caste = "virginQueens")
+getVirginQueensDd(colony)
 
-apiary <- c(colony1, colony2)
+getCasteDd(colony, caste = "workers")
+getWorkersDd(colony)
+
+getCasteDd(colony, caste = "drones")
+getDronesDd(colony)
+
 getCasteDd(apiary, caste = "queen")
-getQueensDd(apiary)
+getQueenDd(apiary)
 
 getCasteDd(apiary, caste = "fathers")
 getCasteDd(apiary, caste = "fathers", nInd = 2)
-getCasteDd(apiary, caste = "fathers", nInd = 2)
+getCasteDd(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersDd(apiary)
 getFathersDd(apiary, nInd = 2)
 

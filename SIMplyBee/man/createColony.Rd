@@ -4,12 +4,14 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x, location = NULL)
+createColony(x = NULL, location = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, one queen or virgin queen(s)}
 
 \item{location}{numeric, location of the colony as \code{c(x, y)}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 new \code{\link{Colony-class}}
@@ -19,15 +21,18 @@ Level 2 function that creates a new \code{\link{Colony-class}}
   to initiate simulations.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(x = basePop[1], nInd = 15)
 
-drones <- createDrones(x = basePop[1], nInd = 50)
+# Create an empty Colony class with one or multiple virgin queens
 colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones, nFathers = 15)
 colony1
-
 colony2 <- createColony(x = basePop[3:4])
 colony2
+
+# Create a mated Colony
+colony1 <- cross(colony1, drones = drones)
+colony1
 }

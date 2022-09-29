@@ -16,7 +16,7 @@ getCsdAlleles(
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
@@ -28,11 +28,16 @@ allele}
 \item{dronesHaploid}{logical, return haploid result for drones?}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a set of
-csd alleles in either the entire population, colony, or colonies. Default
-is \code{FALSE}.}
+csd alleles across the entire population, colony, or multicolony (not
+separately for each caste when \code{x} is a colony or each caste of
+each colony when \code{x} is a multicolony. This is a way to get one single
+object as an output across castes or colonies. Note this has nothing to do
+with the colony collapse. It's like \code{paste(..., collapse = TRUE)}.
+Default is \code{FALSE}. See examples about this behaviour.}
 
-\item{unique}{logical, return only the unique set of csd alleles. Default
-is \code{FALSE}.}
+\item{unique}{logical, return only the unique set of csd alleles. This argument
+interacts with \code{collapse}. Default is \code{FALSE}. See examples about
+this behaviour.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -40,8 +45,8 @@ is \code{FALSE}.}
 matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with haplotypes
-  when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+  when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
+  colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
   \code{x} is \code{NULL}
 }
 \description{
@@ -49,42 +54,42 @@ Level 0 function that returns alleles from the csd locus. See
   \code{\link{SimParamBee}} for more information about the csd locus.
 }
 \details{
-If both collapse and unique are \code{TRUE}, the function
-  returns a unique set of csd alleles in the entire population, colony, or
-  colonies.
+If both collapse and unique are \code{TRUE}, the function returns a
+  unique set of csd alleles in the entire population, colony, or multicolony
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCsdAlleles(getQueen(colony1))
-getCsdAlleles(getFathers(colony1))
-getCsdAlleles(getWorkers(colony1))
-getCsdAlleles(getDrones(colony1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
-getCsdAlleles(colony1)
-getCsdAlleles(colony1, unique = TRUE)
-getCsdAlleles(colony1, collapse = TRUE)
-getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 
-getCsdAlleles(getDrones(colony2))
-getCsdAlleles(colony2)
+# Use getCsdAlleles on a Population
+getCsdAlleles(getQueen(colony))
+getCsdAlleles(getFathers(colony))
+getCsdAlleles(getWorkers(colony))
+getCsdAlleles(getDrones(colony))
 
+# Use getCsdAlleles on a Colony
+getCsdAlleles(colony)
+getCsdAlleles(colony, unique = TRUE)
+getCsdAlleles(colony, collapse = TRUE)
+getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
+
+# Use getCsdAlleles on a MultiColony
 getCsdAlleles(apiary)
 getCsdAlleles(apiary, unique = TRUE)
 getCsdAlleles(apiary, collapse = TRUE)
 getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
-
 getCsdAlleles(apiary, nInd = 2)
 }

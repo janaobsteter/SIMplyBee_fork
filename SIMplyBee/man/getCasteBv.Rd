@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteBv}
 \alias{getCasteBv}
-\alias{getQueensBv}
+\alias{getQueenBv}
 \alias{getFathersBv}
 \alias{getVirginQueensBv}
 \alias{getWorkersBv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteBv(x, caste, nInd = NULL, simParamBee = NULL)
 
-getQueensBv(x, simParamBee = NULL)
+getQueenBv(x, simParamBee = NULL)
 
 getFathersBv(x, nInd = NULL, simParamBee = NULL)
 
@@ -22,7 +22,7 @@ getWorkersBv(x, nInd = NULL, simParamBee = NULL)
 getDronesBv(x, nInd = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -35,8 +35,8 @@ individuals are accessed, otherwise a random sample}
 \value{
 vector of breeding values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of breeding values when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns breeding values of individuals in
@@ -44,7 +44,7 @@ Level 0 function that returns breeding values of individuals in
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensBv()}: Access breeding value of the queen
+\item \code{getQueenBv()}: Access breeding value of the queen
 
 \item \code{getFathersBv()}: Access breeding values of fathers
 
@@ -56,47 +56,50 @@ Level 0 function that returns breeding values of individuals in
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+SP$addTraitA(nQtlPerChr = 10, var = 1)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteBv(colony1, caste = "queen")
-getQueensBv(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteBv(colony1, caste = "fathers")
-getCasteBv(colony1, caste = "fathers", nInd = 2)
-getCasteBv(colony1, caste = "fathers", nInd = 2)
-getFathersBv(colony1)
-getFathersBv(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteBv(colony1, caste = "virginQueens")
-getVirginQueensBv(colony1)
+getCasteBv(colony, caste = "queen")
+getQueenBv(colony)
 
-getCasteBv(colony1, caste = "workers")
-getWorkersBv(colony1)
+getCasteBv(colony, caste = "fathers")
+getCasteBv(colony, caste = "fathers", nInd = 2)
+getCasteBv(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersBv(colony)
+getFathersBv(colony, nInd = 2)
 
-getCasteBv(colony1, caste = "drones")
-getDronesBv(colony1)
+getCasteBv(colony, caste = "virginQueens")
+getVirginQueensBv(colony)
 
-apiary <- c(colony1, colony2)
+getCasteBv(colony, caste = "workers")
+getWorkersBv(colony)
+
+getCasteBv(colony, caste = "drones")
+getDronesBv(colony)
+
 getCasteBv(apiary, caste = "queen")
-getQueensBv(apiary)
+getQueenBv(apiary)
 
 getCasteBv(apiary, caste = "fathers")
 getCasteBv(apiary, caste = "fathers", nInd = 2)
-getCasteBv(apiary, caste = "fathers", nInd = 2)
+getCasteBv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersBv(apiary)
 getFathersBv(apiary, nInd = 2)
 

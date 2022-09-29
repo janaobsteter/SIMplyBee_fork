@@ -3,23 +3,23 @@
 \name{pullCastePop}
 \alias{pullCastePop}
 \alias{pullQueen}
-\alias{pullVirginQueens}
 \alias{pullWorkers}
 \alias{pullDrones}
+\alias{pullVirginQueens}
 \title{Pull individuals from a caste in a colony}
 \usage{
 pullCastePop(x, caste, nInd = NULL, use = "rand", removeFathers = TRUE)
 
 pullQueen(x)
 
-pullVirginQueens(x, nInd = NULL, use = "rand")
-
 pullWorkers(x, nInd = NULL, use = "rand")
 
 pullDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+
+pullVirginQueens(x, nInd = NULL, use = "rand")
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "workers", "drones", or "virginQueens"}
 
@@ -36,8 +36,8 @@ virgin queens, say via insemination}
 list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
   when \code{x} is \code{\link{Colony-class}} and list of (a list of
   \code{\link{Pop-class}} named by colony id) and
-  \code{\link{Colonies-class}} when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}} when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 1 function that pulls individuals from a caste in a
@@ -48,71 +48,72 @@ Level 1 function that pulls individuals from a caste in a
 \itemize{
 \item \code{pullQueen()}: Pull queen from a colony
 
-\item \code{pullVirginQueens()}: Pull virgin queens from a colony
-
 \item \code{pullWorkers()}: Pull workers from a colony
 
 \item \code{pullDrones()}: Pull drones from a colony
 
+\item \code{pullVirginQueens()}: Pull virgin queens from a colony
+
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addVirginQueens(colony1, nInd = 10)
-colony2 <- addVirginQueens(colony2, nInd = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 5)
-colony2 <- addDrones(colony2, nInd = 6)
-pullCastePop(colony1, caste = "queen")
-pullQueen(colony1)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-pullCastePop(colony1, caste = "virginQueens")
-pullCastePop(colony1, caste = "virginQueens", nInd = 2)
-pullVirginQueens(colony1)
-pullVirginQueens(colony1, nInd = 2)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10, exact = TRUE)
+colony <- addVirginQueens(x = colony, nInd = 3)
 
-pullCastePop(colony1, caste = "workers")
-pullCastePop(colony1, caste = "workers", nInd = 5)
-pullWorkers(colony1)
-pullWorkers(colony1, nInd = 5)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10, exact = TRUE)
+apiary <- addVirginQueens(x = apiary, nInd = 3)
 
-pullCastePop(colony1, caste = "drones")
-pullCastePop(colony1, caste = "drones", nInd = 5)
-pullDrones(colony1)
-pullDrones(colony1, nInd = 5)
+# pullCastePop on Colony class
+# We can't pull the queen and leave the colony queenless
+pullCastePop(colony, caste = "virginQueens")
+pullCastePop(colony, caste = "virginQueens", nInd = 2)
+pullVirginQueens(colony)
+pullVirginQueens(colony, nInd = 2)
 
-apiary <- c(colony1, colony2)
+pullCastePop(colony, caste = "workers")
+pullCastePop(colony, caste = "workers", nInd = 5)
+pullWorkers(colony)
+pullWorkers(colony, nInd = 5)
 
+pullCastePop(colony, caste = "drones")
+pullCastePop(colony, caste = "drones", nInd = 5)
+pullDrones(colony)
+pullDrones(colony, nInd = 5)
+
+# pullCastePop on MultiColony class
 pullCastePop(apiary, caste = "queen")
 pullQueen(apiary)
 nQueens(apiary)
-nQueens(pullQueen(apiary)$colonies)
+nQueens(pullQueen(apiary)$remnant)
 
 pullCastePop(apiary, caste = "virginQueens")
 pullVirginQueens(apiary)
 nVirginQueens(apiary)
-nVirginQueens(pullVirginQueens(apiary)$colonies)
-nVirginQueens(pullVirginQueens(apiary, nInd = 5)$colonies)
 
 pullCastePop(apiary, caste = "workers")
 pullWorkers(apiary)
 nWorkers(apiary)
-nWorkers(pullWorkers(apiary)$colonies)
-nWorkers(pullWorkers(apiary, nInd = 5)$colonies)
+nWorkers(pullWorkers(apiary)$remnant)
 
 pullCastePop(apiary, caste = "drones")
 pullDrones(apiary)
 nDrones(apiary)
-nDrones(pullDrones(apiary)$colonies)
-nDrones(pullDrones(apiary, nInd = 5)$colonies)
+nDrones(pullDrones(apiary)$remnant)
 }
 \seealso{
 \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},

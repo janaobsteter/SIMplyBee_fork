@@ -20,10 +20,10 @@ isColony(x)
 \item{object}{\code{\link{Colony-class}}}
 
 \item{...}{\code{NULL}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}}
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 }
 \description{
 An object holding honeybee colony
@@ -40,7 +40,7 @@ An object holding honeybee colony
 \section{Slots}{
 
 \describe{
-\item{\code{id}}{character, ID of the colony, which is equal to the ID of the queen}
+\item{\code{id}}{integer, unique ID of the colony}
 
 \item{\code{location}}{numeric, location of the colony (x, y)}
 
@@ -53,8 +53,6 @@ colony}
 \item{\code{drones}}{\code{\link{Pop-class}}, drones of the colony}
 
 \item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
-
-\item{\code{pheno}}{matrix, phenotypes of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/156}
 
 \item{\code{split}}{logical, has colony split}
 
@@ -76,13 +74,14 @@ founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 15)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
+colony1 <- cross(colony1, drones = droneGroups[[1]])
 colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+colony2 <- cross(colony2, drones = droneGroups[[2]])
 colony3 <- createColony(x = basePop[4])
-colony3 <- crossColony(colony3, drones = drones[11:15], nFathers = 5)
+colony3 <- cross(colony3, drones = droneGroups[[3]])
 
 colony1
 show(colony1)
@@ -91,7 +90,7 @@ isColony(colony1)
 
 apiary <- c(colony1, colony2)
 is(apiary)
-isColonies(apiary)
+isMultiColony(apiary)
 
 c(apiary, colony3)
 c(colony3, apiary)

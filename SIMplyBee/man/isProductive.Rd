@@ -7,35 +7,35 @@
 isProductive(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns colony production status. This can
   be used to decided if colony production can be simulated.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony
+colony <- cross(colony, drones = droneGroups[[1]])
+
 isProductive(colony)
-colony <- buildUpColony(colony, nWorkers = 100)
-colony
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 isProductive(colony)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[4])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-apiary <- buildUpColonies(apiary, nWorkers = 100)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+
+isProductive(apiary)
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 isProductive(apiary)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteGv}
 \alias{getCasteGv}
-\alias{getQueensGv}
+\alias{getQueenGv}
 \alias{getFathersGv}
 \alias{getVirginQueensGv}
 \alias{getWorkersGv}
@@ -11,7 +11,7 @@
 \usage{
 getCasteGv(x, caste, nInd = NULL)
 
-getQueensGv(x)
+getQueenGv(x)
 
 getFathersGv(x, nInd = NULL)
 
@@ -22,7 +22,7 @@ getWorkersGv(x, nInd = NULL)
 getDronesGv(x, nInd = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -31,18 +31,18 @@ getDronesGv(x, nInd = NULL)
 individuals are accessed, otherwise a random sample}
 }
 \value{
-vector of genetic values when \code{x} is \code{\link{Colony-class}}
+vector of phenotype values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of genetic values when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns genetic values of individuals in a
-  caste.
+Level 0 function that returns genetic values of individuals
+  in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensGv()}: Access genetic value of the queen
+\item \code{getQueenGv()}: Access genetic value of the queen
 
 \item \code{getFathersGv()}: Access genetic values of fathers
 
@@ -54,47 +54,50 @@ Level 0 function that returns genetic values of individuals in a
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+SP$addTraitA(nQtlPerChr = 10, var = 1)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteGv(colony1, caste = "queen")
-getQueensGv(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteGv(colony1, caste = "fathers")
-getCasteGv(colony1, caste = "fathers", nInd = 2)
-getCasteGv(colony1, caste = "fathers", nInd = 2)
-getFathersGv(colony1)
-getFathersGv(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteGv(colony1, caste = "virginQueens")
-getVirginQueensGv(colony1)
+getCasteGv(colony, caste = "queen")
+getQueenGv(colony)
 
-getCasteGv(colony1, caste = "workers")
-getWorkersGv(colony1)
+getCasteGv(colony, caste = "fathers")
+getCasteGv(colony, caste = "fathers", nInd = 2)
+getCasteGv(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersGv(colony)
+getFathersGv(colony, nInd = 2)
 
-getCasteGv(colony1, caste = "drones")
-getDronesGv(colony1)
+getCasteGv(colony, caste = "virginQueens")
+getVirginQueensGv(colony)
 
-apiary <- c(colony1, colony2)
+getCasteGv(colony, caste = "workers")
+getWorkersGv(colony)
+
+getCasteGv(colony, caste = "drones")
+getDronesGv(colony)
+
 getCasteGv(apiary, caste = "queen")
-getQueensGv(apiary)
+getQueenGv(apiary)
 
 getCasteGv(apiary, caste = "fathers")
 getCasteGv(apiary, caste = "fathers", nInd = 2)
-getCasteGv(apiary, caste = "fathers", nInd = 2)
+getCasteGv(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersGv(apiary)
 getFathersGv(apiary, nInd = 2)
 

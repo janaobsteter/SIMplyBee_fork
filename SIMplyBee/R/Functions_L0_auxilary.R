@@ -1,77 +1,121 @@
-# Level 0 Auxiliary Functions
+# ---- Level 0 Auxiliary Functions ----
+
+# n* ----
 
 #' @rdname nColonies
-#' @title Number of colonies
+#' @title Number of colonies in a MultiColony object
 #'
 #' @description Level 0 function that returns the number of colonies in a
-#'   colonies object.
+#'   MultiColony object.
 #'
-#' @param colonies \code{\link{Colonies-class}}
-#'
+#' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' apiary <- createMultiColony(basePop[2:3], n = 2)
 #' nColonies(apiary)
-#' nColonies(createColonies(n = 10))
+#' nColonies(createMultiColony(n = 10))
 #' @export
-nColonies <- function(colonies) {
-  if (!"Colonies" %in% class(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+nColonies <- function(multicolony) {
+  if (!"MultiColony" %in% class(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
-  n <- length(colonies@colonies)
+  n <- length(multicolony@colonies)
   return(n)
 }
 
 #' @rdname nNULLColonies
-#' @title Number of NULL colonies
+#' @title Number of NULL colonies in a MultiColony object
 #'
 #' @description Level 0 function that returns the number of colonies in a
-#'   colonies object that are in fact empty \code{NULL}.
+#'   MultiColony object that are in fact \code{NULL}.
 #'
-#' @param colonies \code{\link{Colonies-class}}
+#' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @return integer
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' getId(apiary)
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 #'
-#' nColonies(apiary)
-#' nColonies(selectColonies(apiary, ID = c("3", "4")))
-#' nColonies(selectColonies(apiary, ID = c("4", "5")))
-#' nColonies(selectColonies(apiary, ID = c("5", "6")))
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
 #'
-#' nNULLColonies(apiary)
-#' nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
-#' nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
-#' nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#'
 #' @export
-nNULLColonies <- function(colonies) {
-  if (!"Colonies" %in% class(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+nNULLColonies <- function(multicolony) {
+  if (!"MultiColony" %in% class(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
-  if (length(colonies@colonies) == 0) {
+  if (nColonies(multicolony) == 0) {
     ret <- 0
   } else {
-    ret <- sum(sapply(X = colonies@colonies, FUN = is.null))
+    ret <- sum(isNULLColonies(multicolony))
+  }
+  return(ret)
+}
+
+#' @rdname nEmptyColonies
+#' @title Number of empty colonies in a MultiColony object
+#'
+#' @description Level 0 function that returns the number of empty colonies in a
+#'   MultiColony object
+#'
+#' @param multicolony \code{\link{MultiColony-class}}
+#'
+#' @return integer
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+#'
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
+#'
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#' @export
+nEmptyColonies <- function(multicolony) {
+  if (!"MultiColony" %in% class(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
+  if (nColonies(multicolony) == 0) {
+    ret <- 0
+  } else {
+    ret <- sum(isEmpty(multicolony))
   }
   return(ret)
 }
@@ -82,7 +126,7 @@ nNULLColonies <- function(colonies) {
 #'
 #' @description Returns the number of individuals of a caste in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #'
@@ -92,32 +136,37 @@ nNULLColonies <- function(colonies) {
 #'
 #' @return when \code{x} is \code{\link{Colony-class}} return is integer for
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
-#'   by caste; when \code{x} is \code{\link{Colonies-class}} return is named
+#'   by caste; when \code{x} is \code{\link{MultiColony-class}} return is named
 #'   integer for \code{caste != "all"} or named list of lists for
 #'   \code{caste == "all"}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 100)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 3)
-#' colony2 <- addWorkers(colony2, nInd = 200)
-#' nCaste(colony1, caste = "queen")
-#' nCaste(colony1, caste = "fathers")
-#' nCaste(colony1, caste = "virginQueens")
-#' nCaste(colony1, caste = "workers")
-#' nCaste(colony1, caste = "drones")
-#' nCaste(colony1, caste = "all")
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 100, nDrones = 10)
+#' colony <- addVirginQueens(x = colony, nInd = 3)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#' apiary <- addVirginQueens(x = apiary, nInd = 3)
+#'
+#' # Check caste members
+#' nCaste(colony, caste = "queen")
+#' nCaste(colony, caste = "fathers")
+#' nCaste(colony, caste = "virginQueens")
+#' nCaste(colony, caste = "workers")
+#' nCaste(colony, caste = "drones")
+#' nCaste(colony, caste = "all")
+#'
 #' nCaste(apiary, caste = "queen")
 #' nCaste(apiary, caste = "fathers")
 #' nCaste(apiary, caste = "virginQueens")
@@ -138,21 +187,19 @@ nCaste <- function(x, caste = "all") {
       }
     } else {
       if (caste == "fathers") {
-        if (isQueenPresent(x)) {
-          ret <- ifelse(isQueenMated(x), nInd(x@queen@misc[[1]]$fathers), 0)
-        } else {
-          ret <- 0
-        }
+        ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
+      } else if (caste == "drones") {
+        ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x@drones)), 0)
       } else {
-        ret <- ifelse(is.null(slot(x, caste)), 0, nInd(slot(x, caste)))
+        ret <- ifelse(!is.null(slot(x, caste)), nInd(slot(x, caste)), 0)
       }
     }
-  } else if (isColonies(x)) {
-    fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
-    names(ret) <- getId(x)
+  } else if (isMultiColony(x)) {
+      fun <- ifelse(caste == "all", lapply, sapply)
+      ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
+      names(ret) <- getId(x)
   } else {
-    stop("Argument colony must be a Colony or Colonies class object!")
+    stop("Argument colony must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -162,34 +209,35 @@ nCaste <- function(x, caste = "all") {
 #'
 #' @description Returns the number of queens in a colony (expect 0 or 1)
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' nQueens(colony1)
-#' nQueens(colony2)
-#' colony2 <- removeQueen(colony2)
-#' nQueens(colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#'
+#' nQueens(colony)
+#' colony <- removeQueen(colony)
+#' nQueens(colony)
+#'
+#' nQueens(apiary)
+#' apiary <- removeQueen(apiary)
 #' nQueens(apiary)
 #' @export
 nQueens <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- nCaste(x, caste = "queen")
   return(ret)
 }
 
@@ -198,42 +246,42 @@ nQueens <- function(x) {
 #'
 #' @description Returns the number of nFathers (drones the queen mated with) in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' nFathers(colony1)
-#' nFathers(colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#'
+#' nFathers(colony)
 #' nFathers(apiary)
 #' @export
 nFathers <- function(x) {
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
-      stop("Individuals in x must be virgin queens or queens!")
+    if (any(!(isQueen(x)))) {
+      stop("Individuals in x must be queens!")
     }
     nInd <- nInd(x)
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (isQueenMated(x[ind])) {
+      if (isQueen(x[ind])) {
         ret[ind] <- nInd(x@misc[[ind]]$fathers)
       }
     }
-  } else if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "fathers")
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    ret <- nCaste(x, caste = "fathers")
   }
   return(ret)
 }
@@ -243,34 +291,32 @@ nFathers <- function(x) {
 #'
 #' @description Returns the number of virgin queens in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addVirginQueens(colony1, nInd = 3)
-#' colony2 <- addVirginQueens(colony2, nInd = 5)
-#' nVirginQueens(colony1)
-#' nVirginQueens(colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- addVirginQueens(x = colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- addVirginQueens(x = apiary, nInd = 3)
+#'
+#' nVirginQueens(colony)
 #' nVirginQueens(apiary)
 #' @export
 nVirginQueens <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "virginQueens")
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- nCaste(x, caste = "virginQueens")
   return(ret)
 }
 
@@ -279,34 +325,41 @@ nVirginQueens <- function(x) {
 #'
 #' @description Returns the number of workers in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 100)
-#' colony2 <- addWorkers(colony2, nInd = 200)
-#' nWorkers(colony1)
-#' nWorkers(colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- addWorkers(x = colony, nInd = 50, exact = TRUE)
+#' nWorkers(colony)
+#'
+#' # Create a Multicolony class
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#'
+#' # If exact = TRUE, all 50 individuals are added
+#' tmp <- addWorkers(x = apiary[1], nInd = 100, exact = TRUE)
+#' nWorkers(tmp)
+#' # If exact = FALSE, some of the workers are removed due to homozygosity
+#' # on the csd (when the csd is turned on)
+#' tmp2 <- addWorkers(x = apiary[2], nInd = 200, exact = FALSE)
+#' nWorkers(tmp2)
+#'
+#' apiary <- c(tmp, tmp2)
 #' nWorkers(apiary)
 #' @export
 nWorkers <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "workers")
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- nCaste(x, caste = "workers")
   return(ret)
 }
 
@@ -315,36 +368,38 @@ nWorkers <- function(x) {
 #'
 #' @description Returns the number of drones in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return integer, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return integer, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addDrones(colony1, nInd = 100)
-#' colony2 <- addDrones(colony2, nInd = 200)
-#' nDrones(colony1)
-#' nDrones(colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- addDrones(x = colony, nInd = 50)
+#'
+#' apiary <- createMultiColony(basePop[3:7], n = 5)
+#' apiary <- cross(x = apiary, drones = droneGroups[2:6])
+#' tmp <- addDrones(x = apiary[1:3], nInd = 100)
+#' tmp2 <- addDrones(x = apiary[4:5], nInd = 200)
+#' apiary <- c(tmp, tmp2)
+#'
+#' nDrones(colony)
 #' nDrones(apiary)
 #' @export
 nDrones <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- nCaste(x, caste = "drones")
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- nCaste(x, caste = "drones")
   return(ret)
 }
+
+# pHomBrood ----
 
 #' @rdname calcQueensPHomBrood
 #' @title The expected proportion and a realised number of csd homozygous brood
@@ -359,67 +414,61 @@ nDrones <- function(x) {
 #'   details.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @seealso Demo in the introductory vignette
 #'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
 #' @return numeric, expected csd homozygosity named by colony id when \code{x}
-#'   is \code{\link{Colonies-class}}
+#'   is \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' # This is a bit long example - the key is at the end!
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony2 <- addDrones(colony2, nInd = 20)
-#' colony1 <- addVirginQueens(colony1, nInd = 1)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#' colony <- addVirginQueens(x = colony, nInd = 1)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 #'
 #' # Virgin queen
-#' calcQueensPHomBrood(basePop[2])
+#' try(calcQueensPHomBrood(basePop[5]))
 #'
-#' # Mated queen
-#' matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
-#' calcQueensPHomBrood(matedQueen)
+#' # Queens of colony
+#' calcQueensPHomBrood(colony)
 #'
-#' # Queen of the colony
-#' calcQueensPHomBrood(getQueen(colony1))
-#'
-#' # Colony
-#' calcQueensPHomBrood(colony1)
-#'
-#' # Colonies
-#' apiary <- c(colony1, colony2)
+#' # Queens of apiary
 #' calcQueensPHomBrood(apiary)
 #'
 #' # Inbreed virgin queen with her brothers to generate csd homozygous brood
-#' colony3 <- createColony(x = getVirginQueens(colony1))
-#' colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+#' colony2 <- createColony(x = getVirginQueens(colony))
+#' colony2 <- cross(x = colony2, drones = pullDrones(x = colony, nInd = nFathersPoisson())[[1]])
 #'
 #' # Calculate the expected csd homozygosity
-#' calcQueensPHomBrood(getQueen(colony3))
-#' pHomBrood(colony3)
+#' calcQueensPHomBrood(getQueen(colony2))
+#' pHomBrood(colony2)
 #'
 #' # Evaluate a realised csd homozygosity
-#' nHomBrood(addWorkers(colony3, nInd = 100))
-#' nHomBrood(addWorkers(colony3, nInd = 100))
+#' nHomBrood(addWorkers(colony2, nInd = 100))
+#' nHomBrood(addWorkers(colony2, nInd = 100))
 #' # nHomBrood will vary between function calls due to inheritance process
 #' @export
 calcQueensPHomBrood <- function(x) {
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (is.null(x@misc[[ind]]$fathers)) {
-        ret[ind] <- NA
+      if (!isQueen(x)) {
+        stop("calcQueensPHomBrood can only be used with queens!")
       } else {
         queensCsd <- apply(
           X = getCsdAlleles(x[ind]), MARGIN = 1,
@@ -435,11 +484,11 @@ calcQueensPHomBrood <- function(x) {
     }
   } else if (isColony(x)) {
     ret <- calcQueensPHomBrood(x = x@queen)
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -467,11 +516,11 @@ pHomBrood <- function(x) {
     } else {
       ret <- x@queen@misc[[1]]$pHomBrood
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = pHomBrood)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -496,17 +545,19 @@ nHomBrood <- function(x) {
     } else {
       ret <- x@queen@misc[[1]]$nHomBrood
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = nHomBrood)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
+# is* ----
+
 #' @rdname isCaste
-#' @title Is individual a member of specific caste
+#' @title Is individual a member of a specific caste
 #'
 #' @description Level 0 function that tests if individuals are members of a
 #'   specific caste
@@ -519,20 +570,22 @@ nHomBrood <- function(x) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
 #' isCaste(getQueen(colony), caste = "queen")
 #' isCaste(getFathers(colony, nInd = 2), caste = "fathers")
-#' isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+#' isCaste(getWorkers(colony, nInd = 2), caste = "workers") # random sample!
 #' isCaste(getDrones(colony, nInd = 2), caste = "drones")
 #' isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
 #'
@@ -550,13 +603,16 @@ nHomBrood <- function(x) {
 #' isCaste(bees, caste = "virginQueens")
 #' @export
 isCaste <- function(x, caste, simParamBee = NULL) {
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
     ret <- simParamBee$caste[x@id] == caste[1]
   } else if (is.null(x)) {
-    ret <- logical()
+    ret <- NULL
   } else {
     stop("Argument x must be a Pop class object or NULL!")
   }
@@ -574,29 +630,23 @@ isCaste <- function(x, caste, simParamBee = NULL) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' colony <- cross(colony, drones = droneGroups[[1]])
 #'
 #' isQueen(getQueen(colony))
 #' isQueen(getFathers(colony, nInd = 2))
-#' isQueen(getWorkers(colony, nInd = 2))
-#' isQueen(getDrones(colony, nInd = 2))
-#' isQueen(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
-#'   getFathers(colony, nInd = 2),
-#'   getWorkers(colony, nInd = 2),
-#'   getDrones(colony, nInd = 2),
-#'   getVirginQueens(colony, nInd = 2)
+#'   getFathers(colony, nInd = 2)
 #' )
 #' isQueen(bees)
 #' @export
@@ -619,29 +669,23 @@ isQueen <- function(x, simParamBee = NULL) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' colony <- cross(colony, drones = droneGroups[[1]])
 #'
 #' isFather(getQueen(colony))
 #' isFather(getFathers(colony, nInd = 2))
-#' isFather(getWorkers(colony, nInd = 2))
-#' isFather(getDrones(colony, nInd = 2))
-#' isFather(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
-#'   getFathers(colony, nInd = 2),
-#'   getWorkers(colony, nInd = 2),
-#'   getDrones(colony, nInd = 2),
-#'   getVirginQueens(colony, nInd = 2)
+#'   getFathers(colony, nInd = 2)
 #' )
 #' isFather(bees)
 #' @export
@@ -664,29 +708,26 @@ isFather <- function(x, simParamBee = NULL) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #'
 #' isWorker(getQueen(colony))
 #' isWorker(getFathers(colony, nInd = 2))
 #' isWorker(getWorkers(colony, nInd = 2))
-#' isWorker(getDrones(colony, nInd = 2))
-#' isWorker(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
 #'   getFathers(colony, nInd = 2),
-#'   getWorkers(colony, nInd = 2),
-#'   getDrones(colony, nInd = 2),
-#'   getVirginQueens(colony, nInd = 2)
+#'   getWorkers(colony, nInd = 2)
 #' )
 #' isWorker(bees)
 #' @export
@@ -709,29 +750,26 @@ isWorker <- function(x, simParamBee = NULL) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #'
 #' isDrone(getQueen(colony))
 #' isDrone(getFathers(colony, nInd = 2))
-#' isDrone(getWorkers(colony, nInd = 2))
 #' isDrone(getDrones(colony, nInd = 2))
-#' isDrone(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
 #'   getFathers(colony, nInd = 2),
-#'   getWorkers(colony, nInd = 2),
-#'   getDrones(colony, nInd = 2),
-#'   getVirginQueens(colony, nInd = 2)
+#'   getDrones(colony, nInd = 2)
 #' )
 #' isDrone(bees)
 #' @export
@@ -754,28 +792,27 @@ isDrone <- function(x, simParamBee = NULL) {
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones, nFathers = 5)
-#' colony <- addWorkers(colony)
-#' colony <- addDrones(colony)
-#' colony <- addVirginQueens(colony)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
+#'
+#' # Test isVirginQueen on colony class
 #' isVirginQueen(getQueen(colony))
 #' isVirginQueen(getFathers(colony, nInd = 2))
-#' isVirginQueen(getWorkers(colony, nInd = 2))
-#' isVirginQueen(getDrones(colony, nInd = 2))
 #' isVirginQueen(getVirginQueens(colony, nInd = 2))
 #'
 #' bees <- c(
 #'   getQueen(colony),
 #'   getFathers(colony, nInd = 2),
-#'   getWorkers(colony, nInd = 2),
-#'   getDrones(colony, nInd = 2),
 #'   getVirginQueens(colony, nInd = 2)
 #' )
 #' isVirginQueen(bees)
@@ -794,214 +831,405 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' @description Level 0 function that returns queen's presence status (is she
 #'   present/alive or not).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- buildUpColony(colony1)
-#' colony2 <- buildUpColony(colony2)
-#' apiary <- c(colony1, colony2)
-#' isQueenPresent(colony1)
-#' isQueenPresent(colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#'
+#' isQueenPresent(colony)
 #' isQueenPresent(apiary)
 #'
-#' colony1r <- removeQueen(colony1)
-#' isQueenPresent(colony1r)
-#'
-#' colony2s <- supersedeColony(colony2)
-#' isQueenPresent(colony2s)
-#'
-#' tmp <- swarmColony(buildUpColony(colony1))
-#' isQueenPresent(tmp$swarm)
-#' isQueenPresent(tmp$remnant)
+#' colony <- removeQueen(colony)
+#' isQueenPresent(colony)
 #' @export
 isQueenPresent <- function(x) {
-  if (isColony(x)) {
-    ret <- !is.null(x@queen)
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenPresent)
-    names(ret) <- getId(x)
+  if (isColony(x) | isMultiColony(x)) {
+    if (length(nQueens(x)) > 0) {
+      ret <- nQueens(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @rdname areVirginQueensPresent
+
+#' @rdname isFathersPresent
+#' @title Are fathers present (=queen mated)
+#'
+#' @description Level 0 function that returns fathers presence status (are they
+#'   present or not, which means the queen is mated).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' isFathersPresent(colony)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' isFathersPresent(apiary)
+#'
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' isFathersPresent(removeDrones(colony))
+#'
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' isFathersPresent(removeDrones(apiary))
+#' @export
+isFathersPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    if (length(nFathers(x)) > 0) {
+      ret <- nFathers(x) > 0
+    } else {
+      ret <- FALSE
+    }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isFathersPresent Are fathers present
+#' @export
+areFathersPresent <- isFathersPresent
+
+#' @rdname isWorkersPresent
+#' @title Are workers present
+#'
+#' @description Level 0 function that returns workers presence status (are they
+#'   present or not).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#'
+#' isWorkersPresent(colony)
+#' isWorkersPresent(removeWorkers(colony))
+#' isWorkersPresent(apiary)
+#' isWorkersPresent(removeWorkers(apiary))
+#' @export
+isWorkersPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    if (length(nWorkers(x)) > 0) {
+      ret <- nWorkers(x) > 0
+    } else {
+      ret <- FALSE
+    }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isWorkersPresent Are workers present
+#' @export
+areWorkersPresent <- isWorkersPresent
+
+#' @rdname isDronesPresent
+#' @title Are drones present
+#'
+#' @description Level 0 function that returns drones presence status (are they
+#'   present or not).
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'
+#' @return logical, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#'
+#' isDronesPresent(colony)
+#' isDronesPresent(removeDrones(colony))
+#' isDronesPresent(apiary)
+#' isDronesPresent(removeDrones(apiary))
+#' @export
+isDronesPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    if (length(nDrones(x)) > 0) {
+      ret <- nDrones(x) > 0
+    } else {
+      ret <- FALSE
+    }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn isWorkersPresent Are drones present
+#' @export
+areDronesPresent <- isDronesPresent
+
+#' @rdname isVirginQueensPresent
 #' @title Are virgin queen(s) present
 #'
 #' @description Level 0 function that returns virgin queen(s) presence status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' areVirginQueensPresent(colony1)
-#' areVirginQueensPresent(colony2)
-#' areVirginQueensPresent(apiary)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' colony1 <- addVirginQueens(colony1)
-#' colony2 <- buildUpColony(colony2)
-#' apiary <- c(colony1, colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- addVirginQueens(x = colony, nInd = 4)
+#' isVirginQueensPresent(colony)
+#' isVirginQueensPresent(pullVirginQueens(colony)$remnant)
+#' isVirginQueensPresent(removeQueen(colony))
+#' # TODO: Should removeQueen() initiate creation of virginQueens #339
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/339
 #'
-#' areVirginQueensPresent(colony1)
-#' areVirginQueensPresent(colony2)
-#' areVirginQueensPresent(apiary)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
+#' isVirginQueensPresent(apiary)
 #'
-#' colony1r <- removeQueen(colony1)
-#' areVirginQueensPresent(colony1r)
-#'
-#' colony2s <- supersedeColony(colony2)
-#' areVirginQueensPresent(colony2s)
-#'
-#' tmp <- swarmColony(colony1)
-#' areVirginQueensPresent(tmp$swarm)
-#' areVirginQueensPresent(tmp$remnant)
-#'
-#' tmp <- splitColony(colony1)
-#' areVirginQueensPresent(tmp$split)
-#' areVirginQueensPresent(tmp$remnant)
+#' tmp <- swarm(x = apiary)
+#' isVirginQueensPresent(tmp$swarm)
+#' isVirginQueensPresent(tmp$remnant)
 #' @export
-areVirginQueensPresent <- function(x) {
-  if (isColony(x)) {
-    ret <- !is.null(x@virginQueens)
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = areVirginQueensPresent)
-    names(ret) <- getId(x)
+isVirginQueensPresent <- function(x) {
+  if (isColony(x) | isMultiColony(x)) {
+    if (length(nVirginQueens(x)) > 0) {
+      ret <- nVirginQueens(x) > 0
+    } else {
+      ret <- FALSE
+    }
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @rdname isQueenMated
-#' @title Is the queen mated?
+#' @rdname isEmpty
+#' @title Check whether a population, colony or a multicolony
+#'   object has no individuals within
 #'
-#' @description Level 0 function that returns queen's mating status.
+#' @description Check whether a population, colony or a multicolony
+#'   object has no individuals within.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or
+#'   \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#' @return boolean when \code{x} is \code{\link{Pop-class}} or
+#'   \code{\link{Colony-class}}, and named vector of boolean when
+#'   \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' apiary <- c(colony1, colony2, colony3)
-#' isQueenMated(getQueen(colony1))
-#' isQueenMated(colony1)
-#' isQueenMated(apiary)
+#' isEmpty(new(Class = "Pop"))
+#' isEmpty(basePop[0])
+#' isEmpty(basePop)
 #'
-#' isQueenMated(removeQueen(colony1))
+#' emptyColony <- createColony()
+#' nonEmptyColony <- createColony(basePop[1])
+#' isEmpty(emptyColony)
+#' isEmpty(nonEmptyColony)
 #'
-#' isQueenMated(supersedeColony(colony2))
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 #'
-#' isQueenMated(c(getQueen(colony1), getQueen(colony2), getVirginQueens(colony3)))
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
 #'
-#' isQueenMated(crossVirginQueen(basePop[6], drones[11:20], nFather = 5))
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#'
 #' @export
-isQueenMated <- function(x) {
-  if (isPop(x)) {
-    if (nInd(x) > 0) {
-      if (!all(isQueen(x) | isVirginQueen(x))) {
-        stop("Individuals in x must be virgin queens or queens!")
-      }
-      ret <- sapply(X = x@misc, FUN = function(z) (!is.null(z$fathers) && z$fathers@nInd != 0))
+isEmpty <- function(x) {
+  if (is.null(x)) {
+    ret <- TRUE
+  } else if (isPop(x)) {
+    if (length(x@nInd) == 0  || x@nInd == 0) {
+      ret <- TRUE
     } else {
       ret <- FALSE
     }
   } else if (isColony(x)) {
-    if (isQueenPresent(x)) {
-      ret <- isQueenMated(x@queen)
+    if (isEmpty(x@queen) & isEmpty(x@virginQueens) & isEmpty(x@workers) & isEmpty(x@drones)) {
+      ret <- TRUE
     } else {
       ret <- FALSE
     }
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = isQueenMated)
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = isEmpty, simplify = TRUE)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @rdname getQueensYearOfBirth
+#' @rdname isNULLColonies
+#' @title Check which of the colonies in a multicolony are NULL
+#'
+#' @description Check which of the colonies in a multicolony are NULL
+#'
+#' @param multicolony  \code{\link{MultiColony-class}}
+#'
+#' @return Named vector of boolean
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' emptyApiary <- createMultiColony(n = 3)
+#' emptyApiary1 <- c(createColony(), createColony())
+#' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
+#'
+#' isEmpty(emptyApiary)
+#' isEmpty(emptyApiary1)
+#' isEmpty(nonEmptyApiary)
+#' isNULLColonies(emptyApiary)
+#' isNULLColonies(emptyApiary1)
+#' isNULLColonies(nonEmptyApiary)
+#'
+#' nEmptyColonies(emptyApiary)
+#' nEmptyColonies(emptyApiary1)
+#' nEmptyColonies(nonEmptyApiary)
+#' nNULLColonies(emptyApiary)
+#' nNULLColonies(emptyApiary1)
+#' nNULLColonies(nonEmptyApiary)
+#'
+#' @export
+isNULLColonies <- function(multicolony) {
+  if (isMultiColony(multicolony)) {
+    ret <- sapply(X = multicolony@colonies, FUN = is.null, simplify = TRUE)
+    names(ret) <- getId(multicolony)
+  } else {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
+  return(ret)
+}
+
+# get (general) ----
+
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+areVirginQueensPresent <- isVirginQueensPresent
+
+#' @rdname getQueenYearOfBirth
 #' @title Access the queen's year of birth
 #'
 #' @description Level 0 function that returns the queen's year of birth.
 #'
 #' @param x \code{\link{Pop-class}} (one or more than one queen),
 #'   \code{\link{Colony-class}} (one colony), or
-#'   \code{\link{Colonies-class}} (more colonies)
+#'   \code{\link{MultiColony-class}} (more colonies)
 #'
 #' @return numeric, the year of birth of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getQueensYearOfBirth(getQueen(colony1))
-#' getQueensYearOfBirth(c(getQueen(colony1), getQueen(colony2)))
-#' getQueensYearOfBirth(colony1)
-#' getQueensYearOfBirth(apiary)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
 #'
-#' queen1 <- getQueen(colony1)
-#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
-#' getQueensYearOfBirth(queen1)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #'
-#' queen2 <- getQueen(colony2)
-#' queens <- setQueensYearOfBirth(c(queen1, queen2), year = 2023)
-#' getQueensYearOfBirth(queens)
+#' queen <- getQueen(colony)
+#' queen <- setQueensYearOfBirth(queen, year = 2022)
+#' getQueenYearOfBirth(queen)
 #'
-#' colony1 <- setQueensYearOfBirth(colony1, year = 2022)
-#' getQueensYearOfBirth(colony1)
+#' getQueenYearOfBirth(getQueen(colony))
+#' colony <- setQueensYearOfBirth(colony, year = 2030)
+#' getQueenYearOfBirth(colony)
 #'
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
-#' getQueensYearOfBirth(apiary)
+#' getQueenYearOfBirth(apiary)
 #' @export
-getQueensYearOfBirth <- function(x) {
+getQueenYearOfBirth <- function(x) {
   if (isPop(x)) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
@@ -1018,54 +1246,52 @@ getQueensYearOfBirth <- function(x) {
     }
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = getQueensYearOfBirth)
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getQueensYearOfBirth Access the queen's year of birth
-#' @export
-getQueensYOB <- getQueensYearOfBirth
-
-#' @rdname getQueensAge
+#' @rdname getQueenAge
 #' @title Get (calculate) the queen's age
 #'
 #' @description Level 0 function that returns the queen's age.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param currentYear integer, current year
 #'
 #' @return numeric, the age of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' queen <- getQueen(colony1)
-#' queen <- setQueensYOB(queen, year = 2021)
-#' getQueensAge(queen, currentYear = 2022)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #'
-#' colony1 <- setQueensYOB(colony1, year = 2021)
-#' getQueensAge(colony1, currentYear = 2022)
+#' queen <- getQueen(colony)
+#' queen <- setQueensYearOfBirth(queen, year = 2020)
+#' getQueenAge(queen, currentYear = 2022)
 #'
-#' apiary <- setQueensYOB(apiary, year = 2021)
-#' getQueensAge(apiary, currentYear = 2022)
+#' colony <- setQueensYearOfBirth(colony, year = 2021)
+#' getQueenAge(colony, currentYear = 2022)
+#'
+#' apiary <- setQueensYearOfBirth(apiary, year = 2018)
+#' getQueenAge(apiary, currentYear = 2022)
 #' @export
-getQueensAge <- function(x, currentYear) {
+getQueenAge <- function(x, currentYear) {
   if (isPop(x)) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
@@ -1086,11 +1312,11 @@ getQueensAge <- function(x, currentYear) {
     } else {
       ret <- NA
     }
-  } else if (isColonies(x)) {
-    ret <- sapply(X = x@colonies, FUN = getQueensAge, currentYear = currentYear)
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = getQueenAge, currentYear = currentYear)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -1101,28 +1327,29 @@ getQueensAge <- function(x, currentYear) {
 #' @description Level 0 function that returns the colony ID. This is by
 #'   definition the ID of the queen.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}
+#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{MultiColony-class}}
 #'
 #' @return character, \code{NA} when queen not present
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getId(getQueen(colony1))
-#' getId(colony1)
-#' getId(colony2)
-#' getId(apiary)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #'
-#' colony2 <- removeQueen(colony2)
+#' getId(getQueen(colony)) # Pop class
+#' getId(colony) # Colony Class
+#' getId(apiary) # MultiColony Class
+#'
+#' colony2 <- removeQueen(colony)
 #' getId(colony2)
 #' @export
 getId <- function(x) {
@@ -1132,10 +1359,10 @@ getId <- function(x) {
     id <- x@id
   } else if (isColony(x)) {
     id <- ifelse(is.null(x@id), NA, x@id)
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     id <- sapply(x@colonies, FUN = getId)
   } else {
-    stop("Argument x must be a NULL, Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a NULL, Pop, Colony, or MultiColony class object!")
   }
   return(id)
 }
@@ -1148,7 +1375,7 @@ getId <- function(x) {
 #'   caste, use \code{\link{getCaste}}.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -1160,39 +1387,39 @@ getId <- function(x) {
 #'    when \code{x} is \code{\link{Colony-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"}
 #'   or named list for \code{caste == "all"} indluding caste members IDs;
-#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'    when \code{x} is \code{\link{MultiColony-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
 #'
 #' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 4)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addWorkers(colony2, nInd = 20)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
 #' getCasteId(x = drones)
-#' getCasteId(x = colony1)
-#' getCasteId(x = colony1, caste = "workers")
+#' getCasteId(x = colony)
+#' getCasteId(x = apiary, caste = "workers")
 #' getCasteId(x = apiary)
 #' getCasteId(x = apiary, caste = "virginQueens")
 #'
 #' # Create a data.frame with id, colony, and caste information
-#' (tmpC <- getCaste(colony1))
-#' (tmpI <- getCasteId(colony1))
+#' (tmpC <- getCaste(apiary[[1]]))
+#' (tmpI <- getCasteId(apiary[[1]]))
 #' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
 #' head(tmp)
 #' tail(tmp)
@@ -1239,12 +1466,12 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
         ret <- tmp@id
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
     ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -1257,7 +1484,7 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #'   caste, use \code{\link{getCaste}}.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
@@ -1269,40 +1496,41 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
 #'    when \code{x} is \code{\link{Colony-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"}
 #'   or named list for \code{caste == "all"} indluding caste members sexes;
-#'    when \code{x} is \code{\link{Colonies-class}} return is a named list of
+#'    when \code{x} is \code{\link{MultiColony-class}} return is a named list of
 #'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
 #'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members sexes
 #'
 #' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 4)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addWorkers(colony2, nInd = 20)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
+#' colony <- addVirginQueens(colony, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
 #' getCasteSex(x = drones)
-#' getCasteSex(x = colony1)
-#' getCasteSex(x = colony1, caste = "workers")
+#' getCasteSex(x = colony)
+#' getCasteSex(x = apiary, caste = "workers")
 #' getCasteSex(x = apiary)
 #' getCasteSex(x = apiary, caste = "virginQueens")
 #'
 #' # Create a data.frame with sex, colony, and caste information
-#' (tmpC <- getCaste(colony1))
-#' (tmpS <- getCasteSex(colony1))
-#' (tmpI <- getCasteId(colony1))
+#' (tmpC <- getCaste(apiary[[1]]))
+#' (tmpS <- getCasteSex(apiary[[1]]))
+#' (tmpI <- getCasteId(apiary[[1]]))
 #' tmp <- data.frame(caste = unlist(tmpC), sex = unlist(tmpS), id = unlist(tmpI))
 #' head(tmp)
 #' tail(tmp)
@@ -1350,12 +1578,12 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
         ret <- tmp@sex
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
     ret <- fun(X = x@colonies, FUN = getCasteSex, caste = caste)
     names(ret) <- getCaste(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -1366,53 +1594,58 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' @description Level 0 function that reports caste of an individual
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 
 #'
 #' @return When x is \code{\link{Pop-class}}, character of caste status; if you
 #'   get \code{NA} note that this is not supposed to happen. When x is
 #'   \code{\link{Colony-class}}, list with character vectors (list is named with
-#'   caste). When x is \code{\link{Colonies-class}}, list of lists with
+#'   caste). When x is \code{\link{MultiColony-class}}, list of lists with
 #'   character vectors (list is named with colony id).
 #'
 #' @seealso \code{\link{getCastePop}} and \code{\link{getCasteId}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1)
-#' colony2 <- addWorkers(colony2)
-#' colony1 <- addDrones(colony1)
-#' colony2 <- addDrones(colony2)
-#' colony1 <- addVirginQueens(colony1)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCaste(getQueen(colony1))
-#' getCaste(getFathers(colony1))
-#' getCaste(getWorkers(colony1))
-#' getCaste(getDrones(colony1))
-#' getCaste(getVirginQueens(colony1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
+#' colony <- addVirginQueens(colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
+#'
+#' getCaste(getQueen(colony))
+#' getCaste(getFathers(colony))
+#' getCaste(getWorkers(colony))
+#' getCaste(getDrones(colony))
+#' getCaste(getVirginQueens(colony))
 #'
 #' bees <- c(
-#'   getQueen(colony1),
-#'   getFathers(colony1, nInd = 2),
-#'   getWorkers(colony1, nInd = 2),
-#'   getDrones(colony1, nInd = 2),
-#'   getVirginQueens(colony1, nInd = 2)
+#'   getQueen(colony),
+#'   getFathers(colony, nInd = 2),
+#'   getWorkers(colony, nInd = 2),
+#'   getDrones(colony, nInd = 2),
+#'   getVirginQueens(colony, nInd = 2)
 #' )
 #' getCaste(bees)
 #'
+#' getCaste(colony)
+#' getCaste(apiary)
+#'
 #' # Create a data.frame with id, colony, and caste information
-#' (tmpC <- getCaste(colony1))
-#' (tmpI <- getCasteId(colony1))
+#' (tmpC <- getCaste(apiary[[1]]))
+#' (tmpI <- getCasteId(apiary[[1]]))
 #' tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
 #' head(tmp)
 #' tail(tmp)
@@ -1448,11 +1681,11 @@ getCaste <- function(x, simParamBee = NULL) {
         ret[[caste]] <- getCaste(tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- lapply(X = x@colonies, FUN = getCaste)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -1463,35 +1696,42 @@ getCaste <- function(x, simParamBee = NULL) {
 #' @description Level 0 function that returns the colony location as (x, y)
 #'   coordinates.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
 #'   and a list of numeric with two values when \code{x} is
-#'   \code{\link{Colonies-class}} (list named after colonies); \code{c(NA, NA)}
+#'   \code{\link{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
 #'   when location not set
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getLocation(colony1)
-#' getLocation(colony2)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#'
+#' getLocation(colony)
+#' getLocation(apiary[[1]])
 #' getLocation(apiary)
 #'
+#' loc <- c(123, 456)
+#' colony <- setLocation(colony, location = loc)
+#' getLocation(colony)
+#'
 #' loc1 <- c(512, 722)
-#' colony1 <- setLocation(colony1, location = loc1)
+#' colony1 <- setLocation(apiary[[1]], location = loc1)
 #' getLocation(colony1)
 #'
 #' loc2 <- c(189, 357)
-#' colony2 <- setLocation(colony2, location = loc2)
+#' colony2 <- setLocation(apiary[[2]], location = loc2)
 #' getLocation(colony2)
 #'
 #' getLocation(c(colony1, colony2))
@@ -1507,18 +1747,20 @@ getCaste <- function(x, simParamBee = NULL) {
 getLocation <- function(x) {
   if (isColony(x)) {
     if (is.null(x@location)) {
-      ret <- as.numeric(c(NA, NA))
+      ret <- NULL
     } else {
       ret <- x@location
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- lapply(x@colonies, FUN = getLocation)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# Events ----
 
 #' @rdname hasSplit
 #' @title Test if colony has split
@@ -1526,47 +1768,45 @@ getLocation <- function(x) {
 #' @description Level 0 function that returns colony split status. This will
 #'   obviously impact colony strength.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#'
 #' hasSplit(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
-#' hasSplit(colony)
-#' tmp <- splitColony(colony)
-#' tmp
+#' tmp <- split(colony)
 #' hasSplit(tmp$split)
 #' hasSplit(tmp$remnant)
 #'
-#' colony1 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[6:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[4])
-#' colony2 <- crossColony(colony2, drones = drones[11:15], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' tmp <- splitColonies(apiary)
-#' tmp
-#' hasSplit(tmp$splits)
-#' hasSplit(tmp$remnants)
+#' hasSplit(apiary)
+#' tmp2 <- split(apiary)
+#' hasSplit(tmp2$split)
+#' hasSplit(tmp2$remnant)
 #' @export
 hasSplit <- function(x) {
   if (isColony(x)) {
     ret <- x@split
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(x@colonies, FUN = hasSplit)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1579,42 +1819,47 @@ hasSplit <- function(x) {
 #'   collapse, and production. These events impact colony status, strength, and
 #'   could also impact downstream phenotypes.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
 #' @return matrix of logicals, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 4)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' getEvents(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(colony, nInd = 5)
 #'
-#' colony1 <- supersedeColony(colony1)
-#' getEvents(colony1)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(apiary, nInd = 4)
 #'
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' apiary <- c(colony1, colony2)
+#' getEvents(colony)
+#' getEvents(apiary)
+#'
+#' tmp <- swarm(colony)
+#' getEvents(tmp$swarm)
+#' getEvents(tmp$remnant)
+#'
+#' apiary <- supersede(apiary)
 #' getEvents(apiary)
 #' @export
-#'
 getEvents <- function(x) {
-  if (!isColony(x) & !isColonies(x)) {
-    stop("Argument x must be a Colony or Colonies class object!")
+  if (!isColony(x) & !isMultiColony(x)) {
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   ret <- cbind(hasSplit(x), hasSwarmed(x), hasSuperseded(x), hasCollapsed(x), isProductive(x))
   colnames(ret) <- c("split", "swarmed", "superseded", "collapsed", "productive")
-  if (isColonies(x)) {
+  if (isMultiColony(x)) {
     rownames(ret) <- getId(x)
   }
   return(ret)
@@ -1626,48 +1871,46 @@ getEvents <- function(x) {
 #' @description Level 0 function that returns colony swarmed status. This will
 #'   obviously have major impact on the colony and its downstream events.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#'
 #' hasSwarmed(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
-#' hasSwarmed(colony)
-#' tmp <- swarmColony(colony)
-#' tmp
+#' tmp <- swarm(colony)
 #' hasSwarmed(tmp$swarm)
 #' hasSwarmed(tmp$remnant)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[4])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' tmp <- swarmColonies(apiary)
-#' tmp
-#' hasSwarmed(tmp$swarms)
-#' hasSwarmed(tmp$remnants)
+#' hasSwarmed(apiary)
+#' tmp2 <- swarm(apiary)
+#' hasSwarmed(tmp2$swarm)
+#' hasSwarmed(tmp2$remnant)
 #' @export
 hasSwarmed <- function(x) {
   if (isColony(x)) {
     ret <- x@swarm
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(x@colonies, FUN = hasSwarmed)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1677,46 +1920,44 @@ hasSwarmed <- function(x) {
 #'
 #' @description Level 0 function that returns colony supersedure status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony
-#' hasSuperseded(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
-#' hasSuperseded(colony)
-#' tmp <- supersedeColony(colony)
-#' tmp
-#' hasSuperseded(tmp)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[4])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' tmp <- supersedeColonies(apiary)
-#' tmp
-#' hasSuperseded(tmp)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#'
+#' hasSuperseded(colony)
+#' colony <- supersede(colony)
+#' hasSuperseded(colony)
+#'
+#' hasSuperseded(apiary)
+#' apiary <- supersede(apiary)
+#' hasSuperseded(apiary)
 #' @export
 hasSuperseded <- function(x) {
   if (isColony(x)) {
     ret <- x@supersedure
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(x@colonies, FUN = hasSuperseded)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1726,46 +1967,44 @@ hasSuperseded <- function(x) {
 #'
 #' @description Level 0 function that returns colony collapse status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony
-#' hasCollapsed(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
-#' hasCollapsed(colony)
-#' tmp <- collapseColony(colony)
-#' tmp
-#' hasCollapsed(tmp)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[4])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' tmp <- collapseColonies(apiary)
-#' tmp
-#' hasCollapsed(tmp)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(colony, nInd = 5)
+#'
+#' hasCollapsed(colony)
+#' colony <- collapse(colony)
+#' hasCollapsed(colony)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#'
+#' hasCollapsed(apiary)
+#' apiary <- collapse(apiary)
+#' hasCollapsed(apiary)
 #' @export
 hasCollapsed <- function(x) {
   if (isColony(x)) {
     ret <- x@collapse
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(x@colonies, FUN = hasCollapsed)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -1776,44 +2015,46 @@ hasCollapsed <- function(x) {
 #' @description Level 0 function that returns colony production status. This can
 #'   be used to decided if colony production can be simulated.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#'
 #' isProductive(colony)
-#' colony <- buildUpColony(colony, nWorkers = 100)
-#' colony
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #' isProductive(colony)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[4])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#'
+#' isProductive(apiary)
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #' isProductive(apiary)
 #' @export
 isProductive <- function(x) {
   if (isColony(x)) {
     ret <- x@production
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- sapply(x@colonies, FUN = isProductive)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be Colony or Colonies class object!")
+    stop("Argument x must be Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# Genome ----
 
 #' @rdname simulateHoneyBeeGenomes
 #' @title Simulate the Honey bee genome
@@ -1824,6 +2065,11 @@ isProductive <- function(x) {
 #' @param nMelS integer, number of Apis mellifera mellifera South individuals to simulate
 #' @param nCar integer, number of Apis mellifera carnica individuals to simulate
 #' @param nLig integer, number of Apis mellifera ligustica individuals to simulate
+#' @param Ne integer, effective size of the simulated population. Currently set to
+#'   170,000, according to Wallberg et al., 2014. Would discourage you to change it
+#'   since it is linked to the parameters of the demographic model we use for the simulation.
+#'   However, there might be some edge cases when using a different Ne is necessary,
+#'   but proceed with caution.
 #' @param ploidy integer, the ploidy of the individuals
 #' @param nChr integer, number of chromosomes to simulate
 #' @param nSegSites integer, number of segregating sites to keep per chromosome
@@ -1866,6 +2112,7 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     nMelS = 0L,
                                     nCar = 0L,
                                     nLig = 0L,
+                                    Ne = 170000L,
                                     ploidy = 2L,
                                     nChr = 16L,
                                     nSegSites = 100L,
@@ -1882,7 +2129,6 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
   }
 
   # For now, the user cannot change this since all the model was specified with these numbers
-  Ne <- 170000L # Wallberg et al. (2014)
   genInt <- 1
 
   nInd <- (nMelN + nMelS + nCar + nLig) / 2
@@ -2047,7 +2293,7 @@ reduceDroneGeno <- function(geno, pop) {
 #'   \code{\link{SimParamBee}} for more information about the csd locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
 #'   are taken; this can be useful as a test of sampling individuals
 #' @param allele character, either "all" for both alleles or an integer for a
@@ -2055,55 +2301,61 @@ reduceDroneGeno <- function(geno, pop) {
 #'   allele
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if \code{TRUE}, the function will return a set of
-#'   csd alleles in either the entire population, colony, or colonies. Default
-#'   is \code{FALSE}.
-#' @param unique logical, return only the unique set of csd alleles. Default
-#'   is \code{FALSE}.
+#'   csd alleles across the entire population, colony, or multicolony (not
+#'   separately for each caste when \code{x} is a colony or each caste of
+#'   each colony when \code{x} is a multicolony. This is a way to get one single
+#'   object as an output across castes or colonies. Note this has nothing to do
+#'   with the colony collapse. It's like \code{paste(..., collapse = TRUE)}.
+#'   Default is \code{FALSE}. See examples about this behaviour.
+#' @param unique logical, return only the unique set of csd alleles. This argument
+#'   interacts with \code{collapse}. Default is \code{FALSE}. See examples about
+#'   this behaviour.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @details  If both collapse and unique are \code{TRUE}, the function
-#'   returns a unique set of csd alleles in the entire population, colony, or
-#'   colonies.
+#' @details If both collapse and unique are \code{TRUE}, the function returns a
+#'   unique set of csd alleles in the entire population, colony, or multicolony
+#'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
-#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+#'   when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
 #'   \code{x} is \code{NULL}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCsdAlleles(getQueen(colony1))
-#' getCsdAlleles(getFathers(colony1))
-#' getCsdAlleles(getWorkers(colony1))
-#' getCsdAlleles(getDrones(colony1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #'
-#' getCsdAlleles(colony1)
-#' getCsdAlleles(colony1, unique = TRUE)
-#' getCsdAlleles(colony1, collapse = TRUE)
-#' getCsdAlleles(colony1, collapse = TRUE, unique = TRUE)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #'
-#' getCsdAlleles(getDrones(colony2))
-#' getCsdAlleles(colony2)
+#' # Use getCsdAlleles on a Population
+#' getCsdAlleles(getQueen(colony))
+#' getCsdAlleles(getFathers(colony))
+#' getCsdAlleles(getWorkers(colony))
+#' getCsdAlleles(getDrones(colony))
 #'
+#' # Use getCsdAlleles on a Colony
+#' getCsdAlleles(colony)
+#' getCsdAlleles(colony, unique = TRUE)
+#' getCsdAlleles(colony, collapse = TRUE)
+#' getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
+#'
+#' # Use getCsdAlleles on a MultiColony
 #' getCsdAlleles(apiary)
 #' getCsdAlleles(apiary, unique = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
-#'
 #' getCsdAlleles(apiary, nInd = 2)
 #' @export
 getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
@@ -2149,7 +2401,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
         ret <- ret[!duplicated(ret), , drop = FALSE]
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- lapply(
       X = x@colonies, FUN = getCsdAlleles, nInd = nInd,
       allele = allele, dronesHaploid = dronesHaploid,
@@ -2165,7 +2417,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
       names(ret) <- getId(x)
     }
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -2178,7 +2430,7 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
 #'   we have implemented it.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
 #'   are taken; this can be useful as a test of sampling individuals
 #' @param dronesHaploid logical, return haploid result for drones?
@@ -2191,36 +2443,47 @@ getCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = TRUE,
 #' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
 #'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with genotypes
-#'   when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+#'   when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
 #'   \code{x} is \code{NULL}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCsdGeno(getQueen(colony1))
-#' getCsdGeno(getFathers(colony1))
-#' getCsdGeno(getWorkers(colony1))
-#' getCsdGeno(getDrones(colony1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
-#' getCsdGeno(colony1)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCsdAlleles(getDrones(colony2))
-#' getCsdAlleles(colony2)
+#' # Use getCsdGeno on a Population
+#' getCsdGeno(getQueen(colony))
+#' getCsdGeno(getFathers(colony))
+#' getCsdGeno(getWorkers(colony))
 #'
+#' # Using dronesHaploid = TRUE returns drones as haploids instead of double haploids
+#' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = TRUE)
+#' # Using dronesHaploid = FALSE returns drones as double haploids
+#' getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
+#'
+#' # Use getCsdGeno on a Colony
+#' getCsdGeno(colony)
+#'
+#' # Compare the use of the dronesHaploid parameter
+#' getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)
+#' getCsdGeno(colony, nInd = 4, dronesHaploid = FALSE)
+#'
+#' # Use getCsdGeno on a MultiColony
 #' getCsdGeno(apiary)
 #' getCsdGeno(apiary, nInd = 2)
 #' @export
@@ -2256,14 +2519,14 @@ getCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
         )
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     ret <- lapply(
       X = x@colonies, FUN = getCsdGeno, nInd = nInd,
       dronesHaploid = dronesHaploid, simParamBee = simParamBee
     )
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -2279,25 +2542,43 @@ getCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' (tmp <- getCsdGeno(getQueen(colony1)))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' # Caste members taken from Colony class
+#' (tmp <- getCsdGeno(getQueen(colony)))
 #' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
-#' (tmp <- getCsdGeno(getVirginQueens(colony1)))
+#' (tmp <- getCsdGeno(getVirginQueens(colony)))
 #' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
-#' (tmp <- getCsdGeno(getWorkers(colony1)))
+#' (tmp <- getCsdGeno(getWorkers(colony)))
 #' SIMplyBee:::isGenoHeterozygous(tmp)
 #'
+#' # Caste members taken from MultiColony class
+#' (tmp <- getCsdGeno(getQueen(apiary[[1]])))
+#' SIMplyBee:::isGenoHeterozygous(tmp)
+#'
+#' (tmp <- getCsdGeno(getVirginQueens(apiary[[1]])))
+#' SIMplyBee:::isGenoHeterozygous(tmp)
+#'
+#' (tmp <- getCsdGeno(getWorkers(apiary[[1]])))
+#' SIMplyBee:::isGenoHeterozygous(tmp)
 #' # Not exporting this function, since its just a helper and quite specific for
 #' #   our csd locus implementation
 isGenoHeterozygous <- function(x) {
@@ -2319,26 +2600,29 @@ isGenoHeterozygous <- function(x) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details We could expand \code{isCsdHeterozygous} to work also with
-#'   \code{\link{Colony-class}} and \code{\link{Colonies-class}} if needed
+#'   \code{\link{Colony-class}} and \code{\link{MultiColony-class}} if needed
 #'
 #' @return logical
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 5)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones, nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' isCsdHeterozygous(getQueen(colony1))
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
-#' isCsdHeterozygous(getWorkers(colony1))
-#'
-#' isCsdHeterozygous(getVirginQueens(colony1))
+#' # Use isCsdHeterozygous on a Population
+#' isCsdHeterozygous(getQueen(colony))
+#' isCsdHeterozygous(getWorkers(colony))
+#' isCsdHeterozygous(getVirginQueens(colony))
+#' isCsdHeterozygous(getDrones(colony))
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -2347,7 +2631,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
-  geno <- getCsdGeno(x = pop, simParamBee = simParamBee)
+  geno <- getCsdGeno(x = pop, simParamBee = simParamBee, dronesHaploid = FALSE)
   # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
   # to test than isCsdHeterozygous()
   ret <- isGenoHeterozygous(x = geno)
@@ -2362,10 +2646,12 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   locus.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #' @param collapse logical, if \code{TRUE}, the function will return the number
 #'   of distinct csd alleles in either the entire population, colony, or
-#'   colonies. Default is \code{FALSE}.
+#'   multicolony. Note this has nothing to do with the colony collapse. It's
+#'   like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
+#'   examples about this behaviour.Default is \code{FALSE}.
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details Queen has 2 distinct csd alleles, since she has to be heterozygous
@@ -2388,34 +2674,37 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' @return integer representing the number of distinct csd alleles when \code{x}
 #'   is \code{\link{Pop-class}} (or ), list of integer
 #'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
-#'   list of a list of integer when \code{x} is \code{\link{Colonies-class}},
+#'   list of a list of integer when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}; the integer rep
+#'   \code{\link{MultiColony-class}}; the integer rep
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony1 <- addDrones(colony1, nInd = 10)
-#' colony1 <- addVirginQueens(colony1, nInd = 3)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' apiary <- c(colony1, colony2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' nCsdAlleles(getQueen(colony1))
-#' nCsdAlleles(getFathers(colony1))
-#' nCsdAlleles(getVirginQueens(colony1))
-#' nCsdAlleles(getWorkers(colony1))
-#' nCsdAlleles(getDrones(colony1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 4)
 #'
-#' nCsdAlleles(colony1)
-#' nCsdAlleles(colony1, collapse = TRUE)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' nCsdAlleles(getQueen(colony))
+#' nCsdAlleles(getFathers(colony))
+#' nCsdAlleles(getVirginQueens(colony))
+#' nCsdAlleles(getWorkers(colony))
+#' nCsdAlleles(getDrones(colony))
+#'
+#' nCsdAlleles(colony)
+#' nCsdAlleles(colony, collapse = TRUE)
 #'
 #' nCsdAlleles(apiary)
 #' nCsdAlleles(apiary, collapse = TRUE)
@@ -2425,7 +2714,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(x)) {
-    ret <- NA
+    ret <- NULL
   } else if (isPop(x)) {
     haplo <- getCsdAlleles(x = x, unique = TRUE, simParamBee = simParamBee)
     ret <- nrow(haplo)
@@ -2450,7 +2739,7 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
       tmp <- tmp[!duplicated(tmp), , drop = FALSE]
       ret$queenAndFathers <- nrow(tmp)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     if (collapse) {
       haplo <- getCsdAlleles(x = x, collapse = TRUE, unique = TRUE, simParamBee = simParamBee)
       ret <- nrow(haplo)
@@ -2459,10 +2748,12 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
       names(ret) <- getId(x)
     }
   } else {
-    stop("Argument x must be a Pop, Colony, or Colonies class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
+
+# get* aliases for AlphaSimR pull* ----
 
 #' @rdname getIbdHaplo
 #' @title Access IBD haplotypes
@@ -2476,11 +2767,30 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @param snpChip integer, indicating which SNP array loci are to be retrieved,
 #'   if \code{NULL}, all sites are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @seealso \code{\link{pullIbdHaplo}}
-#'
 #' @return Matrix of haplotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getIbdHaplo on a Population
+#' getIbdHaplo(getWorkers(colony))
+#' getIbdHaplo(getQueen(colony))
+#' getIbdHaplo(getDrones(colony))
 #' @export
 getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2506,9 +2816,27 @@ getIbdHaplo <- function(pop, chr = NULL, snpChip = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQtlHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getQtlHaplo on a Population
+#' getQtlHaplo(getWorkers(colony))
+#' getQtlHaplo(getQueen(colony))
 #' @export
 getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2529,11 +2857,29 @@ getQtlHaplo <- function(pop, trait = 1, haplo = "all", chr = NULL, simParam = NU
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @seealso \code{\link{pullQtlGeno}}
 #'
 #' @return Matrix of genotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getQtlGeno on a Population
+#' getQtlGeno(getWorkers(colony))
+#' getQtlGeno(getQueen(colony))
 #' @export
 getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2559,9 +2905,26 @@ getQtlGeno <- function(pop, trait = 1, chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getSegSiteHaplo on a Population
+#' getSegSiteHaplo(getWorkers(colony))
+#' getSegSiteHaplo(getQueen(colony))
 #' @export
 getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2584,9 +2947,27 @@ getSegSiteHaplo <- function(pop, haplo = "all", chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSegSiteHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of genotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getSegSiteGeno on a Population
+#' getSegSiteGeno(getWorkers(colony))
+#' getSegSiteGeno(getQueen(colony))
+#' getSegSiteGeno(getDrones(colony))
 #' @export
 getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2612,9 +2993,28 @@ getSegSiteGeno <- function(pop, chr = NULL, simParam = NULL) {
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of haplotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addSnpChip(nSnpPerChr = 5)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getSnpHaplo on a Population
+#' getSnpHaplo(getWorkers(colony))
+#' getSnpHaplo(getQueen(colony))
+#' getSnpHaplo(getDrones(colony))
 #' @export
 getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2637,9 +3037,28 @@ getSnpHaplo <- function(pop, snpChip = 1, haplo = "all", chr = NULL, simParam = 
 #' @param simParam \code{\link{SimParam}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullSnpHaplo}}
-#'
+#' @details This is an alias for the AlphaSimR function to distinguish between getting
+#'   and pulling
 #' @return Matrix of genotypes
 #'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addSnpChip(nSnpPerChr = 5)
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony  class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#'
+#' # Use getSnpGeno on a Population
+#' getSnpGeno(getWorkers(colony))
+#' getSnpGeno(getQueen(colony))
+#' getSnpGeno(getDrones(colony))
 #' @export
 getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
   if (isPop(pop)) {
@@ -2650,13 +3069,15 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
   return(ret)
 }
 
+# get*Ibd* ----
+
 #' @rdname getCasteIbdHaplo
 #' @title Access IBD haplotypes of individuals in a caste
 #'
 #' @description Level 0 function that returns IBD (identity by descent)
 #'   haplotypes of individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -2672,51 +3093,54 @@ getSnpGeno <- function(pop, snpChip = 1, chr = NULL, simParam = NULL) {
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteIbdHaplo(colony1, caste = "queen")
-#' getQueensIbdHaplo(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteIbdHaplo(colony1, caste = "fathers")
-#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
-#' getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
-#' getFathersIbdHaplo(colony1)
-#' getFathersIbdHaplo(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteIbdHaplo(colony1, caste = "virginQueens")
-#' getVirginQueensIbdHaplo(colony1)
+#' getCasteIbdHaplo(x = colony, caste = "queen")
+#' getQueenIbdHaplo(colony)
 #'
-#' getCasteIbdHaplo(colony1, caste = "workers")
-#' getWorkersIbdHaplo(colony1)
+#' getCasteIbdHaplo(colony, caste = "fathers")
+#' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersIbdHaplo(colony)
+#' getFathersIbdHaplo(colony, nInd = 2)
 #'
-#' getCasteIbdHaplo(colony1, caste = "drones")
-#' getDronesIbdHaplo(colony1)
+#' getCasteIbdHaplo(colony, caste = "virginQueens")
+#' getVirginQueensIbdHaplo(colony)
 #'
-#' apiary <- c(colony1, colony2)
-#' getCasteIbdHaplo(apiary, caste = "queen")
-#' getQueensIbdHaplo(apiary)
+#' getCasteIbdHaplo(colony, caste = "workers")
+#' getWorkersIbdHaplo(colony)
+#'
+#' getCasteIbdHaplo(colony, caste = "drones")
+#' getDronesIbdHaplo(colony)
+#'
+#' getCasteIbdHaplo(x = apiary, caste = "queen")
+#' getQueenIbdHaplo(apiary)
 #'
 #' getCasteIbdHaplo(apiary, caste = "fathers")
 #' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersIbdHaplo(apiary)
 #' getFathersIbdHaplo(apiary, nInd = 2)
 #'
@@ -2744,7 +3168,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, snpChip = NULL,
         ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -2765,27 +3189,23 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, snpChip = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteIbdHaplo Access IBD haplotype data of the queen
 #' @export
-getQueensIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL) {
+getQueenIbdHaplo <- function(x, chr = NULL, snpChip = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "queen",
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "queen",
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -2797,16 +3217,12 @@ getFathersIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "fathers", nInd = nInd, chr = chr,
-      snpChip = snpChip,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "fathers", nInd = nInd, chr = chr,
+                          snpChip = snpChip,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -2817,17 +3233,13 @@ getVirginQueensIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "virginQueens",
-      nInd = nInd,
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "virginQueens",
+                          nInd = nInd,
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -2838,17 +3250,13 @@ getWorkersIbdHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "workers",
-      nInd = nInd,
-      chr = chr,
-      snpChip = snpChip,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "workers",
+                          nInd = nInd,
+                          chr = chr,
+                          snpChip = snpChip,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -2860,17 +3268,13 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteIbdHaplo(x,
-      caste = "drones",
-      nInd = nInd, chr = chr,
-      snpChip = snpChip,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteIbdHaplo(x,
+                          caste = "drones",
+                          nInd = nInd, chr = chr,
+                          snpChip = snpChip,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -2880,7 +3284,7 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' @description Level 0 function that returns IBD (identity by descent)
 #'   haplotypes of individuals in colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -2898,33 +3302,36 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'
 #' @return list of matrices with haplotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with haplotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonyIbdHaplo(colony1)
-#' getColonyIbdHaplo(colony1, caste = c("queen", "fathers"))
-#' getColonyIbdHaplo(colony1, nInd = 1)
-#' getColonyIbdHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonyIbdHaplo(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonyIbdHaplo(colony)
+#' getColonyIbdHaplo(colony, caste = c("queen", "fathers"))
+#' getColonyIbdHaplo(colony, nInd = 1)
+#' getColonyIbdHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonyIbdHaplo(apiary)
 #' getColonyIbdHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyIbdHaplo(apiary, nInd = 1)
@@ -2968,7 +3375,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -2982,10 +3389,12 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# get*Qtl* ----
 
 #' @rdname getCasteQtlHaplo
 #' @title Access QTL haplotypes of individuals in a caste
@@ -2993,7 +3402,7 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @description Level 0 function that returns QTL haplotypes of individuals in a
 #'   caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3011,51 +3420,53 @@ getColonyIbdHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteQtlHaplo(colony1, caste = "queen")
-#' getQueensQtlHaplo(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteQtlHaplo(colony1, caste = "fathers")
-#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
-#' getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
-#' getFathersQtlHaplo(colony1)
-#' getFathersQtlHaplo(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteQtlHaplo(colony1, caste = "virginQueens")
-#' getVirginQueensQtlHaplo(colony1)
+#' getCasteQtlHaplo(colony, caste = "queen")
+#' getQueenQtlHaplo(colony)
 #'
-#' getCasteQtlHaplo(colony1, caste = "workers")
-#' getWorkersQtlHaplo(colony1)
+#' getCasteQtlHaplo(colony, caste = "fathers")
+#' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersQtlHaplo(colony)
+#' getFathersQtlHaplo(colony, nInd = 2)
 #'
-#' getCasteQtlHaplo(colony1, caste = "drones")
-#' getDronesQtlHaplo(colony1)
+#' getCasteQtlHaplo(colony, caste = "virginQueens")
+#' getVirginQueensQtlHaplo(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteQtlHaplo(colony, caste = "workers")
+#' getWorkersQtlHaplo(colony)
+#'
+#' getCasteQtlHaplo(colony, caste = "drones")
+#' getDronesQtlHaplo(colony)
+#'
 #' getCasteQtlHaplo(apiary, caste = "queen")
-#' getQueensQtlHaplo(apiary)
+#' getQueenQtlHaplo(apiary)
 #'
 #' getCasteQtlHaplo(apiary, caste = "fathers")
 #' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlHaplo(apiary)
 #' getFathersQtlHaplo(apiary, nInd = 2)
 #'
@@ -3084,7 +3495,7 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
         ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3102,28 +3513,24 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteQtlHaplo Access QTL haplotype data of the queen
 #' @export
-getQueensQtlHaplo <- function(x,
-                              trait = 1, haplo = "all", chr = NULL,
-                              simParamBee = NULL) {
+getQueenQtlHaplo <- function(x,
+                             trait = 1, haplo = "all", chr = NULL,
+                             simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "queen",
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "queen",
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3136,16 +3543,12 @@ getFathersQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "fathers", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "fathers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3157,15 +3560,11 @@ getVirginQueensQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "virginQueens", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3177,16 +3576,11 @@ getWorkersQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "workers", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "workers", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3199,16 +3593,12 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlHaplo(x,
-      caste = "drones", nInd = nInd,
-      trait = trait, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlHaplo(x,
+                          caste = "drones", nInd = nInd,
+                          trait = trait, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3218,7 +3608,7 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns QTL haplotypes of individuals in
 #'   colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3238,33 +3628,35 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with haplotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with haplotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonyQtlHaplo(colony1)
-#' getColonyQtlHaplo(colony1, caste = c("queen", "fathers"))
-#' getColonyQtlHaplo(colony1, nInd = 1)
-#' getColonyQtlHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonyQtlHaplo(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonyQtlHaplo(colony)
+#' getColonyQtlHaplo(colony, caste = c("queen", "fathers"))
+#' getColonyQtlHaplo(colony, nInd = 1)
+#' getColonyQtlHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonyQtlHaplo(apiary)
 #' getColonyQtlHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlHaplo(apiary, nInd = 1)
@@ -3309,7 +3701,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3322,7 +3714,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -3333,7 +3725,7 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @description Level 0 function that returns QTL genotypes of individuals in a
 #'   caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3348,51 +3740,53 @@ getColonyQtlHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteQtlGeno(colony1, caste = "queen")
-#' getQueensQtlGeno(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteQtlGeno(colony1, caste = "fathers")
-#' getCasteQtlGeno(colony1, caste = "fathers", nInd = 2)
-#' getCasteQtlGeno(colony1, caste = "fathers", nInd = 2)
-#' getFathersQtlGeno(colony1)
-#' getFathersQtlGeno(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteQtlGeno(colony1, caste = "virginQueens")
-#' getVirginQueensQtlGeno(colony1)
+#' getCasteQtlGeno(colony, caste = "queen")
+#' getQueenQtlGeno(colony)
 #'
-#' getCasteQtlGeno(colony1, caste = "workers")
-#' getWorkersQtlGeno(colony1)
+#' getCasteQtlGeno(colony, caste = "fathers")
+#' getCasteQtlGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersQtlGeno(colony)
+#' getFathersQtlGeno(colony, nInd = 2)
 #'
-#' getCasteQtlGeno(colony1, caste = "drones")
-#' getDronesQtlGeno(colony1)
+#' getCasteQtlGeno(colony, caste = "virginQueens")
+#' getVirginQueensQtlGeno(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteQtlGeno(colony, caste = "workers")
+#' getWorkersQtlGeno(colony)
+#'
+#' getCasteQtlGeno(colony, caste = "drones")
+#' getDronesQtlGeno(colony)
+#'
 #' getCasteQtlGeno(apiary, caste = "queen")
-#' getQueensQtlGeno(apiary)
+#' getQueenQtlGeno(apiary)
 #'
 #' getCasteQtlGeno(apiary, caste = "fathers")
 #' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteQtlGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersQtlGeno(apiary)
 #' getFathersQtlGeno(apiary, nInd = 2)
 #'
@@ -3421,7 +3815,7 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
         ret <- reduceDroneGeno(geno = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3439,26 +3833,22 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteQtlGeno Access QTL genotype data of the queen
 #' @export
-getQueensQtlGeno <- function(x,
-                             trait = 1, chr = NULL, simParamBee = NULL) {
+getQueenQtlGeno <- function(x,
+                            trait = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "queen",
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "queen",
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3470,16 +3860,12 @@ getFathersQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "fathers", nInd = nInd,
-      trait = trait, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "fathers", nInd = nInd,
+                         trait = trait, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3490,14 +3876,10 @@ getVirginQueensQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "virginQueens", nInd = nInd,
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3508,14 +3890,10 @@ getWorkersQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "workers", nInd = nInd,
-      trait = trait, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "workers", nInd = nInd,
+                         trait = trait, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3527,16 +3905,12 @@ getDronesQtlGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteQtlGeno(x,
-      caste = "drones", nInd = nInd,
-      trait = trait, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteQtlGeno(x,
+                         caste = "drones", nInd = nInd,
+                         trait = trait, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3546,7 +3920,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @description Level 0 function that returns QTL genotypes of individuals in
 #'   colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens",
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3563,33 +3937,35 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with genotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with genotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonyQtlGeno(colony1)
-#' getColonyQtlGeno(colony1, caste = c("queen", "fathers"))
-#' getColonyQtlGeno(colony1, nInd = 1)
-#' getColonyQtlGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonyQtlGeno(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonyQtlGeno(colony)
+#' getColonyQtlGeno(colony, caste = c("queen", "fathers"))
+#' getColonyQtlGeno(colony, nInd = 1)
+#' getColonyQtlGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonyQtlGeno(apiary)
 #' getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
 #' getColonyQtlGeno(apiary, nInd = 1)
@@ -3633,7 +4009,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3646,10 +4022,12 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# get*SegSite* ----
 
 #' @rdname getCasteSegSiteHaplo
 #' @title Access haplotypes for all segregating sites of individuals in a
@@ -3658,7 +4036,7 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' @description Level 0 function that returns haplotypes for all segregating
 #'   sites of individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3675,50 +4053,52 @@ getColonyQtlGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "queen")
-#' getQueensSegSiteHaplo(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "fathers")
-#' getCasteSegSiteHaplo(colony1, caste = "fathers", nInd = 2)
-#' getCasteSegSiteHaplo(colony1, caste = "fathers", nInd = 2)
-#' getFathersSegSiteHaplo(colony1)
-#' getFathersSegSiteHaplo(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "virginQueens")
-#' getVirginQueensSegSiteHaplo(colony1)
+#' getCasteSegSiteHaplo(colony, caste = "queen")
+#' getQueenSegSiteHaplo(colony)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "workers")
-#' getWorkersSegSiteHaplo(colony1)
+#' getCasteSegSiteHaplo(colony, caste = "fathers")
+#' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersSegSiteHaplo(colony)
+#' getFathersSegSiteHaplo(colony, nInd = 2)
 #'
-#' getCasteSegSiteHaplo(colony1, caste = "drones")
-#' getDronesSegSiteHaplo(colony1)
+#' getCasteSegSiteHaplo(colony, caste = "virginQueens")
+#' getVirginQueensSegSiteHaplo(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteSegSiteHaplo(colony, caste = "workers")
+#' getWorkersSegSiteHaplo(colony)
+#'
+#' getCasteSegSiteHaplo(colony, caste = "drones")
+#' getDronesSegSiteHaplo(colony)
+#'
 #' getCasteSegSiteHaplo(apiary, caste = "queen")
-#' getQueensSegSiteHaplo(apiary)
+#' getQueenSegSiteHaplo(apiary)
 #'
 #' getCasteSegSiteHaplo(apiary, caste = "fathers")
 #' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteHaplo(apiary)
 #' getFathersSegSiteHaplo(apiary, nInd = 2)
 #'
@@ -3747,7 +4127,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
         ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3765,26 +4145,22 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteSegSiteHaplo Access haplotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteHaplo <- function(x,
-                                  haplo = "all", chr = NULL, simParamBee = NULL) {
+getQueenSegSiteHaplo <- function(x,
+                                 haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "queen",
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "queen",
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3796,16 +4172,12 @@ getFathersSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "fathers", nInd = nInd,
-      haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "fathers", nInd = nInd,
+                              haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3816,14 +4188,10 @@ getVirginQueensSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "virginQueens", nInd = nInd,
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3834,14 +4202,10 @@ getWorkersSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "workers", nInd = nInd,
-      haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "workers", nInd = nInd,
+                              haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3853,16 +4217,12 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteHaplo(x,
-      caste = "drones", nInd = nInd,
-      haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteHaplo(x,
+                              caste = "drones", nInd = nInd,
+                              haplo = haplo, chr = chr,
+                              dronesHaploid = dronesHaploid,
+                              simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -3873,7 +4233,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns haplotypes for all segregating
 #'   sites of individuals in colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -3892,32 +4252,34 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with haplotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with haplotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonySegSiteHaplo(colony1)
-#' getColonySegSiteHaplo(colony1, caste = c("queen", "fathers"))
-#' getColonySegSiteHaplo(colony1, nInd = 1)
-#' getColonySegSiteHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonySegSiteHaplo(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonySegSiteHaplo(colony)
+#' getColonySegSiteHaplo(colony, caste = c("queen", "fathers"))
+#' getColonySegSiteHaplo(colony, nInd = 1)
+#' getColonySegSiteHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonySegSiteHaplo(apiary)
 #' getColonySegSiteHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteHaplo(apiary, nInd = 1)
@@ -3961,7 +4323,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -3974,7 +4336,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -3986,7 +4348,7 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #' @description Level 0 function that returns genotypes for all segregating
 #'   sites of individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4000,50 +4362,52 @@ getColonySegSiteHaplo <- function(x, caste = c("queen", "fathers", "workers", "d
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "queen")
-#' getQueensSegSiteGeno(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "fathers")
-#' getCasteSegSiteGeno(colony1, caste = "fathers", nInd = 2)
-#' getCasteSegSiteGeno(colony1, caste = "fathers", nInd = 2)
-#' getFathersSegSiteGeno(colony1)
-#' getFathersSegSiteGeno(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "virginQueens")
-#' getVirginQueensSegSiteGeno(colony1)
+#' getCasteSegSiteGeno(colony, caste = "queen")
+#' getQueenSegSiteGeno(colony)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "workers")
-#' getWorkersSegSiteGeno(colony1)
+#' getCasteSegSiteGeno(colony, caste = "fathers")
+#' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersSegSiteGeno(colony)
+#' getFathersSegSiteGeno(colony, nInd = 2)
 #'
-#' getCasteSegSiteGeno(colony1, caste = "drones")
-#' getDronesSegSiteGeno(colony1)
+#' getCasteSegSiteGeno(colony, caste = "virginQueens")
+#' getVirginQueensSegSiteGeno(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteSegSiteGeno(colony, caste = "workers")
+#' getWorkersSegSiteGeno(colony)
+#'
+#' getCasteSegSiteGeno(colony, caste = "drones")
+#' getDronesSegSiteGeno(colony)
+#'
 #' getCasteSegSiteGeno(apiary, caste = "queen")
-#' getQueensSegSiteGeno(apiary)
+#' getQueenSegSiteGeno(apiary)
 #'
 #' getCasteSegSiteGeno(apiary, caste = "fathers")
 #' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSegSiteGeno(apiary)
 #' getFathersSegSiteGeno(apiary, nInd = 2)
 #'
@@ -4072,7 +4436,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
         ret <- reduceDroneGeno(geno = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4089,26 +4453,22 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteSegSiteGeno Access genotype data for all segregating sites of the queen
 #' @export
-getQueensSegSiteGeno <- function(x,
-                                 chr = NULL, simParamBee = NULL) {
+getQueenSegSiteGeno <- function(x,
+                                chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "queen",
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "queen",
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4120,15 +4480,11 @@ getFathersSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "fathers", nInd = nInd,
-      chr = chr, dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "fathers", nInd = nInd,
+                             chr = chr, dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4139,14 +4495,10 @@ getVirginQueensSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "virginQueens", nInd = nInd,
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4157,14 +4509,10 @@ getWorkersSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "workers", nInd = nInd,
-      chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "workers", nInd = nInd,
+                             chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4176,15 +4524,11 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSegSiteGeno(x,
-      caste = "drones", nInd = nInd,
-      chr = chr, dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSegSiteGeno(x,
+                             caste = "drones", nInd = nInd,
+                             chr = chr, dronesHaploid = dronesHaploid,
+                             simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4195,7 +4539,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @description Level 0 function that returns genotypes for all segregating
 #'   sites of individuals in colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4211,32 +4555,34 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with genotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with genotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonySegSiteGeno(colony1)
-#' getColonySegSiteGeno(colony1, caste = c("queen", "fathers"))
-#' getColonySegSiteGeno(colony1, nInd = 1)
-#' getColonySegSiteGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonySegSiteGeno(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonySegSiteGeno(colony)
+#' getColonySegSiteGeno(colony, caste = c("queen", "fathers"))
+#' getColonySegSiteGeno(colony, nInd = 1)
+#' getColonySegSiteGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonySegSiteGeno(apiary)
 #' getColonySegSiteGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySegSiteGeno(apiary, nInd = 1)
@@ -4277,7 +4623,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4290,10 +4636,12 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# get*Snp* ----
 
 #' @rdname getCasteSnpHaplo
 #' @title Access SNP array haplotypes of individuals in a caste
@@ -4301,7 +4649,7 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #' @description Level 0 function that returns SNP array haplotypes of
 #'   individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4319,51 +4667,53 @@ getColonySegSiteGeno <- function(x, caste = c("queen", "fathers", "workers", "dr
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addSnpChip(nSnpPerChr = 10)
+#' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteSnpHaplo(colony1, caste = "queen")
-#' getQueensSnpHaplo(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteSnpHaplo(colony1, caste = "fathers")
-#' getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-#' getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-#' getFathersSnpHaplo(colony1)
-#' getFathersSnpHaplo(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteSnpHaplo(colony1, caste = "virginQueens")
-#' getVirginQueensSnpHaplo(colony1)
+#' getCasteSnpHaplo(colony, caste = "queen")
+#' getQueenSnpHaplo(colony)
 #'
-#' getCasteSnpHaplo(colony1, caste = "workers")
-#' getWorkersSnpHaplo(colony1)
+#' getCasteSnpHaplo(colony, caste = "fathers")
+#' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersSnpHaplo(colony)
+#' getFathersSnpHaplo(colony, nInd = 2)
 #'
-#' getCasteSnpHaplo(colony1, caste = "drones")
-#' getDronesSnpHaplo(colony1)
+#' getCasteSnpHaplo(colony, caste = "virginQueens")
+#' getVirginQueensSnpHaplo(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteSnpHaplo(colony, caste = "workers")
+#' getWorkersSnpHaplo(colony)
+#'
+#' getCasteSnpHaplo(colony, caste = "drones")
+#' getDronesSnpHaplo(colony)
+#'
 #' getCasteSnpHaplo(apiary, caste = "queen")
-#' getQueensSnpHaplo(apiary)
+#' getQueenSnpHaplo(apiary)
 #'
 #' getCasteSnpHaplo(apiary, caste = "fathers")
 #' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
-#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpHaplo(apiary)
 #' getFathersSnpHaplo(apiary, nInd = 2)
 #'
@@ -4392,7 +4742,7 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
         ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4410,26 +4760,22 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteSnpHaplo Access SNP array haplotype data of the queen
 #' @export
-getQueensSnpHaplo <- function(x,
-                              snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
+getQueenSnpHaplo <- function(x,
+                             snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "queen",
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "queen",
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4441,16 +4787,12 @@ getFathersSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "fathers", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "fathers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4461,14 +4803,10 @@ getVirginQueensSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "virginQueens", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "virginQueens", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4479,14 +4817,10 @@ getWorkersSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "workers", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "workers", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4498,16 +4832,12 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpHaplo(x,
-      caste = "drones", nInd = nInd,
-      snpChip = snpChip, haplo = haplo, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpHaplo(x,
+                          caste = "drones", nInd = nInd,
+                          snpChip = snpChip, haplo = haplo, chr = chr,
+                          dronesHaploid = dronesHaploid,
+                          simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4517,7 +4847,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns SNP array haplotypes of
 #'   individuals in colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4537,33 +4867,35 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with haplotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with haplotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addSnpChip(nSnpPerChr = 10)
+#' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonySnpHaplo(colony1)
-#' getColonySnpHaplo(colony1, caste = c("queen", "fathers"))
-#' getColonySnpHaplo(colony1, nInd = 1)
-#' getColonySnpHaplo(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonySnpHaplo(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonySnpHaplo(colony)
+#' getColonySnpHaplo(colony, caste = c("queen", "fathers"))
+#' getColonySnpHaplo(colony, nInd = 1)
+#' getColonySnpHaplo(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonySnpHaplo(apiary)
 #' getColonySnpHaplo(apiary, caste = c("queen", "fathers"))
 #' getColonySnpHaplo(apiary, nInd = 1)
@@ -4607,7 +4939,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4621,7 +4953,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
@@ -4632,7 +4964,7 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #' @description Level 0 function that returns SNP array genotypes of individuals
 #'   in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4647,51 +4979,53 @@ getColonySnpHaplo <- function(x, caste = c("queen", "fathers", "workers", "drone
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addSnpChip(nSnpPerChr = 10)
+#' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteSnpGeno(colony1, caste = "queen")
-#' getQueensSnpGeno(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteSnpGeno(colony1, caste = "fathers")
-#' getCasteSnpGeno(colony1, caste = "fathers", nInd = 2)
-#' getCasteSnpGeno(colony1, caste = "fathers", nInd = 2)
-#' getFathersSnpGeno(colony1)
-#' getFathersSnpGeno(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteSnpGeno(colony1, caste = "virginQueens")
-#' getVirginQueensSnpGeno(colony1)
+#' getCasteSnpGeno(colony, caste = "queen")
+#' getQueenSnpGeno(colony)
 #'
-#' getCasteSnpGeno(colony1, caste = "workers")
-#' getWorkersSnpGeno(colony1)
+#' getCasteSnpGeno(colony, caste = "fathers")
+#' getCasteSnpGeno(colony, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersSnpGeno(colony)
+#' getFathersSnpGeno(colony, nInd = 2)
 #'
-#' getCasteSnpGeno(colony1, caste = "drones")
-#' getDronesSnpGeno(colony1)
+#' getCasteSnpGeno(colony, caste = "virginQueens")
+#' getVirginQueensSnpGeno(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteSnpGeno(colony, caste = "workers")
+#' getWorkersSnpGeno(colony)
+#'
+#' getCasteSnpGeno(colony, caste = "drones")
+#' getDronesSnpGeno(colony)
+#'
 #' getCasteSnpGeno(apiary, caste = "queen")
-#' getQueensSnpGeno(apiary)
+#' getQueenSnpGeno(apiary)
 #'
 #' getCasteSnpGeno(apiary, caste = "fathers")
 #' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
-#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2)
+#' getCasteSnpGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersSnpGeno(apiary)
 #' getFathersSnpGeno(apiary, nInd = 2)
 #'
@@ -4720,7 +5054,7 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
         ret <- reduceDroneGeno(geno = ret, pop = tmp)
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4738,26 +5072,22 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteSnpGeno Access SNP array genotype data of the queen
 #' @export
-getQueensSnpGeno <- function(x,
-                             snpChip = 1, chr = NULL, simParamBee = NULL) {
+getQueenSnpGeno <- function(x,
+                            snpChip = 1, chr = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "queen",
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "queen",
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4769,16 +5099,12 @@ getFathersSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "fathers", nInd = nInd,
-      snpChip = snpChip, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "fathers", nInd = nInd,
+                         snpChip = snpChip, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4789,14 +5115,10 @@ getVirginQueensSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "virginQueens", nInd = nInd,
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "virginQueens", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4807,14 +5129,10 @@ getWorkersSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "workers", nInd = nInd,
-      snpChip = snpChip, chr = chr, simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "workers", nInd = nInd,
+                         snpChip = snpChip, chr = chr, simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4826,16 +5144,12 @@ getDronesSnpGeno <- function(x, nInd = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteSnpGeno(x,
-      caste = "drones", nInd = nInd,
-      snpChip = snpChip, chr = chr,
-      dronesHaploid = dronesHaploid,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteSnpGeno(x,
+                         caste = "drones", nInd = nInd,
+                         snpChip = snpChip, chr = chr,
+                         dronesHaploid = dronesHaploid,
+                         simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -4845,7 +5159,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #' @description Level 0 function that returns SNP array genotypes of individuals
 #'   in colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, a combination of "queen", "fathers", "workers",
 #'   "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -4862,35 +5176,35 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'
 #' @return list of matrices with genotypes when \code{x} is
 #'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+#'   of matrices with genotypes when \code{x} is \code{\link{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addSnpChip(nSnpPerChr = 10)
+#' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonySnpGeno(colony1)
-#' getColonySnpGeno(colony1, caste = c("queen", "fathers"))
-#' getColonySnpGeno(colony1, nInd = 1)
-#' getColonySnpGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getColonySnpGeno(colony2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
+#' getColonySnpGeno(colony)
+#' getColonySnpGeno(colony, caste = c("queen", "fathers"))
+#' getColonySnpGeno(colony, nInd = 1)
+#' getColonySnpGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#'
 #' getColonySnpGeno(apiary)
 #' getColonySnpGeno(apiary, caste = c("queen", "fathers"))
 #' getColonySnpGeno(apiary, nInd = 1)
@@ -4934,7 +5248,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
         }
       }
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -4947,10 +5261,12 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
+
+# getPooledGeno and calcGRM* ----
 
 #' @rdname getPooledGeno
 #' @title Get a pooled genotype from true genotypes
@@ -4969,25 +5285,25 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #'   alternative (2nd row) alleles
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' apiary <- createMultiColony(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 100)
-#' colony <- addDrones(colony, nInd = 100)
-#' colony <- addVirginQueens(colony, nInd = 2)
-#'
-#' genoQ <- getQueensSegSiteGeno(colony)
-#' genoF <- getFathersSegSiteGeno(colony)
-#' genoW <- getWorkersSegSiteGeno(colony)
-#' genoD <- getDronesSegSiteGeno(colony)
-#' genoV <- getVirginQueensSegSiteGeno(colony)
+#' genoQ <- getQueenSegSiteGeno(apiary[[1]])
+#' genoF <- getFathersSegSiteGeno(apiary[[1]])
+#' genoW <- getWorkersSegSiteGeno(apiary[[1]])
+#' genoD <- getDronesSegSiteGeno(apiary[[1]])
+#' genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
 #'
 #' # Pool of drones
-#' sexD <- getCasteSex(colony, caste = "drones")
+#' sexD <- getCasteSex(apiary[[1]], caste = "drones")
 #' getPooledGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
 #' (poolD <- getPooledGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
 #' # ... compare to queen's genotype
@@ -5004,7 +5320,7 @@ getColonySnpGeno <- function(x, caste = c("queen", "fathers", "workers", "drones
 #' getPooledGeno(x = genoW, type = "count")[, 1:10]
 #' (poolW <- getPooledGeno(x = genoW, type = "mean"))[, 1:10]
 #' # ... compare to fathers' and queen's avearage genotype
-#' sexF <- getCasteSex(colony, caste = "fathers")
+#' sexF <- getCasteSex(apiary[[1]], caste = "fathers")
 #' sexQ <- rep(x = "F", times = nrow(genoF))
 #' sexFQ <- c(sexF, sexQ)
 #' genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])
@@ -5070,22 +5386,22 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #'   Selection Evolution, 52:50 \url{https://doi.org/10.1186/s12711-020-00570-6}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' apiary <- createMultiColony(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 5)
-#' colony <- addDrones(colony, nInd = 5)
-#' colony <- addVirginQueens(colony, nInd = 2)
-#'
-#' genoQ <- getQueensSegSiteGeno(colony)
-#' genoF <- getFathersSegSiteGeno(colony)
-#' genoW <- getWorkersSegSiteGeno(colony)
-#' genoD <- getDronesSegSiteGeno(colony)
-#' genoV <- getVirginQueensSegSiteGeno(colony)
+#' genoQ <- getQueenSegSiteGeno(apiary[[1]])
+#' genoF <- getFathersSegSiteGeno(apiary[[1]])
+#' genoW <- getWorkersSegSiteGeno(apiary[[1]])
+#' genoD <- getDronesSegSiteGeno(apiary[[1]])
+#' genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
 #' genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
 #' genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
 #'
@@ -5093,7 +5409,7 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' n <- length(rownames(geno))
 #' rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 #'
-#' sex <- getCasteSex(x = colony)
+#' sex <- getCasteSex(x = apiary[[1]])
 #' sex <- c(
 #'   sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
 #'   "F", "M"
@@ -5239,23 +5555,24 @@ calcBeeAlleleFreq <- function(x, sex) {
 #'   \url{https://doi.org/10.1017/s0016672310000480}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(isTrackRec = TRUE)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' apiary <- createMultiColony(basePop[2:3], n = 2)
+#' apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony <- createColony(x = basePop[2])
-#' colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-#' colony <- addWorkers(colony, nInd = 5)
-#' colony <- addDrones(colony, nInd = 5)
-#' colony <- addVirginQueens(colony, nInd = 2)
-#'
-#' haploQ <- getQueensIbdHaplo(colony)
-#' haploF <- getFathersIbdHaplo(colony)
-#' haploW <- getWorkersIbdHaplo(colony)
-#' haploD <- getDronesIbdHaplo(colony)
-#' haploV <- getVirginQueensIbdHaplo(colony)
+#' haploQ <- getQueenIbdHaplo(apiary[[1]])
+#' haploF <- getFathersIbdHaplo(apiary[[1]])
+#' haploW <- getWorkersIbdHaplo(apiary[[1]])
+#' haploD <- getDronesIbdHaplo(apiary[[1]])
+#' haploV <- getVirginQueensIbdHaplo(apiary[[1]])
 #' SP$pedigree
 #'
 #' haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
@@ -5283,11 +5600,11 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' hist(x)
 #' summary(x)
 #'
-#' qI <- getQueen(colony)@id
-#' fI <- sort(getFathers(colony)@id)
-#' wI <- sort(getWorkers(colony)@id)
-#' dI <- sort(getDrones(colony)@id)
-#' vI <- sort(getVirginQueens(colony)@id)
+#' qI <- getQueen(apiary[[1]])@id
+#' fI <- sort(getFathers(apiary[[1]])@id)
+#' wI <- sort(getWorkers(apiary[[1]])@id)
+#' dI <- sort(getDrones(apiary[[1]])@id)
+#' vI <- sort(getVirginQueens(apiary[[1]])@id)
 #'
 #' qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
 #' fG <- paste(fI, 1, sep = "_")
@@ -5382,13 +5699,293 @@ calcBeeGRMIbd <- function(x) {
   return(list(genome = G, indiv = 0.5 * K %*% G %*% t(K)))
 }
 
+# get*Pheno ----
+
+#' @rdname getCastePheno
+#' @title Access phenotype values of individuals in a caste
+#'
+#' @description Level 0 function that returns phenotype values of individuals in a
+#'   caste.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, "queen", "fathers", "workers", "drones", or
+#'   "virginQueens"
+#' @param nInd numeric, number of individuals to access, if \code{NULL} all
+#'   individuals are accessed, otherwise a random sample
+#'
+#' @seealso \code{\link{pheno}}
+#'
+#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
+#'   and list of vectors of genetic values when \code{x} is
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' SP$addTraitA(nQtlPerChr = 10, var = 1)
+#' SP$setVarE(varE = 1)
+#' # TODO: how should we handle the creation of phenotypes when residual variance
+#' #       is set (then we get phenotypes automatically and we should not call
+#' #       setPheno() below - this overwrites previous phenotypes), but when the
+#' #       residual variance is not set, we have to call setPheno()
+#' #       https://github.com/HighlanderLab/SIMplyBee/issues/235
+#'
+#' basePop <- createVirginQueens(founderGenomes)
+#'
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
+#'
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' getCastePheno(colony, caste = "queen")
+#' getQueenPheno(colony)
+#'
+#' getCastePheno(colony, caste = "fathers")
+#' getCastePheno(colony, caste = "fathers", nInd = 2)
+#' getCastePheno(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersPheno(colony)
+#' getFathersPheno(colony, nInd = 2)
+#'
+#' getCastePheno(colony, caste = "virginQueens")
+#' getVirginQueensPheno(colony)
+#'
+#' getCastePheno(colony, caste = "workers")
+#' getWorkersPheno(colony)
+#'
+#' getCastePheno(colony, caste = "drones")
+#' getDronesPheno(colony)
+#'
+#' getCastePheno(apiary, caste = "queen")
+#' getQueenPheno(apiary)
+#'
+#' getCastePheno(apiary, caste = "fathers")
+#' getCastePheno(apiary, caste = "fathers", nInd = 2)
+#' getCastePheno(apiary, caste = "fathers", nInd = 2) # random sample!
+#' getFathersPheno(apiary)
+#' getFathersPheno(apiary, nInd = 2)
+#'
+#' getCastePheno(apiary, caste = "virginQueens")
+#' getVirginQueensPheno(apiary)
+#'
+#' getCastePheno(apiary, caste = "workers")
+#' getWorkersPheno(apiary)
+#'
+#' getCastePheno(apiary, caste = "drones")
+#' getDronesPheno(apiary)
+#' @export
+getCastePheno <- function(x, caste, nInd = NULL) {
+  if (isColony(x)) {
+    tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+    if (is.null(tmp)) {
+      ret <- NULL
+    } else {
+      ret <- tmp@pheno
+    }
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in seq_len(nCol)) {
+      tmp <- getCastePheno(x = x[[colony]], caste = caste, nInd = nInd)
+      if (is.null(tmp)) {
+        ret[colony] <- list(NULL)
+      } else {
+        ret[[colony]] <- tmp
+      }
+    }
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn getCastePheno Access phenotype value of the queen
+#' @export
+getQueenPheno <- function(x) {
+  ret <- getCastePheno(x, caste = "queen")
+  return(ret)
+}
+
+#' @describeIn getCastePheno Access phenotype values of fathers
+#' @export
+getFathersPheno <- function(x, nInd = NULL) {
+  ret <- getCastePheno(x, caste = "fathers", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCastePheno Access phenotype values of virgin queens
+#' @export
+getVirginQueensPheno <- function(x, nInd = NULL) {
+  ret <- getCastePheno(x, caste = "virginQueens", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCastePheno Access phenotype values of workers
+#' @export
+getWorkersPheno <- function(x, nInd = NULL) {
+  ret <- getCastePheno(x, caste = "workers", nInd = nInd)
+  return(ret)
+}
+
+#' @describeIn getCastePheno Access phenotype values of drones
+#' @export
+getDronesPheno <- function(x, nInd = NULL) {
+  ret <- getCastePheno(x, caste = "drones", nInd = nInd)
+  return(ret)
+}
+
+#' @rdname calcColonyValue
+#' @title Calculate colony value(s)
+#'
+#' @description Level 0 function that calculate value(s) of a colony.
+#'
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param FUN function, that calculates colony value from values of
+#'   colony members
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... other arguments of \code{FUN}
+#'
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
+#'
+#' @return a matrix with one value or a row of values when \code{x} is
+#'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
+#'   \code{\link{MultiColony-class}}, where names are colony IDs
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#'
+#' # Define two traits that collectively affect colony honey yield:
+#' # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
+#' # 2) workers' effect on colony honey yield, say via foraging ability phenotype
+#' # The traits will have a negative genetic correlation of -0.5 and heritability
+#' # of 0.25 (on an individual level)
+#' mean <- c(20, 0)
+#' nWorkers <- 10
+#' varA <- c(1, 1 / nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = mean,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#' SP$setVarE(varE = varE)
+#'
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#'
+#' # Create and cross Colony and MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
+#' apiary <- createMultiColony(basePop[3:5], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
+#'
+#' # Colony value - shorthand version
+#' # (using the default mapCasteToColony*() functions - you can provide yours instead!)
+#' # ... phenotype value
+#' calcColonyPheno(colony)
+#' calcColonyPheno(apiary)
+#' # ... genetic value
+#' calcColonyGv(colony)
+#' calcColonyGv(apiary)
+#' # ... breeding value
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyBv(colony)
+#' # calcColonyBv(apiary)
+#' # ... dominance value
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyDd(colony)
+#' # calcColonyDd(apiary)
+#' # ... epistasis value
+#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
+#' #   https://github.com/gaynorr/AlphaSimR/issues/83
+#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
+#' # calcColonyAa(colony)
+#' # calcColonyAa(apiary)
+#'
+#' # Colony value - long version
+#' # (using the default mapCasteToColony*() function - you can provide yours instead!)
+#' calcColonyValue(colony, FUN = mapCasteToColonyPheno)
+#' calcColonyValue(apiary, FUN = mapCasteToColonyPheno)
+#'
+#' # Colony value - long version - using a function stored in SimParamBee (SP)
+#' # (using the default mapCasteToColony*() function - you can provide yours instead!)
+#' SP$colonyValueFUN <- mapCasteToColonyPheno
+#' calcColonyValue(colony)
+#' calcColonyValue(apiary)
+#'
+#' @export
+# TODO: Calculate inheritance, selection and production criteria in the Colony #23
+#       https://github.com/HighlanderLab/SIMplyBee/issues/23
+# TODO: Do we need to do anything to add GxE to colony values? #353
+#       https://github.com/HighlanderLab/SIMplyBee/issues/353
+# TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
+#       https://github.com/HighlanderLab/SIMplyBee/issues/403
+calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(FUN)) {
+    FUN <- simParamBee$colonyValueFUN
+  }
+  if (is.null(FUN)) {
+    stop("You must provide FUN or set it in the SimParamBee object!")
+  }
+  if (isColony(x)) {
+    ret <- FUN(colony = x, ...)
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    # We could create a matrix output container here, BUT we don't know the output
+    # dimension of FUN() so we create list and row bind the list nodes later
+    ret <- vector(mode = "list", length = nCol)
+    for (colony in seq_len(nCol)) {
+      ret[[colony]] <- FUN(colony = x[[colony]], ...)
+    }
+    ret <- do.call("rbind", ret)
+    rownames(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
+#' @describeIn calcColonyValue Calculate colony phenotype value from caste individuals' phenotype values
+#' @export
+calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
+}
+
+# get*Gv ----
+
 #' @rdname getCasteGv
 #' @title Access genetic values of individuals in a caste
 #'
-#' @description Level 0 function that returns genetic values of individuals in a
-#'   caste.
+#' @description Level 0 function that returns genetic values of individuals
+#'   in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -5396,53 +5993,56 @@ calcBeeGRMIbd <- function(x) {
 #'
 #' @seealso \code{\link{gv}}
 #'
-#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
+#' @return vector of phenotype values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10, var = 1)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 10)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteGv(colony1, caste = "queen")
-#' getQueensGv(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteGv(colony1, caste = "fathers")
-#' getCasteGv(colony1, caste = "fathers", nInd = 2)
-#' getCasteGv(colony1, caste = "fathers", nInd = 2)
-#' getFathersGv(colony1)
-#' getFathersGv(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteGv(colony1, caste = "virginQueens")
-#' getVirginQueensGv(colony1)
+#' getCasteGv(colony, caste = "queen")
+#' getQueenGv(colony)
 #'
-#' getCasteGv(colony1, caste = "workers")
-#' getWorkersGv(colony1)
+#' getCasteGv(colony, caste = "fathers")
+#' getCasteGv(colony, caste = "fathers", nInd = 2)
+#' getCasteGv(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersGv(colony)
+#' getFathersGv(colony, nInd = 2)
 #'
-#' getCasteGv(colony1, caste = "drones")
-#' getDronesGv(colony1)
+#' getCasteGv(colony, caste = "virginQueens")
+#' getVirginQueensGv(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteGv(colony, caste = "workers")
+#' getWorkersGv(colony)
+#'
+#' getCasteGv(colony, caste = "drones")
+#' getDronesGv(colony)
+#'
 #' getCasteGv(apiary, caste = "queen")
-#' getQueensGv(apiary)
+#' getQueenGv(apiary)
 #'
 #' getCasteGv(apiary, caste = "fathers")
 #' getCasteGv(apiary, caste = "fathers", nInd = 2)
-#' getCasteGv(apiary, caste = "fathers", nInd = 2)
+#' getCasteGv(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersGv(apiary)
 #' getFathersGv(apiary, nInd = 2)
 #'
@@ -5463,7 +6063,7 @@ getCasteGv <- function(x, caste, nInd = NULL) {
     } else {
       ret <- gv(pop = tmp)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -5476,159 +6076,53 @@ getCasteGv <- function(x, caste, nInd = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic value of the queen
 #' @export
-getQueensGv <- function(x) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "queen")
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+getQueenGv <- function(x) {
+  ret <- getCasteGv(x, caste = "queen")
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of fathers
 #' @export
 getFathersGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteGv(x, caste = "fathers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of virgin queens
 #' @export
 getVirginQueensGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteGv(x, caste = "virginQueens", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of workers
 #' @export
 getWorkersGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "workers", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteGv(x, caste = "workers", nInd = nInd)
   return(ret)
 }
 
 #' @describeIn getCasteGv Access genetic values of drones
 #' @export
 getDronesGv <- function(x, nInd = NULL) {
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteGv(x, caste = "drones", nInd = nInd)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteGv(x, caste = "drones", nInd = nInd)
   return(ret)
 }
 
-#' @rdname getColonyGv
-#' @title Access genetic values of individuals in colony
-#'
-#' @description Level 0 function that returns genetic values of individuals in
-#'   colony.
-#'
-#' @param x \code{\link{Colony-class}} or Colonies
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#' "drones", or "virginQueens"
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#'
-#' @seealso \code{\link{gv}}
-#'
-#' @return list of vector of genetic values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of genetic values when \code{x} is \code{\link{Colonies-class}},
-#'   outer list is named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#'
-#' getColonyGv(colony1)
-#' getColonyGv(colony1, caste = c("queen", "fathers"))
-#' getColonyGv(colony1, nInd = 1)
-#' getColonyGv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyGv(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' getColonyGv(apiary)
-#' getColonyGv(apiary, caste = c("queen", "fathers"))
-#' getColonyGv(apiary, nInd = 1)
-#' getColonyGv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony genetic value from caste individuals' genetic values
 #' @export
-getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL) {
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
-      } else {
-        ret[[caste]] <- gv(pop = tmp)
-      }
-    }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/28 (for gv)
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29 (for bv and dd)
-  } else if (isColonies(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyGv(x = x[[colony]], caste = caste, nInd = nInd)
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
-  return(ret)
+calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
+
+# get*Bv ----
 
 #' @rdname getCasteBv
 #' @title Access breeding values of individuals in a caste
@@ -5636,7 +6130,7 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #' @description Level 0 function that returns breeding values of individuals in
 #'   a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -5647,51 +6141,54 @@ getColonyGv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of breeding values when \code{x} is
-#'   \code{\link{Colonies-class}}, named by colony id when \code{x} is
-#'   \code{\link{Colonies-class}}
+#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitA(nQtlPerChr = 10, var = 1)
+#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteBv(colony1, caste = "queen")
-#' getQueensBv(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteBv(colony1, caste = "fathers")
-#' getCasteBv(colony1, caste = "fathers", nInd = 2)
-#' getCasteBv(colony1, caste = "fathers", nInd = 2)
-#' getFathersBv(colony1)
-#' getFathersBv(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteBv(colony1, caste = "virginQueens")
-#' getVirginQueensBv(colony1)
+#' getCasteBv(colony, caste = "queen")
+#' getQueenBv(colony)
 #'
-#' getCasteBv(colony1, caste = "workers")
-#' getWorkersBv(colony1)
+#' getCasteBv(colony, caste = "fathers")
+#' getCasteBv(colony, caste = "fathers", nInd = 2)
+#' getCasteBv(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersBv(colony)
+#' getFathersBv(colony, nInd = 2)
 #'
-#' getCasteBv(colony1, caste = "drones")
-#' getDronesBv(colony1)
+#' getCasteBv(colony, caste = "virginQueens")
+#' getVirginQueensBv(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteBv(colony, caste = "workers")
+#' getWorkersBv(colony)
+#'
+#' getCasteBv(colony, caste = "drones")
+#' getDronesBv(colony)
+#'
 #' getCasteBv(apiary, caste = "queen")
-#' getQueensBv(apiary)
+#' getQueenBv(apiary)
 #'
 #' getCasteBv(apiary, caste = "fathers")
 #' getCasteBv(apiary, caste = "fathers", nInd = 2)
-#' getCasteBv(apiary, caste = "fathers", nInd = 2)
+#' getCasteBv(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersBv(apiary)
 #' getFathersBv(apiary, nInd = 2)
 #'
@@ -5715,7 +6212,7 @@ getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     } else {
       ret <- bv(pop = tmp, simParam = simParamBee)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -5731,25 +6228,21 @@ getCasteBv <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
 #' @describeIn getCasteBv Access breeding value of the queen
 #' @export
-getQueensBv <- function(x, simParamBee = NULL) {
+getQueenBv <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x,
-      caste = "queen",
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5759,14 +6252,10 @@ getFathersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x,
-      caste = "fathers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5776,14 +6265,10 @@ getVirginQueensBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x,
-      caste = "virginQueens", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5793,14 +6278,10 @@ getWorkersBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x,
-      caste = "workers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
@@ -5810,125 +6291,28 @@ getDronesBv <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteBv(x,
-      caste = "drones", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteBv(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @rdname getColonyBv
-#' @title Access breeding values of individuals in colony
-#'
-#' @description Level 0 function that returns breeding values of individuals in
-#'   colony.
-#'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#'   "drones", or "virginQueens"
-#' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @seealso \code{\link{bv}}
-#'
-#' @return list of vector of breeding values when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of breeding values when \code{x} is
-#'   \code{\link{Colonies-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{Colonies-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#'
-#' getColonyBv(colony1)
-#' getColonyBv(colony1, caste = c("queen", "fathers"))
-#' getColonyBv(colony1, nInd = 1)
-#' getColonyBv(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
-#'
-#' getColonyBv(colony2)
-#'
-#' apiary <- c(colony1, colony2)
-#' getColonyBv(apiary)
-#' getColonyBv(apiary, caste = c("queen", "fathers"))
-#' getColonyBv(apiary, nInd = 1)
-#' getColonyBv(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
 #' @export
-getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
-    } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
-    }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
-      } else {
-        ret[[caste]] <- bv(pop = tmp, simParam = simParamBee)
-      }
-    }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
-  } else if (isColonies(x)) {
-    nCol <- nColonies(x)
-    ret <- vector(mode = "list", length = nCol)
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyBv(
-        x = x[[colony]], caste = caste,
-        nInd = nInd, simParamBee = simParamBee
-      )
-    }
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
-  return(ret)
+calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
+
+# get*Dd ----
 
 #' @rdname getCasteDd
-#' @title Access dominance deviations of individuals in a caste
+#' @title Access dominance values of individuals in a caste
 #'
-#' @description Level 0 function that returns dominance deviations of
+#' @description Level 0 function that returns dominance values of
 #'   individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
@@ -5937,53 +6321,55 @@ getColonyBv <- function(x, caste = c("queen", "fathers", "workers", "drones", "v
 #'
 #' @seealso \code{\link{dd}}
 #'
-#' @return vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of dominance deviations when
-#'   \code{x} is \code{\link{Colonies-class}}, named by colony id when \code{x}
-#'   is \code{\link{Colonies-class}}
+#' @return vector of dominance values when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of dominance values when
+#'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
+#'   is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
-#' colony2 <- addDrones(colony2, nInd = 4)
-#' colony1 <- addVirginQueens(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getCasteDd(colony1, caste = "queen")
-#' getQueensDd(colony1)
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' getCasteDd(colony1, caste = "fathers")
-#' getCasteDd(colony1, caste = "fathers", nInd = 2)
-#' getCasteDd(colony1, caste = "fathers", nInd = 2)
-#' getFathersDd(colony1)
-#' getFathersDd(colony1, nInd = 2)
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' getCasteDd(colony1, caste = "virginQueens")
-#' getVirginQueensDd(colony1)
+#' getCasteDd(colony, caste = "queen")
+#' getQueenDd(colony)
 #'
-#' getCasteDd(colony1, caste = "workers")
-#' getWorkersDd(colony1)
+#' getCasteDd(colony, caste = "fathers")
+#' getCasteDd(colony, caste = "fathers", nInd = 2)
+#' getCasteDd(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersDd(colony)
+#' getFathersDd(colony, nInd = 2)
 #'
-#' getCasteDd(colony1, caste = "drones")
-#' getDronesDd(colony1)
+#' getCasteDd(colony, caste = "virginQueens")
+#' getVirginQueensDd(colony)
 #'
-#' apiary <- c(colony1, colony2)
+#' getCasteDd(colony, caste = "workers")
+#' getWorkersDd(colony)
+#'
+#' getCasteDd(colony, caste = "drones")
+#' getDronesDd(colony)
+#'
 #' getCasteDd(apiary, caste = "queen")
-#' getQueensDd(apiary)
+#' getQueenDd(apiary)
 #'
 #' getCasteDd(apiary, caste = "fathers")
 #' getCasteDd(apiary, caste = "fathers", nInd = 2)
-#' getCasteDd(apiary, caste = "fathers", nInd = 2)
+#' getCasteDd(apiary, caste = "fathers", nInd = 2) # random sample!
 #' getFathersDd(apiary)
 #' getFathersDd(apiary, nInd = 2)
 #'
@@ -6007,7 +6393,7 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     } else {
       ret <- dd(pop = tmp, simParam = simParamBee)
     }
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
@@ -6023,254 +6409,261 @@ getCasteDd <- function(x, caste, nInd = NULL, simParamBee = NULL) {
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviation of the queen
+#' @describeIn getCasteDd Access dominance value of the queen
 #' @export
-getQueensDd <- function(x, simParamBee = NULL) {
+getQueenDd <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x,
-      caste = "queen",
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of fathers
+#' @describeIn getCasteDd Access dominance values of fathers
 #' @export
 getFathersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x,
-      caste = "fathers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of virgin queens
+#' @describeIn getCasteDd Access dominance values of virgin queens
 #' @export
 getVirginQueensDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x,
-      caste = "virginQueens", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of workers
+#' @describeIn getCasteDd Access dominance values of workers
 #' @export
 getWorkersDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x,
-      caste = "workers", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @describeIn getCasteDd Access dominance deviations of drones
+#' @describeIn getCasteDd Access dominance values of drones
 #' @export
 getDronesDd <- function(x, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isColonies(x)) {
-    ret <- getCasteDd(x,
-      caste = "drones", nInd = nInd,
-      simParamBee = simParamBee
-    )
-  } else {
-    stop("Argument x must be a Colony or Colonies class object!")
-  }
+  ret <- getCasteDd(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
   return(ret)
 }
 
-#' @rdname getColonyDd
-#' @title Access dominance deviations of individuals in colony
+#' @describeIn calcColonyValue Calculate colony dominance value from caste individuals' dominance values
+#' @export
+calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
+}
+
+# get*Aa ----
+
+#' @rdname getCasteAa
+#' @title Access epistasis values of individuals in a caste
 #'
-#' @description Level 0 function that returns dominance deviations of
-#'   individuals in colony.
+#' @description Level 0 function that returns epistasis values of
+#'   individuals in a caste.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{Colonies-class}}
-#' @param caste character, a combination of "queen", "fathers", "workers",
-#'   "drones", or "virginQueens"
+#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param caste character, "queen", "fathers", "workers", "drones", or
+#'   "virginQueens"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
-#'   individuals are accessed, otherwise a random sample; can be a list to
-#'   access different number of different caste - when this is the case
-#'   \code{nInd} takes precedence over \code{caste} (see examples)
+#'   individuals are accessed, otherwise a random sample
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{dd}}
 #'
-#' @return list of vector of dominance deviations when \code{x} is
-#'   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-#'   of vectors of dominance deviations when \code{x} is
-#'   \code{\link{Colonies-class}}, outer list is named by colony id when
-#'   \code{x} is \code{\link{Colonies-class}}
+#' @return vector of epistasis values when \code{x} is
+#'   \code{\link{Colony-class}} and list of vectors of epistasis values when
+#'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
+#'   is \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+#' SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony1 <- addWorkers(colony1, nInd = 10)
-#' colony2 <- addWorkers(colony2, nInd = 20)
-#' colony1 <- addDrones(colony1, nInd = 2)
+#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-#' getColonyDd(colony1)
-#' getColonyDd(colony1, caste = c("queen", "fathers"))
-#' getColonyDd(colony1, nInd = 1)
-#' getColonyDd(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' # Create a Colony and a MultiColony class
+#' colony <- createColony(x = basePop[2])
+#' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+#' colony <- addVirginQueens(x = colony, nInd = 5)
 #'
-#' apiary <- c(colony1, colony2)
-#' getColonyDd(apiary)
-#' getColonyDd(apiary, caste = c("queen", "fathers"))
-#' getColonyDd(apiary, nInd = 1)
-#' getColonyDd(apiary, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#'
+#' getCasteAa(colony, caste = "queen")
+#' getQueenAa(colony)
+#'
+#' getCasteAa(colony, caste = "fathers")
+#' getCasteAa(colony, caste = "fathers", nInd = 2)
+#' getCasteAa(colony, caste = "fathers", nInd = 2) # random sample!
+#' getFathersAa(colony)
+#' getFathersAa(colony, nInd = 2)
+#'
+#' getCasteAa(colony, caste = "virginQueens")
+#' getVirginQueensAa(colony)
+#'
+#' getCasteAa(colony, caste = "workers")
+#' getWorkersAa(colony)
+#'
+#' getCasteAa(colony, caste = "drones")
+#' getDronesAa(colony)
+#'
+#' getCasteAa(apiary, caste = "queen")
+#' getQueenAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "fathers")
+#' getCasteAa(apiary, caste = "fathers", nInd = 2)
+#' getCasteAa(apiary, caste = "fathers", nInd = 2) # random sample!
+#' getFathersAa(apiary)
+#' getFathersAa(apiary, nInd = 2)
+#'
+#' getCasteAa(apiary, caste = "virginQueens")
+#' getVirginQueensAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "workers")
+#' getWorkersAa(apiary)
+#'
+#' getCasteAa(apiary, caste = "drones")
+#' getDronesAa(apiary)
 #' @export
-getColonyDd <- function(x, caste = c("queen", "fathers", "workers", "drones", "virginQueens"),
-                        nInd = NULL, simParamBee = NULL) {
+getCasteAa <- function(x, caste, nInd = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x)) {
-    if (is.list(nInd)) {
-      caste <- names(nInd)
+    tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+    if (is.null(tmp)) {
+      ret <- NULL
     } else {
-      if (length(nInd) > 1) {
-        warning("Using only the first value of nInd!")
-      }
-      nIndOrig <- nInd
-      nInd <- vector(mode = "list", length = length(caste))
-      if (!is.null(nIndOrig)) {
-        for (node in seq_along(caste)) {
-          nInd[[node]] <- nIndOrig
-        }
-      }
-      names(nInd) <- caste
+      ret <- aa(pop = tmp, simParam = simParamBee)
     }
-    ret <- vector(mode = "list", length = length(caste))
-    names(ret) <- caste
-    for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd[[caste]])
-      if (is.null(tmp)) {
-        ret[caste] <- list(NULL)
-      } else {
-        ret[[caste]] <- dd(pop = tmp, simParam = simParamBee)
-      }
-    }
-    # TODO: should we add colony node here too or will that be done elsewhere?
-    #       we might need some theoretical development first to derive it first!
-    #       see also https://github.com/HighlanderLab/SIMplyBee/issues/29
-  } else if (isColonies(x)) {
+  } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- getColonyDd(
-        x = x[[colony]], caste = caste,
-        nInd = nInd, simParamBee = simParamBee
+      tmp <- getCasteAa(
+        x = x[[colony]], caste = caste, nInd = nInd,
+        simParamBee = simParamBee
       )
+      if (is.null(tmp)) {
+        ret[colony] <- list(NULL)
+      } else {
+        ret[[colony]] <- tmp
+      }
     }
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or Colonies class object!")
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
   return(ret)
 }
 
-#' @title Edit genome at a single diploid site in a population
-#'
-#' @description Edits a single selected diploid locus in an entire population
-#'   of individuals to the desired diploid genotype. The gv slot is recalculated
-#'   to reflect the any changes due to editing, but other slots remain the same.
-#'   (modification of AlphaSimR::editGenome to edit desired genotype instead of
-#'   a homozygote for a given allele).
-#'
-#' @param pop an object of \code{\link{Pop-class}}
-#' @param chr integer, the chromosomes to edit.
-#' @param segSite integer, the position of the segregating site to edit
-#' @param alleles list, each element of the list contains a vector with twe two
-#' desired alleles for each individual at the segregating sites. The length of the list
-#' should match the number of individuals in the population
-#' @param simParam an object of \code{\link{SimParam}}
-#'
-#' @return Returns an object of \code{\link{Pop-class}}
-#'
-#' @examples
-#' # Create founder haplotypes
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 5)
-#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-#' pop <- createVirginQueens(founderGenomes)
-#'
-#' # Change individual 1 to homozygous for the 1 allele at locus 1, chromosome 1
-#' pop2 <- SIMplyBee:::editGenomeGeno(pop,
-#'   chr = 1, segSite = 1,
-#'   alleles = list(c(1, 1), c(0, 1)),
-#'   simParam = SP
-#' )
-#' getSegSiteHaplo(pop)
-#' getSegSiteHaplo(pop2)
-editGenomeGeno <- function(pop, chr, segSite, alleles, simParam = NULL) {
-  if (is.null(simParam)) {
-    simParam <- get("SP", envir = .GlobalEnv)
+#' @describeIn getCasteAa Access epistasis value of the queen
+#' @export
+getQueenAa <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  chr <- as.integer(chr)
-  segSite <- as.integer(segSite)
-  stopifnot(all(sapply(alleles, FUN = function(x) x == 0L | x == 1L)))
-  if (!all(sapply(alleles, FUN = function(x) length(x) == pop@ploidy))) {
-    stop("You must provide two alleles for a diploid genome.")
+  ret <- getCasteAa(x,
+                    caste = "queen",
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis values of fathers
+#' @export
+getFathersAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  BYTE <- (segSite - 1L) %/% 8L + 1L
-  BIT <- (segSite - 1L) %% 8L + 1L
-  for (ind in 1:pop@nInd) {
-    for (j in 1:pop@ploidy) {
-      TMP <- pop@geno[[chr]][BYTE, j, ind]
-      TMP <- rawToBits(TMP)
-      TMP[BIT] <- as.raw(alleles[[ind]][j])
-      TMP <- packBits(TMP)
-      pop@geno[[chr]][BYTE, j, ind] <- TMP
-    }
+  ret <- getCasteAa(x,
+                    caste = "fathers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis values of virgin queens
+#' @export
+getVirginQueensAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  PHENO <- pop@pheno
-  EBV <- pop@ebv
-  pop <- resetPop(pop = pop, simParam = simParam)
-  pop@pheno <- PHENO
-  pop@ebv <- EBV
-  return(pop)
+  ret <- getCasteAa(x,
+                    caste = "virginQueens", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis values of workers
+#' @export
+getWorkersAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "workers", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn getCasteAa Access epistasis values of drones
+#' @export
+getDronesAa <- function(x, nInd = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- getCasteAa(x,
+                    caste = "drones", nInd = nInd,
+                    simParamBee = simParamBee
+  )
+  return(ret)
+}
+
+#' @describeIn calcColonyValue Calculate colony epistasis value from caste individuals' epistasis value
+#' @export
+calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
+  calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
 #' @title Edit the csd locus
@@ -6292,7 +6685,7 @@ editGenomeGeno <- function(pop, chr, segSite, alleles, simParam = NULL) {
 #'   virgin queen. The n columns span the length of the csd locus as specified
 #'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters.
+#' @param simParamBee global simulation parameters.
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
 #'
@@ -6326,16 +6719,13 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
     stop("You must provide two different alleles for each individual!")
   }
 
-  for (site in csdSites) {
-    siteAlleles <- lapply(alleles, FUN = function(x) x[, which(site == csdSites)])
-    pop <- editGenomeGeno(
-      pop = pop,
-      chr = simParamBee$csdChr,
-      segSite = site,
-      alleles = siteAlleles,
-      simParam = simParamBee
-    )
-  }
+  # Pull out csd haplotype matrix
+  csdH = pullMarkerHaplo(pop, markers = paste(simParamBee$csdChr, csdSites, sep="_"))
+  # Prepare the haplotype matrix
+  alleles <- as.matrix(do.call(rbind, alleles))
+  rownames(alleles) <- rownames(csdH)
+  colnames(alleles) <- colnames(csdH)
 
+  pop <- setMarkerHaplo(pop, haplo=alleles)
   return(pop)
 }

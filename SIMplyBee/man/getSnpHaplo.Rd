@@ -26,6 +26,29 @@ Matrix of haplotypes
 \description{
 Level 0 function that returns SNP array haplotypes.
 }
+\details{
+This is an alias for the AlphaSimR function to distinguish between getting
+  and pulling
+}
+\examples{
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$addSnpChip(nSnpPerChr = 5)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+
+# Use getSnpHaplo on a Population
+getSnpHaplo(getWorkers(colony))
+getSnpHaplo(getQueen(colony))
+getSnpHaplo(getDrones(colony))
+}
 \seealso{
 \code{\link{pullSnpHaplo}}
 }

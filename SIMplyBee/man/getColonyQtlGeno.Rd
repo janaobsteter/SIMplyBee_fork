@@ -15,7 +15,7 @@ getColonyQtlGeno(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, a combination of "queen", "fathers", "workers",
 "drones", or "virginQueens",}
@@ -37,37 +37,39 @@ are retrieved}
 \value{
 list of matrices with genotypes when \code{x} is
   \code{\link{Colony-class}} (list nodes named by caste) and list of a list
-  of matrices with genotypes when \code{x} is \code{\link{Colonies-class}},
+  of matrices with genotypes when \code{x} is \code{\link{MultiColony-class}},
   outer list is named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns QTL genotypes of individuals in
   colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getColonyQtlGeno(colony1)
-getColonyQtlGeno(colony1, caste = c("queen", "fathers"))
-getColonyQtlGeno(colony1, nInd = 1)
-getColonyQtlGeno(colony1, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getColonyQtlGeno(colony2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-apiary <- c(colony1, colony2)
+getColonyQtlGeno(colony)
+getColonyQtlGeno(colony, caste = c("queen", "fathers"))
+getColonyQtlGeno(colony, nInd = 1)
+getColonyQtlGeno(colony, nInd = list("queen" = 1, "fathers" = 2, "virginQueens" = 1))
+
 getColonyQtlGeno(apiary)
 getColonyQtlGeno(apiary, caste = c("queen", "fathers"))
 getColonyQtlGeno(apiary, nInd = 1)

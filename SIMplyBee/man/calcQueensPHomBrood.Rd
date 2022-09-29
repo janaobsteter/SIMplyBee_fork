@@ -14,11 +14,11 @@ nHomBrood(x)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 }
 \value{
 numeric, expected csd homozygosity named by colony id when \code{x}
-  is \code{\link{Colonies-class}}
+  is \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 functions that calculate or report the proportion of csd
@@ -41,49 +41,43 @@ produced by a queen
 }}
 \examples{
 # This is a bit long example - the key is at the end!
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 10)
-colony2 <- addDrones(colony2, nInd = 20)
-colony1 <- addVirginQueens(colony1, nInd = 1)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+colony <- addVirginQueens(x = colony, nInd = 1)
+
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
 
 # Virgin queen
-calcQueensPHomBrood(basePop[2])
+try(calcQueensPHomBrood(basePop[5]))
 
-# Mated queen
-matedQueen <- crossVirginQueen(pop = basePop[4], drones = drones[11:15], nFathers = 5)
-calcQueensPHomBrood(matedQueen)
+# Queens of colony
+calcQueensPHomBrood(colony)
 
-# Queen of the colony
-calcQueensPHomBrood(getQueen(colony1))
-
-# Colony
-calcQueensPHomBrood(colony1)
-
-# Colonies
-apiary <- c(colony1, colony2)
+# Queens of apiary
 calcQueensPHomBrood(apiary)
 
 # Inbreed virgin queen with her brothers to generate csd homozygous brood
-colony3 <- createColony(x = getVirginQueens(colony1))
-colony3 <- crossColony(colony3, drones = getDrones(colony1), nFathers = 10)
+colony2 <- createColony(x = getVirginQueens(colony))
+colony2 <- cross(x = colony2, drones = pullDrones(x = colony, nInd = nFathersPoisson())[[1]])
 
 # Calculate the expected csd homozygosity
-calcQueensPHomBrood(getQueen(colony3))
-pHomBrood(colony3)
+calcQueensPHomBrood(getQueen(colony2))
+pHomBrood(colony2)
 
 # Evaluate a realised csd homozygosity
-nHomBrood(addWorkers(colony3, nInd = 100))
-nHomBrood(addWorkers(colony3, nInd = 100))
+nHomBrood(addWorkers(colony2, nInd = 100))
+nHomBrood(addWorkers(colony2, nInd = 100))
 # nHomBrood will vary between function calls due to inheritance process
 }
 \seealso{

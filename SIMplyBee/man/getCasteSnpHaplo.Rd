@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSnpHaplo}
 \alias{getCasteSnpHaplo}
-\alias{getQueensSnpHaplo}
+\alias{getQueenSnpHaplo}
 \alias{getFathersSnpHaplo}
 \alias{getVirginQueensSnpHaplo}
 \alias{getWorkersSnpHaplo}
@@ -20,13 +20,7 @@ getCasteSnpHaplo(
   simParamBee = NULL
 )
 
-getQueensSnpHaplo(
-  x,
-  snpChip = 1,
-  haplo = "all",
-  chr = NULL,
-  simParamBee = NULL
-)
+getQueenSnpHaplo(x, snpChip = 1, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersSnpHaplo(
   x,
@@ -67,7 +61,7 @@ getDronesSnpHaplo(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -91,8 +85,8 @@ are retrieved}
 \value{
 matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
   and list of matrices with haplotypes when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns SNP array haplotypes of
@@ -100,7 +94,7 @@ Level 0 function that returns SNP array haplotypes of
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSnpHaplo()}: Access SNP array haplotype data of the queen
+\item \code{getQueenSnpHaplo()}: Access SNP array haplotype data of the queen
 
 \item \code{getFathersSnpHaplo()}: Access SNP array haplotype data of fathers
 
@@ -112,47 +106,49 @@ Level 0 function that returns SNP array haplotypes of
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addSnpChip(nSnpPerChr = 10)
+SP$addSnpChip(nSnpPerChr = 5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteSnpHaplo(colony1, caste = "queen")
-getQueensSnpHaplo(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteSnpHaplo(colony1, caste = "fathers")
-getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(colony1, caste = "fathers", nInd = 2)
-getFathersSnpHaplo(colony1)
-getFathersSnpHaplo(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteSnpHaplo(colony1, caste = "virginQueens")
-getVirginQueensSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "queen")
+getQueenSnpHaplo(colony)
 
-getCasteSnpHaplo(colony1, caste = "workers")
-getWorkersSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "fathers")
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersSnpHaplo(colony)
+getFathersSnpHaplo(colony, nInd = 2)
 
-getCasteSnpHaplo(colony1, caste = "drones")
-getDronesSnpHaplo(colony1)
+getCasteSnpHaplo(colony, caste = "virginQueens")
+getVirginQueensSnpHaplo(colony)
 
-apiary <- c(colony1, colony2)
+getCasteSnpHaplo(colony, caste = "workers")
+getWorkersSnpHaplo(colony)
+
+getCasteSnpHaplo(colony, caste = "drones")
+getDronesSnpHaplo(colony)
+
 getCasteSnpHaplo(apiary, caste = "queen")
-getQueensSnpHaplo(apiary)
+getQueenSnpHaplo(apiary)
 
 getCasteSnpHaplo(apiary, caste = "fathers")
 getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSnpHaplo(apiary)
 getFathersSnpHaplo(apiary, nInd = 2)
 

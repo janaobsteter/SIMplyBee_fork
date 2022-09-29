@@ -2,38 +2,37 @@
 % Please edit documentation in R/Functions_L3_Colonies.R
 \name{removeColonies}
 \alias{removeColonies}
-\title{Remove some colonies}
+\title{Remove some colonies from the MultiColony object}
 \usage{
-removeColonies(colonies, ID)
+removeColonies(multicolony, ID = NULL, n = NULL, p = NULL)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 
-\item{ID}{character or numeric, name of a colony (one or more) to be
-removed; if character (numeric) colonies are removed based on their name
-(position)}
+\item{ID}{character or numeric, ID of a colony (one or more) to be
+removed}
+
+\item{n}{numeric, number of colonies to remove}
+
+\item{p}{numeric, percentage of colonies removed (takes precedence
+over \code{n})}
 }
 \value{
-\code{\link{Colonies-class}} with some colonies removed
+\code{\link{MultiColony-class}} with some colonies removed
 }
 \description{
-Level 3 function that removes some colonies based on their ID.
+Level 3 function that removes some colonies
+  from the MultiColony object based on their ID.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1:4], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-colony3 <- createColony(x = basePop[4])
-colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-colony4 <- createColony(x = basePop[5])
-colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-apiary <- c(colony1, colony2, colony3, colony4)
+drones <- createDrones(x = basePop[1:4], nInd = 100)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+apiary <- createMultiColony(basePop[2:5], n = 4)
+apiary <- cross(apiary, drones = droneGroups[1:4])
 getId(apiary)
 
 getId(removeColonies(apiary, ID = 1))
@@ -44,4 +43,9 @@ getId(removeColonies(apiary, ID = c("5", "6")))
 
 getId(removeColonies(apiary, ID = 5))
 getId(removeColonies(apiary, ID = "9"))
+
+nColonies(apiary)
+apiary <- removeColonies(apiary, ID = "2")
+nColonies(apiary)
+
 }

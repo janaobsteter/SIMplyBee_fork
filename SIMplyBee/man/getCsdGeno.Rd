@@ -8,7 +8,7 @@ getCsdGeno(x, nInd = NULL, dronesHaploid = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
@@ -21,8 +21,8 @@ are taken; this can be useful as a test of sampling individuals}
 matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with genotypes
-  when \code{x} is \code{\link{Colonies-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{Colonies-class}}; \code{NULL} when
+  when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
+  colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
   \code{x} is \code{NULL}
 }
 \description{
@@ -36,31 +36,42 @@ The returned genotypes are spanning multiple bi-allelic SNP of
   \code{\link{getCsdAlleles}}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony1 <- addVirginQueens(colony1, nInd = 2)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCsdGeno(getQueen(colony1))
-getCsdGeno(getFathers(colony1))
-getCsdGeno(getWorkers(colony1))
-getCsdGeno(getDrones(colony1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 4)
 
-getCsdGeno(colony1)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCsdAlleles(getDrones(colony2))
-getCsdAlleles(colony2)
+# Use getCsdGeno on a Population
+getCsdGeno(getQueen(colony))
+getCsdGeno(getFathers(colony))
+getCsdGeno(getWorkers(colony))
 
+# Using dronesHaploid = TRUE returns drones as haploids instead of double haploids
+getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = TRUE)
+# Using dronesHaploid = FALSE returns drones as double haploids
+getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
+
+# Use getCsdGeno on a Colony
+getCsdGeno(colony)
+
+# Compare the use of the dronesHaploid parameter
+getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)
+getCsdGeno(colony, nInd = 4, dronesHaploid = FALSE)
+
+# Use getCsdGeno on a MultiColony
 getCsdGeno(apiary)
 getCsdGeno(apiary, nInd = 2)
 }

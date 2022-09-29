@@ -7,53 +7,43 @@
 setLocation(x, location)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{location}{numeric or list, location to be set for the
-\code{\link{Colony-class}} or for \code{\link{Colonies-class}}; when
+\code{\link{Colony-class}} or for \code{\link{MultiColony-class}}; when
 numeric the same location will be set for all colonies; when list different
 locations will be set for each colony - the list has to have the same
 length at there are colonies in \code{x})}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{Colonies-class}} with set
+\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
   location
 }
 \description{
-Level 2 function that to set colony location to (x, y)
-  coordinates.
+Level 2 function that to set a Colony or MultiColony object
+  location to (x, y) coordinates.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(basePop[1], n = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:10], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-apiary <- c(colony1, colony2)
+# Create Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+apiary <- createMultiColony(basePop[3:8], n = 6)
+apiary <- cross(apiary, drones = droneGroups[2:7])
 
-getLocation(colony1)
-getLocation(colony2)
+getLocation(colony)
 getLocation(apiary)
 
 loc1 <- c(512, 722)
-colony1 <- setLocation(colony1, location = loc1)
-getLocation(colony1)
-
-loc2 <- c(189, 357)
-colony2 <- setLocation(colony2, location = loc2)
-getLocation(colony2)
-
-getLocation(c(colony1, colony2))
+colony <- setLocation(colony, location = loc1)
+getLocation(colony)
 
 # Assuming one location (as in bringing colonies to one place!)
 apiary <- setLocation(apiary, location = loc1)
 getLocation(apiary)
-
-# Assuming different locations (so tmp is not an apiary in one location!)
-tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
-getLocation(tmp)
 }

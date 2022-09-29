@@ -7,11 +7,11 @@
 getEvents(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
 matrix of logicals, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns a matrix of logicals reporting the
@@ -20,25 +20,31 @@ Level 0 function that returns a matrix of logicals reporting the
   could also impact downstream phenotypes.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 4)
-colony1 <- addDrones(colony1, nInd = 2)
-getEvents(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(colony, nInd = 5)
 
-colony1 <- supersedeColony(colony1)
-getEvents(colony1)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(apiary, nInd = 4)
 
-colony2 <- addWorkers(colony2, nInd = 20)
-apiary <- c(colony1, colony2)
+getEvents(colony)
+getEvents(apiary)
+
+tmp <- swarm(colony)
+getEvents(tmp$swarm)
+getEvents(tmp$remnant)
+
+apiary <- supersede(apiary)
 getEvents(apiary)
 }

@@ -7,7 +7,7 @@
 createDCA(x, nInd = NULL, removeFathers = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{nInd}{numeric, number of random drones to pull from each colony,
 if \code{NULL} all drones in a colony are pulled}
@@ -20,8 +20,8 @@ virgin queens, say via insemination}
 \code{\link{Pop-class}}
 }
 \description{
-Level 1 function that creates a population of drones from one or
-  multiple colonies. Such a population is often referred to as a drone
+Level 1 function that creates a population of drones from a Colony
+  or MultiColony.  Such a population is often referred to as a drone
   congregation area (DCA).
 }
 \details{
@@ -29,32 +29,32 @@ In reality, drones leave the colony to mate. They die after that.
   In this function we only get a copy of drones from \code{x}, for
   computational efficiency and ease of use. However, any mating will change
   the caste of drones to fathers, and they won't be available for future
-  matings (see \code{\link{crossVirginQueen}}). Not unless
+  matings (see \code{\link{cross}}). Not unless
   \code{removeFathers = FALSE}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
+SP$addTraitA(10)
+SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addDrones(colony1, nInd = 10)
-colony2 <- addDrones(colony2, nInd = 20)
-createDCA(colony1)
-createDCA(colony2)
-createDCA(colony2, nInd = 10)@id
-createDCA(colony2, nInd = 10)@id
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-apiary <- c(colony1, colony2)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+
+colony <- addDrones(colony, nInd = 10)
+createDCA(colony)
+createDCA(colony, nInd = 10)@id
+
+apiary <- addDrones(apiary)
 createDCA(apiary)
 createDCA(apiary, nInd = 10)
-
-colony3 <- createColony(basePop[4])
-apiary <- c(colony1, colony2, colony3)
-createDCA(apiary)
-
 }

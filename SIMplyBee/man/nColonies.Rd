@@ -2,28 +2,25 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nColonies}
 \alias{nColonies}
-\title{Number of colonies}
+\title{Number of colonies in a MultiColony object}
 \usage{
-nColonies(colonies)
+nColonies(multicolony)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 }
 \description{
 Level 0 function that returns the number of colonies in a
-  colonies object.
+  MultiColony object.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+apiary <- createMultiColony(basePop[2:3], n = 2)
 nColonies(apiary)
-nColonies(createColonies(n = 10))
+nColonies(createMultiColony(n = 10))
 }

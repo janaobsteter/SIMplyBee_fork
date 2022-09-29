@@ -2,40 +2,41 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nNULLColonies}
 \alias{nNULLColonies}
-\title{Number of NULL colonies}
+\title{Number of NULL colonies in a MultiColony object}
 \usage{
-nNULLColonies(colonies)
+nNULLColonies(multicolony)
 }
 \arguments{
-\item{colonies}{\code{\link{Colonies-class}}}
+\item{multicolony}{\code{\link{MultiColony-class}}}
 }
 \value{
 integer
 }
 \description{
 Level 0 function that returns the number of colonies in a
-  colonies object that are in fact empty \code{NULL}.
+  MultiColony object that are in fact \code{NULL}.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
-getId(apiary)
+emptyApiary <- createMultiColony(n = 3)
+emptyApiary1 <- c(createColony(), createColony())
+nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 
-nColonies(apiary)
-nColonies(selectColonies(apiary, ID = c("3", "4")))
-nColonies(selectColonies(apiary, ID = c("4", "5")))
-nColonies(selectColonies(apiary, ID = c("5", "6")))
+isEmpty(emptyApiary)
+isEmpty(emptyApiary1)
+isEmpty(nonEmptyApiary)
+isNULLColonies(emptyApiary)
+isNULLColonies(emptyApiary1)
+isNULLColonies(nonEmptyApiary)
 
-nNULLColonies(apiary)
-nNULLColonies(selectColonies(apiary, ID = c("3", "4")))
-nNULLColonies(selectColonies(apiary, ID = c("4", "5")))
-nNULLColonies(selectColonies(apiary, ID = c("5", "6")))
+nEmptyColonies(emptyApiary)
+nEmptyColonies(emptyApiary1)
+nEmptyColonies(nonEmptyApiary)
+nNULLColonies(emptyApiary)
+nNULLColonies(emptyApiary1)
+nNULLColonies(nonEmptyApiary)
+
 }
