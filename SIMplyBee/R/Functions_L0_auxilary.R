@@ -1378,6 +1378,7 @@ getId <- function(x) {
 #'   \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
+#' @param collapse logical, if all IDs should be returned as a single vector
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCaste}}
@@ -1416,6 +1417,11 @@ getId <- function(x) {
 #' getCasteId(x = apiary, caste = "workers")
 #' getCasteId(x = apiary)
 #' getCasteId(x = apiary, caste = "virginQueens")
+#' # Get all IDs as a single vector
+#' getCasteId(x = colony, caste = "all", collapse = TRUE)
+#' getCasteId(x = apiary, caste = "workers", collapse = TRUE)
+#' getCasteId(x = apiary, caste = "drones", collapse = TRUE)
+#' getCasteId(x = apiary, caste = "all", collapse = TRUE)
 #'
 #' # Create a data.frame with id, colony, and caste information
 #' (tmpC <- getCaste(apiary[[1]]))
@@ -1437,7 +1443,7 @@ getId <- function(x) {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-getCasteId <- function(x, caste = "all", simParamBee = NULL) {
+getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1458,6 +1464,9 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
           ret[[caste]] <- tmp@id
         }
       }
+      if (collapse) {
+        ret <- as.vector(unlist(ret))
+      }
     } else {
       tmp <- getCastePop(x = x, caste = caste)
       if (is.null(tmp)) {
@@ -1467,9 +1476,12 @@ getCasteId <- function(x, caste = "all", simParamBee = NULL) {
       }
     }
   } else if (isMultiColony(x)) {
-    fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = getCasteId, caste = caste)
-    names(ret) <- getId(x)
+    ret <- lapply(X = x@colonies, FUN = getCasteId, caste = caste)
+    if (collapse) {
+      ret <- as.vector(unlist(ret))
+    } else {
+      names(ret) <- getId(x)
+    }
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
