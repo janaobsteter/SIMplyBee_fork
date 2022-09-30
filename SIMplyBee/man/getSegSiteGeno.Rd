@@ -44,5 +44,5 @@ getSegSiteGeno(getQueen(colony))
 getSegSiteGeno(getDrones(colony))
 }
 \seealso{
-\code{\link{pullSegSiteGeno}}
+\code{\link{pullSegSiteHaplo}}
 }

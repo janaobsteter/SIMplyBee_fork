@@ -23,6 +23,7 @@
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
+#' @param collapse logical, whether to return a single merged population
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -110,6 +111,11 @@
 #' getCastePop(apiary, caste = "queen")[[1]]@id
 #' getCastePop(apiary, caste = "queen")[[2]]@id
 #'
+#' # Sample individuals from all the castes
+#' getCastePop(colony, nInd = 5, caste = "all")
+#' # Sample individuals from all the castes as a single population
+#' getCastePop(colony, nInd = 5, caste = "all", collapse = TRUE)
+#'
 #' getCastePop(apiary, caste = "fathers")
 #' getFathers(apiary)
 #' getFathers(apiary)[[1]]@id
@@ -125,7 +131,7 @@
 #' mergePops(getVirginQueens(apiary))
 #'
 #' getCastePop(apiary, caste = "workers")
-#' # Get unequal number from colonies
+#' # Get different number of workers per colony
 #' getCastePop(apiary, caste = "workers", nInd = c(10, 20))
 #' getWorkers(apiary)
 #' getWorkers(apiary)[[1]]@id
@@ -145,9 +151,15 @@
 #' getCastePop(apiary)
 #' getCastePop(apiary, caste = "queen")
 #' getCastePop(apiary, caste = "drones")
+#'
+#' # Obtain individuals from MultiColony as a single population
+#' getCastePop(apiary, caste = "queen", collapse = TRUE)
+#' getQueen(apiary, collapse = TRUE)
+#' getWorkers(apiary, nInd = 10, collapse = TRUE)
+#' getDrones(apiary, nInd = 3, collapse = TRUE)
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
-                        removeFathers = TRUE) {
+                        removeFathers = TRUE, collapse = FALSE) {
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -169,6 +181,9 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
         } else {
           ret[[caste]] <- tmp
         }
+      }
+      if (collapse) {
+        ret <- mergePops(ret)
       }
     } else {
       if (caste == "fathers") {
@@ -228,11 +243,22 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
       } else {
         nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       }
-      ret[[colony]] <- getCastePop(x = x[[colony]],
-                                   caste = caste,
-                                   nInd = nIndColony,
-                                   use = use,
-                                   removeFathers = removeFathers)
+      tmp <- getCastePop(x = x[[colony]],
+                         caste = caste,
+                         nInd = nIndColony,
+                         use = use,
+                         removeFathers = removeFathers,
+                         collapse = collapse)
+      if (is.null(tmp)) {
+        ret[colony] <- list(NULL)
+      } else {
+        ret[[colony]] <- tmp
+      }
+    }
+    if (collapse) {
+      ret <- mergePops(ret)
+    } else {
+      names(ret) <- getId(x)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -242,14 +268,14 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
 
 #' @describeIn getCastePop Access the queen
 #' @export
-getQueen <- function(x) {
-  ret <- getCastePop(x, caste = "queen", nInd = 1)
+getQueen <- function(x, collapse = FALSE) {
+  ret <- getCastePop(x, caste = "queen", nInd = 1, collapse = collapse)
   return(ret)
 }
 
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
-getFathers <- function(x, nInd = NULL, use = "rand") {
+getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
@@ -268,36 +294,45 @@ getFathers <- function(x, nInd = NULL, use = "rand") {
       ret <- ret[[1]]
     }
   } else if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use)
+    ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use, collapse = collapse)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
+  }
+  if (isMultiColony(x)) {
+    if (collapse) {
+      ret <- mergePops(ret)
+    } else {
+      names(ret) <- getId(x)
+    }
   }
   return(ret)
 }
 
 #' @describeIn getCastePop Access workers
 #' @export
-getWorkers <- function(x, nInd = NULL, use = "rand") {
-  ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use)
+getWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+  ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
 
 #' @describeIn getCastePop Access drones
 #' @export
-getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
+getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE) {
   ret <- getCastePop(x,
                      caste = "drones", nInd = nInd, use = use,
-                     removeFathers = removeFathers
+                     removeFathers = removeFathers,
+                     collapse = collapse
   )
   return(ret)
 }
 
 #' @describeIn getCastePop Access virgin queens
 #' @export
-getVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
+getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
+
 
 #' @rdname createCastePop
 #' @title Creates caste population individuals from the colony
@@ -1004,6 +1039,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
+#' @param collapse logical, whether to return a single merged population
+#'   for the pulled individuals (does not affect the remnant colonies)
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
@@ -1077,9 +1114,13 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' pullDrones(apiary)
 #' nDrones(apiary)
 #' nDrones(pullDrones(apiary)$remnant)
+#'
+#' # Merge all the pulled populations into a single population
+#' pullCastePop(apiary, caste = "queen", collapse = TRUE)
+#' pullCastePop(apiary, caste = "virginQueens", collapse = TRUE)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
-                         removeFathers = TRUE) {
+                         removeFathers = TRUE, collapse = FALSE) {
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -1137,11 +1178,16 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                           caste = caste,
                           nInd = nIndColony,
                           use = use,
-                          removeFathers = removeFathers)
+                          removeFathers = removeFathers,
+                          collapse = collapse)
       ret$pulled[[colony]] <- tmp$pulled
       ret$remnant[[colony]] <- tmp$remnant
     }
-    names(ret) <- getId(x)
+    if (collapse) {
+      ret$pulled <- mergePops(ret$pulled)
+    } else {
+      names(ret$pulled) <- getId(x)
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -1150,32 +1196,33 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
 
 #' @describeIn pullCastePop Pull queen from a colony
 #' @export
-pullQueen <- function(x) {
-  ret <- pullCastePop(x, caste = "queen")
+pullQueen <- function(x, collapse = FALSE) {
+  ret <- pullCastePop(x, caste = "queen", collapse = collapse)
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull workers from a colony
 #' @export
-pullWorkers <- function(x, nInd = NULL, use = "rand") {
-  ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use)
+pullWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+  ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull drones from a colony
 #' @export
-pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE) {
+pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE) {
   ret <- pullCastePop(x,
                       caste = "drones", nInd = nInd, use = use,
-                      removeFathers = removeFathers
+                      removeFathers = removeFathers,
+                      collapse = collapse
   )
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull virgin queens from a colony
 #' @export
-pullVirginQueens <- function(x, nInd = NULL, use = "rand") {
-  ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use)
+pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+  ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
 

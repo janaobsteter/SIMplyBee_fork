@@ -106,7 +106,7 @@ apiary <- replaceWorkers(apiary, p = 1)
 lapply(getWorkers(apiary), FUN = function(x) x@id)
 apiary <- replaceDrones(apiary, p = 1)
 lapply(getDrones(apiary), FUN = function(x) x@id)
-# Replace with unequal proportions
+# Replace with different proportions
 apiary <- replaceWorkers(apiary, p = c(1, 0.7))
 lapply(getWorkers(apiary), FUN = function(x) x@id)
 apiary <- replaceDrones(apiary, p = c(1, 0.1))

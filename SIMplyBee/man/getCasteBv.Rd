@@ -9,26 +9,29 @@
 \alias{getDronesBv}
 \title{Access breeding values of individuals in a caste}
 \usage{
-getCasteBv(x, caste, nInd = NULL, simParamBee = NULL)
+getCasteBv(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getQueenBv(x, simParamBee = NULL)
+getQueenBv(x, collapse = FALSE, simParamBee = NULL)
 
-getFathersBv(x, nInd = NULL, simParamBee = NULL)
+getFathersBv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getVirginQueensBv(x, nInd = NULL, simParamBee = NULL)
+getVirginQueensBv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getWorkersBv(x, nInd = NULL, simParamBee = NULL)
+getWorkersBv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getDronesBv(x, nInd = NULL, simParamBee = NULL)
+getDronesBv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with breeding valued of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -94,6 +97,11 @@ getWorkersBv(colony)
 getCasteBv(colony, caste = "drones")
 getDronesBv(colony)
 
+# Get breeding values for all individuals
+getCasteBv(colony, caste = "all")
+# Get all breeding values in a single matrix
+getCasteBv(colony, caste = "all", collapse = TRUE)
+
 getCasteBv(apiary, caste = "queen")
 getQueenBv(apiary)
 
@@ -111,6 +119,10 @@ getWorkersBv(apiary)
 
 getCasteBv(apiary, caste = "drones")
 getDronesBv(apiary)
+
+# Get the breeding values of all individuals either by colony or in a single matrix
+getCasteBv(apiary, caste = "all")
+getCasteBv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{bv}}

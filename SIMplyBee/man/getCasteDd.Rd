@@ -9,26 +9,29 @@
 \alias{getDronesDd}
 \title{Access dominance values of individuals in a caste}
 \usage{
-getCasteDd(x, caste, nInd = NULL, simParamBee = NULL)
+getCasteDd(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getQueenDd(x, simParamBee = NULL)
+getQueenDd(x, collapse = FALSE, simParamBee = NULL)
 
-getFathersDd(x, nInd = NULL, simParamBee = NULL)
+getFathersDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getVirginQueensDd(x, nInd = NULL, simParamBee = NULL)
+getVirginQueensDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getWorkersDd(x, nInd = NULL, simParamBee = NULL)
+getWorkersDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getDronesDd(x, nInd = NULL, simParamBee = NULL)
+getDronesDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with dominance values of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -93,6 +96,11 @@ getWorkersDd(colony)
 getCasteDd(colony, caste = "drones")
 getDronesDd(colony)
 
+# Get dominance valued for all individuals
+getCasteDd(colony, caste = "all")
+# Get all dominance values in a single matrix
+getCasteDd(colony, caste = "all", collapse = TRUE)
+
 getCasteDd(apiary, caste = "queen")
 getQueenDd(apiary)
 
@@ -110,6 +118,10 @@ getWorkersDd(apiary)
 
 getCasteDd(apiary, caste = "drones")
 getDronesDd(apiary)
+
+# Get the dominance values of all individuals either by colony or in a single matrix
+getCasteDd(apiary, caste = "all")
+getCasteDd(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{dd}}

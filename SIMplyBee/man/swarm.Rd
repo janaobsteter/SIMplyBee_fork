@@ -64,7 +64,7 @@ tmp$remnant
 tmp <- swarm(apiary, p = 0.6)
 tmp$swarm[[1]]
 tmp$remnant[[1]]
-# Swarm with unequal percentages
+# Swarm with different proportions
 nWorkers(apiary)
 tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))
 nWorkers(tmp$swarm)

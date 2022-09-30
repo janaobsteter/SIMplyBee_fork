@@ -93,7 +93,7 @@ nWorkers(apiary)
 #' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
 # or alias: removeDrones(apiary, p = 0.3)
 nDrones(apiary)
-# Remove with unequal proportions
+# Remove different proportions
 apiary <- buildUp(apiary)
 nWorkers(apiary); nDrones(apiary)
 nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))

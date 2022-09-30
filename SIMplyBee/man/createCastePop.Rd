@@ -105,7 +105,7 @@ SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createCastePop(founderGenomes, caste = "virginQueens")
 # Or alias function: createVirginQueens(founderGenomes)
 
-#Create drones on a Pop
+# Create drones on a Pop
 drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
 # Or create unequal number of drones from multiple virgin queens
 drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
