@@ -6463,6 +6463,7 @@ calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
+# Edit genome and controlled mating ----
 #' @title Edit the csd locus
 #'
 #' @description Edits the csd locus in an entire population of individuals to
@@ -6525,4 +6526,97 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 
   pop <- setMarkerHaplo(pop, haplo=alleles)
   return(pop)
+}
+
+#' @rdname createRandomCrossPlan
+#' @title Create a cross plan by randomly sampling drones for each queen
+#'   from a drone population
+#'
+#' @description Level 0 function that creates a cross plan by randomly sampling
+#'   a desired number of drones from a DCA and assigning them to either
+#'   virgin queen or colony ID
+#'
+#' @param IDs numeric, IDs of either the virgin queens OR the colonies (can't have both
+#'   in the same cross plan!)
+#' @param drones \code{\link{Pop-class}}, drone population available for mating (DCA)
+#' @param nFathers integer or function, number of drones to be mated with each virgin
+#'   queen
+#'
+#' @return named list with names being virgin queen or colony input IDs with each
+#'   list element holding the IDs of selected drones
+#'
+#' @examples
+#' founderGenomes <- quickHaplo(nInd = 15, nChr = 1, segSites = 100)
+#' SP <- SimParamBee$new(founderGenomes)
+#' basePop <- createVirginQueens(founderGenomes)
+#' drones <- createDrones(basePop[1], n = 1000)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#'
+#' # Create an apiary of colonies and cross it
+#' apiary <- createMultiColony(x = basePop[2:5])
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary <- buildUp(apiary, nWorkers = 100, nDrones = 100)
+#'
+#' # Create a DCA from the drones from the apiary
+#' DCA <- createDCA(apiary)
+#' DCA # Inspect the DCA
+#'
+#' # Create virgin queens, a virgin colony, and a virgin apiary
+#' virginQueen1 <- basePop[6]
+#' virginQueen2 <- basePop[7]
+#' colony1 <- createColony(basePop[7])
+#' apiary1 <- createMultiColony(basePop[8:10])
+#'
+#' # Create a combined cross plan for mating the virgin queens (with virgin queen IDs)
+#' crossPlanVirginQueens <- createRandomCrossPlan(IDs = c(virginQueen1@id, virginQueen2@id),
+#'                                                        drones = DCA,
+#'                                                        nFathers = nFathersPoisson)
+#'
+#' # Cross the virgin queens according to the cross plan
+#' virginQueen1 <- cross(virginQueen1, drones = DCA, crossPlan = crossPlanColonies)
+#' virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanColonies)
+#'
+#' # Create a cross plan for mating the virgin colonies and the virgin apiary (with colony IDs)
+#' crossPlanColonies <- createRandomCrossPlan(IDs = getId(c(colony1, apiary1)),
+#'                                            drones = DCA,
+#'                                            nFathers = nFathersPoisson)
+#'
+#' # Cross the colonies according to the cross plan
+#' colony1 <- cross(colony1, drones = DCA, crossPlan = crossPlanColonies)
+#' apiary1 <- cross(apiary1, drones = DCA, crossPlan = crossPlanColonies)
+#' nFathers(colony1)
+#' nFathers(apiary1)
+#'
+#' # You can mate virgin queens and colonies on the same way on the mating stations's DCA
+#' # Create a mating station from colony1
+#' matingStationDCA <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 10)
+#'
+#' # Create another virgin apiary
+#' apiary2 <- createMultiColony(basePop[11:13])
+#'
+#' # Create a cross plan for crossing the apiary on the mating station
+#' crossPlanApiary <- createRandomCrossPlan(IDs = getId(apiary2), drones = matingStationDCA, nFathers = nFathersPoisson)
+#'
+#' # Cross the apiary
+#' apiary2 <- cross(apiary2, drones = matingStationDCA, crossPlan = crossPlanApiary)
+#' nFathers(apiary2)
+#'
+#' @export
+createRandomCrossPlan <- function(IDs, drones, nFathers) { # Do we want nFathers or nDrones???!!!
+  if (!isPop(drones)) {
+    stop("Argument drones must be a Pop class!")
+  }
+  drones <- drones[isDrone(drones)]
+  if (is.function(nFathers)) {
+    nFathers <- nFathers(length(IDs))
+    fathersMatch <- sample(unlist(sapply(1:length(IDs),
+                                         FUN = function(x) rep(x, nFathers[x]))))
+  } else {
+    fathersMatch <- sample(unlist(sapply(1:length(IDs),
+                                         FUN = function(x) rep(x, nFathers))))
+  }
+  fatherIDs <- sample(as.vector(drones@id), size = length(fathersMatch), replace = F)
+  crossPlan <- base::split(fatherIDs, fathersMatch)
+  names(crossPlan) <- IDs
+  return(crossPlan)
 }
