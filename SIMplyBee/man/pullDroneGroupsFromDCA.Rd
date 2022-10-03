@@ -4,7 +4,7 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL)
+pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones}
@@ -15,6 +15,8 @@ pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL)
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nDrones} when this argument is a function}
 }
 \value{
 list of \code{\link{Pop-class}}

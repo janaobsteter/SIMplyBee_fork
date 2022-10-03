@@ -119,9 +119,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{nWorkersPoisson}},
-  \code{\link{nWorkersTruncPoisson}}, or
-  \code{\link{nWorkersColonyPhenotype}} for examples.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nWorkersPoisson}}, \code{\link{nWorkersTruncPoisson}},
+  or \code{\link{nWorkersColonyPhenotype}} for examples.
 
   You can provide your own functions that satisfy your needs!}
 
@@ -143,8 +144,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(x, arg = default) someCode }, that is, the first
   argument MUST be \code{x} and any following arguments MUST have a
-  default value. See \code{\link{nDronesPoisson}},
-  \code{\link{nDronesTruncPoisson}}, or
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nDronesPoisson}}, \code{\link{nDronesTruncPoisson}}, or
   \code{\link{nDronesColonyPhenotype}} for examples.
 
   You can provide your own functions that satisfy your needs!}
@@ -166,7 +168,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   of other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{nVirginQueensPoisson}},
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nVirginQueensPoisson}},
   \code{\link{nVirginQueensTruncPoisson}}, or
   \code{\link{nVirginQueensColonyPhenotype}} for examples.
 
@@ -190,7 +194,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   \code{function(arg = default) someCode }, that is, any arguments MUST
   have a default value. We did not use the \code{colony} argument here,
   because \code{nFathers} likely does not depend on the colony. Let us
-  know if we are wrong! See \code{\link{nFathersPoisson}} or
+  know if we are wrong!
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nFathersPoisson}} or
   \code{\link{nFathersTruncPoisson}} for examples.
 
   You can provide your own functions that satisfy your needs!}
@@ -212,8 +218,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{swarmPUnif}} or
-  \code{\link{swarmPColonyStrength}} for examples.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{swarmPUnif}} or \code{\link{swarmPColonyStrength}} for
+  examples.
 
   You can provide your own functions that satisfy your needs!}
 
@@ -234,8 +242,10 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{splitPUnif}} or
-  \code{\link{splitPColonyStrength}} for examples.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{splitPUnif}} or \code{\link{splitPColonyStrength}} for
+  examples.
 
   You can provide your own functions that satisfy your needs!}
 
@@ -257,18 +267,23 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{downsizePUnif}} for example.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{downsizePUnif}} for example.
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{colonyPheno}}{function, to set colony phenotypes - used in
-  \code{\link{setColonyPheno}}.
+\item{\code{colonyValueFUN}}{function, to calculate colony values - used
+  in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}},
+  \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
+  \code{\link{calcColonyDd}}, and \code{\link{calcColonyAa}}.
 
   This function should work with internals of others functions -
   therefore the function MUST be defined like \code{function(colony, arg
   = default) someCode }, that is, the first argument MUST be
   \code{colony} and any following arguments MUST have a default value.
-  See \code{\link{calcColonyPhenoFromCaste}} for an example.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{mapCasteToColonyValue}} for an example.
 
   You can provide your own functions that satisfy your needs!}
 }
@@ -369,7 +384,7 @@ Starts the process of building a new simulation by creating
   csdChr = 3,
   csdPos = 0.865,
   nCsdAlleles = 128,
-  colonyPheno = NULL
+  colonyValueFUN = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -410,7 +425,7 @@ then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
 
-\item{\code{colonyPheno}}{see \code{\link{SimParamBee}} field \code{colonyPheno}}
+\item{\code{colonyValueFUN}}{see \code{\link{SimParamBee}} field \code{colonyValueFUN}}
 }
 \if{html}{\out{</div>}}
 }

@@ -40,7 +40,7 @@ colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{...}{other arguments of \code{\link{calcColonyPhenoFromCaste}}}
+\item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
 \value{
 numeric, number of virgin queens
@@ -63,7 +63,7 @@ Sample a number of virgin queens - used when
   \code{nVirginQueensColonyPhenotype} returns a number (above
   \code{lowerLimit}) as a function of colony phenotype, say swarming
   tendency. Colony phenotype is provided by
-  \code{\link{calcColonyPhenoFromCaste}}. You need to set up traits
+  \code{\link{mapCasteToColonyPheno}}. You need to set up traits
   influencing the colony phenotype and their parameters (mean and variances)
   via \code{\link{SimParamBee}} (see examples).
 }
@@ -108,11 +108,11 @@ SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
 SP$setVarE(varE = varE)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 50)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 colony1 <- createColony(x = basePop[2])
 colony2 <- createColony(x = basePop[3])
-colony1 <- cross(colony1, drones = fatherGroups[[1]])
-colony2 <- cross(colony2, drones = fatherGroups[[2]])
+colony1 <- cross(colony1, drones = droneGroups[[1]])
+colony2 <- cross(colony2, drones = droneGroups[[2]])
 colony1 <- buildUp(colony1)
 colony2 <- buildUp(colony2)
 nVirginQueensColonyPhenotype(colony1)

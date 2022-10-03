@@ -4,13 +4,16 @@
 \alias{swarm}
 \title{Swarm}
 \usage{
-swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL)
+swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony;
-if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used}
+if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used.
+If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies}
 
 \item{year}{numeric, year of birth for virgin queens}
 
@@ -20,6 +23,9 @@ remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{p} or \code{nVirginQueens}
+when these arguments are functions}
 }
 \value{
 list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -58,6 +64,11 @@ tmp$remnant
 tmp <- swarm(apiary, p = 0.6)
 tmp$swarm[[1]]
 tmp$remnant[[1]]
+# Swarm with unequal percentages
+nWorkers(apiary)
+tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))
+nWorkers(tmp$swarm)
+nWorkers(tmp$remnant)
 
 # Sample colonies from the apiary that will swarm (sample with probability of 0.2)
 tmp <- pullColonies(apiary, p = 0.2)

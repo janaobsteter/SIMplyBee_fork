@@ -28,7 +28,10 @@ replaceVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 
 \item{caste}{character, "workers", "drones", or "virginQueens"}
 
-\item{p}{numeric, proportion of caste individuals to be replaced with new ones}
+\item{p}{numeric, proportion of caste individuals to be replaced with new ones;
+if input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of caste individuals that stay when \code{p < 1}}
@@ -102,5 +105,10 @@ lapply(getVirginQueens(apiary), FUN = function(x) x@id)
 apiary <- replaceWorkers(apiary, p = 1)
 lapply(getWorkers(apiary), FUN = function(x) x@id)
 apiary <- replaceDrones(apiary, p = 1)
+lapply(getDrones(apiary), FUN = function(x) x@id)
+# Replace with unequal proportions
+apiary <- replaceWorkers(apiary, p = c(1, 0.7))
+lapply(getWorkers(apiary), FUN = function(x) x@id)
+apiary <- replaceDrones(apiary, p = c(1, 0.1))
 lapply(getDrones(apiary), FUN = function(x) x@id)
 }

@@ -7,7 +7,7 @@
 \alias{getVirginQueensAa}
 \alias{getWorkersAa}
 \alias{getDronesAa}
-\title{Access epistasis deviations of individuals in a caste}
+\title{Access epistasis values of individuals in a caste}
 \usage{
 getCasteAa(x, caste, nInd = NULL, simParamBee = NULL)
 
@@ -33,26 +33,26 @@ individuals are accessed, otherwise a random sample}
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-vector of epistasis deviations when \code{x} is
-  \code{\link{Colony-class}} and list of vectors of epistasis deviations when
+vector of epistasis values when \code{x} is
+  \code{\link{Colony-class}} and list of vectors of epistasis values when
   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
   is \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns epistasis deviations of
+Level 0 function that returns epistasis values of
   individuals in a caste.
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueenAa()}: Access epistasis deviation of the queen
+\item \code{getQueenAa()}: Access epistasis value of the queen
 
-\item \code{getFathersAa()}: Access epistasis deviations of fathers
+\item \code{getFathersAa()}: Access epistasis values of fathers
 
-\item \code{getVirginQueensAa()}: Access epistasis deviations of virgin queens
+\item \code{getVirginQueensAa()}: Access epistasis values of virgin queens
 
-\item \code{getWorkersAa()}: Access epistasis deviations of workers
+\item \code{getWorkersAa()}: Access epistasis values of workers
 
-\item \code{getDronesAa()}: Access epistasis deviations of drones
+\item \code{getDronesAa()}: Access epistasis values of drones
 
 }}
 \examples{

@@ -31,7 +31,10 @@ on a queen population}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,
-we return the ones available - this can return \code{NULL}}
+we return the ones available - this can return \code{NULL}.
+If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies.}
 
 \item{use}{character, all options provided by \code{\link{selectInd}} and
 \code{"order"} that selects \code{1:nInd} individuals (meaning it always
@@ -154,6 +157,8 @@ getVirginQueens(apiary, nInd = 2)
 mergePops(getVirginQueens(apiary))
 
 getCastePop(apiary, caste = "workers")
+# Get unequal number from colonies
+getCastePop(apiary, caste = "workers", nInd = c(10, 20))
 getWorkers(apiary)
 getWorkers(apiary)[[1]]@id
 getWorkers(apiary)[[2]]@id
@@ -161,6 +166,8 @@ getWorkers(apiary, nInd = 2)
 mergePops(getWorkers(apiary))
 
 getCastePop(apiary, caste = "drones")
+# Get unequal number from colonies
+getCastePop(apiary, caste = "drones", nInd = c(10, 50))
 getDrones(apiary)
 getDrones(apiary)[[1]]@id
 getDrones(apiary)[[2]]
