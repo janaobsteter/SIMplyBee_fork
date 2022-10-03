@@ -15,12 +15,13 @@ createCastePop(
   year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 
-createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL)
+createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...)
 
-createDrones(x, nInd = NULL, simParamBee = NULL)
+createDrones(x, nInd = NULL, simParamBee = NULL, ...)
 
 createVirginQueens(
   x,
@@ -28,7 +29,8 @@ createVirginQueens(
   year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 }
 \arguments{
@@ -67,6 +69,8 @@ in \code{\link{SimParamBee}}. The two csd alleles must be different to
 ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
 when \code{x} is \code{link{MapPop-class}} returns
@@ -103,6 +107,10 @@ basePop <- createCastePop(founderGenomes, caste = "virginQueens")
 
 #Create drones on a Pop
 drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
+# Or create unequal number of drones from multiple virgin queens
+drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
+# Check mothers
+table(drones@mother)
 # Or alias: createDrones(x = basePop[1], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
@@ -137,8 +145,12 @@ SP$nWorkers <- 100
 SP$nDrones <- 10
 createVirginQueens(colony)
 createVirginQueens(apiary)
+# Or creating unequal numbers
+createVirginQueens(apiary, nInd = c(5, 10))
 createWorkers(colony)
 createWorkers(apiary)
+# Or creating unequal numbers
+createWorkers(apiary, nInd = c(500, 1000))
 createDrones(colony)
 createDrones(apiary)
 # nVirginQueens will NOT vary between function calls when a constant is used

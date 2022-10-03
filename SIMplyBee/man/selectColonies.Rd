@@ -23,8 +23,8 @@ over \code{n})}
 \description{
 Level 3 function that selects colonies from
   MultiColony object based on colony ID or random selection.
-  Whilst user can provide can all arguments ID, p and n, not all are carried out.
-  ID takes first priority. If no ID is provided, p takes precedence over n.
+  Whilst user can provide all three arguments ID, p and n, there is a priority
+  list: ID takes first priority. If no ID is provided, p takes precedence over n.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

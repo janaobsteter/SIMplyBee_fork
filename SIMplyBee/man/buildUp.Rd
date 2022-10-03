@@ -11,7 +11,8 @@ buildUp(
   new = TRUE,
   exact = FALSE,
   resetEvents = FALSE,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 }
 \arguments{
@@ -19,11 +20,15 @@ buildUp(
 
 \item{nWorkers}{numeric or function, number of worker to add to the colony,
 but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
-is used}
+is used. If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies.}
 
 \item{nDrones}{numeric or function, number of drones to add to the colony,
 but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
-is used}
+is used. If input is \code{\link{MultiColony-class}},
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies.}
 
 \item{new}{logical, should the number of workers and drones be added anew or
 should we only top-up the existing number of workers and drones to
@@ -37,6 +42,9 @@ the csd locus)}
 build up}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
+when these arguments are a function}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and
@@ -96,6 +104,10 @@ getWorkers(colony)@id
 # we got new workers since new = TRUE
 # Build up a MultiColony class
 apiary <- buildUp(apiary, nWorkers = 250)
+# Build up with unequal numbers
+apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
+nWorkers(apiary)
+nDrones(apiary)
 
 colony <- buildUp(colony, nWorkers = 100, new = FALSE)
 getWorkers(colony)@id

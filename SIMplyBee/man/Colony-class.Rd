@@ -54,16 +54,6 @@ colony}
 
 \item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
 
-\item{\code{pheno}}{matrix, phenotype values of the colony}
-
-\item{\code{gv}}{matrix, genetic values of the colony}
-
-\item{\code{bv}}{matrix, breeding values of the colony}
-
-\item{\code{dd}}{matrix, dominance values of the colony}
-
-\item{\code{aa}}{matrix, epistasis values of the colony}
-
 \item{\code{split}}{logical, has colony split}
 
 \item{\code{swarm}}{logical, has colony swarmed}
@@ -85,13 +75,13 @@ SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
-fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 colony1 <- createColony(x = basePop[2])
-colony1 <- cross(colony1, drones = fatherGroups[[1]])
+colony1 <- cross(colony1, drones = droneGroups[[1]])
 colony2 <- createColony(x = basePop[3])
-colony2 <- cross(colony2, drones = fatherGroups[[2]])
+colony2 <- cross(colony2, drones = droneGroups[[2]])
 colony3 <- createColony(x = basePop[4])
-colony3 <- cross(colony3, drones = fatherGroups[[3]])
+colony3 <- cross(colony3, drones = droneGroups[[3]])
 
 colony1
 show(colony1)

@@ -83,8 +83,8 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'
 #' @description Level 3 function that selects colonies from
 #'   MultiColony object based on colony ID or random selection.
-#'   Whilst user can provide can all arguments ID, p and n, not all are carried out.
-#'   ID takes first priority. If no ID is provided, p takes precedence over n.
+#'   Whilst user can provide all three arguments ID, p and n, there is a priority
+#'   list: ID takes first priority. If no ID is provided, p takes precedence over n.
 #'
 #' @param multicolony \code{\link{MultiColony-class}}
 #' @param ID character or numeric, ID of a colony (one or more) to be
@@ -142,8 +142,9 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
     }
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
   }
@@ -238,8 +239,9 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
     pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
@@ -311,8 +313,9 @@ removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    if (!all(ID %in% getId(multicolony))) {
-      ID <- ID[ID %in% getId(multicolony)]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
     ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])
