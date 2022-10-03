@@ -128,7 +128,7 @@ However, before we looking into an csd functions, we need to quickly build up ou
 baseQueens <- createVirginQueens(founderGenomes)
 baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
 colony <- createColony(x = baseQueens[2])
-colony <- cross(colony, fathers = baseDrones)
+colony <- cross(colony, drones = baseDrones)
 buildUp(colony, nWorkers = 10, nDrones = 7)
 
 ```
@@ -141,7 +141,7 @@ locus for the queen. You can see that the two sequences are different, meaning
 that she is heterozygous, as expected.
 
 ```{r csd}
-getCsdAlleles(queen)
+getCsdAlleles(getQueen(colony))
 ```
 
 Technically, SIMplyBee represents the csd locus as a series of bi-allelic 
@@ -157,8 +157,8 @@ current colony and mate her with her brothers. Oh, dear me.
 
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
-fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
-inbredColony <- cross(inbredColony, fathers = fathers)
+fathers <- selectInd(pop = createDrones(x = colony, nInd = 15), nInd = SP$nFathers, use = "rand")
+inbredColony <- cross(inbredColony, drones = fathers)
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 ```
@@ -214,14 +214,49 @@ getMisc(getQueen(inbredColony))
 
 # all the 'get' functions
 
+SIMplyBee has a large number of `get*()` functions which fetch 
+the individuals' genomic information for further analysis.
+
+
 SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
-segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
-descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
-are all synonyms for a position in the genome. Study the index of
-available `get*()` functions in SIMplyBee and read the genomics vignette for more information.
+segregating sites (`segSite`), quantitative trait loci (`Qtl`), identity by 
+descent (`Ibd`), and marker array/chip (`SNP`). Here, site, locus and marker
+are all synonyms for a position in the genome. 
 
 
-TODO: work out which functions we want to demonstrate/describe
+
+In these following examples, we will be demonstrating `getColony*()` and `getCaste*()`, however be aware that 
+there are also functions that can be used on the individual caste members level (for example: `getQueenSNPhaplo()`).
+We would recommend studying the index of `get*()` functions to familiarize yourself with all options available for your data collection. 
+
+
+Firstly, let's build up the colony to have a bit data to look at. By using the default, we are adding 100 workers and 100 drones into the colony.
+```{r buildUp colony}
+colony <- buildUp(colony, nWorkers = 10, nDrones = 10)
+```
+
+Only `get*SegSites()` will be demonstrated in this vignette as `get*Qtl()` and `get*SNP()` allow us to extract from the haplotypes and the genotypes in the exact same way. Whereas, `get*Ibd()` is only performed on the haplotypes but has the same functionality. 
+
+
+Lets look at the whole colony first, this will produce quite a large list of
+```{r Colony SegSites}
+colonySegSitesGeno <- getColonySegSiteGeno(colony)
+colonySegSitesHaplo <- getColonySegSiteHaplo(colony)
+```
+
+Now lets have a look at the queen using `getCasteSegSites*()`. Remember that you can also use the `getQueenSegSites*()` to 
+produce the same result
+```{r Colony SegSites}
+queenSegSitesGeno <- getCasteSegSiteGeno(x = colony, caste = "queen")
+queenSegSitesHaplo <- getCasteSegSiteHaplo(x = colony, caste = "queen")
+```
+
+
+
+
+
+Do we want to integrate these into the vignette? 
+
     - getEvents
 Output is a Pop 
     - getCastePop
@@ -239,79 +274,7 @@ Get information
     - getCasteSex
     - getLocation
     
-     
-  - subtitle: Get segregating sites' haplotypes or genotypes
-    contents:
-     - getCasteSegSiteHaplo
-     - getSegSiteHaplo
-     - getQueenSegSiteHaplo
-     - getFathersSegSiteHaplo
-     - getWorkersSegSiteHaplo
-     - getDronesSegSiteHaplo
-     - getVirginQueensSegSiteHaplo
-     - getColonySegSiteHaplo
-
-     - getCasteSegSiteGeno
-     - getSegSiteGeno
-     - getQueenSegSiteGeno
-     - getFathersSegSiteGeno
-     - getWorkersSegSiteGeno
-     - getDronesSegSiteGeno
-     - getVirginQueensSegSiteGeno
-     - getColonySegSiteGeno
-
-  - subtitle: Get QTL haplotypes or genotypes
-    contents:
-    - getCasteQtlHaplo
-    - getQtlHaplo
-    - getQueenQtlHaplo
-    - getFathersQtlHaplo
-    - getWorkersQtlHaplo
-    - getDronesQtlHaplo
-    - getVirginQueensQtlHaplo
-    - getColonyQtlHaplo
-
-    - getCasteQtlGeno
-    - getQtlGeno
-    - getQueenQtlGeno
-    - getFathersQtlGeno
-    - getWorkersQtlGeno
-    - getDronesQtlGeno
-    - getVirginQueensQtlGeno
-    - getColonyQtlGeno
-
-  - subtitle: Get SNP haplotypes or genotypes
-    contents:
-    - getCasteSnpHaplo
-    - getSnpHaplo
-    - getQueenSnpHaplo
-    - getFathersSnpHaplo
-    - getWorkersSnpHaplo
-    - getDronesSnpHaplo
-    - getVirginQueensSnpHaplo
-    - getColonySnpHaplo
-
-    - getSnpGeno
-    - getCasteSnpGeno
-    - getQueenSnpGeno
-    - getFathersSnpGeno
-    - getWorkersSnpGeno
-    - getDronesSnpGeno
-    - getVirginQueensSnpGeno
-    - getColonySnpGeno
-
-  - subtitle: Get IBD (Identity-By-Descent) haplotypes
-    contents:
-    - getCasteIbdHaplo
-    - getIbdHaplo
-    - getQueenIbdHaplo
-    - getFathersIbdHaplo
-    - getWorkersIbdHaplo
-    - getDronesIbdHaplo
-    - getVirginQueensIbdHaplo
-    - getColonyIbdHaplo
-
-  - subtitle: Calculate genomic information
+Calculate genomic information
     contents:
     - calcBeeGRMIbs
     - calcBeeGRMIbd
