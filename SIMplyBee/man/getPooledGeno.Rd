@@ -25,25 +25,25 @@ Level 0 function that returns a pooled genotype from true
   genotypes to mimic genotyping of a pool of colony members.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+
 basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+apiary <- createMultiColony(basePop[2:3], n = 2)
+apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony <- addWorkers(colony, nInd = 100)
-colony <- addDrones(colony, nInd = 100)
-colony <- addVirginQueens(colony, nInd = 2)
-
-genoQ <- getQueensSegSiteGeno(colony)
-genoF <- getFathersSegSiteGeno(colony)
-genoW <- getWorkersSegSiteGeno(colony)
-genoD <- getDronesSegSiteGeno(colony)
-genoV <- getVirginQueensSegSiteGeno(colony)
+genoQ <- getQueenSegSiteGeno(apiary[[1]])
+genoF <- getFathersSegSiteGeno(apiary[[1]])
+genoW <- getWorkersSegSiteGeno(apiary[[1]])
+genoD <- getDronesSegSiteGeno(apiary[[1]])
+genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
 
 # Pool of drones
-sexD <- getCasteSex(colony, caste = "drones")
+sexD <- getCasteSex(apiary[[1]], caste = "drones")
 getPooledGeno(x = genoD, type = "count", sex = sexD)[, 1:10]
 (poolD <- getPooledGeno(x = genoD, type = "mean", sex = sexD))[, 1:10]
 # ... compare to queen's genotype
@@ -60,7 +60,7 @@ plot(
 getPooledGeno(x = genoW, type = "count")[, 1:10]
 (poolW <- getPooledGeno(x = genoW, type = "mean"))[, 1:10]
 # ... compare to fathers' and queen's avearage genotype
-sexF <- getCasteSex(colony, caste = "fathers")
+sexF <- getCasteSex(apiary[[1]], caste = "fathers")
 sexQ <- rep(x = "F", times = nrow(genoF))
 sexFQ <- c(sexF, sexQ)
 genoFQ <- rbind(genoF, genoQ[rep(x = 1, times = nrow(genoF)), ])

@@ -22,6 +22,28 @@ Matrix of genotypes
 \description{
 Level 0 function that returns QTL genotypes.
 }
+\details{
+This is an alias for the AlphaSimR function to distinguish between getting
+  and pulling
+}
+\examples{
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+SP$addTraitA(nQtlPerChr = 10)
+basePop <- createVirginQueens(founderGenomes)
+
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+
+# Use getQtlGeno on a Population
+getQtlGeno(getWorkers(colony))
+getQtlGeno(getQueen(colony))
+}
 \seealso{
 \code{\link{pullQtlGeno}}
 }

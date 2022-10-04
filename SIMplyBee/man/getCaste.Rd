@@ -8,7 +8,7 @@ getCaste(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -16,47 +16,52 @@ getCaste(x, simParamBee = NULL)
 When x is \code{\link{Pop-class}}, character of caste status; if you
   get \code{NA} note that this is not supposed to happen. When x is
   \code{\link{Colony-class}}, list with character vectors (list is named with
-  caste). When x is \code{\link{Colonies-class}}, list of lists with
+  caste). When x is \code{\link{MultiColony-class}}, list of lists with
   character vectors (list is named with colony id).
 }
 \description{
 Level 0 function that reports caste of an individual
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1)
-colony2 <- addWorkers(colony2)
-colony1 <- addDrones(colony1)
-colony2 <- addDrones(colony2)
-colony1 <- addVirginQueens(colony1)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCaste(getQueen(colony1))
-getCaste(getFathers(colony1))
-getCaste(getWorkers(colony1))
-getCaste(getDrones(colony1))
-getCaste(getVirginQueens(colony1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5)
+colony <- addVirginQueens(colony, nInd = 5)
+
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2)
+apiary <- addVirginQueens(apiary, nInd = 4)
+
+getCaste(getQueen(colony))
+getCaste(getFathers(colony))
+getCaste(getWorkers(colony))
+getCaste(getDrones(colony))
+getCaste(getVirginQueens(colony))
 
 bees <- c(
-  getQueen(colony1),
-  getFathers(colony1, nInd = 2),
-  getWorkers(colony1, nInd = 2),
-  getDrones(colony1, nInd = 2),
-  getVirginQueens(colony1, nInd = 2)
+  getQueen(colony),
+  getFathers(colony, nInd = 2),
+  getWorkers(colony, nInd = 2),
+  getDrones(colony, nInd = 2),
+  getVirginQueens(colony, nInd = 2)
 )
 getCaste(bees)
 
+getCaste(colony)
+getCaste(apiary)
+
 # Create a data.frame with id, colony, and caste information
-(tmpC <- getCaste(colony1))
-(tmpI <- getCasteId(colony1))
+(tmpC <- getCaste(apiary[[1]]))
+(tmpI <- getCasteId(apiary[[1]]))
 tmp <- data.frame(caste = unlist(tmpC), id = unlist(tmpI))
 head(tmp)
 tail(tmp)

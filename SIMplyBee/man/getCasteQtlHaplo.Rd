@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteQtlHaplo}
 \alias{getCasteQtlHaplo}
-\alias{getQueensQtlHaplo}
+\alias{getQueenQtlHaplo}
 \alias{getFathersQtlHaplo}
 \alias{getVirginQueensQtlHaplo}
 \alias{getWorkersQtlHaplo}
@@ -20,7 +20,7 @@ getCasteQtlHaplo(
   simParamBee = NULL
 )
 
-getQueensQtlHaplo(x, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL)
+getQueenQtlHaplo(x, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL)
 
 getFathersQtlHaplo(
   x,
@@ -61,7 +61,7 @@ getDronesQtlHaplo(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -85,8 +85,8 @@ are retrieved}
 \value{
 matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
   and list of matrices with haplotypes when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns QTL haplotypes of individuals in a
@@ -94,7 +94,7 @@ Level 0 function that returns QTL haplotypes of individuals in a
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensQtlHaplo()}: Access QTL haplotype data of the queen
+\item \code{getQueenQtlHaplo()}: Access QTL haplotype data of the queen
 
 \item \code{getFathersQtlHaplo()}: Access QTL haplotype data of fathers
 
@@ -106,47 +106,49 @@ Level 0 function that returns QTL haplotypes of individuals in a
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
+SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteQtlHaplo(colony1, caste = "queen")
-getQueensQtlHaplo(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteQtlHaplo(colony1, caste = "fathers")
-getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
-getCasteQtlHaplo(colony1, caste = "fathers", nInd = 2)
-getFathersQtlHaplo(colony1)
-getFathersQtlHaplo(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteQtlHaplo(colony1, caste = "virginQueens")
-getVirginQueensQtlHaplo(colony1)
+getCasteQtlHaplo(colony, caste = "queen")
+getQueenQtlHaplo(colony)
 
-getCasteQtlHaplo(colony1, caste = "workers")
-getWorkersQtlHaplo(colony1)
+getCasteQtlHaplo(colony, caste = "fathers")
+getCasteQtlHaplo(colony, caste = "fathers", nInd = 2)
+getCasteQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersQtlHaplo(colony)
+getFathersQtlHaplo(colony, nInd = 2)
 
-getCasteQtlHaplo(colony1, caste = "drones")
-getDronesQtlHaplo(colony1)
+getCasteQtlHaplo(colony, caste = "virginQueens")
+getVirginQueensQtlHaplo(colony)
 
-apiary <- c(colony1, colony2)
+getCasteQtlHaplo(colony, caste = "workers")
+getWorkersQtlHaplo(colony)
+
+getCasteQtlHaplo(colony, caste = "drones")
+getDronesQtlHaplo(colony)
+
 getCasteQtlHaplo(apiary, caste = "queen")
-getQueensQtlHaplo(apiary)
+getQueenQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "fathers")
 getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersQtlHaplo(apiary)
 getFathersQtlHaplo(apiary, nInd = 2)
 

@@ -1,22 +1,23 @@
-# Level 3 Colonies Functions
+# ---- Level 3 MultiColony Functions ----
 
-#' @rdname createColonies
-#' @title Create colonies
+#' @rdname createMultiColony
+#' @title Create MultiColony object
 #'
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
 #'
 #' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
-#'   (selected at random if there are more than \code{n} in \code{Pop})
-#' @param n integer, number of colonies to create (if only \code{nCol} is
-#'   given then \code{\link{Colonies-class}} is created with \code{nCol} empty
-#'   (\code{NULL}) individual colony) - this is mostly useful for programming)
+#'   (selected at random if there are more than \code{n} in \code{Pop}, while
+#'    all are used when \code{n} is \code{NULL})
+#' @param n integer, number of colonies to create (if only \code{n} is
+#'   given then \code{\link{MultiColony-class}} is created with \code{n}
+#'   \code{NULL}) individual colony - this is mostly useful for programming)
 #' @param location list, location of the colonies as \code{c(x, y)}
 #'
-#' @details When both \code{x} and \code{nCol} are \code{NULL}, then an empty
-#'   \code{NULL} \code{\link{Colonies-class}} is created with 0 colonies.
+#' @details When both \code{x} and \code{n} are \code{NULL}, then a
+#'   \code{\link{MultiColony-class}} with 0 colonies is created.
 #'
-#' @return \code{\link{Colonies-class}}
+#' @return \code{\link{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -24,31 +25,33 @@
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' # Create 2 empty (NULL) colonies
-#' apiary <- createColonies(n = 2)
+#' apiary <- createMultiColony(n = 2)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 mated colonies
-#' apiary <- createColonies(x = basePop, n = 2)
+#' # Create 2 virgin colonies
+#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
+#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 unmated/virgin colonies
-#' apiary <- createColonies(x = basePop[1:2], n = 2)
-#' drones <- createDrones(x = basePop[3], n = 50)
-#' apiary <- crossColonies(apiary, drones = drones, nFathers = 15)
+#' # Create mated colonies by crossing
+#' apiary <- createMultiColony(x = basePop[1:2], n = 2)
+#' drones <- createDrones(x = basePop[3], n = 30)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
+#' apiary <- cross(apiary, drones = droneGroups)
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #' @export
-createColonies <- function(x = NULL, n = NULL, location = NULL) {
+createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
   if (is.null(x)) {
     if (is.null(n)) {
-      ret <- new(Class = "Colonies")
+      ret <- new(Class = "MultiColony")
     } else {
-      ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
+      ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     }
   } else {
     if (!isPop(x)) {
@@ -57,10 +60,13 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
     if (any(!(isVirginQueen(x) | isQueen(x)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
+    if (is.null(n)) {
+      n <- nInd(x)
+    }
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")
     }
-    ret <- new(Class = "Colonies", colonies = vector(mode = "list", length = n))
+    ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     for (colony in seq_len(n)) {
       ret[[colony]] <- createColony(
         x = x[colony],
@@ -73,83 +79,106 @@ createColonies <- function(x = NULL, n = NULL, location = NULL) {
 }
 
 #' @rdname selectColonies
-#' @title Select individual colonies
+#' @title Select colonies from MultiColony object
 #'
-#' @description Level 3 function that selects individual colonies based on
-#'   colony ID or random selection.
+#' @description Level 3 function that selects colonies from
+#'   MultiColony object based on colony ID or random selection.
+#'   Whilst user can provide all three arguments ID, p and n, there is a priority
+#'   list: ID takes first priority. If no ID is provided, p takes precedence over n.
 #'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   selected; if character (numeric) colonies are selected based on their name
-#'   (position)
+#' @param multicolony \code{\link{MultiColony-class}}
+#' @param ID character or numeric, ID of a colony (one or more) to be
+#'   selected
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being selected (takes precedence
+#' @param p numeric, percentage of colonies selected (takes precedence
 #'   over \code{n})
 #'
-#' @return \code{\link{Colonies-class}} with selected colonies
+#' @return \code{\link{MultiColony-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary2 <- createMultiColony(basePop[6:8])
 #' getId(apiary)
+#' getId(apiary2)
 #'
 #' getId(selectColonies(apiary, ID = 1))
-#' getId(selectColonies(apiary, ID = "5"))
+#' getId(selectColonies(apiary, ID = "4"))
 #' getId(selectColonies(apiary, ID = c(1, 2)))
-#' getId(selectColonies(apiary, ID = c("5", "6")))
-#' getId(selectColonies(apiary, ID = 5))
-#' getId(selectColonies(apiary, ID = "9"))
+#' getId(selectColonies(apiary, ID = c("3", "4")))
+#' getId(selectColonies(apiary, ID = 3))
 #' # ... alternative
 #' getId(apiary[1])
 #' getId(apiary[[1]])
-#' getId(apiary["5"])
-#' getId(apiary[["5"]])
+#' getId(apiary["4"])
+#' getId(apiary[["4"]])
 #' getId(apiary[c(1, 2)])
-#' getId(apiary[c("5", "6")])
-#' getId(apiary[5])
-#' getId(apiary["9"])
+#' getId(apiary[c("3", "4")])
+#' getId(apiary[3])
 #'
+#' # Select a random number of colonies
+#' selectColonies(apiary, n = 3)
+#' # Select a percentage of colonies
+#' selectColonies(apiary, p = 0.2)
+#'
+#' # Since selection is random, you would get a different set of colonies with
+#' # each function call
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' @export
-selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
+selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #       trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
   if (!is.null(ID)) {
-    # Testing because a logical vector recycles on colonies[ID]
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
     }
-    ret <- colonies[ID]
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
+      warning("ID parameter contains come invalid IDs!")
+    }
+  }
+  if (!is.null(n)) {
+    if (n > nColonies(multicolony)) {
+      stop("n must not be larger than the number of colonies in multicolony!")
+    } else if (n < 0) {
+      stop("n must be non-negative!")
+    }
+  }
+  if (!is.null(p)) {
+    if (1 < p) {
+      stop("p must not be higher than 1!")
+    } else if (p < 0) {
+      stop("p must not be less than 0!")
+    }
+  }
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
+  if (!is.null(ID)) {
+    ID <- as.character(ID)
+    ret <- multicolony[ID]
   } else if (!is.null(n) | !is.null(p)) {
-    nCol <- nColonies(colonies)
+    nCol <- nColonies(multicolony)
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
     lSel <- sample.int(n = nCol, size = n)
     message(paste0("Randomly selecting colonies: ", n))
     if (length(lSel) > 0) {
-      ret <- colonies[lSel]
+      ret <- multicolony[lSel]
     } else {
-      ret <- NULL
+      ret <- createMultiColony()
     }
   } else {
     stop("Provide either ID, n, or p!")
@@ -159,125 +188,110 @@ selectColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 }
 
 #' @rdname pullColonies
-#' @title Pull out some colonies
+#' @title Pull out some colonies from the MultiColony object
 #'
-#' @description Level 3 function that pulls out some colonies based on colony
-#'   ID or random selection.
+#' @description Level 3 function that pulls out some colonies
+#'   from the MultiColony based on colony ID or random selection.
 #'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be pulled
-#'   out; if character (numeric) colonies are pulled out based on their name
-#'   (position)
+#' @param multicolony \code{\link{MultiColony-class}}
+#' @param ID character or numeric, ID of a colony (one or more) to be pulled
+#'   out
 #' @param n numeric, number of colonies to select
-#' @param p numeric, probability of a colony being pulled out (takes precedence
+#' @param p numeric, percentage of colonies pulled out (takes precedence
 #'   over \code{n})
 #'
-#' @return list with two \code{\link{Colonies-class}}, the \code{pulledColonies}
-#'   and the \code{remainingColonies}
+#' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
+#'   and the \code{remnant}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
-#' tmp <- pullColonies(apiary, ID = c("5", "6"))
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
-#'
-#' tmp <- pullColonies(apiary, ID = 5)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
-#'
-#' tmp <- pullColonies(apiary, ID = "9")
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' tmp <- pullColonies(apiary, ID = c("3", "4"))
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, n = 2)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #'
 #' tmp <- pullColonies(apiary, p = 0.75)
-#' getId(tmp$pulledColonies)
-#' getId(tmp$remainingColonies)
+#' getId(tmp$pulled)
+#' getId(tmp$remnant)
 #' @export
-pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
+pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #        trait expression; this could be complicated - best to follow ideas at
   #       https://github.com/HighlanderLab/SIMplyBee/issues/105
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
   if (!is.null(ID)) {
-    pulledColonies <- selectColonies(colonies, ID)
-    remainingColonies <- removeColonies(colonies, ID)
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
+      warning("ID parameter contains come invalid IDs!")
+    }
+    pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
+    remnant <- removeColonies(multicolony, ID)
   } else if (!is.null(n) | !is.null(p)) {
-    nCol <- nColonies(colonies)
+    nCol <- nColonies(multicolony)
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
     lPull <- sample.int(n = nCol, size = n)
     message(paste0("Randomly pulling colonies: ", n))
     if (length(lPull) > 0) {
-      ids <- getId(colonies)
-      pulledColonies <- selectColonies(colonies, ids[lPull])
-      remainingColonies <- removeColonies(colonies, ids[lPull])
+      pulled <- multicolony[lPull]
+      remnant <- multicolony[-lPull]
     } else {
-      pulledColonies <- createColonies()
-      remainingColonies <- colonies
+      pulled <- createMultiColony()
+      remnant <- multicolony
     }
   } else {
     stop("You must provide either ID, n, or p!")
   }
-  ret <- list(pulledColonies = pulledColonies, remainingColonies = remainingColonies)
-  validObject(ret$pulledColonies)
-  validObject(ret$remainingColonies)
+  ret <- list(pulled = pulled, remnant = remnant)
+  validObject(ret$pulled)
+  validObject(ret$remnant)
   return(ret)
 }
 
 #' @rdname removeColonies
-#' @title Remove some colonies
+#' @title Remove some colonies from the MultiColony object
 #'
-#' @description Level 3 function that removes some colonies based on their ID.
+#' @description Level 3 function that removes some colonies
+#'   from the MultiColony object based on their ID.
 #'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param ID character or numeric, name of a colony (one or more) to be
-#'   removed; if character (numeric) colonies are removed based on their name
-#'   (position)
-#'
-#' @return \code{\link{Colonies-class}} with some colonies removed
+#' @param multicolony \code{\link{MultiColony-class}}
+#' @param ID character or numeric, ID of a colony (one or more) to be
+#'   removed
+#' @param n numeric, number of colonies to remove
+#' @param p numeric, percentage of colonies removed (takes precedence
+#'   over \code{n})
+#' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' colony4 <- createColony(x = basePop[5])
-#' colony4 <- crossColony(colony4, drones = drones[31:40], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3, colony4)
+#' drones <- createDrones(x = basePop[1:4], nInd = 100)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#' apiary <- createMultiColony(basePop[2:5], n = 4)
+#' apiary <- cross(apiary, drones = droneGroups[1:4])
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))
@@ -288,730 +302,32 @@ pullColonies <- function(colonies, ID = NULL, n = NULL, p = NULL) {
 #'
 #' getId(removeColonies(apiary, ID = 5))
 #' getId(removeColonies(apiary, ID = "9"))
+#'
+#' nColonies(apiary)
+#' apiary <- removeColonies(apiary, ID = "2")
+#' nColonies(apiary)
+#'
 #' @export
-removeColonies <- function(colonies, ID) {
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
+removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
   }
-  if (is.character(ID)) {
-    ret <- colonies[!getId(colonies) %in% ID]
-  } else if (is.numeric(ID)) {
-    ret <- colonies[-ID]
+  if (!is.null(ID)) {
+    trueID <- ID %in% getId(multicolony)
+    if (!all(trueID)) {
+      ID <- ID[trueID]
+      warning("ID parameter contains come invalid IDs!")
+    }
+    ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])
+  } else if (!is.null(n) | !is.null(p)) {
+    nCol <- nColonies(multicolony)
+    if (!is.null(p)) {
+      n <- round(nCol * p)
+    }
+    ret <- selectColonies(multicolony, n = (nCol - n))
   } else {
-    stop("ID must be character or numeric!")
+    stop("You must provide either ID, n, or p!")
   }
   validObject(ret)
   return(ret)
-}
-
-#' @rdname buildUpColonies
-#' @title Build up colony by adding (raising) workers and drones for all given
-#'   colonies
-#'
-#' @description Level 3 function that does the same as
-#'   \code{\link{buildUpColony}} but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param nWorkers numeric or function, number of worker; if \code{NULL} then
-#'   \code{\link{SimParamBee}$nWorkers} is used (unless \code{new = TRUE},
-#'   currently present workers are taken into account and only the missing
-#'   difference is added)
-#' @param nDrones numeric or function, number of drones; if \code{NULL} then
-#'   \code{\link{SimParamBee}$nDrones} is used (unless \code{new = TRUE},
-#'   currently present drones are taken into account so only the missing
-#'   difference is added)
-#' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
-#'   create the exactly specified number of viable workers (they are
-#'   heterozygous at the csd locus)
-#' @param new logical, should the workers and drones be added a fresh (ignoring
-#'   currently present workers and drones)
-#' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
-#'   build up
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colonies-class}} with workers and drones added
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' isProductive(apiary)
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' # Using defaults in SP
-#' # (just to have some bees - change this to your needs!)
-#' (apiary <- buildUpColonies(apiary))
-#' isProductive(apiary)
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' apiary[[1]] # we are already at the target
-#' apiary <- buildUpColonies(apiary, nWorkers = 150)
-#' apiary[[1]] # increasing the target
-#' apiary <- buildUpColonies(apiary, nWorkers = 100)
-#' apiary[[1]] # we are already at the target
-#' apiary <- buildUpColonies(apiary, nWorkers = 100, new = TRUE)
-#' apiary[[1]] # adding completely new workers & drones
-#'
-#' # Using functions
-#' apiary <- c(colony1, colony2)
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
-#' tmp[[1]]
-#' tmp[[2]]
-#' tmp <- buildUpColonies(apiary, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
-#' tmp[[1]]
-#' tmp[[2]]
-#' # nWorkers and nDrones will vary between function calls when a function is used
-#'
-#' # Using functions in simParamBee
-#' SP$nWorkers <- nWorkersPoisson
-#' SP$nDrones <- nDronesPoisson
-#' apiary <- c(colony1, colony2)
-#' tmp <- buildUpColonies(apiary)
-#' tmp[[1]]
-#' tmp[[2]]
-#' tmp <- buildUpColonies(apiary)
-#' tmp[[1]]
-#' tmp[[2]]
-#' # nWorkers and nDrones will vary between function calls when a function is used
-#' @export
-buildUpColonies <- function(colonies, nWorkers = NULL, nDrones = NULL,
-                            new = FALSE, exact = FALSE,
-                            resetEvents = FALSE, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (is.null(nWorkers)) {
-    nWorkers <- simParamBee$nWorkers
-  }
-  if (is.null(nDrones)) {
-    nDrones <- simParamBee$nDrones
-  }
-  nCol <- nColonies(colonies)
-  for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- buildUpColony(
-      colony = colonies[[colony]],
-      nWorkers = nWorkers,
-      nDrones = nDrones,
-      new = new,
-      exact = exact,
-      resetEvents = resetEvents,
-      simParamBee = simParamBee
-    )
-  }
-  validObject(colonies)
-  return(colonies)
-}
-
-#' @rdname downsizeColonies
-#' @title Reduce number of workers and remove all drones and virgin queens from
-#'   colonies
-#'
-#' @description Level 3 function that downsizes colonies by removing a proportion
-#'   of workers, all drones and all virgin queens. Usually in the autumn, such
-#'   an event occurs in preparation for the winter months.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, proportion of workers to be removed from each colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used
-#' @param use character, all the options provided by \code{\link{selectInd}};
-#'   it guides the selection of workers that will be removed
-#' @param new logical, should we remove all current workers and add a targeted
-#'   proportion anew (say, create winter workers)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colonies-class}} with workers reduced and drones/virgin queens removed
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' apiary <- createColonies(x = basePop[1:2], n = 2)
-#' drones <- createDrones(x = basePop[3:4], nInd = 20)
-#' apiary <- crossColonies(apiary, drones = drones, nFathers = 5)
-#' apiary <- buildUpColonies(apiary)
-#' apiary <- addVirginQueens(x = apiary, nInd = 20)
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' apiary <- downsizeColonies(colonies = apiary, use = "rand", new = TRUE)
-#' apiary[[1]]
-#' apiary[[2]]
-#' @export
-downsizeColonies <- function(colonies, p = NULL, use = "rand", new = FALSE,
-                             simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (is.null(p)) {
-    p <- simParamBee$downsizeP
-  }
-  nCol <- nColonies(colonies)
-  for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- downsizeColony(
-      colony = colonies[[colony]],
-      p = p,
-      use = use,
-      new = new,
-      simParamBee = simParamBee
-    )
-  }
-  validObject(colonies)
-  return(colonies)
-}
-
-#' @rdname reQueenColonies
-#' @title Re-queen a colony for all given colonies
-#'
-#' @description Level 3 function that does the same as
-#'   \code{\link{reQueenColony}} but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param queens \code{\link{Pop-class}}, queens to be added to colonies, one
-#'   for each colony; \code{\link{isVirginQueen}} and \code{\link{isQueen}} test
-#'   will be run on to ensure these are proper queens
-#'
-#' @return \code{\link{Colonies-class}} with re-queened colonies
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 20)
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#'
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' virginQueens <- basePop[4:5]
-#' apiary2 <- reQueenColonies(apiary, queen = virginQueens)
-#' apiary2
-#' apiary2[[1]]
-#' apiary2[[2]]
-#'
-#' matedQueens <- crossVirginQueen(
-#'   pop = basePop[4:5],
-#'   drones = drones[11:20], nFathers = 2
-#' )
-#' apiary3 <- reQueenColonies(apiary, queen = matedQueens)
-#' apiary3
-#' apiary3[[1]]
-#' apiary3[[2]]
-#' @export
-reQueenColonies <- function(colonies, queens) {
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (!isPop(queens)) {
-    stop("Argument queens must be a Pop class object!")
-  }
-  if (any(!(isVirginQueen(queens) | isQueen(queens)))) {
-    stop("Individuals in queens must be virgin queens or queens!")
-  }
-  nCol <- nColonies(colonies)
-  if (nInd(queens) < nCol) {
-    stop("Not enough queens provided!")
-  }
-  for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- reQueenColony(
-      colony = colonies[[colony]],
-      queen = queens[colony]
-    )
-  }
-  validObject(colonies)
-  return(colonies)
-}
-
-#' @rdname crossColonies
-#' @title Cross colony for all given colonies
-#'
-#' @description Level 3 function that does the same as \code{\link{crossColony}}
-#'   but for all given colonies. To ease the use, \code{crossColonies} takes in
-#'   a group of drones (Drone Congregation Area - DCA), partitions it so that
-#'   in each colony virgin queen mates with one group/partition of drones.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param drones \code{\link{Pop-class}}, drones that the virgin queens could
-#'   mate with (Drone Congregation Area - DCA)
-#' @param nFathers numeric of function, number of drones that a virgin queen
-#'   mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
-#' @param removeFathers logical, removes those \code{drones} that have already
-#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
-#'   virgin queens, say via insemination
-#' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
-#'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
-#'  Details in \code{\link{crossVirginQueen}})
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @details See \code{\link{crossColony}} on caste changes.
-#'
-#' @return \code{\link{Colonies-class}} with mated colonies
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 30)
-#' colony1 <- createColony(x = basePop[2])
-#' colony2 <- createColony(x = basePop[3])
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' apiary <- crossColonies(colonies = apiary, drones = drones, nFathers = 10)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#' @export
-crossColonies <- function(colonies, drones, nFathers = NULL,
-                          removeFathers = TRUE, checkMating = "error",
-                          simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (!isPop(drones)) {
-    stop("Argument drones must be a Pop class object!")
-  }
-  if (any(!isDrone(drones))) {
-    stop("Individuals in drones must be drones!")
-  }
-  if (is.null(nFathers)) {
-    nFathers <- simParamBee$nFathers
-  }
-  # skipping "if (is.null(nFathers))" since we pass it to pullDroneGroupsFromDCA
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    ret <- createColonies()
-  } else {
-    ret <- createColonies(n = nCol)
-    fatherGroups <- pullDroneGroupsFromDCA(
-      DCA = drones,
-      n = nCol,
-      nFathers = nFathers,
-      removeFathers = removeFathers
-    )
-    for (colony in seq_len(nCol)) {
-      ret[[colony]] <- crossColony(
-        colony = colonies[[colony]],
-        drones = fatherGroups[[colony]],
-        nFathers = nInd(fatherGroups[[colony]]),
-        removeFathers = removeFathers,
-        checkMating = checkMating,
-        simParamBee = simParamBee
-      )
-    }
-  }
-  validObject(ret)
-  return(ret)
-}
-
-#' @rdname collapseColonies
-#' @title Collapse colony for all given colonies
-#'
-#' @description Level 3 function that does the same as
-#'   \code{\link{collapseColony}} but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#'
-#' @return \code{\link{Colonies-class}} with the collapse event set to
-#'   \code{TRUE}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' founderDrones <- createDrones(x = basePop[1], nInd = 30)
-#' drones <- createDrones(x = basePop[1:4], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[5:10], nFathers = 5)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[11:20], nFathers = 5)
-#' colony3 <- createColony(x = basePop[4])
-#' colony3 <- crossColony(colony3, drones = drones[21:30], nFathers = 5)
-#' apiary <- c(colony1, colony2, colony3)
-#' apiary
-#' hasCollapsed(apiary)
-#'
-#' tmp <- pullColonies(apiary, ID = c("2", "3"))
-#' tmp
-#' apiaryLost <- collapseColonies(tmp$pulledColonies)
-#' hasCollapsed(apiaryLost)
-#' apiaryLeft <- tmp$remainingColonies
-#' hasCollapsed(apiaryLeft)
-#' @export
-collapseColonies <- function(colonies) {
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  nCol <- nColonies(colonies)
-  for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- collapseColony(colonies[[colony]])
-  }
-  validObject(colonies)
-  return(colonies)
-}
-
-#' @rdname swarmColonies
-#' @title Swarm colony for all given colonies
-#'
-#' @description Level 3 function that does the same as \code{\link{swarmColony}}
-#'   but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, proportion of workers that will leave with the swarm colony;
-#'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used
-#' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer, the number of virgin queens to be created in the
-#'   colony; of these one is randomly selected as the new virgin queen of the
-#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-#'   is used
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return list with two \code{\link{Colonies-class}}, the \code{swarms} and the
-#'   \code{remnants} (see the description of \code{\link{swarmColony}} what each
-#'   node holds!)
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony2 <- buildUpColony(colony2, nWorkers = 100)
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' tmp <- swarmColonies(apiary)
-#' tmp$swarms
-#' tmp$swarms[[1]]
-#' tmp$swarms[[2]]
-#' hasSwarmed(tmp$swarms)
-#' tmp$remnants
-#' tmp$remnants[[1]]
-#' tmp$remnants[[2]]
-#' hasSwarmed(tmp$remnants)
-#' @export
-swarmColonies <- function(colonies, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (is.null(p)) {
-    p <- simParamBee$swarmP
-  }
-  if (is.null(nVirginQueens)) {
-    nVirginQueens <- simParamBee$nVirginQueens
-  }
-  if (is.function(nVirginQueens)) {
-    nVirginQueens <- nVirginQueens()
-  }
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    ret <- list(
-      swarms = createColonies(),
-      remnants = createColonies()
-    )
-  } else {
-    ret <- list(
-      swarms = createColonies(n = nCol),
-      remnants = createColonies(n = nCol)
-    )
-    for (colony in seq_len(nCol)) {
-      tmp <- swarmColony(colonies[[colony]],
-        p = p, year = year,
-        nVirginQueens = nVirginQueens,
-        simParamBee = simParamBee
-      )
-      ret$swarms[[colony]] <- tmp$swarm
-      ret$remnants[[colony]] <- tmp$remnant
-    }
-  }
-  validObject(ret$swarms)
-  validObject(ret$remnants)
-  return(ret)
-}
-
-#' @rdname supersedeColonies
-#' @title Supersede colony for all given colonies
-#'
-#' @description Level 3 function that does the same as
-#'   \code{\link{supersedeColony}} but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer, the number of virgin queens to be created in the
-#'   colony; of these one is randomly selected as the new virgin queen of the
-#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-#'   is used
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colonies-class}} with superseded colonies
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony2 <- buildUpColony(colony2, nWorkers = 100)
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' apiary <- supersedeColonies(apiary)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#' hasSuperseded(apiary)
-#' @export
-supersedeColonies <- function(colonies, year = NULL, nVirginQueens = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nVirginQueens)) {
-    nVirginQueens <- simParamBee$nVirginQueens
-  }
-  if (is.function(nVirginQueens)) {
-    nVirginQueens <- nVirginQueens()
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    colonies <- createColonies()
-  } else {
-    for (colony in seq_len(nCol)) {
-      colonies[[colony]] <- supersedeColony(colonies[[colony]],
-        year = year,
-        nVirginQueens = nVirginQueens,
-        simParamBee = simParamBee
-      )
-    }
-  }
-  validObject(colonies)
-  return(colonies)
-}
-
-#' @rdname splitColonies
-#' @title Split colony in two colonies for all given colonies
-#'
-#' @description Level 3 function that does the same as \code{\link{splitColony}}
-#'   but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param p numeric, proportion of workers that will go to the split colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used
-#' @param year numeric, year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return list with two \code{\link{Colonies-class}}, the \code{splits} and the
-#'   \code{remnants} (see the description of \code{\link{splitColony}} what each
-#'   node holds!)
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony1 <- buildUpColony(colony1, nWorkers = 100)
-#' colony2 <- createColony(x = basePop[3])
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' colony2 <- buildUpColony(colony2, nWorkers = 100)
-#' apiary <- c(colony1, colony2)
-#' apiary
-#' apiary[[1]]
-#' apiary[[2]]
-#'
-#' tmp <- splitColonies(apiary)
-#' tmp$splits
-#' tmp$splits[[1]]
-#' tmp$splits[[2]]
-#' hasSplit(tmp$splits)
-#' tmp$remnants
-#' tmp$remnants[[1]]
-#' tmp$remnants[[2]]
-#' hasSplit(tmp$remnants)
-#' @export
-splitColonies <- function(colonies, p = NULL, year = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (is.null(p)) {
-    p <- simParamBee$splitP
-  }
-  nCol <- nColonies(colonies)
-  if (nCol == 0) {
-    ret <- list(
-      splits = createColonies(),
-      remnants = createColonies()
-    )
-  } else {
-    ret <- list(
-      splits = createColonies(n = nCol),
-      remnants = createColonies(n = nCol)
-    )
-    for (colony in seq_len(nCol)) {
-      tmp <- splitColony(colonies[[colony]],
-        p = p, year = year,
-        simParamBee = simParamBee
-      )
-      ret$splits[[colony]] <- tmp$split
-      ret$remnants[[colony]] <- tmp$remnant
-    }
-  }
-  validObject(ret$splits)
-  validObject(ret$remnants)
-  return(ret)
-}
-
-#' @rdname setPhenoColonies
-#' @title Set colonies phenotype
-#'
-#' @description Level 3 function that does the same as
-#'   \code{\link{setPhenoColony}} but for all given colonies.
-#'
-#' @param colonies \code{\link{Colonies-class}}
-#' @param colonyFUN function, any function that can be run on \code{colony} and
-#'   returns colony phenotypes; if \code{NULL} then
-#'   \code{\link{SimParamBee}$phenoColony} is used - if even this is \code{NULL},
-#'   then colony phenotype is not set, but phenotypes of colony individuals are
-#' @param ... all arguments of \code{\link{setPheno}} and \code{colonyFUN}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link{Colonies-class}} with phenotypes
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#'
-#' # Define two traits that collectively affect colony honey yield:
-#' # 1) queen's effect on colony honey yield
-#' # 2) workers' effect on colony honey yield
-#' # The traits will have negative genetic correlation and heritability of 0.25
-#' meanP <- c(20, 0)
-#' varA <- c(1, 1 / 10)
-#' corA <- matrix(data = c(
-#'   1.0, -0.5,
-#'   -0.5, 1.0
-#' ), nrow = 2, byrow = TRUE)
-#' varE <- c(3, 3 / 10)
-#' varA / (varA + varE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-#' SP$setVarE(varE = varE)
-#'
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 10)
-#' colony1 <- createColony(x = basePop[2])
-#' colony2 <- createColony(x = basePop[3])
-#' colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-#' colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-#' apiary <- c(colony1, colony2)
-#' apiary <- buildUpColonies(apiary, nWorkers = 10)
-#'
-#' # Set phenotypes for all colony individuals
-#' apiary <- setPhenoColonies(apiary)
-#'
-#' # Queen's phenotype for both traits
-#' lapply(getQueen(apiary), FUN = pheno)
-#' # TODO: use getColonyPheno(apiary, caste = "queen")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # Workers' phenotype for both traits
-#' lapply(getWorkers(apiary), FUN = pheno)
-#' # TODO: use getColonyPheno(apiary, caste = "workers")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # Colony phenotype
-#' apiary <- setPhenoColonies(apiary, colonyFUN = phenoQueenPlusSumOfWorkers)
-#' lapply(apiary@colonies, FUN = pheno)
-#' # TODO: use getColonyPheno(apiary, caste = "workers")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#'
-#' # Colony phenotype - store function into the SP object
-#' SP$phenoColony <- phenoQueenPlusSumOfWorkers
-#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
-#' lapply(setPhenoColonies(apiary)@colonies, FUN = pheno)
-#' # TODO: use getColonyPheno(apiary, caste = "workers")
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/26
-#' # phenotype will vary between function calls
-#'
-#' # TODO:
-#' # See
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/26
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/28
-#' #     https://github.com/HighlanderLab/SIMplyBee/issues/32
-#' @export
-setPhenoColonies <- function(colonies, colonyFUN = NULL, ...,
-                             simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (!isColonies(colonies)) {
-    stop("Argument colonies must be a Colonies class object!")
-  }
-  if (is.null(colonyFUN)) {
-    colonyFUN <- simParamBee$phenoColony
-  }
-  nCol <- nColonies(colonies)
-  for (colony in seq_len(nCol)) {
-    colonies[[colony]] <- setPhenoColony(colonies[[colony]],
-      colonyFUN = colonyFUN, ...,
-      # TODO: is ... really passed on to setPhenoColony?
-      #       https://github.com/HighlanderLab/SIMplyBee/issues/240
-      simParamBee = simParamBee
-    )
-  }
-  validObject(colonies)
-  return(colonies)
 }

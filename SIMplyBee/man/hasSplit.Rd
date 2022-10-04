@@ -7,41 +7,39 @@
 hasSplit(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 }
 \value{
-logical, named by colony id when \code{x} is \code{\link{Colonies-class}}
+logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns colony split status. This will
   obviously impact colony strength.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 20)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
-colony
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+
 hasSplit(colony)
-colony <- buildUpColony(colony, nWorkers = 100)
-colony
-hasSplit(colony)
-tmp <- splitColony(colony)
-tmp
+tmp <- split(colony)
 hasSplit(tmp$split)
 hasSplit(tmp$remnant)
 
-colony1 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[6:10], nFathers = 5)
-colony2 <- createColony(x = basePop[4])
-colony2 <- crossColony(colony2, drones = drones[11:15], nFathers = 5)
-apiary <- c(colony1, colony2)
-apiary <- buildUpColonies(apiary, nWorkers = 100)
-tmp <- splitColonies(apiary)
-tmp
-hasSplit(tmp$splits)
-hasSplit(tmp$remnants)
+hasSplit(apiary)
+tmp2 <- split(apiary)
+hasSplit(tmp2$split)
+hasSplit(tmp2$remnant)
 }

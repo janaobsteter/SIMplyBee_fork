@@ -18,28 +18,27 @@ logical
 Level 0 function that tests if individuals are virgin queens
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones, nFathers = 5)
-colony <- addWorkers(colony)
-colony <- addDrones(colony)
-colony <- addVirginQueens(colony)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
+# Create a Colony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+colony <- addVirginQueens(x = colony, nInd = 4)
+
+# Test isVirginQueen on colony class
 isVirginQueen(getQueen(colony))
 isVirginQueen(getFathers(colony, nInd = 2))
-isVirginQueen(getWorkers(colony, nInd = 2))
-isVirginQueen(getDrones(colony, nInd = 2))
 isVirginQueen(getVirginQueens(colony, nInd = 2))
 
 bees <- c(
   getQueen(colony),
   getFathers(colony, nInd = 2),
-  getWorkers(colony, nInd = 2),
-  getDrones(colony, nInd = 2),
   getVirginQueens(colony, nInd = 2)
 )
 isVirginQueen(bees)

@@ -9,6 +9,7 @@ simulateHoneyBeeGenomes(
   nMelS = 0L,
   nCar = 0L,
   nLig = 0L,
+  Ne = 170000L,
   ploidy = 2L,
   nChr = 16L,
   nSegSites = 100L,
@@ -27,6 +28,12 @@ simulateHoneyBeeGenomes(
 \item{nCar}{integer, number of Apis mellifera carnica individuals to simulate}
 
 \item{nLig}{integer, number of Apis mellifera ligustica individuals to simulate}
+
+\item{Ne}{integer, effective size of the simulated population. Currently set to
+170,000, according to Wallberg et al., 2014. Would discourage you to change it
+since it is linked to the parameters of the demographic model we use for the simulation.
+However, there might be some edge cases when using a different Ne is necessary,
+but proceed with caution.}
 
 \item{ploidy}{integer, the ploidy of the individuals}
 

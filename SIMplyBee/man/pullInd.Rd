@@ -16,7 +16,7 @@ individuals}
 }
 \value{
 list with a node \code{pulled} holding \code{\link{Pop-class}} of
-  pulled individuals and a node \code{remainder)} holding \code{\link{Pop-class}}
+  pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
   of remaining individuals
 }
 \description{

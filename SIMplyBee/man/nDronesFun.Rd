@@ -40,7 +40,7 @@ colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{...}{other arguments of \code{\link{phenoQueenPlusSumOfWorkers}}}
+\item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
 \value{
 numeric, number of drones
@@ -61,7 +61,7 @@ Sample a number of drones - used when \code{nDrones = NULL}
 
   \code{nDronesColonyPhenotype} returns a number (above \code{lowerLimit}) as
   a function of colony phenotype, say queen's fecundity. Colony phenotype is
-  provided by \code{\link{phenoQueenPlusSumOfWorkers}}. You need to set up
+  provided by \code{\link{mapCasteToColonyPheno}}. You need to set up
   traits influencing the colony phenotype and their parameters (mean and
   variances) via \code{\link{SimParamBee}} (see examples).
 
@@ -97,11 +97,12 @@ h2 <- 0.1
 SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
 SP$setVarE(varE = average * (1 - h2))
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 50)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 colony1 <- createColony(x = basePop[2])
 colony2 <- createColony(x = basePop[3])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
+colony1 <- cross(colony1, drones = droneGroups[[1]])
+colony2 <- cross(colony2, drones = droneGroups[[2]])
 colony1@queen@pheno
 colony2@queen@pheno
 createDrones(colony1, nInd = nDronesColonyPhenotype)

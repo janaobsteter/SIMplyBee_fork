@@ -7,7 +7,7 @@
 getId(x)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{MultiColony-class}}}
 }
 \value{
 character, \code{NA} when queen not present
@@ -17,22 +17,23 @@ Level 0 function that returns the colony ID. This is by
   definition the ID of the queen.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getId(getQueen(colony1))
-getId(colony1)
-getId(colony2)
-getId(apiary)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
-colony2 <- removeQueen(colony2)
+getId(getQueen(colony)) # Pop class
+getId(colony) # Colony Class
+getId(apiary) # MultiColony Class
+
+colony2 <- removeQueen(colony)
 getId(colony2)
 }

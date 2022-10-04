@@ -1,0 +1,40 @@
+---
+title: "SIMplyBee - Genomics"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIMplyBee - Genomics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
+```
+
+# Introduction
+
+We have already mentioned csd locus in honeybee biology, but now we dive more into all things genomics in SIMplyBee.
+
+Topics to cover:
+
+* genome simulation?
+
+* csd locus on chr 3
+
+* all the get functions
+
+We have this text in 1_Honeybee_biology already - we show get*SegSite* - maybe we dive into the actual implementation of doubled-haploid drones to make it clear what is going on?!
+
+SIMplyBee has the same genome retrieval functions as AlphaSimR, for all
+segregating sites (`segSite`), quantitative trait loci (`qtl`), identity by 
+descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker
+are all synonyms for a position in the genome. Study the index of
+available `get*()` functions in SIMplyBee and read the genomics vignette for more information.
+
+
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteIbdHaplo}
 \alias{getCasteIbdHaplo}
-\alias{getQueensIbdHaplo}
+\alias{getQueenIbdHaplo}
 \alias{getFathersIbdHaplo}
 \alias{getVirginQueensIbdHaplo}
 \alias{getWorkersIbdHaplo}
@@ -19,7 +19,7 @@ getCasteIbdHaplo(
   simParamBee = NULL
 )
 
-getQueensIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
+getQueenIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
 
 getFathersIbdHaplo(
   x,
@@ -56,7 +56,7 @@ getDronesIbdHaplo(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -77,8 +77,8 @@ if \code{NULL}, all sites are retrieved}
 \value{
 matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
   and list of matrices with haplotypes when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns IBD (identity by descent)
@@ -86,7 +86,7 @@ Level 0 function that returns IBD (identity by descent)
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensIbdHaplo()}: Access IBD haplotype data of the queen
+\item \code{getQueenIbdHaplo()}: Access IBD haplotype data of the queen
 
 \item \code{getFathersIbdHaplo()}: Access IBD haplotype data of fathers
 
@@ -98,47 +98,50 @@ Level 0 function that returns IBD (identity by descent)
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(isTrackRec = TRUE)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteIbdHaplo(colony1, caste = "queen")
-getQueensIbdHaplo(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteIbdHaplo(colony1, caste = "fathers")
-getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
-getCasteIbdHaplo(colony1, caste = "fathers", nInd = 2)
-getFathersIbdHaplo(colony1)
-getFathersIbdHaplo(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteIbdHaplo(colony1, caste = "virginQueens")
-getVirginQueensIbdHaplo(colony1)
+getCasteIbdHaplo(x = colony, caste = "queen")
+getQueenIbdHaplo(colony)
 
-getCasteIbdHaplo(colony1, caste = "workers")
-getWorkersIbdHaplo(colony1)
+getCasteIbdHaplo(colony, caste = "fathers")
+getCasteIbdHaplo(colony, caste = "fathers", nInd = 2)
+getCasteIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersIbdHaplo(colony)
+getFathersIbdHaplo(colony, nInd = 2)
 
-getCasteIbdHaplo(colony1, caste = "drones")
-getDronesIbdHaplo(colony1)
+getCasteIbdHaplo(colony, caste = "virginQueens")
+getVirginQueensIbdHaplo(colony)
 
-apiary <- c(colony1, colony2)
-getCasteIbdHaplo(apiary, caste = "queen")
-getQueensIbdHaplo(apiary)
+getCasteIbdHaplo(colony, caste = "workers")
+getWorkersIbdHaplo(colony)
+
+getCasteIbdHaplo(colony, caste = "drones")
+getDronesIbdHaplo(colony)
+
+getCasteIbdHaplo(x = apiary, caste = "queen")
+getQueenIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "fathers")
 getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
-getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
+getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersIbdHaplo(apiary)
 getFathersIbdHaplo(apiary, nInd = 2)
 

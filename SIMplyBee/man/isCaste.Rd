@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{isCaste}
 \alias{isCaste}
-\title{Is individual a member of specific caste}
+\title{Is individual a member of a specific caste}
 \usage{
 isCaste(x, caste, simParamBee = NULL)
 }
@@ -22,20 +22,22 @@ Level 0 function that tests if individuals are members of a
   specific caste
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony class
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones, nFathers = 5)
-colony <- addWorkers(colony)
-colony <- addDrones(colony)
-colony <- addVirginQueens(colony)
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
+colony <- addVirginQueens(x = colony, nInd = 4)
 
 isCaste(getQueen(colony), caste = "queen")
 isCaste(getFathers(colony, nInd = 2), caste = "fathers")
-isCaste(getWorkers(colony, nInd = 2), caste = "workers")
+isCaste(getWorkers(colony, nInd = 2), caste = "workers") # random sample!
 isCaste(getDrones(colony, nInd = 2), caste = "drones")
 isCaste(getVirginQueens(colony, nInd = 2), caste = "virginQueens")
 

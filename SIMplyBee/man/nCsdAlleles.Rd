@@ -8,11 +8,13 @@ nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{Colonies-class}}}
+\code{\link{MultiColony-class}}}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return the number
 of distinct csd alleles in either the entire population, colony, or
-colonies. Default is \code{FALSE}.}
+multicolony. Note this has nothing to do with the colony collapse. It's
+like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
+examples about this behaviour.Default is \code{FALSE}.}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -20,9 +22,9 @@ colonies. Default is \code{FALSE}.}
 integer representing the number of distinct csd alleles when \code{x}
   is \code{\link{Pop-class}} (or ), list of integer
   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
-  list of a list of integer when \code{x} is \code{\link{Colonies-class}},
+  list of a list of integer when \code{x} is \code{\link{MultiColony-class}},
   outer list is named by colony id when \code{x} is
-  \code{\link{Colonies-class}}; the integer rep
+  \code{\link{MultiColony-class}}; the integer rep
 }
 \description{
 Level 0 function that returns the number of distinct csd alleles
@@ -48,29 +50,32 @@ Queen has 2 distinct csd alleles, since she has to be heterozygous
   individuals there should be minimal amount of noise.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony1 <- addDrones(colony1, nInd = 10)
-colony1 <- addVirginQueens(colony1, nInd = 3)
-colony2 <- addWorkers(colony2, nInd = 20)
-apiary <- c(colony1, colony2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-nCsdAlleles(getQueen(colony1))
-nCsdAlleles(getFathers(colony1))
-nCsdAlleles(getVirginQueens(colony1))
-nCsdAlleles(getWorkers(colony1))
-nCsdAlleles(getDrones(colony1))
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 4)
 
-nCsdAlleles(colony1)
-nCsdAlleles(colony1, collapse = TRUE)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+nCsdAlleles(getQueen(colony))
+nCsdAlleles(getFathers(colony))
+nCsdAlleles(getVirginQueens(colony))
+nCsdAlleles(getWorkers(colony))
+nCsdAlleles(getDrones(colony))
+
+nCsdAlleles(colony)
+nCsdAlleles(colony, collapse = TRUE)
 
 nCsdAlleles(apiary)
 nCsdAlleles(apiary, collapse = TRUE)

@@ -51,7 +51,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+colony <- cross(colony, drones = drones)
 colony <- addWorkers(colony, nInd = 5)
 colony <- addDrones(colony, nInd = 5)
 colony <- addVirginQueens(colony, nInd = 2)
@@ -72,7 +72,7 @@ SP$caste
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+colony <- cross(colony, drones = drones)
 SP$pedigree
 SP$caste
 }
@@ -103,7 +103,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 \describe{
 \item{\code{nWorkers}}{numeric or function, a number of workers generated in a
   colony - used in \code{\link{createWorkers}}, \code{\link{addWorkers}},
-  \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
+  \code{\link{buildUp}}.
 
   The default value is 100, that is, queen generates 100 workers - this
   is for a down-scaled simulation (for efficiency) assuming that this
@@ -117,17 +117,18 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   When \code{nWorkers} is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
-  \code{function(x, arg = default) someCode }, that is, the first
-  argument MUST be \code{x} and any following arguments MUST have a
-  default value. See \code{\link{nWorkersPoisson}},
-  \code{\link{nWorkersTruncPoisson}}, or
-  \code{\link{nWorkersColonyPhenotype}} for examples.
+  \code{function(colony, arg = default) someCode }, that is, the first
+  argument MUST be \code{colony} and any following arguments MUST have a
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nWorkersPoisson}}, \code{\link{nWorkersTruncPoisson}},
+  or \code{\link{nWorkersColonyPhenotype}} for examples.
 
   You can provide your own functions that satisfy your needs!}
 
 \item{\code{nDrones}}{numeric or function, a number of drones generated in a
   colony - used in \code{\link{createDrones}}, \code{\link{addDrones}},
-  \code{\link{buildUpColony}}, and \code{\link{buildUpColonies}}.
+  \code{\link{buildUp}}.
 
   The default value is 100, that is, queen generates 100 drones - this is
   for a down-scaled simulation (for efficiency) assuming that this
@@ -143,8 +144,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(x, arg = default) someCode }, that is, the first
   argument MUST be \code{x} and any following arguments MUST have a
-  default value. See \code{\link{nDronesPoisson}},
-  \code{\link{nDronesTruncPoisson}}, or
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nDronesPoisson}}, \code{\link{nDronesTruncPoisson}}, or
   \code{\link{nDronesColonyPhenotype}} for examples.
 
   You can provide your own functions that satisfy your needs!}
@@ -166,7 +168,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   of other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{nVirginQueensPoisson}},
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nVirginQueensPoisson}},
   \code{\link{nVirginQueensTruncPoisson}}, or
   \code{\link{nVirginQueensColonyPhenotype}} for examples.
 
@@ -174,8 +178,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
 \item{\code{nFathers}}{numeric or function, a number of drones a queen mates
   with  - used in \code{\link{pullDroneGroupsFromDCA}},
-  \code{\link{crossVirginQueen}}, \code{\link{crossColony}}, and
-  \code{\link{crossColonies}}.
+  \code{\link{cross}}.
 
   The default value is 15, that is, a virging queen mates on average with
   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
@@ -191,14 +194,16 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   \code{function(arg = default) someCode }, that is, any arguments MUST
   have a default value. We did not use the \code{colony} argument here,
   because \code{nFathers} likely does not depend on the colony. Let us
-  know if we are wrong! See \code{\link{nFathersPoisson}} or
+  know if we are wrong!
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{nFathersPoisson}} or
   \code{\link{nFathersTruncPoisson}} for examples.
 
   You can provide your own functions that satisfy your needs!}
 
 \item{\code{swarmP}}{numeric or a function, the swarm proportion - the proportion
   of workers that leave with the old queen when the colony swarms - used
-  in \code{\link{swarmColony}} and \code{\link{swarmColonies}}.
+  in \code{\link{swarm}}.
 
   The default value is 0.50, that is, about a half of workers leave colony
   in a swarm (Seeley, 2019). This value is set in \code{SimParamBee$new()}
@@ -213,14 +218,16 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{swarmPUnif}} or
-  \code{\link{swarmPColonyStrength}} for examples.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{swarmPUnif}} or \code{\link{swarmPColonyStrength}} for
+  examples.
 
   You can provide your own functions that satisfy your needs!}
 
 \item{\code{splitP}}{numeric or a function, the split proportion - the
   proportion of workers removed in a managed split - used in
-  \code{\link{splitColony}} and \code{\link{splitColonies}}.
+  \code{\link{split}}.
 
   The default value is 0.30, that is, about a third of workers is put into
   a split colony from a strong colony (Seeley, 2019). This value is set
@@ -235,15 +242,16 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{splitPUnif}} or
-  \code{\link{splitPColonyStrength}} for examples.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{splitPUnif}} or \code{\link{splitPColonyStrength}} for
+  examples.
 
   You can provide your own functions that satisfy your needs!}
 
 \item{\code{downsizeP}}{numeric or a function, the downsize proportion - the
   proportion of workers removed from the colony when downsizing, usually
-  in autumn - used in \code{\link{downsizeColony}} and
-  \code{\link{downsizeColonies}}.
+  in autumn - used in \code{\link{downsize}}.
 
   The default value is 0.85, that is, a majority of workers die before
   autumn or all die but some winter workers are created (Seeley, 2019).
@@ -259,18 +267,23 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   other functions. Therefore, the function MUST be defined like
   \code{function(colony, arg = default) someCode }, that is, the first
   argument MUST be \code{colony} and any following arguments MUST have a
-  default value. See \code{\link{downsizePUnif}} for example.
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{downsizePUnif}} for example.
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{phenoColony}}{function, to set colony phenotypes - used in
-  \code{\link{setPhenoColony}} and \code{\link{setPhenoColonies}}.
+\item{\code{colonyValueFUN}}{function, to calculate colony values - used
+  in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}},
+  \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
+  \code{\link{calcColonyDd}}, and \code{\link{calcColonyAa}}.
 
   This function should work with internals of others functions -
   therefore the function MUST be defined like \code{function(colony, arg
   = default) someCode }, that is, the first argument MUST be
   \code{colony} and any following arguments MUST have a default value.
-  See \code{\link{phenoQueenPlusSumOfWorkers}} for an example.
+  For flexibility you can add ... argument to pass on any other argument.
+  See \code{\link{mapCasteToColonyValue}} for an example.
 
   You can provide your own functions that satisfy your needs!}
 }
@@ -281,6 +294,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 \describe{
 \item{\code{caste}}{character, caste information for every individual ever
 created; active only when \code{SP$setTrackPed(isTrackPed = TRUE)}}
+
+\item{\code{lastColonyId}}{integer, ID of the last Colony object
+created with \code{\link{createColony}}}
 
 \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
@@ -308,6 +324,7 @@ generate this object}
 \item \href{#method-SimParamBee-new}{\code{SimParamBee$new()}}
 \item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
 \item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
+\item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
 \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
 }
 }
@@ -367,7 +384,7 @@ Starts the process of building a new simulation by creating
   csdChr = 3,
   csdPos = 0.865,
   nCsdAlleles = 128,
-  phenoColony = NULL
+  colonyValueFUN = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -408,7 +425,7 @@ then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
 
-\item{\code{phenoColony}}{see \code{\link{SimParamBee}} field \code{phenoColony}}
+\item{\code{colonyValueFUN}}{see \code{\link{SimParamBee}} field \code{colonyValueFUN}}
 }
 \if{html}{\out{</div>}}
 }
@@ -459,7 +476,7 @@ basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+colony <- cross(colony, drones = drones)
 colony <- addWorkers(colony, nInd = 5)
 colony <- addDrones(colony, nInd = 5)
 colony <- addVirginQueens(colony, nInd = 2)
@@ -502,7 +519,7 @@ SP$caste
 
 drones <- createDrones(x = basePop[1], nInd = 10)
 colony <- createColony(x = basePop[2])
-colony <- crossColony(colony, drones = drones[1:5], nFathers = 5)
+colony <- cross(colony, drones = drones)
 SP$pedigree
 SP$caste
 }
@@ -510,6 +527,25 @@ SP$caste
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updateLastColonyId"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateLastColonyId}{}}}
+\subsection{Method \code{updateLastColonyId()}}{
+A function to update the colony last
+  ID everytime we create a Colony-class with createColony.
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{lastColonyId}}{integer, last colony ID assigned}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-clone"></a>}}

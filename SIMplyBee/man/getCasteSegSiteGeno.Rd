@@ -2,7 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCasteSegSiteGeno}
 \alias{getCasteSegSiteGeno}
-\alias{getQueensSegSiteGeno}
+\alias{getQueenSegSiteGeno}
 \alias{getFathersSegSiteGeno}
 \alias{getVirginQueensSegSiteGeno}
 \alias{getWorkersSegSiteGeno}
@@ -19,7 +19,7 @@ getCasteSegSiteGeno(
   simParamBee = NULL
 )
 
-getQueensSegSiteGeno(x, chr = NULL, simParamBee = NULL)
+getQueenSegSiteGeno(x, chr = NULL, simParamBee = NULL)
 
 getFathersSegSiteGeno(
   x,
@@ -42,7 +42,7 @@ getDronesSegSiteGeno(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{Colonies-class}}}
+\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones", or
 "virginQueens"}
@@ -60,8 +60,8 @@ are retrieved}
 \value{
 matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
   list of matrices with genotypes when \code{x} is
-  \code{\link{Colonies-class}}, named by colony id when \code{x} is
-  \code{\link{Colonies-class}}
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns genotypes for all segregating
@@ -69,7 +69,7 @@ Level 0 function that returns genotypes for all segregating
 }
 \section{Functions}{
 \itemize{
-\item \code{getQueensSegSiteGeno()}: Access genotype data for all segregating sites of the queen
+\item \code{getQueenSegSiteGeno()}: Access genotype data for all segregating sites of the queen
 
 \item \code{getFathersSegSiteGeno()}: Access genotype data for all segregating sites of fathers
 
@@ -81,46 +81,48 @@ Level 0 function that returns genotypes for all segregating
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addWorkers(colony1, nInd = 10)
-colony2 <- addWorkers(colony2, nInd = 20)
-colony1 <- addDrones(colony1, nInd = 2)
-colony2 <- addDrones(colony2, nInd = 4)
-colony1 <- addVirginQueens(colony1, nInd = 2)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-getCasteSegSiteGeno(colony1, caste = "queen")
-getQueensSegSiteGeno(colony1)
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-getCasteSegSiteGeno(colony1, caste = "fathers")
-getCasteSegSiteGeno(colony1, caste = "fathers", nInd = 2)
-getCasteSegSiteGeno(colony1, caste = "fathers", nInd = 2)
-getFathersSegSiteGeno(colony1)
-getFathersSegSiteGeno(colony1, nInd = 2)
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-getCasteSegSiteGeno(colony1, caste = "virginQueens")
-getVirginQueensSegSiteGeno(colony1)
+getCasteSegSiteGeno(colony, caste = "queen")
+getQueenSegSiteGeno(colony)
 
-getCasteSegSiteGeno(colony1, caste = "workers")
-getWorkersSegSiteGeno(colony1)
+getCasteSegSiteGeno(colony, caste = "fathers")
+getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2)
+getCasteSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersSegSiteGeno(colony)
+getFathersSegSiteGeno(colony, nInd = 2)
 
-getCasteSegSiteGeno(colony1, caste = "drones")
-getDronesSegSiteGeno(colony1)
+getCasteSegSiteGeno(colony, caste = "virginQueens")
+getVirginQueensSegSiteGeno(colony)
 
-apiary <- c(colony1, colony2)
+getCasteSegSiteGeno(colony, caste = "workers")
+getWorkersSegSiteGeno(colony)
+
+getCasteSegSiteGeno(colony, caste = "drones")
+getDronesSegSiteGeno(colony)
+
 getCasteSegSiteGeno(apiary, caste = "queen")
-getQueensSegSiteGeno(apiary)
+getQueenSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "fathers")
 getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2)
+getCasteSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
 getFathersSegSiteGeno(apiary)
 getFathersSegSiteGeno(apiary, nInd = 2)
 

@@ -4,27 +4,19 @@
 \alias{pullDroneGroupsFromDCA}
 \title{Pulls drone groups from a Drone Congregation Area (DCA)}
 \usage{
-pullDroneGroupsFromDCA(
-  DCA,
-  n,
-  nFathers = NULL,
-  removeFathers = TRUE,
-  simParamBee = NULL
-)
+pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{DCA}{\code{\link{Pop-class}}, population of drones}
 
 \item{n}{integer, number of drone groups to be created}
 
-\item{nFathers}{numeric of function, number of drones that a virgin queen
+\item{nDrones}{numeric of function, number of drones that a virgin queen
 mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
 
-\item{removeFathers}{logical, removes drones in \code{DCA} that have already
-mated; set to \code{FALSE} if you would like to mate a drone to multiple
-virgin queens, say via insemination}
-
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{additional arguments passed to \code{nDrones} when this argument is a function}
 }
 \value{
 list of \code{\link{Pop-class}}
@@ -37,18 +29,21 @@ Level 1 function that pulls drone groups from a Drone
   what you do with the DCA object outside function to avoid drone "copies".
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 10)
-colony1 <- createColony(x = basePop[2])
-colony1 <- crossColony(colony1, drones = drones[1:5], nFathers = 5)
-colony2 <- createColony(x = basePop[3])
-colony2 <- crossColony(colony2, drones = drones[6:10], nFathers = 5)
-colony1 <- addDrones(colony1, nInd = 10)
-colony2 <- addDrones(colony2, nInd = 20)
-apiary <- c(colony1, colony2)
-DCA <- createDCA(apiary)
-pullDroneGroupsFromDCA(DCA, n = 4, nFathers = 5)
+drones <- createDrones(x = basePop[1], nInd = 1000)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+
+# Create a Colony and a MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, drones = droneGroups[[1]])
+colony <- addDrones(colony, nInd = 100)
+
+# Create colony DCA
+DCA <- createDCA(colony)
+pullDroneGroupsFromDCA(DCA, n = 4, nDrones = 5)
+pullDroneGroupsFromDCA(DCA, n = 5, nDrones = nFathersPoisson)
+
 }
