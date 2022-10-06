@@ -196,7 +196,7 @@ nCaste <- function(x, caste = "all") {
     }
   } else if (isMultiColony(x)) {
       fun <- ifelse(caste == "all", lapply, sapply)
-      ret <- fun(X = x@colonies, FUN = nCaste, caste = caste)
+      ret <- fun(X = x@colonies, FUN = function(x) ifelse(isEmpty(x), 0, nCaste(caste = caste)))
       names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
@@ -1101,6 +1101,7 @@ isVirginQueensPresent <- function(x) {
 #'
 #' emptyApiary <- createMultiColony(n = 3)
 #' emptyApiary1 <- c(createColony(), createColony())
+#' emptyApiary2 <- createMultiColony()
 #' nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 #'
 #' isEmpty(emptyApiary)
@@ -1134,8 +1135,12 @@ isEmpty <- function(x) {
       ret <- FALSE
     }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = isEmpty, simplify = TRUE)
-    names(ret) <- getId(x)
+    if (nColonies(x) > 0) {
+      ret <- sapply(X = x@colonies, FUN = isEmpty, simplify = TRUE)
+      names(ret) <- getId(x)
+    } else {
+      ret <- TRUE
+    }
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
