@@ -17,6 +17,88 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
+This vignette will introduce you to colony events. We implemented most important 
+biological peculiarities of honey bees like swarming, supersedure and collapse of the colony.
+Beside that we included also beekeeping practice called splitting. Some of this of
+this events influnce also genetics in the honey bee colony.
+
+# Swarming
+Swarming is the process in which honey bee colonies reproduce to form new colonies. 
+When a honey bee colony outgrows its hive, becomes too congested, or too populated 
+for the queen’s pheromones to spread among workers, then the swarming begins.  
+The workers start building swarm cells for new queens. 
+Once the swarm cells are constructed, and the queen lays eggs in them, then the 
+colony changes its behavior. Foraging slows down, and the workers begin erratic 
+movements within the hive. Meanwhile, the queen stops laying eggs and reduces her 
+weight to be able to fly. When the queen is ready, she leaves the hive and is followed
+by about half of the workers in a massive cloud of flying bees. The queen will 
+find a nearby tree, land, and emit pheromones that signal the workers to cluster
+around her. The cluster will remain there for several hours while scout bees explore 
+the area for a new home. Often the cluster will leave, travel a mile or more, 
+and reform on another branch far away from the original hive. The cluster will 
+remain until scout bees locate a new hive or cavity to occupy. Once a suitable
+home is found, the entire cluster will take flight and move to the new location 
+where it will begin building comb, developing new brood, and gathering pollen and nectar.
+
+The queens developing in the swarm cells in the old hive are attended by half of 
+the workers that did not leave with the swarm. After 16 days, the new queens begin 
+to emerge. Typically, the first queen to emerge will sting the other queens in 
+their cells and kill them in order to assume the role as the new queen for the 
+colony. She then will take flight to find drones to mate with in order 
+to begin the process of egg-laying and rebuilding the workforce in the colony. 
+(source: https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms/#:~:text=What%20Is%20A%20Swarm%20Of,it%20is%20time%20to%20swarm.). The queen in remnant is daughter of a queen that swarmed. 
+
+Our function for swarming splits the number of workers in a colony according to specified 
+argument p (percentage of swarming). The function works both on colony and multcolony objects. 
+Return of the function is a list with two Colony or MultiColony classes, swarm and remnant.
+Remnant contains the old queen and specified percentage of workers. the remnant contains the rest of 
+workers, all the drones and virgin queen that is daughter of a queen that swarmed.
+TODOD: describe how to elect specified %of colonies to swarm
+```{r create founder genoms and a Colony and Multicolony objects }
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- createVirginQueens(founderGenomes)
+drones <- createDrones(basePop[1], n = 1000)
+fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+
+# Create Colony and MultiColony class
+colony <- createColony(x = basePop[2])
+colony <- cross(colony, fathers = fatherGroups[[1]])
+(colony <- buildUp(colony, nWorkers = 100))
+apiary <- createMultiColony(basePop[3:8], n = 6)
+apiary <- cross(apiary, fathers = fatherGroups[2:7])
+apiary <- buildUp(apiary, nWorkers = 100)
+```
+TODO: finish example
+# Supersedure
+Supersedure is a replacement of a queen by her daughter without interference of beekeeper.
+Supersedure is a natural way of requeening without swarming. there are many reasons for
+supersedure: poor physical condition of a queen, old age, diseases, depleted spermatheca, 
+poorly bread queen, reduced pheromone output and many others (source: https://www.tandfonline.com/doi/pdf/10.1080/0005772X.2010.11417360#:~:text=Supersedure%2C%20as%20it%20relates%20to,summer%20or%20in%20early%20autumn.). 
+Our function supersede works both on colony and Multicolony objects. nVirginQueens parameter specifies 
+the number of virgin queens of which one would be randomly selected for queen.
+New queen is not mated yet.
+# Collapse
+Collapse of the colony is a term that describes death of a colony. all individuals 
+within a colony die when collapse occurs. There are many reasons for collapse of a honey bee colony like:
+diseases, starvation, queen problems, environmental and in-hive contamination with pesticides.
+Colony losses can be very high, up to 60% of colonies per year. High colony losses can significantly influence
+genetic structure of a population. 
+Our function works both on Colony and Multicolony objects. 
+# Splitting 
+Colony splitting is a common beekeeping technique for managing swarming. 
+A percentage of workers, brood and food stores are removed and combined in a new colony. 
+Old queen normally stays with splited colony (remnant in our function). Function 
+works on Colony and Multicolonyobjects. Argument p is proportion of workers that will go to 
+new colony.
+
+TODO: add colony events images!
+
+TODO: where do we describe L0, L1, L2, and L3? In the next vignette that dives
+      into these aspects (already?)?
+TODO: related to the above, where do we want to write a list of functions
+      grouped by some nice system (according to L0, L1, L2 and L3?)
+
 
 TODO: add colony events images!
 
