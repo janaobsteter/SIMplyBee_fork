@@ -61,7 +61,7 @@ colony <- downsize(x = colony, new = TRUE, use = "rand")
 colony
 apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 apiary[[1]]
-# Downsize with unequal numbers
+# Downsize with different numbers
 nWorkers(apiary); nDrones(apiary)
 apiary <- downsize(x = apiary, p = c(0.5, 0.1), new = TRUE, use = "rand")
 nWorkers(apiary); nDrones(apiary)

@@ -9,26 +9,29 @@
 \alias{getDronesAa}
 \title{Access epistasis values of individuals in a caste}
 \usage{
-getCasteAa(x, caste, nInd = NULL, simParamBee = NULL)
+getCasteAa(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getQueenAa(x, simParamBee = NULL)
+getQueenAa(x, collapse = FALSE, simParamBee = NULL)
 
-getFathersAa(x, nInd = NULL, simParamBee = NULL)
+getFathersAa(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getVirginQueensAa(x, nInd = NULL, simParamBee = NULL)
+getVirginQueensAa(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getWorkersAa(x, nInd = NULL, simParamBee = NULL)
+getWorkersAa(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getDronesAa(x, nInd = NULL, simParamBee = NULL)
+getDronesAa(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with epistatic values of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -93,6 +96,11 @@ getWorkersAa(colony)
 getCasteAa(colony, caste = "drones")
 getDronesAa(colony)
 
+# Get epistatic values for all individuals
+getCasteAa(colony, caste = "all")
+# Get all epistatic values in a single matrix
+getCasteAa(colony, caste = "all", collapse = TRUE)
+
 getCasteAa(apiary, caste = "queen")
 getQueenAa(apiary)
 
@@ -110,6 +118,10 @@ getWorkersAa(apiary)
 
 getCasteAa(apiary, caste = "drones")
 getDronesAa(apiary)
+
+# Get the epistatic values of all individuals either by colony or in a single matrix
+getCasteAa(apiary, caste = "all")
+getCasteAa(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{dd}}

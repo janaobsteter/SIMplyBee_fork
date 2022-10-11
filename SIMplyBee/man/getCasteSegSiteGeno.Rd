@@ -16,36 +16,51 @@ getCasteSegSiteGeno(
   nInd = NULL,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getQueenSegSiteGeno(x, chr = NULL, simParamBee = NULL)
+getQueenSegSiteGeno(x, chr = NULL, collapse = FALSE, simParamBee = NULL)
 
 getFathersSegSiteGeno(
   x,
   nInd = NULL,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getVirginQueensSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getVirginQueensSegSiteGeno(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
-getWorkersSegSiteGeno(x, nInd = NULL, chr = NULL, simParamBee = NULL)
+getWorkersSegSiteGeno(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
 getDronesSegSiteGeno(
   x,
   nInd = NULL,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
@@ -54,6 +69,9 @@ individuals are accessed, otherwise a random sample}
 are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with genotypes of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -117,6 +135,11 @@ getWorkersSegSiteGeno(colony)
 getCasteSegSiteGeno(colony, caste = "drones")
 getDronesSegSiteGeno(colony)
 
+# Get genotypes for all individuals
+getCasteSegSiteGeno(colony, caste = "all")
+# Get all genotypes in a single matrix
+getCasteSegSiteGeno(colony, caste = "all", collapse = TRUE)
+
 getCasteSegSiteGeno(apiary, caste = "queen")
 getQueenSegSiteGeno(apiary)
 
@@ -134,6 +157,10 @@ getWorkersSegSiteGeno(apiary)
 
 getCasteSegSiteGeno(apiary, caste = "drones")
 getDronesSegSiteGeno(apiary)
+
+# Get the genotypes of all individuals either by colony or in a single matrix
+getCasteSegSiteGeno(apiary, caste = "all")
+getCasteSegSiteGeno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}

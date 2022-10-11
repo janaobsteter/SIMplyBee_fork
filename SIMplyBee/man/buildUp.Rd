@@ -104,7 +104,7 @@ getWorkers(colony)@id
 # we got new workers since new = TRUE
 # Build up a MultiColony class
 apiary <- buildUp(apiary, nWorkers = 250)
-# Build up with unequal numbers
+# Build up with different numbers
 apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
 nWorkers(apiary)
 nDrones(apiary)

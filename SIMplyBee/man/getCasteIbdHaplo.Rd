@@ -16,10 +16,17 @@ getCasteIbdHaplo(
   chr = NULL,
   snpChip = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getQueenIbdHaplo(x, chr = NULL, snpChip = NULL, simParamBee = NULL)
+getQueenIbdHaplo(
+  x,
+  chr = NULL,
+  snpChip = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
 getFathersIbdHaplo(
   x,
@@ -27,6 +34,7 @@ getFathersIbdHaplo(
   chr = NULL,
   snpChip = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -35,6 +43,7 @@ getVirginQueensIbdHaplo(
   nInd = NULL,
   chr = NULL,
   snpChip = NULL,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -43,6 +52,7 @@ getWorkersIbdHaplo(
   nInd = NULL,
   chr = NULL,
   snpChip = NULL,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -52,14 +62,15 @@ getDronesIbdHaplo(
   chr = NULL,
   snpChip = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
@@ -71,6 +82,9 @@ are retrieved}
 if \code{NULL}, all sites are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -136,8 +150,16 @@ getWorkersIbdHaplo(colony)
 getCasteIbdHaplo(colony, caste = "drones")
 getDronesIbdHaplo(colony)
 
+# Get haplotypes for all individuals
+getCasteIbdHaplo(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getCasteIbdHaplo(colony, caste = "all", collapse = TRUE)
+
+# MultiColony
 getCasteIbdHaplo(x = apiary, caste = "queen")
 getQueenIbdHaplo(apiary)
+# Or collapse all the haplotypes into a single matrix
+getQueenIbdHaplo(apiary, collapse = TRUE)
 
 getCasteIbdHaplo(apiary, caste = "fathers")
 getCasteIbdHaplo(apiary, caste = "fathers", nInd = 2)
@@ -153,6 +175,10 @@ getWorkersIbdHaplo(apiary)
 
 getCasteIbdHaplo(apiary, caste = "drones")
 getDronesIbdHaplo(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getCasteIbdHaplo(apiary, caste = "all")
+getCasteIbdHaplo(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
