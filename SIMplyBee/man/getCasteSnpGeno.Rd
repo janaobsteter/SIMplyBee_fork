@@ -16,10 +16,17 @@ getCasteSnpGeno(
   snpChip = 1,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getQueenSnpGeno(x, snpChip = 1, chr = NULL, simParamBee = NULL)
+getQueenSnpGeno(
+  x,
+  snpChip = 1,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
 getFathersSnpGeno(
   x,
@@ -27,6 +34,7 @@ getFathersSnpGeno(
   snpChip = 1,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -35,10 +43,18 @@ getVirginQueensSnpGeno(
   nInd = NULL,
   snpChip = 1,
   chr = NULL,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getWorkersSnpGeno(x, nInd = NULL, snpChip = 1, chr = NULL, simParamBee = NULL)
+getWorkersSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
 getDronesSnpGeno(
   x,
@@ -46,14 +62,15 @@ getDronesSnpGeno(
   snpChip = 1,
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
@@ -64,6 +81,9 @@ individuals are accessed, otherwise a random sample}
 are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with genotypes of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -128,6 +148,11 @@ getWorkersSnpGeno(colony)
 getCasteSnpGeno(colony, caste = "drones")
 getDronesSnpGeno(colony)
 
+# Get genotypes for all individuals
+getCasteSnpGeno(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getCasteSnpGeno(colony, caste = "all", collapse = TRUE)
+
 getCasteSnpGeno(apiary, caste = "queen")
 getQueenSnpGeno(apiary)
 
@@ -145,6 +170,10 @@ getWorkersSnpGeno(apiary)
 
 getCasteSnpGeno(apiary, caste = "drones")
 getDronesSnpGeno(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getCasteSnpGeno(apiary, caste = "all")
+getCasteSnpGeno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}

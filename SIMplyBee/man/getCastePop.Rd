@@ -9,17 +9,24 @@
 \alias{getVirginQueens}
 \title{Access individuals of a caste}
 \usage{
-getCastePop(x, caste = "all", nInd = NULL, use = "order", removeFathers = TRUE)
+getCastePop(
+  x,
+  caste = "all",
+  nInd = NULL,
+  use = "order",
+  removeFathers = TRUE,
+  collapse = FALSE
+)
 
-getQueen(x)
+getQueen(x, collapse = FALSE)
 
-getFathers(x, nInd = NULL, use = "rand")
+getFathers(x, nInd = NULL, use = "rand", collapse = FALSE)
 
-getWorkers(x, nInd = NULL, use = "rand")
+getWorkers(x, nInd = NULL, use = "rand", collapse = FALSE)
 
-getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE)
 
-getVirginQueens(x, nInd = NULL, use = "rand")
+getVirginQueens(x, nInd = NULL, use = "rand", collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -43,6 +50,8 @@ returns at least one individual, even if \code{nInd = 0})}
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
 set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
+
+\item{collapse}{logical, whether to return a single merged population}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is
@@ -142,6 +151,11 @@ getQueen(apiary)
 getCastePop(apiary, caste = "queen")[[1]]@id
 getCastePop(apiary, caste = "queen")[[2]]@id
 
+# Sample individuals from all the castes
+getCastePop(colony, nInd = 5, caste = "all")
+# Sample individuals from all the castes as a single population
+getCastePop(colony, nInd = 5, caste = "all", collapse = TRUE)
+
 getCastePop(apiary, caste = "fathers")
 getFathers(apiary)
 getFathers(apiary)[[1]]@id
@@ -157,7 +171,7 @@ getVirginQueens(apiary, nInd = 2)
 mergePops(getVirginQueens(apiary))
 
 getCastePop(apiary, caste = "workers")
-# Get unequal number from colonies
+# Get different number of workers per colony
 getCastePop(apiary, caste = "workers", nInd = c(10, 20))
 getWorkers(apiary)
 getWorkers(apiary)[[1]]@id
@@ -166,7 +180,7 @@ getWorkers(apiary, nInd = 2)
 mergePops(getWorkers(apiary))
 
 getCastePop(apiary, caste = "drones")
-# Get unequal number from colonies
+# Get different number of drones per colony
 getCastePop(apiary, caste = "drones", nInd = c(10, 50))
 getDrones(apiary)
 getDrones(apiary)[[1]]@id
@@ -177,6 +191,12 @@ mergePops(getDrones(apiary))
 getCastePop(apiary)
 getCastePop(apiary, caste = "queen")
 getCastePop(apiary, caste = "drones")
+
+# Obtain individuals from MultiColony as a single population
+getCastePop(apiary, caste = "queen", collapse = TRUE)
+getQueen(apiary, collapse = TRUE)
+getWorkers(apiary, nInd = 10, collapse = TRUE)
+getDrones(apiary, nInd = 3, collapse = TRUE)
 }
 \seealso{
 \code{\link{getQueen}}, \code{\link{getFathers}},

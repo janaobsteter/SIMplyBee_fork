@@ -17,10 +17,18 @@ getCasteQtlHaplo(
   haplo = "all",
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
-getQueenQtlHaplo(x, trait = 1, haplo = "all", chr = NULL, simParamBee = NULL)
+getQueenQtlHaplo(
+  x,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
 getFathersQtlHaplo(
   x,
@@ -29,6 +37,7 @@ getFathersQtlHaplo(
   haplo = "all",
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -38,6 +47,7 @@ getVirginQueensQtlHaplo(
   trait = 1,
   haplo = "all",
   chr = NULL,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -47,6 +57,7 @@ getWorkersQtlHaplo(
   trait = 1,
   haplo = "all",
   chr = NULL,
+  collapse = FALSE,
   simParamBee = NULL
 )
 
@@ -57,14 +68,15 @@ getDronesQtlHaplo(
   haplo = "all",
   chr = NULL,
   dronesHaploid = TRUE,
+  collapse = FALSE,
   simParamBee = NULL
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
@@ -79,6 +91,9 @@ value of 2 for male haplotypes}
 are retrieved}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -143,6 +158,11 @@ getWorkersQtlHaplo(colony)
 getCasteQtlHaplo(colony, caste = "drones")
 getDronesQtlHaplo(colony)
 
+# Get haplotypes for all individuals
+getCasteQtlHaplo(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getCasteQtlHaplo(colony, caste = "all", collapse = TRUE)
+
 getCasteQtlHaplo(apiary, caste = "queen")
 getQueenQtlHaplo(apiary)
 
@@ -160,6 +180,11 @@ getWorkersQtlHaplo(apiary)
 
 getCasteQtlHaplo(apiary, caste = "drones")
 getDronesQtlHaplo(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getCasteQtlHaplo(apiary, caste = "all")
+getCasteQtlHaplo(apiary, caste = "all", collapse = TRUE)
+
 }
 \seealso{
 \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
