@@ -176,7 +176,7 @@ nEmptyColonies <- function(multicolony) {
 #' @export
 nCaste <- function(x, caste = "all") {
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (isColony(x)) {
     if (caste == "all") {
@@ -196,7 +196,7 @@ nCaste <- function(x, caste = "all") {
     }
   } else if (isMultiColony(x)) {
       fun <- ifelse(caste == "all", lapply, sapply)
-      ret <- fun(X = x@colonies, FUN = function(x) ifelse(isEmpty(x), 0, nCaste(caste = caste)))
+      ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste)))
       names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
@@ -604,7 +604,7 @@ nHomBrood <- function(x) {
 #' @export
 isCaste <- function(x, caste, simParamBee = NULL) {
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1453,7 +1453,7 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (isPop(x)) {
     ret <- x@id
@@ -1571,7 +1571,7 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (isPop(x)) {
     ret <- x@sex
@@ -3189,7 +3189,7 @@ getCasteIbdHaplo <- function(x, caste, nInd = NULL, chr = NULL, snpChip = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -3450,7 +3450,7 @@ getCasteQtlHaplo <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -3705,7 +3705,7 @@ getCasteQtlGeno <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -3961,7 +3961,7 @@ getCasteSegSiteHaplo <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -4214,7 +4214,7 @@ getCasteSegSiteGeno <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -4464,7 +4464,7 @@ getCasteSnpHaplo <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -4712,7 +4712,7 @@ getCasteSnpGeno <- function(x, caste, nInd = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -5390,7 +5390,7 @@ calcBeeGRMIbd <- function(x) {
 #' @export
 getCastePheno <- function(x, caste, nInd = NULL, collapse = FALSE) {
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -5700,7 +5700,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @export
 getCasteGv <- function(x, caste, nInd = NULL, collapse = FALSE) {
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -5887,7 +5887,7 @@ getCasteBv <- function(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NU
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -6112,7 +6112,7 @@ getCasteDd <- function(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NU
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -6337,7 +6337,7 @@ getCasteAa <- function(x, caste, nInd = NULL, collapse = FALSE, simParamBee = NU
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (length(caste) > 1) {
-    stop("Argument caste can be only of length 1!")
+    stop("Argument caste must be of length 1!")
   }
   if (any(nInd < 0)) {
     stop("nInd must not be negative!")
@@ -6544,7 +6544,7 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' @param IDs numeric, IDs of either the virgin queens OR the colonies (can't have both
 #'   in the same cross plan!)
 #' @param drones \code{\link{Pop-class}}, drone population available for mating (DCA)
-#' @param nFathers integer or function, number of drones to be mated with each virgin
+#' @param nDrones integer or function, number of drones to be mated with each virgin
 #'   queen
 #'
 #' @return named list with names being virgin queen or colony input IDs with each
@@ -6574,17 +6574,17 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'
 #' # Create a combined cross plan for mating the virgin queens (with virgin queen IDs)
 #' crossPlanVirginQueens <- createRandomCrossPlan(IDs = c(virginQueen1@id, virginQueen2@id),
-#'                                                        drones = DCA,
-#'                                                        nFathers = nFathersPoisson)
+#'                                                drones = DCA,
+#'                                                nDrones = nFathersPoisson)
 #'
 #' # Cross the virgin queens according to the cross plan
-#' virginQueen1 <- cross(virginQueen1, drones = DCA, crossPlan = crossPlanColonies)
-#' virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanColonies)
+#' virginQueen1 <- cross(virginQueen1, drones = DCA, crossPlan = crossPlanVirginQueens)
+#' virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanVirginQueens)
 #'
 #' # Create a cross plan for mating the virgin colonies and the virgin apiary (with colony IDs)
 #' crossPlanColonies <- createRandomCrossPlan(IDs = getId(c(colony1, apiary1)),
 #'                                            drones = DCA,
-#'                                            nFathers = nFathersPoisson)
+#'                                            nDrones = nFathersPoisson)
 #'
 #' # Cross the colonies according to the cross plan
 #' colony1 <- cross(colony1, drones = DCA, crossPlan = crossPlanColonies)
@@ -6592,36 +6592,35 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' nFathers(colony1)
 #' nFathers(apiary1)
 #'
-#' # You can mate virgin queens and colonies on the same way on the mating stations's DCA
+#' # You can mate virgin queens and colonies in the same way on the mating stations's DCA
 #' # Create a mating station from colony1
 #' matingStationDCA <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 10)
 #'
 #' # Create another virgin apiary
 #' apiary2 <- createMultiColony(basePop[11:13])
 #'
-#' # Create a cross plan for crossing the apiary on the mating station
-#' crossPlanApiary <- createRandomCrossPlan(IDs = getId(apiary2), drones = matingStationDCA, nFathers = nFathersPoisson)
+#' # Create a cross plan with colonyIDs for crossing the apiary on the mating station
+#' crossPlanApiary <- createRandomCrossPlan(IDs = getId(apiary2),
+#'                                          drones = matingStationDCA,
+#'                                          nDrones = nFathersPoisson)
 #'
 #' # Cross the apiary
 #' apiary2 <- cross(apiary2, drones = matingStationDCA, crossPlan = crossPlanApiary)
 #' nFathers(apiary2)
 #'
 #' @export
-createRandomCrossPlan <- function(IDs, drones, nFathers) { # Do we want nFathers or nDrones???!!!
+createRandomCrossPlan <- function(IDs, drones, nDrones) {
   if (!isPop(drones)) {
     stop("Argument drones must be a Pop class!")
   }
   drones <- drones[isDrone(drones)]
-  if (is.function(nFathers)) {
-    nFathers <- nFathers(length(IDs))
-    fathersMatch <- sample(unlist(sapply(1:length(IDs),
-                                         FUN = function(x) rep(x, nFathers[x]))))
+  if (is.function(nDrones)) {
+    nDrones <- nDrones(n = length(IDs))
+    fathersMatch <- rep.int(IDs, times = nDrones)
   } else {
-    fathersMatch <- sample(unlist(sapply(1:length(IDs),
-                                         FUN = function(x) rep(x, nFathers))))
+    fathersMatch <- rep(IDs, each = nDrones)
   }
-  fatherIDs <- sample(as.vector(drones@id), size = length(fathersMatch), replace = F)
+  fatherIDs <- sample(drones@id, size = length(fathersMatch), replace = FALSE)
   crossPlan <- base::split(fatherIDs, fathersMatch)
-  names(crossPlan) <- IDs
   return(crossPlan)
 }

@@ -917,7 +917,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' @description Level 1 function that creates a DCA at a classical honeybee
 #'   mating station of several sister drone producing queens. The
 #'   functions first creates multiple drone producing queens (DPQs) from one colony;
-#'   and second, produces drones from the DPQs. All the created drones forms a
+#'   and second, produces drones from the DPQs. All the created drones form a
 #'   DCA at a mating station.
 #'
 #' @param colony \code{\link{Colony-class}} to produce drone producing queens from
@@ -949,7 +949,19 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' nFathers(colony2)
 #'
 #' @export
-createMatingStationDCA <- function(colony, nDPQs = 30, nDronePerDPQ = 100) {
+createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (!isColony(colony)) {
+    stop("The argument colony must be a Colony class!")
+  }
+  if (is.null(nDronePerDPQ)) {
+    nDronePerDPQ <- SP$nDrones
+  }
+  if (is.function(nDronePerDPQ)) {
+    nDronePerDPQ <- nDronePerDPQ(n = nDPQ)
+  }
   DPQs <- createVirginQueens(colony, nInd = nDPQs)
   drones <- createDrones(DPQs, nInd = nDronePerDPQ)
   return(drones)
@@ -1291,11 +1303,11 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   if there is more than one virgin queen, the user has to provide
 #'   a list of drone \code{\link{Pop-class}}. For this, the user can use
 #'   \code{\link{pullDroneGroupsFromDCA}}
-#' @param crossPlan, named list with names being virgin queen or colony input IDs with each
+#' @param crossPlan, named list with names being virgin queen or colony IDs with each
 #'   list element holding the IDs of selected drones. Also see \code{\link{createRandomCrossPlan}}.
-#7    If cross plan is NULL, we cross each virgin queens with the element-wise element
-#'    of \code{drones}, which should be the sam length as the number of virgin queens
-#'    If the cross plan is provided, the drones argument must be a single \code{\link{Pop-class}}.
+#7    If cross plan is NULL, we cross each virgin queen with the element-wise element
+#'    of \code{drones}, which should be the same length as the number of virgin queens
+#'    If the cross plan is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.
 #' @param removeFathers logical, removes those \code{drones} that have already
 #'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
 #'   virgin queens, say via insemination

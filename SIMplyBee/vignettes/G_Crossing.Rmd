@@ -93,7 +93,7 @@ Providing packages / populations of drones can be memory consuming, especially w
 crossPlanQueens <- createRandomCrossPlan(IDs = c(getId(virginQueen2),
                                                  getId(virginQueens2)),
                                          drones = DCA,
-                                         nFathers = 15)
+                                         nDrones = 15)
 # Cross a aingle virgin queen
 virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanQueens)
 nFathers(virginQueen2)
@@ -103,7 +103,7 @@ nFathers(virginQueens2)
 
 crossPlanColonies <- createRandomCrossPlan(IDs = c(getId(colony2), getId(apiary2)),
                                            drones = DCA,
-                                           nFathers = nFathersPoisson)
+                                           nDrones = nFathersPoisson)
 # Cross a single colony
 colony2 <- cross(colony2, drones = DCA, crossPlan = crossPlanColonies)
 nFathers(colony2)
@@ -127,7 +127,7 @@ Here, we will mate a single colony and a group of colonies (`Multicolony` object
 crossPlanMatingStation <- createRandomCrossPlan(IDs = c(getId(colony3), 
                                                          getId(apiary3)),
                                                 drones = matingStationDCA,
-                                                nFathers = nFathersTruncPoisson)
+                                                nDrones = nFathersTruncPoisson)
 
 # Cross a colony
 colony3 <- cross(colony3, crossPlan = crossPlanMatingStation, drones = matingStationDCA)
@@ -144,9 +144,9 @@ It could happen, that you have e.g. 10 virgin colonies in an apiary - you would 
 singleDrone = createDrones(colony2, nInd = 1)
 # Create a cross plan for crossinge some of the colonies in an open DCA, some with single drone, and some on a mating station
 crossPlanApiary4 <- c(
-  createRandomCrossPlan(IDs = getId(apiary4)[1], drones = singleDrone, nFathers = 1),
-  createRandomCrossPlan(IDs = getId(apiary4)[2:6], drones = DCA, nFathers = nFathersTruncPoisson),
-  createRandomCrossPlan(IDs = getId(apiary4)[7:10], drones = matingStationDCA, nFathers = nFathersTruncPoisson)
+  createRandomCrossPlan(IDs = getId(apiary4)[1], drones = singleDrone, nDrones = 1),
+  createRandomCrossPlan(IDs = getId(apiary4)[2:6], drones = DCA, nDrones = nFathersTruncPoisson),
+  createRandomCrossPlan(IDs = getId(apiary4)[7:10], drones = matingStationDCA, nDrones = nFathersTruncPoisson)
   )
 
 apiary4 <- cross(apiary4, crossPlan = crossPlanApiary4, drones = c(singleDrone, DCA, matingStationDCA))
