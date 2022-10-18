@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 ===== QUESTION =====  Are we including SimParamBee Information in this section? 
 
 
-This vignette introduces SIMplyBee package by describing and demonstrating how SIMplyBee implements honeybee biology. Specifically, it describes: 
+This vignette introduces SIMplyBee package by describing and demonstrating how SIMplyBee manages and manipulates the honey bee's genomic information. Specifically, it describes: 
 
 * Genome simulation
 
@@ -45,7 +45,7 @@ SIMplyBee allows for the simulation of the honeybee genome. Honeybees genome is 
 
 # Initiating simulation with founder genomes and global parameters,
 
-We initiate the simulation by simulating founder honeybee genomes. 
+We simulate some genomes that represent the founder population. 
 We can quickly generate random genomes using AlphaSimR's `quickHaplo()`.
 Alternatively, in SIMplyBee's `simulateHoneybeeGenomes()` we included the simulation of the honeybee genome with MaCS (ref) and are currently allowing for the simulation of three subspecies: A. m. ligustica, A. m. carnica, and A. m. mellifera according to the demographic model published in Wallberg et al., 2014.
 
@@ -60,7 +60,7 @@ founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 ```
 
 
-Alternatively as a second demonstration, using SIMplyBee's `simulateHoneybeeGenomes()`, we will create a founder population containing the genomes of 4 A.m.m (North) individuals and 2 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 5 segregating sites per chromosome in this example. 
+Alternatively as a second demonstration, using SIMplyBee's `simulateHoneybeeGenomes()`, we will create a founder population containing the genomes of 4 A.m.mellifera (North) individuals and 2 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 5 segregating sites per chromosome in this example. 
 These numbers are of course extremely low but for demonstrative reasons we want a quick example. This chunk of code should take about 5 minutes to run. 
 
 
@@ -72,7 +72,7 @@ founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 4,
                                           nSegSites = 5)
 ```
 
-Due to the complexity of this function, the computing power required is high and time so using more realistic numbers will take a lot of time to process. We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is much easier to load into your environment and work with. 
+Due to the complexity of this function, the computing power required is high and time so using more realistic numbers will take a lot of time to process. We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is easy to load into your environment and work with. 
 
 ```{r save Rdata file}
 save(founderGenomes2, file="FounderGenomes2_3chr.RData")
@@ -116,7 +116,7 @@ TODO : functions that we could write about:
 
 TODO: add genome image (tree and inheritance and csd)?
 
-The complementary sex determining (csd) locus, well, complements sex
+The Complementary Sex Determinor (csd) locus, well, complements sex
 determination. Fertilised eggs that are heterozygous at the csd locus develop
 into workers. On the other hand, homozygous eggs develop into unviable drones.
 These drones are usually discarded by workers. SIMplyBee doesn't store these
