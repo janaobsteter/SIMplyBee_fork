@@ -8,14 +8,14 @@ test_that("supersede", {
     SP <- SimParamBee$new(founderGenomes)
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create Colony and MultiColony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(colony, nWorkers = 100)
     apiary <- createMultiColony(basePop[3:8], n = 6)
-    apiary <- cross(apiary, fathers = fatherGroups[2:7])
+    apiary <- cross(apiary, drones = fatherGroups[2:7])
     apiary <- buildUp(apiary, nWorkers = 100)
 
   expect_true(isQueenPresent(colony))
@@ -43,15 +43,15 @@ test_that("split", {
     SP <- SimParamBee$new(founderGenomes)
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
     nWorkers = 100
 
     # Create Colony and MultiColony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(colony, nWorkers = nWorkers)
     apiary <- createMultiColony(basePop[3:8], n = 6)
-    apiary <- cross(apiary, fathers = fatherGroups[2:7])
+    apiary <- cross(apiary, drones = fatherGroups[2:7])
     apiary <- buildUp(apiary, nWorkers = 100)
 
   expect_error(split(colony, p = 1.2))
@@ -62,6 +62,18 @@ test_that("split", {
   expect_equal(nWorkers(colony), nWorkers/2)
     colony@workers <- NULL
   expect_error(split(colony, p = 0.5))
+  expect_equal(length(tmp), 2)
+
+    colony <- buildUp(colony, nWorkers = nWorkers)
+    tmp <- split(colony, p = 1)
+  expect_equal(nWorkers(tmp$split), 100)
+    colony <- buildUp(colony, nWorkers = nWorkers)
+    colony@queen <- NULL
+  expect_error(split(colony, p = 0.5))
+    tmp <- split(apiary)
+  expect_equal(nColonies(tmp$split), 6)
+  expect_equal(nColonies(tmp$remnant), 6)
+
 })
 
 # ---- resetEvents ----
@@ -72,13 +84,13 @@ test_that("resetEvents", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 100)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = 10)
 
     # Create and cross Colony and MultiColony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     apiary <- createMultiColony(basePop[4:5], n = 2)
-    apiary <- cross(apiary, fathers = fatherGroups[3:4])
+    apiary <- cross(apiary, drones = fatherGroups[3:4])
 
     # Build-up - this sets Productive to TRUE
     colony <- buildUp(colony, nWorkers = 100)
@@ -108,17 +120,17 @@ test_that("Combine", {
     SP <- SimParamBee$new(founderGenomes)
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create weak and strong Colony and MultiColony class
     colony1 <- createColony(x = basePop[2])
-    colony1 <- cross(colony1, fathers = fatherGroups[[1]])
+    colony1 <- cross(colony1, drones = fatherGroups[[1]])
     colony2 <- createColony(x = basePop[3])
-    colony2 <- cross(colony2, fathers = fatherGroups[[2]])
+    colony2 <- cross(colony2, drones = fatherGroups[[2]])
     apiary1 <- createMultiColony(basePop[4:6], n = 3)
-    apiary1 <- cross(apiary1, fathers = fatherGroups[3:5])
+    apiary1 <- cross(apiary1, drones = fatherGroups[3:5])
     apiary2 <- createMultiColony(basePop[7:9], n = 3)
-    apiary2 <- cross(apiary2, fathers = fatherGroups[6:8])
+    apiary2 <- cross(apiary2, drones = fatherGroups[6:8])
 
     # Build-up
     colony1 <- buildUp(x = colony1, nWorkers = 100, nDrones = 20)
@@ -143,14 +155,14 @@ test_that("swarm", {
     SP <- SimParamBee$new(founderGenomes)
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
     nWorkers = 100
     # Create Colony and MultiColony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(colony, nWorkers = nWorkers)
     apiary <- createMultiColony(basePop[3:8], n = 6)
-    apiary <- cross(apiary, fathers = fatherGroups[2:7])
+    apiary <- cross(apiary, drones = fatherGroups[2:7])
     apiary <- buildUp(apiary, nWorkers = 100)
 
     # Swarm a colony
@@ -160,10 +172,18 @@ test_that("swarm", {
   expect_true(areVirginQueensPresent(tmp$remnant))
   expect_equal(colony@queen@id, tmp$swarm@queen@id)
   expect_equal(nWorkers(tmp$swarm), nWorkers/2)
+  expect_equal(length(tmp), 2)
+    colony <- buildUp(colony, nWorkers = nWorkers)
+    tmp <- swarm(colony, p = 1)
+  expect_equal(nWorkers(tmp$swarm), 100)
+    colony <- tmp$swarm
+    colony@queen <- NULL
+  expect_error(swarm(colony, p = 0.4))
 
-    # Swarm all colonies in the apiary with p = 0.6 (60% of workers leave)
-    tmp <- swarm(apiary, p = 0.6)
-
+    #Apiary test
+    tmp <- swarm(apiary, p = 0.5)
+  expect_equal(nColonies(tmp$swarm), 6)
+  expect_equal(nColonies(tmp$remnant), 6)
   expect_true(isQueenPresent(tmp$swarm[[4]]))
   expect_true(areVirginQueensPresent(tmp$remnant[[4]]))
 })
@@ -175,13 +195,13 @@ test_that("collapse", {
     SP <- SimParamBee$new(founderGenomes)
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = 10)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create Colony and MultiColony class
     colony <- createColony(x = basePop[1])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     apiary <- createMultiColony(x = basePop[2:10], n = 9)
-    apiary <- cross(apiary, fathers = fatherGroups[2:10])
+    apiary <- cross(apiary, drones = fatherGroups[2:10])
 
     # Collapse
   expect_false(hasCollapsed(colony))

@@ -5,9 +5,9 @@ test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes)
-  expect_equal(nColonies(createColonies(n = 2)), 2)
-  expect_equal(nColonies(createColonies()), 0)
-  expect_equal(nColonies(createColonies(n = 10)), 10)
+  expect_equal(nColonies(createMultiColony(n = 2)), 2)
+  expect_equal(nColonies(createMultiColony()), 0)
+  expect_equal(nColonies(createMultiColony(n = 10)), 10)
 })
 
 # ---- nCaste ----
@@ -17,140 +17,107 @@ test_that("nCaste", {
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 45)
-  droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = 15)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = 10)
   colony <- createColony(x = basePop[2])
   colony <- cross(colony, drones = droneGroups[[1]])
-  colony <- buildUp(colony, nDrones = 10, nWorkers = 20)
+  colony <- buildUp(colony, nDrones = 15, nWorkers = 20)
   expect_equal(nCaste(colony, caste = "queen"), 1)
-  expect_equal(nCaste(colony, caste = "fathers"), 15)
+  expect_equal(nCaste(colony, caste = "drones"), 15)
   expect_equal(nCaste(colony, caste = "virginQueens"), 0)
-  expect_equal(nCaste(colony, caste = "workers"), 20)
-  expect_equal(nCaste(colony, caste = "drones"), 10)
+  expect_equal(nCaste(colony, caste = "workers"), nWorkers(colony))
+  expect_equal(nCaste(colony, caste = "fathers"), 10)
 
-  apiary <- createColonies(basePop[3:4], n = 2)
+  apiary <- createMultiColony(basePop[3:4], n = 2)
   apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
   apiary <- buildUp(apiary, nWorkers = 20, nDrones = 10)
-  expect_equal(nCaste(apiary, caste = "queen"), c("3" = 1, "4" = 1))
-  expect_equal(nCaste(apiary, caste = "fathers"), c("3" = 15, "4" = 15))
-  expect_equal(nCaste(apiary, caste = "virginQueens"), c("3" = 0, "4" = 0))
-  expect_equal(nCaste(apiary, caste = "workers"), c("3" = 20, "4" = 20))
-  expect_equal(nCaste(apiary, caste = "drones"), c("3" = 10, "4" = 10))
+  expect_equal(sum(nCaste(apiary, caste = "queen")), 2)
+  expect_equal(sum(nCaste(apiary, caste = "drones")), 20)
+  expect_equal(sum(nCaste(apiary, caste = "virginQueens")), 0)
+  expect_equal(sum(nCaste(apiary, caste = "workers")), sum(nWorkers(apiary)))
+  expect_equal(sum(nCaste(apiary, caste = "fathers")), 20)
 })
 
 # ---- nQueens ----
 
 test_that("nQueens", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes)
-  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[3], fathers = drones[6:8])
+    founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+    SP <- SimParamBee$new(founderGenomes)
+    basePop <- createVirginQueens(founderGenomes)
+    drones <- createDrones(basePop[1], n = 1000)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+
+    colony1 <- createColony(x = basePop[1])
+    colony1 <- cross(colony1, drones = fatherGroups[[1]])
+    apiary <- createMultiColony(basePop[3:4], n = 2)
+    apiary <- cross(apiary, drones = fatherGroups[c(2, 3)])
+
   expect_equal(nQueens(colony1), 1)
-  expect_equal(nQueens(colony2), 1)
-  colony2 <- removeQueen(colony2)
-  expect_equal(nQueens(colony2), 0)
-  apiary <- c(colony1, colony2)
-  expect_equal(nQueens(apiary), c("2" = 1, "NA" = 0))
-})
-
-# ---- nFathers ----
-
-test_that("nFathers", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes)
-  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-  matedQueen1 <- crossVirginQueen(pop = basePop[2], fathers = drones[1:5])
-  matedQueen2 <- crossVirginQueen(pop = basePop[3], fathers = drones[6:9])
-
-  expect_equal(nFathers(matedQueen1), 5)
-  expect_equal(nFathers(matedQueen2), 4)
-  expect_equal(nFathers(c(basePop[2], matedQueen1, matedQueen2)), c(0, 5, 4))
-
-  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[3], fathers = drones[6:9])
-  expect_equal(nFathers(colony1), 5)
-  expect_equal(nFathers(colony2), 4)
-  expect_equal(nFathers(c(colony1, colony2)), c("2" = 5, "3" = 4))
+    colony1 <- removeQueen(colony1)
+  expect_equal(nQueens(colony1), 0)
+  expect_equal(sum(nQueens(apiary)), 2)
 })
 
 # ---- nDrones ----
 
 test_that("nDrones", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes)
-  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
+  basePop <- createVirginQueens(founderGenomes)
+  drones <- createDrones(basePop[1], n = 1000)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+
+  colony1 <- createColony(x = basePop[1])
+  colony1 <- cross(colony1, drones = fatherGroups[[1]])
+  colony2 <- createColony(x = basePop[2])
+  colony2 <- cross(colony2, drones = fatherGroups[[2]])
 
   expect_equal(nDrones(colony1), 0)
   colony1 <- addDrones(colony1, nInd = 5)
   colony2 <- addDrones(colony2, nInd = 10)
   expect_equal(nDrones(colony1), 5)
   expect_equal(nDrones(colony2), 10)
-  expect_equal(nDrones(c(colony1, colony2)), c("2" = 5, "3" = 10))
+  expect_equal(sum(nDrones(c(colony1, colony2))), 15)
   expect_error(nDrones(basePop))
-})
-
-# ---- isQueenMated ----
-
-test_that("isQueenMated", {
-  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
-  basePop <- newPop(founderGenomes)
-  drones <- createFounderDrones(pop = basePop[1], nDronesPerQueen = 10)
-  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-  colony3 <- createColony(virginQueens = basePop[4])
-  apiary <- c(colony1, colony2, colony3)
-
-  expect_true(isQueenMated(getQueen(colony1)))
-  expect_true(isQueenMated(colony1))
-  expect_true(isQueenMated(colony2))
-  expect_equal(isQueenMated(apiary), c("2" = TRUE, "3" = TRUE, `NA` = FALSE))
-  expect_false(isQueenMated(removeQueen(colony1)))
-  expect_false(isQueenMated(supersedeColony(colony2)))
-  expect_equal(
-    isQueenMated(c(
-      getQueen(colony1), getQueen(colony2),
-      getVirginQueens(colony3)
-    )),
-    c(TRUE, TRUE, FALSE)
-  )
 })
 
 # ---- getCsd ----
 
 test_that("getCsd", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 4)
-  basePop <- newPop(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
+   basePop <- createVirginQueens(founderGenomes)
 
-  drones <- createDrones(x = basePop[1], nDronesPerQueen = 10)
-  colony1 <- createColony(queen = basePop[2], fathers = drones[1:5])
-  colony2 <- createColony(queen = basePop[3], fathers = drones[6:10])
-  colony1 <- addWorkers(colony1, nInd = 10)
-  colony2 <- addWorkers(colony2, nInd = 20)
-  colony1 <- addDrones(colony1, nInd = 2)
-  colony2 <- addDrones(colony2, nInd = 4)
-  apiary <- c(colony1, colony2)
+   drones <- createDrones(x = basePop[1], nInd = 1000)
+   droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
-  haplo <- getCsdAlleles(getQueen(colony1))
-  geno <- getCsdGeno(getQueen(colony1))
+   # Create a Colony and a MultiColony class
+   colony <- createColony(x = basePop[2])
+   colony <- cross(colony, drones = droneGroups[[1]])
+   colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+
+   apiary <- createMultiColony(basePop[3:4], n = 2)
+   apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+   apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+
+  haplo <- getCsdAlleles(getQueen(colony))
+  geno <- getCsdGeno(getQueen(colony))
   expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
   # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
 
-  haplo <- getCsdAlleles(colony1)$queen
-  geno <- getCsdGeno(colony1)$queen
-  expect_equal(colSums(haplo), geno, ignore_attr = TRUE)
-  # colSums returns a vector not a matrix, hence need ignore_attr = TRUE
-
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  basePop <- newPop(founderGenomes)
-  expect_error(getCsdAlleles(basePop))
-  expect_error(getCsdGeno(basePop))
+  basePop <- createVirginQueens(founderGenomes)
+
+  drones <- createDrones(x = basePop[1], nInd = 1000)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+
+  # Create a Colony and a MultiColony class
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, drones = droneGroups[[1]])
+  colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+
+  expect_error(getCsdAlleles(getQueen(colony)))
+  expect_error(getCsdGeno(getQueen(colony)))
 })
 
 # ---- isGenoHeterozygous ----
@@ -170,20 +137,6 @@ test_that("isGenoHeterozygous", {
   expect_equal(SIMplyBee:::isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
 })
 
-# ---- nNULLColonies ----
-
-test_that("nNULLColonies", {
-    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-    SP <- SimParamBee$new(founderGenomes)
-    basePop <- createVirginQueens(founderGenomes)
-    apiary <- createMultiColony(n = 3)
-
-  # 3 empty colonies are created above, so I test if the output is an intiger
-  # and if nNullColonies = 3
-  expect_true(is.integer(nNULLColonies(apiary)))
-  expect_equal(nNULLColonies(apiary), 3)
-})
-
 # ---- isCaste ----
 
 test_that("isCaste", {
@@ -192,27 +145,27 @@ test_that("isCaste", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
    # Create a Colony class
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = fatherGroups[[1]])
    colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
 
   # get the queen that is a caste "queen" and ask if it is a caste "queen"
-  # and drones and fathers
+  # and drones and drones
   expect_true(isCaste(getQueen(colony), caste = "queen"))
   expect_true(all(isCaste(getDrones(colony), caste = "drones")))
-  expect_true(all(isCaste(getFathers(colony), caste = "fathers")))
+  expect_true(all(isCaste(getdrones(colony), caste = "drones")))
   # get the queen that is a caste "queen" and test if it is a caste "workers",
   #test on virgin queen that is not present in a colony
   expect_false(isCaste(getQueen(colony), caste = "workers"))
   #test on virgin queen that is not present in a colony
   expect_null(isCaste(getVirginQueens(colony), caste = "virginQueens"))
-   malePop <- c(getDrones(colony), getFathers(colony))
-  expect_true(any(isCaste(malePop, caste = "fathers")))
+   malePop <- c(getDrones(colony), getdrones(colony))
   expect_true(any(isCaste(malePop, caste = "drones")))
-  expect_false(all(isCaste(malePop, caste = "fathers")))
+  expect_true(any(isCaste(malePop, caste = "drones")))
+  expect_false(all(isCaste(malePop, caste = "drones")))
   expect_false(all(isCaste(malePop, caste = "drones")))
 })
 
@@ -224,11 +177,11 @@ test_that("calcQueensPHomBrood", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
 
@@ -243,7 +196,7 @@ test_that("calcQueensPHomBrood", {
   colony@drones <- NULL
   colony@virginQueens <- NULL
  expect_error(calcQueensPHomBrood(colony))
- expect_error(calcQueensPHomBrood(apiary))
+ expect_equal((length(calcQueensPHomBrood(apiary))), 0)
 })
 
 # ---- pHomBrood ----
@@ -254,11 +207,11 @@ test_that("pHomBrood", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
 
@@ -274,7 +227,7 @@ test_that("pHomBrood", {
     colony@drones <- NULL
     colony@virginQueens <- NULL
   expect_error(pHomBrood(colony))
-  expect_error(pHomBrood(apiary))
+  expect_equal(length(pHomBrood(apiary)), 0)
 })
 
 # ---- nHomBrood -----
@@ -285,11 +238,11 @@ test_that("nHomBrood", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
 
@@ -305,7 +258,7 @@ test_that("nHomBrood", {
     colony@drones <- NULL
     colony@virginQueens <- NULL
   expect_error(nHomBrood(colony))
-  expect_error(nHomBrood(apiary))
+  expect_equal(length(nHomBrood(apiary)), 0)
 })
 
 # ---- isQueenPresent ----
@@ -316,18 +269,18 @@ test_that("isQueenPresent", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- addVirginQueens(x = colony, nInd = 1)
     apiary <- createMultiColony(n = 1)
     vec <- c(1,2,3,4)
     apiary2 <- createMultiColony()
 
   expect_true(isQueenPresent(colony))
-  expect_error(isQueenPresent(apiary)) #TODO do we want error?
+  expect_false(isQueenPresent(apiary))
   expect_error(isQueenPresent(vec))
   expect_true(is.vector(isQueenPresent(apiary2)))
 })
@@ -340,11 +293,11 @@ test_that("isVirginQueensPresent", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class object
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
     colony <- addVirginQueens(x = colony, nInd = 1)
     apiary <- createMultiColony(n = 1)
@@ -353,7 +306,7 @@ test_that("isVirginQueensPresent", {
 
 
   expect_true(isVirginQueensPresent(colony))
-  expect_error(isVirginQueensPresent(apiary))
+  expect_false(isVirginQueensPresent(apiary))
   expect_error(isQueenVirginPresent(vec))
   expect_true(is.vector(isVirginQueensPresent(apiary2)))
 })
@@ -366,30 +319,30 @@ test_that("isProductive", {
      basePop <- createVirginQueens(founderGenomes)
 
      drones <- createDrones(x = basePop[1], nInd = 1000)
-     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
      # Create a Colony and a MultiColony class
      colony <- createColony(x = basePop[2])
-     colony <- cross(colony, fathers = fatherGroups[[1]])
+     colony <- cross(colony, drones = fatherGroups[[1]])
 
    expect_false(isProductive(colony))
      colony <- buildUp(x = colony)
    expect_true(isProductive(colony))
 
      apiary <- createMultiColony(basePop[3:4], n = 2)
-     apiary <- cross(apiary, fathers = fatherGroups[c(2, 3)])
+     apiary <- cross(apiary, drones = fatherGroups[c(2, 3)])
 
    expect_false(all(isProductive(apiary)))
     apiary <- buildUp(x = apiary)
    expect_true(all(isProductive(apiary)))
 
-   colony <- createColony()
-  expect_false(isProductive(colony))
-   colony <- NULL
-  expect_null(isProductive(colony))
+     colony <- createColony()
+    expect_false(isProductive(colony))
+     colony <- NULL
+    expect_error(isProductive(colony))
 
-   apiary <- createMultiColony()
-  expect_true(is.list(isProductive(apiary)))
+     apiary <- createMultiColony()
+    expect_true(is.list(isProductive(apiary)))
 })
 # ---- reduceDroneHaplo ----
 
@@ -441,11 +394,11 @@ test_that("getCsdAlleles", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
    # Create a Colony class
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = fatherGroups[[1]])
    colony <- buildUp(x = colony)
 
  expect_true(is.list(getCsdAlleles(colony)))
@@ -456,11 +409,11 @@ test_that("getCsdAlleles", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
    # Create a Colony class
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = fatherGroups[[1]])
    colony <- buildUp(x = colony)
 
  expect_error(getCsdAlleles(colony))
@@ -470,85 +423,88 @@ test_that("getCsdAlleles", {
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
-   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
    # Create a Colony class
    colony <- createColony(x = basePop[2])
-   colony <- cross(colony, fathers = fatherGroups[[1]])
+   colony <- cross(colony, drones = fatherGroups[[1]])
    colony <- buildUp(x = colony)
   expect_true(is.matrix(getCsdAlleles(colony, collapse = TRUE)))
   expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE)),
-               sum(nQueens(colony)*2, nFathers(colony), nWorkers(colony)*2, nDrones(colony),
+               sum(nQueens(colony)*2, nDrones(colony), nWorkers(colony)*2, nFathers(colony),
                    nVirginQueens(colony)*2))
   expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE)),
                nrow(unique(getCsdAlleles(colony, collapse = TRUE))))
-  expect_equal(length(getCsdAlleles(colony)), 5)
-#Maybe you can change this test to check whether the number of rows if less then SP$nCsdAlleles (its called something like this)?
+  expect_true(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE)) <= SP$nCsdAlleles)
+
   })
 
 # ---- getCsdGeno ----
 
 test_that("getCsdGeno", {
     founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-    SP <- SimParamBee$new(founderGenomes)
+    SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
 
   expect_true(is.list(getCsdGeno(colony)))
   expect_true(is.matrix(getCsdGeno(getQueen(colony))))
+  expect_true(nCsdAlleles(colony, collapse = TRUE) <= SP$nCsdAlleles)
 
     # set CSD to NULL
     SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
 
   expect_error(getCsdGeno(colony))
-  expect_true(nCsdAlleles(colony, collapse = TRUE) <= SP$nCsdAlleles)
+
 })
 
 # ---- isCsdHeterozygous ----
 
 test_that("isCsdHeterozygous", {
     founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-    SP <- SimParamBee$new(founderGenomes)
+    SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
+    colony@virginQueens <- createVirginQueens(colony, nInd = 1)
 
   expect_true(isCsdHeterozygous(colony@queen))
   expect_true(is.vector(isCsdHeterozygous(colony@workers)))
-  expect_true(all(isCsdHeterozygous(colony@drones)))
-  # Could you add a test whether the virgin queens are homozygous?
+  expect_false(all(isCsdHeterozygous(colony@drones)))
+  expect_true(isCsdHeterozygous(colony@virginQueens))
+
     # set CSD to NULL
     SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
 
   expect_error(isCsdHeterozygous(colony@queen))
@@ -562,11 +518,11 @@ test_that("nCsdAlleles", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
 
   expect_equal(nCsdAlleles(colony@queen), 2)
@@ -579,14 +535,14 @@ test_that("nCsdAlleles", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
 
-  expect_error(nCsdAlleles(colony@queen))
+  expect_equal(nCsdAlleles(colony@queen), 2)
 
     #collapse argument
     nCsdAlleles <- 5
@@ -594,11 +550,11 @@ test_that("nCsdAlleles", {
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
     # Create a Colony class
     colony <- createColony(x = basePop[2])
-    colony <- cross(colony, fathers = fatherGroups[[1]])
+    colony <- cross(colony, drones = fatherGroups[[1]])
     colony <- buildUp(x = colony)
   expect_true(is.numeric(nCsdAlleles(colony, collapse = TRUE)))
   expect_true(nCsdAlleles(colony, collapse = TRUE) <= nCsdAlleles)
@@ -616,13 +572,13 @@ test_that("calcBeeGRMIbs", {
 
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(x = basePop[1], nInd = 1000)
-    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+    fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
     apiary <- createMultiColony(basePop[2:3], n = 2)
-    apiary <- cross(x = apiary, fathers = fatherGroups[c(2, 3)])
+    apiary <- cross(x = apiary, drones = fatherGroups[c(2, 3)])
     apiary <- buildUp(x = apiary)
     apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-    genoQ <- getQueensSegSiteGeno(apiary[[1]])
+    genoQ <- getQueenSegSiteGeno(apiary[[1]])
     genoF <- getFathersSegSiteGeno(apiary[[1]])
     genoW <- getWorkersSegSiteGeno(apiary[[1]])
     genoD <- getDronesSegSiteGeno(apiary[[1]])
@@ -653,7 +609,7 @@ test_that("calcBeeGRMIbs", {
 
     sex <- getCasteSex(x = apiary[[1]])
     sex <- c(
-      sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
+      sex$queen, sex$drones, sex$workers, sex$drones, sex$virginQueens,
       "A", "B"
     )
 
@@ -718,11 +674,11 @@ test_that("isDronesPresent", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nDronesPoisson)
 
   # Create a Colony class object
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = fatherGroups[[1]])
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
   colony <- addVirginQueens(x = colony, nInd = 1)
   apiary <- createMultiColony(n = 1)
@@ -743,11 +699,11 @@ test_that("isFathersPresent", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
   # Create a Colony class object
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = fatherGroups[[1]])
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
   colony <- addVirginQueens(x = colony, nInd = 1)
   apiary <- createMultiColony(n = 1)
@@ -755,7 +711,7 @@ test_that("isFathersPresent", {
   apiary2 <- createMultiColony()
 
   expect_true(isFathersPresent(colony))
-  expect_error(isFathersPresent(apiary)) #TODO do we want error?
+  expect_false(isFathersPresent(apiary))
   expect_error(isFathersPresent(vec))
   expect_true(is.vector(isFathersPresent(apiary2)))
    queen <- colony@queen
@@ -770,11 +726,11 @@ test_that("isWorkersPresent", {
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nFathers = nFathersPoisson)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
   # Create a Colony class object
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, fathers = fatherGroups[[1]])
+  colony <- cross(colony, drones = fatherGroups[[1]])
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20)
   colony <- addVirginQueens(x = colony, nInd = 1)
   apiary <- createMultiColony(n = 1)
@@ -782,25 +738,9 @@ test_that("isWorkersPresent", {
   apiary2 <- createMultiColony()
 
   expect_true(isWorkersPresent(colony))
-  expect_error(isWorkersPresent(apiary)) #TODO do we want error?
+  expect_false(isWorkersPresent(apiary))
   expect_error(isWorkersPresent(vec))
   expect_true(is.vector(isWorkersPresent(apiary2)))
 })
 
-# ---- nEmptyColonies ----
 
-test_that("nEmptyColonies", {
-    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-    SP <- SimParamBee$new(founderGenomes)
-    basePop <- createVirginQueens(founderGenomes)
-
-    emptyApiary <- createMultiColony(n = 3)
-    emptyApiary1 <- c(createColony(), createColony())
-    nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
-    emptyColony <- createColony()
-
-  expect_equal(nEmptyColonies(emptyApiary),3)
-  expect_equal(nEmptyColonies(emptyApiary1), 2)
-  expect_equal(nEmptyColonies(nonEmptyApiary), 0)
-  expect_error(nEmptyColonies(emptyColony))
-})
