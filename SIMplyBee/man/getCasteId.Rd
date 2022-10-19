@@ -4,7 +4,7 @@
 \alias{getCasteId}
 \title{Get IDs of individuals of a caste, or ID of all members of colony}
 \usage{
-getCasteId(x, caste = "all", simParamBee = NULL)
+getCasteId(x, caste = "all", collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -12,6 +12,8 @@ getCasteId(x, caste = "all", simParamBee = NULL)
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
+
+\item{collapse}{logical, if all IDs should be returned as a single vector}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -53,6 +55,11 @@ getCasteId(x = colony)
 getCasteId(x = apiary, caste = "workers")
 getCasteId(x = apiary)
 getCasteId(x = apiary, caste = "virginQueens")
+# Get all IDs as a single vector
+getCasteId(x = colony, caste = "all", collapse = TRUE)
+getCasteId(x = apiary, caste = "workers", collapse = TRUE)
+getCasteId(x = apiary, caste = "drones", collapse = TRUE)
+getCasteId(x = apiary, caste = "all", collapse = TRUE)
 
 # Create a data.frame with id, colony, and caste information
 (tmpC <- getCaste(apiary[[1]]))

@@ -2,10 +2,16 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCsdAlleles}
 \alias{getCsdAlleles}
+\alias{getQueenCsdAlleles}
+\alias{getFathersCsdAlleles}
+\alias{getVirginQueensCsdAlleles}
+\alias{getWorkersCsdAlleles}
+\alias{getDronesCsdAlleles}
 \title{Get csd alleles}
 \usage{
 getCsdAlleles(
   x,
+  caste = NULL,
   nInd = NULL,
   allele = "all",
   dronesHaploid = TRUE,
@@ -13,10 +19,61 @@ getCsdAlleles(
   unique = FALSE,
   simParamBee = NULL
 )
+
+getQueenCsdAlleles(
+  x,
+  allele = "all",
+  unique = FALSE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getFathersCsdAlleles(
+  x,
+  nInd = NULL,
+  allele = "all",
+  dronesHaploid = TRUE,
+  unique = FALSE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensCsdAlleles(
+  x,
+  nInd = NULL,
+  allele = "all",
+  unique = FALSE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getWorkersCsdAlleles(
+  x,
+  nInd = NULL,
+  allele = "all",
+  unique = FALSE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getDronesCsdAlleles(
+  x,
+  nInd = NULL,
+  allele = "all",
+  dronesHaploid = TRUE,
+  unique = FALSE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{MultiColony-class}}}
+
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
@@ -57,6 +114,19 @@ Level 0 function that returns alleles from the csd locus. See
 If both collapse and unique are \code{TRUE}, the function returns a
   unique set of csd alleles in the entire population, colony, or multicolony
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueenCsdAlleles()}: Access csd alleles of the queen
+
+\item \code{getFathersCsdAlleles()}: Access csd alleles of the fathers
+
+\item \code{getVirginQueensCsdAlleles()}: Access csd alleles of the virgin queens
+
+\item \code{getWorkersCsdAlleles()}: Access csd alleles of the workers
+
+\item \code{getDronesCsdAlleles()}: Access csd alleles of the drones
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
@@ -82,6 +152,16 @@ getCsdAlleles(getDrones(colony))
 
 # Use getCsdAlleles on a Colony
 getCsdAlleles(colony)
+getCsdAlleles(colony, caste = "queen")
+getQueenCsdAlleles(colony)
+getCsdAlleles(colony, caste = "fathers")
+getFathersCsdAlleles(colony)
+getCsdAlleles(colony, caste = "virginQueens")
+getVirginQueensCsdAlleles(colony)
+getCsdAlleles(colony, caste = "workers")
+getWorkersCsdAlleles(colony)
+getCsdAlleles(colony, caste = "drones")
+getDronesCsdAlleles(colony)
 getCsdAlleles(colony, unique = TRUE)
 getCsdAlleles(colony, collapse = TRUE)
 getCsdAlleles(colony, collapse = TRUE, unique = TRUE)

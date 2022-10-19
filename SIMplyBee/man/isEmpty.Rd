@@ -36,6 +36,7 @@ isEmpty(nonEmptyColony)
 
 emptyApiary <- createMultiColony(n = 3)
 emptyApiary1 <- c(createColony(), createColony())
+emptyApiary2 <- createMultiColony()
 nonEmptyApiary <- createMultiColony(basePop[2:5], n = 4)
 
 isEmpty(emptyApiary)

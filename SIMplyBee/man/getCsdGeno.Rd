@@ -2,18 +2,60 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getCsdGeno}
 \alias{getCsdGeno}
+\alias{getQueenCsdGeno}
+\alias{getFathersCsdGeno}
+\alias{getVirginQueensCsdGeno}
+\alias{getWorkersCsdGeno}
+\alias{getDronesCsdGeno}
 \title{Get genotypes from the csd locus}
 \usage{
-getCsdGeno(x, nInd = NULL, dronesHaploid = TRUE, simParamBee = NULL)
+getCsdGeno(
+  x,
+  caste = NULL,
+  nInd = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getQueenCsdGeno(x, collapse = FALSE, simParamBee = NULL)
+
+getFathersCsdGeno(
+  x,
+  nInd = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensCsdGeno(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
+
+getWorkersCsdGeno(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
+
+getDronesCsdGeno(
+  x,
+  nInd = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{MultiColony-class}}}
 
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
+
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
 are taken; this can be useful as a test of sampling individuals}
 
 \item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -35,6 +77,19 @@ The returned genotypes are spanning multiple bi-allelic SNP of
   a non-recombining csd locus / haplotype. In most cases you will want to use
   \code{\link{getCsdAlleles}}.
 }
+\section{Functions}{
+\itemize{
+\item \code{getQueenCsdGeno()}: Access csd genotypes of the queen
+
+\item \code{getFathersCsdGeno()}: Access csd genotypes of the fathers
+
+\item \code{getVirginQueensCsdGeno()}: Access csd genotypes of the virgin queens
+
+\item \code{getWorkersCsdGeno()}: Access csd genotypes of the virgin queens
+
+\item \code{getDronesCsdGeno()}: Access csd genotypes of the virgin queens
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -66,6 +121,16 @@ getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
 
 # Use getCsdGeno on a Colony
 getCsdGeno(colony)
+getCsdGeno(colony, caste = "queen")
+getQueenCsdGeno(colony)
+getCsdGeno(colony, caste = "fathers")
+getFathersCsdGeno(colony)
+getCsdGeno(colony, caste = "virginQueens")
+getVirginQueensCsdGeno(colony)
+getCsdGeno(colony, caste = "workers")
+getWorkersCsdGeno(colony)
+getCsdGeno(colony, caste = "drones")
+getDronesCsdGeno(colony)
 
 # Compare the use of the dronesHaploid parameter
 getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)

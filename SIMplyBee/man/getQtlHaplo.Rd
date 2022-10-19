@@ -2,12 +2,87 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getQtlHaplo}
 \alias{getQtlHaplo}
-\title{Access QTL haplotypes}
+\alias{getQueenQtlHaplo}
+\alias{getFathersQtlHaplo}
+\alias{getVirginQueensQtlHaplo}
+\alias{getWorkersQtlHaplo}
+\alias{getDronesQtlHaplo}
+\title{Access QTL haplotypes of individuals in a caste}
 \usage{
-getQtlHaplo(pop, trait = 1, haplo = "all", chr = NULL, simParam = NULL)
+getQtlHaplo(
+  x,
+  caste = NULL,
+  nInd = NULL,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getQueenQtlHaplo(
+  x,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getFathersQtlHaplo(
+  x,
+  nInd = NULL,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensQtlHaplo(
+  x,
+  nInd = NULL,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getWorkersQtlHaplo(
+  x,
+  nInd = NULL,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getDronesQtlHaplo(
+  x,
+  nInd = NULL,
+  trait = 1,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{MultiColony-class}}}
+
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
+
+\item{nInd}{numeric, number of individuals to access, if \code{NULL} all
+individuals are accessed, otherwise a random sample}
 
 \item{trait}{numeric, indicates which trait's QTL haplotypes to retrieve}
 
@@ -18,18 +93,36 @@ value of 2 for male haplotypes}
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
-\item{simParam}{\code{\link{SimParam}}, global simulation parameters}
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Matrix of haplotypes
+matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+  and list of matrices with haplotypes when \code{x} is
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns QTL haplotypes.
+Level 0 function that returns QTL haplotypes of individuals in a
+  caste.
 }
-\details{
-This is an alias for the AlphaSimR function to distinguish between getting
-  and pulling
-}
+\section{Functions}{
+\itemize{
+\item \code{getQueenQtlHaplo()}: Access QTL haplotype data of the queen
+
+\item \code{getFathersQtlHaplo()}: Access QTL haplotype data of fathers
+
+\item \code{getVirginQueensQtlHaplo()}: Access QTL haplotype data of virgin queens
+
+\item \code{getWorkersQtlHaplo()}: Access QTL haplotype of workers
+
+\item \code{getDronesQtlHaplo()}: Access QTL haplotype data of drones
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -39,15 +132,71 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-# Create a Colony class
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-# Use getQtlHaplo on a Population
-getQtlHaplo(getWorkers(colony))
-getQtlHaplo(getQueen(colony))
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+
+# Input is a population
+getQtlHaplo(x = getQueen(colony))
+queens <- getQueen(apiary, collapse = TRUE)
+getQtlHaplo(queens)
+
+# Input is a Colony
+getQtlHaplo(colony, caste = "queen")
+getQueenQtlHaplo(colony)
+
+getQtlHaplo(colony, caste = "fathers")
+getQtlHaplo(colony, caste = "fathers", nInd = 2)
+getQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersQtlHaplo(colony)
+getFathersQtlHaplo(colony, nInd = 2)
+
+getQtlHaplo(colony, caste = "virginQueens")
+getVirginQueensQtlHaplo(colony)
+
+getQtlHaplo(colony, caste = "workers")
+getWorkersQtlHaplo(colony)
+
+getQtlHaplo(colony, caste = "drones")
+getDronesQtlHaplo(colony)
+
+# Get haplotypes for all individuals
+getQtlHaplo(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getQtlHaplo(colony, caste = "all", collapse = TRUE)
+
+# Input is a MultiColony
+getQtlHaplo(apiary, caste = "queen")
+getQueenQtlHaplo(apiary)
+
+getQtlHaplo(apiary, caste = "fathers")
+getQtlHaplo(apiary, caste = "fathers", nInd = 2)
+getQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
+getFathersQtlHaplo(apiary)
+getFathersQtlHaplo(apiary, nInd = 2)
+
+getQtlHaplo(apiary, caste = "virginQueens")
+getVirginQueensQtlHaplo(apiary)
+
+getQtlHaplo(apiary, caste = "workers")
+getWorkersQtlHaplo(apiary)
+
+getQtlHaplo(apiary, caste = "drones")
+getDronesQtlHaplo(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getQtlHaplo(apiary, caste = "all")
+getQtlHaplo(apiary, caste = "all", collapse = TRUE)
+
 }
 \seealso{
-\code{\link{pullQtlHaplo}}
+\code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
 }

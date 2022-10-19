@@ -2,12 +2,82 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getSegSiteHaplo}
 \alias{getSegSiteHaplo}
-\title{Access haplotypes for all segregating sites}
+\alias{getQueenSegSiteHaplo}
+\alias{getFathersSegSiteHaplo}
+\alias{getVirginQueensSegSiteHaplo}
+\alias{getWorkersSegSiteHaplo}
+\alias{getDronesSegSiteHaplo}
+\title{Access haplotypes for all segregating sites of individuals in a
+  caste}
 \usage{
-getSegSiteHaplo(pop, haplo = "all", chr = NULL, simParam = NULL)
+getSegSiteHaplo(
+  x,
+  caste = NULL,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getQueenSegSiteHaplo(
+  x,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getFathersSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getWorkersSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getDronesSegSiteHaplo(
+  x,
+  nInd = NULL,
+  haplo = "all",
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{MultiColony-class}}}
+
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
+
+\item{nInd}{numeric, number of individuals to access, if \code{NULL} all
+individuals are accessed, otherwise a random sample}
 
 \item{haplo}{character, either "all" for all haplotypes or an integer for a
 single set of haplotypes, use a value of 1 for female haplotypes and a
@@ -16,19 +86,36 @@ value of 2 for male haplotypes}
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
-\item{simParam}{\code{\link{SimParam}}, global simulation parameters}
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Matrix of haplotypes
+matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+  and list of matrices with haplotypes when \code{x} is
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns haplotypes for all segregating
-  sites.
+  sites of individuals in a caste.
 }
-\details{
-This is an alias for the AlphaSimR function to distinguish between getting
-  and pulling
-}
+\section{Functions}{
+\itemize{
+\item \code{getQueenSegSiteHaplo()}: Access haplotype data for all segregating sites of the queen
+
+\item \code{getFathersSegSiteHaplo()}: Access haplotype data for all segregating sites of fathers
+
+\item \code{getVirginQueensSegSiteHaplo()}: Access haplotype data for all segregating sites of virgin queens
+
+\item \code{getWorkersSegSiteHaplo()}: Access haplotype data for all segregating sites of workers
+
+\item \code{getDronesSegSiteHaplo()}: Access haplotype data for all segregating sites of drones
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -37,15 +124,68 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-# Create a Colony class
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-# Use getSegSiteHaplo on a Population
-getSegSiteHaplo(getWorkers(colony))
-getSegSiteHaplo(getQueen(colony))
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+# Input is a population
+getSegSiteHaplo(x = getQueen(colony))
+queens <- getQueen(apiary, collapse = TRUE)
+getSegSiteHaplo(queens)
+
+# Input is a colony
+getSegSiteHaplo(colony, caste = "queen")
+getQueenSegSiteHaplo(colony)
+
+getSegSiteHaplo(colony, caste = "fathers")
+getSegSiteHaplo(colony, caste = "fathers", nInd = 2)
+getSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersSegSiteHaplo(colony)
+getFathersSegSiteHaplo(colony, nInd = 2)
+
+getSegSiteHaplo(colony, caste = "virginQueens")
+getVirginQueensSegSiteHaplo(colony)
+
+getSegSiteHaplo(colony, caste = "workers")
+getWorkersSegSiteHaplo(colony)
+
+getSegSiteHaplo(colony, caste = "drones")
+getDronesSegSiteHaplo(colony)
+
+# Get haplotypes for all individuals
+getSegSiteHaplo(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getSegSiteHaplo(colony, caste = "all", collapse = TRUE)
+
+getSegSiteHaplo(apiary, caste = "queen")
+getQueenSegSiteHaplo(apiary)
+
+getSegSiteHaplo(apiary, caste = "fathers")
+getSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
+getSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
+getFathersSegSiteHaplo(apiary)
+getFathersSegSiteHaplo(apiary, nInd = 2)
+
+getSegSiteHaplo(apiary, caste = "virginQueens")
+getVirginQueensSegSiteHaplo(apiary)
+
+getSegSiteHaplo(apiary, caste = "workers")
+getWorkersSegSiteHaplo(apiary)
+
+getSegSiteHaplo(apiary, caste = "drones")
+getDronesSegSiteHaplo(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getSegSiteHaplo(apiary, caste = "all")
+getSegSiteHaplo(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{pullSegSiteHaplo}}
+\code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
 }

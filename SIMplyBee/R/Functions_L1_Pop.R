@@ -923,6 +923,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' @param colony \code{\link{Colony-class}} to produce drone producing queens from
 #' @param nDPQs integer, the number of drone producing queens
 #' @param nDronePerDPQ integer, number of drones each DPQ contributed to the DCA
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Pop-class}} with created drones resembling a DCA at a mating station
 #'
@@ -957,10 +958,10 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
     stop("The argument colony must be a Colony class!")
   }
   if (is.null(nDronePerDPQ)) {
-    nDronePerDPQ <- SP$nDrones
+    nDronePerDPQ <- simParamBee$nDrones
   }
   if (is.function(nDronePerDPQ)) {
-    nDronePerDPQ <- nDronePerDPQ(n = nDPQ)
+    nDronePerDPQ <- nDronePerDPQ(n = nDPQs)
   }
   DPQs <- createVirginQueens(colony, nInd = nDPQs)
   drones <- createDrones(DPQs, nInd = nDronePerDPQ)
@@ -1308,9 +1309,6 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #7    If cross plan is NULL, we cross each virgin queen with the element-wise element
 #'    of \code{drones}, which should be the same length as the number of virgin queens
 #'    If the cross plan is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.
-#' @param removeFathers logical, removes those \code{drones} that have already
-#'   mated; set to \code{FALSE} if you would like to mate a drone to multiple
-#'   virgin queens, say via insemination
 #' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
 #'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
 #'  Details)
@@ -1416,10 +1414,9 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' (matedColony <- cross(x = colony, drones = drones))
 #' isQueenPresent(matedColony)
 #'
-#' # For crossing virgin queens according to a cross plan, see
-#'   \code{\link{createRandomCrossPlan}}}
-#'
-#' # For crossing virgin queens on a mating stations, see
+#' @seealso For crossing virgin queens according to a cross plan, see
+#'   \code{\link{createRandomCrossPlan}}.
+#'   For crossing virgin queens on a mating stations, see
 #'   \code{\link{createMatingStationDCA}}
 #'
 #' @export
