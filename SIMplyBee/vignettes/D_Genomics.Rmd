@@ -46,8 +46,11 @@ SIMplyBee allows for the simulation of the honeybee genome. Honeybees genome is 
 # Initiating simulation with founder genomes and global parameters,
 
 We simulate some genomes that represent the founder population. 
-We can quickly generate random genomes using AlphaSimR's `quickHaplo()`.
-Alternatively, in SIMplyBee's `simulateHoneybeeGenomes()` we included the simulation of the honeybee genome with MaCS (ref) and are currently allowing for the simulation of three subspecies: A. m. ligustica, A. m. carnica, and A. m. mellifera according to the demographic model published in Wallberg et al., 2014.
+You can quickly generate random genomes using AlphaSimR's `quickHaplo()`. These founder genomes are rapidly simulated by randomly sampling 0s and 1s, and does not include any species specific demographic history. This is equivalent to having all loci with allele frequency 0.5 and being in linkage equilibrium.
+This method is only used when you want to geneterate "something", in other words a non specific group of genomes. 
+
+Alternatively, you can simulate an accurate honeybee genome by use SIMplyBee's `simulateHoneybeeGenomes()`. 
+`simulateHoneybeeGenomes()`  simulates the honeybee genome using MaCS (ref) and is currently allowing for the simulation of three subspecies: A. m. ligustica, A. m. carnica, and A. m. mellifera according to the demographic model published in Wallberg et al., 2014.
 
 
 As a first demonstration, we will use `quickHaplo()` and simulate random genomes of two founding individuals. 
@@ -72,15 +75,34 @@ founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 4,
                                           nSegSites = 5)
 ```
 
-Due to the complexity of this function, the computing power required is high and time so using more realistic numbers will take a lot of time to process. We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is easy to load into your environment and work with. 
+Unfortunately, due to complexity of this function, even using such small numbers requires a lot of computing power and takes a while to run. Simulating a group of founder genomes with more realistic numbers will therefore require a lot of time to run. 
+We suggest outsourcing this process to an external server and to save the outcome as an Rdata file. This Rdata file is easy to load into your environment and work with. 
 
 ```{r save Rdata file}
 save(founderGenomes2, file="FounderGenomes2_3chr.RData")
 ```
 
 
-There are many arguments provided by `simulateHoneybeeGenome()` of which we will not desxcribe in this article.
-Most arguments have a provided default values, however these values can be changed to personalize your founder population genomes. If this is something you're interested in, we recommend you return back to this point once you are comfortable with the basic functionality.
+There are many arguments provided by `simulateHoneybeeGenomes()`, which are listed below. However, we will not be going into depth describing them  in this article. 
+
+```{r simulateHoneybeeGenomes arguements}
+nMelN = 0L,
+nMelS = 0L,
+nCar = 0L,
+nLig = 0L,
+Ne = 170000L, # Wallberg 2014 
+ploidy = 2L,
+nChr = 16L,
+nSegSites = 100L,
+nBp = 2.252e+8 / 16, # GenBank Amel_Hv3.1
+genLen = 3.199121, # Beye et al., 2006
+mutRate = 3.4e-9, # Yang et al. (2015)
+recRate = 2.3e-7, # Beye et al., 2006
+nThreads = NULL) 
+```
+
+Most arguments have a provided default values, most of which currently correspond to the Wallberg demographic model (Wallberg 2014). 
+However, these values can be changed safely to personalize your founder population genomes. If this is something you're interested in, we recommend you return back to this point once you are comfortable with the basic functionality.
 
 ```{r deeper looking to the arguments}
 ??simulateHoneybeeGenomes
@@ -132,23 +154,26 @@ colony <- cross(colony, drones = baseDrones)
 buildUp(colony, nWorkers = 10, nDrones = 7)
 
 ```
- 
+Technically, SIMplyBee represents the csd locus as a series of bi-allelic 
+single nucleotide polymorphisms that don't recombine. So, the csd locus is 
+represented as a haplotype and different haplotypes represent different csd 
+alleles. By varying the number of sites within the csd locus we can control the
+number of distinct alleles (see `help(SimParamBee)`).
+
 Now we can retrieve information about csd variation with `getCsdAlleles()`. For
 details on where the csd locus is and the number of distinct alleles, see
-`help(SimParamBee)`. The output below shows two sequences (in two rows) of 0s
+`help(SimParamBee)`.
+Keep in mind that in order to do this the csd needs to be turned on. 
+
+The output below shows two sequences (in two rows) of 0s
 and 1s representing respectively ancestral and mutation alleles along the csd
 locus for the queen. You can see that the two sequences are different, meaning
 that she is heterozygous, as expected.
 
 ```{r csd}
 getCsdAlleles(getQueen(colony))
+isHeterozygous(getQueen(colony))
 ```
-
-Technically, SIMplyBee represents the csd locus as a series of bi-allelic 
-single nucleotide polymorphisms that don't recombine. So, the csd locus is 
-represented as a haplotype and different haplotypes represent different csd 
-alleles. By varying the number of sites within the csd locus we can control the
-number of distinct alleles (see `help(SimParamBee)`).
 
 A keen geneticist would immediately inspect csd alleles of fathers to check for
 any similarity with the queen's csd alleles. Lets boost a chance of such an
@@ -223,35 +248,8 @@ segregating sites (`segSite`), quantitative trait loci (`Qtl`), identity by
 descent (`Ibd`), and marker array/chip (`SNP`). Here, site, locus and marker
 are all synonyms for a position in the genome. 
 
-
-
-In these following examples, we will be demonstrating `getColony*()` and `getCaste*()`, however be aware that 
-there are also functions that can be used on the individual caste members level (for example: `getQueenSNPhaplo()`).
-We would recommend studying the index of `get*()` functions to familiarize yourself with all options available for your data collection. 
-
-
-Firstly, let's build up the colony to have a bit data to look at. By using the default, we are adding 100 workers and 100 drones into the colony.
-```{r buildUp colony}
-colony <- buildUp(colony, nWorkers = 10, nDrones = 10)
-```
-
-Only `get*SegSites()` will be demonstrated in this vignette as `get*Qtl()` and `get*SNP()` allow us to extract from the haplotypes and the genotypes in the exact same way. Whereas, `get*Ibd()` is only performed on the haplotypes but has the same functionality. 
-
-
-Lets look at the whole colony first, this will produce quite a large list of
-```{r Colony SegSites}
-colonySegSitesGeno <- getColonySegSiteGeno(colony)
-colonySegSitesHaplo <- getColonySegSiteHaplo(colony)
-```
-
-Now lets have a look at the queen using `getCasteSegSites*()`. Remember that you can also use the `getQueenSegSites*()` to 
-produce the same result
-```{r Colony SegSites}
-queenSegSitesGeno <- getCasteSegSiteGeno(x = colony, caste = "queen")
-queenSegSitesHaplo <- getCasteSegSiteHaplo(x = colony, caste = "queen")
-```
-
-
+TODO: getColony/getCaste soon to be dead. Note - all get functions now have a collapse parameter
+      Focus on an example i.e segSites then calculate the GRM Matrix and then just say the same can be done for ibd/snp etc 
 
 
 
