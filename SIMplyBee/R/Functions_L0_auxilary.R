@@ -5692,7 +5692,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @rdname calcInheritanceCriterion
 #' @title Calculate the inheritance criterion
 #'
-#' @description Level 0 function that calculate the inheritance criterion as the sum
+#' @description Level 0 function that calculates the inheritance criterion as the sum
 #'   of direct and maternal breeding values of the queens, as described
 #'   by Du et al., 2021.
 #'
@@ -5702,6 +5702,10 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTrait numeric, trait that represents workers' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
+#' @param use character, the measure to use for the calculation, being
+#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
+#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
+#'   and "aa" (epistatic additive by additive deviation)
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5719,7 +5723,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanA, var = varA, corA = corA,
 #' name = c("queenTrait", "workersTrait"))
 #' varE <- c(3, 3 / SP$nWorkers)
 #' corE <- matrix(data = c(1.0, 0.3,
@@ -5744,17 +5748,30 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' calcInheritanceCriterion(apiary, queenTrait = 1, workersTrait = 2)
 #'
 #' @export
-calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
+calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = "gv") {
   if (isPop(x)) {
     if(!all(isQueen(x))) {
       stop("x must be queens!")
     }
-    ret <- x@gv[, queenTrait] + x@gv[, workersTrait]
+    if (is.null(queenTrait)) {
+      queenEffect <- 0
+    } else {
+      queenEffect <- slot(x, use)[, queenTrait]
+    }
+    if (!is.null(workersTrait)) {
+      workerEffect <- 0
+    } else {
+      workerEffect <- slot(x, use)[, workersTrait]
+    }
+    ret <- queenEffect + workerEffect
   } else if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
     }
-    ret <- x@queen@gv[, queenTrait] + x@queen@gv[, workersTrait]
+    ret <- calcInheritanceCriterion(getQueen(colony),
+                                    queenTrait = queenTrait,
+                                    workersTrait = workersTrait,
+                                    use = use)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -5762,7 +5779,8 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
       if (isQueenPresent(x[[colony]])) {
         ret[[colony]] <- calcInheritanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
-                                                  workersTrait = workersTrait)
+                                                  workersTrait = workersTrait,
+                                                  use = use)
       } else {
         ret[colony] <- list(NULL)
       }
@@ -5776,7 +5794,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
 #' @rdname calcPerformanceCriterion
 #' @title Calculate the performance criterion
 #'
-#' @description Level 0 function that calculate the performance criterion as the
+#' @description Level 0 function that calculates the performance criterion as the
 #'   sum of the maternal breeding value of a queen and the direct breeding value of her
 #'   worker group, as described by Du et al., 2021.
 #'
@@ -5786,8 +5804,10 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
 #' @param workersTrait numeric, trait that represents workers' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
-#' #TODO should this function be "mean" without allowing any other functions (following
-#' the reference)?
+#' @param use character, the measure to use for the calculation, being
+#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
+#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
+#'   and "aa" (epistatic additive by additive deviation)
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5805,7 +5825,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanA, var = varA, corA = corA,
 #' name = c("queenTrait", "workersTrait"))
 #' varE <- c(3, 3 / SP$nWorkers)
 #' corE <- matrix(data = c(1.0, 0.3,
@@ -5834,7 +5854,8 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2) {
 #' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
 #'
 #' @export
-calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean) {
+calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
+                                     workersTraitFUN = mean, use = "gv") {
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
@@ -5842,7 +5863,17 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
     if (!isWorkersPresent(x)) {
       stop("No workers in the Colony!")
     }
-    ret <- x@queen@gv[, queenTrait] + workersTraitFUN(x@workers@gv[, workersTrait])
+    if (is.null(queenTrait)) {
+      queenEffect <- 0
+    } else {
+      queenEffect <- slot(x@queen, use)[, queenTrait]
+    }
+    if (!is.null(workersTrait)) {
+      workerEffect <- 0
+    } else {
+      workerEffect <-workersTraitFUN(slot(x@workers, use)[, workersTrait])
+    }
+    ret <- queenEffect + workerEffect
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -5851,7 +5882,8 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
         ret[[colony]] <- calcPerformanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
                                                   workersTrait = workersTrait,
-                                                  workersTraitFUN = workersTraitFUN)
+                                                  workersTraitFUN = workersTraitFUN,
+                                                  use = use)
       } else {
         ret[colony] <- list(NULL)
       }
@@ -5866,7 +5898,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
 #' @rdname calcSelectionCriterion
 #' @title Calculate the selection criterion
 #'
-#' @description Level 0 function that calculate the selection criterion as the
+#' @description Level 0 function that calculates the selection criterion as the
 #'   sum of direct and maternal breeding values of a worker group,
 #'   as described by Du et al., 2021.
 #'
@@ -5877,8 +5909,10 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
 #' @param workersTrait numeric, trait that represents workers' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
-#' #' #TODO should these functions be "mean" without allowing any other functions (following
-#' the reference)?
+#' @param use character, the measure to use for the calculation, being
+#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
+#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
+#'   and "aa" (epistatic additive by additive deviation)
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5896,7 +5930,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
-#' SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
+#' SP$addTraitA(nQtlPerChr = 100, mean = meanA, var = varA, corA = corA,
 #' name = c("queenTrait", "workersTrait"))
 #' varE <- c(3, 3 / SP$nWorkers)
 #' corE <- matrix(data = c(1.0, 0.3,
@@ -5934,7 +5968,8 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, worker
 #'
 #' @export
 calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
-                                   workersTrait = 2, workersTraitFUN = mean) {
+                                   workersTrait = 2, workersTraitFUN = mean,
+                                   use = "gv") {
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
@@ -5942,7 +5977,17 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
     if (!isWorkersPresent(x)) {
       stop("No workers in the Colony!")
     }
-    ret <- queenTraitFUN(x@workers@gv[, queenTrait]) + workersTraitFUN(x@workers@gv[, workersTrait])
+    if (is.null(queenTrait)) {
+      queenEffect <- 0
+    } else {
+      queenEffect <- queenTraitFUN(slot(x@workers, use)[, queenTrait])
+    }
+    if (!is.null(workersTrait)) {
+      workersEffect <- 0
+    } else {
+      workersEffect <- workersTraitFUN(slot(x@workers, use)[, workersTrait])
+    }
+    ret <- queenEffect + workersEffect
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -5952,7 +5997,8 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
                                                 queenTrait = queenTrait,
                                                 queenTraitFUN = queenTraitFUN,
                                                 workersTrait = workersTrait,
-                                                workersTraitFUN = workersTraitFUN)
+                                                workersTraitFUN = workersTraitFUN,
+                                                use = use)
       } else {
         ret[colony] <- list(NULL)
       }
@@ -6995,8 +7041,8 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' # Create virgin queens, a virgin colony, and a virgin apiary
 #' virginQueen1 <- basePop[6]
 #' virginQueen2 <- basePop[7]
-#' colony1 <- createColony(basePop[7])
-#' apiary1 <- createMultiColony(basePop[8:10])
+#' colony1 <- createColony(basePop[8])
+#' apiary1 <- createMultiColony(basePop[9:11])
 #'
 #' # Create a combined cross plan for mating the virgin queens (with virgin queen IDs)
 #' crossPlanVirginQueens <- createRandomCrossPlan(IDs = c(virginQueen1@id, virginQueen2@id),
@@ -7023,7 +7069,7 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' matingStationDCA <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 10)
 #'
 #' # Create another virgin apiary
-#' apiary2 <- createMultiColony(basePop[11:13])
+#' apiary2 <- createMultiColony(basePop[12:14])
 #'
 #' # Create a cross plan with colonyIDs for crossing the apiary on the mating station
 #' crossPlanApiary <- createRandomCrossPlan(IDs = getId(apiary2),

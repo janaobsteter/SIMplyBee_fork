@@ -942,11 +942,11 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' colony2 <- createColony(x = basePop[3])
 #'
 #' # Create a mating station from colony1
-#' matingStation <- createMatingStation(colony1, nDPQs = 20, nDronesPerDPQ = 10)
+#' matingStation <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 10)
 #'
 #' # Cross colony2 on the mating station
 #' fathers <- pullDroneGroupsFromDCA(matingStation, n = 1, nDrones = 15)
-#' colony2 <- cross(colony2, drones = fathers)
+#' colony2 <- cross(colony2, drones = fathers[[1]])
 #' nFathers(colony2)
 #'
 #' @export
