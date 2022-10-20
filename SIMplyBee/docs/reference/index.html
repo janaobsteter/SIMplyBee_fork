@@ -36,7 +36,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -92,9 +92,9 @@
         </td>
         <td><p>Honeybee colony</p></td>
       </tr><tr><td>
-          <p><code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;Colony&gt;</i>)</a></code> </p>
+          <p><code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;Colony&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Honeybee multicolony object</p></td>
+        <td><p>Honeybee multi-colony object</p></td>
       </tr><tr><td>
           <p><code><a href="SimParamBee.html">SimParamBee</a></code> </p>
         </td>
@@ -120,10 +120,6 @@
         </td>
         <td><p>Set colony location</p></td>
       </tr><tr><td>
-          <p><code><a href="setQueensYearOfBirth.html">setQueensYearOfBirth()</a></code> </p>
-        </td>
-        <td><p>Set the queen's year of birth</p></td>
-      </tr><tr><td>
           <p><code><a href="createMultiColony.html">createMultiColony()</a></code> </p>
         </td>
         <td><p>Create MultiColony object</p></td>
@@ -139,6 +135,10 @@
           <p><code><a href="removeColonies.html">removeColonies()</a></code> </p>
         </td>
         <td><p>Remove some colonies from the MultiColony object</p></td>
+      </tr><tr><td>
+          <p><code><a href="getId.html">getId()</a></code> </p>
+        </td>
+        <td><p>Get the colony ID</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="events">Events <a href="#events" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
@@ -214,17 +214,9 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="addWorkers.html">addWorkers()</a></code> </p>
+          <p><code><a href="addCastePop.html">addCastePop()</a></code> <code><a href="addCastePop.html">addWorkers()</a></code> <code><a href="addCastePop.html">addDrones()</a></code> <code><a href="addCastePop.html">addVirginQueens()</a></code> </p>
         </td>
-        <td><p>Add (raise) workers in the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="addDrones.html">addDrones()</a></code> </p>
-        </td>
-        <td><p>Add (raise) drones in the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="addVirginQueens.html">addVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Add (raise) virgin queens in the colony</p></td>
+        <td><p>Add caste individuals to the colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="caste-specific-events-replace">Caste specific events - Replace <a href="#caste-specific-events-replace" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
@@ -234,37 +226,17 @@
         </td>
         <td><p>Re-queen</p></td>
       </tr><tr><td>
-          <p><code><a href="replaceWorkers.html">replaceWorkers()</a></code> </p>
+          <p><code><a href="replaceCastePop.html">replaceCastePop()</a></code> <code><a href="replaceCastePop.html">replaceWorkers()</a></code> <code><a href="replaceCastePop.html">replaceDrones()</a></code> <code><a href="replaceCastePop.html">replaceVirginQueens()</a></code> </p>
         </td>
-        <td><p>Replace a proportion of workers with new ones</p></td>
-      </tr><tr><td>
-          <p><code><a href="replaceDrones.html">replaceDrones()</a></code> </p>
-        </td>
-        <td><p>Replace a proportion of drones with new ones</p></td>
-      </tr><tr><td>
-          <p><code><a href="replaceVirginQueens.html">replaceVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Replace a proportion of virgin queens with new ones</p></td>
+        <td><p>Replace a proportion of caste individuals with new ones</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="caste-specific-events-remove">Caste specific events - Remove <a href="#caste-specific-events-remove" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="removeQueen.html">removeQueen()</a></code> </p>
+          <p><code><a href="removeCastePop.html">removeCastePop()</a></code> <code><a href="removeCastePop.html">removeQueen()</a></code> <code><a href="removeCastePop.html">removeWorkers()</a></code> <code><a href="removeCastePop.html">removeDrones()</a></code> <code><a href="removeCastePop.html">removeVirginQueens()</a></code> </p>
         </td>
-        <td><p>Remove queen</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeWorkers.html">removeWorkers()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of workers</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeDrones.html">removeDrones()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of drones</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeVirginQueens.html">removeVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Remove a proportion of virgin queens</p></td>
+        <td><p>Remove a proportion of caste individuals from a colony</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="caste-operations">Caste operations <a href="#caste-operations" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -274,17 +246,9 @@
           <p class="section-desc"></p><p>(output is Population)</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="createWorkers.html">createWorkers()</a></code> </p>
+          <p><code><a href="createCastePop.html">createCastePop()</a></code> <code><a href="createCastePop.html">createWorkers()</a></code> <code><a href="createCastePop.html">createDrones()</a></code> <code><a href="createCastePop.html">createVirginQueens()</a></code> </p>
         </td>
-        <td><p>Creates workers from the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="createDrones.html">createDrones()</a></code> </p>
-        </td>
-        <td><p>Creates drones from the colony</p></td>
-      </tr><tr><td>
-          <p><code><a href="createVirginQueens.html">createVirginQueens()</a></code> </p>
-        </td>
-        <td><p>Creates virgin queens from the colony</p></td>
+        <td><p>Creates caste population individuals from the colony</p></td>
       </tr><tr><td>
           <p><code><a href="createDCA.html">createDCA()</a></code> </p>
         </td>
@@ -294,7 +258,7 @@
           <p class="section-desc"></p><p>(output is Population)</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> </p>
+          <p><code><a href="getCastePop.html">getCastePop()</a></code> <code><a href="getCastePop.html">getQueen()</a></code> <code><a href="getCastePop.html">getFathers()</a></code> <code><a href="getCastePop.html">getWorkers()</a></code> <code><a href="getCastePop.html">getDrones()</a></code> <code><a href="getCastePop.html">getVirginQueens()</a></code> </p>
         </td>
         <td><p>Access individuals of a caste</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -306,7 +270,7 @@
         </td>
         <td><p>Pull individuals from a population</p></td>
       </tr><tr><td>
-          <p><code><a href="pullCastePop.html">pullCastePop()</a></code> <code><a href="pullCastePop.html">pullQueen()</a></code> <code><a href="pullCastePop.html">pullVirginQueens()</a></code> <code><a href="pullCastePop.html">pullWorkers()</a></code> <code><a href="pullCastePop.html">pullDrones()</a></code> </p>
+          <p><code><a href="pullCastePop.html">pullCastePop()</a></code> <code><a href="pullCastePop.html">pullQueen()</a></code> <code><a href="pullCastePop.html">pullWorkers()</a></code> <code><a href="pullCastePop.html">pullDrones()</a></code> <code><a href="pullCastePop.html">pullVirginQueens()</a></code> </p>
         </td>
         <td><p>Pull individuals from a caste in a colony</p></td>
       </tr><tr><td>
@@ -318,17 +282,9 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="getId.html">getId()</a></code> </p>
-        </td>
-        <td><p>Get the colony ID</p></td>
-      </tr><tr><td>
           <p><code><a href="getCaste.html">getCaste()</a></code> </p>
         </td>
         <td><p>Report caste of an individual</p></td>
-      </tr><tr><td>
-          <p><code><a href="getQueenYearOfBirth.html">getQueenYearOfBirth()</a></code> </p>
-        </td>
-        <td><p>Access the queen's year of birth</p></td>
       </tr><tr><td>
           <p><code><a href="getQueenAge.html">getQueenAge()</a></code> </p>
         </td>
@@ -345,6 +301,18 @@
           <p><code><a href="getLocation.html">getLocation()</a></code> </p>
         </td>
         <td><p>Get the colony location</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="queen-s-birth">Queen’s birth <a href="#queen-s-birth" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="setQueensYearOfBirth.html">setQueensYearOfBirth()</a></code> </p>
+        </td>
+        <td><p>Set the queen's year of birth</p></td>
+      </tr><tr><td>
+          <p><code><a href="getQueenYearOfBirth.html">getQueenYearOfBirth()</a></code> </p>
+        </td>
+        <td><p>Access the queen's year of birth</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="is-are-functions">Is/are functions <a href="#is-are-functions" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -415,9 +383,9 @@
         <td><p>Check whether a population, colony or a multicolony
   object has no individuals within</p></td>
       </tr><tr><td>
-          <p><code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;Colony&gt;</i>)</a></code> </p>
+          <p><code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">isMultiColony()</a></code> <code><a href="MultiColony-class.html">show(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">c(<i>&lt;MultiColonyOrNULL&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogical&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[`(<i>&lt;MultiColony&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;MultiColony&gt;</i>)</a></code> <code><a href="MultiColony-class.html">`[[&lt;-`(<i>&lt;MultiColony&gt;</i>,<i>&lt;integerOrNumericOrLogicalOrCharacter&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;Colony&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Honeybee multicolony object</p></td>
+        <td><p>Honeybee multi-colony object</p></td>
       </tr><tr><td>
           <p><code><a href="isNULLColonies.html">isNULLColonies()</a></code> </p>
         </td>
@@ -517,10 +485,6 @@
           <p><code><a href="swarmPFun.html">swarmPUnif()</a></code> <code><a href="swarmPFun.html">swarmPColonyStrength()</a></code> </p>
         </td>
         <td><p>Sample the swarm proportion - the proportion of workers that swarm</p></td>
-      </tr><tr><td>
-          <p><code><a href="calcQueensPHomBrood.html">calcQueensPHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">pHomBrood()</a></code> <code><a href="calcQueensPHomBrood.html">nHomBrood()</a></code> </p>
-        </td>
-        <td><p>The expected proportion and a realised number of csd homozygous brood</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="genome">Genome <a href="#genome" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -537,10 +501,6 @@
           <p><code><a href="getPooledGeno.html">getPooledGeno()</a></code> </p>
         </td>
         <td><p>Get a pooled genotype from true genotypes</p></td>
-      </tr><tr><td>
-          <p><code><a href="editGenomeGeno.html">editGenomeGeno()</a></code> </p>
-        </td>
-        <td><p>Edit genome at a single diploid site in a population</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="csd">Csd <a href="#csd" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>

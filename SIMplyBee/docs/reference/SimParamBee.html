@@ -43,7 +43,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -132,13 +132,13 @@
     </div>
     <div id="super-class">
     <h2>Super class</h2>
-    <p><code><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html" class="external-link">AlphaSimR::SimParam</a></code> -&gt; <code>SimParamBee</code></p>
+    <p><code><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html" class="external-link">AlphaSimR::SimParam</a></code> -&gt; <code>SimParamBee</code></p>
     </div>
     <div id="public-fields">
     <h2>Public fields</h2>
     <p></p><div class="r6-fields"><dl><dt><code>nWorkers</code></dt>
 <dd><p>numeric or function, a number of workers generated in a
-  colony - used in <code><a href="createWorkers.html">createWorkers</a></code>, <code><a href="addWorkers.html">addWorkers</a></code>,
+  colony - used in <code><a href="createCastePop.html">createWorkers</a></code>, <code><a href="addCastePop.html">addWorkers</a></code>,
   <code><a href="buildUp.html">buildUp</a></code>.</p>
 <p>The default value is 100, that is, queen generates 100 workers - this
   is for a down-scaled simulation (for efficiency) assuming that this
@@ -149,8 +149,8 @@
         https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>nWorkers</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
-  <code>function(x, arg = default) someCode </code>, that is, the first
-  argument MUST be <code>x</code> and any following arguments MUST have a
+  <code>function(colony, arg = default) someCode </code>, that is, the first
+  argument MUST be <code>colony</code> and any following arguments MUST have a
   default value. See <code><a href="nWorkersFun.html">nWorkersPoisson</a></code>,
   <code><a href="nWorkersFun.html">nWorkersTruncPoisson</a></code>, or
   <code><a href="nWorkersFun.html">nWorkersColonyPhenotype</a></code> for examples.</p>
@@ -159,7 +159,7 @@
 
 <dt><code>nDrones</code></dt>
 <dd><p>numeric or function, a number of drones generated in a
-  colony - used in <code><a href="createDrones.html">createDrones</a></code>, <code><a href="addDrones.html">addDrones</a></code>,
+  colony - used in <code><a href="createCastePop.html">createDrones</a></code>, <code><a href="addCastePop.html">addDrones</a></code>,
   <code><a href="buildUp.html">buildUp</a></code>.</p>
 <p>The default value is 100, that is, queen generates 100 drones - this is
   for a down-scaled simulation (for efficiency) assuming that this
@@ -181,7 +181,7 @@
 <dt><code>nVirginQueens</code></dt>
 <dd><p>numeric or function, a number of virgin queens
   generated when a queen dies or other situations - used in
-  <code><a href="createVirginQueens.html">createVirginQueens</a></code> and <code><a href="addVirginQueens.html">addVirginQueens</a></code>.</p>
+  <code><a href="createCastePop.html">createVirginQueens</a></code> and <code><a href="addCastePop.html">addVirginQueens</a></code>.</p>
 <p>The default value is 10, that is, when the queen dies, workers generate
   10 new virgin queens (Seeley, 2019). This value is set in
   <code>SimParamBee$new()</code> to have a number to work with.</p>
@@ -345,36 +345,36 @@ generate this object</p></dd>
 <li><p><a href="#method-SimParamBee-changeCaste"><code>SimParamBee$changeCaste()</code></a></p></li>
 <li><p><a href="#method-SimParamBee-updateLastColonyId"><code>SimParamBee$updateLastColonyId()</code></a></p></li>
 <li><p><a href="#method-SimParamBee-clone"><code>SimParamBee$clone()</code></a></p></li>
-</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addSnpChip"><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addStructuredSnpChip"><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addToPed"><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addToRec"><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitA"><code>AlphaSimR::SimParam$addTraitA()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitAD"><code>AlphaSimR::SimParam$addTraitAD()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitADE"><code>AlphaSimR::SimParam$addTraitADE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitADEG"><code>AlphaSimR::SimParam$addTraitADEG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitADG"><code>AlphaSimR::SimParam$addTraitADG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitAE"><code>AlphaSimR::SimParam$addTraitAE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitAEG"><code>AlphaSimR::SimParam$addTraitAEG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-addTraitAG"><code>AlphaSimR::SimParam$addTraitAG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-ibdHaplo"><code>AlphaSimR::SimParam$ibdHaplo()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="importTrait"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-importTrait"><code>AlphaSimR::SimParam$importTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-manAddTrait"><code>AlphaSimR::SimParam$manAddTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-removeTrait"><code>AlphaSimR::SimParam$removeTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-rescaleTraits"><code>AlphaSimR::SimParam$rescaleTraits()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-resetPed"><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-restrSegSites"><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setCorE"><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setRecombRatio"><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setSexes"><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setTrackPed"><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setTrackRec"><code>AlphaSimR::SimParam$setTrackRec()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-setVarE"><code>AlphaSimR::SimParam$setVarE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-switchFemaleMap"><code>AlphaSimR::SimParam$switchFemaleMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-switchGenMap"><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-switchMaleMap"><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-switchTrait"><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href="https://rdrr.io/pkg/AlphaSimR/man/SimParam.html#method-updateLastId"><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
+</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addSnpChip"><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addStructuredSnpChip"><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToPed"><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToRec"><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitA"><code>AlphaSimR::SimParam$addTraitA()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitAD"><code>AlphaSimR::SimParam$addTraitAD()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitADE"><code>AlphaSimR::SimParam$addTraitADE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitADEG"><code>AlphaSimR::SimParam$addTraitADEG()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitADG"><code>AlphaSimR::SimParam$addTraitADG()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitAE"><code>AlphaSimR::SimParam$addTraitAE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitAEG"><code>AlphaSimR::SimParam$addTraitAEG()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addTraitAG"><code>AlphaSimR::SimParam$addTraitAG()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-ibdHaplo"><code>AlphaSimR::SimParam$ibdHaplo()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="importTrait"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-importTrait"><code>AlphaSimR::SimParam$importTrait()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-manAddTrait"><code>AlphaSimR::SimParam$manAddTrait()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-removeTrait"><code>AlphaSimR::SimParam$removeTrait()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-rescaleTraits"><code>AlphaSimR::SimParam$rescaleTraits()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-resetPed"><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-restrSegSites"><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setCorE"><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setRecombRatio"><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setSexes"><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setTrackPed"><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setTrackRec"><code>AlphaSimR::SimParam$setTrackRec()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setVarE"><code>AlphaSimR::SimParam$setVarE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-switchFemaleMap"><code>AlphaSimR::SimParam$switchFemaleMap()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-switchGenMap"><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-switchMaleMap"><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-switchTrait"><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-updateLastId"><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
 </ul></details></p><hr><a id="method-SimParamBee-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Starts the process of building a new simulation by creating
@@ -502,14 +502,14 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
+<span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDrones.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addWorkers.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addDrones.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addVirginQueens.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">caste</span></span></code></pre></div><p></p></div>
@@ -541,11 +541,11 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
+<span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">caste</span></span>
 <span></span>
-<span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDrones.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span>
@@ -619,20 +619,20 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va">SimParamBee</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDrones.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addWorkers.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addDrones.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addVirginQueens.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span></span>
@@ -648,7 +648,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">2</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va">SimParamBee</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createVirginQueens.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
@@ -656,7 +656,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> factor(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: queen fathers workers drones virginQueens</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDrones.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>

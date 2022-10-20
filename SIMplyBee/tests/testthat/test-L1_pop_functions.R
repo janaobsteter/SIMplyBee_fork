@@ -9,7 +9,7 @@ test_that("getCastePop", {
   # Create Colony and MultiColony class  colony <- createColony(x = basePop[2])
   colony <- createColony(basePop[2])
   colony <- cross(colony, drones = drones)
-  colony <- buildUp(colony, nWorkers = 100, nDrones = 100)
+  colony <- buildUp(colony, nWorkers = 200, nDrones = 100)
   # Colony without workers
   colony1 <- removeWorkers(colony)
 
@@ -29,7 +29,7 @@ test_that("getCastePop", {
   expect_length(getCastePop(apiary), 2)
   # Test whether you pull out more individuals that available
   expect_equal(getCastePop(colony, caste = "workers", nInd = 10)@nInd, 10)
-  expect_equal(getCastePop(colony, caste = "workers", nInd = 200)@nInd, 100)
+  expect_equal(getCastePop(colony, caste = "workers", nInd = 100)@nInd, 100)
 })
 
 # ---- createVirginQueens ----
@@ -63,7 +63,7 @@ test_that("createVirginQueens", {
 
   # Error when testing on empty MultiColony
   apiary1 <- createMultiColony(n = 2)
-  expect_error(createVirginQueens(apiary, nInd = 5))
+  expect_error(createVirginQueens(apiary1, nInd = 5))
 
   #check that output is virginqueens ?
   expect_false(all(isVirginQueen(drones)))
@@ -72,7 +72,7 @@ test_that("createVirginQueens", {
 
   # Input = pop/colony        Output = pop class
   expect_s4_class(createVirginQueens(x= colony, nInd = 5), "Pop")
-  expect_error(createVirginQueens(x= colony, nInd = 0))
+  suppressWarnings(expect_error(createVirginQueens(x= colony, nInd = 0)))
   expect_equal(createVirginQueens(x= colony, nInd = 5)@nInd, 5)
 
   # look at csd activity if editCsd = TRUE/FALSE #TODO
@@ -154,7 +154,7 @@ test_that("combineBeeGametes", {
   #check the class
   expect_s4_class(combineBeeGametes(basePop[5], drones = drones), "Pop")
   expect_equal(combineBeeGametes(basePop[5], drones = drones, nProgeny = 5)@nInd, 5)
-  expect_error(combineBeeGametes(basePop[5], drones = drones, nProgeny = 0))
+  suppressWarnings(expect_error(combineBeeGametes(basePop[5], drones = drones, nProgeny = 0)))
 })
 
 # ---- pullCastePop ----
@@ -207,10 +207,11 @@ test_that("pullCastePop", {
   expect_type(pullCastePop(apiary, caste = "workers"), "list")
   expect_type(pullCastePop(apiary, caste = "queen"), "list")
   expect_type(pullCastePop(apiary, caste = "drones"), "list")
-})
 
-# Test whether you pull out more individuals that available
-expect_equal(pullCastePop(colony, caste = "workers", nInd = 10)$pulled@nInd, 10)
+  # Test whether you pull out more individuals that available
+  expect_equal(pullCastePop(colony, caste = "workers", nInd = 10)$pulled@nInd, 10)
+
+})
 
 # ---- cross ----
 test_that("cross", {
