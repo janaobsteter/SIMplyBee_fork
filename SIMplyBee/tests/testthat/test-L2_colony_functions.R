@@ -1,3 +1,5 @@
+
+####----- CREATE COLONY ---- ####
 test_that("createColony", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -17,6 +19,7 @@ test_that("createColony", {
    expect_s4_class(createColony(location = c(1,2)), "Colony")
 })
 
+####-----   REQUEEN ---- ####
 test_that("reQueen", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -57,6 +60,7 @@ test_that("reQueen", {
   expect_true(isQueenPresent(reQueen(matedColony, queen = matedQueen1)))
 })
 
+####-----   ADD FUNCTIONS ---- ####
 test_that("Add functions", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -111,6 +115,7 @@ test_that("Add functions", {
    expect_s4_class(addDrones(apiary, nInd = 5), "MultiColony")
 })
 
+####----- BuildUp downSize ---- ####
 test_that("BuildUpDownsize", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -150,9 +155,9 @@ test_that("BuildUpDownsize", {
    # Non-empty apiary
    expect_equal(nColonies(buildUp(apiary)), 2)
 
-   # Downsize
-   # EmptyColony
-   expect_error(downsize(emptyColony))
+   # Downsize EmptyColony works
+   downsize(emptyColony)
+
    expect_s4_class(downsize(colony, p = 0.5), "Colony")
    expect_equal(nWorkers(downsize(colony, p = 0.5)), 50)
    expect_error(nWorkers(downsize(colony, n = 10)))
@@ -163,9 +168,10 @@ test_that("BuildUpDownsize", {
    # Empty apiary
    expect_s4_class(downsize(emptyApiary), "MultiColony")
    # Non-empty apiary
-   downsize(apiary) # !!!!!!!!!!!!!
+   downsize(apiary)
 })
 
+####----- Replace Functions  ---- ####
 test_that("replaceFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -218,6 +224,7 @@ test_that("replaceFunctions", {
   expect_equal(nColonies(replaceDrones(apiary, p = 0)), nColonies(apiary))
 })
 
+####----- Remove functions  ---- ####
 test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -251,7 +258,7 @@ test_that("removeFunctions", {
   expect_s4_class(removeWorkers(colony), "Colony")
   expect_s4_class(removeDrones(colony), "Colony")
   expect_equal(nVirginQueens(removeVirginQueens(colony, p = 1)), 0)
-  expect_equal(nWorkers(removeVirginQueens(colony, p = 0.5)), nWorkers(colony)/2)
+  expect_equal(nWorkers(removeWorkers(colony, p = 0.5)), nWorkers(colony)/2)
   expect_equal(nDrones(removeDrones(colony, p = 0)), nDrones(colony))
 
   expect_s4_class(removeVirginQueens(apiary), "MultiColony")
@@ -262,13 +269,13 @@ test_that("removeFunctions", {
   expect_equal(nColonies(removeDrones(apiary, p = 0)), nColonies(apiary))
 })
 
-
+####----- SetLocation ---- ####
 test_that("setLocation", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes)
 
-  colony <- createColony()
+  emptyColony <- createColony()
   expect_s4_class(setLocation(emptyColony, location = c(1,1)), "Colony")
   expect_equal(setLocation(emptyColony, location = c(1,1))@location, c(1,1))
 
@@ -277,7 +284,7 @@ test_that("setLocation", {
 
   expect_s4_class(setLocation(emptyApiary, location = c(1,2)), "MultiColony")
   expect_error(setLocation(emptyApiary, location = list(1,2))) # Lengths do not match
-  expect_s4_class(setLocation(emptyApiary, location = list(1:2, 3:4, 4:5))) #Not setting anything, if all are NULL!!!!
+  expect_s4_class(setLocation(emptyApiary, location = list(1:2, 3:4, 4:5)), "MultiColony") #Not setting anything, if all are NULL!!!!
   expect_s4_class(setLocation(apiary, location = c(1,2)), "MultiColony")
   expect_error(setLocation(apiary, location = list(1,2))) # Lengths do not match
   expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5)), "MultiColony")

@@ -8,15 +8,28 @@
 \alias{pullVirginQueens}
 \title{Pull individuals from a caste in a colony}
 \usage{
-pullCastePop(x, caste, nInd = NULL, use = "rand", removeFathers = TRUE)
+pullCastePop(
+  x,
+  caste,
+  nInd = NULL,
+  use = "rand",
+  removeFathers = TRUE,
+  collapse = FALSE
+)
 
-pullQueen(x)
+pullQueen(x, collapse = FALSE)
 
-pullWorkers(x, nInd = NULL, use = "rand")
+pullWorkers(x, nInd = NULL, use = "rand", collapse = FALSE)
 
-pullDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE)
+pullDrones(
+  x,
+  nInd = NULL,
+  use = "rand",
+  removeFathers = TRUE,
+  collapse = FALSE
+)
 
-pullVirginQueens(x, nInd = NULL, use = "rand")
+pullVirginQueens(x, nInd = NULL, use = "rand", collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -33,6 +46,9 @@ a single value is provided, the same value will be applied to all the colonies.}
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
 set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
+
+\item{collapse}{logical, whether to return a single merged population
+for the pulled individuals (does not affect the remnant colonies)}
 }
 \value{
 list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
@@ -120,6 +136,10 @@ pullCastePop(apiary, caste = "drones", nInd = c(5, 3))
 pullDrones(apiary)
 nDrones(apiary)
 nDrones(pullDrones(apiary)$remnant)
+
+# Merge all the pulled populations into a single population
+pullCastePop(apiary, caste = "queen", collapse = TRUE)
+pullCastePop(apiary, caste = "virginQueens", collapse = TRUE)
 }
 \seealso{
 \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},

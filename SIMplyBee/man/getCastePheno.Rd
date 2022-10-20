@@ -9,26 +9,29 @@
 \alias{getDronesPheno}
 \title{Access phenotype values of individuals in a caste}
 \usage{
-getCastePheno(x, caste, nInd = NULL)
+getCastePheno(x, caste, nInd = NULL, collapse = FALSE)
 
-getQueenPheno(x)
+getQueenPheno(x, collapse = FALSE)
 
-getFathersPheno(x, nInd = NULL)
+getFathersPheno(x, nInd = NULL, collapse = FALSE)
 
-getVirginQueensPheno(x, nInd = NULL)
+getVirginQueensPheno(x, nInd = NULL, collapse = FALSE)
 
-getWorkersPheno(x, nInd = NULL)
+getWorkersPheno(x, nInd = NULL, collapse = FALSE)
 
-getDronesPheno(x, nInd = NULL)
+getDronesPheno(x, nInd = NULL, collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with phenotypes of all the individuals}
 }
 \value{
 vector of genetic values when \code{x} is \code{\link{Colony-class}}
@@ -98,6 +101,11 @@ getWorkersPheno(colony)
 getCastePheno(colony, caste = "drones")
 getDronesPheno(colony)
 
+# Get phenotypes for all individuals
+getCastePheno(colony, caste = "all")
+# Get all phenotypes in a single matrix
+getCastePheno(colony, caste = "all", collapse = TRUE)
+
 getCastePheno(apiary, caste = "queen")
 getQueenPheno(apiary)
 
@@ -115,6 +123,10 @@ getWorkersPheno(apiary)
 
 getCastePheno(apiary, caste = "drones")
 getDronesPheno(apiary)
+
+# Get the phenotypes of all individuals either by colony or in a single matrix
+getCastePheno(apiary, caste = "all")
+getCastePheno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{pheno}}

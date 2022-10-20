@@ -368,7 +368,7 @@ SimParamBee <- R6Class(
         }
         genMap <- self$genMap
         # Cancel recombination in the csd region to get non-recombining haplotypes as csd alleles
-        genMap[[private$.csdChr]][private$.csdPosStart:private$.csdPosStop] <- 0
+        genMap[[private$.csdChr]][private$.csdPosStart:private$.csdPosStop] <- genMap[[private$.csdChr]][private$.csdPosStart]
         self$switchGenMap(genMap)
       }
 

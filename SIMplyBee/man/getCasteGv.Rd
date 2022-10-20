@@ -9,26 +9,29 @@
 \alias{getDronesGv}
 \title{Access genetic values of individuals in a caste}
 \usage{
-getCasteGv(x, caste, nInd = NULL)
+getCasteGv(x, caste, nInd = NULL, collapse = FALSE)
 
-getQueenGv(x)
+getQueenGv(x, collapse = FALSE)
 
-getFathersGv(x, nInd = NULL)
+getFathersGv(x, nInd = NULL, collapse = FALSE)
 
-getVirginQueensGv(x, nInd = NULL)
+getVirginQueensGv(x, nInd = NULL, collapse = FALSE)
 
-getWorkersGv(x, nInd = NULL)
+getWorkersGv(x, nInd = NULL, collapse = FALSE)
 
-getDronesGv(x, nInd = NULL)
+getDronesGv(x, nInd = NULL, collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{caste}{character, "queen", "fathers", "workers", "drones", or
-"virginQueens"}
+\item{caste}{character, "queen", "fathers", "workers", "drones",
+"virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with genetic values of all the individuals}
 }
 \value{
 vector of phenotype values when \code{x} is \code{\link{Colony-class}}
@@ -92,6 +95,11 @@ getWorkersGv(colony)
 getCasteGv(colony, caste = "drones")
 getDronesGv(colony)
 
+# Get genetic values for all individuals
+getCasteGv(colony, caste = "all")
+# Get all genetic values in a single matrix
+getCasteGv(colony, caste = "all", collapse = TRUE)
+
 getCasteGv(apiary, caste = "queen")
 getQueenGv(apiary)
 
@@ -109,6 +117,10 @@ getWorkersGv(apiary)
 
 getCasteGv(apiary, caste = "drones")
 getDronesGv(apiary)
+
+# Get the genetic values of all individuals either by colony or in a single matrix
+getCasteGv(apiary, caste = "all")
+getCasteGv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{gv}}

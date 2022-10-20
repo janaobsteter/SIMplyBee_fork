@@ -150,7 +150,7 @@ getMisc(getQueen(addWorkers(colony)))
 # Add individuals to a MultiColony object
 nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
 nDrones(addDrones(apiary, nInd = 10))
-# Add with unequal number of workers per colony
+# Add different number of workers to colonies
 nWorkers(addWorkers(apiary, nInd = c(50, 100)))
 nDrones(addDrones(apiary, nInd = c(100, 10)))
 

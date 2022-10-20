@@ -59,7 +59,7 @@ tmp$remnant
 tmp <- split(apiary, p = 0.5)
 tmp$split[[1]]
 tmp$remnant[[1]]
-# Split with variables percentages
+# Split with different proportions
 nWorkers(apiary)
 tmp <- split(apiary, p = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6))
 nWorkers(tmp$split)

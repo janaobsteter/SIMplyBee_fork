@@ -1,6 +1,4 @@
-
 # ---- nColonies ----
-
 test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -10,8 +8,8 @@ test_that("nColonies", {
   expect_equal(nColonies(createMultiColony(n = 10)), 10)
 })
 
-# ---- nCaste ----
 
+# ---- nCaste ----
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -58,7 +56,6 @@ test_that("nQueens", {
 })
 
 # ---- nDrones ----
-
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -71,6 +68,7 @@ test_that("nDrones", {
   colony2 <- createColony(x = basePop[2])
   colony2 <- cross(colony2, drones = fatherGroups[[2]])
 
+
   expect_equal(nDrones(colony1), 0)
   colony1 <- addDrones(colony1, nInd = 5)
   colony2 <- addDrones(colony2, nInd = 10)
@@ -80,9 +78,9 @@ test_that("nDrones", {
   expect_error(nDrones(basePop))
 })
 
-
 # ---- isGenoHeterozygous ----
 
+####----- isGenoHeterozygous ---- ####
 test_that("isGenoHeterozygous", {
   geno <- matrix(
     data = c(
@@ -602,6 +600,7 @@ test_that("editCsdLocus", {
 
 # ---- emptyNULL ----
 
+####----- emptyNULL ---- ####
 test_that("emptyNULL", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
