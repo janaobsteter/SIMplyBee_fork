@@ -5,13 +5,7 @@
 \title{Cross (mate) virgin queen(s) as a population, of a colony, or
   of all given colonies}
 \usage{
-cross(
-  x,
-  drones,
-  removeFathers = TRUE,
-  checkMating = "error",
-  simParamBee = NULL
-)
+cross(x, drones, crossPlan = NULL, checkMating = "error", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -23,9 +17,10 @@ if there is more than one virgin queen, the user has to provide
 a list of drone \code{\link{Pop-class}}. For this, the user can use
 \code{\link{pullDroneGroupsFromDCA}}}
 
-\item{removeFathers}{logical, removes those \code{drones} that have already
-mated; set to \code{FALSE} if you would like to mate a drone to multiple
-virgin queens, say via insemination}
+\item{crossPlan, }{named list with names being virgin queen or colony IDs with each
+list element holding the IDs of selected drones. Also see \code{\link{createRandomCrossPlan}}.
+ of \code{drones}, which should be the same length as the number of virgin queens
+ If the cross plan is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.}
 
 \item{checkMating}{character, throw a warning (when \code{checkMating = "warning"}),
 or stop error (when \code{checkMating = "error"}) when some matings fail (see
@@ -147,4 +142,9 @@ isQueenPresent(matedColony)
 \seealso{
 \code{\link{Colony-class}} on how we store the fathers along the
   queen.
+
+For crossing virgin queens according to a cross plan, see
+  \code{\link{createRandomCrossPlan}}.
+  For crossing virgin queens on a mating stations, see
+  \code{\link{createMatingStationDCA}}
 }

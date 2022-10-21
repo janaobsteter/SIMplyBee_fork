@@ -2,30 +2,117 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getSnpGeno}
 \alias{getSnpGeno}
-\title{Access SNP array genotypes}
+\alias{getQueenSnpGeno}
+\alias{getFathersSnpGeno}
+\alias{getVirginQueensSnpGeno}
+\alias{getWorkersSnpGeno}
+\alias{getDronesSnpGeno}
+\title{Access SNP array genotypes of individuals in a caste}
 \usage{
-getSnpGeno(pop, snpChip = 1, chr = NULL, simParam = NULL)
+getSnpGeno(
+  x,
+  caste = NULL,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getQueenSnpGeno(
+  x,
+  snpChip = 1,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getFathersSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getWorkersSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getDronesSnpGeno(
+  x,
+  nInd = NULL,
+  snpChip = 1,
+  chr = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{MultiColony-class}}}
 
-\item{snpChip}{numeric, indicates which SNP array genotype to retrieve}
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
+
+\item{nInd}{numeric, number of individuals to access, if \code{NULL} all
+individuals are accessed, otherwise a random sample}
+
+\item{snpChip}{numeric, indicates which SNP array genotypes to retrieve}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
 
-\item{simParam}{\code{\link{SimParam}}, global simulation parameters}
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with genotypes of all the individuals}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Matrix of genotypes
+matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+  list of matrices with genotypes when \code{x} is
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
-Level 0 function that returns SNP array genotypes.
+Level 0 function that returns SNP array genotypes of individuals
+  in a caste.
 }
-\details{
-This is an alias for the AlphaSimR function to distinguish between getting
-  and pulling
-}
+\section{Functions}{
+\itemize{
+\item \code{getQueenSnpGeno()}: Access SNP array genotype data of the queen
+
+\item \code{getFathersSnpGeno()}: Access SNP array genotype data of fathers
+
+\item \code{getVirginQueensSnpGeno()}: Access SNP array genotype data of virgin queens
+
+\item \code{getWorkersSnpGeno()}: Access SNP array genotype data of workers
+
+\item \code{getDronesSnpGeno()}: Access SNP array genotype data of drones
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -35,16 +122,69 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-# Create a Colony  class
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-# Use getSnpGeno on a Population
-getSnpGeno(getWorkers(colony))
-getSnpGeno(getQueen(colony))
-getSnpGeno(getDrones(colony))
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+# Input is a population
+getSnpGeno(x = getQueen(colony))
+queens <- getQueen(apiary, collapse = TRUE)
+getSnpGeno(queens)
+
+# Input is a colony
+getSnpGeno(colony, caste = "queen")
+getQueenSnpGeno(colony)
+
+getSnpGeno(colony, caste = "fathers")
+getSnpGeno(colony, caste = "fathers", nInd = 2)
+getSnpGeno(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersSnpGeno(colony)
+getFathersSnpGeno(colony, nInd = 2)
+
+getSnpGeno(colony, caste = "virginQueens")
+getVirginQueensSnpGeno(colony)
+
+getSnpGeno(colony, caste = "workers")
+getWorkersSnpGeno(colony)
+
+getSnpGeno(colony, caste = "drones")
+getDronesSnpGeno(colony)
+
+# Get genotypes for all individuals
+getSnpGeno(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getSnpGeno(colony, caste = "all", collapse = TRUE)
+
+# Input is a MultiColony
+getSnpGeno(apiary, caste = "queen")
+getQueenSnpGeno(apiary)
+
+getSnpGeno(apiary, caste = "fathers")
+getSnpGeno(apiary, caste = "fathers", nInd = 2)
+getSnpGeno(apiary, caste = "fathers", nInd = 2) # random sample!
+getFathersSnpGeno(apiary)
+getFathersSnpGeno(apiary, nInd = 2)
+
+getSnpGeno(apiary, caste = "virginQueens")
+getVirginQueensSnpGeno(apiary)
+
+getSnpGeno(apiary, caste = "workers")
+getWorkersSnpGeno(apiary)
+
+getSnpGeno(apiary, caste = "drones")
+getDronesSnpGeno(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getSnpGeno(apiary, caste = "all")
+getSnpGeno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{pullSnpHaplo}}
+\code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
 }

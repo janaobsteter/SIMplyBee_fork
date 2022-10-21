@@ -2,12 +2,81 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getIbdHaplo}
 \alias{getIbdHaplo}
-\title{Access IBD haplotypes}
+\alias{getQueenIbdHaplo}
+\alias{getFathersIbdHaplo}
+\alias{getVirginQueensIbdHaplo}
+\alias{getWorkersIbdHaplo}
+\alias{getDronesIbdHaplo}
+\title{Access IBD haplotypes of individuals in a caste}
 \usage{
-getIbdHaplo(pop, chr = NULL, snpChip = NULL, simParam = NULL)
+getIbdHaplo(
+  x,
+  caste = NULL,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getQueenIbdHaplo(
+  x,
+  chr = NULL,
+  snpChip = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getFathersIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getVirginQueensIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getWorkersIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  collapse = FALSE,
+  simParamBee = NULL
+)
+
+getDronesIbdHaplo(
+  x,
+  nInd = NULL,
+  chr = NULL,
+  snpChip = NULL,
+  dronesHaploid = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
+\code{\link{MultiColony-class}}}
+
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
+and character when \code{x} is a \code{\link{Colony-class}} or
+ \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+ "workers", "drones", "virginQueens", or "all"}
+
+\item{nInd}{numeric, number of individuals to access, if \code{NULL} all
+individuals are accessed, otherwise a random sample}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
@@ -15,19 +84,36 @@ are retrieved}
 \item{snpChip}{integer, indicating which SNP array loci are to be retrieved,
 if \code{NULL}, all sites are retrieved}
 
-\item{simParam}{\code{\link{SimParam}}, global simulation parameters}
+\item{dronesHaploid}{logical, return haploid result for drones?}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with haplotypes of all the individuals}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-Matrix of haplotypes
+matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+  and list of matrices with haplotypes when \code{x} is
+  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link{MultiColony-class}}
 }
 \description{
 Level 0 function that returns IBD (identity by descent)
-  haplotypes.
+  haplotypes of individuals in a caste.
 }
-\details{
-This is an alias for the AlphaSimR function to distinguish between getting
-  and pulling
-}
+\section{Functions}{
+\itemize{
+\item \code{getQueenIbdHaplo()}: Access IBD haplotype data of the queen
+
+\item \code{getFathersIbdHaplo()}: Access IBD haplotype data of fathers
+
+\item \code{getVirginQueensIbdHaplo()}: Access IBD haplotype data of virgin queens
+
+\item \code{getWorkersIbdHaplo()}: Access IBD haplotype data of workers
+
+\item \code{getDronesIbdHaplo()}: Access IBD haplotype data of drones
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -38,16 +124,71 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
-# Create a Colony class
+# Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
+colony <- addVirginQueens(x = colony, nInd = 5)
 
-# Use getIbdHaplo on a Population
-getIbdHaplo(getWorkers(colony))
-getIbdHaplo(getQueen(colony))
-getIbdHaplo(getDrones(colony))
+apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
+apiary <- addVirginQueens(x = apiary, nInd = 5)
+
+# Input is a population
+getIbdHaplo(x = getQueen(colony))
+queens <- getQueen(apiary, collapse = TRUE)
+getIbdHaplo(queens)
+
+# Input is a colony
+getIbdHaplo(x = colony, caste = "queen")
+getQueenIbdHaplo(colony)
+
+getIbdHaplo(colony, caste = "fathers")
+getIbdHaplo(colony, caste = "fathers", nInd = 2)
+getIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
+getFathersIbdHaplo(colony)
+getFathersIbdHaplo(colony, nInd = 2)
+
+getIbdHaplo(colony, caste = "virginQueens")
+getVirginQueensIbdHaplo(colony)
+
+getIbdHaplo(colony, caste = "workers")
+getWorkersIbdHaplo(colony)
+
+getIbdHaplo(colony, caste = "drones")
+getDronesIbdHaplo(colony)
+
+# Get haplotypes for all individuals
+getIbdHaplo(colony, caste = "all")
+# Get all haplotypes in a single matrix
+getIbdHaplo(colony, caste = "all", collapse = TRUE)
+
+# Input is a MultiColony
+getIbdHaplo(x = apiary, caste = "queen")
+getQueenIbdHaplo(apiary)
+# Or collapse all the haplotypes into a single matrix
+getQueenIbdHaplo(apiary, collapse = TRUE)
+
+getIbdHaplo(apiary, caste = "fathers")
+getIbdHaplo(apiary, caste = "fathers", nInd = 2)
+getIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
+getFathersIbdHaplo(apiary)
+getFathersIbdHaplo(apiary, nInd = 2)
+
+getIbdHaplo(apiary, caste = "virginQueens")
+getVirginQueensIbdHaplo(apiary)
+
+getIbdHaplo(apiary, caste = "workers")
+getWorkersIbdHaplo(apiary)
+
+getIbdHaplo(apiary, caste = "drones")
+getDronesIbdHaplo(apiary)
+
+# Get the haplotypes of all individuals either by colony or in a single matrix
+getIbdHaplo(apiary, caste = "all")
+getIbdHaplo(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{pullIbdHaplo}}
+\code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
 }
