@@ -4,7 +4,7 @@
 \alias{getCasteSex}
 \title{Get sex of individuals of a caste, or sex of all members of colony}
 \usage{
-getCasteSex(x, caste = "all", simParamBee = NULL)
+getCasteSex(x, caste = "all", collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -12,6 +12,9 @@ getCasteSex(x, caste = "all", simParamBee = NULL)
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
+
+\item{collapse}{logical, if \code{TRUE}, the function will return a single
+vector with sex information}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -54,6 +57,8 @@ getCasteSex(x = colony)
 getCasteSex(x = apiary, caste = "workers")
 getCasteSex(x = apiary)
 getCasteSex(x = apiary, caste = "virginQueens")
+# Collapse information into a single vector
+getCasteSex(colony, caste = "all", collapse = TRUE)
 
 # Create a data.frame with sex, colony, and caste information
 (tmpC <- getCaste(apiary[[1]]))
