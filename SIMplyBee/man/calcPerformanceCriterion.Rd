@@ -24,9 +24,8 @@ to the colony value; if \code{NULL} then this contribution is 0}
 \item{workersTraitFUN}{function, function that will be applied to the worker trait}
 
 \item{use}{character, the measure to use for the calculation, being
-either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-and "aa" (epistatic additive by additive deviation)}
+either "gv" (genetic value),"ebv" (estimated breeding value),
+or "pheno" (phenotypic value)}
 }
 \value{
 integer when \code{x} is

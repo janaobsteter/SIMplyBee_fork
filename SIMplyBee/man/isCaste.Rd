@@ -2,9 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{isCaste}
 \alias{isCaste}
+\alias{isQueen}
+\alias{isFather}
+\alias{isWorker}
+\alias{isDrone}
+\alias{isVirginQueen}
 \title{Is individual a member of a specific caste}
 \usage{
 isCaste(x, caste, simParamBee = NULL)
+
+isQueen(x, simParamBee = NULL)
+
+isFather(x, simParamBee = NULL)
+
+isWorker(x, simParamBee = NULL)
+
+isDrone(x, simParamBee = NULL)
+
+isVirginQueen(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}}
@@ -21,6 +36,19 @@ logical
 Level 0 function that tests if individuals are members of a
   specific caste
 }
+\section{Functions}{
+\itemize{
+\item \code{isQueen()}: Is individual a queen
+
+\item \code{isFather()}: Is individual a father
+
+\item \code{isWorker()}: Is individual a worker
+
+\item \code{isDrone()}: Is individual a drone
+
+\item \code{isVirginQueen()}: Is individual a virgin queen
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -53,4 +81,28 @@ isCaste(bees, caste = "fathers")
 isCaste(bees, caste = "workers")
 isCaste(bees, caste = "drones")
 isCaste(bees, caste = "virginQueens")
+
+isQueen(getQueen(colony))
+isQueen(getFathers(colony, nInd = 2))
+
+isFather(getQueen(colony))
+isFather(getFathers(colony, nInd = 2))
+
+isWorker(getQueen(colony))
+isWorker(getFathers(colony, nInd = 2))
+isWorker(getWorkers(colony, nInd = 2))
+
+isDrone(getQueen(colony))
+isDrone(getFathers(colony, nInd = 2))
+isDrone(getDrones(colony, nInd = 2))
+
+isVirginQueen(getQueen(colony))
+isVirginQueen(getFathers(colony, nInd = 2))
+isVirginQueen(getVirginQueens(colony, nInd = 2))
+
+}
+\seealso{
+\code{\link{isQueen}}, \code{\link{isFather}},
+  \code{\link{isVirginQueen}}, \code{\link{isWorker}}, and
+  \code{\link{isDrone}}
 }
