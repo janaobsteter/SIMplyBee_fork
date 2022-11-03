@@ -5434,10 +5434,8 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @param workersTrait numeric, trait that represents workers' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
-#'
+#'   either "gv" (genetic value), "ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
@@ -5480,6 +5478,9 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'
 #' @export
 calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isPop(x)) {
     if(!all(isQueen(x))) {
       stop("x must be queens!")
@@ -5536,9 +5537,8 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
+#'   either "gv" (genetic value),"ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5587,6 +5587,9 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @export
 calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
                                      workersTraitFUN = mean, use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
@@ -5641,10 +5644,8 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
-#'
+#'   either "gv" (genetic value), "ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
@@ -5701,6 +5702,9 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
                                    workersTrait = 2, workersTraitFUN = mean,
                                    use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")

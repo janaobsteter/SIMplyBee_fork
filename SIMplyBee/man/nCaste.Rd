@@ -2,10 +2,25 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nCaste}
 \alias{nCaste}
+\alias{nQueens}
+\alias{nFathers}
+\alias{nWorkers}
+\alias{nDrones}
+\alias{nVirginQueens}
 \title{Level 0 function that returns the number of individuals of a caste in a
   colony}
 \usage{
 nCaste(x, caste = "all")
+
+nQueens(x)
+
+nFathers(x)
+
+nWorkers(x)
+
+nDrones(x)
+
+nVirginQueens(x)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -23,6 +38,19 @@ when \code{x} is \code{\link{Colony-class}} return is integer for
 \description{
 Returns the number of individuals of a caste in a colony
 }
+\section{Functions}{
+\itemize{
+\item \code{nQueens()}: Number of queens in a colony
+
+\item \code{nFathers()}: Number of fathers in a colony
+
+\item \code{nWorkers()}: Number of workers in a colony
+
+\item \code{nDrones()}: Number of drones in a colony
+
+\item \code{nVirginQueens()}: Number of virgin queens in a colony
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -56,6 +84,29 @@ nCaste(apiary, caste = "virginQueens")
 nCaste(apiary, caste = "workers")
 nCaste(apiary, caste = "drones")
 nCaste(apiary, caste = "all")
+
+# Check number of queens
+nQueens(colony)
+nQueens(apiary)
+apiary <- removeQueen(apiary)
+nQueens(apiary)
+
+# Check number of fathers
+nFathers(colony)
+nFathers(apiary)
+
+# Check number of workers
+nWorkers(colony)
+nWorkers(apiary)
+
+# Check number of drones
+nDrones(colony)
+nDrones(apiary)
+
+# Check number of virgin queens
+nVirginQueens(colony)
+nVirginQueens(apiary)
+
 }
 \seealso{
 \code{\link{nQueens}}, \code{\link{nFathers}},
