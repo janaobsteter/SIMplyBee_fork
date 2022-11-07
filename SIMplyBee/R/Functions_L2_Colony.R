@@ -1221,6 +1221,12 @@ resetEvents <- function(x, collapse = NULL) {
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the collapse
 #'   event set to \code{TRUE}
 #'
+#' @details You should use this function in an edge-case when you
+#'  want to indicate that the colony has collapsed, but you still want to
+#'  collect some values from the colony for a retrospective analysis.
+#'  It resembles a situation where the colony has collapsed, but dead
+#'  bees are still in the hive.
+#'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
