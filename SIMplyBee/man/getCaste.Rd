@@ -4,11 +4,14 @@
 \alias{getCaste}
 \title{Report caste of an individual}
 \usage{
-getCaste(x, simParamBee = NULL)
+getCaste(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{MultiColony-class}}}
+
+\item{collapse}{logical, if \code{TRUE}, the function will return a single
+vector with caste information}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
@@ -57,6 +60,8 @@ bees <- c(
 getCaste(bees)
 
 getCaste(colony)
+# Collapse information into a single vector
+getCaste(colony, collapse = TRUE)
 getCaste(apiary)
 
 # Create a data.frame with id, colony, and caste information

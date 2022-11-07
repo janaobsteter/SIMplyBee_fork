@@ -18,6 +18,13 @@ Level 2 function that collapses a Colony or MultiColony object
   by setting the collapse event slot to \code{TRUE}. The production status
   slot is also changed (to \code{FALSE}).
 }
+\details{
+You should use this function in an edge-case when you
+ want to indicate that the colony has collapsed, but you still want to
+ collect some values from the colony for a retrospective analysis.
+ It resembles a situation where the colony has collapsed, but dead
+ bees are still in the hive.
+}
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
