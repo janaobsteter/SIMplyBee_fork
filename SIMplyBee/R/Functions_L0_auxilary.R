@@ -1356,7 +1356,7 @@ getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) 
 #'   \code{\link{MultiColony-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param collapse logical, if \code{TRUE}, the function will return a single
-#'   vector with sex information
+#'   vector with caste information
 #' @return When x is \code{\link{Pop-class}}, character of caste status; if you
 #'   get \code{NA} note that this is not supposed to happen. When x is
 #'   \code{\link{Colony-class}}, list with character vectors (list is named with

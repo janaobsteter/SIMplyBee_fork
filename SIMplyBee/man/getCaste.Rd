@@ -11,7 +11,7 @@ getCaste(x, collapse = FALSE, simParamBee = NULL)
 \code{\link{MultiColony-class}}}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a single
-vector with sex information}
+vector with caste information}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
