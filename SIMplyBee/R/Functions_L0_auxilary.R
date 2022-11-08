@@ -1235,6 +1235,8 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
 #'   \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
+#' @param collapse logical, if \code{TRUE}, the function will return a single
+#'   vector with sex information
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getCaste}}
@@ -1274,6 +1276,8 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
 #' getCasteSex(x = apiary, caste = "workers")
 #' getCasteSex(x = apiary)
 #' getCasteSex(x = apiary, caste = "virginQueens")
+#' # Collapse information into a single vector
+#' getCasteSex(colony, caste = "all", collapse = TRUE)
 #'
 #' # Create a data.frame with sex, colony, and caste information
 #' (tmpC <- getCaste(apiary[[1]]))
@@ -1297,7 +1301,7 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
+getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1318,6 +1322,9 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
           ret[[caste]] <- tmp@sex
         }
       }
+      if (collapse) {
+        ret <- do.call("c", ret)
+      }
     } else {
       tmp <- getCastePop(x = x, caste = caste)
       if (is.null(tmp)) {
@@ -1327,9 +1334,13 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
       }
     }
   } else if (isMultiColony(x)) {
-    fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(X = x@colonies, FUN = getCasteSex, caste = caste)
-    names(ret) <- getCaste(x)
+    ret <- lapply(X = x@colonies, FUN = getCasteSex, caste = caste,
+               collapse = collapse, simParamBee = simParamBee)
+    if (collapse) {
+      ret <- do.call("c", ret)
+    } else {
+      names(ret) <- getCaste(x)
+    }
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
@@ -1344,8 +1355,8 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
-
-#'
+#' @param collapse logical, if \code{TRUE}, the function will return a single
+#'   vector with caste information
 #' @return When x is \code{\link{Pop-class}}, character of caste status; if you
 #'   get \code{NA} note that this is not supposed to happen. When x is
 #'   \code{\link{Colony-class}}, list with character vectors (list is named with
@@ -1389,6 +1400,8 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' getCaste(bees)
 #'
 #' getCaste(colony)
+#' # Collapse information into a single vector
+#' getCaste(colony, collapse = TRUE)
 #' getCaste(apiary)
 #'
 #' # Create a data.frame with id, colony, and caste information
@@ -1411,7 +1424,7 @@ getCasteSex <- function(x, caste = "all", simParamBee = NULL) {
 #' head(tmp)
 #' tail(tmp)
 #' @export
-getCaste <- function(x, simParamBee = NULL) {
+getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1429,9 +1442,16 @@ getCaste <- function(x, simParamBee = NULL) {
         ret[[caste]] <- getCaste(tmp)
       }
     }
+    if (collapse) {
+      ret <- do.call("c", ret)
+    }
   } else if (isMultiColony(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCaste)
-    names(ret) <- getId(x)
+    ret <- lapply(X = x@colonies, FUN = getCaste, collapse = collapse, simParamBee = simParamBee)
+    if (collapse) {
+      ret <- do.call("c", ret)
+    } else {
+      names(ret) <- getId(x)
+    }
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
@@ -4784,23 +4804,16 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
-#' genoQ <- getQueenSegSiteGeno(apiary[[1]])
-#' genoF <- getFathersSegSiteGeno(apiary[[1]])
-#' genoW <- getWorkersSegSiteGeno(apiary[[1]])
-#' genoD <- getDronesSegSiteGeno(apiary[[1]])
-#' genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
-#' genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
-#' genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
+#' geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
+#' genoMeanW <- apply(X = getWorkersSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
+#' genoMeanD <- apply(X = getDronesSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
 #'
-#' geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
+#' geno <- rbind(geno, genoMeanW, genoMeanD)
 #' n <- length(rownames(geno))
 #' rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 #'
-#' sex <- getCasteSex(x = apiary[[1]])
-#' sex <- c(
-#'   sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
-#'   "F", "M"
-#' )
+#' sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
+#' sex <- c(sex, "F", "M")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #'
@@ -4814,36 +4827,37 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' hist(x)
 #' summary(x)
 #'
-#' q <- rownames(genoQ)
-#' f <- rownames(genoF)
-#' w <- rownames(genoW)
-#' d <- rownames(genoD)
-#' v <- rownames(genoV)
+#' ids <- getCasteId(apiary[[1]])
+#' idQueen <- ids$queen
+#' idFathers <- ids$fathers
+#' idWorkers <- ids$workers
+#' idDrones <- ids$drones
+#' idVirginQueens <- ids$virginQueens
 #' mw <- "mw"
 #' md <- "md"
 #'
 #' # Queen vs others
-#' GRM[q, f]
-#' GRM[q, w]
-#' GRM[q, d]
-#' GRM[q, v]
-#' GRM[q, mw]
-#' GRM[q, md]
+#' GRM[idQueen, idFathers]
+#' GRM[idQueen, idWorkers]
+#' GRM[idQueen, idDrones]
+#' GRM[idQueen, idVirginQueens]
+#' GRM[idQueen, mw]
+#' GRM[idQueen, md]
 #'
 #' # Fathers vs others
-#' GRM[f, f]
-#' GRM[f, w]
-#' GRM[f, d]
-#' GRM[f, v]
-#' GRM[f, mw]
-#' GRM[f, md]
+#' GRM[idFathers, idFathers]
+#' GRM[idFathers, idWorkers]
+#' GRM[idFathers, idDrones]
+#' GRM[idFathers, idVirginQueens]
+#' GRM[idFathers, mw]
+#' GRM[idFathers, md]
 #'
 #' # Workers vs others
-#' GRM[w, w]
-#' GRM[w, d]
-#' GRM[w, v]
-#' GRM[w, mw]
-#' GRM[w, md]
+#' GRM[idWorkers, idWorkers]
+#' GRM[idWorkers, idDrones]
+#' GRM[idWorkers, idVirginQueens]
+#' GRM[idWorkers, mw]
+#' GRM[idWorkers, md]
 #'
 #' # Calculating allele frequencies ourselves (say, to "shift" base population)
 #' aF <- calcBeeAlleleFreq(x = geno, sex = sex)
@@ -5434,10 +5448,8 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @param workersTrait numeric, trait that represents workers' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
-#'
+#'   either "gv" (genetic value), "ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
@@ -5480,6 +5492,9 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'
 #' @export
 calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isPop(x)) {
     if(!all(isQueen(x))) {
       stop("x must be queens!")
@@ -5536,9 +5551,8 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
+#'   either "gv" (genetic value),"ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5587,6 +5601,9 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @export
 calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
                                      workersTraitFUN = mean, use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
@@ -5641,10 +5658,8 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param workersTraitFUN function, function that will be applied to the worker trait
 #' @param use character, the measure to use for the calculation, being
-#'   either "gv" (genetic value), "bv" (breeding value), "ebv" (estimated
-#'   breeding value), "pheno" (phenotypic value), "dd" (dominance deviation),
-#'   and "aa" (epistatic additive by additive deviation)
-#'
+#'   either "gv" (genetic value), "ebv" (estimated breeding value),
+#'   or "pheno" (phenotypic value)
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
@@ -5701,6 +5716,9 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
                                    workersTrait = 2, workersTraitFUN = mean,
                                    use = "gv") {
+  if (!use %in% c("gv", "ebv", "pheno")) {
+    stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
+  }
   if (isColony(x)) {
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")

@@ -2,9 +2,15 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{nColonies}
 \alias{nColonies}
+\alias{nNULLColonies}
+\alias{nEmptyColonies}
 \title{Number of colonies in a MultiColony object}
 \usage{
 nColonies(multicolony)
+
+nNULLColonies(multicolony)
+
+nEmptyColonies(multicolony)
 }
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
@@ -13,6 +19,13 @@ nColonies(multicolony)
 Level 0 function that returns the number of colonies in a
   MultiColony object.
 }
+\section{Functions}{
+\itemize{
+\item \code{nNULLColonies()}: Number of \code{NULL} colonies in a MultiColony object
+
+\item \code{nEmptyColonies()}: Number of empty colonies in a MultiColony object
+
+}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
@@ -23,4 +36,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 apiary <- createMultiColony(basePop[2:3], n = 2)
 nColonies(apiary)
 nColonies(createMultiColony(n = 10))
+}
+\seealso{
+\code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
 }

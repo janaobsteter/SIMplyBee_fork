@@ -48,23 +48,16 @@ apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-genoQ <- getQueenSegSiteGeno(apiary[[1]])
-genoF <- getFathersSegSiteGeno(apiary[[1]])
-genoW <- getWorkersSegSiteGeno(apiary[[1]])
-genoD <- getDronesSegSiteGeno(apiary[[1]])
-genoV <- getVirginQueensSegSiteGeno(apiary[[1]])
-genoMeanW <- apply(X = genoW, MARGIN = 2, FUN = mean)
-genoMeanD <- apply(X = genoD, MARGIN = 2, FUN = mean)
+geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
+genoMeanW <- apply(X = getWorkersSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
+genoMeanD <- apply(X = getDronesSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
 
-geno <- rbind(genoQ, genoF, genoW, genoD, genoV, genoMeanW, genoMeanD)
+geno <- rbind(geno, genoMeanW, genoMeanD)
 n <- length(rownames(geno))
 rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 
-sex <- getCasteSex(x = apiary[[1]])
-sex <- c(
-  sex$queen, sex$fathers, sex$workers, sex$drones, sex$virginQueens,
-  "F", "M"
-)
+sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
+sex <- c(sex, "F", "M")
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 
@@ -78,36 +71,37 @@ x <- GRM[lower.tri(x = GRM, diag = FALSE)]
 hist(x)
 summary(x)
 
-q <- rownames(genoQ)
-f <- rownames(genoF)
-w <- rownames(genoW)
-d <- rownames(genoD)
-v <- rownames(genoV)
+ids <- getCasteId(apiary[[1]])
+idQueen <- ids$queen
+idFathers <- ids$fathers
+idWorkers <- ids$workers
+idDrones <- ids$drones
+idVirginQueens <- ids$virginQueens
 mw <- "mw"
 md <- "md"
 
 # Queen vs others
-GRM[q, f]
-GRM[q, w]
-GRM[q, d]
-GRM[q, v]
-GRM[q, mw]
-GRM[q, md]
+GRM[idQueen, idFathers]
+GRM[idQueen, idWorkers]
+GRM[idQueen, idDrones]
+GRM[idQueen, idVirginQueens]
+GRM[idQueen, mw]
+GRM[idQueen, md]
 
 # Fathers vs others
-GRM[f, f]
-GRM[f, w]
-GRM[f, d]
-GRM[f, v]
-GRM[f, mw]
-GRM[f, md]
+GRM[idFathers, idFathers]
+GRM[idFathers, idWorkers]
+GRM[idFathers, idDrones]
+GRM[idFathers, idVirginQueens]
+GRM[idFathers, mw]
+GRM[idFathers, md]
 
 # Workers vs others
-GRM[w, w]
-GRM[w, d]
-GRM[w, v]
-GRM[w, mw]
-GRM[w, md]
+GRM[idWorkers, idWorkers]
+GRM[idWorkers, idDrones]
+GRM[idWorkers, idVirginQueens]
+GRM[idWorkers, mw]
+GRM[idWorkers, md]
 
 # Calculating allele frequencies ourselves (say, to "shift" base population)
 aF <- calcBeeAlleleFreq(x = geno, sex = sex)
