@@ -322,7 +322,7 @@ test_that("reduceDroneHaplo", {
    df <- as.data.frame(tmp)
    tmpD <- getSegSiteHaplo(drones)
 
- expect_error(reduceDroneHaplo(haplo = tmp, pop = queens))
+ expect_error(reduceDroneHaplo(haplo = tmp, pop = virginQueens))
  expect_error(reduceDroneHaplo(haplo = vec, pop = drones))
  expect_error(reduceDroneHaplo(haplo = df, pop = drones))
  expect_true(is.matrix(reduceDroneHaplo(haplo = tmpD, pop = drones)))
