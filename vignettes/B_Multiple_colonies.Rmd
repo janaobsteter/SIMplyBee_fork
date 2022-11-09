@@ -36,7 +36,7 @@ The third option is to create a `MultiColony` object with a population of either
 
 ```{r}
 # Create 20 founder genomes
-founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
 # Set up new global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 # Create a base population of 20 virgin queens
@@ -87,41 +87,26 @@ isQueenPresent(apiary1)
 ```
 
 
-Once we have mated queens in the apiary, we can apply all the events functions directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`, `split()`, `supersede()`, `collapse()` but also all the functions that either add, replace, or remove individuals from the castes. Let's say we know want to build up all the colonies in our apiary.
+Once we have mated queens in the apiary, we can apply all the events functions directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`, `split()`, `supersede()`, `collapse()` but also all the functions that either add, replace, or remove individuals from the castes. Let's say we know want to build up all the colonies in our apiary. We can use the `pullColonies()` or `selectColonies()` to subset the colonies that will for example swarm, collapse, or supersede, or the ones that we decided to split (check out the Colony events vignette).
 ```{r}
-# Initiate an empty apiary2 at the location (2,2)
-apiary2 <- createMultiColony()
-apiary2 <- setLocation(apiary2, c(2,2))
 # Build-up all the colonies in the apiary1
 apiary1 <- buildUp(apiary1, nWorkers = 1000, nDrones = 100)
 ```
 
-Now, let's split all the colonies in the `apiary1` and swarm 10% of the colonies. Splitting and swarming all duplicate the number of colonies and set up a new virgin queen in the remaining colonies. Let's say we want to put all the these newly created virgin colonies to a new location (2,2) in `apiary2.`
-```{r}
-# Split all the colonies in the apiary1 - this returns two lists of colonies
-tmp <- split(apiary1)
-tmp
-# Assign the remnants with the old queens back to the apiary1
-apiary1 <- tmp$remnant
-# Assign the splits to a new apiary2
-apiary2 <- c(apiary2, tmp$split)
-# Pull out 10% colonies that will swarm
-tmp <- pullColonies(apiary1, p = 0.1)
-# Keep the remnants in the apiary1
-apiary1 <- tmp$remnant
-# Swarm the pulled-out colonies
-tmp <- swarm(tmp$pulled, p = 0.5)
-# Let's assume you loose the swarms
-# Put the remnants in the new apiary2
-apiary2 <- c(apiary2, tmp$remnant)
-```
-
 Here, we defined different `MultiColony` objects according to the location of the apiary. The objects could also be defined according to the age of the queens - `age0`, `age1`... Here, `apiary2` are actually all new virgin queens of age 0 produced through splitting and swarming.
 
-Let's say we now want to mate the `apiary2` that contains only virgin queens. We want to mate them to a DCA made of drones in `apiary1`. Since some time has passed, we want to first replace the drones in `apiary1` with new drones. We can do that with `replaceDrones()` function.
+Let's now initiate another `MultiColony` names `apiary2` that contains only virgin queens. We want to mate them to a DCA made of drones in `apiary1`. 
+```{r}
+# Initiate apiary2 at the location (2,2)
+apiary2 <- createMultiColony(basePop[21:30])
+apiary2 <- setLocation(apiary2, c(2,2))
+```
+
+Since some time has passed, we want to first replace the drones in `apiary1` with new drones. We can do that with `replaceDrones()` function.
 ```{r}
 apiary1 <- replaceDrones(apiary1)
 ```
+
 Now that we have a new set of drones, we can create a DCA with the function `createDCA()` and mate virgin queens in apiary2 to the DCA.
 ```{r}
 # Check whether all colonies in apiary2 are virgin
