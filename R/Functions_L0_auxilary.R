@@ -1985,7 +1985,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #'   haplotypes, which is why you need to provide \code{pop}. We only reduce
 #'   haplotypes for males though.
 #'
-#' @return matrix with one haplotype per drone instead of two
+#' @return matrix with one haplotype per drone instead of two - the order of
+#'   individuals stays the same, but there will be less rows!
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
@@ -2026,7 +2027,8 @@ reduceDroneHaplo <- function(haplo, pop) {
 #' @param geno \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
 #'
-#' @return matrix with genotype as one haplotype per drone instead of two
+#' @return matrix with genotype as one haplotype per drone instead of two - the
+#'   order of individuals and the number of rows stays the same!
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
