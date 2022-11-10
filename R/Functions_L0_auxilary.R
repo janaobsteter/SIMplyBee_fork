@@ -1974,8 +1974,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @title Reduce drone's double haplotypes to a single haplotype
 #'
 #' @description Level 0 function that returns one haplotype of drones, because
-#'   we internally simulate them as diploid (doubled haploid). This is a utility
-#'   function that you likely don't need to use.
+#'   we internally simulate them as diploid (doubled haploid). This is an
+#'   internal utility function that you likely don't need to use.
 #'
 #' @param haplo \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
@@ -1988,23 +1988,23 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @return matrix with one haplotype per drone instead of two
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteHaplo(drones))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
+#' reduceDroneHaplo(haplo = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteHaplo(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+#' reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneHaplo <- function(haplo, pop) {
   if (!is.matrix(haplo)) {
     stop("Argument haplo must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   idHap <- rownames(haplo)
   id <- sapply(X = strsplit(x = idHap, split = "_"), FUN = function(z) z[[1]])
@@ -2020,7 +2020,8 @@ reduceDroneHaplo <- function(haplo, pop) {
 #'
 #' @description Level 0 function that reduces drone's genotype to a single
 #'   haplotype, because we internally simulate them as diploid (doubled
-#'   haploid). This is a utility function that you likely don't need to use.
+#'   haploid). This is an internal utility function that you likely don't need
+#'   to use.
 #'
 #' @param geno \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
@@ -2028,23 +2029,23 @@ reduceDroneHaplo <- function(haplo, pop) {
 #' @return matrix with genotype as one haplotype per drone instead of two
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteGeno(drones))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
+#' reduceDroneGeno(geno = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteGeno(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+#' reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneGeno <- function(geno, pop) {
   if (!is.matrix(geno)) {
     stop("Argument geno must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   id <- rownames(geno)
   sel <- id %in% pop@id[pop@sex == "M"]
