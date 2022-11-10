@@ -82,56 +82,56 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 # Input is a population
-getDd(x = getQueen(colony))
+SIMplyBee:::getDd(x = getQueen(colony))
 queens <- getQueen(apiary, collapse = TRUE)
-getDd(queens)
+SIMplyBee:::getDd(queens)
 
 # Input is a colony
-getDd(colony, caste = "queen")
-getQueenDd(colony)
+SIMplyBee:::getDd(colony, caste = "queen")
+SIMplyBee:::getQueenDd(colony)
 
-getDd(colony, caste = "fathers")
-getDd(colony, caste = "fathers", nInd = 2)
-getDd(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersDd(colony)
-getFathersDd(colony, nInd = 2)
+SIMplyBee:::getDd(colony, caste = "fathers")
+SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2)
+SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersDd(colony)
+SIMplyBee:::getFathersDd(colony, nInd = 2)
 
-getDd(colony, caste = "virginQueens")
-getVirginQueensDd(colony)
+SIMplyBee:::getDd(colony, caste = "virginQueens")
+SIMplyBee:::getVirginQueensDd(colony)
 
-getDd(colony, caste = "workers")
-getWorkersDd(colony)
+SIMplyBee:::getDd(colony, caste = "workers")
+SIMplyBee:::getWorkersDd(colony)
 
-getDd(colony, caste = "drones")
-getDronesDd(colony)
+SIMplyBee:::getDd(colony, caste = "drones")
+SIMplyBee:::getDronesDd(colony)
 
 # Get dominance valued for all individuals
-getDd(colony, caste = "all")
+SIMplyBee:::getDd(colony, caste = "all")
 # Get all dominance values in a single matrix
-getDd(colony, caste = "all", collapse = TRUE)
+SIMplyBee:::getDd(colony, caste = "all", collapse = TRUE)
 
 # Input is a MultiColony
-getDd(apiary, caste = "queen")
-getQueenDd(apiary)
+SIMplyBee:::getDd(apiary, caste = "queen")
+SIMplyBee:::getQueenDd(apiary)
 
-getDd(apiary, caste = "fathers")
-getDd(apiary, caste = "fathers", nInd = 2)
-getDd(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersDd(apiary)
-getFathersDd(apiary, nInd = 2)
+SIMplyBee:::getDd(apiary, caste = "fathers")
+SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2)
+SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersDd(apiary)
+SIMplyBee:::getFathersDd(apiary, nInd = 2)
 
-getDd(apiary, caste = "virginQueens")
-getVirginQueensDd(apiary)
+SIMplyBee:::getDd(apiary, caste = "virginQueens")
+SIMplyBee:::getVirginQueensDd(apiary)
 
-getDd(apiary, caste = "workers")
-getWorkersDd(apiary)
+SIMplyBee:::getDd(apiary, caste = "workers")
+SIMplyBee:::getWorkersDd(apiary)
 
-getDd(apiary, caste = "drones")
-getDronesDd(apiary)
+SIMplyBee:::getDd(apiary, caste = "drones")
+SIMplyBee:::getDronesDd(apiary)
 
 # Get the dominance values of all individuals either by colony or in a single matrix
-getDd(apiary, caste = "all")
-getDd(apiary, caste = "all", collapse = TRUE)
+SIMplyBee:::getDd(apiary, caste = "all")
+SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{dd}}

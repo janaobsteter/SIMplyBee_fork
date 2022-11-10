@@ -274,9 +274,8 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   You can provide your own functions that satisfy your needs!}
 
 \item{\code{colonyValueFUN}}{function, to calculate colony values - used
-  in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}},
-  \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
-  \code{\link{calcColonyDd}}, and \code{\link{calcColonyAa}}.
+  in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}}
+  and \code{\link{calcColonyGv}}.
 
   This function should work with internals of others functions -
   therefore the function MUST be defined like \code{function(colony, arg

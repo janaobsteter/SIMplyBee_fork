@@ -235,9 +235,8 @@ SimParamBee <- R6Class(
 
     # colonyValueFUN field ----
     #' @field colonyValueFUN function, to calculate colony values - used
-    #'   in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}},
-    #'   \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
-    #'   \code{\link{calcColonyDd}}, and \code{\link{calcColonyAa}}.
+    #'   in \code{\link{calcColonyValue}} - see also \code{\link{calcColonyPheno}}
+    #'   and \code{\link{calcColonyGv}}.
     #'
     #'   This function should work with internals of others functions -
     #'   therefore the function MUST be defined like \code{function(colony, arg
@@ -1196,8 +1195,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'   such as a queen and a workers trait.
 #'
 #' @param colony \code{\link{Colony-class}}
-#' @param value character, one of \code{pheno}, \code{gv}, \code{bv}, \code{dd},
-#'   or \code{aa}
+#' @param value character, one of \code{pheno} or \code{gv}
 #' @param queenTrait numeric, trait that represents queen's contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param queenFUN function, function that will be applied to the queen's value
@@ -1221,11 +1219,8 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{colonyValueFUN} and functions
 #'   \code{\link{calcColonyValue}}, \code{\link{calcColonyPheno}},
-#'   \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
-#'   \code{\link{calcColonyDd}}, \code{\link{calcColonyAa}},
-#'   \code{\link{getEvents}},
-#'   \code{\link{pheno}}, \code{\link{gv}}, \code{\link{bv}}, \code{\link{dd}},
-#'   and \code{\link{aa}}
+#'   \code{\link{calcColonyGv}}, \code{\link{getEvents}},
+#'   \code{\link{pheno}}, and \code{\link{gv}}
 #'
 #' @details This is a utility/mapping function meant to be called by
 #'   \code{\link{calcColonyValue}}. It only works on a single colony - use
@@ -1270,9 +1265,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #' #   https://github.com/gaynorr/AlphaSimR/issues/83
 #' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # mapCasteToColonyBv(colony)
-#' # mapCasteToColonyDd(colony)
-#' # mapCasteToColonyAa(colony)
 #'
 #' # To understand where the above values come from, study the contents of
 #' # mapCasteToColonyValue() and the values below:
@@ -1284,27 +1276,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' # Genetic values
 #' getQueenGv(colony)
 #' getWorkersGv(colony)
-#'
-#' # Breeding values
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # getQueenBv(colony)
-#' getWorkersBv(colony)
-#'
-#' # Dominance values
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # getQueenDd(colony)
-#' getWorkersDd(colony)
-#'
-#' # Epistasis values
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # getQueenAa(colony)
-#' getWorkersAa(colony)
 #'
 #' @export
 # TODO: Calculate inheritance, selection and production criteria in the Colony #23
@@ -1327,8 +1298,8 @@ mapCasteToColonyValue <- function(colony,
   if (1 < length(value)) {
     stop("Argument value must be of length 1!")
   }
-  if (!(value %in% c("pheno", "gv", "bv", "dd", "aa"))) {
-    stop("Argument value must be one of pheno, gv, bv, dd, or aa!")
+  if (!(value %in% c("pheno", "gv"))) {
+    stop("Argument value must be one of pheno or gv!")
   }
   valueFUN <- get(x = value)
   if (is.null(simParamBee)) {
@@ -1339,7 +1310,7 @@ mapCasteToColonyValue <- function(colony,
   } else {
     if (value %in% c("pheno", "gv")) {
       tmp <- valueFUN(colony@queen)[, queenTrait, drop = FALSE]
-    } else { # bv, dd, and aa
+    } else { # bv, dd, and aa: leaving this in for future use!
       tmp <- valueFUN(colony@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
     }
     queenEff <- queenFUN(tmp)
@@ -1384,19 +1355,16 @@ mapCasteToColonyGv <- function(colony, checkProduction = FALSE, simParamBee = NU
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) breeding values to a colony breeding value
-#' @export
 mapCasteToColonyBv <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
   mapCasteToColonyValue(colony, value = "bv", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) dominance values to a colony dominance value
-#' @export
 mapCasteToColonyDd <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
   mapCasteToColonyValue(colony, value = "dd", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) epistasis values to a colony epistasis value
-#' @export
 mapCasteToColonyAa <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
   mapCasteToColonyValue(colony, value = "aa", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
