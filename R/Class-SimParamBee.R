@@ -1205,6 +1205,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @param dronesTrait numeric, trait that represents drones' contribution
 #'   to the colony value; if \code{NULL} then this contribution is 0
 #' @param dronesFUN function, function that will be applied to the drone values
+#' @param traitName, the name of the trait (i.e. honeyYield)
 #' @param combineFUN, function that will combine the queen, worker, and drone
 #'   contributions - this function should be defined as \code{function(q, w, d)}
 #'   where \code{q} represents queen's, \code{q} represents workers',
@@ -1289,6 +1290,7 @@ mapCasteToColonyValue <- function(colony,
                                   queenTrait = 1, queenFUN = function(x) x,
                                   workersTrait = 2, workersFUN = sum,
                                   dronesTrait = NULL, dronesFUN = NULL,
+                                  traitName = NULL,
                                   combineFUN = function(q, w, d) q + w,
                                   checkProduction = TRUE, notProductiveValue = 0,
                                   simParamBee = NULL) {
@@ -1336,6 +1338,7 @@ mapCasteToColonyValue <- function(colony,
     dronesEff <- dronesFUN(tmp)
   }
   colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
+  colnames(colonyValue) <- traitName
   if (checkProduction && !colony@production) {
     colonyValue <- notProductiveValue
   }
