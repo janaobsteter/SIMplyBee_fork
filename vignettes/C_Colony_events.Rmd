@@ -4,11 +4,8 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{SIMplyBee - Colony events}
-  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  markdown: 
-    wrap: 72
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
