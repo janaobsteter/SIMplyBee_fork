@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 # Introduction
 
 This vignette describes and demonstrates how SIMplyBee implements quantitative
-genetics principles for honeybees. Specifically, it describes four different
+genetics principles for honeybees. Specifically, it describes three different
 examples where we simulate:
 
   1. Honey yield - a single colony trait,
@@ -28,23 +28,22 @@ examples where we simulate:
   
   3. Colony strength and Honey yield - two colony traits where one trait impacts
      the other one via the number of workers, and
-  
-  4. Swarming and Honey yield - two colony traits where one trait impacts the
-     other one via a colony event (swarming).
+
 
 ```{r load_packages}
 library(package = "SIMplyBee")
 library(package = "ggplot2")
 ```
 
+We start by simulating some honeybee founder genomes with 16 chromosomes and 1000 segregating sites per chromosome.
 ```{r founderGenomes}
 # Founder genomes
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 ```
 
 # Honey yield
-
-TODO: say more and show some equations
+AlphaSimR, and hence SIMplyBee, simulate each individuals with its corresponding genome and quantitative genetic and phenotypic values. To this end we need to set quantitative genetic parameters for the traits we want to simulate in the `simParamBee` object at the beginning of the simulation. We need to set the number of traits we want to simulate, the number of quantitative trait loci (QTL) that affect the trait, the distribution of QTL effect, the mean of the trait and the genetic and environmental variances. If we simulate multiple traits, we also need to specify the genetic and environmental covariances between the traits. In honeybees, the majority of the traits includes a queen and worker effect. The queen effect is usually the indirect genetic effect, since the queen does not perform tasks herself but instead lays the eggs and managed the hive through pheromones. The worker effect is usually the direct genetic effect since workers do the actual work - bring the nectar, clean the hive etc. The queen and worker effect for a trait are usually negatively correlated in honeybees. 
+Here, we simulate two traits that represent the queen and worker effect for honey yield. We set the mean of the queen effect to 20 with variance of 1, and the mean of the worker effect to 1 with variance 1/noWorkers. The mean and variance for the queen effect are larger than for the worker effect, since there is one queen and many workers the effect of which accumulate. 
 
 ```{r SimParamBee}
 # Global simulation parameters
@@ -54,11 +53,18 @@ SP <- SimParamBee$new(founderGenomes)
 # by queen and worker genetic effects - each represented by a different trait
 mean <- c(20, 0)
 varA <- c(1, 1 / SP$nWorkers)
+```
+
+We set the genetic covariance between the traits to -0.5 to reflect the usual negative correlation or the queen and worker effect. We add an additive trait to `simParamBee` with `addTraitA` function and we name them `queenTrait` and `workerTrait`. For more options on simulating traits read AlphaSimR's document here: https://cran.r-project.org/web/packages/AlphaSimR/vignettes/traits.pdf.
+```{r SimParamBee}
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
              name = c("queenTrait", "workersTrait"))
+```
 
+We set the environmental variance of the queen effect to 3 and of worker effect to 3/nWorkers. We set the environmental correlation between the queen and worker effect to 0.3.
+```{r SimParamBee}
 varE <- c(3, 3 / SP$nWorkers)
 # TODO: what is a reasonable environmental correlation between queen and worker effects?
 corE <- matrix(data = c(1.0, 0.3, 
@@ -66,6 +72,7 @@ corE <- matrix(data = c(1.0, 0.3,
 SP$setVarE(varE = varE, corE = corE)
 ```
 
+We continue by creating a base population. Since we defined two traits in the `SimParamBee`, all the newly created individuals get a corresponding genetic and phenotypic value for the traits. The genetic values are stored in the `gv` slot of a `Pop` object, and phenotypic values in the `pheno` slot.
 ```{r basePop_virgin_queens}
 # Base population virgin queens
 basePop <- createVirginQueens(founderGenomes, n = 20)
@@ -77,34 +84,51 @@ hist(basePop@pheno[, "queenTrait"])
 hist(basePop@pheno[, "workersTrait"])
 ```
 
-TODO: Mention that drones also get these values - they just don't express them
+In SIMplyBee, all individual get a corresponding genetic and phenotypic values. That holds also for drones, although for honey yield (any many other traits) we are usually not interested in their contribution and their phenotypic values.
 
 ```{r basePop_drones}
 # Base population drones
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 head(drones@pheno)
 ```
-
+We continue by creating a colony and crossing the queen within it and add some workers. We add only a small number of workers to facilitate the inspection of the results.
 ```{r create_colony}
 # Colony
-queen <- cross(x = basePop[6], drones = drones)
-colony <- createColony(x = queen)
+colony <- createColony(x = basePop[6])
+colony <- cross(x = colony, drones = drones)
+colony <- addWorkers(colony, nWorkers = 10)
 colony
-colony@queen@pheno
 ```
 
+We can acces the genetic and phenotypic values of the colony member with functions `getGv()` and `getPheno()`, both of which take the `caste` as an argument. The `caste` could be `queen`, `fathers`, `virginQueens`, `workers`, `drones`, or `all`. The latter returns the value for all colony members either by caste or as a single dataframe if `collapse` argument if set to `TRUE`. 
+```{r create_colony}
+getGv(colony, caste = "queen")
+head(getGv(colony, caste = "workers"))
+head(getGv(colony, caste = "all", collapse = TRUE))
+
+getPheno(colony, caste = "queen")
+head(getPheno(colony, caste = "workers"))
+head(getPheno(colony, caste = "all", collapse = TRUE))
+```
+
+We also included shortcuts for accessing the genetic and phenotypic values of a specific caste directly.
+```{r}
+getQueenGv(colony)
+head(getWorkersGv(colony))
+
+getQueenPheno(colony)
+head(getWorkersPheno(colony))
+```
+Some phenotypes, such as honey yield, would only be expressed if the colony is at its full-size. The full-size of the colony in the simulation does not have to be the same as in real life, but is defined by the user instead. The `buildUp()` function assumes we are building the colony to a full size and hence turns the `production` status of the colony to `TRUE`. SIMplyBee includes a function `ìsProductive()` to check the production status of a colony. Since we have previously build-up our colony, the colony is productive.
 ```{r build_up_colony}
 # Check if colony is productive
 isProductive(colony)
 
-# Build up colony to reach productive stage
+# Build-up the colony and check the production status again
 colony <- buildUp(colony)
 isProductive(colony)
 ```
-
-```{r queen_and_workers_values}
-head(colony@workers@pheno)
-```
+We now combine colony values into a single dataframe.
 
 ```{r data.frame}
 # Collate genetic and phenotype values of workers
@@ -116,7 +140,7 @@ df <- data.frame(id = colony@workers@id,
                  pvWorkersTrait = colony@workers@pheno[, "workersTrait"])
 head(df)
 ```
-
+We then plot the covariance between the queen and worker effect that visualises a negative correlation between these effects in a population.
 ```{r plot_queen_vs_worker_values}
 # Covariation between queen and worker trait genetic values in workers
 p <- ggplot(data = df, aes(x = gvQueenTrait, y = gvWorkersTrait)) +
@@ -124,7 +148,13 @@ p <- ggplot(data = df, aes(x = gvQueenTrait, y = gvWorkersTrait)) +
   theme_classic()
 print(p)
 ```
+Since we know the genetic values of all the individuals, we also know what each of the fathers brought to the colony,
+```{r fathers_values}
+# Variation in patriline genetic values
+getFathersGv(colony)
+```
 
+Due to the information above, we can also plot the distribution of genetic values by the patriline (workers offspring of a single drone) for the queen effect. We see clear differences between the partilines (21 - 35).
 ```{r distribution_by_patriline}
 # Variation in worker genetic values by patriline - for queen trait
 p <- ggplot(data = df, aes(x = gvQueenTrait, colour = father)) +
@@ -132,7 +162,7 @@ p <- ggplot(data = df, aes(x = gvQueenTrait, colour = father)) +
   theme_classic()
 print(p)
 ```
-
+We can do the same for the worker effect.
 ```{r distribution_by_patriline_2}
 # Variation in worker genetic values by patriline - for workers trait
 p <- ggplot(df, aes(x = gvWorkersTrait, colour = father)) +
@@ -141,21 +171,46 @@ p <- ggplot(df, aes(x = gvWorkersTrait, colour = father)) +
 print(p)
 ```
 
-```{r fathers_values}
-# Variation in patriline genetic values
-getFathers(colony)@gv
-```
 
+However, in honeybees we usually don't observe values on an individual level, but colony level instead. SIMplyBee includes functions for mapping individual values to the colony value. The general function for combining individual-level values in a single colony-level value is the `calcColonyValue()` function that can be used to combine any quantitative value. However, computation of some values, such as breeding value, dominance deviations, and epistatic deviations, is complex in honeybees and could be misinterpreted. Hence, here we focus only on computing the genetic and phenotypic values. SIMplyBee contains shortcuts for computing these values names `calcColonyPheno()` and `calcColonyGv()`. These functions require the user to specify so called mapping functions (`FUN` argument). The mapping function required specifying which are the queen, worker, and potentially also the drone trait and what function we want to apply to each of them before combining. We also need to provide the function to combine these (transformed) queen, worker, and potentially drone trait into a single value. We can also specify, whether the colony value depends on the production status. That is, if the colony is not productive, there is no value to express. In SIMplyBee, we provide default mapping functions, `mapCasteToColonyValue` that can be modified to cater user's and trait's needs. This function by default first computes caste values: leaves the queen's value as it is, sums workers' values, sums potential drones' values; and lastly sums all caste values.
+
+DAG - figure from Laura
+We now compute a single phenotypic value for our colony. In reality, this would be the value that you are able to collect. In this case, a single value for honey yield per colony.
 ```{r colony_pheno} 
 # Colony phenotype value
 calcColonyPheno(colony, queenTrait = "queenTrait", workersTrait = "workersTrait")
 help(calcColonyPheno)
 help(mapCasteToColonyPheno)
 ```
+The same functions can be used on a `MultiColony` object. Let's create a `MultiColony` object that represents our apiary.
+```{r}
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:5], nInd = 100)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = nColonies(apiary), nDrones = 15)
+apiary <- cross(apiary, droneGroups)
+apiary <- buildUp(apiary)
+```
+
+We can extract the genetic and phenotypic values in the same manner than from a colony with `get*Gv()` and `get*Pheno()` functions. The output of the function is a names list with values for each colony or a single data frame if `collapse` is `TRUE`. 
+```{r}
+head(getQueenGv(apiary))
+head(getWorkersGv(apiary, collapse = TRUE))
+```
+In a similar manner, we can compute colony value for all the colonies in our apiary, where the row names of the output represent colony IDs. We can compute either colony-level genetic or phenotypic values.
+```{r}
+colonyValuesGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, checkProduction = TRUE)
+colonyValuesPheno <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, checkProduction = TRUE)
+```
+
+Since the aim of selection is to select the best individuals or colonies for the reproduction, we could select the best colony in our apiary based on either genetic or phenotypic value for grafting the new generation of queens. The colony with the highest genetic value is colony with ID 6, hence we select it for further reproduction.
+```{r}
+colonyValuesGv
+bestGvColony <- selectColonies(apiary, ID = 6)
+```
+
 
 # Honey yield and Calmness
-
-TODO: say more and show some equations
+Now, let's see how to two uncorrelated traits, honey yield and calmness. For each of them, we follow the recipe from above and simulate a queen and worker effect. We set the genetic covariance between the queen and worker effect for honey yield to -0.5 and for calmness to -0.4, and environmental covariance between the effects to 0.3 for honey yield and 0.2 for calmness. We assume no genetic or environmental correlation between the honey yield and calmness.
 
 ```{r SimParamBee_2}
 # Global simulation parameters
@@ -168,8 +223,8 @@ meanP <- c(20, 0, 0, 0)
 varA <- c(1, 1 / SP$nWorkers, 1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5, 0.0, 0.0, 
                         -0.5,  1.0, 0.0, 0.0,
-                         0.0,  0.0, 1.0, 0.4,
-                         0.0,  0.0, 0.4, 1.0), nrow = 4, byrow = TRUE)
+                         0.0,  0.0, 1.0, -0.4, 
+                         0.0,  0.0, -0.4, 1.0), nrow = 4, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA,
              name = c("yieldQueenTrait", "yieldWorkersTrait",
                       "calmQueenTrait", "calmWorkersTrait"))
@@ -183,35 +238,49 @@ corE <- matrix(data = c(1.0, 0.3, 0.0, 0.0,
 SP$setVarE(varE = varE, corE = corE)
 ```
 
+We continue by creating a base population, and an apiary with 10 full size colonies.
 ```{r base_pop_and_colony}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1:5], nInd = 3)
-queen <- cross(x = basePop[6], drones = drones)
-colony <- createColony(x = queen)
-colony <- buildUp(colony)
-colony
-colony@queen@pheno
-head(colony@workers@pheno)
+drones <- createDrones(x = basePop[1:5], nInd = 100)
+apiary <- createMultiColony(basePop[6:15])
+droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 20)
+apiary <- cross(x = apiary, drones = droneGroups)
+apiary <- buildUp(apiary)
+apiary
 ```
-
+We can again inspect the phenotypic values of all individuals in the apiary with `get*Pheno()` functions. Now, the output contains four simulated traits representing the queen and worker effect for honey yield and calmness. These functions also take an `nInd` argument to sample the desired number of individuals and their values.
+```{r}
+head(getQueenGv(apiary))
+getWorkersPheno(apiary, nInd = 3)
+```
+Now, we compute the colony genetic phenotypic values for all colonies in the apiary. Since we are simulating two trait, honey yield and calmness, we have to provide a mapping function for each of them.
 ```{r colony_pheno_2}
 calcMyColonyPheno <- function(colony) {
   yield <- mapCasteToColonyPheno(colony,
                                  queenTrait = "yieldQueenTrait",
-                                 workersTrait = "yieldWorkersTrait")
+                                 workersTrait = "yieldWorkersTrait",
+                                 traitName = "yield",
+                                 checkProduction = TRUE)
   calmness <- mapCasteToColonyPheno(colony,
                                     queenTrait = "calmQueenTrait",
                                     workersTrait = "calmWorkersTrait",
+                                    traitName = "calmness",
                                     checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
-calcColonyPheno(colony, FUN = calcMyColonyPheno)
+colonyValues <- as.data.frame(calcColonyPheno(apiary, FUN = calcMyColonyPheno))
+colonyValues
 ```
+Again, we can now select the best colony based on the best phenotypic value for either yield, calmness or an index of both. Let's say both traits are equally important so we select on a sum of both of them (equivalent to an index with weights of 0.5). (The problem is they are not standardized and don't have equal means!)
+```{r}
+colonyValues$Index <- colonyValues$yield + colonyValues$calmness
+colonyValues
+```
+We see that based on yield alone, we would select colony 7 for further reproduction, based on calmness alone, we would select colony 2, and based on the index of both traits, we would select colony 5.
 
 # Strength and honey yield
 
-Here we will show how to use `nWorkers` function to genetically and
-environmentally influence the colony strength and with this honey yield.
+Now, let's simulate two traits where the phenotype of the first one affects the phenotype of the second one. Here we will show how to use `nWorkers` function to genetically and environmentally influence the colony strength and with this honey yield.
 
 TODO: describe which trait is which (nWorkersColonyPhenotype has queenTrait = 1!)
 
@@ -219,6 +288,7 @@ TODO: say more and show some equations
 
 say that this is just an example assuming that workers don't contribute to how many eggs a queen lays phenotypically!
 
+We follow the same logic as above and simulate two traits again - one representing queen's fecundity, that is colony strength, and the other one representing honey yield. The idea is that the higher the fecundity, the more honey yield due to a larger number of workers. We assume that fecundity is only controled by the queen (and not the workers), hence we simulate only queen effect for it. We again assume that honey yield is affected by the workers and how hard they work as well as how well the queen managed the hive, hence we simulate the queen and the worker effect for it.
 ```{r SimParamBee_3}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
@@ -233,7 +303,7 @@ corA <- matrix(data = c(1.0,  0.0,  0.0,
                         0.0,  1.0, -0.5, 
                         0.0, -0.5,  1.0), nrow = 3, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
-             name = c("strengthQueenTrait", "yieldQueenTrait", "yieldWorkersTrait"))
+             name = c("fecundityQueenTrait", "yieldQueenTrait", "yieldWorkersTrait"))
 
 # TODO: revise covariances (I made them up!)
 varE <- c(300, 3, 3 / SP$nWorkers)
@@ -243,21 +313,23 @@ corE <- matrix(data = c(1.0, 0.0, 0.0,
 SP$setVarE(varE = varE, corE = corE)
 ```
 
+We continue by creating an apiary with 10 full-size colonies.
 ```{r base_pop_and_colony_2}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1:5], nInd = 3)
-queen <- cross(x = basePop[6], drones = drones)
-colony <- createColony(x = queen)
-colony@queen@pheno
+drones <- createDrones(x = basePop[1:5], nInd = 100)
+apiary <- createMultiColony(basePop[6:15])
+droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 20)
+apiary <- cross(x = apiary, drones = droneGroups)
 ```
 
+We next build-up the colonies in the apiary. But instead of building them all up to the same fixed numbers of workers and drones, we build them up according to queen's fecundity. For that we use the sampling function `nWorkersColonyPhenotype`, that computes the number of workers based on the simulated `fecundityQueenTrait`. Each colony hence contains a different number of workers. 
 ```{r colony_strength}
-colony <- buildUp(colony, nWorkers = nWorkersColonyPhenotype,
-                  queenTrait = "strengthQueenTrait")
-colony
+apiary <- buildUp(apiary, nWorkers = nWorkersColonyPhenotype,
+                  queenTrait = "fecundityQueenTrait")
+nWorkers(apiary)
 help(nWorkersColonyPhenotype)
 ```
-
+To compute the colony value for the yield, we again employ the `calcColonyValue()` function. Here, we compute the phenotype of the colonies in the apiary with `calcColonyPheno()` function.
 ```{r colony_pheno_3}
 calcMyColonyPheno <- function(colony) {
   yield <- mapCasteToColonyPheno(colony,
@@ -265,15 +337,12 @@ calcMyColonyPheno <- function(colony) {
                                  workersTrait = "yieldWorkersTrait")
   return(matrix(yield))
 }
-calcColonyPheno(colony, FUN = calcMyColonyPheno)
+colonyValuesPheno <- calcColonyPheno(apiary, FUN = calcMyColonyPheno)
+colonyValuesPheno
+```
+We again see that the colony with the best phenotype is colony with ID 9 and we would want to select it for further reproduction, let's say a 1000 new virgin queens.
+```{r}
+bestColony <- selectColonies(apiary, ID = 9)
+newQueens <- createVirginQueens(bestColony, nInd = 1000)
 ```
 
-# Swarming and honey yield
-
-TODO: show how we could genetically and environmentally influence if colony will swarm (can we do this?) and with this honey yield. https://github.com/HighlanderLab/SIMplyBee/issues/105
-
-TODO: say more and show some equations
-
-```{r SimParamBee_4}
-# TODO
-```

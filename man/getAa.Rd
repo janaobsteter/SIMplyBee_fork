@@ -82,56 +82,56 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 # Input is a population
-getAa(x = getQueen(colony))
+SIMplyBee:::getAa(x = getQueen(colony))
 queens <- getQueen(apiary, collapse = TRUE)
-getAa(queens)
+SIMplyBee:::getAa(queens)
 
 # Input is a colony
-getAa(colony, caste = "queen")
-getQueenAa(colony)
+SIMplyBee:::getAa(colony, caste = "queen")
+SIMplyBee:::getQueenAa(colony)
 
-getAa(colony, caste = "fathers")
-getAa(colony, caste = "fathers", nInd = 2)
-getAa(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersAa(colony)
-getFathersAa(colony, nInd = 2)
+SIMplyBee:::getAa(colony, caste = "fathers")
+SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2)
+SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersAa(colony)
+SIMplyBee:::getFathersAa(colony, nInd = 2)
 
-getAa(colony, caste = "virginQueens")
-getVirginQueensAa(colony)
+SIMplyBee:::getAa(colony, caste = "virginQueens")
+SIMplyBee:::getVirginQueensAa(colony)
 
-getAa(colony, caste = "workers")
-getWorkersAa(colony)
+SIMplyBee:::getAa(colony, caste = "workers")
+SIMplyBee:::getWorkersAa(colony)
 
-getAa(colony, caste = "drones")
-getDronesAa(colony)
+SIMplyBee:::getAa(colony, caste = "drones")
+SIMplyBee:::getDronesAa(colony)
 
 # Get epistatic values for all individuals
-getAa(colony, caste = "all")
+SIMplyBee:::getAa(colony, caste = "all")
 # Get all epistatic values in a single matrix
-getAa(colony, caste = "all", collapse = TRUE)
+SIMplyBee:::getAa(colony, caste = "all", collapse = TRUE)
 
 # Input is a MultiColony
-getAa(apiary, caste = "queen")
-getQueenAa(apiary)
+SIMplyBee:::getAa(apiary, caste = "queen")
+SIMplyBee:::getQueenAa(apiary)
 
-getAa(apiary, caste = "fathers")
-getAa(apiary, caste = "fathers", nInd = 2)
-getAa(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersAa(apiary)
-getFathersAa(apiary, nInd = 2)
+SIMplyBee:::getAa(apiary, caste = "fathers")
+SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2)
+SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersAa(apiary)
+SIMplyBee:::getFathersAa(apiary, nInd = 2)
 
-getAa(apiary, caste = "virginQueens")
-getVirginQueensAa(apiary)
+SIMplyBee:::getAa(apiary, caste = "virginQueens")
+SIMplyBee:::getVirginQueensAa(apiary)
 
-getAa(apiary, caste = "workers")
-getWorkersAa(apiary)
+SIMplyBee:::getAa(apiary, caste = "workers")
+SIMplyBee:::getWorkersAa(apiary)
 
-getAa(apiary, caste = "drones")
-getDronesAa(apiary)
+SIMplyBee:::getAa(apiary, caste = "drones")
+SIMplyBee:::getDronesAa(apiary)
 
 # Get the epistatic values of all individuals either by colony or in a single matrix
-getAa(apiary, caste = "all")
-getAa(apiary, caste = "all", collapse = TRUE)
+SIMplyBee:::getAa(apiary, caste = "all")
+SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
 \code{\link{dd}}

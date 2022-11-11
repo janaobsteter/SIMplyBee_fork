@@ -15,6 +15,9 @@ nEmptyColonies(multicolony)
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
 }
+\value{
+integer
+}
 \description{
 Level 0 function that returns the number of colonies in a
   MultiColony object.
@@ -27,15 +30,31 @@ Level 0 function that returns the number of colonies in a
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-apiary <- createMultiColony(basePop[2:3], n = 2)
-nColonies(apiary)
-nColonies(createMultiColony(n = 10))
+emptyApiary <- createMultiColony(n = 3)
+emptyApiary1 <- c(createColony(), createColony())
+nonEmptyApiary <- createMultiColony(basePop[2:3], n = 2)
+
+nColonies(nonEmptyApiary)
+nColonies(emptyApiary)
+
+isEmpty(emptyApiary)
+isEmpty(emptyApiary1)
+isEmpty(nonEmptyApiary)
+isNULLColonies(emptyApiary)
+isNULLColonies(emptyApiary1)
+isNULLColonies(nonEmptyApiary)
+
+nEmptyColonies(emptyApiary)
+nEmptyColonies(emptyApiary1)
+nEmptyColonies(nonEmptyApiary)
+nNULLColonies(emptyApiary)
+nNULLColonies(emptyApiary1)
+nNULLColonies(nonEmptyApiary)
+
 }
 \seealso{
 \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}

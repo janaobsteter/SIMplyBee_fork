@@ -18,6 +18,7 @@ mapCasteToColonyValue(
   workersFUN = sum,
   dronesTrait = NULL,
   dronesFUN = NULL,
+  traitName = NULL,
   combineFUN = function(q, w, d) q + w,
   checkProduction = TRUE,
   notProductiveValue = 0,
@@ -37,8 +38,7 @@ mapCasteToColonyAa(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
 
-\item{value}{character, one of \code{pheno}, \code{gv}, \code{bv}, \code{dd},
-or \code{aa}}
+\item{value}{character, one of \code{pheno} or \code{gv}}
 
 \item{queenTrait}{numeric, trait that represents queen's contribution
 to the colony value; if \code{NULL} then this contribution is 0}
@@ -54,6 +54,8 @@ to the colony value; if \code{NULL} then this contribution is 0}
 to the colony value; if \code{NULL} then this contribution is 0}
 
 \item{dronesFUN}{function, function that will be applied to the drone values}
+
+\item{traitName, }{the name of the trait (i.e. honeyYield)}
 
 \item{combineFUN, }{function that will combine the queen, worker, and drone
 contributions - this function should be defined as \code{function(q, w, d)}
@@ -145,9 +147,6 @@ mapCasteToColonyGv(colony)
 # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
 #   https://github.com/gaynorr/AlphaSimR/issues/83
 #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# mapCasteToColonyBv(colony)
-# mapCasteToColonyDd(colony)
-# mapCasteToColonyAa(colony)
 
 # To understand where the above values come from, study the contents of
 # mapCasteToColonyValue() and the values below:
@@ -160,34 +159,10 @@ getWorkersPheno(colony)
 getQueenGv(colony)
 getWorkersGv(colony)
 
-# Breeding values
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# getQueenBv(colony)
-getWorkersBv(colony)
-
-# Dominance values
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# getQueenDd(colony)
-getWorkersDd(colony)
-
-# Epistasis values
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# getQueenAa(colony)
-getWorkersAa(colony)
-
 }
 \seealso{
 \code{\link{SimParamBee}} field \code{colonyValueFUN} and functions
   \code{\link{calcColonyValue}}, \code{\link{calcColonyPheno}},
-  \code{\link{calcColonyGv}}, \code{\link{calcColonyBv}},
-  \code{\link{calcColonyDd}}, \code{\link{calcColonyAa}},
-  \code{\link{getEvents}},
-  \code{\link{pheno}}, \code{\link{gv}}, \code{\link{bv}}, \code{\link{dd}},
-  and \code{\link{aa}}
+  \code{\link{calcColonyGv}}, \code{\link{getEvents}},
+  \code{\link{pheno}}, and \code{\link{gv}}
 }
