@@ -1,7 +1,6 @@
 # ---- Level 0 Auxiliary Functions ----
 
 # n* ----
-
 #' @rdname nColonies
 #' @title Number of colonies in a MultiColony object
 #'
@@ -11,34 +10,6 @@
 #' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' nColonies(apiary)
-#' nColonies(createMultiColony(n = 10))
-#' @export
-nColonies <- function(multicolony) {
-  if (!"MultiColony" %in% class(multicolony)) {
-    stop("Argument multicolony must be a MultiColony class object!")
-  }
-  n <- length(multicolony@colonies)
-  return(n)
-}
-
-#' @rdname nNULLColonies
-#' @title Number of NULL colonies in a MultiColony object
-#'
-#' @description Level 0 function that returns the number of colonies in a
-#'   MultiColony object that are in fact \code{NULL}.
-#'
-#' @param multicolony \code{\link{MultiColony-class}}
-#'
 #' @return integer
 #'
 #' @examples
@@ -1974,8 +1945,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @title Reduce drone's double haplotypes to a single haplotype
 #'
 #' @description Level 0 function that returns one haplotype of drones, because
-#'   we internally simulate them as diploid (doubled haploid). This is a utility
-#'   function that you likely don't need to use.
+#'   we internally simulate them as diploid (doubled haploid). This is an
+#'   internal utility function that you likely don't need to use.
 #'
 #' @param haplo \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
@@ -1988,23 +1959,23 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @return matrix with one haplotype per drone instead of two
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteHaplo(drones))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
+#' reduceDroneHaplo(haplo = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteHaplo(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+#' reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneHaplo <- function(haplo, pop) {
   if (!is.matrix(haplo)) {
     stop("Argument haplo must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   idHap <- rownames(haplo)
   id <- sapply(X = strsplit(x = idHap, split = "_"), FUN = function(z) z[[1]])
@@ -2020,7 +1991,8 @@ reduceDroneHaplo <- function(haplo, pop) {
 #'
 #' @description Level 0 function that reduces drone's genotype to a single
 #'   haplotype, because we internally simulate them as diploid (doubled
-#'   haploid). This is a utility function that you likely don't need to use.
+#'   haploid). This is an internal utility function that you likely don't need
+#'   to use.
 #'
 #' @param geno \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
@@ -2028,23 +2000,23 @@ reduceDroneHaplo <- function(haplo, pop) {
 #' @return matrix with genotype as one haplotype per drone instead of two
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteGeno(drones))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
+#' reduceDroneGeno(geno = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteGeno(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+#' reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneGeno <- function(geno, pop) {
   if (!is.matrix(geno)) {
     stop("Argument geno must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   id <- rownames(geno)
   sel <- id %in% pop@id[pop@sex == "M"]
@@ -6008,57 +5980,56 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getBv(x = getQueen(colony))
+#' SIMplyBee:::getBv(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getBv(queens)
+#' SIMplyBee:::getBv(queens)
 #'
 #' # Input is a colony
-#' getBv(colony, caste = "queen")
-#' getQueenBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "queen")
+#' SIMplyBee:::getQueenBv(colony)
 #'
-#' getBv(colony, caste = "fathers")
-#' getBv(colony, caste = "fathers", nInd = 2)
-#' getBv(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersBv(colony)
-#' getFathersBv(colony, nInd = 2)
+#' SIMplyBee:::getBv(colony, caste = "fathers")
+#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersBv(colony)
+#' SIMplyBee:::getFathersBv(colony, nInd = 2)
 #'
-#' getBv(colony, caste = "virginQueens")
-#' getVirginQueensBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensBv(colony)
 #'
-#' getBv(colony, caste = "workers")
-#' getWorkersBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "workers")
+#' SIMplyBee:::getWorkersBv(colony)
 #'
-#' getBv(colony, caste = "drones")
-#' getDronesBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "drones")
+#' SIMplyBee:::getDronesBv(colony)
 #'
 #' # Get breeding values for all individuals
-#' getBv(colony, caste = "all")
+#' SIMplyBee:::getBv(colony, caste = "all")
 #' # Get all breeding values in a single matrix
-#' getBv(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getBv(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getBv(apiary, caste = "queen")
-#' getQueenBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "queen")
+#' SIMplyBee:::getQueenBv(apiary)
 #'
-#' getBv(apiary, caste = "fathers")
-#' getBv(apiary, caste = "fathers", nInd = 2)
-#' getBv(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersBv(apiary)
-#' getFathersBv(apiary, nInd = 2)
+#' SIMplyBee:::getBv(apiary, caste = "fathers")
+#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersBv(apiary)
+#' SIMplyBee:::getFathersBv(apiary, nInd = 2)
 #'
-#' getBv(apiary, caste = "virginQueens")
-#' getVirginQueensBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensBv(apiary)
 #'
-#' getBv(apiary, caste = "workers")
-#' getWorkersBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersBv(apiary)
 #'
-#' getBv(apiary, caste = "drones")
-#' getDronesBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "drones")
+#' SIMplyBee:::getDronesBv(apiary)
 #'
 #' # Get the breeding values of all individuals either by colony or in a single matrix
-#' getBv(apiary, caste = "all")
-#' getBv(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getBv(apiary, caste = "all")
+#' SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6128,7 +6099,6 @@ getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getBv Access breeding value of the queen
-#' @export
 getQueenBv <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6142,7 +6112,6 @@ getQueenBv <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of fathers
-#' @export
 getFathersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6156,7 +6125,6 @@ getFathersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of virgin queens
-#' @export
 getVirginQueensBv <- function(x, nInd = NULL,collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6170,7 +6138,6 @@ getVirginQueensBv <- function(x, nInd = NULL,collapse = FALSE, simParamBee = NUL
 }
 
 #' @describeIn getBv Access breeding values of workers
-#' @export
 getWorkersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6184,7 +6151,6 @@ getWorkersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of drones
-#' @export
 getDronesBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6198,7 +6164,6 @@ getDronesBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
-#' @export
 calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
@@ -6251,57 +6216,56 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getDd(x = getQueen(colony))
+#' SIMplyBee:::getDd(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getDd(queens)
+#' SIMplyBee:::getDd(queens)
 #'
 #' # Input is a colony
-#' getDd(colony, caste = "queen")
-#' getQueenDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "queen")
+#' SIMplyBee:::getQueenDd(colony)
 #'
-#' getDd(colony, caste = "fathers")
-#' getDd(colony, caste = "fathers", nInd = 2)
-#' getDd(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersDd(colony)
-#' getFathersDd(colony, nInd = 2)
+#' SIMplyBee:::getDd(colony, caste = "fathers")
+#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersDd(colony)
+#' SIMplyBee:::getFathersDd(colony, nInd = 2)
 #'
-#' getDd(colony, caste = "virginQueens")
-#' getVirginQueensDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensDd(colony)
 #'
-#' getDd(colony, caste = "workers")
-#' getWorkersDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "workers")
+#' SIMplyBee:::getWorkersDd(colony)
 #'
-#' getDd(colony, caste = "drones")
-#' getDronesDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "drones")
+#' SIMplyBee:::getDronesDd(colony)
 #'
 #' # Get dominance valued for all individuals
-#' getDd(colony, caste = "all")
+#' SIMplyBee:::getDd(colony, caste = "all")
 #' # Get all dominance values in a single matrix
-#' getDd(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getDd(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getDd(apiary, caste = "queen")
-#' getQueenDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "queen")
+#' SIMplyBee:::getQueenDd(apiary)
 #'
-#' getDd(apiary, caste = "fathers")
-#' getDd(apiary, caste = "fathers", nInd = 2)
-#' getDd(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersDd(apiary)
-#' getFathersDd(apiary, nInd = 2)
+#' SIMplyBee:::getDd(apiary, caste = "fathers")
+#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersDd(apiary)
+#' SIMplyBee:::getFathersDd(apiary, nInd = 2)
 #'
-#' getDd(apiary, caste = "virginQueens")
-#' getVirginQueensDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensDd(apiary)
 #'
-#' getDd(apiary, caste = "workers")
-#' getWorkersDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersDd(apiary)
 #'
-#' getDd(apiary, caste = "drones")
-#' getDronesDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "drones")
+#' SIMplyBee:::getDronesDd(apiary)
 #'
 #' # Get the dominance values of all individuals either by colony or in a single matrix
-#' getDd(apiary, caste = "all")
-#' getDd(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getDd(apiary, caste = "all")
+#' SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6371,7 +6335,6 @@ getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getDd Access dominance value of the queen
-#' @export
 getQueenDd <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6385,7 +6348,6 @@ getQueenDd <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of fathers
-#' @export
 getFathersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6399,7 +6361,6 @@ getFathersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of virgin queens
-#' @export
 getVirginQueensDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6413,7 +6374,6 @@ getVirginQueensDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NU
 }
 
 #' @describeIn getDd Access dominance values of workers
-#' @export
 getWorkersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6427,7 +6387,6 @@ getWorkersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of drones
-#' @export
 getDronesDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6441,7 +6400,6 @@ getDronesDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony dominance value from caste individuals' dominance values
-#' @export
 calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
@@ -6494,57 +6452,56 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getAa(x = getQueen(colony))
+#' SIMplyBee:::getAa(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getAa(queens)
+#' SIMplyBee:::getAa(queens)
 #'
 #' # Input is a colony
-#' getAa(colony, caste = "queen")
-#' getQueenAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "queen")
+#' SIMplyBee:::getQueenAa(colony)
 #'
-#' getAa(colony, caste = "fathers")
-#' getAa(colony, caste = "fathers", nInd = 2)
-#' getAa(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersAa(colony)
-#' getFathersAa(colony, nInd = 2)
+#' SIMplyBee:::getAa(colony, caste = "fathers")
+#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersAa(colony)
+#' SIMplyBee:::getFathersAa(colony, nInd = 2)
 #'
-#' getAa(colony, caste = "virginQueens")
-#' getVirginQueensAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensAa(colony)
 #'
-#' getAa(colony, caste = "workers")
-#' getWorkersAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "workers")
+#' SIMplyBee:::getWorkersAa(colony)
 #'
-#' getAa(colony, caste = "drones")
-#' getDronesAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "drones")
+#' SIMplyBee:::getDronesAa(colony)
 #'
 #' # Get epistatic values for all individuals
-#' getAa(colony, caste = "all")
+#' SIMplyBee:::getAa(colony, caste = "all")
 #' # Get all epistatic values in a single matrix
-#' getAa(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getAa(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getAa(apiary, caste = "queen")
-#' getQueenAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "queen")
+#' SIMplyBee:::getQueenAa(apiary)
 #'
-#' getAa(apiary, caste = "fathers")
-#' getAa(apiary, caste = "fathers", nInd = 2)
-#' getAa(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersAa(apiary)
-#' getFathersAa(apiary, nInd = 2)
+#' SIMplyBee:::getAa(apiary, caste = "fathers")
+#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersAa(apiary)
+#' SIMplyBee:::getFathersAa(apiary, nInd = 2)
 #'
-#' getAa(apiary, caste = "virginQueens")
-#' getVirginQueensAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensAa(apiary)
 #'
-#' getAa(apiary, caste = "workers")
-#' getWorkersAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersAa(apiary)
 #'
-#' getAa(apiary, caste = "drones")
-#' getDronesAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "drones")
+#' SIMplyBee:::getDronesAa(apiary)
 #'
 #' # Get the epistatic values of all individuals either by colony or in a single matrix
-#' getAa(apiary, caste = "all")
-#' getAa(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getAa(apiary, caste = "all")
+#' SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6614,7 +6571,6 @@ getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getAa Access epistasis value of the queen
-#' @export
 getQueenAa <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6628,7 +6584,6 @@ getQueenAa <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of fathers
-#' @export
 getFathersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6642,7 +6597,6 @@ getFathersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of virgin queens
-#' @export
 getVirginQueensAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6656,7 +6610,6 @@ getVirginQueensAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NU
 }
 
 #' @describeIn getAa Access epistasis values of workers
-#' @export
 getWorkersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6670,7 +6623,6 @@ getWorkersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of drones
-#' @export
 getDronesAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6684,7 +6636,6 @@ getDronesAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony epistasis value from caste individuals' epistasis value
-#' @export
 calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }

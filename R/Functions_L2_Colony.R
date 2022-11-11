@@ -29,44 +29,44 @@
 #' colony1
 #' @export
 createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
-if (is.null(simParamBee)) {
-  simParamBee <- get(x = "SP", envir = .GlobalEnv)
-}
-simParamBee$updateLastColonyId()
-if (is.null(x)) {
-  colony <- new(
-    Class = "Colony",
-    id = simParamBee$lastColonyId,
-    location = location
-  )
-} else {
-  if (!isPop(x)) {
-    stop("Argument x must be a Pop class object!")
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (all(isQueen(x))) {
-    if (1 < nInd(x)) {
-      stop("You must provide just one queen for the colony!")
-    }
-    queen <- x
-    virginQueens <- NULL
-  } else if (all(isVirginQueen(x))) {
-    queen <- NULL
-    virginQueens <- x
+  simParamBee$updateLastColonyId()
+  if (is.null(x)) {
+    colony <- new(
+      Class = "Colony",
+      id = simParamBee$lastColonyId,
+      location = location
+    )
   } else {
-    stop("Argument x must hold one queen or virgin queen(s)!")
-  }
+    if (!isPop(x)) {
+      stop("Argument x must be a Pop class object!")
+    }
+    if (all(isQueen(x))) {
+      if (1 < nInd(x)) {
+        stop("You must provide just one queen for the colony!")
+      }
+      queen <- x
+      virginQueens <- NULL
+    } else if (all(isVirginQueen(x))) {
+      queen <- NULL
+      virginQueens <- x
+    } else {
+      stop("Argument x must hold one queen or virgin queen(s)!")
+    }
 
-  colony <- new(
-    Class = "Colony",
-    id = simParamBee$lastColonyId,
-    location = location,
-    queen = queen,
-    virginQueens = virginQueens
-  )
-}
-colony <- resetEvents(colony)
-validObject(colony)
-return(colony)
+    colony <- new(
+      Class = "Colony",
+      id = simParamBee$lastColonyId,
+      location = location,
+      queen = queen,
+      virginQueens = virginQueens
+    )
+  }
+  colony <- resetEvents(colony)
+  validObject(colony)
+  return(colony)
 }
 
 #' @rdname reQueen
@@ -143,41 +143,41 @@ return(colony)
 #' getCasteId(apiary, caste = "virginQueens")
 #' @export
 reQueen <- function(x, queen, removeVirginQueens = TRUE) {
-if (!isPop(queen)) {
-  stop("Argument queen must be a Pop class object!")
-}
-if (!all(isVirginQueen(queen) | isQueen(queen))) {
-  stop("Individual in queen must be a virgin queen or a queen!")
-}
-if (isColony(x)) {
-  if (all(isQueen(queen))) {
-    if (nInd(queen) > 1) {
-      stop("You must provide just one queen for the colony!")
+  if (!isPop(queen)) {
+    stop("Argument queen must be a Pop class object!")
+  }
+  if (!all(isVirginQueen(queen) | isQueen(queen))) {
+    stop("Individual in queen must be a virgin queen or a queen!")
+  }
+  if (isColony(x)) {
+    if (all(isQueen(queen))) {
+      if (nInd(queen) > 1) {
+        stop("You must provide just one queen for the colony!")
+      }
+      x@queen <- queen
+      if (removeVirginQueens) {
+        x <- removeVirginQueens(x)
+      }
+    } else {
+      x <- removeQueen(x, addVirginQueens = FALSE)
+      x@virginQueens <- queen
     }
-    x@queen <- queen
-    if (removeVirginQueens) {
-      x <- removeVirginQueens(x)
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    if (nInd(queen) < nCol) {
+      stop("Not enough queens provided!")
+    }
+    for (colony in seq_len(nCol)) {
+      x[[colony]] <- reQueen(
+        x = x[[colony]],
+        queen = queen[colony]
+      )
     }
   } else {
-    x <- removeQueen(x)
-    x@virginQueens <- queen
+    stop("Argument x must be a Colony or MultiColony class object!")
   }
-} else if (isMultiColony(x)) {
-  nCol <- nColonies(x)
-  if (nInd(queen) < nCol) {
-    stop("Not enough queens provided!")
-  }
-  for (colony in seq_len(nCol)) {
-    x[[colony]] <- reQueen(
-      x = x[[colony]],
-      queen = queen[colony]
-    )
-  }
-} else {
-  stop("Argument x must be a Colony or MultiColony class object!")
-}
-validObject(x)
-return(x)
+  validObject(x)
+  return(x)
 }
 
 #' @rdname addCastePop
@@ -946,6 +946,14 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
+#' @param addVirginQueens logical, whether virgin queens should be added; only
+#'   used when removing the queen from the colony
+#' @param nVirginQueens integer, the number of virgin queens to be created in the
+#'   colony; only used when removing the queen from the colony. If \code{0}, no virgin
+#'   queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+#'   is used
+#' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without virgin queens
 #'
@@ -960,8 +968,10 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
+#' colony <- buildUp(colony)
 #' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
+#' apiary <- buildUp(apiary)
 #'
 #' # Add virgin queens
 #' colony <- addVirginQueens(colony, nInd = 10)
@@ -1000,7 +1010,12 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
 #' nDrones(removeDrones(apiary, p = c(0.1, 0.9)))
 #' @export
-removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
+removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
+                           addVirginQueens = FALSE, nVirginQueens = NULL,
+                           year = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
   }
@@ -1014,6 +1029,14 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
       warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
     }
+    if (caste == "queen") {
+      if (addVirginQueens) {
+        if (is.null(nVirginQueens)) {
+          nVirginQueens <- simParamBee$nVirginQueens
+        }
+        x <- addVirginQueens(x, nInd = nVirginQueens, year = year, simParamBee = simParamBee)
+      }
+    }
     if (p == 1) {
       slot(x, caste) <- NULL
     } else {
@@ -1025,7 +1048,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
           use = use
         )
       } else {
-        removeCastePop(x, caste)
+        x <- removeCastePop(x, caste)
       }
     }
   } else if (isMultiColony(x)) {
@@ -1059,8 +1082,9 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand") {
 
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
-removeQueen <- function(x) {
-  ret <- removeCastePop(x = x, caste = "queen", p = 1)
+removeQueen <- function(x, addVirginQueens = FALSE, nVirginQueens = NULL, year = NULL, simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "queen", p = 1, addVirginQueens = addVirginQueens,
+                        nVirginQueens = nVirginQueens, year = year, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1354,8 +1378,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
       p <- p(x, ...)
     } else  {
       if (p < 0 | 1 < p) {
-      stop("p must be between 0 and 1 (inclusive)!")
-        }
+        stop("p must be between 0 and 1 (inclusive)!")
+      }
       if (length(p) > 1) {
         warning("More than one value in the p argument, taking only the first value!")
         p <- p[1]
@@ -1519,12 +1543,9 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
       nVirginQueens <- nVirginQueens(x, ...)
     }
 
-    tmpVirginQueen <- createVirginQueens(
-      x = x, nInd = nVirginQueens,
-      year = year
-    )
-    x@virginQueens <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
-    x <- removeQueen(x)
+    x <- removeQueen(x, addVirginQueens = TRUE, nVirginQueens = nVirginQueens,
+                     year = year, simParamBee = simParamBee)
+    x@virginQueens <- selectInd(x@virginQueens, nInd = 1, use = "rand")
     x@last_event <- "superseded"
     x@supersedure <- TRUE
   } else if (isMultiColony(x)) {

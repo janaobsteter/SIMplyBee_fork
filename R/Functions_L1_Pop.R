@@ -158,7 +158,7 @@
 #' getWorkers(apiary, nInd = 10, collapse = TRUE)
 #' getDrones(apiary, nInd = 3, collapse = TRUE)
 #' @export
-getCastePop <- function(x, caste = "all", nInd = NULL, use = "order",
+getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
                         removeFathers = TRUE, collapse = FALSE) {
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")

@@ -16,8 +16,8 @@ matrix with one haplotype per drone instead of two
 }
 \description{
 Level 0 function that returns one haplotype of drones, because
-  we internally simulate them as diploid (doubled haploid). This is a utility
-  function that you likely don't need to use.
+  we internally simulate them as diploid (doubled haploid). This is an
+  internal utility function that you likely don't need to use.
 }
 \details{
 While this function is meant to work on male (drone) haplotypes, we
@@ -26,14 +26,14 @@ While this function is meant to work on male (drone) haplotypes, we
   haplotypes for males though.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 
 (tmp <- getSegSiteHaplo(drones))
-SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
+reduceDroneHaplo(haplo = tmp, pop = drones)
 
 (tmp <- getSegSiteHaplo(c(basePop, drones)))
-SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 }

@@ -8,9 +8,24 @@
 \alias{removeVirginQueens}
 \title{Remove a proportion of caste individuals from a colony}
 \usage{
-removeCastePop(x, caste = NULL, p = 1, use = "rand")
+removeCastePop(
+  x,
+  caste = NULL,
+  p = 1,
+  use = "rand",
+  addVirginQueens = FALSE,
+  nVirginQueens = NULL,
+  year = NULL,
+  simParamBee = NULL
+)
 
-removeQueen(x)
+removeQueen(
+  x,
+  addVirginQueens = FALSE,
+  nVirginQueens = NULL,
+  year = NULL,
+  simParamBee = NULL
+)
 
 removeWorkers(x, p = 1, use = "rand")
 
@@ -29,6 +44,18 @@ a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link{selectInd}} -
 guides selection of virgins queens that will stay when \code{p < 1}}
+
+\item{addVirginQueens}{logical, whether virgin queens should be added; only
+used when removing the queen from the colony}
+
+\item{nVirginQueens}{integer, the number of virgin queens to be created in the
+colony; only used when removing the queen from the colony. If \code{0}, no virgin
+queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
+is used}
+
+\item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without virgin queens
@@ -59,8 +86,10 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
+colony <- buildUp(colony)
 apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, drones = droneGroups[3:4])
+apiary <- buildUp(apiary)
 
 # Add virgin queens
 colony <- addVirginQueens(colony, nInd = 10)

@@ -13,7 +13,7 @@ getCastePop(
   x,
   caste = "all",
   nInd = NULL,
-  use = "order",
+  use = "rand",
   removeFathers = TRUE,
   collapse = FALSE
 )
