@@ -1042,14 +1042,13 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
     } else {
       nIndStay <- round(nCaste(x, caste) * (1 - p))
       if (nIndStay > 0) {
-        nIndStay <- round(nCaste(x, caste) * (1 - p))
         slot(x, caste) <- selectInd(
           pop = slot(x, caste),
           nInd = nIndStay,
           use = use
         )
       } else {
-        removeCastePop(x, caste) #This bit is only here for when there are no individuals in the colony. Should this be x = remove...?
+        x <- removeCastePop(x, caste)
       }
     }
   } else if (isMultiColony(x)) {
@@ -1083,7 +1082,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
-removeQueen <- function(x, addVirginQueens = FALSE, nVirginQueens = NULL, year = year, simParamBee = NULL) {
+removeQueen <- function(x, addVirginQueens = FALSE, nVirginQueens = NULL, year = NULL, simParamBee = NULL) {
   ret <- removeCastePop(x = x, caste = "queen", p = 1, addVirginQueens = addVirginQueens,
                         nVirginQueens = nVirginQueens, year = year, simParamBee = simParamBee)
   return(ret)

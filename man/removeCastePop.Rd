@@ -23,7 +23,7 @@ removeQueen(
   x,
   addVirginQueens = FALSE,
   nVirginQueens = NULL,
-  year = year,
+  year = NULL,
   simParamBee = NULL
 )
 

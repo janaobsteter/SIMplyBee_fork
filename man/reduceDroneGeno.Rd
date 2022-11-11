@@ -17,17 +17,18 @@ matrix with genotype as one haplotype per drone instead of two
 \description{
 Level 0 function that reduces drone's genotype to a single
   haplotype, because we internally simulate them as diploid (doubled
-  haploid). This is a utility function that you likely don't need to use.
+  haploid). This is an internal utility function that you likely don't need
+  to use.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 
 (tmp <- getSegSiteGeno(drones))
-SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
+reduceDroneGeno(geno = tmp, pop = drones)
 
 (tmp <- getSegSiteGeno(c(basePop, drones)))
-SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
 }

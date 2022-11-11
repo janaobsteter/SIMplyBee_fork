@@ -1,7 +1,6 @@
 # ---- Level 0 Auxiliary Functions ----
 
 # n* ----
-
 #' @rdname nColonies
 #' @title Number of colonies in a MultiColony object
 #'
@@ -11,34 +10,6 @@
 #' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' nColonies(apiary)
-#' nColonies(createMultiColony(n = 10))
-#' @export
-nColonies <- function(multicolony) {
-  if (!"MultiColony" %in% class(multicolony)) {
-    stop("Argument multicolony must be a MultiColony class object!")
-  }
-  n <- length(multicolony@colonies)
-  return(n)
-}
-
-#' @rdname nNULLColonies
-#' @title Number of NULL colonies in a MultiColony object
-#'
-#' @description Level 0 function that returns the number of colonies in a
-#'   MultiColony object that are in fact \code{NULL}.
-#'
-#' @param multicolony \code{\link{MultiColony-class}}
-#'
 #' @return integer
 #'
 #' @examples
