@@ -207,10 +207,10 @@ via `help(getGv)`).
 
 ```{r getGv_and_getPheno}
 getGv(colony, caste = "queen")
-head(getGv(colony, caste = "workers"))
+getGv(colony, caste = "workers") |> head(n = 4)
 
 getPheno(colony, caste = "queen")
-head(getPheno(colony, caste = "workers"))
+getPheno(colony, caste = "workers") |> head(n = 4)
 ```
 
 For convenience, there are also alias functions for accessing the genetic and
@@ -218,10 +218,10 @@ phenotypic values of each caste directly.
 
 ```{r getGv_and_getPheno_caste}
 getQueenGv(colony)
-head(getWorkersGv(colony))
+getWorkersGv(colony) |> head(n = 4)
 
 getQueenPheno(colony)
-head(getWorkersPheno(colony))
+getWorkersPheno(colony) |> head(n = 4)
 ```
 
 Some phenotypes, such as honey yield, are only expressed if colony is at its
@@ -324,8 +324,8 @@ reduce the colony honey yield.
 
 ```{r colony_pheno_change}
 # Colony phenotype value from a reduced colony
-calcColonyPheno(removeWorkers(colony, p = 0.5),
-                queenTrait = "queenTrait", workersTrait = "workersTrait")
+removeWorkers(colony, p = 0.5) |>
+  calcColonyPheno(queenTrait = "queenTrait", workersTrait = "workersTrait")
 ```
 
 Please note that we assumed that the queen contributes half to colony honey
@@ -335,8 +335,8 @@ the mapping between individual, caste, and colony values with care!
 
 ```{r colony_pheno_change}
 # Colony phenotype value from a reduced colony
-calcColonyPheno(removeWorkers(colony, p = 0.99),
-                queenTrait = "queenTrait", workersTrait = "workersTrait")
+removeWorkers(colony, p = 0.99) |>
+  calcColonyPheno(queenTrait = "queenTrait", workersTrait = "workersTrait")
 ```
  
 Finally, note that SIMplyBee currently does not provide functionaly for breeding
@@ -365,16 +365,17 @@ The output of these function is a named list with values for each colony or a
 data.frame if we set the `collapse` argument to `TRUE`.
 
 ```{r multicolony_gv}
-head(getQueenGv(apiary))
-head(getQueenGv(apiary, collapse = TRUE))
+getQueenGv(apiary) |> head(n = 4)
+getQueenGv(apiary, collapse = TRUE) |> head(n = 4)
 ```
 
 In a similar manner, we can calculate colony value for all the colonies in our
 apiary, where the row names of the output represent colony IDs.
 
 ```{r multicolony_pheno}
-(colonyGv <- calcColonyGv(apiary))
-(colonyPheno <- calcColonyPheno(apiary))
+colonyGv <- calcColonyGv(apiary))
+colonyPheno <- calcColonyPheno(apiary))
+data.frame(colonyGv, colonyPheno)
 ```
 
 ## Selection on colony values
@@ -391,35 +392,38 @@ apiary[[bestColonyId]]
 
 # Honey yield and Calmness
 
-Now, let's see how to two uncorrelated traits, honey yield and calmness. For each of them, we follow the recipe from above and
+In this section we expand simulation to two uncorrelated colony traits with
+queen and workers effects, honey yield and calmness. We follow the same recipe
+as in the previous section where we simulated only one colony trait.
 
-TODO
-  a. Quantitative genetic parameters,
-  b. Values in the base population,
-  c. Values in a colony,
-  d. Colony value, and
-  e. MultiColony values.
-
- simulate a queen and workers effect. We set the genetic covariance between the queen and workers effect for honey yield to -0.5 and for calmness to -0.4, and environmental covariance between the effects to 0.3 for honey yield and 0.2 for calmness. We assume no genetic or environmental correlation between the honey yield and calmness.
+We first reinitialize the global simulation parameters because we will define
+new traits. For honey yield we will use the same parameters as before, while for
+calmness trait we will assume that the trait is scored continuously in such a
+way that negative values are undesirable and positive values are desirable with
+zero being population mean. We will further assume the same variances for calmness
+as for honey yield, and a genetic (and environmental) correlation between the
+queen and workers effects of -0.4 (and 0.2) for calmness. We assume no genetic
+or environmental correlation between honey yield and calmness. Beware, this is
+just an example to show you how to simulate multiple colony traits - we have
+made up these parameters - please use literature estimates in your simulations!
 
 ```{r SimParamBee_2}
 # Global simulation parameters
 SP <- SimParamBee$new(founderGenomes)
 
-# Quantitative genetic parameters - for two traits with queen and worker genetic effects
-# TODO: what is the scale of calmness "values"?
-meanP <- c(20, 0, 0, 0)
-# TODO: revise covariances (I made them up!)
+nQtlPerChr <- 100
+
+# Quantitative genetic parameters - for two traits, each with the queen and workers effects
+meanP <- c(10, 10 / SP$nWorkers, 0, 0)
 varA <- c(1, 1 / SP$nWorkers, 1, 1 / SP$nWorkers)
-corA <- matrix(data = c( 1.0, -0.5, 0.0, 0.0, 
-                        -0.5,  1.0, 0.0, 0.0,
-                         0.0,  0.0, 1.0, -0.4, 
-                         0.0,  0.0, -0.4, 1.0), nrow = 4, byrow = TRUE)
+corA <- matrix(data = c( 1.0, -0.5,  0.0,  0.0, 
+                        -0.5,  1.0,  0.0,  0.0,
+                         0.0,  0.0,  1.0, -0.4, 
+                         0.0,  0.0, -0.4,  1.0), nrow = 4, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA,
              name = c("yieldQueenTrait", "yieldWorkersTrait",
                       "calmQueenTrait", "calmWorkersTrait"))
 
-# TODO: revise covariances (I made them up!)
 varE <- c(3, 3 / SP$nWorkers, 3, 3 / SP$nWorkers)
 corE <- matrix(data = c(1.0, 0.3, 0.0, 0.0,
                         0.3, 1.0, 0.0, 0.0,
@@ -428,7 +432,8 @@ corE <- matrix(data = c(1.0, 0.3, 0.0, 0.0,
 SP$setVarE(varE = varE, corE = corE)
 ```
 
-We continue by creating a base population, and an apiary with 10 full-size colonies.
+We continue by creating a base population of virgin queens and from them an
+apiary with 10 full-sized colonies.
 
 ```{r base_pop_and_colony}
 basePop <- createVirginQueens(founderGenomes)
@@ -440,17 +445,38 @@ apiary <- buildUp(apiary)
 apiary
 ```
 
-We can again inspect the phenotypic values of all individuals in the apiary with `get*Pheno()` functions. Now, the output contains four simulated traits representing the queen and workers effect for honey yield and calmness. These functions also take an `nInd` argument to sample the desired number of individuals and their values.
+We can again inspect the genetic (and phenotypic) values of all individuals in
+each colony and whole apiary with `get*Gv()` and `get*Pheno()` functions. Now,
+the output contains four traits representing the queen and workers effect for
+honey yield and calmness. These functions also take an `nInd` argument to sample
+a number of individuals along with their values.
 
 ```{r}
-head(getQueenGv(apiary))
-getWorkersPheno(apiary, nInd = 3)
+getQueenGv(apiary) |> head(n = 4)
+getWorkersPheno(apiary, nInd = 3) |> head(n = 4)
 ```
 
-Now, we compute the colony genetic phenotypic values for all colonies in the apiary. Since we are simulating two trait, honey yield and calmness, we have to provide a mapping function for each of them.
+Now, we calculate colony genetic and phenotypic values for all colonies in the
+apiary. Since we are simulating two traits, honey yield and calmness, we have
+two ways to calculate corresponding colony values. The first way is to use the
+default `mapCasteToColony*()` function in `calcColony*()` and only define
+additional arguments as shown here:
 
-```{r colony_pheno_2}
-calcMyColonyPheno <- function(colony) {
+```{r colony_pheno_2a}
+colonyValues <- calcColonyPheno(apiary,
+                                queenTrait = c("yieldQueenTrait", "calmQueenTrait"),
+                                workersTrait = c("yieldWorkersTrait", "calmWorkersTrait"),
+                                traitName = c("yield", "calmness"),
+                                checkProduction = c(TRUE, FALSE)) |> as.data.frame()
+colonyValues
+```
+
+The second way is to create our own mapping function. An equivalent outcome to
+the above is shown below just to demonstrate use of your own function, but we are
+simply just reusing `mapCasteToColonyPheno()` twice;)
+
+```{r colony_pheno_2a}
+myMapCasteToColonyPheno <- function(colony) {
   yield <- mapCasteToColonyPheno(colony,
                                  queenTrait = "yieldQueenTrait",
                                  workersTrait = "yieldWorkersTrait",
@@ -463,18 +489,24 @@ calcMyColonyPheno <- function(colony) {
                                     checkProduction = FALSE)
   return(cbind(yield, calmness))
 }
-colonyValues <- as.data.frame(calcColonyPheno(apiary, FUN = calcMyColonyPheno))
+colonyValues <- calcColonyPheno(apiary, FUN = myMapCasteToColonyPheno) |> as.data.frame()
 colonyValues
 ```
 
-Again, we can now select the best colony based on the best phenotypic value for either yield, calmness or an index of both. Let's say both traits are equally important so we select on a sum of both of them (equivalent to an index with weights of 0.5). (The problem is they are not standardized and don't have equal means!)
+Again, we can now select the best colony based on the best phenotypic value for
+either yield, calmness, or an index of both. Let's say that both traits are
+equally important so we select on a weighted sum of both of them - we will use
+the AlphaSimR `selIndex()` function that enables this calculation along with scaling.
+We will represent the index such that it has a mean of 100 and standard deviation
+of 10 units.
 
 ```{r}
-colonyValues$Index <- colonyValues$yield + colonyValues$calmness
-colonyValues
+colonyValues$Index <- selIndex(Y = colonyValues, b = c(0.5, 0.5), scale = TRUE) * 10 + 100
+colonyValues[order(colonyValues$Index, decreasing = TRUE), ]
 ```
 
-We see that based on yield alone, we would select colony 7 for further reproduction, based on calmness alone, we would select colony 2, and based on the index of both traits, we would select colony 5.
+We see that based on which selection criteria we use (yield, calmness, or index)
+we would be selecting different colonies.
 
 # Strength and honey yield
 
