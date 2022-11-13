@@ -599,12 +599,12 @@ isSimParamBee <- function(x) {
 #' @param n integer, number of samples
 #' @param average numeric, average number of workers
 #' @param lowerLimit numeric, returned numbers will be above this value
-#' @param queenTrait numeric, trait that represents queen's effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{0} then this effect is 0
-#' @param workersTrait numeric, trait that represents workers's effect on the
-#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{0} then this effect is 0
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
@@ -620,7 +620,8 @@ isSimParamBee <- function(x) {
 #'   traits influencing the colony phenotype and their parameters (mean and
 #'   variances) via \code{\link{SimParamBee}} (see examples).
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{nWorkers}
+#' @seealso \code{\link{SimParamBee}} field \code{nWorkers} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return numeric, number of workers
 #'
@@ -698,12 +699,12 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' @param n integer, number of samples
 #' @param average numeric, average number of drones
 #' @param lowerLimit numeric, returned numbers will be above this value
-#' @param queenTrait numeric, trait that represents queen's effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{0} then this effect is 0
-#' @param workersTrait numeric, trait that represents workers's effect on the
-#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{0} then this effect is 0
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
@@ -724,7 +725,8 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #'   When \code{x} is \code{\link{Pop-class}}, only \code{workersTrait} is not
 #'   used, that is, only \code{queenTrait} is used.
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{nDrones}
+#' @seealso \code{\link{SimParamBee}} field \code{nDrones} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return numeric, number of drones
 #'
@@ -808,12 +810,12 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' @param n integer, number of samples
 #' @param average numeric, average number of virgin queens
 #' @param lowerLimit numeric, returned numbers will be above this value
-#' @param queenTrait numeric, trait that represents queen's effect on the colony
-#'   phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{NULL} then this effect is 0
-#' @param workersTrait numeric, trait that represents workers's effect on the
-#'   colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-#'   \code{NULL} then this effect is 0
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers's effect on the colony phenotype (defined in
+#'   \code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
@@ -833,7 +835,8 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #'   influencing the colony phenotype and their parameters (mean and variances)
 #'   via \code{\link{SimParamBee}} (see examples).
 #'
-#' @seealso \code{\link{SimParamBee}} field \code{nVirginQueens}
+#' @seealso \code{\link{SimParamBee}} field \code{nVirginQueens} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return numeric, number of virgin queens
 #'
@@ -853,9 +856,8 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' # Example for nVirginQueensColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' # TODO: Find some means and variances (Vg and Ve) for swarming in honeybees
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/259
-#' meanP <- c(10, 0)
+#' # Setting trait scale such that mean is 10 split into queen and workers effects
+#' meanP <- c(5, 5 / SP$nWorkers)
 #' # setup variances such that the total phenotype variance will match the mean
 #' varA <- c(3 / 2, 3 / 2 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -1250,8 +1252,8 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' # 2) workers' effect on colony honey yield, say via foraging ability phenotype
 #' # The traits will have a negative genetic correlation of -0.5 and heritability
 #' # of 0.25 (on an individual level)
-#' mean <- c(20, 0)
 #' nWorkers <- 10
+#' mean <- c(10, 10 / nWorkers)
 #' varA <- c(1, 1 / nWorkers)
 #' corA <- matrix(data = c(
 #'   1.0, -0.5,
