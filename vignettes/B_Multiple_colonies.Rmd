@@ -3,7 +3,7 @@ title: "SIMplyBee - Multiple colonies"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - Multiple colonies}
+  %\VignetteIndexEntry{MultipleColonies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

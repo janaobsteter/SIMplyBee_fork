@@ -3,7 +3,7 @@ title: "SIMplyBee - Genomics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - Genomics}
+  %\VignetteIndexEntry{Genomics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

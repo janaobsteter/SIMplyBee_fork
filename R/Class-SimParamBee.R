@@ -1189,39 +1189,51 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'   own "caste functions" that satisfy your needs within this mapping function
 #'   (see \code{queenFUN}, \code{workersFUN}, and \code{dronesFUN} below)
 #'   or provide a complete replacement of this mapping function! For example,
-#'   this mappign function does not cater for indirect (social) genetic effects
+#'   this mapping function does not cater for indirect (social) genetic effects
 #'   where colony individuals value impacts value of other colony individuals.
-#'   Note though that you can achieve this also via multiple correlated traits,
-#'   such as a queen and a workers trait.
+#'   Note though that you can achieve this impact also via multiple correlated
+#'   traits, such as a queen and a workers trait.
 #'
 #' @param colony \code{\link{Colony-class}}
 #' @param value character, one of \code{pheno} or \code{gv}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param queenFUN function, function that will be applied to the queen's value
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersFUN function, function that will be applied to the worker values
-#' @param dronesTrait numeric, trait that represents drones' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param dronesFUN function, function that will be applied to the drone values
-#' @param traitName, the name of the trait (i.e. honeyYield)
+#' @param queenTrait numeric (column position) or character (column name),
+#'   trait(s) that represents queen's contribution to colony value(s); if
+#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   here, but make sure that \code{combineFUN} works with these trait dimensions
+#' @param queenFUN function, function that will be applied to queen's value
+#' @param workersTrait numeric (column position) or character (column name),
+#'   trait(s) that represents workers' contribution to colony value(s); if
+#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   here, but make sure that \code{combineFUN} works with these trait dimensions
+#' @param workersFUN function, function that will be applied to workers values
+#' @param dronesTrait numeric (column position) or character (column name),
+#'   trait(s) that represents drones' contribution to colony value(s); if
+#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   here, but make sure that \code{combineFUN} works with these trait dimensions
+#' @param dronesFUN function, function that will be applied to drone values
+#' @param traitName, the name of the colony trait(s), say, honeyYield; you can pass
+#'   more than one trait name here, but make sure to match them with
+#'   \code{combineFUN} trait dimensions
 #' @param combineFUN, function that will combine the queen, worker, and drone
 #'   contributions - this function should be defined as \code{function(q, w, d)}
-#'   where \code{q} represents queen's, \code{q} represents workers',
+#'   where \code{q} represents queen's, \code{q} represents workers', and
 #'   \code{d} represents drones' contribution.
 #' @param checkProduction logical, does the value depend on the production
-#'   status of colony; if yes and production is not \code{TRUE}, the return
+#'   status of colony; if yes and production is \code{FALSE}, the return
 #'   is \code{notProductiveValue} - this will often make sense for colony
-#'   phenotype value only
-#' @param notProductiveValue scalar, returned value when colony is not productive
+#'   phenotype value only; you can pass more than one logical value here (one
+#'   per trait coming out of \code{combineFUN})
+#' @param notProductiveValue numeric, returned value when colony is not productive;
+#'   you can pass more than one logical value here (one per trait coming out of
+#'   \code{combineFUN})
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{mapCasteToColonyValue} (for its aliases)
 #'
 #' @seealso \code{\link{SimParamBee}} field \code{colonyValueFUN} and functions
 #'   \code{\link{calcColonyValue}}, \code{\link{calcColonyPheno}},
 #'   \code{\link{calcColonyGv}}, \code{\link{getEvents}},
-#'   \code{\link{pheno}}, and \code{\link{gv}}
+#'   \code{\link{pheno}}, and \code{\link{gv}}, as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @details This is a utility/mapping function meant to be called by
 #'   \code{\link{calcColonyValue}}. It only works on a single colony - use
@@ -1279,8 +1291,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' getWorkersGv(colony)
 #'
 #' @export
-# TODO: Calculate inheritance, selection and production criteria in the Colony #23
-#       https://github.com/HighlanderLab/SIMplyBee/issues/23
 # TODO: Do we need to do anything to add GxE to colony values? #353
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
@@ -1288,7 +1298,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 mapCasteToColonyValue <- function(colony,
                                   value = "pheno",
                                   queenTrait = 1, queenFUN = function(x) x,
-                                  workersTrait = 2, workersFUN = sum,
+                                  workersTrait = 2, workersFUN = colSums,
                                   dronesTrait = NULL, dronesFUN = NULL,
                                   traitName = NULL,
                                   combineFUN = function(q, w, d) q + w,
@@ -1338,9 +1348,22 @@ mapCasteToColonyValue <- function(colony,
     dronesEff <- dronesFUN(tmp)
   }
   colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
+  nColTrt <- length(colonyValue)
   colnames(colonyValue) <- traitName
-  if (checkProduction && !colony@production) {
-    colonyValue <- notProductiveValue
+  if (any(checkProduction) && !isProductive(colony)) {
+    if (length(checkProduction) == 1 && nColTrt != 1) {
+      checkProduction <- rep(checkProduction, times = nColTrt)
+    }
+    if (length(notProductiveValue) == 1 && nColTrt != 1) {
+      notProductiveValue <- rep(notProductiveValue, times = nColTrt)
+    }
+    if (length(checkProduction) != nColTrt) {
+      stop("Dimension of checkProduction does not match the number of traits from combineFUN()!")
+    }
+    if (length(checkProduction) != length(notProductiveValue)) {
+      stop("Dimensions of checkProduction and notProductiveValue must match!")
+    }
+    colonyValue[checkProduction] <- notProductiveValue[checkProduction]
   }
   return(colonyValue)
 }

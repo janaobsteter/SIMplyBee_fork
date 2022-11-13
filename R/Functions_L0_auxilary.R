@@ -5286,7 +5286,8 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
 #'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
@@ -5368,8 +5369,6 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' calcColonyValue(apiary)
 #'
 #' @export
-# TODO: Calculate inheritance, selection and production criteria in the Colony #23
-#       https://github.com/HighlanderLab/SIMplyBee/issues/23
 # TODO: Do we need to do anything to add GxE to colony values? #353
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
