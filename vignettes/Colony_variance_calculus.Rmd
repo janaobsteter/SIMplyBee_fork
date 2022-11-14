@@ -103,9 +103,15 @@ $Var(g_c) = Var(g_{q,q}) + Var(\Sigma_{i=1}^{n_w}(g_{i,w})) + 2Cov(g_{q,q}, \Sig
 
 $Var(g_c) = \sigma^2_{g_{q}} + Var(\Sigma_{i=1}^{n_w}(g_{i,w})) + 2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$
 
-So, we have three parts: A) the variance of the queen effect in queens
-$\sigma^2_{g_{q}}$, B) variance of a sum of workers effect in workers
-$Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$, and C) covariance between the two
+So, we have three parts:
+
+A) the variance of the queen effect in queens
+$\sigma^2_{g_{q}}$,
+
+B) variance of a sum of workers effect in workers
+$Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$, and
+
+C) covariance between the two
 $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$.
 
 # A) Variance of the queen effect in queens $\sigma^2_{g_{q}}$ - in our case this is:
@@ -121,9 +127,11 @@ Anyway, quite close!
 
 # B) Variance of a sum of workers effect in workers $Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$
 
-Given that this is a sum, we need to look at: B1) variance of each of worker
-genetic values $Var(g_{i,w})$ and B2) covariance between each pair of the
-values $Cov(g_{i,w}, g_{j,w})$.
+Given that this is a sum, we need to look at:
+
+B1) variance of each of worker genetic values $Var(g_{i,w})$ and
+
+B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$.
 
 This means, that family structure will start to matter because it induces
 covariance between family members (workers). The simplest case is when all
@@ -131,7 +139,11 @@ workers come from the same father. Then we have:
 
 $g_{1,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{1,w}$
 
-$g_{2,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{2,w}$ ... $g_{n_w,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{n_w,w}$
+$g_{2,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{2,w}$
+
+...
+
+$g_{n_w,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{n_w,w}$
 
 ## B1) variance of each of worker genetic values $Var(g_{i,w})$
 
