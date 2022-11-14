@@ -5411,7 +5411,9 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'
 #' @description Level 0 function that calculates the inheritance criterion as the
 #'   sum of the queen (maternal) and workers (direct) effect from the queen,
-#'   as defined by Du et al. (2021).
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of drones from the queen or half the expected value of virgin queens from
+#'   the queen.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}} or
 #'   \code{\link{MultiColony-class}}
@@ -5428,7 +5430,9 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
-#' @seealso \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
@@ -5518,7 +5522,8 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'
 #' @description Level 0 function that calculates the performance criterion as the
 #'   sum of the queen (maternal) effect from the queen and the workers (direct)
-#'   effect from her workers, as defined by Du et al. (2021).
+#'   effect from her workers, as defined by Du et al. (2021). This can be seen
+#'   as the expected value of the colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param queenTrait numeric (column position) or character (column name), trait
@@ -5534,7 +5539,9 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'   either "gv" (genetic value),"ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
 #'
-#' @seealso \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcInheritanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
@@ -5630,7 +5637,9 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'
 #' @description Level 0 function that calculates the selection criterion as the
 #'   sum of workers (direct) and queen (maternal) effects of workers,
-#'   as defined by Du et al. (2021).
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of virgin queens from the queen (as well as workers, but we would not be
+#'   selecting workers).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param queenTrait numeric (column position) or character (column name), trait
@@ -5647,7 +5656,9 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
 #'
-#' @seealso \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#' @seealso \code{\link{calcInheritanceCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#`   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
