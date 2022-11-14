@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{SamplingFunctions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+editor_options:
+   markdown:
+     wrap: 80
+     canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -20,9 +24,6 @@ knitr::opts_chunk$set(
 
 Describe the use of helper sampling functions, like
 
-nWorkersPoisson
-nDronesPossion
-etc.
+nWorkersPoisson nDronesPossion etc.
 
 this will make then transition to quantitative genetics a bit easier too!
-

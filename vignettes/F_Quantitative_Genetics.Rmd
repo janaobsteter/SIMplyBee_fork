@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{QuantitativeGenetics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+editor_options:
+   markdown:
+     wrap: 80
+     canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -22,12 +26,12 @@ This vignette describes and demonstrates how SIMplyBee implements quantitative
 genetics principles for honeybees. Specifically, it describes three different
 examples where we simulate:
 
-  1. Honey yield - a single colony trait,
-  
-  2. Honey yield and Calmness - two colony traits, and
-  
-  3. Colony strength and Honey yield - two colony traits where one trait impacts
-     the other one via the number of workers.
+1.  Honey yield - a single colony trait,
+
+2.  Honey yield and Calmness - two colony traits, and
+
+3.  Colony strength and Honey yield - two colony traits where one trait impacts
+    the other one via the number of workers.
 
 We start by loading SIMplyBee and quickly simulating genomes for some founder
 honeybees. Specifically, genomes for 20 individuals with 16 chromosomes and 1000
@@ -45,36 +49,37 @@ This section shows how to simulate one colony trait, honey yield, that is
 influenced by the queen and workers as well as the environment. We will achieve
 this by:
 
-  a. Setting base population quantitative genetic parameters,
-  b. Inspecting values in the base population,
-  c. Inspecting values in a colony,
-  d. Calculating Colony value,
-  e. Calculating MultiColony values, and 
-  f. Selection on colony values.
+a.  Setting base population quantitative genetic parameters,
+b.  Inspecting individual values in the base population,
+c.  Inspecting individual values in a colony,
+d.  Calculating colony value,
+e.  Calculating multi-colony values, and
+f.  Selection on colony values.
 
 ## Base population quantitative genetic parameters
 
 AlphaSimR, and hence SIMplyBee, simulates each individual with its corresponding
-genome and quantitative genetic and phenotypic values. To enable this simulation,
-we must set base population quantitative genetic parameters for the traits of
-interest in the global simulation parameters via `SimParamBee`. We must set:
+genome and quantitative genetic and phenotypic values. To enable this
+simulation, we must set base population quantitative genetic parameters for the
+traits of interest in the global simulation parameters via `SimParamBee`. We
+must set:
 
-  1) the number of traits,
-  2) the number of quantitative trait loci (QTL) that affect the traits,
-  3) the distribution of QTL effects,
-  4) trait means, and
-  5) trait genetic and environmental variances - if we simulate multiple traits,
-     we must also specify genetic and environmental covariances between the
-     traits.
+1)  the number of traits,
+2)  the number of quantitative trait loci (QTL) that affect the traits,
+3)  the distribution of QTL effects,
+4)  trait means, and
+5)  trait genetic and environmental variances - if we simulate multiple traits,
+    we must also specify genetic and environmental covariances between the
+    traits.
 
-In honeybees, the majority of traits are influenced by the queen and workers. 
+In honeybees, the majority of traits are influenced by the queen and workers.
 There are many biological mechanisms for these queen and workers effects.
 Depending on which caste is the main driver of the trait (the queen or workers),
 we also talk about direct and indirect effects. For example, for honey yield,
 workers directly affect honey yield by foraging, while the queen indirectly
 affects honey yield by stimulating workers via pheromone production. The queen
-and workers effects for a trait can be genetically and environmentally independent
-or correlated (negatively or positively). 
+and workers effects for a trait can be genetically and environmentally
+independent or correlated (negatively or positively).
 
 Here, we will simulate two traits to represent the queen and workers effects on
 honey yield. From this point onward we will use the terms the queen effect and
@@ -90,13 +95,13 @@ QTL in total).
 
 We will first initiate global simulation parameters and set the mean of queen
 effects to 10 kg with genetic variance of 1 $kg^2$, while we will set the mean
-of workers effects to 10 kg with genetic variance of 1 $kg^2$, both proportionally
-scaled by the expected number of workers in a colony. The mean and variance for
-the queen effect is assumed larger than for the workers effect, because there is
-one queen and many workers in colony and we assume that workers effects
-"accumulate". Deciding how to split the colony mean between queen and workers
-effects will depend on the individual to colony mapping function, whici we will
-describe in the Colony value sub-section.
+of workers effects to 10 kg with genetic variance of 1 $kg^2$, both
+proportionally scaled by the expected number of workers in a colony. The mean
+and variance for the queen effect is assumed larger than for the workers effect,
+because there is one queen and many workers in colony and we assume that workers
+effects "accumulate". Deciding how to split the colony mean between queen and
+workers effects will depend on the individual to colony mapping function, which
+we will describe in the Colony value sub-section.
 
 ```{r SimParamBee_mean_and_varA}
 # Global simulation parameters
@@ -112,9 +117,10 @@ varA <- c(1, 1 / SP$nWorkers)
 We next set genetic correlation between the queen and workers effects to -0.5 to
 reflect the commonly observed antagonistic relationship between these effects.
 With all the quantitative genetic parameters defined, we now add two additive
-traits to global simulation parameters and name them `queenTrait` and `workerTrait`.
-These parameters drive the simulation of QTL effects. Read about all the other
-trait simulation options in AlphaSimR via: `vignette(topic = "traits", package="AlphaSimR")`.
+traits to global simulation parameters and name them `queenTrait` and
+`workerTrait`. These parameters drive the simulation of QTL effects. Read about
+all the other trait simulation options in AlphaSimR via:
+`vignette(topic = "traits", package="AlphaSimR")`.
 
 ```{r SimParamBee_corA_and_addTrait}
 corA <- matrix(data = c( 1.0, -0.5, 
@@ -123,12 +129,12 @@ SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
              name = c("queenTrait", "workersTrait"))
 ```
 
-Finally, we set the environmental variance of the queen and workers effects to
-3 $kg^2$ and we again scale the worker variance by the expected number of workers.
+Finally, we set the environmental variance of the queen and workers effects to 3
+$kg^2$ and we again scale the worker variance by the expected number of workers.
 Contrary to the negative genetic correlation, we here assume that environmental
-correlation between the queen and workers effects is slightly positive, 0.3. This
-is just an example! These parameters should be based on literature or simulation
-scenarios of interest.
+correlation between the queen and workers effects is slightly positive, 0.3.
+This is just an example! These parameters should be based on literature or
+simulation scenarios of interest.
 
 ```{r SimParamBee_varE_and_corR}
 varE <- c(3, 3 / SP$nWorkers)
@@ -137,12 +143,12 @@ corE <- matrix(data = c(1.0, 0.3,
 SP$setVarE(varE = varE, corE = corE)
 ```
 
-## Values in the base population
+## Individual values in the base population
 
 Now we create a base population of virgin queens. Since we defined two traits,
 all honeybees in the simulation will have genetic and phenotypic values for both
 traits. The genetic values are stored in the `gv` slot of each `Pop` object,
-while phenotypic values are  stored in the `pheno` slot.
+while phenotypic values are stored in the `pheno` slot.
 
 ```{r basePop_virgin_queens}
 # Base population virgin queens
@@ -162,23 +168,23 @@ hist(basePop@pheno[, "workersTrait"], xlab = "Phenotypic value", main = "Workers
 
 Note that these are virgin queens, yet we obtained queen and workers effect
 values for them! Is this wrong? No! Virgin queens carry DNA with genes that are
-differentially expressed in different castes, which would be only showed in their
-phenotype. Hence, virgin queens have genetic values for the queen and worker
-effects, but they might never actually express these effects. In this simulation
-virgin queens also obtained phenotypic values for both of the effects. This is
-technically incorrect because virgin queens don't express genes for the worker
-effect at all, and they also do not express the queen effect, not until they
-become the queen of a colony. We can treat these phenotypic values for virgin
-queens as values that we could see if these virgin queens would express these
-traits. We will show later in the Colony value sub-section how we use these
-traits from different castes. If existence of these phenotypic values for certain
-castes is a hindrance, we can always remove them for population or colony objects
-by modifying the corresponding slots as required.
+differentially expressed in different castes, which would be only showed in
+their phenotype. Hence, virgin queens have genetic values for the queen and
+worker effects, but they might never actually express these effects. In this
+simulation virgin queens also obtained phenotypic values for both of the
+effects. This is technically incorrect because virgin queens don't express genes
+for the worker effect at all, and they also do not express the queen effect, not
+until they become the queen of a colony. We can treat these phenotypic values
+for virgin queens as values that we could see if these virgin queens would
+express these traits. We will show later in the Colony value sub-section how we
+use these traits from different castes. If existence of these phenotypic values
+for certain castes is a hindrance, we can always remove them for population or
+colony objects by modifying the corresponding slots as required.
 
 As with the virgin queens, drones also carry DNA with genes that are expressed
-in different castes. Therefore, drones will also have the queen and workers effect
-genetic (and phenotypic values) for honey yield even though they do not contribute
-to this trait in a colony.
+in different castes. Therefore, drones will also have the queen and workers
+effect genetic (and phenotypic values) for honey yield even though they do not
+contribute to this trait in a colony.
 
 ```{r basePop_drones}
 # Base population drones
@@ -189,7 +195,7 @@ hist(drones@gv[, "queenTrait"], xlab = "Genetic value", main = "Queen effect")
 hist(drones@gv[, "workersTrait"], xlab = "Genetic value", main = "Workers effect")
 ```
 
-## Values in a colony
+## Individual values in a colony
 
 We continue by creating a colony from one base population virgin queen, crossing
 it, and adding some workers.
@@ -240,7 +246,8 @@ colony
 isProductive(colony)
 ```
 
-For the ease of further demonstration, we now combine workers' values into a single data.frame.
+For the ease of further demonstration, we now combine workers' values into a
+single data.frame.
 
 ```{r data.frame}
 # Collate genetic and phenotypic values of workers
@@ -275,9 +282,9 @@ the queen mated with (=fathers in a colony)!
 getFathersGv(colony)
 ```
 
-Knowing father of each worker, we inspect variation in the distribution of genetic
-values of worker by the patriline (workers from a single father drone) for the
-workers effect.
+Knowing father of each worker, we inspect variation in the distribution of
+genetic values of worker by the patriline (workers from a single father drone)
+for the workers effect.
 
 ```{r distribution_by_patriline}
 # Variation in workers effect genetic values by patriline in workers
@@ -289,7 +296,7 @@ print(p)
 ```
 
 ## Colony value
- 
+
 However, in honeybees we usually don't observe values on individuals, but on a
 colony. SIMplyBee provides functions for mapping individual values to a colony
 value. The general function for this is `calcColonyValue()`, which can combine
@@ -298,14 +305,15 @@ any value and trait from any caste. There are also aliases `calcColonyGv()` and
 mapping function (via the `FUN` argument). The mapping function specifies queen
 and workers traits (potentially also drone traits) and what function we want to
 apply to each of them before mapping them to the colony value(s). We can also
-specify, whether the colony value(s) depend on the production status. For example,
-if a colony is not productive, its honey yield would be 0 or unobserved.
-SIMplyBee provides a general mapping function `mapCasteToColonyValue()`
-and aliases `mapCasteToColonyGv()` and `mapCasteToColonyPheno()`. These functions
-have arguments to cater for various situations By default, they first calculate
-caste values: leave the queen's value as it is, sum workers' values, potentially
-sum drones' values, and lastly sum all these caste values together into a colony
-value (Figure XXX). Users can provide their own mapping function(s) too!
+specify, whether the colony value(s) depend on the production status. For
+example, if a colony is not productive, its honey yield would be 0 or
+unobserved. SIMplyBee provides a general mapping function
+`mapCasteToColonyValue()` and aliases `mapCasteToColonyGv()` and
+`mapCasteToColonyPheno()`. These functions have arguments to cater for various
+situations By default, they first calculate caste values: leave the queen's
+value as it is, sum workers' values, potentially sum drones' values, and lastly
+sum all these caste values together into a colony value (Figure XXX). Users can
+provide their own mapping function(s) too!
 
 TODO: DAG - figure from Laura
 
@@ -330,26 +338,27 @@ removeWorkers(colony, p = 0.5) |>
 
 Please note that we assumed that the queen contributes half to colony honey
 yield and workers contribute the other half. This means that removing workers
-will still give a non-zero honey yield! This shows that we have to design
-the mapping between individual, caste, and colony values with care!
+will still give a non-zero honey yield! This shows that we have to design the
+mapping between individual, caste, and colony values with care!
 
 ```{r colony_pheno_change}
 # Colony phenotype value from a reduced colony
 removeWorkers(colony, p = 0.99) |>
   calcColonyPheno(queenTrait = "queenTrait", workersTrait = "workersTrait")
 ```
- 
+
 Finally, note that SIMplyBee currently does not provide functionaly for breeding
-values, dominance deviations, and epistatic deviations at caste and colony levels,
-despite the availabiliy of AlphaSimR `bv()`, `dd()`, and `aa()` functions. This
-is so, because we have to check or develop theory on how to calculate these
-values across active colonies and hence we currently advise against the use of
-AlphaSimR `bv()`, `dd()`, and `aa()` functions with SIMplyBee as the output of
-these functions could be easily misinterpreted.
+values, dominance deviations, and epistatic deviations at caste and colony
+levels, despite the availabiliy of AlphaSimR `bv()`, `dd()`, and `aa()`
+functions. This is so, because we have to check or develop theory on how to
+calculate these values across active colonies and hence we currently advise
+against the use of AlphaSimR `bv()`, `dd()`, and `aa()` functions with SIMplyBee
+as the output of these functions could be easily misinterpreted.
 
 ## MultiColony values
 
-The same functions can be used on a `MultiColony` class object. Let's create an apiary.
+The same functions can be used on a `MultiColony` class object. Let's create an
+apiary.
 
 ```{r multicolony}
 apiary <- createMultiColony(basePop[7:20])
@@ -360,9 +369,9 @@ apiary <- buildUp(apiary)
 ```
 
 We can extract the genetic and phenotypic values from multiple colonies in the
-same manner as from a single colony, by using `get*Gv()` and `get*Pheno()` functions.
-The output of these function is a named list with values for each colony or a
-data.frame if we set the `collapse` argument to `TRUE`.
+same manner as from a single colony, by using `get*Gv()` and `get*Pheno()`
+functions. The output of these function is a named list with values for each
+colony or a data.frame if we set the `collapse` argument to `TRUE`.
 
 ```{r multicolony_gv}
 getQueenGv(apiary) |> head(n = 4)
@@ -380,7 +389,11 @@ data.frame(colonyGv, colonyPheno)
 
 ## Selection on colony values
 
-Since the aim of selection is to select the best individuals or colonies for the reproduction, we could select the best colony in our apiary based on either genetic or phenotypic value for grafting the new generation of queens. The colony with the highest genetic value is colony with ID 6, hence we select it for further reproduction.
+Since the aim of selection is to select the best individuals or colonies for the
+reproduction, we could select the best colony in our apiary based on either
+genetic or phenotypic value for grafting the new generation of queens. The
+colony with the highest genetic value is colony with ID 6, hence we select it
+for further reproduction.
 
 TODO: improve this code once selectColonies() is improved
 
@@ -400,12 +413,13 @@ We first reinitialize the global simulation parameters because we will define
 new traits. For honey yield we will use the same parameters as before, while for
 calmness trait we will assume that the trait is scored continuously in such a
 way that negative values are undesirable and positive values are desirable with
-zero being population mean. We will further assume the same variances for calmness
-as for honey yield, and a genetic (and environmental) correlation between the
-queen and workers effects of -0.4 (and 0.2) for calmness. We assume no genetic
-or environmental correlation between honey yield and calmness. Beware, this is
-just an example to show you how to simulate multiple colony traits - we have
-made up these parameters - please use literature estimates in your simulations!
+zero being population mean. We will further assume the same variances for
+calmness as for honey yield, and a genetic (and environmental) correlation
+between the queen and workers effects of -0.4 (and 0.2) for calmness. We assume
+no genetic or environmental correlation between honey yield and calmness.
+Beware, this is just an example to show you how to simulate multiple colony
+traits - we have made up these parameters - please use literature estimates in
+your simulations!
 
 ```{r SimParamBee_2}
 # Global simulation parameters
@@ -472,8 +486,8 @@ colonyValues
 ```
 
 The second way is to create our own mapping function. An equivalent outcome to
-the above is shown below just to demonstrate use of your own function, but we are
-simply just reusing `mapCasteToColonyPheno()` twice;)
+the above is shown below just to demonstrate use of your own function, but we
+are simply just reusing `mapCasteToColonyPheno()` twice;)
 
 ```{r colony_pheno_2a}
 myMapCasteToColonyPheno <- function(colony) {
@@ -496,9 +510,9 @@ colonyValues
 Again, we can now select the best colony based on the best phenotypic value for
 either yield, calmness, or an index of both. Let's say that both traits are
 equally important so we select on a weighted sum of both of them - we will use
-the AlphaSimR `selIndex()` function that enables this calculation along with scaling.
-We will represent the index such that it has a mean of 100 and standard deviation
-of 10 units.
+the AlphaSimR `selIndex()` function that enables this calculation along with
+scaling. We will represent the index such that it has a mean of 100 and standard
+deviation of 10 units.
 
 ```{r}
 colonyValues$Index <- selIndex(Y = colonyValues, b = c(0.5, 0.5), scale = TRUE) * 10 + 100
@@ -510,29 +524,31 @@ we would be selecting different colonies.
 
 # Strength and honey yield
 
-In this section we change simulation to two traits where the phenotype realisation
-of the first trait affects the phenotype realisation of the second trait.
-Specifically, we will assume that queen's fecundity, and hence the number of
-workers, is under the genetic affect of the queen and her environment. Furthermore,
-we will assume as before that colony honey yield is due to the queen effect and
-workers effect. Since the value of the workers effect depends on then number of
-workers, we obtain correlation between fecundity and honey yield, even if these
-traits would be uncorrelated on the queen level. We emphasise that this is just
-an example and the biology of these traits might be different.
+In this section we change simulation to two traits where the phenotype
+realisation of the first trait affects the phenotype realisation of the second
+trait. Specifically, we will assume that queen's fecundity, and hence the number
+of workers, is under the genetic affect of the queen and her environment.
+Furthermore, we will assume as before that colony honey yield is due to the
+queen effect and workers effect. Since the value of the workers effect depends
+on then number of workers, we obtain correlation between fecundity and honey
+yield, even if these traits would be uncorrelated on the queen level. We
+emphasise that this is just an example and the biology of these traits might be
+different.
 
-We follow the same logic as before and simulate three traits that will contribute
-to two colony traits, queen's fecundity, that is colony strength, and honey yield.
-We assume that fecundity is only due to the queen (and not the workers), hence
-we simulate only the queen effect for this trait. For honey yield we again assume
-that it both the queen and workers contribute to the colony value. Fox speed 
-of simulation we only simulate 100 workers on colony on average and split honey
-yield mean between the queen and workers. We measure fecundity with the number
-of workers, which is a count variable and for such variables Poisson distribution
-is a good model. This distribution has just one parameter (lambda) that represents
-both the mean and variance of the variable. To this end we set phenotypic variance
-to 100 and split it into 25 for genetic and 65 for environmental variance. As
-before we warn that these are just exemplary values to demonstrate the code
-functionality and do not necessarily reflect published values!
+We follow the same logic as before and simulate three traits that will
+contribute to two colony traits, queen's fecundity, that is colony strength, and
+honey yield. We assume that fecundity is only due to the queen (and not the
+workers), hence we simulate only the queen effect for this trait. For honey
+yield we again assume that it both the queen and workers contribute to the
+colony value. For speed of simulation we only simulate 100 workers on colony on
+average and split honey yield mean between the queen and workers. We measure
+fecundity with the number of workers, which is a count variable and for such
+variables Poisson distribution is a good model. This distribution has just one
+parameter (lambda) that represents both the mean and variance of the variable.
+To this end we set phenotypic variance to 100 and split it into 25 for genetic
+and 65 for environmental variance. As before we warn that these are just
+exemplary values to demonstrate the code functionality and do not necessarily
+reflect published values!
 
 ```{r SimParamBee_3}
 # Global simulation parameters
@@ -567,14 +583,14 @@ droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 15)
 apiary <- cross(x = apiary, drones = droneGroups)
 ```
 
-Let's explore queen's genetic and phenotypic values for fecundity and honey yield.
-The below printouts show quite some variation in fecundity between queens at the
-genetic, but particularly phenotypic level. This is a small example, so we should
-not put too much into correlations between these three variables. However, if you
-restart this simulation many times, you will notice zero correlation on average
-between fecundityQueenTrait and the other two traits and negative correlation on
-average between yieldQueenTrait and yieldWorkersTrait. Just like we defined in
-the global simulation parameters.
+Let's explore queen's genetic and phenotypic values for fecundity and honey
+yield. The below printouts show quite some variation in fecundity between queens
+at the genetic, but particularly phenotypic level. This is a small example, so
+we should not put too much into correlations between these three variables.
+However, if you restart this simulation many times, you will notice zero
+correlation on average between fecundityQueenTrait and the other two traits and
+negative correlation on average between yieldQueenTrait and yieldWorkersTrait.
+Just like we defined in the global simulation parameters.
 
 ```{r queen_values}
 getQueenGv(apiary, collapse = TRUE)
@@ -584,10 +600,10 @@ plot(queenPheno)
 ```
 
 We next build-up colonies in the apiary. But instead of building them all up to
-the same fixed number of workers, we build them up according to queen's fecundity.
-For that we use the sampling function `nWorkersColonyPhenotype()`, that samples
-the number of workers based on phenotypes of colony members, in our case
-`fecundityQueenTrait` in queens. Correspondingly, each colony will have a
+the same fixed number of workers, we build them up according to queen's
+fecundity. For that we use the sampling function `nWorkersColonyPhenotype()`,
+that samples the number of workers based on phenotypes of colony members, in our
+case `fecundityQueenTrait` in queens. Correspondingly, each colony will have a
 different number of workers. Read more about this function in it's help page.
 
 ```{r colony_strength}
@@ -597,10 +613,11 @@ cbind(nWorkers = nWorkers(apiary), queenPheno)
 help(nWorkersColonyPhenotype)
 ```
 
-To compute the colony value for honey yield, we again employ the `calcColonyPheno()`
-function. Correlating the queen and colony values we will now see a positive
-correlation because our individual to colony mapping function sums workers effect
-across all workers and the more workers there are the larger the sum.
+To compute the colony value for honey yield, we again employ the
+`calcColonyPheno()` function. Correlating the queen and colony values we will
+now see a positive correlation because our individual to colony mapping function
+sums workers effect across all workers and the more workers there are the larger
+the sum.
 
 ```{r colony_pheno_3}
 colonyValuesPheno <- calcColonyPheno(apiary,
