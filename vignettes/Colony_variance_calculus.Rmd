@@ -71,7 +71,7 @@ $g_c = g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w}).$
 
 Expectation of colony genetic value is then:
 
-$E(g_c) = E(g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w})$
+$E(g_c) = E(g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w}))$
 
 $E(g_c) = E(g_{q,q}) + E(\Sigma_{i=1}^{n_w}(g_{i,w}))$
 
