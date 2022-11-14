@@ -340,16 +340,9 @@ Lastly we'll look at the `calcBeeAlleleFreq()` function. This function allows yo
 alleleFreq <- calcBeeAlleleFreq(x = geno, sex = sex)
 ```
 
-We can also get the diagonal of the matrix: 
-```{r view diagonal}
-  library("Matrix"); image(as(alleleFreq, "Matrix"))
 
-   x <- diag(alleleFreq)
-   hist(x)
-   summary(x)
-```
 
-And also look at the non-diagonal
+As demonstrate above, we can look at the non-diagonal: 
 ```{r view non-diagonal}
   x <- alleleFreq[lower.tri(x = alleleFreq, diag = FALSE)]
    hist(x)
