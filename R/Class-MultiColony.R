@@ -131,9 +131,15 @@ setMethod(
   signature(object = "MultiColony"),
   definition = function(object) {
     cat("An object of class", classLabel(class(object)), "\n")
-    cat("Number of colonies:", nColonies(object), "\n")
-    cat("Number of empty colonies:", nEmptyColonies(object), "\n")
-    cat("Number of NULL colonies:", nNULLColonies(object), "\n")
+    cat("Number of colonies:\n")
+    cat("  proper:", nColonies(object), "\n")
+    cat("  empty:", nEmptyColonies(object), "\n")
+    cat("  NULL:", nNULLColonies(object), "\n")
+    cat("  has split:", sum(hasSplit(object)), "\n")
+    cat("  has swarmed:", sum(hasSwarmed(object)), "\n")
+    cat("  has superseded:", sum(hasSuperseded(object)), "\n")
+    cat("  has collapsed:", sum(hasCollapsed(object)), "\n")
+    cat("  is productive:", sum(isProductive(object)), "\n")
     invisible()
   }
 )
