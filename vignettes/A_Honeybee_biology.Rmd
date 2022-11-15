@@ -54,8 +54,6 @@ founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 
 Alternatively as a second demonstration, using SIMplyBee's `simulateHoneybeeGenomes()`, we will create a founder population containing the genomes of 4 A.m.mellifera (North) individuals and 2 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 5 segregating sites per chromosome in this example. These numbers are of course extremely low but for demonstrative reasons we want a quick example. This chunk of code should take about 5 minutes to run.
 
-TODO: should we provide the Rdata we already have as an example to download?
-
 ```{r simulate honeybee genomes}
 founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 4,
                                           nCar = 2,
@@ -87,7 +85,7 @@ recRate = 2.3e-7, # Beye et al., 2006
 nThreads = NULL) 
 ```
 
-Most arguments have a provided default values, most of which currently correspond to the Wallberg demographic model (Wallberg 2014). However, these values can be changed safely to personalize your founder population genomes. If this is something you're interested in, we recommend you return back to this point once you are comfortable with the basic functionality.
+Most arguments have a provided default values, most of which currently correspond to the Wallberg demographic model (Wallberg 2014). Unfortunately, these values cannot be changed safely and would not recommend their change, as they correspond to a this model specifically. If you do wish to make a personalised founder population genome, keep in mind that they won't correspond to the model and may lead to problems. 
 
 ```{r deeper looking to the arguments}
 ??simulateHoneybeeGenomes
@@ -99,7 +97,7 @@ Now we are ready to setup global simulation parameters using `SimParamBee`. `Sim
 SP <- SimParamBee$new(founderGenomes)
 ```
 
-There are many options provided by `SimParamBee` of which we will not talk about now. You can quickly take a peek into the information and functions stored in the `SP` object. The following code gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality!
+There are many options provided by `SimParamBee` of which we will not talk about now. You can quickly take a peek into the information and functions stored in the `SP` object. The following code gives a lot of output and we suggest you return back to this point once you are comfortable with the basic functionality! We would recommend familarising yourself with some of the more important parameters, such as `SP$nWorkers` which generates the number of workers you want in the colony and is used in functions such as `createWorkers()`, `addWorkers()` and `buildUp()`. The equivalent parameters can be found for other caste members. The `SP` also stores the csd information, such as its location, which you can spcify using `SP$csdPosStart` and `SP$csdPosStop`.
 
 ```{r SP, eval = FALSE}
 show(SP)
@@ -254,7 +252,7 @@ getCaste(bees)
 
 TODO: add genome image (tree and inheritance and csd)?
 
-The complementary sex determining (csd) locus, well, complements sex determination. Fertilised eggs that are heterozygous at the csd locus develop into workers. On the other hand, homozygous eggs develop into unviable drones. These drones are usually discarded by workers. SIMplyBee doesn't store these unviable drones, but it does store their number.
+The complementary sex determining (CSD) locus, well, complements sex determination. Fertilised eggs that are heterozygous at the csd locus develop into workers. On the other hand, homozygous eggs develop into unviable drones. These drones are usually discarded by workers. SIMplyBee doesn't store these unviable drones, but it does store their number in the `SP`. 
 
 We can retrieve information about csd variation with `getCsdAlleles()`. For details on where the csd locus is and the number of distinct alleles, see `help(SimParamBee)`. The output below shows two sequences (in two rows) of 0s and 1s representing respectively ancestral and mutation alleles along the csd locus for the queen. You can see that the two sequences are different, meaning that she is heterozygous, as expected.
 
