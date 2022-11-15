@@ -135,5 +135,6 @@ SIMplyBee:::getBv(apiary, caste = "all")
 SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{bv}}
+\code{\link{bv}} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

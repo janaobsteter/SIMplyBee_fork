@@ -1277,9 +1277,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' # Colony value
 #' mapCasteToColonyPheno(colony)
 #' mapCasteToColonyGv(colony)
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 #'
 #' # To understand where the above values come from, study the contents of
 #' # mapCasteToColonyValue() and the values below:

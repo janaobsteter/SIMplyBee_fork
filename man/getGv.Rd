@@ -133,5 +133,6 @@ getGv(apiary, caste = "all")
 getGv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{gv}}
+\code{\link{gv}} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

@@ -5337,24 +5337,6 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' # ... genetic value
 #' calcColonyGv(colony)
 #' calcColonyGv(apiary)
-#' # ... breeding value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyBv(colony)
-#' # calcColonyBv(apiary)
-#' # ... dominance value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyDd(colony)
-#' # calcColonyDd(apiary)
-#' # ... epistasis value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyAa(colony)
-#' # calcColonyAa(apiary)
 #'
 #' # Colony value - long version
 #' # (using the default mapCasteToColony*() function - you can provide yours instead!)

@@ -15,7 +15,7 @@ mapCasteToColonyValue(
   queenTrait = 1,
   queenFUN = function(x) x,
   workersTrait = 2,
-  workersFUN = sum,
+  workersFUN = colSums,
   dronesTrait = NULL,
   dronesFUN = NULL,
   traitName = NULL,
@@ -40,34 +40,45 @@ mapCasteToColonyAa(colony, checkProduction = FALSE, simParamBee = NULL, ...)
 
 \item{value}{character, one of \code{pheno} or \code{gv}}
 
-\item{queenTrait}{numeric, trait that represents queen's contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{queenTrait}{numeric (column position) or character (column name),
+trait(s) that represents queen's contribution to colony value(s); if
+\code{NULL} then this contribution is 0; you can pass more than one trait
+here, but make sure that \code{combineFUN} works with these trait dimensions}
 
-\item{queenFUN}{function, function that will be applied to the queen's value}
+\item{queenFUN}{function, function that will be applied to queen's value}
 
-\item{workersTrait}{numeric, trait that represents workers' contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{workersTrait}{numeric (column position) or character (column name),
+trait(s) that represents workers' contribution to colony value(s); if
+\code{NULL} then this contribution is 0; you can pass more than one trait
+here, but make sure that \code{combineFUN} works with these trait dimensions}
 
-\item{workersFUN}{function, function that will be applied to the worker values}
+\item{workersFUN}{function, function that will be applied to workers values}
 
-\item{dronesTrait}{numeric, trait that represents drones' contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{dronesTrait}{numeric (column position) or character (column name),
+trait(s) that represents drones' contribution to colony value(s); if
+\code{NULL} then this contribution is 0; you can pass more than one trait
+here, but make sure that \code{combineFUN} works with these trait dimensions}
 
-\item{dronesFUN}{function, function that will be applied to the drone values}
+\item{dronesFUN}{function, function that will be applied to drone values}
 
-\item{traitName, }{the name of the trait (i.e. honeyYield)}
+\item{traitName, }{the name of the colony trait(s), say, honeyYield; you can pass
+more than one trait name here, but make sure to match them with
+\code{combineFUN} trait dimensions}
 
 \item{combineFUN, }{function that will combine the queen, worker, and drone
 contributions - this function should be defined as \code{function(q, w, d)}
-where \code{q} represents queen's, \code{q} represents workers',
+where \code{q} represents queen's, \code{q} represents workers', and
 \code{d} represents drones' contribution.}
 
 \item{checkProduction}{logical, does the value depend on the production
-status of colony; if yes and production is not \code{TRUE}, the return
+status of colony; if yes and production is \code{FALSE}, the return
 is \code{notProductiveValue} - this will often make sense for colony
-phenotype value only}
+phenotype value only; you can pass more than one logical value here (one
+per trait coming out of \code{combineFUN})}
 
-\item{notProductiveValue}{scalar, returned value when colony is not productive}
+\item{notProductiveValue}{numeric, returned value when colony is not productive;
+you can pass more than one logical value here (one per trait coming out of
+\code{combineFUN})}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 
@@ -87,10 +98,10 @@ Maps caste member (individual) values to a colony value - for
   own "caste functions" that satisfy your needs within this mapping function
   (see \code{queenFUN}, \code{workersFUN}, and \code{dronesFUN} below)
   or provide a complete replacement of this mapping function! For example,
-  this mappign function does not cater for indirect (social) genetic effects
+  this mapping function does not cater for indirect (social) genetic effects
   where colony individuals value impacts value of other colony individuals.
-  Note though that you can achieve this also via multiple correlated traits,
-  such as a queen and a workers trait.
+  Note though that you can achieve this impact also via multiple correlated
+  traits, such as a queen and a workers trait.
 }
 \details{
 This is a utility/mapping function meant to be called by
@@ -119,8 +130,8 @@ SP <- SimParamBee$new(founderGenomes)
 # 2) workers' effect on colony honey yield, say via foraging ability phenotype
 # The traits will have a negative genetic correlation of -0.5 and heritability
 # of 0.25 (on an individual level)
-mean <- c(20, 0)
 nWorkers <- 10
+mean <- c(10, 10 / nWorkers)
 varA <- c(1, 1 / nWorkers)
 corA <- matrix(data = c(
   1.0, -0.5,
@@ -144,9 +155,6 @@ colony <- buildUp(colony, nWorkers = nWorkers, nDrones = 3)
 # Colony value
 mapCasteToColonyPheno(colony)
 mapCasteToColonyGv(colony)
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
 
 # To understand where the above values come from, study the contents of
 # mapCasteToColonyValue() and the values below:
@@ -164,5 +172,6 @@ getWorkersGv(colony)
 \code{\link{SimParamBee}} field \code{colonyValueFUN} and functions
   \code{\link{calcColonyValue}}, \code{\link{calcColonyPheno}},
   \code{\link{calcColonyGv}}, \code{\link{getEvents}},
-  \code{\link{pheno}}, and \code{\link{gv}}
+  \code{\link{pheno}}, and \code{\link{gv}}, as well as
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }
