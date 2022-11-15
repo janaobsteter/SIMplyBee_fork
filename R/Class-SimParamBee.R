@@ -43,9 +43,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nWorkers} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -70,9 +67,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nDrones} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(x, arg = default) someCode }, that is, the first
@@ -96,9 +90,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nVirginQueens} is a function, it should work with internals
     #'   of other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -117,14 +108,11 @@ SimParamBee <- R6Class(
     #'   with  - used in \code{\link{pullDroneGroupsFromDCA}},
     #'   \code{\link{cross}}.
     #'
-    #'   The default value is 15, that is, a virging queen mates on average with
+    #'   The default value is 15, that is, a virgin queen mates on average with
     #'   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
     #'   to have a number to work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{nFathers} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
@@ -150,9 +138,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{swarmP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -175,9 +160,6 @@ SimParamBee <- R6Class(
     #'   in \code{SimParamBee$new()} to have a proportion to work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{splitP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
@@ -202,9 +184,6 @@ SimParamBee <- R6Class(
     #'   work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{downsizeP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
