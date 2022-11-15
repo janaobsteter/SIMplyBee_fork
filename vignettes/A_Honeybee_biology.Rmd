@@ -52,7 +52,7 @@ As a first demonstration, we will use `quickHaplo()` and simulate random genomes
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 ```
 
-Alternatively as a second demonstration, using SIMplyBee's `simulateHoneybeeGenomes()`, we will create a founder population containing the genomes of 4 A.m.mellifera (North) individuals and 2 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 5 segregating sites per chromosome in this example. These numbers are of course extremely low but for demonstrative reasons we want a quick example. This chunk of code should take about 5 minutes to run.
+Alternatively as a second demonstration, using SIMplyBee's `simulateHoneybeeGenomes()`, we will create a founder population containing the genomes of 4 A.m.mellifera (North) individuals and 2 A.m.carnica individuals. The genomes will be represented by only three chromosomes and 5 segregating sites per chromosome in this example. These numbers are of course extremely low but for demonstrative reasons we want a quick example. This chunk of code should take a few minutes to run.
 
 ```{r simulate honeybee genomes}
 founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 4,
