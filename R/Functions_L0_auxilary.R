@@ -1956,7 +1956,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #'   haplotypes, which is why you need to provide \code{pop}. We only reduce
 #'   haplotypes for males though.
 #'
-#' @return matrix with one haplotype per drone instead of two
+#' @return matrix with one haplotype per drone instead of two - the order of
+#'   individuals stays the same, but there will be less rows!
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
@@ -1997,7 +1998,8 @@ reduceDroneHaplo <- function(haplo, pop) {
 #' @param geno \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
 #'
-#' @return matrix with genotype as one haplotype per drone instead of two
+#' @return matrix with genotype as one haplotype per drone instead of two - the
+#'   order of individuals and the number of rows stays the same!
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
@@ -3042,7 +3044,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param trait numeric (trait position) or character (trait name), indicates
+#'   which trait's QTL haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #'   single set of haplotypes, use a value of 1 for female haplotypes and a
 #'   value of 2 for male haplotypes
@@ -3053,7 +3056,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'   with haplotypes of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}} as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
@@ -3079,7 +3083,6 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
 #'
 #' # Input is a population
 #' getQtlHaplo(x = getQueen(colony))
@@ -3320,7 +3323,8 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param trait numeric, indicates which trait's QTL genotypes to retrieve
+#' @param trait numeric (trait position) or character (trait name), indicates
+#'   which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
 #' @param dronesHaploid logical, return haploid result for drones?
@@ -3328,7 +3332,8 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   with genotypes of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
+#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}} as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
@@ -5091,7 +5096,8 @@ calcBeeGRMIbd <- function(x) {
 #' @param collapse logical, if the return value should be a single matrix
 #'   with phenotypes of all the individuals
 #'
-#' @seealso \code{\link{pheno}}
+#' @seealso \code{\link{pheno}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
@@ -5103,11 +5109,6 @@ calcBeeGRMIbd <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10, var = 1)
 #' SP$setVarE(varE = 1)
-#' # TODO: how should we handle the creation of phenotypes when residual variance
-#' #       is set (then we get phenotypes automatically and we should not call
-#' #       setPheno() below - this overwrites previous phenotypes), but when the
-#' #       residual variance is not set, we have to call setPheno()
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/235
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -5284,7 +5285,8 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
 #'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
@@ -5299,8 +5301,8 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' # 2) workers' effect on colony honey yield, say via foraging ability phenotype
 #' # The traits will have a negative genetic correlation of -0.5 and heritability
 #' # of 0.25 (on an individual level)
-#' mean <- c(20, 0)
 #' nWorkers <- 10
+#' mean <- c(10, 10 / nWorkers)
 #' varA <- c(1, 1 / nWorkers)
 #' corA <- matrix(data = c(
 #'   1.0, -0.5,
@@ -5366,8 +5368,6 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' calcColonyValue(apiary)
 #'
 #' @export
-# TODO: Calculate inheritance, selection and production criteria in the Colony #23
-#       https://github.com/HighlanderLab/SIMplyBee/issues/23
 # TODO: Do we need to do anything to add GxE to colony values? #353
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
@@ -5409,16 +5409,20 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @rdname calcInheritanceCriterion
 #' @title Calculate the inheritance criterion
 #'
-#' @description Level 0 function that calculates the inheritance criterion as the sum
-#'   of direct and maternal breeding values of the queens, as described
-#'   by Du et al., 2021.
+#' @description Level 0 function that calculates the inheritance criterion as the
+#'   sum of the queen (maternal) and workers (direct) effect from the queen,
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of drones from the queen or half the expected value of virgin queens from
+#'   the queen.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}} or
 #'   \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL}
+#'   then this effect is 0
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
@@ -5426,15 +5430,19 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5513,32 +5521,41 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @title Calculate the performance criterion
 #'
 #' @description Level 0 function that calculates the performance criterion as the
-#'   sum of the maternal breeding value of a queen and the direct breeding value of her
-#'   worker group, as described by Du et al., 2021.
+#'   sum of the queen (maternal) effect from the queen and the workers (direct)
+#'   effect from her workers, as defined by Du et al. (2021). This can be seen
+#'   as the expected value of the colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTraitFUN function, function that will be applied to the worker trait
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTraitFUN function, that will be applied to the workers effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value),"ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#'
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcInheritanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5562,17 +5579,18 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(apiary)
 #'
-#' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
+#' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
-#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcPerformanceCriterion(apiary, queenTrait = 1,
+#'                          workersTrait = 2, workersTraitFUN = sum)
 #'
 #' @export
 calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
-                                     workersTraitFUN = mean, use = "gv") {
+                                     workersTraitFUN = sum, use = "gv") {
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
   }
@@ -5614,37 +5632,47 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
   return(ret)
 }
 
-
 #' @rdname calcSelectionCriterion
 #' @title Calculate the selection criterion
 #'
 #' @description Level 0 function that calculates the selection criterion as the
-#'   sum of direct and maternal breeding values of a worker group,
-#'   as described by Du et al., 2021.
+#'   sum of workers (direct) and queen (maternal) effects of workers,
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of virgin queens from the queen (as well as workers, but we would not be
+#'   selecting workers).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param queenTraitFUN function, function that will be applied to the queen trait
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTraitFUN function, function that will be applied to the worker trait
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL} then this contribution is 0
+#' @param queenTraitFUN function, that will be applied to the queen effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL} then this contribution is 0
+#' @param workersTraitFUN function, that will be applied to the workers effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#'
+#' @seealso \code{\link{calcInheritanceCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#`   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5669,24 +5697,25 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' apiary <- buildUp(apiary)
 #'
 #' calcSelectionCriterion(colony,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = mean)
+#'                        queenTrait = 1, queenTraitFUN = sum,
+#'                        workersTrait = 2, workersTraitFUN = sum)
 #' calcSelectionCriterion(colony,
 #'                        queenTrait = 1, queenTraitFUN = mean,
+#'                        workersTrait = 2, workersTraitFUN = mean)
+#' calcSelectionCriterion(apiary,
+#'                        queenTrait = 1, queenTraitFUN = sum,
 #'                        workersTrait = 2, workersTraitFUN = sum)
 #' calcSelectionCriterion(apiary,
 #'                        queenTrait = 1, queenTraitFUN = mean,
 #'                        workersTrait = 2, workersTraitFUN = mean)
-#' calcSelectionCriterion(apiary,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = sum)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
-#' calcSelectionCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcSelectionCriterion(apiary, queenTrait = 1,
+#'                        workersTrait = 2, workersTraitFUN = sum)
 #'
 #' @export
-calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
-                                   workersTrait = 2, workersTraitFUN = mean,
+calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
+                                   workersTrait = 2, workersTraitFUN = sum,
                                    use = "gv") {
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
@@ -5749,7 +5778,8 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genetic values of all the individuals
 #'
-#' @seealso \code{\link{gv}}
+#' @seealso \code{\link{gv}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of phenotype values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
@@ -5951,7 +5981,8 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #'   with breeding valued of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{bv}}
+#' @seealso \code{\link{bv}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of breeding values when \code{x} is
@@ -6188,7 +6219,8 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #'   with dominance values of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}}
+#' @seealso \code{\link{dd}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of dominance values when \code{x} is
 #'   \code{\link{Colony-class}} and list of vectors of dominance values when
@@ -6424,7 +6456,8 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #'   with epistatic values of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}}
+#' @seealso \code{\link{dd}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of epistasis values when \code{x} is
 #'   \code{\link{Colony-class}} and list of vectors of epistasis values when

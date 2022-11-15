@@ -1,35 +1,48 @@
 ---
-title: "Colony variance calculus"
-output: html_document
-date: '2022-11-12'
+title: "SIMplyBee - Variance calculations between individual and colony level values"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{VarianceCalculations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options:
+  markdown:
+    wrap: 80
+    canonical: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
 ```
 
 # Introduction
 
 This document develops theory for the variance of genetic and phenotypic values
-between colonies with the aim to understand how to fine tune a SIMplyBee simulation
-where we need variance components for queen and workers effects at an individual
-honeybee level. The challenge here is that in reality we do not observe such
-variances, but only on a colony level.
+between colonies with the aim to understand how to fine tune a SIMplyBee
+simulation where we need variance components for queen and workers effects at an
+individual honeybee level. The challenge here is that in reality we do not
+observe such variances, but only on a colony level.
 
-For example, in the vignette we assumed that phenotypic variance on the individual
-level is about 1/4 due to genetic variation and about 3/4 due to environmental
-variation, but looking at colony genetic and phenotypic variances the ratio
-was aobut 1/2!
+For example, in the vignette we assumed that phenotypic variance on the
+individual level is about 1/4 due to genetic variation and about 3/4 due to
+environmental variation, but looking at colony genetic and phenotypic variances
+the ratio was aobut 1/2!
 
-TODO: What do we do about this? It feels like we need a full paper on all of this;) :(
+TODO: What do we do about this? It feels like we need a full paper on all of
+this;) :(
 
 To make use of the material in this document you should run the quantitative
 genetics vignette - the first example. Then you can continue here!
 
-Having multiple colonies and their values, we can now return to the "about" point
-mentioned at the start of this section, when we defined quantitative genetic
-parameters. Recall that our starting quantitative genetic parameters for the
-queen and workers effects were:
+Having multiple colonies and their values, we can now return to the "about"
+point mentioned at the start of this section, when we defined quantitative
+genetic parameters. Recall that our starting quantitative genetic parameters for
+the queen and workers effects were:
 
 ```{r quan_gen_param_revision}
 # Trait means
@@ -62,24 +75,31 @@ var(colonyPheno)
 var(colonyGv) / var(colonyPheno) 
 ```
 
-Hmm, we have much higher genetic and phenotypic variances, as well as much higher
-ratio between the two than the initial value of ~1/4! Why? Let's see. For genetic
-value of a colony $g_c$ we add up the queen's genetic value for the queen effect
-$g_{q,q}$ and workers' genetic values for the workers effect $\Sigma_{i=1}^{n_w}(g_{i,w})$:
+Hmm, we have much higher genetic and phenotypic variances, as well as much
+higher ratio between the two than the initial value of \~1/4! Why? Let's see.
+For genetic value of a colony $g_c$ we add up the queen's genetic value for the
+queen effect $g_{q,q}$ and workers' genetic values for the workers effect
+$\Sigma_{i=1}^{n_w}(g_{i,w})$:
 
 $g_c = g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w}).$
 
-Expectation of colony genetic value is then: 
+Expectation of colony genetic value is then:
 
-$E(g_c) = E(g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w})$
+$E(g_c) = E(g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w}))$
+
 $E(g_c) = E(g_{q,q}) + E(\Sigma_{i=1}^{n_w}(g_{i,w}))$
-$E(g_c) = \mu_{g_{q}} + n_w E(g_{w,w})$
-$E(g_c) = \mu_{g_{q}} + n_w \mu_{g_{w}}$ 
 
-we are assuming here that $n_w$ is a fixed value, but if it is a random variable then we would have 
- 
-$E(g_c) = \mu_{g_{q}} + E(n_w) E(g_{w,w})$ using https://en.wikipedia.org/wiki/Distribution_of_the_product_of_two_random_variables
-$E(g_c) = \mu_{g_{q}} + \lambda_{n_w} \mu_{g_{w}}$ 
+$E(g_c) = \mu_{g_{q}} + n_w E(g_{w,w})$
+
+$E(g_c) = \mu_{g_{q}} + n_w \mu_{g_{w}}$
+
+we are assuming here that $n_w$ is a fixed value, but if it is a random variable
+then we would have
+
+$E(g_c) = \mu_{g_{q}} + E(n_w) E(g_{w,w})$ using
+<https://en.wikipedia.org/wiki/Distribution_of_the_product_of_two_random_variables>
+
+$E(g_c) = \mu_{g_{q}} + \lambda_{n_w} \mu_{g_{w}}$
 
 which in our case turns the same. So in our case we have:
 
@@ -90,16 +110,22 @@ mean(colonyGv)
 mean(colonyPheno)
 ```
 
-Variance of colony genetic value is then: 
+Variance of colony genetic value is then:
 
-$Var(g_c) = Var(g_{q,q} + \Sigma_{i=1}^_{n_w}(g_{i,w}))$
-$Var(g_c) = Var(g_{q,q}) + Var(\Sigma_{i=1}^_{n_w}(g_{i,w})) + 2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$
+$Var(g_c) = Var(g_{q,q} + \Sigma_{i=1}^{n_w}(g_{i,w}))$
+
+$Var(g_c) = Var(g_{q,q}) + Var(\Sigma_{i=1}^{n_w}(g_{i,w})) + 2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$
+
 $Var(g_c) = \sigma^2_{g_{q}} + Var(\Sigma_{i=1}^{n_w}(g_{i,w})) + 2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$
 
 So, we have three parts:
-  A) the variance of the queen effect in queens $\sigma^2_{g_{q}}$,
-  B) variance of a sum of workers effect in workers $Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$, and
-  C) covariance between the two $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$.
+
+A)  the variance of the queen effect in queens $\sigma^2_{g_{q}}$,
+
+B)  variance of a sum of workers effect in workers
+    $Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$, and
+
+C)  covariance between the two $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$.
 
 # A) Variance of the queen effect in queens $\sigma^2_{g_{q}}$ - in our case this is:
 
@@ -115,22 +141,27 @@ Anyway, quite close!
 # B) Variance of a sum of workers effect in workers $Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$
 
 Given that this is a sum, we need to look at:
-  B1) variance of each of worker genetic values $Var(g_{i,w})$ and
-  B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$.
-  
+
+B1) variance of each of worker genetic values $Var(g_{i,w})$ and
+
+B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$.
+
 This means, that family structure will start to matter because it induces
-covariance beteen family members (workers). The simplest case is when all workers
-come from the same father. Then we have:
+covariance between family members (workers). The simplest case is when all
+workers come from the same father. Then we have:
 
 $g_{1,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{1,w}$
+
 $g_{2,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{2,w}$
+
 ...
+
 $g_{n_w,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{n_w,w}$
 
 ## B1) variance of each of worker genetic values $Var(g_{i,w})$
 
-As stated initially, we have $Var(g_{i,w}) = \sigma^2_{g_{w}}$ and we
-have $n_w$ such terms, $n_w \sigma^2_{g_{w}}$. In our case this would be:
+As stated initially, we have $Var(g_{i,w}) = \sigma^2_{g_{w}}$ and we have $n_w$
+such terms, $n_w \sigma^2_{g_{w}}$. In our case this would be:
 
 ```{r check_workers_variances}
 nW * varA[2]
@@ -141,10 +172,10 @@ sum((g - nW * mean[2])^2) / nColonies(apiary)
 ```
 
 So, a huge discrepancy between the variance of a sum of genetic values for the
-workers effect `nW * varA[2]` (assuming independence) and a realised
-sum of genetic values for the workers effect. As we have seen above, this is
-due to family structure and associated B2) covariance between each pair of the
-values $Cov(g_{i,w}, g_{j,w})$.
+workers effect `nW * varA[2]` (assuming independence) and a realised sum of
+genetic values for the workers effect. As we have seen above, this is due to
+family structure and associated B2) covariance between each pair of the values
+$Cov(g_{i,w}, g_{j,w})$.
 
 ## B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$
 
@@ -152,25 +183,26 @@ Clearly, these covariances matter a lot - there is lots of worker pairs in a
 colony! How do these covariances look like?
 
 $Cov(g_{1,w}, g_{2,w}) = Cov(\frac{1}{2}g_{q,w} + g_{f,w}, \frac{1}{2}g_{q,w} + g_{f,w})$
+
 $Cov(g_{1,w}, g_{2,w}) = Var(\frac{1}{2}g_{q,w}) + Var(g_{f,w})$
 
-assuming that mother and father are not related; further genetic variance between
-drones is in fact half the genetic variance between queens because they are haploid,
-so we get:
+assuming that mother and father are not related; further genetic variance
+between drones is in fact half the genetic variance between queens because they
+are haploid, so we get:
 
 $Cov(g_{1,w}, g_{2,w}) = \frac{1}{4}\sigma^2_{g_w} + \frac{1}{4}\sigma^2_{g_w}$
+
 $Cov(g_{1,w}, g_{2,w}) = \frac{1}{2}\sigma^2_{g_w}$.
 
 Every pair of super-sister workers adds $\frac{1}{2}\sigma^2_{g_w}$ to B - note
 that pair A-B adds this value, but so does the pair B-A, hence total is
-$2\frac{1}{2}\sigma^2_{g_w} = \sigma^2_{g_w}$.
-With $n_w$ workers we get $n_w n_w$ pairs (including with itself) or
-$n_w n_w - n_w$ pairs between different workers. The total covariance
-contribution is then $(\frac{n_w n_w}{2} - \frac{n_w}{2})\sigma^2_{g_w}$
-(or equivalently $(n_w n_w - n_w)\frac{1}{2}\sigma^2_{g_w}$). In our case
-this would be:
+$2\frac{1}{2}\sigma^2_{g_w} = \sigma^2_{g_w}$. With $n_w$ workers we get
+$n_w n_w$ pairs (including with itself) or $n_w n_w - n_w$ pairs between
+different workers. The total covariance contribution is then
+$(\frac{n_w n_w}{2} - \frac{n_w}{2})\sigma^2_{g_w}$ (or equivalently
+$(n_w n_w - n_w)\frac{1}{2}\sigma^2_{g_w}$). In our case this would be:
 
-```{r check_workers_variances2} 
+```{r check_workers_variances2}
 (varSumWorkers <- nW * varA[2]) # B1
 (covSumWorkers <- (nW * nW - nW)/2 * varA[2]) # B2
 varSumWorkers + covSumWorkers # B
@@ -181,29 +213,34 @@ var(g) # B
 sum((g - nW * mean[2])^2) / nColonies(apiary) # B
 ```
 
-If we would only have super-sisters we would have ~1 for B1, ~49.5 for B2, and
-~50.5 for B, but with a mix of sisters and super-sisters we would have a lower
-value, which is what we see above, ~26.8 for B.
+If we would only have super-sisters we would have \~1 for B1, \~49.5 for B2, and
+\~50.5 for B, but with a mix of sisters and super-sisters we would have a lower
+value, which is what we see above, \~26.8 for B.
 
-So, now we need to work out B2 with a mix of sisters and super-sisters :( 
-Sister workers are related only due to having the same mother, assuming that
-drones the queen mated with are unrelated:
+So, now we need to work out B2 with a mix of sisters and super-sisters :( Sister
+workers are related only due to having the same mother, assuming that drones the
+queen mated with are unrelated:
 
 $g_{1,w} = \frac{1}{2}g_{q,w} + g_{f1,w} + r_{1,w}$
+
 $g_{2,w} = \frac{1}{2}g_{q,w} + g_{f2,w} + r_{2,w}$
 
 $Cov(g_{1,w}, g_{2,w}) = Cov(\frac{1}{2}g_{q,w} + g_{f1,w}, \frac{1}{2}g_{q,w} + g_{f2,w})$
+
 $Cov(g_{1,w}, g_{2,w}) = Var(\frac{1}{2}g_{q,w})$
+
 $Cov(g_{1,w}, g_{2,w}) = \frac{1}{4}Var(g_{q,w})$
 
 Hence every pair of sister workers adds $\frac{1}{4}\sigma^2_{g_w}$ to B (note,
-this is $2\frac{1}{4}\sigma^2_{g_w}$ for A-B and B-A pairs!).
-With $n_w$ workers and $n_f$ fathers we have $\frac{n_w}{n_f}$ workers per father.
-Further, we have $n_f$ groups of super-sisters and $n_f n_f - n_f$ pairs of 
-sister groups. Assuming that sister groups are the same size, we have
-$n_f \frac{n_w}{n_f} \frac{n_w}{n_f} = n_w \frac{n_w}{n_f} = \frac{n^2_w}{n_f}$ pairs of
-super-sisters and $(n_f n_f - n_f) \frac{n_w}{n_f} \frac{n_w}{n_f}$ - this is 
-$n_f (n_f - 1) \frac{n_w}{n_f} \frac{n_w}{n_f} = (n_f - 1) n_w \frac{n_w}{n_f} = \frac{ (n_f - 1) n^2_w}{n_f}$. Is this correct?
+this is $2\frac{1}{4}\sigma^2_{g_w}$ for A-B and B-A pairs!). With $n_w$ workers
+and $n_f$ fathers we have $\frac{n_w}{n_f}$ workers per father. Further, we have
+$n_f$ groups of super-sisters and $n_f n_f - n_f$ pairs of sister groups.
+Assuming that sister groups are the same size, we have
+$n_f \frac{n_w}{n_f} \frac{n_w}{n_f} = n_w \frac{n_w}{n_f} = \frac{n^2_w}{n_f}$
+pairs of super-sisters and $(n_f n_f - n_f) \frac{n_w}{n_f} \frac{n_w}{n_f}$ -
+this is
+$n_f (n_f - 1) \frac{n_w}{n_f} \frac{n_w}{n_f} = (n_f - 1) n_w \frac{n_w}{n_f} = \frac{ (n_f - 1) n^2_w}{n_f}$.
+Is this correct?
 
 ```{r pairs_of_workers}
 (nF <- nFathers(colony))
@@ -233,24 +270,25 @@ sum((g - SP$nWorkers * mean[2])^2) / nColonies(apiary) # B
 
 Cool - very close!!!
 
-TODO: What if $n_w$ is a random variable? Following  https://en.wikipedia.org/wiki/Distribution_of_the_product_of_two_random_variables
+TODO: What if $n_w$ is a random variable? Following
+<https://en.wikipedia.org/wiki/Distribution_of_the_product_of_two_random_variables>
 we would use:
 
-$Var(XY) = (Var(X) + E(X)^2) (Var(Y) + E(Y)^2) - E(X)^2 E(Y)^2$ 
+$Var(XY) = (Var(X) + E(X)^2) (Var(Y) + E(Y)^2) - E(X)^2 E(Y)^2$
 
-but this is for two variables, while I have $n_w$ genetic values, so this reference
-result is not that useful in our case! Well, if $n_w$ varies between colonies,
-this must boost variance of colony-level genetic values significantly - because
-kind of start calculating variance between apples (small colonies) and oranges
-(large colonies).
+but this is for two variables, while I have $n_w$ genetic values, so this
+reference result is not that useful in our case! Well, if $n_w$ varies between
+colonies, this must boost variance of colony-level genetic values significantly,
+because kind of start calculating variance between apples (small colonies) and
+oranges (large colonies).
 
 # C) Covariance between the two $2Cov(g_{q,q}, \Sigma_{i-1}^{n_w}(g_{i,w}))$.
 
 Let's repeat:
 
 $g_{1,w} = \frac{1}{2}g_{q,w} + g_{f1,w} + r_{1,w}$
-$g_{2,w} = \frac{1}{2}g_{q,w} + g_{f2,w} + r_{2,w}$
-...
+
+$g_{2,w} = \frac{1}{2}g_{q,w} + g_{f2,w} + r_{2,w}$ ...
 
 The essential bit here is:
 
@@ -259,13 +297,17 @@ $Cov(g_{q,q}, g_{i,w}) = Cov(g_{q,q}, \frac{1}{2} g_{q,w})$
 assuming that the queen and fathers are unrelated. Then:
 
 $Cov(g_{q,q}, g_{i,w}) = Cov(g_{q}, \frac{1}{2} g_{w})$
+
 $Cov(g_{q,q}, g_{i,w}) = \frac{1}{2} Cov(g_{q}, g_{w})$
+
 $Cov(g_{q,q}, g_{i,w}) = \frac{1}{2} \sigma_{g_{q},g_{w}}$
 
 So:
 
 $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = 2Cov(g_{q,q}, n_w \frac{1}{2} g_{q,w})$
+
 $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = 2 n_w \frac{1}{2}Cov(g_{q,q}, g_{q,w})$
+
 $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = n_w \sigma_{g_{q},g_{w}}$
 
 ```{r check_workers_variances4}
@@ -301,7 +343,8 @@ var(p)
 sum((p - 20)^2) / nColonies(apiary)
 ```
 
-Bingo for genetic variance and very close for phenotypic too, but we need to check some part above!
+Bingo for genetic variance and very close for phenotypic too, but we need to
+check some part above!
 
 # What now?
 
@@ -317,44 +360,61 @@ TODO: develop such estimating equations!
 So, we have genetic part:
 
 $A_g = \sigma^2_{g_q}$
+
 $B1_g = n_w \sigma^2_{g_w}$
+
 $B2_g = \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}$
+
 $B3_g = \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$
+
 $C_g = n_w \sigma^2_{{g_q},{g_w}}$
 
-here are 3 unknowns: $\sigma^2_{g_q}$, $\sigma^2_{g_w}$, and $\sigma^2_{{g_q},{g_w}}$
+here are 3 unknowns: $\sigma^2_{g_q}$, $\sigma^2_{g_w}$, and
+$\sigma^2_{{g_q},{g_w}}$
 
 we can add phenotypic part:
 
 $A_p = \sigma^2_{p_q}$
+
 $B1_p = n_w \sigma^2_{p_w}$
-$B2_p = \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}$ TODO: check if its only genetic
-$B3_p = \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$ TODO: check if its only genetic
+
+$B2_p = \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}$ TODO: check if its only
+genetic
+
+$B3_p = \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$ TODO: check if
+its only genetic
+
 $C_p = n_w \sigma^2_{{p_q},{p_w}}$
 
-here are additional 3 unknowns: $\sigma^2_{p_q}$, $\sigma^2_{p_w}$, and $\sigma^2_{{p_q},{p_w}}$
+here are additional 3 unknowns: $\sigma^2_{p_q}$, $\sigma^2_{p_w}$, and
+$\sigma^2_{{p_q},{p_w}}$
 
-while we could provide as guidance 2, maybe 3, inputs: $\sigma^2_{g_c}$, $\sigma^2_{p_c}$, and $\frac{\sigma^2_{g_c}}{\sigma^2_{p_c}}$.
+while we could provide as guidance 2, maybe 3, inputs: $\sigma^2_{g_c}$,
+$\sigma^2_{p_c}$, and $\frac{\sigma^2_{g_c}}{\sigma^2_{p_c}}$.
 
 TODO: are there any additional inputs that we could get from literature? How do
 we connect all this with variance estimates for the queen and the workers effect
-in the honeybee genetics and breeding literature? I think that those estimates are
-essentially this: $\sigma^2_{g_c} = \sigma^2_{g_{c,q}} + \sigma^2_{g_{c,w}} + 2\sigma_{g_{c,q},g_{c,w}}$ where $\sigma^2_{g_{c,q}}$ is the queen part of $\sigma^2_{g_c}$,
-but not necessarily the same as $\sigma^2_{g_w}$, or is it? Maybe that is the same,
-and $\sigma^2_{g_{c,w}}$ is a counterpart to $n_w \sigma^2_{g_w} + \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}, \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$, while
-$\sigma_{g_{c,q},g_{c,w}}$ is a counterpart to $n_w \sigma^2_{{g_q},{g_w}}$. If
-this is so, then it fells that we should have 3 more inputs for genetic part -
-so 4 inputs to estimate 3 unknowns of which some are very simple transformations!!!
+in the honeybee genetics and breeding literature? I think that those estimates
+are essentially this:
+$\sigma^2_{g_c} = \sigma^2_{g_{c,q}} + \sigma^2_{g_{c,w}} + 2\sigma_{g_{c,q},g_{c,w}}$
+where $\sigma^2_{g_{c,q}}$ is the queen part of $\sigma^2_{g_c}$, but not
+necessarily the same as $\sigma^2_{g_w}$, or is it? Maybe that is the same, and
+$\sigma^2_{g_{c,w}}$ is a counterpart to
+$n_w \sigma^2_{g_w} + \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}, \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$,
+while $\sigma_{g_{c,q},g_{c,w}}$ is a counterpart to
+$n_w \sigma^2_{{g_q},{g_w}}$. If this is so, then it fells that we should have 3
+more inputs for genetic part, so 4 inputs to estimate 3 unknowns of which some
+are very simple transformations!!!
 
-Additional input could be $\sigma^2_{p_c}$. For sure we don't get estimates of 
-$\sigma^2_{p_c} = \sigma^2_{p_{c,q}} + \sigma^2_{p_{c,w}} + 2\sigma_{p_{c,q},p_{c,w}}$
+Additional input could be $\sigma^2_{p_c}$. For sure we don't get estimates of
+$\sigma^2_{p_c} = \sigma^2_{p_{c,q}} + \sigma^2_{p_{c,w}} + 2\sigma_{p_{c,q},p_{c,w}}$,
 but, having sorted the genetic part and if $B2_p$ and $B3_p$ depend only on
 genetic covariance, then maybe, we have some maneuvering space to estimate also
 $\sigma^2_{p_q}$, $\sigma^2_{p_w}$, and $\sigma^2_{{p_q},{p_w}}$?!
 
-Furthermore, we have some constraints, so this is not just any system of equations.
-For example, we know that variances must be positive. Futhermore, we might know
-that come covariances are either positive or negative.
+Furthermore, we have some constraints, so this is not just any system of
+equations. For example, we know that variances must be positive. Futhermore, we
+might know that come covariances are either positive or negative.
 
 TODO: Develop and polish all this further and create a Shiny application where
 we can change these individual-level parameters and study how that will change

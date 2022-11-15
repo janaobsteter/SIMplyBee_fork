@@ -3,9 +3,13 @@ title: "SIMplyBee - Multiple colonies"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - Multiple colonies}
+  %\VignetteIndexEntry{MultipleColonies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+editor_options:
+   markdown:
+     wrap: 80
+     canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -17,22 +21,43 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-We have already introduced the Colony class that holds colony-specific information and caste individuals. However, when working with honeybees, we usually do not work with a single colony, but with apiaries or even whole populations instead. To cater for this, we created a `MultiColony` class. It behaves as a list of `Colony` objects but with additional functionality - you can apply function directly to the `MultiColony` objects. A `MultiColony` can represent different apiaries or even different subpopulations in terms of either age of the queens of geographical location of the apiaries. 
+
+We have already introduced the Colony class that holds colony-specific
+information and caste individuals. However, when working with honeybees, we
+usually do not work with a single colony, but with apiaries or even whole
+populations instead. To cater for this, we created a `MultiColony` class. It
+behaves as a list of `Colony` objects but with additional functionality - you
+can apply function directly to the `MultiColony` objects. A `MultiColony` can
+represent different apiaries or even different subpopulations in terms of either
+age of the queens of geographical location of the apiaries.
 
 # Creating a MultiColony object
-We create a `MultiColony` object with `createMultiColony()` function. Let's say you want to create a `MultiColony` object that represents a single apiary. The first option is to initialise an empty `MultiColony` object that represents an empty apiary without any colonies and individuals within.
+
+We create a `MultiColony` object with `createMultiColony()` function. Let's say
+you want to create a `MultiColony` object that represents a single apiary. The
+first option is to initialise an empty `MultiColony` object that represents an
+empty apiary without any colonies and individuals within.
+
 ```{r}
 # Create an empty apiary
 emptyApiary <- createMultiColony()
 emptyApiary
 ```
-The second option is again to create an empty `MultiColony` object that represents an empty apiary without any individuals within, but with a defined number of colony slots.
+
+The second option is again to create an empty `MultiColony` object that
+represents an empty apiary without any individuals within, but with a defined
+number of colony slots.
+
 ```{r}
 # Create an empty apiary with 10 colony slots
 emptyApiary1 <- createMultiColony(n = 10)
 emptyApiary1
 ```
-The third option is to create a `MultiColony` object with a population of either virgin or mated queens. For this, we first have to initialise the simulation by simulating founder genomes and creating a base population of virgin queens. We will use 10 virgin queens to produce drones and create a DCA.
+
+The third option is to create a `MultiColony` object with a population of either
+virgin or mated queens. For this, we first have to initialise the simulation by
+simulating founder genomes and creating a base population of virgin queens. We
+will use 10 virgin queens to produce drones and create a DCA.
 
 ```{r}
 # Create 20 founder genomes
@@ -45,7 +70,11 @@ basePop <- createVirginQueens(founderGenomes)
 DCA <- createDrones(basePop[1:10], nInd = 100)
 ```
 
-We will now create an apiary with 10 virgin colonies with the `createMultiColony()` function by providing the remaining 10 virgin queens as the input parameter. Let's say this apiary stands at the location 1 (1,1) and call it `apiary1`.
+We will now create an apiary with 10 virgin colonies with the
+`createMultiColony()` function by providing the remaining 10 virgin queens as
+the input parameter. Let's say this apiary stands at the location 1 (1,1) and
+call it `apiary1`.
+
 ```{r}
 # Create an apiary with the remaining virgin queens
 apiary1 <- createMultiColony(x = basePop[11:20])
@@ -55,7 +84,11 @@ apiary1 <- setLocation(apiary1, c(1,1))
 isQueenPresent(apiary1)
 isVirginQueensPresent(apiary1)
 ```
-Once we have a non-empty `MultiColony` object, we can do some basic operations on it. First, we can select some of colonies by either specifying the IDs, desired number or percentage of randomly selected colonies.
+
+Once we have a non-empty `MultiColony` object, we can do some basic operations
+on it. First, we can select some of colonies by either specifying the IDs,
+desired number or percentage of randomly selected colonies.
+
 ```{r}
 # Get the IDs of the colonies
 getId(apiary1)
@@ -65,18 +98,27 @@ selectColonies(apiary1, ID = c(1,2))
 selectColonies(apiary1, p = 0.1)
 ```
 
-Second, we can pull some colonies from the `MultiColony` object. This means, that the pulled colonies are pulled-out and removed from the original object. The function `pullColonies()` therefore returns two object - the pulled colonies and the remnant colonies.
+Second, we can pull some colonies from the `MultiColony` object. This means,
+that the pulled colonies are pulled-out and removed from the original object.
+The function `pullColonies()` therefore returns two object - the pulled colonies
+and the remnant colonies.
+
 ```{r}
 # Pull one colony - returns $remnant and $pulled object
 pullColonies(apiary1, n = 1)
 ```
 
-Third, we can also remove some colonies from the `MultiColony` object with `removeColonies()` function.
+Third, we can also remove some colonies from the `MultiColony` object with
+`removeColonies()` function.
+
 ```{r}
 removeColonies(apiary1, ID = 13)
 ```
 
-Next, we will cross all the virgin queens in the apiary with the `cross()` function to groups of drones that we collected from the DCA with the `pullDroneGroupsFromDCA()` function.
+Next, we will cross all the virgin queens in the apiary with the `cross()`
+function to groups of drones that we collected from the DCA with the
+`pullDroneGroupsFromDCA()` function.
+
 ```{r}
 # Pull 10 groups of drones from the DCA
 droneGroups <- pullDroneGroupsFromDCA(DCA, n = 10, nDrones = nFathersPoisson)
@@ -86,28 +128,44 @@ apiary1 <- cross(apiary1, drones = droneGroups)
 isQueenPresent(apiary1)
 ```
 
+Once we have mated queens in the apiary, we can apply all the events functions
+directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`,
+`split()`, `supersede()`, `collapse()` but also all the functions that either
+add, replace, or remove individuals from the castes. Let's say we know want to
+build up all the colonies in our apiary. We can use the `pullColonies()` or
+`selectColonies()` to subset the colonies that will for example swarm, collapse,
+or supersede, or the ones that we decided to split (check out the Colony events
+vignette).
 
-Once we have mated queens in the apiary, we can apply all the events functions directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`, `split()`, `supersede()`, `collapse()` but also all the functions that either add, replace, or remove individuals from the castes. Let's say we know want to build up all the colonies in our apiary. We can use the `pullColonies()` or `selectColonies()` to subset the colonies that will for example swarm, collapse, or supersede, or the ones that we decided to split (check out the Colony events vignette).
 ```{r}
 # Build-up all the colonies in the apiary1
 apiary1 <- buildUp(apiary1, nWorkers = 1000, nDrones = 100)
 ```
 
-Here, we defined different `MultiColony` objects according to the location of the apiary. The objects could also be defined according to the age of the queens - `age0`, `age1`... Here, `apiary2` are actually all new virgin queens of age 0 produced through splitting and swarming.
+Here, we defined different `MultiColony` objects according to the location of
+the apiary. The objects could also be defined according to the age of the
+queens - `age0`, `age1`... Here, `apiary2` are actually all new virgin queens of
+age 0 produced through splitting and swarming.
 
-Let's now initiate another `MultiColony` names `apiary2` that contains only virgin queens. We want to mate them to a DCA made of drones in `apiary1`. 
+Let's now initiate another `MultiColony` names `apiary2` that contains only
+virgin queens. We want to mate them to a DCA made of drones in `apiary1`.
+
 ```{r}
 # Initiate apiary2 at the location (2,2)
 apiary2 <- createMultiColony(basePop[21:30])
 apiary2 <- setLocation(apiary2, c(2,2))
 ```
 
-Since some time has passed, we want to first replace the drones in `apiary1` with new drones. We can do that with `replaceDrones()` function.
+Since some time has passed, we want to first replace the drones in `apiary1`
+with new drones. We can do that with `replaceDrones()` function.
+
 ```{r}
 apiary1 <- replaceDrones(apiary1)
 ```
 
-Now that we have a new set of drones, we can create a DCA with the function `createDCA()` and mate virgin queens in apiary2 to the DCA.
+Now that we have a new set of drones, we can create a DCA with the function
+`createDCA()` and mate virgin queens in apiary2 to the DCA.
+
 ```{r}
 # Check whether all colonies in apiary2 are virgin
 isQueenPresent(apiary2)
@@ -121,6 +179,4 @@ droneGroups <- pullDroneGroupsFromDCA(DCA, n = nColonies(apiary2), nDrones = nFa
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```
-
-
 
