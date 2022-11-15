@@ -1062,8 +1062,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     if (nInd(DCA) < nD) {
       stop("We ran out of drones in the DCA!")
     }
-    # TODO: We select drones for mating at random, should we use "use"?
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     tmp <- pullInd(pop = DCA, nInd = nD)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remnant
@@ -1588,7 +1586,7 @@ setQueensYearOfBirth <- function(x, year) {
     if (isQueenPresent(x)) {
       x@queen <- setMisc(x = x@queen, node = "yearOfBirth", value = year)
     } else {
-      stop("Missing queen!") # TODO: should this be a warning?: https://github.com/HighlanderLab/SIMplyBee/issues/159
+      stop("Missing queen!")
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
