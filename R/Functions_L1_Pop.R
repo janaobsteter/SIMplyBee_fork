@@ -658,8 +658,8 @@ createVirginQueens <- function(x, nInd = NULL,
 #' @rdname combineBeeGametes
 #' @title Create diploid gametes from a mated queen
 #'
-#' @description Level 1 function that produces diploid offspring from a mated queen. Queen is
-#'   diploid, while drones are double haploids so we use AlphaSimR diploid
+#' @description Level 1 function that produces diploid offspring from a mated queen.
+#'   Queen is diploid, while drones are double haploids so we use AlphaSimR diploid
 #'   functionality to make this cross, but since drones are double haploids we
 #'   get the desired outcome. This is an utility function, and you most likely
 #'   want to use the \code{\link{cross}}
@@ -678,8 +678,6 @@ createVirginQueens <- function(x, nInd = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -710,11 +708,11 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' @rdname combineBeeGametesHaploDiploid
 #' @title Create diploid gametes from a mated queen
 #'
-#' @description Level 1 function that produces diploid offspring from a mated queen. Drones are
-#'   haploid, while the queen is diploid, so we first generate gametes (with
-#'   recombination) from her and merge them with drone genomes (=gametes), where
-#'   we randomly re-sample drones to get the desired number of progeny. This is
-#'   an utility function, and you most likely want to use the
+#' @description Level 1 function that produces diploid offspring from a mated queen.
+#'   Drones are haploid, while the queen is diploid, so we first generate gametes
+#'   (with recombination) from her and merge them with drone genomes (=gametes),
+#'   where we randomly re-sample drones to get the desired number of progeny.
+#'   This is an utility function, and you most likely want to use the
 #'   \code{\link{cross}} function.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
@@ -733,8 +731,6 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -868,10 +864,6 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1111,10 +1103,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1564,10 +1552,6 @@ cross <- function(x, drones,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)

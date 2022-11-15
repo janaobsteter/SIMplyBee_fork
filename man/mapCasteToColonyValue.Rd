@@ -18,6 +18,7 @@ mapCasteToColonyValue(
   workersFUN = sum,
   dronesTrait = NULL,
   dronesFUN = NULL,
+  traitName = NULL,
   combineFUN = function(q, w, d) q + w,
   checkProduction = TRUE,
   notProductiveValue = 0,
@@ -53,6 +54,8 @@ to the colony value; if \code{NULL} then this contribution is 0}
 to the colony value; if \code{NULL} then this contribution is 0}
 
 \item{dronesFUN}{function, function that will be applied to the drone values}
+
+\item{traitName, }{the name of the trait (i.e. honeyYield)}
 
 \item{combineFUN, }{function that will combine the queen, worker, and drone
 contributions - this function should be defined as \code{function(q, w, d)}
