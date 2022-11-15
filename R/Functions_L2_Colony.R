@@ -306,6 +306,9 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
   }
   # doing "if (is.function(nInd))" below
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not add individuals (from the queen) to it!"))
+    }
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
@@ -530,6 +533,9 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not build it up!"))
+    }
     # Workers
     if (is.null(nWorkers)) {
       nWorkers <- simParamBee$nWorkers
@@ -694,6 +700,9 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     stop("p must not be less than 0!")
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not downsize it!"))
+    }
     if (is.null(p)) {
       p <- simParamBee$downsizeP
     }
@@ -833,6 +842,9 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
     stop("p must not be less than 0!")
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not replace individuals in it!"))
+    }
     if (!isQueenPresent(x)) {
       stop("Missing queen!")
     }
@@ -1025,6 +1037,9 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
     stop("p must not be less than 0!")
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      warning(paste0("The colony ", getId(x), " collapsed. You can only remove individuals from it!"))
+    }
     if (length(p) > 1) {
       warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
@@ -1368,6 +1383,9 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     nVirginQueens <- simParamBee$nVirginQueens
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence it can not swarm!"))
+    }
     if (!isQueenPresent(x)) {
       stop("No queen present in the colony!")
     }
@@ -1536,6 +1554,9 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
     nVirginQueens <- simParamBee$nVirginQueens
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence it can not supresede!"))
+    }
     if (!isQueenPresent(x)) {
       stop("No queen present in the colony!")
     }
@@ -1639,6 +1660,9 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     p <- simParamBee$splitP
   }
   if (isColony(x)) {
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not split it!"))
+    }
     if (!isQueenPresent(x)) {
       stop("No queen present in the colony!")
     }
@@ -1798,6 +1822,12 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
 #' @export
 combine <- function(strong, weak) {
   if (isColony(strong) & isColony(weak)) {
+    if (hasCollapsed(strong)) {
+      stop(paste0("The colony ", getId(strong), " (strong) has collapsed, hence you can not combine it!"))
+    }
+    if (hasCollapsed(weak)) {
+      stop(paste0("The colony ", getId(weak), " (weak) has collapsed, hence you can not combine it!"))
+    }
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
   } else if (isMultiColony(strong) & isMultiColony(weak)) {
