@@ -1,19 +1,3 @@
-# TODO: I have provided this as PullRequest for AlphaSimR
-#       https://github.com/gaynorr/AlphaSimR/pull/52
-#       once it gets incorporated there we should remove it here
-#       https://github.com/HighlanderLab/SIMplyBee/issues/60
-isPop <- function(x) {
-  ret <- is(x, class2 = "Pop")
-  return(ret)
-}
-
-# TODO: This should go to AlphaSimR too
-#       https://github.com/HighlanderLab/SIMplyBee/issues/196
-isMapPop <- function(x) {
-  ret <- is(x, class2 = "MapPop")
-  return(ret)
-}
-
 # ---- Class SimParamBee ----
 
 setClassUnion("numericOrFunction", c("numeric", "function"))
