@@ -421,3 +421,4 @@ we can change these individual-level parameters and study how that will change
 colony-level parameters and then how we could go the other way around based on
 literature and solving the above systems of equations. We could host such a
 Shiny app on SIMplyBee.info!? Can we?
+

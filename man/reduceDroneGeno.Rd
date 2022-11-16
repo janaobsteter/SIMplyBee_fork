@@ -12,7 +12,8 @@ reduceDroneGeno(geno, pop)
 \item{pop}{\code{\link{Pop-class}}}
 }
 \value{
-matrix with genotype as one haplotype per drone instead of two
+matrix with genotype as one haplotype per drone instead of two - the
+  order of individuals and the number of rows stays the same!
 }
 \description{
 Level 0 function that reduces drone's genotype to a single

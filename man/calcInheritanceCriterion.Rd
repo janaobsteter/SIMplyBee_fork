@@ -10,11 +10,13 @@ calcInheritanceCriterion(x, queenTrait = 1, workersTrait = 2, use = "gv")
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}} or
 \code{\link{MultiColony-class}}}
 
-\item{queenTrait}{numeric, trait that represents queen's contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{queenTrait}{numeric (column position) or character (column name), trait
+that represents queen's effect on the colony value; if \code{NULL}
+then this effect is 0}
 
-\item{workersTrait}{numeric, trait that represents workers' contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{workersTrait}{numeric (column position) or character (column name), trait
+that represents workers' effect on the colony value; if \code{NULL}
+then this effect is 0}
 
 \item{use}{character, the measure to use for the calculation, being
 either "gv" (genetic value), "ebv" (estimated breeding value),
@@ -26,14 +28,16 @@ integer when \code{x} is
   \code{\link{MultiColony-class}}, where names are colony IDs
 }
 \description{
-Level 0 function that calculates the inheritance criterion as the sum
-  of direct and maternal breeding values of the queens, as described
-  by Du et al., 2021.
+Level 0 function that calculates the inheritance criterion as the
+  sum of the queen (maternal) and workers (direct) effect from the queen,
+  as defined by Du et al. (2021). This can be seen as the expected value
+  of drones from the queen or half the expected value of virgin queens from
+  the queen.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-meanA <- c(20, 0)
+meanA <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5,
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -63,7 +67,12 @@ calcInheritanceCriterion(apiary, queenTrait = 1, workersTrait = 2)
 
 }
 \references{
-Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-  mating and selection on the genetic variance of honeybee populations.
- Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+Du, M., et al. (2021) Short-term effects of controlled mating and selection
+  on the genetic variance of honeybee populations. Heredity 126, 733–747.
+  https://doi.org/10.1038/s41437-021-00411-2
+}
+\seealso{
+\code{\link{calcSelectionCriterion}} and
+  \code{\link{calcPerformanceCriterion}} and  as well as
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

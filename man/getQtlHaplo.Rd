@@ -84,7 +84,8 @@ and character when \code{x} is a \code{\link{Colony-class}} or
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
 
-\item{trait}{numeric, indicates which trait's QTL haplotypes to retrieve}
+\item{trait}{numeric (trait position) or character (trait name), indicates
+which trait's QTL haplotypes to retrieve}
 
 \item{haplo}{character, either "all" for all haplotypes or an integer for a
 single set of haplotypes, use a value of 1 for female haplotypes and a
@@ -143,7 +144,6 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
-
 # Input is a population
 getQtlHaplo(x = getQueen(colony))
 queens <- getQueen(apiary, collapse = TRUE)
@@ -198,5 +198,6 @@ getQtlHaplo(apiary, caste = "all", collapse = TRUE)
 
 }
 \seealso{
-\code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+\code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}} as well as
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

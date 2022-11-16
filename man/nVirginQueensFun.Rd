@@ -28,13 +28,13 @@ nVirginQueensColonyPhenotype(
 
 \item{lowerLimit}{numeric, returned numbers will be above this value}
 
-\item{queenTrait}{numeric, trait that represents queen's effect on the colony
-phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-\code{NULL} then this effect is 0}
+\item{queenTrait}{numeric (column position) or character (column name), trait
+that represents queen's effect on the colony phenotype (defined in
+\code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
 
-\item{workersTrait}{numeric, trait that represents workers's effect on the
-colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-\code{NULL} then this effect is 0}
+\item{workersTrait}{numeric (column position) or character (column name), trait
+that represents workers's effect on the colony phenotype (defined in
+\code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
 
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
@@ -91,9 +91,8 @@ table(n)
 # Example for nVirginQueensColonyPhenotype()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-# TODO: Find some means and variances (Vg and Ve) for swarming in honeybees
-#       https://github.com/HighlanderLab/SIMplyBee/issues/259
-meanP <- c(10, 0)
+# Setting trait scale such that mean is 10 split into queen and workers effects
+meanP <- c(5, 5 / SP$nWorkers)
 # setup variances such that the total phenotype variance will match the mean
 varA <- c(3 / 2, 3 / 2 / SP$nWorkers)
 corA <- matrix(data = c(
@@ -119,5 +118,6 @@ nVirginQueensColonyPhenotype(colony1)
 nVirginQueensColonyPhenotype(colony2)
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{nVirginQueens}
+\code{\link{SimParamBee}} field \code{nVirginQueens} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

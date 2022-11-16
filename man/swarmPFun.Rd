@@ -2,12 +2,9 @@
 % Please edit documentation in R/Class-SimParamBee.R
 \name{swarmPUnif}
 \alias{swarmPUnif}
-\alias{swarmPColonyStrength}
 \title{Sample the swarm proportion - the proportion of workers that swarm}
 \usage{
 swarmPUnif(colony, n = 1, min = 0.4, max = 0.6)
-
-swarmPColonyStrength(colony, n = 1, nWorkersFull = 100, scale = 1)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}
@@ -40,62 +37,16 @@ Sample the swarm proportion - the proportion of workers that
 \code{swarmPUnif} samples from a uniform distribution between values
   0.4 and 0.6 irrespective of colony strength.
 
-  \code{swarmPColonyStrength} samples from a beta distribution with a mean of
-  \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
-  nWorkers}. This beta sampling mimics larger swarms for strong colonies and
-  smaller swarms for weak colonies - see examples. This is just an example,
-  not based on actual data!
-  # TODO: should we flip the pattern?
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/250
-
   The \code{nWorkersFull} default value used in this function is geared
   towards a situation where we simulate ~100 workers per colony (down-scaled
   simulation for efficiency). If you simulate more workers, you should change
   the default accordingly.
 }
-\section{Functions}{
-\itemize{
-\item \code{swarmPColonyStrength()}: Sample the swarm proportion - the proportion of
-workers that swarm based on the colony strength
-
-}}
 \examples{
 swarmPUnif()
 swarmPUnif()
 p <- swarmPUnif(n = 1000)
 hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
-
-# Example for swarmPColonyStrength()
-founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 15)
-colony <- createColony(x = basePop[2])
-colony <- cross(colony, drones = drones)
-colony <- addWorkers(colony, nInd = 10)
-nWorkers(colony) # weak colony
-swarmPColonyStrength(colony)
-swarmPColonyStrength(colony)
-colony <- addWorkers(colony, nInd = 100)
-nWorkers(colony) # strong colony
-swarmPColonyStrength(colony)
-swarmPColonyStrength(colony)
-
-# Logic behind swarmPColonyStrength()
-nWorkersFull <- 100
-nWorkers <- 0:200
-swarmP <- 1 - rbeta(
-  n = length(nWorkers),
-  shape1 = nWorkers + nWorkersFull,
-  shape2 = nWorkers
-)
-plot(swarmP ~ nWorkers, ylim = c(0, 1))
-abline(v = nWorkersFull)
-pStay <- 1 - swarmP
-plot(pStay ~ nWorkers, ylim = c(0, 1))
-abline(v = nWorkersFull)
-# TODO: should we flip the pattern?
-#       https://github.com/HighlanderLab/SIMplyBee/issues/250
 }
 \seealso{
 \code{\link{SimParamBee}} field \code{swarmP}

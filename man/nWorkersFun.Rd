@@ -28,13 +28,13 @@ nWorkersColonyPhenotype(
 
 \item{lowerLimit}{numeric, returned numbers will be above this value}
 
-\item{queenTrait}{numeric, trait that represents queen's effect on the colony
-phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-\code{0} then this effect is 0}
+\item{queenTrait}{numeric (column position) or character (column name), trait
+that represents queen's effect on the colony phenotype (defined in
+\code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0}
 
-\item{workersTrait}{numeric, trait that represents workers's effect on the
-colony phenotype (defined in \code{\link{SimParamBee}} - see examples); if
-\code{0} then this effect is 0}
+\item{workersTrait}{numeric (column position) or character (column name), trait
+that represents workers's effect on the colony phenotype (defined in
+\code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0}
 
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
@@ -104,5 +104,6 @@ createWorkers(colony1, nInd = nWorkersColonyPhenotype)
 createWorkers(colony2, nInd = nWorkersColonyPhenotype)
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{nWorkers}
+\code{\link{SimParamBee}} field \code{nWorkers} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

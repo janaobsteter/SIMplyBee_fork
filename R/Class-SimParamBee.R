@@ -1,19 +1,3 @@
-# TODO: I have provided this as PullRequest for AlphaSimR
-#       https://github.com/gaynorr/AlphaSimR/pull/52
-#       once it gets incorporated there we should remove it here
-#       https://github.com/HighlanderLab/SIMplyBee/issues/60
-isPop <- function(x) {
-  ret <- is(x, class2 = "Pop")
-  return(ret)
-}
-
-# TODO: This should go to AlphaSimR too
-#       https://github.com/HighlanderLab/SIMplyBee/issues/196
-isMapPop <- function(x) {
-  ret <- is(x, class2 = "MapPop")
-  return(ret)
-}
-
 # ---- Class SimParamBee ----
 
 setClassUnion("numericOrFunction", c("numeric", "function"))
@@ -59,9 +43,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nWorkers} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -86,9 +67,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nDrones} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(x, arg = default) someCode }, that is, the first
@@ -112,9 +90,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{nVirginQueens} is a function, it should work with internals
     #'   of other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -133,14 +108,11 @@ SimParamBee <- R6Class(
     #'   with  - used in \code{\link{pullDroneGroupsFromDCA}},
     #'   \code{\link{cross}}.
     #'
-    #'   The default value is 15, that is, a virging queen mates on average with
+    #'   The default value is 15, that is, a virgin queen mates on average with
     #'   15 drones (Seeley, 2019). This value is set in \code{SimParamBee$new()}
     #'   to have a number to work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{nFathers} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
@@ -166,9 +138,6 @@ SimParamBee <- R6Class(
     #'
     #'   You can change this setting to your needs!
     #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
-    #'
     #'   When \code{swarmP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
     #'   \code{function(colony, arg = default) someCode }, that is, the first
@@ -191,9 +160,6 @@ SimParamBee <- R6Class(
     #'   in \code{SimParamBee$new()} to have a proportion to work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{splitP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
@@ -218,9 +184,6 @@ SimParamBee <- R6Class(
     #'   work with.
     #'
     #'   You can change this setting to your needs!
-    #'
-    #'   TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-    #'         https://github.com/HighlanderLab/SIMplyBee/issues/242
     #'
     #'   When \code{downsizeP} is a function, it should work with internals of
     #'   other functions. Therefore, the function MUST be defined like
@@ -981,14 +944,6 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' @details \code{swarmPUnif} samples from a uniform distribution between values
 #'   0.4 and 0.6 irrespective of colony strength.
 #'
-#'   \code{swarmPColonyStrength} samples from a beta distribution with a mean of
-#'   \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
-#'   nWorkers}. This beta sampling mimics larger swarms for strong colonies and
-#'   smaller swarms for weak colonies - see examples. This is just an example,
-#'   not based on actual data!
-#'   # TODO: should we flip the pattern?
-#'   #       https://github.com/HighlanderLab/SIMplyBee/issues/250
-#'
 #'   The \code{nWorkersFull} default value used in this function is geared
 #'   towards a situation where we simulate ~100 workers per colony (down-scaled
 #'   simulation for efficiency). If you simulate more workers, you should change
@@ -1003,54 +958,9 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' swarmPUnif()
 #' p <- swarmPUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
-#'
-#' # Example for swarmPColonyStrength()
-#' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 15)
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = drones)
-#' colony <- addWorkers(colony, nInd = 10)
-#' nWorkers(colony) # weak colony
-#' swarmPColonyStrength(colony)
-#' swarmPColonyStrength(colony)
-#' colony <- addWorkers(colony, nInd = 100)
-#' nWorkers(colony) # strong colony
-#' swarmPColonyStrength(colony)
-#' swarmPColonyStrength(colony)
-#'
-#' # Logic behind swarmPColonyStrength()
-#' nWorkersFull <- 100
-#' nWorkers <- 0:200
-#' swarmP <- 1 - rbeta(
-#'   n = length(nWorkers),
-#'   shape1 = nWorkers + nWorkersFull,
-#'   shape2 = nWorkers
-#' )
-#' plot(swarmP ~ nWorkers, ylim = c(0, 1))
-#' abline(v = nWorkersFull)
-#' pStay <- 1 - swarmP
-#' plot(pStay ~ nWorkers, ylim = c(0, 1))
-#' abline(v = nWorkersFull)
-#' # TODO: should we flip the pattern?
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/250
 #' @export
 swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
   return(runif(n = n, min = min, max = max))
-}
-
-#' @describeIn swarmPFun Sample the swarm proportion - the proportion of
-#'   workers that swarm based on the colony strength
-#' @export
-swarmPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
-  nW <- nWorkers(colony)
-  pKeep <- rbeta(
-    n = n,
-    shape1 = (nW + nWorkersFull) / scale,
-    shape2 = nW / scale
-  )
-  return(1 - pKeep)
 }
 
 #' @rdname splitPFun
@@ -1081,8 +991,8 @@ swarmPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #'   \code{splitPColonyStrength} samples from a beta distribution with mean
 #'   \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
 #'   nWorkers}. This beta sampling mimics larger splits for strong colonies and
-#'   smaller splits for weak colonies - see examples. This is just an example,
-#'   based on practical experience!
+#'   smaller splits for weak colonies - see examples. This is just an example -
+#'   adapt to your needs!
 #'
 #'   The \code{nWorkersFull} default value used in this function is geared
 #'   towards a situation where we simulate ~100 workers per colony (down-scaled
@@ -1277,9 +1187,6 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' # Colony value
 #' mapCasteToColonyPheno(colony)
 #' mapCasteToColonyGv(colony)
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
 #'
 #' # To understand where the above values come from, study the contents of
 #' # mapCasteToColonyValue() and the values below:
