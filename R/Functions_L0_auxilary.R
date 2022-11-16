@@ -1,7 +1,6 @@
 # ---- Level 0 Auxiliary Functions ----
 
 # n* ----
-
 #' @rdname nColonies
 #' @title Number of colonies in a MultiColony object
 #'
@@ -11,34 +10,6 @@
 #' @param multicolony \code{\link{MultiColony-class}}
 #'
 #' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' nColonies(apiary)
-#' nColonies(createMultiColony(n = 10))
-#' @export
-nColonies <- function(multicolony) {
-  if (!"MultiColony" %in% class(multicolony)) {
-    stop("Argument multicolony must be a MultiColony class object!")
-  }
-  n <- length(multicolony@colonies)
-  return(n)
-}
-
-#' @rdname nNULLColonies
-#' @title Number of NULL colonies in a MultiColony object
-#'
-#' @description Level 0 function that returns the number of colonies in a
-#'   MultiColony object that are in fact \code{NULL}.
-#'
-#' @param multicolony \code{\link{MultiColony-class}}
-#'
 #' @return integer
 #'
 #' @examples
@@ -777,8 +748,6 @@ areDronesPresent <- isDronesPresent
 #' isVirginQueensPresent(colony)
 #' isVirginQueensPresent(pullVirginQueens(colony)$remnant)
 #' isVirginQueensPresent(removeQueen(colony))
-#' # TODO: Should removeQueen() initiate creation of virginQueens #339
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/339
 #'
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
@@ -1974,8 +1943,8 @@ isCsdActive <- function(simParamBee = NULL) {
 #' @title Reduce drone's double haplotypes to a single haplotype
 #'
 #' @description Level 0 function that returns one haplotype of drones, because
-#'   we internally simulate them as diploid (doubled haploid). This is a utility
-#'   function that you likely don't need to use.
+#'   we internally simulate them as diploid (doubled haploid). This is an
+#'   internal utility function that you likely don't need to use.
 #'
 #' @param haplo \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
@@ -1985,26 +1954,27 @@ isCsdActive <- function(simParamBee = NULL) {
 #'   haplotypes, which is why you need to provide \code{pop}. We only reduce
 #'   haplotypes for males though.
 #'
-#' @return matrix with one haplotype per drone instead of two
+#' @return matrix with one haplotype per drone instead of two - the order of
+#'   individuals stays the same, but there will be less rows!
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteHaplo(drones))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = drones)
+#' reduceDroneHaplo(haplo = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteHaplo(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
+#' reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneHaplo <- function(haplo, pop) {
   if (!is.matrix(haplo)) {
     stop("Argument haplo must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   idHap <- rownames(haplo)
   id <- sapply(X = strsplit(x = idHap, split = "_"), FUN = function(z) z[[1]])
@@ -2020,31 +1990,33 @@ reduceDroneHaplo <- function(haplo, pop) {
 #'
 #' @description Level 0 function that reduces drone's genotype to a single
 #'   haplotype, because we internally simulate them as diploid (doubled
-#'   haploid). This is a utility function that you likely don't need to use.
+#'   haploid). This is an internal utility function that you likely don't need
+#'   to use.
 #'
 #' @param geno \code{\link{matrix-class}}
 #' @param pop \code{\link{Pop-class}}
 #'
-#' @return matrix with genotype as one haplotype per drone instead of two
+#' @return matrix with genotype as one haplotype per drone instead of two - the
+#'   order of individuals and the number of rows stays the same!
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
 #' (tmp <- getSegSiteGeno(drones))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = drones)
+#' reduceDroneGeno(geno = tmp, pop = drones)
 #'
 #' (tmp <- getSegSiteGeno(c(basePop, drones)))
-#' SIMplyBee:::reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
+#' reduceDroneGeno(geno = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneGeno <- function(geno, pop) {
   if (!is.matrix(geno)) {
     stop("Argument geno must be a matrix class object!")
   }
   if (!isPop(pop)) {
-    stop("Argument pop must be a matrix class object!")
+    stop("Argument pop must be a Pop class object!")
   }
   id <- rownames(geno)
   sel <- id %in% pop@id[pop@sex == "M"]
@@ -3070,7 +3042,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param trait numeric, indicates which trait's QTL haplotypes to retrieve
+#' @param trait numeric (trait position) or character (trait name), indicates
+#'   which trait's QTL haplotypes to retrieve
 #' @param haplo character, either "all" for all haplotypes or an integer for a
 #'   single set of haplotypes, use a value of 1 for female haplotypes and a
 #'   value of 2 for male haplotypes
@@ -3081,7 +3054,8 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'   with haplotypes of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}}
+#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}} as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
@@ -3107,7 +3081,6 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
 #'
 #' # Input is a population
 #' getQtlHaplo(x = getQueen(colony))
@@ -3348,7 +3321,8 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
-#' @param trait numeric, indicates which trait's QTL genotypes to retrieve
+#' @param trait numeric (trait position) or character (trait name), indicates
+#'   which trait's QTL genotypes to retrieve
 #' @param chr numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 #'   are retrieved
 #' @param dronesHaploid logical, return haploid result for drones?
@@ -3356,7 +3330,8 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   with genotypes of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
+#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}} as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
@@ -5119,7 +5094,8 @@ calcBeeGRMIbd <- function(x) {
 #' @param collapse logical, if the return value should be a single matrix
 #'   with phenotypes of all the individuals
 #'
-#' @seealso \code{\link{pheno}}
+#' @seealso \code{\link{pheno}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
@@ -5131,11 +5107,6 @@ calcBeeGRMIbd <- function(x) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10, var = 1)
 #' SP$setVarE(varE = 1)
-#' # TODO: how should we handle the creation of phenotypes when residual variance
-#' #       is set (then we get phenotypes automatically and we should not call
-#' #       setPheno() below - this overwrites previous phenotypes), but when the
-#' #       residual variance is not set, we have to call setPheno()
-#' #       https://github.com/HighlanderLab/SIMplyBee/issues/235
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -5312,7 +5283,8 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
 #'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
@@ -5327,8 +5299,8 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' # 2) workers' effect on colony honey yield, say via foraging ability phenotype
 #' # The traits will have a negative genetic correlation of -0.5 and heritability
 #' # of 0.25 (on an individual level)
-#' mean <- c(20, 0)
 #' nWorkers <- 10
+#' mean <- c(10, 10 / nWorkers)
 #' varA <- c(1, 1 / nWorkers)
 #' corA <- matrix(data = c(
 #'   1.0, -0.5,
@@ -5363,24 +5335,6 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' # ... genetic value
 #' calcColonyGv(colony)
 #' calcColonyGv(apiary)
-#' # ... breeding value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyBv(colony)
-#' # calcColonyBv(apiary)
-#' # ... dominance value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyDd(colony)
-#' # calcColonyDd(apiary)
-#' # ... epistasis value
-#' # TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#' #   https://github.com/gaynorr/AlphaSimR/issues/83
-#' #   https://github.com/HighlanderLab/SIMplyBee/issues/399
-#' # calcColonyAa(colony)
-#' # calcColonyAa(apiary)
 #'
 #' # Colony value - long version
 #' # (using the default mapCasteToColony*() function - you can provide yours instead!)
@@ -5394,8 +5348,6 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' calcColonyValue(apiary)
 #'
 #' @export
-# TODO: Calculate inheritance, selection and production criteria in the Colony #23
-#       https://github.com/HighlanderLab/SIMplyBee/issues/23
 # TODO: Do we need to do anything to add GxE to colony values? #353
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
@@ -5437,16 +5389,20 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @rdname calcInheritanceCriterion
 #' @title Calculate the inheritance criterion
 #'
-#' @description Level 0 function that calculates the inheritance criterion as the sum
-#'   of direct and maternal breeding values of the queens, as described
-#'   by Du et al., 2021.
+#' @description Level 0 function that calculates the inheritance criterion as the
+#'   sum of the queen (maternal) and workers (direct) effect from the queen,
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of drones from the queen or half the expected value of virgin queens from
+#'   the queen.
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}} or
 #'   \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL}
+#'   then this effect is 0
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
@@ -5454,15 +5410,19 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5541,32 +5501,41 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @title Calculate the performance criterion
 #'
 #' @description Level 0 function that calculates the performance criterion as the
-#'   sum of the maternal breeding value of a queen and the direct breeding value of her
-#'   worker group, as described by Du et al., 2021.
+#'   sum of the queen (maternal) effect from the queen and the workers (direct)
+#'   effect from her workers, as defined by Du et al. (2021). This can be seen
+#'   as the expected value of the colony.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTraitFUN function, function that will be applied to the worker trait
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL}
+#'   then this effect is 0
+#' @param workersTraitFUN function, that will be applied to the workers effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value),"ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#'
+#' @seealso \code{\link{calcSelectionCriterion}} and
+#'   \code{\link{calcInheritanceCriterion}} and  as well as
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5590,17 +5559,18 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(apiary)
 #'
-#' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
+#' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
-#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcPerformanceCriterion(apiary, queenTrait = 1,
+#'                          workersTrait = 2, workersTraitFUN = sum)
 #'
 #' @export
 calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
-                                     workersTraitFUN = mean, use = "gv") {
+                                     workersTraitFUN = sum, use = "gv") {
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
   }
@@ -5642,37 +5612,47 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
   return(ret)
 }
 
-
 #' @rdname calcSelectionCriterion
 #' @title Calculate the selection criterion
 #'
 #' @description Level 0 function that calculates the selection criterion as the
-#'   sum of direct and maternal breeding values of a worker group,
-#'   as described by Du et al., 2021.
+#'   sum of workers (direct) and queen (maternal) effects of workers,
+#'   as defined by Du et al. (2021). This can be seen as the expected value
+#'   of virgin queens from the queen (as well as workers, but we would not be
+#'   selecting workers).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param queenTrait numeric, trait that represents queen's contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param queenTraitFUN function, function that will be applied to the queen trait
-#' @param workersTrait numeric, trait that represents workers' contribution
-#'   to the colony value; if \code{NULL} then this contribution is 0
-#' @param workersTraitFUN function, function that will be applied to the worker trait
+#' @param queenTrait numeric (column position) or character (column name), trait
+#'   that represents queen's effect on the colony value; if \code{NULL} then this contribution is 0
+#' @param queenTraitFUN function, that will be applied to the queen effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
+#' @param workersTrait numeric (column position) or character (column name), trait
+#'   that represents workers' effect on the colony value; if \code{NULL} then this contribution is 0
+#' @param workersTraitFUN function, that will be applied to the workers effect
+#'   values of workers, default is sum (see examples), but note that the correct
+#'   function will depend on how you will setup simulation!
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#'
+#' @seealso \code{\link{calcInheritanceCriterion}} and
+#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#`   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
+#'
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-#'   mating and selection on the genetic variance of honeybee populations.
-#'  Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
+#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
+#'   https://doi.org/10.1038/s41437-021-00411-2
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' meanA <- c(20, 0)
+#' meanA <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c( 1.0, -0.5,
 #'                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -5697,24 +5677,25 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' apiary <- buildUp(apiary)
 #'
 #' calcSelectionCriterion(colony,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = mean)
+#'                        queenTrait = 1, queenTraitFUN = sum,
+#'                        workersTrait = 2, workersTraitFUN = sum)
 #' calcSelectionCriterion(colony,
 #'                        queenTrait = 1, queenTraitFUN = mean,
+#'                        workersTrait = 2, workersTraitFUN = mean)
+#' calcSelectionCriterion(apiary,
+#'                        queenTrait = 1, queenTraitFUN = sum,
 #'                        workersTrait = 2, workersTraitFUN = sum)
 #' calcSelectionCriterion(apiary,
 #'                        queenTrait = 1, queenTraitFUN = mean,
 #'                        workersTrait = 2, workersTraitFUN = mean)
-#' calcSelectionCriterion(apiary,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = sum)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
-#' calcSelectionCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+#' calcSelectionCriterion(apiary, queenTrait = 1,
+#'                        workersTrait = 2, workersTraitFUN = sum)
 #'
 #' @export
-calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
-                                   workersTrait = 2, workersTraitFUN = mean,
+calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
+                                   workersTrait = 2, workersTraitFUN = sum,
                                    use = "gv") {
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
@@ -5777,7 +5758,8 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = mean,
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genetic values of all the individuals
 #'
-#' @seealso \code{\link{gv}}
+#' @seealso \code{\link{gv}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of phenotype values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
@@ -5979,7 +5961,8 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #'   with breeding valued of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{bv}}
+#' @seealso \code{\link{bv}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
 #'   and list of vectors of breeding values when \code{x} is
@@ -6008,57 +5991,56 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getBv(x = getQueen(colony))
+#' SIMplyBee:::getBv(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getBv(queens)
+#' SIMplyBee:::getBv(queens)
 #'
 #' # Input is a colony
-#' getBv(colony, caste = "queen")
-#' getQueenBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "queen")
+#' SIMplyBee:::getQueenBv(colony)
 #'
-#' getBv(colony, caste = "fathers")
-#' getBv(colony, caste = "fathers", nInd = 2)
-#' getBv(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersBv(colony)
-#' getFathersBv(colony, nInd = 2)
+#' SIMplyBee:::getBv(colony, caste = "fathers")
+#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersBv(colony)
+#' SIMplyBee:::getFathersBv(colony, nInd = 2)
 #'
-#' getBv(colony, caste = "virginQueens")
-#' getVirginQueensBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensBv(colony)
 #'
-#' getBv(colony, caste = "workers")
-#' getWorkersBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "workers")
+#' SIMplyBee:::getWorkersBv(colony)
 #'
-#' getBv(colony, caste = "drones")
-#' getDronesBv(colony)
+#' SIMplyBee:::getBv(colony, caste = "drones")
+#' SIMplyBee:::getDronesBv(colony)
 #'
 #' # Get breeding values for all individuals
-#' getBv(colony, caste = "all")
+#' SIMplyBee:::getBv(colony, caste = "all")
 #' # Get all breeding values in a single matrix
-#' getBv(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getBv(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getBv(apiary, caste = "queen")
-#' getQueenBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "queen")
+#' SIMplyBee:::getQueenBv(apiary)
 #'
-#' getBv(apiary, caste = "fathers")
-#' getBv(apiary, caste = "fathers", nInd = 2)
-#' getBv(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersBv(apiary)
-#' getFathersBv(apiary, nInd = 2)
+#' SIMplyBee:::getBv(apiary, caste = "fathers")
+#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersBv(apiary)
+#' SIMplyBee:::getFathersBv(apiary, nInd = 2)
 #'
-#' getBv(apiary, caste = "virginQueens")
-#' getVirginQueensBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensBv(apiary)
 #'
-#' getBv(apiary, caste = "workers")
-#' getWorkersBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersBv(apiary)
 #'
-#' getBv(apiary, caste = "drones")
-#' getDronesBv(apiary)
+#' SIMplyBee:::getBv(apiary, caste = "drones")
+#' SIMplyBee:::getDronesBv(apiary)
 #'
 #' # Get the breeding values of all individuals either by colony or in a single matrix
-#' getBv(apiary, caste = "all")
-#' getBv(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getBv(apiary, caste = "all")
+#' SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6128,7 +6110,6 @@ getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getBv Access breeding value of the queen
-#' @export
 getQueenBv <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6142,7 +6123,6 @@ getQueenBv <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of fathers
-#' @export
 getFathersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6156,7 +6136,6 @@ getFathersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of virgin queens
-#' @export
 getVirginQueensBv <- function(x, nInd = NULL,collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6170,7 +6149,6 @@ getVirginQueensBv <- function(x, nInd = NULL,collapse = FALSE, simParamBee = NUL
 }
 
 #' @describeIn getBv Access breeding values of workers
-#' @export
 getWorkersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6184,7 +6162,6 @@ getWorkersBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getBv Access breeding values of drones
-#' @export
 getDronesBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6198,7 +6175,6 @@ getDronesBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
-#' @export
 calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
@@ -6223,7 +6199,8 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #'   with dominance values of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}}
+#' @seealso \code{\link{dd}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of dominance values when \code{x} is
 #'   \code{\link{Colony-class}} and list of vectors of dominance values when
@@ -6251,57 +6228,56 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getDd(x = getQueen(colony))
+#' SIMplyBee:::getDd(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getDd(queens)
+#' SIMplyBee:::getDd(queens)
 #'
 #' # Input is a colony
-#' getDd(colony, caste = "queen")
-#' getQueenDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "queen")
+#' SIMplyBee:::getQueenDd(colony)
 #'
-#' getDd(colony, caste = "fathers")
-#' getDd(colony, caste = "fathers", nInd = 2)
-#' getDd(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersDd(colony)
-#' getFathersDd(colony, nInd = 2)
+#' SIMplyBee:::getDd(colony, caste = "fathers")
+#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersDd(colony)
+#' SIMplyBee:::getFathersDd(colony, nInd = 2)
 #'
-#' getDd(colony, caste = "virginQueens")
-#' getVirginQueensDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensDd(colony)
 #'
-#' getDd(colony, caste = "workers")
-#' getWorkersDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "workers")
+#' SIMplyBee:::getWorkersDd(colony)
 #'
-#' getDd(colony, caste = "drones")
-#' getDronesDd(colony)
+#' SIMplyBee:::getDd(colony, caste = "drones")
+#' SIMplyBee:::getDronesDd(colony)
 #'
 #' # Get dominance valued for all individuals
-#' getDd(colony, caste = "all")
+#' SIMplyBee:::getDd(colony, caste = "all")
 #' # Get all dominance values in a single matrix
-#' getDd(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getDd(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getDd(apiary, caste = "queen")
-#' getQueenDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "queen")
+#' SIMplyBee:::getQueenDd(apiary)
 #'
-#' getDd(apiary, caste = "fathers")
-#' getDd(apiary, caste = "fathers", nInd = 2)
-#' getDd(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersDd(apiary)
-#' getFathersDd(apiary, nInd = 2)
+#' SIMplyBee:::getDd(apiary, caste = "fathers")
+#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersDd(apiary)
+#' SIMplyBee:::getFathersDd(apiary, nInd = 2)
 #'
-#' getDd(apiary, caste = "virginQueens")
-#' getVirginQueensDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensDd(apiary)
 #'
-#' getDd(apiary, caste = "workers")
-#' getWorkersDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersDd(apiary)
 #'
-#' getDd(apiary, caste = "drones")
-#' getDronesDd(apiary)
+#' SIMplyBee:::getDd(apiary, caste = "drones")
+#' SIMplyBee:::getDronesDd(apiary)
 #'
 #' # Get the dominance values of all individuals either by colony or in a single matrix
-#' getDd(apiary, caste = "all")
-#' getDd(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getDd(apiary, caste = "all")
+#' SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6371,7 +6347,6 @@ getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getDd Access dominance value of the queen
-#' @export
 getQueenDd <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6385,7 +6360,6 @@ getQueenDd <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of fathers
-#' @export
 getFathersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6399,7 +6373,6 @@ getFathersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of virgin queens
-#' @export
 getVirginQueensDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6413,7 +6386,6 @@ getVirginQueensDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NU
 }
 
 #' @describeIn getDd Access dominance values of workers
-#' @export
 getWorkersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6427,7 +6399,6 @@ getWorkersDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getDd Access dominance values of drones
-#' @export
 getDronesDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6441,7 +6412,6 @@ getDronesDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony dominance value from caste individuals' dominance values
-#' @export
 calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
@@ -6466,7 +6436,8 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #'   with epistatic values of all the individuals
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}}
+#' @seealso \code{\link{dd}} and
+#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of epistasis values when \code{x} is
 #'   \code{\link{Colony-class}} and list of vectors of epistasis values when
@@ -6494,57 +6465,56 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' # Input is a population
-#' getAa(x = getQueen(colony))
+#' SIMplyBee:::getAa(x = getQueen(colony))
 #' queens <- getQueen(apiary, collapse = TRUE)
-#' getAa(queens)
+#' SIMplyBee:::getAa(queens)
 #'
 #' # Input is a colony
-#' getAa(colony, caste = "queen")
-#' getQueenAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "queen")
+#' SIMplyBee:::getQueenAa(colony)
 #'
-#' getAa(colony, caste = "fathers")
-#' getAa(colony, caste = "fathers", nInd = 2)
-#' getAa(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersAa(colony)
-#' getFathersAa(colony, nInd = 2)
+#' SIMplyBee:::getAa(colony, caste = "fathers")
+#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersAa(colony)
+#' SIMplyBee:::getFathersAa(colony, nInd = 2)
 #'
-#' getAa(colony, caste = "virginQueens")
-#' getVirginQueensAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensAa(colony)
 #'
-#' getAa(colony, caste = "workers")
-#' getWorkersAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "workers")
+#' SIMplyBee:::getWorkersAa(colony)
 #'
-#' getAa(colony, caste = "drones")
-#' getDronesAa(colony)
+#' SIMplyBee:::getAa(colony, caste = "drones")
+#' SIMplyBee:::getDronesAa(colony)
 #'
 #' # Get epistatic values for all individuals
-#' getAa(colony, caste = "all")
+#' SIMplyBee:::getAa(colony, caste = "all")
 #' # Get all epistatic values in a single matrix
-#' getAa(colony, caste = "all", collapse = TRUE)
+#' SIMplyBee:::getAa(colony, caste = "all", collapse = TRUE)
 #'
 #' # Input is a MultiColony
-#' getAa(apiary, caste = "queen")
-#' getQueenAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "queen")
+#' SIMplyBee:::getQueenAa(apiary)
 #'
-#' getAa(apiary, caste = "fathers")
-#' getAa(apiary, caste = "fathers", nInd = 2)
-#' getAa(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersAa(apiary)
-#' getFathersAa(apiary, nInd = 2)
+#' SIMplyBee:::getAa(apiary, caste = "fathers")
+#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2)
+#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2) # random sample!
+#' SIMplyBee:::getFathersAa(apiary)
+#' SIMplyBee:::getFathersAa(apiary, nInd = 2)
 #'
-#' getAa(apiary, caste = "virginQueens")
-#' getVirginQueensAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "virginQueens")
+#' SIMplyBee:::getVirginQueensAa(apiary)
 #'
-#' getAa(apiary, caste = "workers")
-#' getWorkersAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "workers")
+#' SIMplyBee:::getWorkersAa(apiary)
 #'
-#' getAa(apiary, caste = "drones")
-#' getDronesAa(apiary)
+#' SIMplyBee:::getAa(apiary, caste = "drones")
+#' SIMplyBee:::getDronesAa(apiary)
 #'
 #' # Get the epistatic values of all individuals either by colony or in a single matrix
-#' getAa(apiary, caste = "all")
-#' getAa(apiary, caste = "all", collapse = TRUE)
-#' @export
+#' SIMplyBee:::getAa(apiary, caste = "all")
+#' SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6614,7 +6584,6 @@ getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
 }
 
 #' @describeIn getAa Access epistasis value of the queen
-#' @export
 getQueenAa <- function(x, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6628,7 +6597,6 @@ getQueenAa <- function(x, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of fathers
-#' @export
 getFathersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6642,7 +6610,6 @@ getFathersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of virgin queens
-#' @export
 getVirginQueensAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6656,7 +6623,6 @@ getVirginQueensAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NU
 }
 
 #' @describeIn getAa Access epistasis values of workers
-#' @export
 getWorkersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6670,7 +6636,6 @@ getWorkersAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn getAa Access epistasis values of drones
-#' @export
 getDronesAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6684,7 +6649,6 @@ getDronesAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 }
 
 #' @describeIn calcColonyValue Calculate colony epistasis value from caste individuals' epistasis value
-#' @export
 calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }

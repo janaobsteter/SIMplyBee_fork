@@ -39,8 +39,6 @@ colony <- addVirginQueens(x = colony, nInd = 4)
 isVirginQueensPresent(colony)
 isVirginQueensPresent(pullVirginQueens(colony)$remnant)
 isVirginQueensPresent(removeQueen(colony))
-# TODO: Should removeQueen() initiate creation of virginQueens #339
-#       https://github.com/HighlanderLab/SIMplyBee/issues/339
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])

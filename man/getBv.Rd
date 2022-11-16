@@ -83,57 +83,58 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 # Input is a population
-getBv(x = getQueen(colony))
+SIMplyBee:::getBv(x = getQueen(colony))
 queens <- getQueen(apiary, collapse = TRUE)
-getBv(queens)
+SIMplyBee:::getBv(queens)
 
 # Input is a colony
-getBv(colony, caste = "queen")
-getQueenBv(colony)
+SIMplyBee:::getBv(colony, caste = "queen")
+SIMplyBee:::getQueenBv(colony)
 
-getBv(colony, caste = "fathers")
-getBv(colony, caste = "fathers", nInd = 2)
-getBv(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersBv(colony)
-getFathersBv(colony, nInd = 2)
+SIMplyBee:::getBv(colony, caste = "fathers")
+SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2)
+SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersBv(colony)
+SIMplyBee:::getFathersBv(colony, nInd = 2)
 
-getBv(colony, caste = "virginQueens")
-getVirginQueensBv(colony)
+SIMplyBee:::getBv(colony, caste = "virginQueens")
+SIMplyBee:::getVirginQueensBv(colony)
 
-getBv(colony, caste = "workers")
-getWorkersBv(colony)
+SIMplyBee:::getBv(colony, caste = "workers")
+SIMplyBee:::getWorkersBv(colony)
 
-getBv(colony, caste = "drones")
-getDronesBv(colony)
+SIMplyBee:::getBv(colony, caste = "drones")
+SIMplyBee:::getDronesBv(colony)
 
 # Get breeding values for all individuals
-getBv(colony, caste = "all")
+SIMplyBee:::getBv(colony, caste = "all")
 # Get all breeding values in a single matrix
-getBv(colony, caste = "all", collapse = TRUE)
+SIMplyBee:::getBv(colony, caste = "all", collapse = TRUE)
 
 # Input is a MultiColony
-getBv(apiary, caste = "queen")
-getQueenBv(apiary)
+SIMplyBee:::getBv(apiary, caste = "queen")
+SIMplyBee:::getQueenBv(apiary)
 
-getBv(apiary, caste = "fathers")
-getBv(apiary, caste = "fathers", nInd = 2)
-getBv(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersBv(apiary)
-getFathersBv(apiary, nInd = 2)
+SIMplyBee:::getBv(apiary, caste = "fathers")
+SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2)
+SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2) # random sample!
+SIMplyBee:::getFathersBv(apiary)
+SIMplyBee:::getFathersBv(apiary, nInd = 2)
 
-getBv(apiary, caste = "virginQueens")
-getVirginQueensBv(apiary)
+SIMplyBee:::getBv(apiary, caste = "virginQueens")
+SIMplyBee:::getVirginQueensBv(apiary)
 
-getBv(apiary, caste = "workers")
-getWorkersBv(apiary)
+SIMplyBee:::getBv(apiary, caste = "workers")
+SIMplyBee:::getWorkersBv(apiary)
 
-getBv(apiary, caste = "drones")
-getDronesBv(apiary)
+SIMplyBee:::getBv(apiary, caste = "drones")
+SIMplyBee:::getDronesBv(apiary)
 
 # Get the breeding values of all individuals either by colony or in a single matrix
-getBv(apiary, caste = "all")
-getBv(apiary, caste = "all", collapse = TRUE)
+SIMplyBee:::getBv(apiary, caste = "all")
+SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{bv}}
+\code{\link{bv}} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

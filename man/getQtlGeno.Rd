@@ -72,7 +72,8 @@ and character when \code{x} is a \code{\link{Colony-class}} or
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed, otherwise a random sample}
 
-\item{trait}{numeric, indicates which trait's QTL genotypes to retrieve}
+\item{trait}{numeric (trait position) or character (trait name), indicates
+which trait's QTL genotypes to retrieve}
 
 \item{chr}{numeric, chromosomes to retrieve, if \code{NULL}, all chromosome
 are retrieved}
@@ -179,5 +180,6 @@ getQtlGeno(apiary, caste = "all")
 getQtlGeno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}}
+\code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}} as well as
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

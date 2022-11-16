@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^man/figures/.*\.jpg
+^man/figures/.*\.png
+^vignettes/F2*.Rmd
+^README.Rmd
