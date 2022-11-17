@@ -22,8 +22,93 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-Describe the use of helper sampling functions, like
+SIMplyBee includes functions to sample the number or percentage of caste
+individuals. First, there are functions to sample the number of caste
+individuals from either a Poisson or truncated Poisson distribution:
+`n*Poisson()` and `n*TruncPoisson()`, where `*` is either `Workers`, `Drones`,
+`VirginQueens`, or `Fathers`. Most SIMplyBee functions that take the number of
+individuals as an argument can accept these sampling functions as input, meaning
+that the output of such function calls will be stochastic. These functions are
+useful when you want to sample a variable number of individuals around a mean,
+as for example when mating virgin queens.
 
-nWorkersPoisson nDronesPossion etc.
+Let's start again with creating a DCA and an apiary with 10 virgin colonies, as
+seen before.
 
-this will make then transition to quantitative genetics a bit easier too!
+```{r}
+founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
+SP <- SimParamBee$new(founderGenomes)
+basePop <- createVirginQueens(founderGenomes)
+
+# Create a DCA from the first 10 base virgin queens
+DCA <- createDrones(x = basePop[1:10], nInd = 100)
+
+# Create an apiary with 10 virgin colonies
+apiary <- createMultiColony(basePop[11:20])
+```
+
+From the literature we know that virgin queens on average mate to 17 drones, but
+this number actually varies around this number. Some mate with 10 drones, some
+with 20. To resemble this variation, we can use the function `nFathersPoisson()`
+to sample variable number of drones from a DCA. The default mean for this
+function is 15, but you can use any value you want. Let's use this function to
+sample 1000 values and inspect the distribution and the mean.
+
+```{r}
+hist(nFathersPoisson(1000))
+```
+
+Let's now use this functionality to sample a variable number of drones from the
+DCA to mate with each of the 10 virgin queens.
+
+```{r}
+droneGroups <- pullDroneGroupsFromDCA(DCA = DCA, n = 10, nDrones = nFathersPoisson)
+apiary <- cross(apiary, drones = droneGroups)
+```
+
+And inspect the number of fathers in each of the colony and their mean.
+
+```{r}
+nFathers(apiary)
+mean(nFathers(apiary))
+```
+
+Next, we have a group of functions that will sample the number of individuals
+according to the colony phenotype, whatever that might be. These functions are
+named `n*ColonyPhenotype()`, where `*` is either is either `Workers`, `Drones`,
+or `VirginQueens`. An example of this would be sampling the number of workers
+and drones according to queen's fecundity or honey yield. An example of this can
+be seen in the quantitative genetics vignette in the "Strength and honey yield"
+example.
+
+Lastly, there are functions to sample the proportions of workers that leave or
+are removed when downsizing, splitting, or swarming a colony from either a
+uniform distribution or from a beta distribution that accounts for the number of
+individuals in a colony (colony strength). These functions are named `*PUnif()`,
+where `*` can be either `swarm`, `split`, or `downsize`. There is an additional
+function, `splitPColonyStrength()`, that determined the number of workers to be
+removed in a split according to the colony strength.
+
+Let's say we want to swarm all the colonies in our apiary with a variable
+percentage of workers that leave. We want to sample the percentage of workers
+from an uniform distribution with mean of 0.7. For these, we use `swarmPUnif()`
+function that takes a `min` and a `max` values and sample a value between them.
+Be default, the `min` is set to 0.4 and `max` to 0.6. Let's use this function to
+sample a 1000 values between 0.5 and 0.7 and inspect the mean.
+
+```{r}
+hist(swarmPUnif(n = 1000, min = 0.5, max = 0.7))
+```
+
+Let's now swarm all the colonies in our apiary with a variable percentage of
+workers that leave.
+
+```{r}
+apiary <- buildUp(apiary, nWorkers = 1000, nDrones = 100)
+tmp <- swarm(apiary, p = swarmPUnif(n = 10, min = 0.5, max = 0.7))
+nWorkers(tmp$swarm)
+```
+
+We see that each colony swarmed with a different percentage between 0.5 and 0.7.
+
+TODO: Do you think we need to add a splitPColonyStrength example?
