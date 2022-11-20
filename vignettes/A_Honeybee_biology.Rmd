@@ -225,8 +225,6 @@ str(colony)
 
 To explore the various accessor or modification functions, study the SIMplyBee's index of functions.
 
-TODO: point to PkdDown too
-
 ```{r help, eval = FALSE}
 help(SIMplyBee)
 ```
