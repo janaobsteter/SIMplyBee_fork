@@ -53,10 +53,9 @@ We recommend that you study the index of available `get*()` functions in SIMplyB
 help(SIMplyBee)
 ```
 
-TODO: ADD IN SHOWING COLLAPSE ARGUMENT 
-
 To show all this, let's get haplotypes and genotypes across the segregating sites for the different castes. 
-You can use `getSegSitesGeno()` or `getSegSitesHaplo()` to this and you can specify which caste members you would like by using the `caste =` argument. 
+You can use `getSegSitesGeno()` or `getSegSitesHaplo()` to this and you can specify which caste members you would like by using the `caste =` argument.
+Another argument you can use with this function is `collapse = TRUE/FALSE`. If `collapse = TRUE` then all of the information is squished together and a single matrix is returned, if `collapse = FALSE` we return a list by caste or by colony.  
 The haplotypes are below shown in rows, spanning sites in columns (limiting to the first ten sites). Genotypes are simply a sum of the two haplotypes. First the queen:
 
 ```{r queens haplo}
@@ -172,7 +171,7 @@ The next section introduces the calculations of IBD and IBS genomic data, so let
 - Identity-by-descent (IBD) is when a segment of matching (IBS) DNA shared by two or more individuals has been inherited from a common ancestor without any recombination. 
 
 Using IBD and IBS can allow a user to looking into the relationships based on the genomic data. 
-We'll demonstrate this by calculating some Genomic Realtionship Matrices (GRM) using SIMplyBee's `calcBeeGRMIbs()` and `calcBeeGRMIbd()`.
+We'll demonstrate this by calculating some Genomic Relationship Matrices (GRM) using SIMplyBee's `calcBeeGRMIbs()` and `calcBeeGRMIbd()`.
 
 
 Lets look at the `calcBeeGRMIbs()` first.
@@ -251,7 +250,7 @@ alleleFreq <- calcBeeAlleleFreq(x = geno, sex = sex)
 
 
 Now lets look at `calcBeeGRMIbd()`. 
-This function creates Genomic Relatedness Matrix (GRM) for honeybees from Identical By Descent genomic data (tracked alleles since the founders). It returns a list with a matrix of gametic relatedness coefficients (genome) and a matrix of individual relatedness coefficients (indiv). 
+This function creates Genomic Relatedness Matrix (GRM) for honeybees from Identical By Descent genomic data, defined as those originating from the same allele of the base population. It returns a list with a matrix of gametic relatedness coefficients (genome) and a matrix of individual relatedness coefficients (indiv). 
 
 In order to create this functions we referred to Grossman and Eisen (1989), Fernando and Grossman (1989), Fernando and Grossman (1990), Van Arendonk, Tier, and Kinghorn (1994) and Hill and Weir (2011). See the functions documentation for more information regarding the references used. 
 
