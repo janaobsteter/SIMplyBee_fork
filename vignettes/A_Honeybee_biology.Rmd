@@ -26,9 +26,7 @@ This vignette introduces SIMplyBee package by describing and demonstrating how S
 
 3.  Colony structure,
 
-4.  Sex and caste,
-
-5.  Complementary sex determining (csd) locus
+4.  Complementary sex determining (csd) locus
 
 Now load the package and dive in!
 
