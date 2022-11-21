@@ -122,8 +122,6 @@ baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
 baseDrones
 ```
 
-A keen reader will notice that drones' ploidy is two. We will address this in the next sections.
-
 # Creating and building up a colony
 
 We will use the other virgin queen to create a colony. In SIMplyBee, a colony is an object of `Colony` class with all sorts of information.
