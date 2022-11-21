@@ -34,9 +34,9 @@ SP$setTrackRec(TRUE)
 baseQueens <- createVirginQueens(founderGenomes)
 baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
 
-Colony <- createColony(x = baseQueens[2])
-Colony <- cross(colony, drones = baseDrones)
-Colony <- buildUp(colony)
+colony <- createColony(x = baseQueens[2])
+colony <- cross(colony, drones = baseDrones)
+colony <- buildUp(colony)
 
 ```
 
@@ -59,60 +59,60 @@ Another argument you can use with this function is `collapse = TRUE/FALSE`. If `
 The haplotypes are below shown in rows, spanning sites in columns (limiting to the first ten sites). Genotypes are simply a sum of the two haplotypes. First the queen:
 
 ```{r queens haplo}
-getSegSiteHaplo(Colony, caste = "queen")[, 1:10]
+getSegSiteHaplo(colony, caste = "queen")[, 1:10]
 ```
 
 ```{r queens geno}
-getSegSiteGeno(Colony, caste = "queen")[, 1:10]
+getSegSiteGeno(colony, caste = "queen")[, 1:10]
 ```
 
 now all fathers:
 
 ```{r fathers haplo}
-getSegSiteHaplo(Colony, caste = "fathers")[, 1:10]
+getSegSiteHaplo(colony, caste = "fathers")[, 1:10]
 ```
 
 ```{r fathers geno}
-getSegSiteGeno(Colony, caste = "fathers")[, 1:10]
+getSegSiteGeno(colony, caste = "fathers")[, 1:10]
 ```
 
 each father is listed once (one row per father), but we can retrieve the diploid state, if this is desired (showing just one father to show this clearly):
 
 ```{r fathers haplo 2}
-getSegSiteHaplo(Colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10]
+getSegSiteHaplo(colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10]
 ```
 
 ```{r fathers geno 2}
-getSegSiteGeno(Colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10, drop = FALSE]
+getSegSiteGeno(colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10, drop = FALSE]
 ```
 
 now two workers:
 
 ```{r workers haplo}
-getSegSiteHaplo(Colony, caste = "workers", nInd = 2)[, 1:10]
+getSegSiteHaplo(colony, caste = "workers", nInd = 2)[, 1:10]
 ```
 
 ```{r workers geno}
-getSegSiteGeno(Colony, caste = "workers", nInd = 2)[, 1:10]
+getSegSiteGeno(colony, caste = "workers", nInd = 2)[, 1:10]
 ```
 
 and finally four drones:
 
 ```{r drones haplo}
-getSegSiteHaplo(Colony, caste = "drones", nInd = 4)[, 1:10]
+getSegSiteHaplo(colony, caste = "drones", nInd = 4)[, 1:10]
 ```
 
 ```{r drones geno}
-getSegSiteGeno(Colony, caste = "drones", nInd = 4)[, 1:10]
+getSegSiteGeno(colony, caste = "drones", nInd = 4)[, 1:10]
 ```
 
 You can also use `caste = "all"` to get the haplotypes and phenotypes from every individual in the colony: 
 ```{r Colony haplo}
-getSegSiteHaplo(Colony, caste = "all")[, 1:10]
+getSegSiteHaplo(colony, caste = "all")[, 1:10]
 ```
 
 ```{r drones geno}
-getSegSiteGeno(Colony, caste = "all")[, 1:10]
+getSegSiteGeno(colony, caste = "all")[, 1:10]
 ```
 
 SIMplyBee also has shortcuts for these haplotype and genotype functions to make life a bit easier for the user: 
@@ -138,13 +138,13 @@ Unfortunately, in real life it's almost impossible to get the genotype of every 
 
 Firstly lets assign the genotypes of the drones and of the queen so that they're easier to work with: 
 ```{r assign genotypes of drones and queens }
-genoQ <- getSegSiteGeno(Colony, caste = "queen")
-genoW <- getSegSiteGeno(Colony, caste = "workers")
+genoQ <- getSegSiteGeno(colony, caste = "queen")
+genoW <- getSegSiteGeno(colony, caste = "workers")
 ```
 
 Now lets get the sex of the drones:
 ```{r get drones sex}
-sexW <- getCasteSex(Colony, caste = "workers")
+sexW <- getCasteSex(colony, caste = "workers")
 ```
 
 You have two options when choose what kind of pooled genotypes you would like, using the `type =` argument. 
@@ -179,16 +179,16 @@ This function returns a Genomic Relatedness Matrix (GRM) for honeybees from IBS 
 
 To see this, lets set up the colony genotypes: 
 ```{r genotypes}
- geno <- getSegSiteGeno(Colony, collapse = TRUE)
- genoMeanW <- apply(X = getWorkersSegSiteGeno(Colony), MARGIN = 2, FUN = mean)
- genoMeanD <- apply(X = getDronesSegSiteGeno(Colony), MARGIN = 2, FUN = mean)
+ geno <- getSegSiteGeno(colony, collapse = TRUE)
+ genoMeanW <- apply(X = getWorkersSegSiteGeno(colony), MARGIN = 2, FUN = mean)
+ genoMeanD <- apply(X = getDronesSegSiteGeno(colony), MARGIN = 2, FUN = mean)
  geno <- rbind(geno, genoMeanW, genoMeanD)
  geno[1:10,1:10]
  
  n <- length(rownames(geno))
  rownames(geno)[c(n - 1, n)] <- c("mw", "md")
 
- sex <- getCasteSex(x = Colony, collapse = TRUE)
+ sex <- getCasteSex(x = colony, collapse = TRUE)
  sex <- c(sex, "F", "M")
 ```
 
@@ -220,7 +220,7 @@ And also look at the non-diagonal
 
 You can also compare caste members: 
 ```{r compare caste memebers}
- ids <- getCasteId(Colony) 
+ ids <- getCasteId(colony) 
  idQueen <- ids$queen
  idFathers <- ids$fathers
  idWorkers <- ids$workers
@@ -258,11 +258,11 @@ Now lets calculate IBD GRM, we use haplotypes to do this:
 
 First, we'll set up the haplotypes
 ```{r Set up haplotypes }
- haploQ <- getQueenIbdHaplo(Colony)
- haploF <- getFathersIbdHaplo(Colony)
- haploW <- getWorkersIbdHaplo(Colony)
- haploD <- getDronesIbdHaplo(Colony)
- haploV <- getVirginQueensIbdHaplo(Colony)
+ haploQ <- getQueenIbdHaplo(colony)
+ haploF <- getFathersIbdHaplo(colony)
+ haploW <- getWorkersIbdHaplo(colony)
+ haploD <- getDronesIbdHaplo(colony)
+ haploV <- getVirginQueensIbdHaplo(colony)
  
  haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
 ```
@@ -304,10 +304,10 @@ And now the non-diagonals
 
 Let's compare some of the caste members' whole genomes and individuals
 ```{r}
-  qI <- getQueen(Colony)@id
-  fI <- sort(getFathers(Colony)@id)
-  wI <- sort(getWorkers(Colony)@id)
-  dI <- sort(getDrones(Colony)@id)
+  qI <- getQueen(colony)@id
+  fI <- sort(getFathers(colony)@id)
+  wI <- sort(getWorkers(colony)@id)
+  dI <- sort(getDrones(colony)@id)
   
   qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
   fG <- paste(fI, 1, sep = "_")
