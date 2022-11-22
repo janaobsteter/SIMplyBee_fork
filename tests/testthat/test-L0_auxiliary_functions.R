@@ -321,7 +321,9 @@ test_that("reduceDroneHaplo", {
    tmp <- getSegSiteHaplo(virginQueens)
    df <- as.data.frame(tmp)
    tmpD <- getSegSiteHaplo(drones)
+   mix <- rbind(tmp, tmpD)
 
+ expect_equal(nrow(reduceDroneHaplo(haplo = mix, pop = c(drones, virginQueens))), 6)
  expect_equal(nrow(reduceDroneHaplo(haplo = tmpD, pop = drones)), 2)
  expect_error(reduceDroneHaplo(haplo = vec, pop = drones))
  expect_error(reduceDroneHaplo(haplo = df, pop = drones))
@@ -333,7 +335,7 @@ test_that("reduceDroneHaplo", {
 # ---- reduceDroneGeno ----
 
 test_that("reduceDroneGeno", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 2)
@@ -342,6 +344,7 @@ test_that("reduceDroneGeno", {
   tmp <- getSegSiteGeno(virginQueens)
   df <- as.data.frame(tmp)
   tmpD <- getSegSiteGeno(drones)
+
 
   expect_equal(nrow(reduceDroneGeno(geno = tmpD, pop = drones)), 2)
   expect_error(reduceDroneGeno(geno = tmp, pop = queens))
