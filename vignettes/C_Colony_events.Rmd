@@ -43,14 +43,8 @@ swarmed and are attended by the remnant workers that did not leave with the
 swarm. After few days, the new virgin queens begin to emerge. Typically, the
 first queen to emerge will kill the rest of virgin queens to assume the role as
 the new queen for the colony. She will then go on a mating flight to find drones
-to mate with to begin laying eggs and rebuilding the workforce in the colony.
-
-Clemson Cooperative Extension. (2021). Frequently asked questions about honey
-bee swarms.
-\<<https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms/>,
-accesed on 11.11.2022). Rangel, J., & Seeley, T. D. (2012). Colony fissioning in
-honey bees: size and significance of the swarm fraction. Insectes sociaux,
-59(4), 453-462.
+to mate with to begin laying eggs and rebuilding the workforce in the colony
+(Clemson Cooperative Extension, 2021; Rangel et al., 2012)
 
 In the simulation, we first need to initiate a simulation with 10 base virgin
 queens. We next create a colony (`Colony` class) and an apiary (`MultiColony`
@@ -106,6 +100,7 @@ considered it to be a new colony.
 ```{r saving output of the function}
 colony <- tmp$swarm
 colony1 <- tmp$remnant
+colony <- buildUp(colony)
 ```
 
 After swarming, the colony would usually build-up back to the full size and the
@@ -173,17 +168,16 @@ You can also use a non-fixed `p` parameter by using the function `swarmPUnif`
 that samples the `p` from a uniform distribution between values 0.4 and 0.6
 irrespective of colony strength.
 
-```{r assign swarm back to apiary and build up the apiary and colony}
+```{r assign swarm back to apiary and build up the apiary}
 apiary <- tmp$swarm
 apiary <- buildUp(apiary)
-colony <- buildUp(colony)
 ```
 
 # Splitting
 
 Colony splitting is a common beekeeping technique for managing swarming. A
-percentage of workers, brood and food stores are removed and combined in a new
-colony. Old queen normally stays with splited colony (remnant in our function).
+percentage of workers, brood, and food stores are removed and combined in a new
+colony. Old queen normally stays with split colony (remnant in our function).
 Function works on `Colony` and `Multicolony` objects. Argument `p` is proportion
 of workers that will go to new colony. The output of the function is a list of
 two `Colony` or `MultiColony` objects.
@@ -198,16 +192,20 @@ We see that in remnant is old queen (ID 2), and 70% of workers since we set `p`
 argument to 0.3 meaning that 30% is removed to split. `Has split` is turned to
 `TRUE`.
 
+```{r build up the colony}
+colony <- buildUp(colony)
+```
+
 ```{r inspect the split}
 tmp$split
 ```
 
-In split we have 30% of workers and a virgin queen. `Has split` is turned to
-`TRUE`. `p` argument can be used as it is demonstrated in `swarm` function. We
-can specify a vector with different values when spliting `MultiColony` object.
-`p` argument can be also changed in `SP` object, so we do not specify it each
-time we call the function. We call `SimParamBee$splitP` to change the `p`
-argument in the `SP` object.
+`p` argument can be also put in `SP` object, so we do not specify it each time
+we call the function. We call `SimParamBee$splitP` and assign new `p` argument
+in the `SP` object. In the split we have 30% of workers and a virgin queen.
+`Has split` is turned to `TRUE`. `p` argument can be used as it is demonstrated
+in `swarm` function. We can specify a vector with different values when spliting
+`MultiColony` object.
 
 ```{r split the MultiColony object and inspect the first colony in remnant}
 tmp <- split(apiary, p = 0.3)
@@ -226,7 +224,6 @@ different for each colony same as in `swarm()` function.
 ```{r build up the colony and apaiary for further examples}
 apiary <- tmp$remnant
 apiary <- buildUp(apiary)
-colony <- buildUp(colony)
 ```
 
 # Supersedure
@@ -235,10 +232,7 @@ Supersedure is a replacement of a queen by her daughter without interference of
 beekeeper. Supersedure is a natural way of requeening without swarming. There
 are many reasons for supersedure: poor physical condition of a queen, old age,
 diseases, depleted spermatheca, poorly bread queen, reduced pheromone output and
-many others.
-
-Hamdan, K. (2010). Natural Supersedure of Queens in Honey Bee Colonies. Bee
-World, 87(3), 52-54.
+many others (Hamdan, 2010).
 
 ```{r inspect the colony}
 colony
@@ -301,3 +295,17 @@ collapsed colonies. `collapse()` function is used when you want to keep
 collapsed colonies for subsequent genetic analysis. In case when you don't need
 the collapsed colony you can simply select the survivors with `select()`
 function.
+
+# References
+
+Clemson Cooperative Extension. (2021). Frequently asked questions about honey
+bee swarms.
+\<<https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms/>,
+accesed on 11.11.2022).
+
+Hamdan K. (2010). Natural Supersedure of Queens in Honey Bee Colonies. Bee
+World, 87(3), 52-54.
+
+Rangel J., Seeley T. D. (2012). Colony fissioning in honey bees: size and
+significance of the swarm fraction. Insectes sociaux, 59(4), 453-462.
+
