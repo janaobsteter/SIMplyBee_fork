@@ -1038,7 +1038,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
   }
   if (isColony(x)) {
     if (hasCollapsed(x)) {
-      warning(paste0("The colony ", getId(x), " collapsed. You can only remove individuals from it!"))
+      stop(paste0("The colony ", getId(x), " collapsed, hence can not remove individuals from it!"))
     }
     if (length(p) > 1) {
       warning("More than one value in the p argument, taking only the first value!")
