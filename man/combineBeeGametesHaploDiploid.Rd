@@ -19,11 +19,11 @@ combineBeeGametesHaploDiploid(queen, drones, nProgeny = 1, simParamBee = NULL)
 \code{\link{Pop-class}} with diploid individuals
 }
 \description{
-Level 1 function that produces diploid offspring from a mated queen. Drones are
-  haploid, while the queen is diploid, so we first generate gametes (with
-  recombination) from her and merge them with drone genomes (=gametes), where
-  we randomly re-sample drones to get the desired number of progeny. This is
-  an utility function, and you most likely want to use the
+Level 1 function that produces diploid offspring from a mated queen.
+  Drones are haploid, while the queen is diploid, so we first generate gametes
+  (with recombination) from her and merge them with drone genomes (=gametes),
+  where we randomly re-sample drones to get the desired number of progeny.
+  This is an utility function, and you most likely want to use the
   \code{\link{cross}} function.
 }
 \details{
@@ -36,8 +36,6 @@ founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
-SP$addTraitA(10)
-SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)
 
 queen <- basePop[1]

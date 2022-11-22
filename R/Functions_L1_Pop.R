@@ -658,12 +658,11 @@ createVirginQueens <- function(x, nInd = NULL,
 #' @rdname combineBeeGametes
 #' @title Create diploid gametes from a mated queen
 #'
-#' @description Level 1 function that produces diploid offspring from a mated queen. Queen is
-#'   diploid, while drones are double haploids so we use AlphaSimR diploid
+#' @description Level 1 function that produces diploid offspring from a mated queen.
+#'   Queen is diploid, while drones are double haploids so we use AlphaSimR diploid
 #'   functionality to make this cross, but since drones are double haploids we
 #'   get the desired outcome. This is an utility function, and you most likely
-#'   want to use the \code{\link{cross}}
-#'   functions.
+#'   want to use the \code{\link{cross}} functions.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
 #' @param drones \code{\link{Pop-class}}, with one or more diploid (double
@@ -678,8 +677,6 @@ createVirginQueens <- function(x, nInd = NULL,
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -710,11 +707,11 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' @rdname combineBeeGametesHaploDiploid
 #' @title Create diploid gametes from a mated queen
 #'
-#' @description Level 1 function that produces diploid offspring from a mated queen. Drones are
-#'   haploid, while the queen is diploid, so we first generate gametes (with
-#'   recombination) from her and merge them with drone genomes (=gametes), where
-#'   we randomly re-sample drones to get the desired number of progeny. This is
-#'   an utility function, and you most likely want to use the
+#' @description Level 1 function that produces diploid offspring from a mated queen.
+#'   Drones are haploid, while the queen is diploid, so we first generate gametes
+#'   (with recombination) from her and merge them with drone genomes (=gametes),
+#'   where we randomly re-sample drones to get the desired number of progeny.
+#'   This is an utility function, and you most likely want to use the
 #'   \code{\link{cross}} function.
 #'
 #' @param queen \code{\link{Pop-class}}, with a single diploid individual
@@ -733,8 +730,6 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' queen <- basePop[1]
@@ -868,10 +863,6 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1070,8 +1061,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     if (nInd(DCA) < nD) {
       stop("We ran out of drones in the DCA!")
     }
-    # TODO: We select drones for mating at random, should we use "use"?
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/205
     tmp <- pullInd(pop = DCA, nInd = nD)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remnant
@@ -1111,10 +1100,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1290,25 +1275,25 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' @description Level 1 function that crosses (mates) a virgin queen to a group
 #'   of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
 #'   in a colony (\code{\link{Colony-class}}), or multi-colony (\code{\link{MultiColony-class}}).
-#'   This function does not create any progeny, it only stores the
-#'   mated drones (fathers) so we can later create progeny as needed.
-#'   When input is a  (\code{\link{Colony-class}}) or  (\code{\link{MultiColony-class}}),
-#'   one virgin queens is selected at random, mated, and promoted to the queen of the colony.
-#'   Other virgin queens are destroyed. Mated drones (fathers) are stored for
-#'   producing progeny at a later stage.
+#'   This function does not create any progeny, it only stores the mated drones
+#'   (fathers) so we can later create progeny as needed. When input is a
+#'   (\code{\link{Colony-class}}) or  (\code{\link{MultiColony-class}}), one
+#'   virgin queens is selected at random, mated, and promoted to the queen of
+#'   the colony. Other virgin queens are destroyed. Mated drones (fathers) are
+#'   stored for producing progeny at a later stage.
 #'
 #' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #'   one or more virgin queens / colonies to be mated;
 #' @param drones \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
-#'   group(s) of drones that will be mated with virgin queen(s);
-#'   if there is more than one virgin queen, the user has to provide
-#'   a list of drone \code{\link{Pop-class}}. For this, the user can use
-#'   \code{\link{pullDroneGroupsFromDCA}}
-#' @param crossPlan, named list with names being virgin queen or colony IDs with each
-#'   list element holding the IDs of selected drones. Also see \code{\link{createRandomCrossPlan}}.
-#7    If cross plan is NULL, we cross each virgin queen with the element-wise element
-#'    of \code{drones}, which should be the same length as the number of virgin queens
-#'    If the cross plan is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.
+#'   group(s) of drones that will be mated with virgin queen(s); if there is
+#'   more than one virgin queen, the user has to provide a list of drone
+#'   \code{\link{Pop-class}}. For this, the user can use \code{\link{pullDroneGroupsFromDCA}}
+#' @param crossPlan, named list with names being virgin queen or colony IDs with
+#'   each list element holding the IDs of selected drones. Also see
+#'   \code{\link{createRandomCrossPlan}}. If cross plan is \code{NULL}, we cross
+#'   each virgin queen with the element-wise element of \code{drones}, which
+#'   should be the same length as the number of virgin queens If the cross plan
+#'   is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.
 #' @param checkMating character, throw a warning (when \code{checkMating = "warning"}),
 #'  or stop error (when \code{checkMating = "error"}) when some matings fail (see
 #'  Details)
@@ -1316,18 +1301,18 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'
 #' @details This function changes caste for the mated drones to fathers, and
 #'   mated virgin queens to queens. See examples. This means that you can not
-#'   use these individuals in matings anymore!
+#'   use these individuals in matings any more!
 #'
-#' @seealso \code{\link{Colony-class}} on how we store the fathers along the
-#'   queen.
-#'
-#' @details If the supplied drone population is empty (has 0 individuals), which
+#'   If the supplied drone population is empty (has 0 individuals), which
 #'   can happen in edge cases or when \code{\link{nFathersPoisson}} is used
 #'   instead of \code{\link{nFathersTruncPoisson}}, then mating of a virgin
 #'   queen will fail and she will stay virgin. This can happen for just a few
 #'   of many virgin queens, which can be annoying to track down, but you can use
-#'   \code{\link{isQueen}} or \code{\link{isVirginQueen}}  to find such virgin queens. You can use
-#'   \code{checkMating} to alert you about this situation.
+#'   \code{\link{isQueen}} or \code{\link{isVirginQueen}} to find such virgin
+#'   queens. You can use \code{checkMating} to alert you about this situation.
+#'
+#' @seealso \code{\link{Colony-class}} on how we store the fathers along the
+#'   queen.
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
@@ -1564,10 +1549,6 @@ cross <- function(x, drones,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' SP$addTraitA(10)
-#' SP$addSnpChip(5)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1604,7 +1585,7 @@ setQueensYearOfBirth <- function(x, year) {
     if (isQueenPresent(x)) {
       x@queen <- setMisc(x = x@queen, node = "yearOfBirth", value = year)
     } else {
-      stop("Missing queen!") # TODO: should this be a warning?: https://github.com/HighlanderLab/SIMplyBee/issues/159
+      stop("Missing queen!")
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)

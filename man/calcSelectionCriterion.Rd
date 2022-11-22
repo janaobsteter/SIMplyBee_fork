@@ -7,24 +7,28 @@
 calcSelectionCriterion(
   x,
   queenTrait = 1,
-  queenTraitFUN = mean,
+  queenTraitFUN = sum,
   workersTrait = 2,
-  workersTraitFUN = mean,
+  workersTraitFUN = sum,
   use = "gv"
 )
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
-\item{queenTrait}{numeric, trait that represents queen's contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{queenTrait}{numeric (column position) or character (column name), trait
+that represents queen's effect on the colony value; if \code{NULL} then this contribution is 0}
 
-\item{queenTraitFUN}{function, function that will be applied to the queen trait}
+\item{queenTraitFUN}{function, that will be applied to the queen effect
+values of workers, default is sum (see examples), but note that the correct
+function will depend on how you will setup simulation!}
 
-\item{workersTrait}{numeric, trait that represents workers' contribution
-to the colony value; if \code{NULL} then this contribution is 0}
+\item{workersTrait}{numeric (column position) or character (column name), trait
+that represents workers' effect on the colony value; if \code{NULL} then this contribution is 0}
 
-\item{workersTraitFUN}{function, function that will be applied to the worker trait}
+\item{workersTraitFUN}{function, that will be applied to the workers effect
+values of workers, default is sum (see examples), but note that the correct
+function will depend on how you will setup simulation!}
 
 \item{use}{character, the measure to use for the calculation, being
 either "gv" (genetic value), "ebv" (estimated breeding value),
@@ -37,13 +41,15 @@ integer when \code{x} is
 }
 \description{
 Level 0 function that calculates the selection criterion as the
-  sum of direct and maternal breeding values of a worker group,
-  as described by Du et al., 2021.
+  sum of workers (direct) and queen (maternal) effects of workers,
+  as defined by Du et al. (2021). This can be seen as the expected value
+  of virgin queens from the queen (as well as workers, but we would not be
+  selecting workers).
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-meanA <- c(20, 0)
+meanA <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5,
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
@@ -68,24 +74,29 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary)
 
 calcSelectionCriterion(colony,
-                       queenTrait = 1, queenTraitFUN = mean,
-                       workersTrait = 2, workersTraitFUN = mean)
+                       queenTrait = 1, queenTraitFUN = sum,
+                       workersTrait = 2, workersTraitFUN = sum)
 calcSelectionCriterion(colony,
                        queenTrait = 1, queenTraitFUN = mean,
+                       workersTrait = 2, workersTraitFUN = mean)
+calcSelectionCriterion(apiary,
+                       queenTrait = 1, queenTraitFUN = sum,
                        workersTrait = 2, workersTraitFUN = sum)
 calcSelectionCriterion(apiary,
                        queenTrait = 1, queenTraitFUN = mean,
                        workersTrait = 2, workersTraitFUN = mean)
-calcSelectionCriterion(apiary,
-                       queenTrait = 1, queenTraitFUN = mean,
-                       workersTrait = 2, workersTraitFUN = sum)
 
 apiary[[2]] <- removeQueen(apiary[[2]])
-calcSelectionCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
+calcSelectionCriterion(apiary, queenTrait = 1,
+                       workersTrait = 2, workersTraitFUN = sum)
 
 }
 \references{
-Du, M., Bernstein, R., Hoppe, A. et al. Short-term effects of controlled
-  mating and selection on the genetic variance of honeybee populations.
- Heredity 126, 733–747 (2021). https://doi.org/10.1038/s41437-021-00411-2
+Du, M., et al. (2021) Short-term effects of controlled mating and selection
+  on the genetic variance of honeybee populations. Heredity 126, 733–747.
+  https://doi.org/10.1038/s41437-021-00411-2
+}
+\seealso{
+\code{\link{calcInheritanceCriterion}} and
+  \code{\link{calcPerformanceCriterion}} and  as well as
 }

@@ -3,9 +3,13 @@ title: "SIMplyBee - Genomics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SIMplyBee - Genomics}
+  %\VignetteIndexEntry{Genomics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+editor_options:
+   markdown:
+     wrap: 80
+     canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -23,6 +27,7 @@ This vignette introduces SIMplyBee package by describing and demonstrating how S
  - pooling genotypes 
  - how to compute to genomic relationship matrices 
 
+
  
  Before we begin, lets set up our environment to be able to run our genomics examples. We'll be using the same steps we went through in the honeybee biology vignette. 
 ```{r load package}
@@ -33,6 +38,7 @@ SP$setTrackRec(TRUE)
 
 baseQueens <- createVirginQueens(founderGenomes)
 baseDrones <- createDrones(x = baseQueens[1], nInd = 15)
+
 
 colony <- createColony(x = baseQueens[2])
 colony <- cross(colony, drones = baseDrones)
@@ -45,6 +51,7 @@ colony <- buildUp(colony)
 Honeybees have a haplo-diploid inheritance system where queens and workers are diploid and drones are haploid. In SIMplyBee, we simulate drones as doubled-haploids, that is, as fully homozygous diploid individuals. This means that they have two identical sets of chromosomes. When they produce sperm, their gametes all have the same one set of chromosomes. Despite them being diploid, we generally return a haploid set of chromosomes, unless specifically requested.
 
 SIMplybee has a group of genome retrival functions `get*Haplo/Geno()` which extract haplotypes and genotypes for all segregating sites (`SegSites`), quantitative trait loci (`QTL`), identity by descent (`ibd`), and marker array/chip (`chip`). Here, site, locus and marker are all synonyms for a position in the genome.  These functions leverage AlphaSimR functionality, but work with SIMplyBee's `Colony` or `MultiColony` objects and in addition take the `caste` argument to extract information only for a specific caste. Another argument you can use with this function is `collapse = TRUE/FALSE`. If `collapse = TRUE` then all of the information is squished together and a single matrix is returned, if `collapse = FALSE` we return a list by caste or by colony.  
+
 
 We recommend that you study the index of available `get*()` functions in SIMplyBee and read the genomics vignette for more information.
 
@@ -63,7 +70,9 @@ getSegSiteHaplo(colony, caste = "queen")[, 1:10]
 getSegSiteGeno(colony, caste = "queen")[, 1:10]
 ```
 
+
 now all fathers:
+
 
 ```{r fathers haplo}
 getSegSiteHaplo(colony, caste = "fathers")[, 1:10]
@@ -73,11 +82,13 @@ getSegSiteHaplo(colony, caste = "fathers")[, 1:10]
 getSegSiteGeno(colony, caste = "fathers")[, 1:10]
 ```
 
+
 each father is listed once (one row per father), but we can retrieve the diploid state, if this is desired (showing just one father to show this clearly):
 
 ```{r fathers haplo 2}
 getSegSiteHaplo(colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10]
 ```
+
 
 ```{r fathers geno 2}
 getSegSiteGeno(colony, caste = "fathers", nInd = 1, dronesHaploid = FALSE)[, 1:10, drop = FALSE]
@@ -89,9 +100,11 @@ now two workers:
 getSegSiteHaplo(colony, caste = "workers", nInd = 2)[, 1:10]
 ```
 
+
 ```{r workers geno}
 getSegSiteGeno(colony, caste = "workers", nInd = 2)[, 1:10]
 ```
+
 
 and finally four drones:
 
@@ -102,6 +115,7 @@ getSegSiteHaplo(colony, caste = "drones", nInd = 4)[, 1:10]
 ```{r drones geno}
 getSegSiteGeno(colony, caste = "drones", nInd = 4)[, 1:10]
 ```
+
 
 You can also use `caste = "all"` to get the haplotypes and phenotypes from every individual in the colony: 
 ```{r Colony haplo}
@@ -126,6 +140,7 @@ SIMplyBee also has shortcuts for these haplotype and genotype functions to make 
 - `getDronesSegSitesHaplo()`
 - `getDronesSegSitesGeno()`
 
+
 - `getVirginQueensSegSitesHaplo()`
 - `getVriginQueensSegSitesGeno()`
 
@@ -138,6 +153,7 @@ Firstly lets assign the genotypes of the drones and of the queen so that they're
 genoQ <- getSegSiteGeno(colony, caste = "queen")
 genoW <- getSegSiteGeno(colony, caste = "workers")
 ```
+
 
 Now lets get the sex of the drones:
 ```{r get drones sex}
@@ -171,8 +187,10 @@ Using IBD and IBS can allow a user to looking into the relationships based on th
 We'll demonstrate this by calculating some Genomic Relationship Matrices (GRM) using SIMplyBee's `calcBeeGRMIbs()` and `calcBeeGRMIbd()`.
 
 
+
 Lets look at the `calcBeeGRMIbs()` first.
 This function returns a Genomic Relatedness Matrix (GRM) for honeybees from IBS genomic data (bi-allelic SNP represented as allele dosages) following the method for the sex X chromosome (Druet and Legarra, 2020). 
+
 
 To see this, lets set up the colony genotypes: 
 ```{r genotypes}
@@ -227,6 +245,7 @@ You can also compare caste members:
  md <- "md"
 ```
 
+
 ```{r Queen vs fathers}
    GRM[idQueen, idFathers]
 ```
@@ -235,11 +254,13 @@ You can also compare caste members:
    GRM[idQueen, idWorkers]
 ```
 
+
 ```{r Queen vs drones}
    GRM[idQueen, idDrones]
 ```
 
 Next, we'll look at the `calcBeeAlleleFreq()` function. This function allows you to calculate allele frequencies from honeybee genotypes and works similarly to `calcBeeGRMIbs()`. 
+
 
 ```{r  alleleFreq}
 alleleFreq <- calcBeeAlleleFreq(x = geno, sex = sex)
@@ -250,6 +271,7 @@ Now lets look at `calcBeeGRMIbd()`.
 This function creates Genomic Relatedness Matrix (GRM) for honeybees from Identical By Descent genomic data, defined as those originating from the same allele of the base population. It returns a list with a matrix of gametic relatedness coefficients (genome) and a matrix of individual relatedness coefficients (indiv). 
 
 In order to create this functions we referred to Grossman and Eisen (1989), Fernando and Grossman (1989), Fernando and Grossman (1990), Van Arendonk, Tier, and Kinghorn (1994) and Hill and Weir (2011). See the functions documentation for more information regarding the references used. 
+
 
 Now lets calculate IBD GRM, we use haplotypes to do this:
 
@@ -269,6 +291,7 @@ Now calculate the IBD GRM
  GRMs <- calcBeeGRMIbd(x = haplo)
 ```
 
+
 Let's check out this large matrix: 
 ```{r  view calcGRMIbd}
  library("Matrix"); image(as(GRMs$genome, "Matrix"))
@@ -286,6 +309,7 @@ Now we can look at the diagonal of the matrix of the whole genome and of the ind
  hist(i)
  summary(i)
 ```
+
 
 And now the non-diagonals
 ```{r  view non-diagonal}
@@ -327,8 +351,6 @@ Let's compare some of the caste members' whole genomes and individuals
   GRMs$genome[dG, qG]
   GRMs$indiv[dI, qI]
 ```
-
-
 
 As demonstrate above, we can look at the non-diagonal: 
 ```{r view non-diagonal}

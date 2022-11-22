@@ -45,8 +45,8 @@ Sample the split proportion - proportion of removed workers in a
   \code{splitPColonyStrength} samples from a beta distribution with mean
   \code{a / (a + b)}, where \code{a = nWorkers + nWorkersFull} and \code{b =
   nWorkers}. This beta sampling mimics larger splits for strong colonies and
-  smaller splits for weak colonies - see examples. This is just an example,
-  based on practical experience!
+  smaller splits for weak colonies - see examples. This is just an example -
+  adapt to your needs!
 
   The \code{nWorkersFull} default value used in this function is geared
   towards a situation where we simulate ~100 workers per colony (down-scaled

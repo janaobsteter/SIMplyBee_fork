@@ -134,5 +134,6 @@ SIMplyBee:::getDd(apiary, caste = "all")
 SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{dd}}
+\code{\link{dd}} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

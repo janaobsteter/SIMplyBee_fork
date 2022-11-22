@@ -61,8 +61,8 @@ SP <- SimParamBee$new(founderGenomes)
 # 2) workers' effect on colony honey yield, say via foraging ability phenotype
 # The traits will have a negative genetic correlation of -0.5 and heritability
 # of 0.25 (on an individual level)
-mean <- c(20, 0)
 nWorkers <- 10
+mean <- c(10, 10 / nWorkers)
 varA <- c(1, 1 / nWorkers)
 corA <- matrix(data = c(
   1.0, -0.5,
@@ -97,24 +97,6 @@ calcColonyPheno(apiary)
 # ... genetic value
 calcColonyGv(colony)
 calcColonyGv(apiary)
-# ... breeding value
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# calcColonyBv(colony)
-# calcColonyBv(apiary)
-# ... dominance value
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# calcColonyDd(colony)
-# calcColonyDd(apiary)
-# ... epistasis value
-# TODO: Uncomment getQueenBv() with nTrait>1 once AlphaSimR bug is solved
-#   https://github.com/gaynorr/AlphaSimR/issues/83
-#   https://github.com/HighlanderLab/SIMplyBee/issues/399
-# calcColonyAa(colony)
-# calcColonyAa(apiary)
 
 # Colony value - long version
 # (using the default mapCasteToColony*() function - you can provide yours instead!)
@@ -129,5 +111,6 @@ calcColonyValue(apiary)
 
 }
 \seealso{
-\code{\link{mapCasteToColonyValue}} as an example of \code{FUN}
+\code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

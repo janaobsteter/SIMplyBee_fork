@@ -134,5 +134,6 @@ SIMplyBee:::getAa(apiary, caste = "all")
 SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{dd}}
+\code{\link{dd}} and
+  \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }
