@@ -33,11 +33,8 @@ SIMplyBee implements honeybee biology. Specifically, it describes:
 
 4.  Complementary sex determining (*CSD*) locus
 
-First, you need to install the package:
-
-```{r}
-install.packages(pkg = "SIMplyBee")
-```
+First, you need to install the package with
+`install.packages(pkg = "SIMplyBee")`.
 
 Now load the package and dive in!
 
@@ -445,3 +442,4 @@ brood, and the expected proportion of homozygous brood.
 ```{r queens counters}
 getMisc(getQueen(inbredColony))
 ```
+
