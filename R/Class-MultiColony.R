@@ -132,14 +132,23 @@ setMethod(
   definition = function(object) {
     cat("An object of class", classLabel(class(object)), "\n")
     cat("Number of colonies:\n")
-    cat("  proper:", nColonies(object), "\n")
+    cat("  populated:", nColonies(object), "\n")
     cat("  empty:", nEmptyColonies(object), "\n")
     cat("  NULL:", nNULLColonies(object), "\n")
-    cat("  has split:", sum(hasSplit(object)), "\n")
-    cat("  has swarmed:", sum(hasSwarmed(object)), "\n")
-    cat("  has superseded:", sum(hasSuperseded(object)), "\n")
-    cat("  has collapsed:", sum(hasCollapsed(object)), "\n")
-    cat("  is productive:", sum(isProductive(object)), "\n")
+    sel <- !(isNULLColonies(object) | isEmpty(object))
+    if (any(sel)) {
+      cat("  has split:", sum(hasSplit(object[sel])), "\n")
+      cat("  has swarmed:", sum(hasSwarmed(object[sel])), "\n")
+      cat("  has superseded:", sum(hasSuperseded(object[sel])), "\n")
+      cat("  has collapsed:", sum(hasCollapsed(object[sel])), "\n")
+      cat("  is productive:", sum(isProductive(object[sel])), "\n")
+    } else {
+      cat("  has split: 0 \n")
+      cat("  has swarmed: 0 \n")
+      cat("  has superseded: 0 \n")
+      cat("  has collapsed: 0 \n")
+      cat("  is productive: 0 \n")
+    }
     invisible()
   }
 )
