@@ -45,10 +45,10 @@ emptyApiary
 ```
 
 Let's inspect the printout of the `MultiColony` object. This tells use how many
-colonies within it are `proper`, meaning they contain some individuals, how many
-are `empty` and contain no individuals, how many are `NULL` objects, how many
-have experienced a split, swarm, supersedure, or a collapse (you can read more
-about this events in the Colony events vignette), and how many of them are
+colonies within it are `populated`, meaning they contain some individuals, how
+many are `empty` and contain no individuals, how many are `NULL` objects, how
+many have experienced a split, swarm, supersedure, or a collapse (you can read
+more about this events in the Colony events vignette), and how many of them are
 productive, meaning that we can collect a production phenotype from them (i.e.
 honey).
 
@@ -191,4 +191,3 @@ droneGroups <- pullDroneGroupsFromDCA(DCA, n = nColonies(apiary2), nDrones = nFa
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```
-

@@ -179,7 +179,7 @@ apiary <- tmp$swarm
 apiary <- buildUp(apiary)
 ```
 
-# Splitting
+# Split
 
 Colony splitting is a common beekeeping technique for managing swarming. A
 percentage of workers, brood, and food stores are removed and combined in a new
@@ -337,4 +337,3 @@ World, 87(3), 52-54.
 
 Rangel J., Seeley T. D. (2012). Colony fissioning in honey bees: size and
 significance of the swarm fraction. Insectes sociaux, 59(4), 453-462.
-

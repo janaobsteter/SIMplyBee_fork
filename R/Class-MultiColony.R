@@ -132,7 +132,7 @@ setMethod(
   definition = function(object) {
     cat("An object of class", classLabel(class(object)), "\n")
     cat("Number of colonies:\n")
-    cat("  proper:", nColonies(object), "\n")
+    cat("  populated:", nColonies(object), "\n")
     cat("  empty:", nEmptyColonies(object), "\n")
     cat("  NULL:", nNULLColonies(object), "\n")
     cat("  has split:", sum(hasSplit(object)), "\n")

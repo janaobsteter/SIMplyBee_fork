@@ -23,14 +23,18 @@ knitr::opts_chunk$set(
 # Introduction
 
 SIMplyBee includes functions to sample the number or percentage of caste
-individuals. First, there are functions to sample the number of caste
-individuals from either a Poisson or truncated Poisson distribution:
-`n*Poisson()` and `n*TruncPoisson()`, where `*` is either `Workers`, `Drones`,
-`VirginQueens`, or `Fathers`. Most SIMplyBee functions that take the number of
-individuals as an argument can accept these sampling functions as input, meaning
-that the output of such function calls will be stochastic. These functions are
-useful when you want to sample a variable number of individuals around a mean,
-as for example when mating virgin queens.
+individuals.
+
+# Functions to sample numbers
+
+First, there are functions to sample the number of caste individuals from either
+a Poisson or truncated Poisson distribution: `n*Poisson()` and
+`n*TruncPoisson()`, where `*` is either `Workers`, `Drones`, `VirginQueens`, or
+`Fathers`. Most SIMplyBee functions that take the number of individuals as an
+argument can accept these sampling functions as input, meaning that the output
+of such function calls will be stochastic. These functions are useful when you
+want to sample a variable number of individuals around a mean, as for example
+when mating virgin queens.
 
 Let's start again with creating a DCA and an apiary with 10 virgin colonies, as
 seen before.
@@ -75,7 +79,7 @@ nFathers(apiary)
 mean(nFathers(apiary))
 ```
 
-Next, we have a group of functions that will sample the number of individuals
+Second, we have a group of functions that will sample the number of individuals
 according to the colony phenotype, whatever that might be. These functions are
 named `n*ColonyPhenotype()`, where `*` is either is either `Workers`, `Drones`,
 or `VirginQueens`. An example of this would be sampling the number of workers
@@ -83,13 +87,15 @@ and drones according to queen's fecundity or honey yield. An example of this can
 be seen in the quantitative genetics vignette in the "Strength and honey yield"
 example.
 
-Lastly, there are functions to sample the proportions of workers that leave or
-are removed when downsizing, splitting, or swarming a colony from either a
-uniform distribution or from a beta distribution that accounts for the number of
-individuals in a colony (colony strength). These functions are named `*PUnif()`,
-where `*` can be either `swarm`, `split`, or `downsize`. There is an additional
-function, `splitPColonyStrength()`, that determined the number of workers to be
-removed in a split according to the colony strength.
+# Functions that sample proportions
+
+SIMplyBee also includes functions to sample the proportions of workers that
+leave or are removed when downsizing, splitting, or swarming a colony from
+either a uniform distribution or from a beta distribution that accounts for the
+number of individuals in a colony (colony strength). These functions are named
+`*PUnif()`, where `*` can be either `swarm`, `split`, or `downsize`. There is an
+additional function, `splitPColonyStrength()`, that determined the number of
+workers to be removed in a split according to the colony strength.
 
 Let's say we want to swarm all the colonies in our apiary with a variable
 percentage of workers that leave. We want to sample the percentage of workers
@@ -114,3 +120,4 @@ nWorkers(tmp$swarm)
 We see that each colony swarmed with a different percentage between 0.5 and 0.7.
 
 TODO: Do you think we need to add a splitPColonyStrength example?
+
