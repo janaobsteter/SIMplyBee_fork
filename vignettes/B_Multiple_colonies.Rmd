@@ -44,6 +44,14 @@ emptyApiary <- createMultiColony()
 emptyApiary
 ```
 
+Let's inspect the printout of the `MultiColony` object. This tells use how many
+colonies within it are `populated`, meaning they contain some individuals, how
+many are `empty` and contain no individuals, how many are `NULL` objects, how
+many have experienced a split, swarm, supersedure, or a collapse (you can read
+more about this events in the Colony events vignette), and how many of them are
+productive, meaning that we can collect a production phenotype from them (i.e.
+honey).
+
 The second option is again to create an empty `MultiColony` object that
 represents an empty apiary without any individuals within, but with a defined
 number of colony slots.
@@ -85,6 +93,8 @@ isQueenPresent(apiary1)
 isVirginQueensPresent(apiary1)
 ```
 
+# MultiColony operations
+
 Once we have a non-empty `MultiColony` object, we can do some basic operations
 on it. First, we can select some of colonies by either specifying the IDs,
 desired number or percentage of randomly selected colonies.
@@ -115,6 +125,8 @@ Third, we can also remove some colonies from the `MultiColony` object with
 removeColonies(apiary1, ID = 13)
 ```
 
+# Crossing a MultiColony
+
 Next, we will cross all the virgin queens in the apiary with the `cross()`
 function to groups of drones that we collected from the DCA with the
 `pullDroneGroupsFromDCA()` function.
@@ -134,8 +146,8 @@ directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`,
 add, replace, or remove individuals from the castes. Let's say we know want to
 build up all the colonies in our apiary. We can use the `pullColonies()` or
 `selectColonies()` to subset the colonies that will for example swarm, collapse,
-or supersede, or the ones that we decided to split (check out the Colony events
-vignette).
+or supersede (presented in the Colony events vignette), or the ones that we
+decided to split (check out the Colony events vignette).
 
 ```{r}
 # Build-up all the colonies in the apiary1
@@ -179,4 +191,3 @@ droneGroups <- pullDroneGroupsFromDCA(DCA, n = nColonies(apiary2), nDrones = nFa
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```
-

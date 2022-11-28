@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 This vignette will introduce you to colony events. We implemented the most
 important natural events like swarming, supersedure, and collapse of the colony,
 and a beekeeping management practice called splitting. All functions that
-implement colony events work both on `Colony` and `MultyColony` objects.
+implement colony events work both on `Colony` and `MultiColony` objects.
 
 # Swarming
 
@@ -67,12 +67,13 @@ apiary <- cross(apiary, drones = fatherGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100, nDrones = 20, exact = TRUE)
 ```
 
-We developed a function `swarm()` that simulates swarming. The function takes a
-`Colony` class object and a percentage `p` of workers that leave with the swarm.
-The function returns is a list with two `Colony` clas objects, `swarm` and
-`remnant`. The `swarm` contains the old queen and `p` percentage of workers that
-left the hive. The `remnant` contains the rest of workers `(1-p)`, all the
-drones, and virgin queens that are daughters of the old queen that swarmed.
+In SIMplyBee, we developed a function `swarm()` that simulates swarming. The
+function takes a `Colony` class object and a percentage `p` of workers that
+leave with the swarm. The function returns is a list with two `Colony` class
+objects, `swarm` and `remnant`. The `swarm` contains the old queen and `p`
+percentage of workers that left the hive. The `remnant` contains the rest of
+workers `(1-p)`, all the drones, and virgin queens that are daughters of the old
+queen that swarmed.
 
 Let's swarm our `colony`. Since the output of a function is a list with
 colonies, we must save it in a new (temporary) object.
@@ -83,14 +84,18 @@ tmp
 ```
 
 The function returns two colonies: `remnant` and `swarm`. The `remnant` colony
-does not have queen but has one virgin queen that must be mated. It also has 60
-workers since we set `p` argument to 0.4 meaning that 40% of workers will leave
-with the swarm. All the drones remained in the `remnant` and `Has swarmed` has
-turned to `TRUE`.
+does not have a queen but has one virgin queen that must be mated. It also has
+60 workers since we set `p` argument to 0.4, meaning that 40% of workers will
+leave with the swarm. All the drones remained in the `remnant` and that `swarm`
+is turned to `TRUE`.
 
 The `swarm` contains the old queen, no virgin queens, and 40 workers, since we
-set the proportion `p` to 0.4. Same as in the `remnant`, the `Has swarmed` has
+set the proportion `p` to 0.4. Same as in the `remnant`, the `swarm` status is
 turned to `TRUE` in the `swarm`.
+
+Swarming also turns the `production` slot to FALSE for both, the `swarm` and the
+`remnant` colony, since in reality, you would not be able to collect honey from
+such colonies (or other products).
 
 The `swarm` stays genetically identical to the "old" colony, although downsized.
 Hence, we assign the `swarm` back to the original colony. The `remnant` has a
@@ -104,7 +109,8 @@ colony <- buildUp(colony)
 ```
 
 After swarming, the colony would usually build-up back to the full size and the
-virgin queens would mate.
+virgin queens would mate. Building-up a colony turns the `production` status
+back to `TRUE`, since we assume, the colonies are at their full-size.
 
 Instead of setting the `p` everytime we call the `swarm()` function, we can save
 the `swarmP` argument in the `SimParamBee` object. The `swarm()` function will
@@ -122,7 +128,7 @@ SP$swarmP
 ```
 
 We swarm a `MultiColony` object is the same was we swarm a single `Colony` -
-with the `swarm()` function. The `swarm()`function is here applied to each
+with the `swarm()` function. The `swarm()` function is here applied to each
 colony in the `MultiColony()` object with the same parameters. The function now
 returns two `MultiColony()` objects - one containing the `swarms` and the other
 containing the `remnants`.
@@ -145,8 +151,8 @@ tmp$remnant[[3]]
 ```
 
 We see that the the third colony was swarmed with `p` of 35% as specified in the
-`SimParamBee`, hence the swarm left with 35 workers and the old queen and the
-remnant stayed with a new virgin queen and 65 workers.
+`SimParamBee`, hence the swarm left with 35 workers and the old queen, and the
+remnant stayed behind with a new virgin queen and 65 workers.
 
 Above, all the colonies in a `MultiColony` are swarmed with the same percentage.
 However, we can also specify a different `p` for each colony.
@@ -156,7 +162,7 @@ tmp <- swarm(apiary, p = c(0.3, 0.4, 0.5, 0.6, 0.7, 0.8))
 ```
 
 If we now inspect the first and the second swarm, we see that each colony has a
-different percentage of workers that stayed and left
+different percentage of workers that stayed or left.
 
 If you want to track the genetics, you would assign the swarms back to the
 original apiary and create a new apiary from the remnant. However, if you want
@@ -166,21 +172,23 @@ a new apiary or be lost.
 
 You can also use a non-fixed `p` parameter by using the function `swarmPUnif`
 that samples the `p` from a uniform distribution between values 0.4 and 0.6
-irrespective of colony strength.
+irrespective of the colony strength.
 
 ```{r assign swarm back to apiary and build up the apiary}
 apiary <- tmp$swarm
 apiary <- buildUp(apiary)
 ```
 
-# Splitting
+# Split
 
 Colony splitting is a common beekeeping technique for managing swarming. A
 percentage of workers, brood, and food stores are removed and combined in a new
-colony. Old queen normally stays with split colony (remnant in our function).
-Function works on `Colony` and `Multicolony` objects. Argument `p` is proportion
-of workers that will go to new colony. The output of the function is a list of
-two `Colony` or `MultiColony` objects.
+colony. Old queen normally stays with split colony (remnant in our function). We
+created a function `split()` that works on `Colony` and `Multicolony` objects.
+Argument `p` is proportion of workers that will go to new colony. The output of
+the function is a list of two `Colony` or `MultiColony` objects. The `split()`
+function follows the same principles as the `swarm()`, hence we will spent less
+time explaining the outputs.
 
 ```{r split a colony}
 tmp <- split(colony, p = 0.3)
@@ -188,31 +196,39 @@ colony <- tmp$remnant
 colony
 ```
 
-We see that in remnant is old queen (ID 2), and 70% of workers since we set `p`
-argument to 0.3 meaning that 30% is removed to split. `Has split` is turned to
-`TRUE`.
+We see that remnant contains the old queen (ID 2), and 70% of workers since we
+set `p` argument to 0.3, meaning that 30% of workers are removed in the split.
+The `split` status of the `remnant` colony is turned to `TRUE`. The `production`
+status of the `remnant` stays `TRUE`, because in reality we always split a
+colony in a way that does not threaten the production of the remnant colony.
+
+After a split, the colony would build-up back to their full-size.
 
 ```{r build up the colony}
 colony <- buildUp(colony)
 ```
 
+If we inspect the `split`, we see that it contains 30% of the workers, the
+`split` status is turned to `TRUE`, and the `production` status is turned to
+`FALSE`, since in reality, these small colonies would not be productive.
+
 ```{r inspect the split}
 tmp$split
 ```
 
-`p` argument can be also put in `SP` object, so we do not specify it each time
-we call the function. We call `SimParamBee$splitP` and assign new `p` argument
-in the `SP` object. In the split we have 30% of workers and a virgin queen.
-`Has split` is turned to `TRUE`. `p` argument can be used as it is demonstrated
-in `swarm` function. We can specify a vector with different values when spliting
-`MultiColony` object.
+The `p` argument for splitting can be also saved in `SP` object, so we do not
+specify it each time we call the function. We call `SimParamBee$splitP` and
+assign new `p` argument in the `SP` object.
+
+We split a `MultiColony` object in the same way we split a `Colony` (as shown in
+swarm).
 
 ```{r split the MultiColony object and inspect the first colony in remnant}
 tmp <- split(apiary, p = 0.3)
 tmp$remnant[[1]]
 ```
 
-Now we see that in remnant we have mated queen and 70 workers...
+We again see that in remnant we have mated queen and 70 workers...
 
 ```{r inspect the split of the first colony}
 tmp$split[[1]]
@@ -220,6 +236,9 @@ tmp$split[[1]]
 
 and a virgin queen with 30 workers in split. We can use the vector of `p`,
 different for each colony same as in `swarm()` function.
+
+After the split, we would assign the remnant colonies back to the apiary and
+build them up.
 
 ```{r build up the colony and apaiary for further examples}
 apiary <- tmp$remnant
@@ -238,33 +257,39 @@ many others (Hamdan, 2010).
 colony
 ```
 
+SIMplyBee contains a function `supersede()` that removes the old queen and
+triggers the creation of new virgin queens from the brood. The function returns
+a single `Colony` or `MultiColony` object (not a list of two).
+
 ```{r supersede Colony object}
 colony <- supersede(colony)
 colony
 ```
 
-Now, the old queen is removed and virgin queen ready to mate. We also see that
-`Has superseded` event is set to `TRUE`. The function `supersede()` works both
-on `Colony` and `MultiColony` classes. We can select percentage of colonies from
+We see that after a supersedure, the old queen is removed and a new virgin queen
+is ready to mate. Hence, the next step in the simulation would be to cross this
+virgin queen. We also see that the `supersedure` status is set to `TRUE`. The
+`production` status stay set to `TRUE`, since the colony did not loose any
+individuals (stayed at it's full-size).
+
+The function `supersede()` works both on `Colony` and `MultiColony` classes. We
+supersede a `MultiColony` in a same way as a `Colony`.
 
 ```{r supersede Multicolony object}
 apiary <- supersede(apiary)
-apiary[[2]]
+apiary
 ```
-
-We do the supersedure of `MultiColony` in a same way as it is described as
-described above in `Colony` . We don't have to assign the output of the function
-to a special object since the output is single `Colony` or `MultiColony` object
-and not a list of two.
 
 # Collapse
 
-Collapse of the colony is a term that describes death of a colony. All
+Collapse of the colony is a term that describes the death of a colony. All
 individuals within a colony die when collapse occurs. There are many reasons for
-collapse of a honey bee colony like: diseases, starvation, queen problems,
+the collapse of a honey bee colony: diseases, starvation, queen problems, and
 environmental and in-hive contamination with pesticides. Colony losses can be
 very high, up to 60% of colonies per year. High colony losses can significantly
-influence genetic structure of a population.
+influence genetic structure of a population and genetic gain.
+
+Let's again create a fresh colony and an apiary.
 
 ```{r create the colony and Mlticolony }
 colony <- createColony(x = basePop[20])
@@ -276,25 +301,29 @@ apiary <- cross(apiary, drones = fatherGroups[21:26])
 apiary <- buildUp(apiary, nWorkers = 100, nDrones = 20, exact = TRUE)
 ```
 
+SIMplyBee includes a function `collapse()` that simulates the collapse of a
+colony. This function does not remove individuals from the colony, but sets the
+`collapse()` status of the colony to `TRUE` and `production` status to `FALSE`.
+In reality, bees would still be present in the colony, although dead. This
+allows us to extract any genetic material from the colony even after collapse.
+However, future operations in terms of reproduction or simulation of events are
+not allowed with a collapsed colony.
+
 ```{r collapse the colony}
 colony <- collapse(colony)
 colony
 ```
 
-The output of the function is `Colony` with the `Has collapsed` set to `TRUE`.
+The function works also `MultiColony` objects. `collapse()` function is used
+when you want to keep collapsed colonies for subsequent genetic analysis. In
+case when you don't need the collapsed colony, you can simply select the
+survivors with `selectColonies()` function.
 
 ```{r collapse the MultiColony}
 apiary <- collapse(apiary)
 apiary[[3]]
+apiary
 ```
-
-The function works also `MultiColony` objects. Colonies from `MultiColony` are
-selected by using function `pullColonies()` with arguments `n` specifying exact
-number of collapsed colonies or with `p` argument specifying the percentage of
-collapsed colonies. `collapse()` function is used when you want to keep
-collapsed colonies for subsequent genetic analysis. In case when you don't need
-the collapsed colony you can simply select the survivors with `select()`
-function.
 
 # References
 
@@ -308,4 +337,3 @@ World, 87(3), 52-54.
 
 Rangel J., Seeley T. D. (2012). Colony fissioning in honey bees: size and
 significance of the swarm fraction. Insectes sociaux, 59(4), 453-462.
-
