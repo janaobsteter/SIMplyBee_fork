@@ -131,15 +131,23 @@ setMethod(
   signature(object = "MultiColony"),
   definition = function(object) {
     cat("An object of class", classLabel(class(object)), "\n")
-    cat("Number of colonies:\n")
-    cat("  populated:", nColonies(object), "\n")
-    cat("  empty:", nEmptyColonies(object), "\n")
-    cat("  NULL:", nNULLColonies(object), "\n")
-    cat("  has split:", sum(hasSplit(object)), "\n")
-    cat("  has swarmed:", sum(hasSwarmed(object)), "\n")
-    cat("  has superseded:", sum(hasSuperseded(object)), "\n")
-    cat("  has collapsed:", sum(hasCollapsed(object)), "\n")
-    cat("  is productive:", sum(isProductive(object)), "\n")
+    cat("Number of colonies:", nColonies(object), "\n")
+    cat("Are empty:", nEmptyColonies(object), "\n")
+    cat("Are NULL:", nNULLColonies(object), "\n")
+    sel <- !(isNULLColonies(object) | isEmpty(object))
+    if (any(sel)) {
+      cat("Have split:", sum(hasSplit(object[sel])), "\n")
+      cat("Have swarmed:", sum(hasSwarmed(object[sel])), "\n")
+      cat("Have superseded:", sum(hasSuperseded(object[sel])), "\n")
+      cat("Have collapsed:", sum(hasCollapsed(object[sel])), "\n")
+      cat("Are productive:", sum(isProductive(object[sel])), "\n")
+    } else {
+      cat("Have split: 0 \n")
+      cat("Have swarmed: 0 \n")
+      cat("Have superseded: 0 \n")
+      cat("Have collapsed: 0 \n")
+      cat("Are productive: 0 \n")
+    }
     invisible()
   }
 )
