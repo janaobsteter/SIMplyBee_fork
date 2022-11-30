@@ -134,7 +134,11 @@ setMethod(
     cat("Number of colonies:", nColonies(object), "\n")
     cat("Are empty:", nEmptyColonies(object), "\n")
     cat("Are NULL:", nNULLColonies(object), "\n")
-    sel <- !(isNULLColonies(object) | isEmpty(object))
+    if (nColonies(object) > 1) {
+      sel <- !(isNULLColonies(object) | isEmpty(object))
+    } else {
+      sel <- FALSE
+    }
     if (any(sel)) {
       cat("Have split:", sum(hasSplit(object[sel])), "\n")
       cat("Have swarmed:", sum(hasSwarmed(object[sel])), "\n")
