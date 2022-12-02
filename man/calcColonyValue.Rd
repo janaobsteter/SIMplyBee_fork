@@ -111,6 +111,8 @@ calcColonyValue(apiary)
 
 }
 \seealso{
-\code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+\code{\link{mapCasteToColonyValue}} as an example of \code{FUN},
+  \code{\link{selectColonies}} for example for to select colonies based
+  on these values, and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

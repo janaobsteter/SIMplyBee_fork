@@ -1824,20 +1824,20 @@ isProductive <- function(x) {
 #' Wallberg, A., Bunikis, I., Pettersson, O.V. et al.
 #'   A hybrid de novo genome assembly of the honeybee, Apis mellifera,
 #'   with chromosome-length scaffolds. 2019, BMC Genomics 20:275.
-#'   https://doi.org/10.1186/s12864-019-5642-0
+#'   \doi{/10.1186/s12864-019-5642-0}
 #'
 #' Beye M, Gattermeier I, Hasselmann M, et al. Exceptionally high levels
 #'   of recombination across the honey bee genome.
-#'   2006, Genome Res 16(11):1339-1344. doi:10.1101/gr.5680406
+#'   2006, Genome Res 16(11):1339-1344. \doi{/10.1101/gr.5680406}
 #'
 #' Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
 #'   genome sequence variation provides insight into the evolutionary
 #'   history of the honeybee Apis mellifera.
-#'   2014, Nat Genet 46:1081–1088. https://doi.org/10.1038/ng.3077
+#'   2014, Nat Genet 46:1081–1088. \doi{/10.1038/ng.3077}
 #'
 #' Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
 #'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
-#'   2015, Nature 523(7561):463-7. doi: 10.1038/nature14649.
+#'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649.}
 #'
 #' @examples
 #' # founderGenomes <- simulateHoneyBeeGenomes(
@@ -4765,7 +4765,7 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #'
 #' @references Druet and Legarra (2020) Theoretical and empirical comparisons of
 #'   expected and realized relationships for the X-chromosome. Genetics
-#'   Selection Evolution, 52:50 \url{https://doi.org/10.1186/s12711-020-00570-6}
+#'   Selection Evolution, 52:50 \doi{/10.1186/s12711-020-00570-6}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -4912,23 +4912,23 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' @references
 #' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
 #'   relatives for X-chromosomal loci. The Journal of Heredity,
-#'   \url{https://doi.org/10.1093/oxfordjournals.jhered.a110812}
+#'   \doi{/10.1093/oxfordjournals.jhered.a110812}
 #'
 #' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
 #'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
-#'   \url{https://doi.org/10.1007/bf00305821}
+#'   \doi{/10.1007/bf00305821}
 #'
 #' Fernando and Grossman (1990) Genetic evaluation with autosomal
 #'   and X-chromosomal inheritance. Theoretical and Applied Genetics,
-#'   \url{https://doi.org/10.1007/bf00224018}
+#'  \doi{/10.1007/bf00224018}
 #'
 #' Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
 #'   prediction of breeding values. Genetics,
-#'   \url{https://doi.org/10.1093/genetics/137.1.319}
+#'  \doi{/10.1093/genetics/137.1.319}
 #'
 #' Hill and Weir (2011) Variation in actual relationship as a consequence of
 #'   Mendelian sampling and linkage. Genetics Research,
-#'   \url{https://doi.org/10.1017/s0016672310000480}
+#'   \doi{/10.1017/s0016672310000480}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -5187,6 +5187,7 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
     ret <- NULL
   } else if (isPop(x)) {
     ret <- pheno(pop = x)
+    rownames(ret) <- x@id
   } else if (isColony(x)) {
     if (is.null(caste)) {
       warning("Caste not provided, returning info for all castes!")
@@ -5208,11 +5209,12 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order")
       if (is.null(tmp)) {
         ret <- NULL
       } else {
         ret <- pheno(pop = tmp)
+        rownames(ret) <- tmp@id
       }
     }
   } else if (isMultiColony(x)) {
@@ -5283,7 +5285,9 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN} and
+#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN},
+#'   \code{\link{selectColonies}} for example for to select colonies based
+#'   on these values, and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
@@ -5417,7 +5421,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   https://doi.org/10.1038/s41437-021-00411-2
+#'   \doi{/10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5530,7 +5534,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   https://doi.org/10.1038/s41437-021-00411-2
+#'   \doi{/10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5647,7 +5651,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   https://doi.org/10.1038/s41437-021-00411-2
+#'   \doi{/10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5850,6 +5854,7 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
     ret <- NULL
   } else if (isPop(x)) {
     ret <- gv(pop = x)
+    rownames(ret) <- x@id
   } else if (isColony(x)) {
     if (is.null(caste)) {
       warning("Caste not provided, returning info for all castes!")
@@ -5871,11 +5876,12 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order")
       if (is.null(tmp)) {
         ret <- NULL
       } else {
         ret <- gv(pop = tmp)
+        rownames(ret) <- tmp@id
       }
     }
   } else if (isMultiColony(x)) {

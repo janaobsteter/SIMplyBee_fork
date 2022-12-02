@@ -1,7 +1,14 @@
 ---
 title: "SIMplyBee - Crossing"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  pdf_document: null
+  toc: yes
+  number_sections: yes
+  highlight: default
+  fig_caption: yes
+  html_document:
+    df_print: paged
 vignette: >
   %\VignetteIndexEntry{Crossing}
   %\VignetteEngine{knitr::rmarkdown}
@@ -28,6 +35,12 @@ virgin queen in a colony (class `Colony`), or all the virgin queens in an apiary
 or population (class `MultiColony`); \* cross either with pre-selected
 population/group of drones or according to a cross plan. \* cross queens on an
 open DCA or mating station
+
+We again load the package, if we haven't already.
+
+```{r}
+library(package = "SIMplyBee")
+```
 
 First, we have to create a founder population and some virgin queen, virgin
 colonies, and virgin apiaries that we will later cross.
@@ -204,14 +217,22 @@ plans into one. Let's mate the multicolony `apiary4` in such a manner.
 ```{r}
 # Create a single drone for single drone insemination
 singleDrone = createDrones(colony2, nInd = 1)
-# Create a cross plan for crossinge some of the colonies in an open DCA, some with single drone, and some on a mating station
+# Create a cross plan for crossing some of the colonies in an open DCA, 
+# some with single drone, and some on a mating station
 crossPlanApiary4 <- c(
-  createRandomCrossPlan(IDs = getId(apiary4)[1], drones = singleDrone, nDrones = 1),
-  createRandomCrossPlan(IDs = getId(apiary4)[2:6], drones = DCA, nDrones = nFathersTruncPoisson),
-  createRandomCrossPlan(IDs = getId(apiary4)[7:10], drones = matingStationDCA, nDrones = nFathersTruncPoisson)
+  createRandomCrossPlan(IDs = getId(apiary4)[1], 
+                        drones = singleDrone, 
+                        nDrones = 1),
+  createRandomCrossPlan(IDs = getId(apiary4)[2:6], 
+                        drones = DCA, 
+                        nDrones = nFathersTruncPoisson),
+  createRandomCrossPlan(IDs = getId(apiary4)[7:10], 
+                        drones = matingStationDCA, 
+                        nDrones = nFathersTruncPoisson)
   )
 
-apiary4 <- cross(apiary4, crossPlan = crossPlanApiary4, drones = c(singleDrone, DCA, matingStationDCA))
+apiary4 <- cross(apiary4, 
+                 crossPlan = crossPlanApiary4, 
+                 drones = c(singleDrone, DCA, matingStationDCA))
 nFathers(apiary4)
 ```
-

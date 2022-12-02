@@ -1,7 +1,14 @@
 ---
 title: "SIMplyBee - Multiple colonies"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  pdf_document: null
+  toc: yes
+  number_sections: yes
+  highlight: tango
+  fig_caption: yes
+  html_document:
+    df_print: paged
 vignette: >
   %\VignetteIndexEntry{MultipleColonies}
   %\VignetteEngine{knitr::rmarkdown}
@@ -29,7 +36,12 @@ populations instead. To cater for this, we created a `MultiColony` class. It
 behaves as a list of `Colony` objects but with additional functionality - you
 can apply function directly to the `MultiColony` objects. A `MultiColony` can
 represent different apiaries or even different subpopulations in terms of either
-age of the queens of geographical location of the apiaries.
+age of the queens of geographical location of the apiaries. First, we again load
+the package, if we haven't already.
+
+```{r}
+library(package = "SIMplyBee")
+```
 
 # Creating a MultiColony object
 
@@ -187,7 +199,9 @@ DCA <- createDCA(apiary1)
 # Check how big is the DCA
 DCA
 # Sample drones groups from the DCA
-droneGroups <- pullDroneGroupsFromDCA(DCA, n = nColonies(apiary2), nDrones = nFathersPoisson)
+droneGroups <- pullDroneGroupsFromDCA(DCA, 
+                                      n = nColonies(apiary2), 
+                                      nDrones = nFathersPoisson)
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```

@@ -14,14 +14,6 @@ swarmPUnif(colony, n = 1, min = 0.4, max = 0.6)
 \item{min}{numeric, lower limit for \code{swarmPUnif}}
 
 \item{max}{numeric, upper limit for \code{swarmPUnif}}
-
-\item{nWorkersFull}{numeric, average number of workers in a full/strong
-colony for \code{splitPColonyStrength} (actual number can go beyond this
-value)}
-
-\item{scale}{numeric, scaling of numbers in \code{swarmPColonyStrength}
-to avoid to narrow range when colonies have a large number of bees (in that
-case change \code{nWorkersFull} too!)}
 }
 \value{
 numeric, swarm proportion

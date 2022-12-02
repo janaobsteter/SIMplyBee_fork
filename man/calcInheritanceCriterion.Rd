@@ -69,7 +69,7 @@ calcInheritanceCriterion(apiary, queenTrait = 1, workersTrait = 2)
 \references{
 Du, M., et al. (2021) Short-term effects of controlled mating and selection
   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-  https://doi.org/10.1038/s41437-021-00411-2
+  \doi{/10.1038/s41437-021-00411-2}
 }
 \seealso{
 \code{\link{calcSelectionCriterion}} and

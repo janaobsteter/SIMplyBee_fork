@@ -112,5 +112,5 @@ stopifnot(identical(GRM2, GRM))
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of
   expected and realized relationships for the X-chromosome. Genetics
-  Selection Evolution, 52:50 \url{https://doi.org/10.1186/s12711-020-00570-6}
+  Selection Evolution, 52:50 \doi{/10.1186/s12711-020-00570-6}
 }

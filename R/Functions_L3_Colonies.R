@@ -92,21 +92,42 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' @param n numeric, number of colonies to select
 #' @param p numeric, percentage of colonies selected (takes precedence
 #'   over \code{n})
+#' @param by matrix, matrix of values to select by with names being
+#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   This parameter is used in combination
+#'   with \code{n} or \code{p} to determine the number of selected colonies, and
+#'   \code{end} to determine whether to select the best or the worst colonies.
+#'   If NULL, the colonies are selected at random
+#' @param selectTop logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})
 #'
 #' @return \code{\link{MultiColony-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' mean <- c(10, 10 / SP$nWorkers)
+#' varA <- c(1, 1 / SP$nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / SP$nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = mean,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#' SP$setVarE(varE = varE)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, drones = droneGroups[1:4])
-#' apiary2 <- createMultiColony(basePop[6:8])
+#' apiary <- buildUp(apiary)
 #' getId(apiary)
-#' getId(apiary2)
 #'
 #' getId(selectColonies(apiary, ID = 1))
 #' getId(selectColonies(apiary, ID = "4"))
@@ -132,12 +153,23 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
+#'
+#' # How to select colonies based on colony values?
+#' # Obtain colony phenotype
+#' colonyPheno <- calcColonyPheno(apiary)
+#' # Select the best colony
+#' selectColonies(apiary, n = 1, by = colonyPheno)
+#'
+#' # Select the worst 2 colonies
+#' selectColonies(apiary, n = 2, by = colonyPheno, selectTop = FALSE)
+#'
+#' # Select best colony based on queen's genetic value for trait 1
+#' queenGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersTrait = NULL)
+#' selectColonies(apiary, n = 1, by = queenGv)
+#'
 #' @export
-selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
-  # TODO: add use and trait argument to this function?
-  #       the idea is that we could swarm/supersede/... colonies depending on a
-  #       trait expression; this could be complicated - best to follow ideas at
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/105
+selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
+                           by = NULL, selectTop = TRUE) {
   if (!is.null(ID)) {
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
@@ -173,8 +205,12 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
-    lSel <- sample.int(n = nCol, size = n)
-    message(paste0("Randomly selecting colonies: ", n))
+    if (is.null(by)) {
+      lSel <- sample.int(n = nCol, size = n)
+      message(paste0("Randomly selecting colonies: ", n))
+    } else {
+      lSel <- rownames(by)[order(by, decreasing = selectTop)[1:n]]
+    }
     if (length(lSel) > 0) {
       ret <- multicolony[lSel]
     } else {
@@ -199,6 +235,13 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' @param n numeric, number of colonies to select
 #' @param p numeric, percentage of colonies pulled out (takes precedence
 #'   over \code{n})
+#' @param by matrix, matrix of values to select by with names being
+#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   This parameter is used in combination
+#'   with \code{n} or \code{p} to determine the number of selected colonies, and
+#'   \code{end} to determine whether to select the best or the worst colonies.
+#'   If NULL, the colonies are selected at random
+#' @param pullTop logical, pull highest (lowest) values if \code{TRUE} (\code{FALSE})
 #'
 #' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
 #'   and the \code{remnant}
@@ -206,12 +249,28 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' mean <- c(10, 10 / SP$nWorkers)
+#' varA <- c(1, 1 / SP$nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / SP$nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = mean,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#' SP$setVarE(varE = varE)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary <- buildUp(apiary)
 #' getId(apiary)
 #'
 #' tmp <- pullColonies(apiary, ID = c(1, 2))
@@ -229,8 +288,13 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' tmp <- pullColonies(apiary, p = 0.75)
 #' getId(tmp$pulled)
 #' getId(tmp$remnant)
+#'
+#' # How to pull out colonies based on colony values?
+#' colonyGv <- calcColonyGv(apiary)
+#' pullColonies(apiary, n = 1, by = colonyGv)
 #' @export
-pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
+pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
+                         by = NULL, pullTop = TRUE) {
   # TODO: add use and trait argument to this function?
   #       the idea is that we could swarm/supersede/... colonies depending on a
   #        trait expression; this could be complicated - best to follow ideas at
@@ -251,11 +315,19 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
-    lPull <- sample.int(n = nCol, size = n)
-    message(paste0("Randomly pulling colonies: ", n))
+    if (is.null(by)) {
+      positions <- 1:nCol
+      lPull <- sample.int(n = nCol, size = n)
+      lStay <- positions[!positions %in% lPull]
+      message(paste0("Randomly pulling colonies: ", n))
+    } else {
+      IDs <- getId(multicolony)
+      lPull <- rownames(by)[order(by, decreasing = pullTop)[1:n]]
+      lStay <- as.character(IDs[!IDs %in% lPull])
+    }
     if (length(lPull) > 0) {
       pulled <- multicolony[lPull]
-      remnant <- multicolony[-lPull]
+      remnant <- multicolony[lStay]
     } else {
       pulled <- createMultiColony()
       remnant <- multicolony
@@ -281,34 +353,62 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL) {
 #' @param n numeric, number of colonies to remove
 #' @param p numeric, percentage of colonies removed (takes precedence
 #'   over \code{n})
+#' @param by matrix, matrix of values to select by with names being
+#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   This parameter is used in combination
+#'   with \code{n} or \code{p} to determine the number of selected colonies, and
+#'   \code{end} to determine whether to select the best or the worst colonies.
+#'   If NULL, the colonies are selected at random
+#' @param removeTop logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})
+#'
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' mean <- c(10, 10 / SP$nWorkers)
+#' varA <- c(1, 1 / SP$nWorkers)
+#' corA <- matrix(data = c(
+#'   1.0, -0.5,
+#'   -0.5, 1.0
+#' ), nrow = 2, byrow = TRUE)
+#' varE <- c(3, 3 / SP$nWorkers)
+#' varA / (varA + varE)
+#' SP$addTraitADE(nQtlPerChr = 100,
+#'                mean = mean,
+#'                var = varA, corA = corA,
+#'                meanDD = 0.1, varDD = 0.2, corD = corA,
+#'                relAA = 0.1, corAA = corA)
+#' SP$setVarE(varE = varE)
+#'
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1:4], nInd = 100)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #' apiary <- createMultiColony(basePop[2:5], n = 4)
 #' apiary <- cross(apiary, drones = droneGroups[1:4])
+#' apiary <- buildUp(apiary)
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))
-#' getId(removeColonies(apiary, ID = "5"))
+#' getId(removeColonies(apiary, ID = "4"))
 #'
 #' getId(removeColonies(apiary, ID = c(1, 2)))
-#' getId(removeColonies(apiary, ID = c("5", "6")))
-#'
-#' getId(removeColonies(apiary, ID = 5))
-#' getId(removeColonies(apiary, ID = "9"))
+#' getId(removeColonies(apiary, ID = c("3", "4")))
 #'
 #' nColonies(apiary)
 #' apiary <- removeColonies(apiary, ID = "2")
 #' nColonies(apiary)
 #'
+#' # How to remove colonies based on colony values?
+#' # Obtain colony phenotype
+#' colonyPheno <- calcColonyPheno(apiary)
+#' # Remove the worst colony
+#' removeColonies(apiary, n = 1, by = colonyPheno)
+#'
 #' @export
-removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
+removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL,
+                           by = NULL, removeTop = FALSE) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -324,7 +424,17 @@ removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL) {
     if (!is.null(p)) {
       n <- round(nCol * p)
     }
-    ret <- selectColonies(multicolony, n = (nCol - n))
+    if (is.null(by)) {
+      lSel <- sample.int(n = nCol, size = (nCol - n))
+      message(paste0("Randomly removing colonies: ", n))
+    } else {
+      lSel <- rownames(by)[order(by, decreasing = !removeTop)[1:(nCol - n)]]
+    }
+    if (length(lSel) > 0) {
+      ret <- multicolony[lSel]
+    } else {
+      ret <- multicolony
+    }
   } else {
     stop("You must provide either ID, n, or p!")
   }

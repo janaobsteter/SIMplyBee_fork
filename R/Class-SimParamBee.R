@@ -144,7 +144,7 @@ SimParamBee <- R6Class(
     #'   argument MUST be \code{colony} and any following arguments MUST have a
     #'   default value.
     #'   For flexibility you can add ... argument to pass on any other argument.
-    #'   See \code{\link{swarmPUnif}} or \code{\link{swarmPColonyStrength}} for
+    #'   See \code{\link{swarmPUnif}} for
     #'   examples.
     #'
     #'   You can provide your own functions that satisfy your needs!
@@ -244,20 +244,20 @@ SimParamBee <- R6Class(
     #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
     #'   Sequencing for the Identification of Apis mellifera Complementary Sex
     #'   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-    #'   \url{https://www.mdpi.com/2075-4450/12/10/868}
+    #'   \doi{/10.3390/insects12100868}
     #'
     #' Lechner et al. (2014) Nucleotide variability at its limit? Insights into
     #'  the number and evolutionary dynamics of the sex-determining specificities
     #'  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
-    #'  272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
+    #'  272-287. \doi{/10.1093/molbev/mst207}
     #'
     #' Seeley (2019) The Lives of Bees: The Untold Story of the Honey
     #'   Bee in the Wild. Princeton: Princeton University Press.
-    #'   \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
+    #'   \doi{/10.1515/9780691189383}
     #'
     #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
     #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-    #'   \url{https://doi.org/10.1038/s41598-017-02629-9}
+    #'   \doi{/10.1038/s41598-017-02629-9}
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -934,12 +934,6 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' @param n integer, number of samples
 #' @param min numeric, lower limit for \code{swarmPUnif}
 #' @param max numeric, upper limit for \code{swarmPUnif}
-#' @param nWorkersFull numeric, average number of workers in a full/strong
-#'   colony for \code{splitPColonyStrength} (actual number can go beyond this
-#'   value)
-#' @param scale numeric, scaling of numbers in \code{swarmPColonyStrength}
-#'   to avoid to narrow range when colonies have a large number of bees (in that
-#'   case change \code{nWorkersFull} too!)
 #'
 #' @details \code{swarmPUnif} samples from a uniform distribution between values
 #'   0.4 and 0.6 irrespective of colony strength.
