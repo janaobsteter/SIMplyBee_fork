@@ -1,7 +1,14 @@
 ---
 title: "SIMplyBee - Sampling functions"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  pdf_document: null
+  toc: yes
+  number_sections: yes
+  highlight: tango
+  fig_caption: yes
+  html_document:
+    df_print: paged
 vignette: >
   %\VignetteIndexEntry{SamplingFunctions}
   %\VignetteEngine{knitr::rmarkdown}
@@ -25,16 +32,22 @@ knitr::opts_chunk$set(
 SIMplyBee includes functions to sample the number or percentage of caste
 individuals.
 
+We again load the package, if we haven't already.
+
+```{r}
+library(package = "SIMplyBee")
+```
+
 # Functions to sample numbers
 
 First, there are functions to sample the number of caste individuals from either
 a Poisson or truncated Poisson distribution: `n*Poisson()` and
 `n*TruncPoisson()`, where `*` is either `Workers`, `Drones`, `VirginQueens`, or
 `Fathers`. Most SIMplyBee functions that take the number of individuals as an
-argument can accept these sampling functions as input, meaning that the output
-of such function calls will be stochastic. These functions are useful when you
-want to sample a variable number of individuals around a mean, as for example
-when mating virgin queens.
+argument can accept these sampling functions as an input, meaning that the
+output of such function calls will be stochastic. These functions are useful
+when you want to sample a variable number of individuals around a mean, as for
+example when mating virgin queens.
 
 Let's start again with creating a DCA and an apiary with 10 virgin colonies, as
 seen before.
@@ -58,10 +71,11 @@ to sample variable number of drones from a DCA. The default average for this
 function is 15, but you can use any value you want. Let's use this function to
 sample 1000 values and inspect the distribution and the mean.
 
-```{r}
-hist(nFathersPoisson(n = 1000))
+```{r, echo = FALSE, fig.height = 3, fig.width = 6}
+par(mfrow=c(1,2))
+hist(nFathersPoisson(n = 1000), main = "Average = 15", xlab = "nFathers")
 # Change the average to 10
-hist(nFathersPoisson(n = 1000, average = 10))
+hist(nFathersPoisson(n = 1000, average = 10), main = "Average = 10", xlab = "nFathers")
 ```
 
 Let's now use this functionality to sample a variable number of drones from the
@@ -94,18 +108,18 @@ leave or are removed when downsizing, splitting, or swarming a colony from
 either a uniform distribution or from a beta distribution that accounts for the
 number of individuals in a colony (colony strength). These functions are named
 `*PUnif()`, where `*` can be either `swarm`, `split`, or `downsize`. There is an
-additional function, `splitPColonyStrength()`, that determined the number of
+additional function, `splitPColonyStrength()`, that determines the number of
 workers to be removed in a split according to the colony strength.
 
 Let's say we want to swarm all the colonies in our apiary with a variable
 percentage of workers that leave. We want to sample the percentage of workers
-from an uniform distribution with mean of 0.7. For these, we use `swarmPUnif()`
-function that takes a `min` and a `max` values and sample a value between them.
-By default, the `min` is set to 0.4 and `max` to 0.6. Let's use this function to
-sample a 1000 values between 0.5 and 0.7 and inspect the mean.
+from an uniform distribution with the mean of 0.6. For this, we use
+`swarmPUnif()` function that takes a `min` and a `max` values and sample a value
+between them. By default, the `min` is set to 0.4 and `max` to 0.6. Let's use
+this function to sample a 1000 values between 0.5 and 0.7 and inspect the mean.
 
-```{r}
-hist(swarmPUnif(n = 1000, min = 0.5, max = 0.7))
+```{r, echo = FALSE, fig.height = 3, fig.width = 3}
+hist(swarmPUnif(n = 1000, min = 0.5, max = 0.7), xlab = "swarmP", main = "min=0.5, max=0.7")
 ```
 
 Let's now swarm all the colonies in our apiary with a variable percentage of
@@ -118,6 +132,3 @@ nWorkers(tmp$swarm)
 ```
 
 We see that each colony swarmed with a different percentage between 0.5 and 0.7.
-
-TODO: Do you think we need to add a splitPColonyStrength example?
-

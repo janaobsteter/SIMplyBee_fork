@@ -18,8 +18,13 @@ TODO SIMplyBee is available on CRAN. You can install it with
 The development (and potentially unstable!) versions of SIMplyBee can be
 accessed from the main and devel branches using:
 
-    # New stable version of SIMplyBee before its submitted to CRAN
-    devtools::install_github(repo="HighlanderLab/SIMplyBee@main")
+# New stable version of SIMplyBee before its submitted to CRAN
+devtools::install_github(repo="HighlanderLab/SIMplyBee@main")
 
-    # Development version of SIMplyBee
-    devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
+# Development version of SIMplyBee
+devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
+
+
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/janaobsteter/SIMplyBee/workflows/R-CMD-check/badge.svg)](https://github.com/janaobsteter/SIMplyBee/actions)
+  <!-- badges: end -->

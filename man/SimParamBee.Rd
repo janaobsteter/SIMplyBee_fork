@@ -80,20 +80,20 @@ SP$caste
 Bovo et al. (2021) Application of Next Generation Semiconductor-Based
   Sequencing for the Identification of Apis mellifera Complementary Sex
   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-  \url{https://www.mdpi.com/2075-4450/12/10/868}
+  \doi{/10.3390/insects12100868}
 
 Lechner et al. (2014) Nucleotide variability at its limit? Insights into
  the number and evolutionary dynamics of the sex-determining specificities
  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
- 272-287. \url{https://academic.oup.com/mbe/article/31/2/272/998263}
+ 272-287. \doi{/10.1093/molbev/mst207}
 
 Seeley (2019) The Lives of Bees: The Untold Story of the Honey
   Bee in the Wild. Princeton: Princeton University Press.
-  \url{https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383}
+  \doi{/10.1515/9780691189383}
 
 Zareba et al. (2017) Uneven distribution of complementary sex determiner
   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-  \url{https://doi.org/10.1038/s41598-017-02629-9}
+  \doi{/10.1038/s41598-017-02629-9}
 }
 \section{Super class}{
 \code{\link[AlphaSimR:SimParam]{AlphaSimR::SimParam}} -> \code{SimParamBee}
@@ -205,7 +205,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   argument MUST be \code{colony} and any following arguments MUST have a
   default value.
   For flexibility you can add ... argument to pass on any other argument.
-  See \code{\link{swarmPUnif}} or \code{\link{swarmPColonyStrength}} for
+  See \code{\link{swarmPUnif}} for
   examples.
 
   You can provide your own functions that satisfy your needs!}

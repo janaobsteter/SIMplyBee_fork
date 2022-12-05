@@ -4,7 +4,14 @@
 \alias{selectColonies}
 \title{Select colonies from MultiColony object}
 \usage{
-selectColonies(multicolony, ID = NULL, n = NULL, p = NULL)
+selectColonies(
+  multicolony,
+  ID = NULL,
+  n = NULL,
+  p = NULL,
+  by = NULL,
+  selectTop = TRUE
+)
 }
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
@@ -16,6 +23,15 @@ selected}
 
 \item{p}{numeric, percentage of colonies selected (takes precedence
 over \code{n})}
+
+\item{by}{matrix, matrix of values to select by with names being
+colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+This parameter is used in combination
+with \code{n} or \code{p} to determine the number of selected colonies, and
+\code{end} to determine whether to select the best or the worst colonies.
+If NULL, the colonies are selected at random}
+
+\item{selectTop}{logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})}
 }
 \value{
 \code{\link{MultiColony-class}} with selected colonies
@@ -29,15 +45,29 @@ Level 3 function that selects colonies from
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+mean <- c(10, 10 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers)
+corA <- matrix(data = c(
+  1.0, -0.5,
+  -0.5, 1.0
+), nrow = 2, byrow = TRUE)
+varE <- c(3, 3 / SP$nWorkers)
+varA / (varA + varE)
+SP$addTraitADE(nQtlPerChr = 100,
+               mean = mean,
+               var = varA, corA = corA,
+               meanDD = 0.1, varDD = 0.2, corD = corA,
+               relAA = 0.1, corAA = corA)
+SP$setVarE(varE = varE)
+
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, drones = droneGroups[1:4])
-apiary2 <- createMultiColony(basePop[6:8])
+apiary <- buildUp(apiary)
 getId(apiary)
-getId(apiary2)
 
 getId(selectColonies(apiary, ID = 1))
 getId(selectColonies(apiary, ID = "4"))
@@ -63,4 +93,18 @@ selectColonies(apiary, p = 0.2)
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
 getId(selectColonies(apiary, p = 0.5))
+
+# How to select colonies based on colony values?
+# Obtain colony phenotype
+colonyPheno <- calcColonyPheno(apiary)
+# Select the best colony
+selectColonies(apiary, n = 1, by = colonyPheno)
+
+# Select the worst 2 colonies
+selectColonies(apiary, n = 2, by = colonyPheno, selectTop = FALSE)
+
+# Select best colony based on queen's genetic value for trait 1
+queenGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersTrait = NULL)
+selectColonies(apiary, n = 1, by = queenGv)
+
 }

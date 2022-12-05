@@ -4,7 +4,14 @@
 \alias{removeColonies}
 \title{Remove some colonies from the MultiColony object}
 \usage{
-removeColonies(multicolony, ID = NULL, n = NULL, p = NULL)
+removeColonies(
+  multicolony,
+  ID = NULL,
+  n = NULL,
+  p = NULL,
+  by = NULL,
+  removeTop = FALSE
+)
 }
 \arguments{
 \item{multicolony}{\code{\link{MultiColony-class}}}
@@ -16,6 +23,15 @@ removed}
 
 \item{p}{numeric, percentage of colonies removed (takes precedence
 over \code{n})}
+
+\item{by}{matrix, matrix of values to select by with names being
+colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+This parameter is used in combination
+with \code{n} or \code{p} to determine the number of selected colonies, and
+\code{end} to determine whether to select the best or the worst colonies.
+If NULL, the colonies are selected at random}
+
+\item{removeTop}{logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})}
 }
 \value{
 \code{\link{MultiColony-class}} with some colonies removed
@@ -27,25 +43,44 @@ Level 3 function that removes some colonies
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+mean <- c(10, 10 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers)
+corA <- matrix(data = c(
+  1.0, -0.5,
+  -0.5, 1.0
+), nrow = 2, byrow = TRUE)
+varE <- c(3, 3 / SP$nWorkers)
+varA / (varA + varE)
+SP$addTraitADE(nQtlPerChr = 100,
+               mean = mean,
+               var = varA, corA = corA,
+               meanDD = 0.1, varDD = 0.2, corD = corA,
+               relAA = 0.1, corAA = corA)
+SP$setVarE(varE = varE)
+
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1:4], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 apiary <- createMultiColony(basePop[2:5], n = 4)
 apiary <- cross(apiary, drones = droneGroups[1:4])
+apiary <- buildUp(apiary)
 getId(apiary)
 
 getId(removeColonies(apiary, ID = 1))
-getId(removeColonies(apiary, ID = "5"))
+getId(removeColonies(apiary, ID = "4"))
 
 getId(removeColonies(apiary, ID = c(1, 2)))
-getId(removeColonies(apiary, ID = c("5", "6")))
-
-getId(removeColonies(apiary, ID = 5))
-getId(removeColonies(apiary, ID = "9"))
+getId(removeColonies(apiary, ID = c("3", "4")))
 
 nColonies(apiary)
 apiary <- removeColonies(apiary, ID = "2")
 nColonies(apiary)
+
+# How to remove colonies based on colony values?
+# Obtain colony phenotype
+colonyPheno <- calcColonyPheno(apiary)
+# Remove the worst colony
+removeColonies(apiary, n = 1, by = colonyPheno)
 
 }
