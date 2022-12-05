@@ -1,14 +1,7 @@
 ---
 title: "SIMplyBee - Sampling functions"
 date: "`r Sys.Date()`"
-output:
-  pdf_document: null
-  toc: yes
-  number_sections: yes
-  highlight: tango
-  fig_caption: yes
-  html_document:
-    df_print: paged
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{SamplingFunctions}
   %\VignetteEngine{knitr::rmarkdown}

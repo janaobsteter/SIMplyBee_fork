@@ -1,14 +1,7 @@
 ---
 title: "SIMplyBee - Honeybee biology"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    df_print: paged
-  toc: yes
-  number_sections: yes
-  highlight: tango
-  fig_caption: yes
-  pdf_document: null
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Honeybee biology}
   %\VignetteEngine{knitr::rmarkdown}

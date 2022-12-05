@@ -1,14 +1,7 @@
 ---
 title: "SIMplyBee - Quantitative genetics"
 date: "`r Sys.Date()`"
-output: 
-  pdf_document: null
-  toc: yes
-  number_sections: yes
-  highlight: tango
-  fig_caption: yes
-  html_document:
-    df_print: paged
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{QuantitativeGenetics}
   %\VignetteEngine{knitr::rmarkdown}
@@ -640,4 +633,3 @@ pheno <- cbind(nWorkers = nWorkers(apiary), queenPheno, yield = colonyValuesPhen
 cor(pheno)
 plot(pheno)
 ```
-

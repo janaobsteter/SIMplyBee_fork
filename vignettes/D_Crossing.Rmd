@@ -1,14 +1,7 @@
 ---
 title: "SIMplyBee - Crossing"
 date: "`r Sys.Date()`"
-output: 
-  pdf_document: null
-  toc: yes
-  number_sections: yes
-  highlight: default
-  fig_caption: yes
-  html_document:
-    df_print: paged
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Crossing}
   %\VignetteEngine{knitr::rmarkdown}
@@ -285,4 +278,3 @@ apiary4 <- cross(apiary4,
                  drones = c(singleDrone, DCA, matingStationDCA))
 nFathers(apiary4)
 ```
-
