@@ -1,4 +1,4 @@
-# SIMplyBee README <a><img src="man/figures/SIMplyBee_logo_hex.png" align="right" height="200"/></a>
+# SIMplyBee README <img src="man/figures/SIMplyBee_logo_hex.png" align="right" height="200"/>
 
 SIMplyBee R package extends [AlphaSimR](https://CRAN.R-project.org/package=AlphaSimR)
 for simulating honeybee populations and breeding programmes

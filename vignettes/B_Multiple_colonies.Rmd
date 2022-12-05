@@ -1,14 +1,7 @@
 ---
 title: "SIMplyBee - Multiple colonies"
 date: "`r Sys.Date()`"
-output:
-  pdf_document: null
-  toc: yes
-  number_sections: yes
-  highlight: tango
-  fig_caption: yes
-  html_document:
-    df_print: paged
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MultipleColonies}
   %\VignetteEngine{knitr::rmarkdown}
@@ -217,4 +210,3 @@ droneGroups <- pullDroneGroupsFromDCA(DCA,
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```
-
