@@ -24,7 +24,3 @@ devtools::install_github(repo="HighlanderLab/SIMplyBee@main")
 # Development version of SIMplyBee
 devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
 
-
-<!-- badges: start -->
-  [![R-CMD-check](https://github.com/janaobsteter/SIMplyBee/workflows/R-CMD-check/badge.svg)](https://github.com/janaobsteter/SIMplyBee/actions)
-  <!-- badges: end -->

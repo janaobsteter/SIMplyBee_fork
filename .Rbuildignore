@@ -11,3 +11,4 @@
 ^vignettes/*pdf
 ^README.Rmd
 ^tests/*
+^\.github$

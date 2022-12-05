@@ -26,10 +26,10 @@ over \code{n})}
 
 \item{by}{matrix, matrix of values to select by with names being
 colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+If NULL, the colonies are selected at random.
 This parameter is used in combination
 with \code{n} or \code{p} to determine the number of selected colonies, and
-\code{end} to determine whether to select the best or the worst colonies.
-If NULL, the colonies are selected at random}
+\code{selectTop} to determine whether to select the best or the worst colonies.}
 
 \item{selectTop}{logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})}
 }
