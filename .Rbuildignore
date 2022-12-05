@@ -5,5 +5,9 @@
 ^pkgdown$
 ^man/figures/.*\.jpg
 ^man/figures/.*\.png
-^vignettes/F2*.Rmd
+^vignettes/*F2*
+^vignettes/*R
+^vignettes/*RData
+^vignettes/*pdf
 ^README.Rmd
+^tests/*
