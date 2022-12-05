@@ -240,7 +240,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'   If NULL, the colonies are pulled at random.
 #'   This parameter is used in combination
 #'   with \code{n} or \code{p} to determine the number of pulled colonies, and
-#'   \code{pullTop} to determine whether to select the best or the worst colonies.
+#'   \code{pullTop} to determine whether to pull the best or the worst colonies.
 #' @param pullTop logical, pull highest (lowest) values if \code{TRUE} (\code{FALSE})
 #'
 #' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
@@ -295,10 +295,6 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @export
 pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
                          by = NULL, pullTop = TRUE) {
-  # TODO: add use and trait argument to this function?
-  #       the idea is that we could swarm/supersede/... colonies depending on a
-  #        trait expression; this could be complicated - best to follow ideas at
-  #       https://github.com/HighlanderLab/SIMplyBee/issues/105
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -358,7 +354,7 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'   If NULL, the colonies are removed at random.
 #'   This parameter is used in combination
 #'   with \code{n} or \code{p} to determine the number of removed colonies, and
-#'   \code{removeTop} to determine whether to select the best or the worst colonies.
+#'   \code{removeTop} to determine whether to remove the best or the worst colonies.
 #' @param removeTop logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})
 #'
 #' @return \code{\link{MultiColony-class}} with some colonies removed
