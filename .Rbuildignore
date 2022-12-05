@@ -10,3 +10,4 @@
 ^README.Rmd
 ^tests/*
 ^\.github$
+^LICENSE\.md$
