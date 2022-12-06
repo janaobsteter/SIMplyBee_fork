@@ -25,7 +25,7 @@ Level 0 function that returns a pooled genotype from true
   genotypes to mimic genotyping of a pool of colony members.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 
 basePop <- createVirginQueens(founderGenomes)

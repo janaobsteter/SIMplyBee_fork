@@ -74,7 +74,7 @@ TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
       https://github.com/HighlanderLab/SIMplyBee/issues/176
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -93,15 +93,12 @@ isProductive(apiary)
 # Using defaults in SP$nWorkers & SP$nDrones
 (colony <- buildUp(colony))
 isProductive(colony)
-getWorkers(colony)@id
 # Build-up a MultiColony class
 (apiary <- buildUp(apiary))
 isProductive(apiary)
 
 # Specifying own number
 colony <- buildUp(colony, nWorkers = 100)
-getWorkers(colony)@id
-# we got new workers since new = TRUE
 # Build up a MultiColony class
 apiary <- buildUp(apiary, nWorkers = 250)
 # Build up with different numbers
@@ -109,33 +106,19 @@ apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
 nWorkers(apiary)
 nDrones(apiary)
 
-colony <- buildUp(colony, nWorkers = 100, new = FALSE)
-getWorkers(colony)@id
-# we did NOT get new workers since new = FALSE and we were at the target of 100
-
-colony <- buildUp(colony, nWorkers = 150, new = FALSE)
-getWorkers(colony)@id
-# we got additional workers since new = FALSE and we were NOT at the target of 150
-
 # The user can also specify a function that will give a number
-colony <- createColony(x = basePop[5])
-colony <- cross(colony, drones = droneGroups[[4]])
+colony <- removeWorkers(colony) # Remove workers to start from fresh
+colony <- removeDrones(colony) # Remove drones to start from fresh
 buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 # nWorkers and nDrones will vary between function calls when a function is used
-
-# Store a function or a value in the SP object
+# You can store these functions or a values in the SP object
 SP$nWorkers <- nWorkersPoisson
 SP$nDrones <- nDronesPoisson
-# Create new drones and a new colony
-colony <- createColony(x = basePop[6])
-colony <- cross(colony, drones = droneGroups[[5]])
-buildUp(colony)
-buildUp(colony)
-# nWorkers and nDrones will vary between function calls when a function is used
+
 # Same for MultiColony class
-apiary <- createMultiColony(basePop[7:8], n = 2)
-apiary <- cross(apiary, drones = droneGroups[c(6, 7)])
+apiary <- removeWorkers(apiary)
+apiary <- removeDrones(apiary)
 buildUp(apiary)[[1]]
 buildUp(apiary)[[1]]
 

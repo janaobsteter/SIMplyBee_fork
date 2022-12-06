@@ -125,12 +125,12 @@ Level 0 function that returns QTL haplotypes of individuals in a
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 1000)
+drones <- createDrones(x = basePop[1], nInd = 200)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
@@ -153,44 +153,18 @@ getQtlHaplo(queens)
 getQtlHaplo(colony, caste = "queen")
 getQueenQtlHaplo(colony)
 
-getQtlHaplo(colony, caste = "fathers")
-getQtlHaplo(colony, caste = "fathers", nInd = 2)
-getQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersQtlHaplo(colony)
-getFathersQtlHaplo(colony, nInd = 2)
-
-getQtlHaplo(colony, caste = "virginQueens")
-getVirginQueensQtlHaplo(colony)
-
-getQtlHaplo(colony, caste = "workers")
+getQtlHaplo(colony, caste = "workers", nInd = 3)
 getWorkersQtlHaplo(colony)
-
-getQtlHaplo(colony, caste = "drones")
-getDronesQtlHaplo(colony)
+# Same aliases exist for all the castes!
 
 # Get haplotypes for all individuals
 getQtlHaplo(colony, caste = "all")
 # Get all haplotypes in a single matrix
 getQtlHaplo(colony, caste = "all", collapse = TRUE)
 
-# Input is a MultiColony
+# Input is a MultiColony - same behaviour as for the Colony
 getQtlHaplo(apiary, caste = "queen")
 getQueenQtlHaplo(apiary)
-
-getQtlHaplo(apiary, caste = "fathers")
-getQtlHaplo(apiary, caste = "fathers", nInd = 2)
-getQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersQtlHaplo(apiary)
-getFathersQtlHaplo(apiary, nInd = 2)
-
-getQtlHaplo(apiary, caste = "virginQueens")
-getVirginQueensQtlHaplo(apiary)
-
-getQtlHaplo(apiary, caste = "workers")
-getWorkersQtlHaplo(apiary)
-
-getQtlHaplo(apiary, caste = "drones")
-getDronesQtlHaplo(apiary)
 
 # Get the haplotypes of all individuals either by colony or in a single matrix
 getQtlHaplo(apiary, caste = "all")

@@ -97,7 +97,7 @@ Level 1 function that creates the specified number of caste
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
@@ -108,9 +108,7 @@ basePop <- createCastePop(founderGenomes, caste = "virginQueens")
 # Create drones on a Pop
 drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
 # Or create unequal number of drones from multiple virgin queens
-drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
-# Check mothers
-table(drones@mother)
+# drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
 # Or alias: createDrones(x = basePop[1], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
@@ -126,18 +124,12 @@ colony@workers <- createWorkers(colony)$workers
 colony@drones <- createDrones(colony)
 
 # These populations hold individual information
-# Example on the virgin queens
+# Example on the virgin queens (same holds for all castes!)
 virginQueens <- colony@virginQueens
 virginQueens@id
 virginQueens@sex
-virginQueens@misc
 virginQueens@mother
 virginQueens@father
-SP$pedigree
-SP$recHist
-SP$recHist[[23]][[1]][1]
-SP$recHist[[23]][[1]][2]
-SP$caste
 
 # Specify own number
 SP$nVirginQueens <- 15
@@ -147,21 +139,11 @@ createVirginQueens(colony)
 createVirginQueens(apiary)
 # Or creating unequal numbers
 createVirginQueens(apiary, nInd = c(5, 10))
-createWorkers(colony)
-createWorkers(apiary)
-# Or creating unequal numbers
-createWorkers(apiary, nInd = c(500, 1000))
-createDrones(colony)
-createDrones(apiary)
 # nVirginQueens will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
 createVirginQueens(colony, nInd = nVirginQueensPoisson)
 createVirginQueens(apiary, nInd = nVirginQueensPoisson)
-createWorkers(colony, nInd = nWorkersPoisson)
-createWorkers(apiary, nInd = nWorkersPoisson)
-createDrones(colony, nInd = nDronesPoisson)
-createDrones(apiary, nInd = nDronesPoisson)
 # No. of individuals will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
@@ -169,21 +151,16 @@ SP$nVirginQueens <- nVirginQueensPoisson
 SP$nWorkers <- nWorkersPoisson
 SP$nDrones <- nDronesPoisson
 createVirginQueens(colony)
+createVirginQueens(colony)
 createVirginQueens(apiary)
-createWorkers(colony)
-createWorkers(apiary)
-createDrones(colony)
-createDrones(apiary)
+createVirginQueens(apiary)
 # No. of individuals will vary between function calls when a function is used
 
 # csd homozygosity - relevant when creating virgin queens
-founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
 basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
-nrow(getCsdAlleles(basePop, unique = TRUE))
 all(isCsdHeterozygous(basePop))
 
 basePop <- createVirginQueens(founderGenomes, editCsd = TRUE)
-nrow(getCsdAlleles(basePop, unique = TRUE))
 all(isCsdHeterozygous(basePop))
 }

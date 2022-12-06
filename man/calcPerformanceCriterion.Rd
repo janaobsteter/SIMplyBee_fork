@@ -70,9 +70,7 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary)
 
 calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 
 apiary[[2]] <- removeQueen(apiary[[2]])
 calcPerformanceCriterion(apiary, queenTrait = 1,

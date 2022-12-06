@@ -1837,7 +1837,7 @@ isProductive <- function(x) {
 #'
 #' Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
 #'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
-#'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649.}
+#'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
 #'
 #' @examples
 #' # founderGenomes <- simulateHoneyBeeGenomes(
@@ -2781,13 +2781,13 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
 #' # Create a Colony and a MultiColony class
@@ -2810,20 +2810,9 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' getIbdHaplo(x = colony, caste = "queen")
 #' getQueenIbdHaplo(colony)
 #'
-#' getIbdHaplo(colony, caste = "fathers")
-#' getIbdHaplo(colony, caste = "fathers", nInd = 2)
-#' getIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersIbdHaplo(colony)
-#' getFathersIbdHaplo(colony, nInd = 2)
-#'
-#' getIbdHaplo(colony, caste = "virginQueens")
-#' getVirginQueensIbdHaplo(colony)
-#'
-#' getIbdHaplo(colony, caste = "workers")
+#' getIbdHaplo(colony, caste = "workers", nInd = 3)
 #' getWorkersIbdHaplo(colony)
-#'
-#' getIbdHaplo(colony, caste = "drones")
-#' getDronesIbdHaplo(colony)
+#' # Same aliases exist for all castes!
 #'
 #' # Get haplotypes for all individuals
 #' getIbdHaplo(colony, caste = "all")
@@ -2835,21 +2824,6 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' getQueenIbdHaplo(apiary)
 #' # Or collapse all the haplotypes into a single matrix
 #' getQueenIbdHaplo(apiary, collapse = TRUE)
-#'
-#' getIbdHaplo(apiary, caste = "fathers")
-#' getIbdHaplo(apiary, caste = "fathers", nInd = 2)
-#' getIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersIbdHaplo(apiary)
-#' getFathersIbdHaplo(apiary, nInd = 2)
-#'
-#' getIbdHaplo(apiary, caste = "virginQueens")
-#' getVirginQueensIbdHaplo(apiary)
-#'
-#' getIbdHaplo(apiary, caste = "workers")
-#' getWorkersIbdHaplo(apiary)
-#'
-#' getIbdHaplo(apiary, caste = "drones")
-#' getDronesIbdHaplo(apiary)
 #'
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getIbdHaplo(apiary, caste = "all")
@@ -3063,12 +3037,12 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
 #' # Create a Colony and a MultiColony class
@@ -3091,44 +3065,18 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' getQtlHaplo(colony, caste = "queen")
 #' getQueenQtlHaplo(colony)
 #'
-#' getQtlHaplo(colony, caste = "fathers")
-#' getQtlHaplo(colony, caste = "fathers", nInd = 2)
-#' getQtlHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersQtlHaplo(colony)
-#' getFathersQtlHaplo(colony, nInd = 2)
-#'
-#' getQtlHaplo(colony, caste = "virginQueens")
-#' getVirginQueensQtlHaplo(colony)
-#'
-#' getQtlHaplo(colony, caste = "workers")
+#' getQtlHaplo(colony, caste = "workers", nInd = 3)
 #' getWorkersQtlHaplo(colony)
-#'
-#' getQtlHaplo(colony, caste = "drones")
-#' getDronesQtlHaplo(colony)
+#' # Same aliases exist for all the castes!
 #'
 #' # Get haplotypes for all individuals
 #' getQtlHaplo(colony, caste = "all")
 #' # Get all haplotypes in a single matrix
 #' getQtlHaplo(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony
 #' getQtlHaplo(apiary, caste = "queen")
 #' getQueenQtlHaplo(apiary)
-#'
-#' getQtlHaplo(apiary, caste = "fathers")
-#' getQtlHaplo(apiary, caste = "fathers", nInd = 2)
-#' getQtlHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersQtlHaplo(apiary)
-#' getFathersQtlHaplo(apiary, nInd = 2)
-#'
-#' getQtlHaplo(apiary, caste = "virginQueens")
-#' getVirginQueensQtlHaplo(apiary)
-#'
-#' getQtlHaplo(apiary, caste = "workers")
-#' getWorkersQtlHaplo(apiary)
-#'
-#' getQtlHaplo(apiary, caste = "drones")
-#' getDronesQtlHaplo(apiary)
 #'
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getQtlHaplo(apiary, caste = "all")
@@ -3339,12 +3287,12 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
 #' # Create a Colony and a MultiColony class
@@ -3367,43 +3315,18 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' getQtlGeno(colony, caste = "queen")
 #' getQueenQtlGeno(colony)
 #'
-#' getQtlGeno(colony, caste = "fathers")
-#' getQtlGeno(colony, caste = "fathers", nInd = 2)
-#' getQtlGeno(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersQtlGeno(colony)
-#' getFathersQtlGeno(colony, nInd = 2)
-#'
-#' getQtlGeno(colony, caste = "virginQueens")
-#' getVirginQueensQtlGeno(colony)
-#'
-#' getQtlGeno(colony, caste = "workers")
+#' getQtlGeno(colony, caste = "workers", nInd = 3)
 #' getWorkersQtlGeno(colony)
-#'
-#' getQtlGeno(colony, caste = "drones")
-#' getDronesQtlGeno(colony)
+#' # Same aliases exist for all the castes!
 #'
 #' # Get genotypes for all individuals
 #' getQtlGeno(colony, caste = "all")
 #' # Get all haplotypes in a single matrix
 #' getQtlGeno(colony, caste = "all", collapse = TRUE)
 #'
+#' # Input is a MultiColony - same behaviour as for the Colony!
 #' getQtlGeno(apiary, caste = "queen")
 #' getQueenQtlGeno(apiary)
-#'
-#' getQtlGeno(apiary, caste = "fathers")
-#' getQtlGeno(apiary, caste = "fathers", nInd = 2)
-#' getQtlGeno(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersQtlGeno(apiary)
-#' getFathersQtlGeno(apiary, nInd = 2)
-#'
-#' getQtlGeno(apiary, caste = "virginQueens")
-#' getVirginQueensQtlGeno(apiary)
-#'
-#' getQtlGeno(apiary, caste = "workers")
-#' getWorkersQtlGeno(apiary)
-#'
-#' getQtlGeno(apiary, caste = "drones")
-#' getDronesQtlGeno(apiary)
 #'
 #' # Get the genotypes of all individuals either by colony or in a single matrix
 #' getQtlGeno(apiary, caste = "all")
@@ -3613,7 +3536,7 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -3640,43 +3563,18 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' getSegSiteHaplo(colony, caste = "queen")
 #' getQueenSegSiteHaplo(colony)
 #'
-#' getSegSiteHaplo(colony, caste = "fathers")
-#' getSegSiteHaplo(colony, caste = "fathers", nInd = 2)
-#' getSegSiteHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSegSiteHaplo(colony)
-#' getFathersSegSiteHaplo(colony, nInd = 2)
-#'
-#' getSegSiteHaplo(colony, caste = "virginQueens")
-#' getVirginQueensSegSiteHaplo(colony)
-#'
-#' getSegSiteHaplo(colony, caste = "workers")
+#' getSegSiteHaplo(colony, caste = "workers", nInd = 3)
 #' getWorkersSegSiteHaplo(colony)
-#'
-#' getSegSiteHaplo(colony, caste = "drones")
-#' getDronesSegSiteHaplo(colony)
+#' #Same aliases exist for all the castes!
 #'
 #' # Get haplotypes for all individuals
 #' getSegSiteHaplo(colony, caste = "all")
 #' # Get all haplotypes in a single matrix
 #' getSegSiteHaplo(colony, caste = "all", collapse = TRUE)
 #'
+#' #Input is a MultiColony - same behaviour as for the Colony!
 #' getSegSiteHaplo(apiary, caste = "queen")
 #' getQueenSegSiteHaplo(apiary)
-#'
-#' getSegSiteHaplo(apiary, caste = "fathers")
-#' getSegSiteHaplo(apiary, caste = "fathers", nInd = 2)
-#' getSegSiteHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSegSiteHaplo(apiary)
-#' getFathersSegSiteHaplo(apiary, nInd = 2)
-#'
-#' getSegSiteHaplo(apiary, caste = "virginQueens")
-#' getVirginQueensSegSiteHaplo(apiary)
-#'
-#' getSegSiteHaplo(apiary, caste = "workers")
-#' getWorkersSegSiteHaplo(apiary)
-#'
-#' getSegSiteHaplo(apiary, caste = "drones")
-#' getDronesSegSiteHaplo(apiary)
 #'
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getSegSiteHaplo(apiary, caste = "all")
@@ -3879,7 +3777,7 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -3906,44 +3804,18 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' getSegSiteGeno(colony, caste = "queen")
 #' getQueenSegSiteGeno(colony)
 #'
-#' getSegSiteGeno(colony, caste = "fathers")
-#' getSegSiteGeno(colony, caste = "fathers", nInd = 2)
-#' getSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSegSiteGeno(colony)
-#' getFathersSegSiteGeno(colony, nInd = 2)
-#'
-#' getSegSiteGeno(colony, caste = "virginQueens")
-#' getVirginQueensSegSiteGeno(colony)
-#'
-#' getSegSiteGeno(colony, caste = "workers")
+#' getSegSiteGeno(colony, caste = "workers", nInd = 3)
 #' getWorkersSegSiteGeno(colony)
-#'
-#' getSegSiteGeno(colony, caste = "drones")
-#' getDronesSegSiteGeno(colony)
+#' # same aliases exist for all the castes!
 #'
 #' # Get genotypes for all individuals
 #' getSegSiteGeno(colony, caste = "all")
 #' # Get all genotypes in a single matrix
 #' getSegSiteGeno(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony
 #' getSegSiteGeno(apiary, caste = "queen")
 #' getQueenSegSiteGeno(apiary)
-#'
-#' getSegSiteGeno(apiary, caste = "fathers")
-#' getSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-#' getSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSegSiteGeno(apiary)
-#' getFathersSegSiteGeno(apiary, nInd = 2)
-#'
-#' getSegSiteGeno(apiary, caste = "virginQueens")
-#' getVirginQueensSegSiteGeno(apiary)
-#'
-#' getSegSiteGeno(apiary, caste = "workers")
-#' getWorkersSegSiteGeno(apiary)
-#'
-#' getSegSiteGeno(apiary, caste = "drones")
-#' getDronesSegSiteGeno(apiary)
 #'
 #' # Get the genotypes of all individuals either by colony or in a single matrix
 #' getSegSiteGeno(apiary, caste = "all")
@@ -4145,7 +4017,7 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4174,44 +4046,18 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' getSnpHaplo(colony, caste = "queen")
 #' getQueenSnpHaplo(colony)
 #'
-#' getSnpHaplo(colony, caste = "fathers")
-#' getSnpHaplo(colony, caste = "fathers", nInd = 2)
-#' getSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSnpHaplo(colony)
-#' getFathersSnpHaplo(colony, nInd = 2)
-#'
-#' getSnpHaplo(colony, caste = "virginQueens")
-#' getVirginQueensSnpHaplo(colony)
-#'
-#' getSnpHaplo(colony, caste = "workers")
+#' getSnpHaplo(colony, caste = "workers", nInd = 3)
 #' getWorkersSnpHaplo(colony)
-#'
-#' getSnpHaplo(colony, caste = "drones")
-#' getDronesSnpHaplo(colony)
+#' # Same aliases exist for all the castes!
 #'
 #' # Get haplotypes for all individuals
 #' getSnpHaplo(colony, caste = "all")
 #' # Get all haplotypes in a single matrix
 #' getSnpHaplo(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony!
 #' getSnpHaplo(apiary, caste = "queen")
 #' getQueenSnpHaplo(apiary)
-#'
-#' getSnpHaplo(apiary, caste = "fathers")
-#' getSnpHaplo(apiary, caste = "fathers", nInd = 2)
-#' getSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSnpHaplo(apiary)
-#' getFathersSnpHaplo(apiary, nInd = 2)
-#'
-#' getSnpHaplo(apiary, caste = "virginQueens")
-#' getVirginQueensSnpHaplo(apiary)
-#'
-#' getSnpHaplo(apiary, caste = "workers")
-#' getWorkersSnpHaplo(apiary)
-#'
-#' getSnpHaplo(apiary, caste = "drones")
-#' getDronesSnpHaplo(apiary)
 #'
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getSnpHaplo(apiary, caste = "all")
@@ -4413,7 +4259,7 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addSnpChip(nSnpPerChr = 5)
 #' basePop <- createVirginQueens(founderGenomes)
@@ -4441,44 +4287,18 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' getSnpGeno(colony, caste = "queen")
 #' getQueenSnpGeno(colony)
 #'
-#' getSnpGeno(colony, caste = "fathers")
-#' getSnpGeno(colony, caste = "fathers", nInd = 2)
-#' getSnpGeno(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSnpGeno(colony)
-#' getFathersSnpGeno(colony, nInd = 2)
-#'
-#' getSnpGeno(colony, caste = "virginQueens")
-#' getVirginQueensSnpGeno(colony)
-#'
-#' getSnpGeno(colony, caste = "workers")
+#' getSnpGeno(colony, caste = "workers", nInd = 3)
 #' getWorkersSnpGeno(colony)
-#'
-#' getSnpGeno(colony, caste = "drones")
-#' getDronesSnpGeno(colony)
+#' # Same aliases exist for all the castes!
 #'
 #' # Get genotypes for all individuals
 #' getSnpGeno(colony, caste = "all")
 #' # Get all haplotypes in a single matrix
 #' getSnpGeno(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony!
 #' getSnpGeno(apiary, caste = "queen")
 #' getQueenSnpGeno(apiary)
-#'
-#' getSnpGeno(apiary, caste = "fathers")
-#' getSnpGeno(apiary, caste = "fathers", nInd = 2)
-#' getSnpGeno(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersSnpGeno(apiary)
-#' getFathersSnpGeno(apiary, nInd = 2)
-#'
-#' getSnpGeno(apiary, caste = "virginQueens")
-#' getVirginQueensSnpGeno(apiary)
-#'
-#' getSnpGeno(apiary, caste = "workers")
-#' getWorkersSnpGeno(apiary)
-#'
-#' getSnpGeno(apiary, caste = "drones")
-#' getDronesSnpGeno(apiary)
 #'
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getSnpGeno(apiary, caste = "all")
@@ -4667,7 +4487,7 @@ getDronesSnpGeno <- function(x, nInd = NULL,
 #'   alternative (2nd row) alleles
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
@@ -5139,38 +4959,18 @@ calcBeeGRMIbd <- function(x) {
 #' getFathersPheno(colony)
 #' getFathersPheno(colony, nInd = 2)
 #'
-#' getPheno(colony, caste = "virginQueens")
-#' getVirginQueensPheno(colony)
-#'
 #' getPheno(colony, caste = "workers")
 #' getWorkersPheno(colony)
-#'
-#' getPheno(colony, caste = "drones")
-#' getDronesPheno(colony)
+#' # Same aliases exist for all the castes!!!
 #'
 #' # Get phenotypes for all individuals
 #' getPheno(colony, caste = "all")
 #' # Get all phenotypes in a single matrix
 #' getPheno(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony!
 #' getPheno(apiary, caste = "queen")
 #' getQueenPheno(apiary)
-#'
-#' getPheno(apiary, caste = "fathers")
-#' getPheno(apiary, caste = "fathers", nInd = 2)
-#' getPheno(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersPheno(apiary)
-#' getFathersPheno(apiary, nInd = 2)
-#'
-#' getPheno(apiary, caste = "virginQueens")
-#' getVirginQueensPheno(apiary)
-#'
-#' getPheno(apiary, caste = "workers")
-#' getWorkersPheno(apiary)
-#'
-#' getPheno(apiary, caste = "drones")
-#' getDronesPheno(apiary)
 #'
 #' # Get the phenotypes of all individuals either by colony or in a single matrix
 #' getPheno(apiary, caste = "all")
@@ -5320,7 +5120,7 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #' SP$setVarE(varE = varE)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
 #' # Create and cross Colony and MultiColony class
@@ -5564,9 +5364,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' apiary <- buildUp(apiary)
 #'
 #' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-#' calcPerformanceCriterion(colony, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = sum)
-#' calcPerformanceCriterion(apiary, queenTrait = 1, workersTrait = 2, workersTraitFUN = mean)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
 #' calcPerformanceCriterion(apiary, queenTrait = 1,
@@ -5683,15 +5481,9 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' calcSelectionCriterion(colony,
 #'                        queenTrait = 1, queenTraitFUN = sum,
 #'                        workersTrait = 2, workersTraitFUN = sum)
-#' calcSelectionCriterion(colony,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = mean)
 #' calcSelectionCriterion(apiary,
 #'                        queenTrait = 1, queenTraitFUN = sum,
 #'                        workersTrait = 2, workersTraitFUN = sum)
-#' calcSelectionCriterion(apiary,
-#'                        queenTrait = 1, queenTraitFUN = mean,
-#'                        workersTrait = 2, workersTraitFUN = mean)
 #'
 #' apiary[[2]] <- removeQueen(apiary[[2]])
 #' calcSelectionCriterion(apiary, queenTrait = 1,
@@ -5771,7 +5563,7 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
 #'   \code{\link{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$addTraitA(nQtlPerChr = 10, var = 1)
 #' SP$addSnpChip(5)
@@ -5800,44 +5592,18 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
 #' getGv(colony, caste = "queen")
 #' getQueenGv(colony)
 #'
-#' getGv(colony, caste = "fathers")
-#' getGv(colony, caste = "fathers", nInd = 2)
-#' getGv(colony, caste = "fathers", nInd = 2) # random sample!
-#' getFathersGv(colony)
-#' getFathersGv(colony, nInd = 2)
-#'
-#' getGv(colony, caste = "virginQueens")
-#' getVirginQueensGv(colony)
-#'
 #' getGv(colony, caste = "workers")
 #' getWorkersGv(colony)
-#'
-#' getGv(colony, caste = "drones")
-#' getDronesGv(colony)
+#' # Same aliases exist for all the castes!
 #'
 #' # Get genetic values for all individuals
 #' getGv(colony, caste = "all")
 #' # Get all genetic values in a single matrix
 #' getGv(colony, caste = "all", collapse = TRUE)
 #'
-#' # Input is a MultiColony
+#' # Input is a MultiColony - same behaviour as for the Colony!
 #' getGv(apiary, caste = "queen")
 #' getQueenGv(apiary)
-#'
-#' getGv(apiary, caste = "fathers")
-#' getGv(apiary, caste = "fathers", nInd = 2)
-#' getGv(apiary, caste = "fathers", nInd = 2) # random sample!
-#' getFathersGv(apiary)
-#' getFathersGv(apiary, nInd = 2)
-#'
-#' getGv(apiary, caste = "virginQueens")
-#' getVirginQueensGv(apiary)
-#'
-#' getGv(apiary, caste = "workers")
-#' getWorkersGv(apiary)
-#'
-#' getGv(apiary, caste = "drones")
-#' getDronesGv(apiary)
 #'
 #' # Get the genetic values of all individuals either by colony or in a single matrix
 #' getGv(apiary, caste = "all")

@@ -60,7 +60,7 @@ Level 0 function that returns genetic values of individuals
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$addSnpChip(5)
@@ -89,44 +89,18 @@ getGv(queens)
 getGv(colony, caste = "queen")
 getQueenGv(colony)
 
-getGv(colony, caste = "fathers")
-getGv(colony, caste = "fathers", nInd = 2)
-getGv(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersGv(colony)
-getFathersGv(colony, nInd = 2)
-
-getGv(colony, caste = "virginQueens")
-getVirginQueensGv(colony)
-
 getGv(colony, caste = "workers")
 getWorkersGv(colony)
-
-getGv(colony, caste = "drones")
-getDronesGv(colony)
+# Same aliases exist for all the castes!
 
 # Get genetic values for all individuals
 getGv(colony, caste = "all")
 # Get all genetic values in a single matrix
 getGv(colony, caste = "all", collapse = TRUE)
 
-# Input is a MultiColony
+# Input is a MultiColony - same behaviour as for the Colony!
 getGv(apiary, caste = "queen")
 getQueenGv(apiary)
-
-getGv(apiary, caste = "fathers")
-getGv(apiary, caste = "fathers", nInd = 2)
-getGv(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersGv(apiary)
-getFathersGv(apiary, nInd = 2)
-
-getGv(apiary, caste = "virginQueens")
-getVirginQueensGv(apiary)
-
-getGv(apiary, caste = "workers")
-getWorkersGv(apiary)
-
-getGv(apiary, caste = "drones")
-getDronesGv(apiary)
 
 # Get the genetic values of all individuals either by colony or in a single matrix
 getGv(apiary, caste = "all")

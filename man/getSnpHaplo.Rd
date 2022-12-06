@@ -124,7 +124,7 @@ Level 0 function that returns SNP array haplotypes of
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$addSnpChip(nSnpPerChr = 5)
 basePop <- createVirginQueens(founderGenomes)
@@ -152,44 +152,18 @@ getSnpHaplo(queens)
 getSnpHaplo(colony, caste = "queen")
 getQueenSnpHaplo(colony)
 
-getSnpHaplo(colony, caste = "fathers")
-getSnpHaplo(colony, caste = "fathers", nInd = 2)
-getSnpHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersSnpHaplo(colony)
-getFathersSnpHaplo(colony, nInd = 2)
-
-getSnpHaplo(colony, caste = "virginQueens")
-getVirginQueensSnpHaplo(colony)
-
-getSnpHaplo(colony, caste = "workers")
+getSnpHaplo(colony, caste = "workers", nInd = 3)
 getWorkersSnpHaplo(colony)
-
-getSnpHaplo(colony, caste = "drones")
-getDronesSnpHaplo(colony)
+# Same aliases exist for all the castes!
 
 # Get haplotypes for all individuals
 getSnpHaplo(colony, caste = "all")
 # Get all haplotypes in a single matrix
 getSnpHaplo(colony, caste = "all", collapse = TRUE)
 
-# Input is a MultiColony
+# Input is a MultiColony - same behaviour as for the Colony!
 getSnpHaplo(apiary, caste = "queen")
 getQueenSnpHaplo(apiary)
-
-getSnpHaplo(apiary, caste = "fathers")
-getSnpHaplo(apiary, caste = "fathers", nInd = 2)
-getSnpHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersSnpHaplo(apiary)
-getFathersSnpHaplo(apiary, nInd = 2)
-
-getSnpHaplo(apiary, caste = "virginQueens")
-getVirginQueensSnpHaplo(apiary)
-
-getSnpHaplo(apiary, caste = "workers")
-getWorkersSnpHaplo(apiary)
-
-getSnpHaplo(apiary, caste = "drones")
-getDronesSnpHaplo(apiary)
 
 # Get the haplotypes of all individuals either by colony or in a single matrix
 getSnpHaplo(apiary, caste = "all")
