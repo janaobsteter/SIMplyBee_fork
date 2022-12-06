@@ -76,15 +76,9 @@ apiary <- buildUp(apiary)
 calcSelectionCriterion(colony,
                        queenTrait = 1, queenTraitFUN = sum,
                        workersTrait = 2, workersTraitFUN = sum)
-calcSelectionCriterion(colony,
-                       queenTrait = 1, queenTraitFUN = mean,
-                       workersTrait = 2, workersTraitFUN = mean)
 calcSelectionCriterion(apiary,
                        queenTrait = 1, queenTraitFUN = sum,
                        workersTrait = 2, workersTraitFUN = sum)
-calcSelectionCriterion(apiary,
-                       queenTrait = 1, queenTraitFUN = mean,
-                       workersTrait = 2, workersTraitFUN = mean)
 
 apiary[[2]] <- removeQueen(apiary[[2]])
 calcSelectionCriterion(apiary, queenTrait = 1,

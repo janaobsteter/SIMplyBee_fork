@@ -103,7 +103,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' @return \code{\link{MultiColony-class}} with selected colonies
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
@@ -130,18 +130,10 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' getId(apiary)
 #'
 #' getId(selectColonies(apiary, ID = 1))
-#' getId(selectColonies(apiary, ID = "4"))
-#' getId(selectColonies(apiary, ID = c(1, 2)))
 #' getId(selectColonies(apiary, ID = c("3", "4")))
-#' getId(selectColonies(apiary, ID = 3))
 #' # ... alternative
 #' getId(apiary[1])
-#' getId(apiary[[1]])
-#' getId(apiary["4"])
 #' getId(apiary[["4"]])
-#' getId(apiary[c(1, 2)])
-#' getId(apiary[c("3", "4")])
-#' getId(apiary[3])
 #'
 #' # Select a random number of colonies
 #' selectColonies(apiary, n = 3)
@@ -150,7 +142,6 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'
 #' # Since selection is random, you would get a different set of colonies with
 #' # each function call
-#' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #' getId(selectColonies(apiary, p = 0.5))
 #'
@@ -247,7 +238,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'   and the \code{remnant}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
@@ -360,7 +351,7 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
@@ -387,9 +378,6 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' getId(apiary)
 #'
 #' getId(removeColonies(apiary, ID = 1))
-#' getId(removeColonies(apiary, ID = "4"))
-#'
-#' getId(removeColonies(apiary, ID = c(1, 2)))
 #' getId(removeColonies(apiary, ID = c("3", "4")))
 #'
 #' nColonies(apiary)

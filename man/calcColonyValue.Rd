@@ -78,7 +78,7 @@ SP$addTraitADE(nQtlPerChr = 100,
 SP$setVarE(varE = varE)
 
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(x = basePop[1], nInd = 1000)
+drones <- createDrones(x = basePop[1], nInd = 200)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create and cross Colony and MultiColony class

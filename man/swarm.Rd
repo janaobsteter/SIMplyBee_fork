@@ -41,7 +41,7 @@ Level 2 function that swarms a Colony or MultiColony object -
   the swarm is the same as for the remnant (for now).
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(basePop[1], n = 1000)
@@ -62,8 +62,8 @@ tmp$remnant
 
 # Swarm all colonies in the apiary with p = 0.6 (60\% of workers leave)
 tmp <- swarm(apiary, p = 0.6)
-tmp$swarm[[1]]
-tmp$remnant[[1]]
+nWorkers(tmp$swarm)
+nWorkers(tmp$remnant)
 # Swarm with different proportions
 nWorkers(apiary)
 tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))

@@ -82,5 +82,5 @@ Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
 
 Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
-  2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649.}
+  2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
 }

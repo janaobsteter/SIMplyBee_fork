@@ -115,13 +115,13 @@ Level 0 function that returns IBD (identity by descent)
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 1000)
+drones <- createDrones(x = basePop[1], nInd = 200)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
@@ -144,20 +144,9 @@ getIbdHaplo(queens)
 getIbdHaplo(x = colony, caste = "queen")
 getQueenIbdHaplo(colony)
 
-getIbdHaplo(colony, caste = "fathers")
-getIbdHaplo(colony, caste = "fathers", nInd = 2)
-getIbdHaplo(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersIbdHaplo(colony)
-getFathersIbdHaplo(colony, nInd = 2)
-
-getIbdHaplo(colony, caste = "virginQueens")
-getVirginQueensIbdHaplo(colony)
-
-getIbdHaplo(colony, caste = "workers")
+getIbdHaplo(colony, caste = "workers", nInd = 3)
 getWorkersIbdHaplo(colony)
-
-getIbdHaplo(colony, caste = "drones")
-getDronesIbdHaplo(colony)
+# Same aliases exist for all castes!
 
 # Get haplotypes for all individuals
 getIbdHaplo(colony, caste = "all")
@@ -169,21 +158,6 @@ getIbdHaplo(x = apiary, caste = "queen")
 getQueenIbdHaplo(apiary)
 # Or collapse all the haplotypes into a single matrix
 getQueenIbdHaplo(apiary, collapse = TRUE)
-
-getIbdHaplo(apiary, caste = "fathers")
-getIbdHaplo(apiary, caste = "fathers", nInd = 2)
-getIbdHaplo(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersIbdHaplo(apiary)
-getFathersIbdHaplo(apiary, nInd = 2)
-
-getIbdHaplo(apiary, caste = "virginQueens")
-getVirginQueensIbdHaplo(apiary)
-
-getIbdHaplo(apiary, caste = "workers")
-getWorkersIbdHaplo(apiary)
-
-getIbdHaplo(apiary, caste = "drones")
-getDronesIbdHaplo(apiary)
 
 # Get the haplotypes of all individuals either by colony or in a single matrix
 getIbdHaplo(apiary, caste = "all")

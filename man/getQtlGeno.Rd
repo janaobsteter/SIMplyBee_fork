@@ -109,12 +109,12 @@ Level 0 function that returns QTL genotypes of individuals in a
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 1000)
+drones <- createDrones(x = basePop[1], nInd = 200)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
@@ -137,43 +137,18 @@ getQtlGeno(queens)
 getQtlGeno(colony, caste = "queen")
 getQueenQtlGeno(colony)
 
-getQtlGeno(colony, caste = "fathers")
-getQtlGeno(colony, caste = "fathers", nInd = 2)
-getQtlGeno(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersQtlGeno(colony)
-getFathersQtlGeno(colony, nInd = 2)
-
-getQtlGeno(colony, caste = "virginQueens")
-getVirginQueensQtlGeno(colony)
-
-getQtlGeno(colony, caste = "workers")
+getQtlGeno(colony, caste = "workers", nInd = 3)
 getWorkersQtlGeno(colony)
-
-getQtlGeno(colony, caste = "drones")
-getDronesQtlGeno(colony)
+# Same aliases exist for all the castes!
 
 # Get genotypes for all individuals
 getQtlGeno(colony, caste = "all")
 # Get all haplotypes in a single matrix
 getQtlGeno(colony, caste = "all", collapse = TRUE)
 
+# Input is a MultiColony - same behaviour as for the Colony!
 getQtlGeno(apiary, caste = "queen")
 getQueenQtlGeno(apiary)
-
-getQtlGeno(apiary, caste = "fathers")
-getQtlGeno(apiary, caste = "fathers", nInd = 2)
-getQtlGeno(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersQtlGeno(apiary)
-getFathersQtlGeno(apiary, nInd = 2)
-
-getQtlGeno(apiary, caste = "virginQueens")
-getVirginQueensQtlGeno(apiary)
-
-getQtlGeno(apiary, caste = "workers")
-getWorkersQtlGeno(apiary)
-
-getQtlGeno(apiary, caste = "drones")
-getDronesQtlGeno(apiary)
 
 # Get the genotypes of all individuals either by colony or in a single matrix
 getQtlGeno(apiary, caste = "all")

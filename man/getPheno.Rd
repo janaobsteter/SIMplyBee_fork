@@ -96,38 +96,18 @@ getPheno(colony, caste = "fathers", nInd = 2) # random sample!
 getFathersPheno(colony)
 getFathersPheno(colony, nInd = 2)
 
-getPheno(colony, caste = "virginQueens")
-getVirginQueensPheno(colony)
-
 getPheno(colony, caste = "workers")
 getWorkersPheno(colony)
-
-getPheno(colony, caste = "drones")
-getDronesPheno(colony)
+# Same aliases exist for all the castes!!!
 
 # Get phenotypes for all individuals
 getPheno(colony, caste = "all")
 # Get all phenotypes in a single matrix
 getPheno(colony, caste = "all", collapse = TRUE)
 
-# Input is a MultiColony
+# Input is a MultiColony - same behaviour as for the Colony!
 getPheno(apiary, caste = "queen")
 getQueenPheno(apiary)
-
-getPheno(apiary, caste = "fathers")
-getPheno(apiary, caste = "fathers", nInd = 2)
-getPheno(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersPheno(apiary)
-getFathersPheno(apiary, nInd = 2)
-
-getPheno(apiary, caste = "virginQueens")
-getVirginQueensPheno(apiary)
-
-getPheno(apiary, caste = "workers")
-getWorkersPheno(apiary)
-
-getPheno(apiary, caste = "drones")
-getDronesPheno(apiary)
 
 # Get the phenotypes of all individuals either by colony or in a single matrix
 getPheno(apiary, caste = "all")
