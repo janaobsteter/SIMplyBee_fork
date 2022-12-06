@@ -1,11 +1,5 @@
 title: SIMplyBee
 url: https://www.simplybee.info
-development:
-  mode: auto
-
-template:
-  params:
-    bootswatch: lux
 
 navbar:
   structure:
@@ -35,6 +29,8 @@ navbar:
         href: articles/5_Sampling_functions.html
       - text: Quantitative Genetics
         href: articles/6_Quantitative_Genetics.html
+      - text : FAQs
+        href: articles/7_FAQs.html
 
 reference:
   - title: Class
@@ -220,6 +216,7 @@ reference:
      - getDronesSegSiteHaplo
      - getVirginQueensSegSiteHaplo
 
+
      - getSegSiteGeno
      - getQueenSegSiteGeno
      - getFathersSegSiteGeno
@@ -269,70 +266,53 @@ reference:
     - calcBeeGRMIbs
     - calcBeeGRMIbd
     - calcBeeAlleleFreq
-
-
-
-  - title: Quantitative Genetics
-  - subtitle: Phenotype values
+  - subtitle: Calculate phenotypic information
     contents:
     - getPheno
-    - getQueenPheno
-    - getFathersPheno
-    - getWorkersPheno
-    - getDronesPheno
-    - getVirginQueensPheno
+  - subtitle: Calculate criterion
+    contents:
     - calcColonyValue
-    - calcColonyPheno
     - calcInheritanceCriterion
     - calcPerformanceCriterion
     - calcSelectionCriterion
+
+  - title: Planned mating
+  - subtitile:
+    contents:
+    - createMatingStationDCA
+    - createRandomCrossPlan
+    - mapCasteToColonyValue
+
+  - title: Quantitative Genetics
   - subtitle: Genetic values
     contents:
-    - getGv
     - getQueenGv
     - getFathersGv
     - getWorkersGv
     - getDronesGv
     - getVirginQueensGv
     - getWorkersGv
-    - calcColonyGv
   - subtitle: Breeding values
     contents:
-    - getBv
     - getQueenBv
     - getFathersBv
     - getWorkersBv
     - getDronesBv
     - getVirginQueensBv
-    - calcColonyBv
   - subtitle: Dominance deviations
     contents:
-    - getDd
     - getQueenDd
     - getFathersDd
     - getWorkersDd
     - getDronesDd
     - getVirginQueensDd
-    - calcColonyDd
-  - subtitle: Epistatic deviations
+  - subtitle: Epistatic devaitions
     contents:
     - getAa
-    - getQueenAa
-    - getFathersAa
-    - getWorkersAa
-    - getDronesAa
-    - getVirginQueensAa
-    - calcColonyAa
-  - subtitle: Controlled mating
-    contents:
-    - createRandomCrossPlan
-    - createMatingStationDCA
-    - mapCasteToColonyValue
-
-
 
   - title: Combine REMOVE EXPORT AND DELETE
     contents:
     - combineBeeGametesHaploDiploid
     - combineBeeGametes
+
 
