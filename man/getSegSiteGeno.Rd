@@ -102,7 +102,7 @@ Level 0 function that returns genotypes for all segregating
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -129,44 +129,18 @@ getSegSiteGeno(queens)
 getSegSiteGeno(colony, caste = "queen")
 getQueenSegSiteGeno(colony)
 
-getSegSiteGeno(colony, caste = "fathers")
-getSegSiteGeno(colony, caste = "fathers", nInd = 2)
-getSegSiteGeno(colony, caste = "fathers", nInd = 2) # random sample!
-getFathersSegSiteGeno(colony)
-getFathersSegSiteGeno(colony, nInd = 2)
-
-getSegSiteGeno(colony, caste = "virginQueens")
-getVirginQueensSegSiteGeno(colony)
-
-getSegSiteGeno(colony, caste = "workers")
+getSegSiteGeno(colony, caste = "workers", nInd = 3)
 getWorkersSegSiteGeno(colony)
-
-getSegSiteGeno(colony, caste = "drones")
-getDronesSegSiteGeno(colony)
+# same aliases exist for all the castes!
 
 # Get genotypes for all individuals
 getSegSiteGeno(colony, caste = "all")
 # Get all genotypes in a single matrix
 getSegSiteGeno(colony, caste = "all", collapse = TRUE)
 
-# Input is a MultiColony
+# Input is a MultiColony - same behaviour as for the Colony
 getSegSiteGeno(apiary, caste = "queen")
 getQueenSegSiteGeno(apiary)
-
-getSegSiteGeno(apiary, caste = "fathers")
-getSegSiteGeno(apiary, caste = "fathers", nInd = 2)
-getSegSiteGeno(apiary, caste = "fathers", nInd = 2) # random sample!
-getFathersSegSiteGeno(apiary)
-getFathersSegSiteGeno(apiary, nInd = 2)
-
-getSegSiteGeno(apiary, caste = "virginQueens")
-getVirginQueensSegSiteGeno(apiary)
-
-getSegSiteGeno(apiary, caste = "workers")
-getWorkersSegSiteGeno(apiary)
-
-getSegSiteGeno(apiary, caste = "drones")
-getDronesSegSiteGeno(apiary)
 
 # Get the genotypes of all individuals either by colony or in a single matrix
 getSegSiteGeno(apiary, caste = "all")

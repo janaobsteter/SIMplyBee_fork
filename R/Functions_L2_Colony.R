@@ -211,7 +211,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #'   workers added
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -224,67 +224,38 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE) {
 #' apiary <- createMultiColony(basePop[4:5], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
 #'
-#' # Add virgin queens
-#' addCastePop(colony, caste = "virginQueens", nInd = 20)
-#' # Or use a alias function
-#' addVirginQueens(colony, nInd = 20)
-#' nVirginQueens(addVirginQueens(apiary, nInd = 20))
-#'
+#' #Here we show an example for workers, but same holds for drones and virgin queens!
 #' # Add workers
 #' addCastePop(colony, caste = "workers", nInd = 20)
-#' # Or use a alias function
-#' addWorkers(colony, nInd = 20)
-#' nWorkers(addWorkers(apiary, nInd = 20))
-#'
-#' # Add drones
-#' addCastePop(colony, caste = "drones", nInd = 20)
-#' # Or use a alias function
-#' addDrones(colony, nInd = 20)
-#' nDrones(addDrones(apiary, nInd = 20))
+#' # Or use a alias function: addWorkers(colony, nInd = 20)
+#' # Same holds for other castes!
 #'
 #' # Using a default in SP$nWorkers
 #' # (just to have some individuals - change this to your needs!)
-#' addVirginQueens(colony)
-#' addDrones(colony)
 #' addWorkers(colony)
-#' nWorkers(addWorkers(apiary))
 #'
 #' # Specify own number
-#' SP$nVirginQueens <- 2
 #' SP$nWorkers <- 15
-#' SP$nDrones <- 3
-#' nVirginQueens(addVirginQueens(colony))
 #' nWorkers(addWorkers(colony))
-#' nDrones(addDrones(colony))
 #' # nVirginQueens/nWorkers/nDrones will NOT vary between function calls when a constant is used
 #'
 #' # Specify a function that will give a number
-#' nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
-#' nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
 #' nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
 #' nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
-#' nDrones(addDrones(colony, nInd = nDronesPoisson))
-#' nDrones(addDrones(colony, nInd = nDronesPoisson))
 #' # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 #'
 #' # Store a function or a value in the SP object
-#' SP$nVirginQueens <- nVirginQueensPoisson
 #' SP$nWorkers <- nWorkersPoisson
-#' SP$nDrones <- nDronesPoisson
-#' (addVirginQueens(colony))
 #' (addWorkers(colony))
-#' (addDrones(colony))
 #' # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 #'
 #' # Queen's counters
 #' getMisc(getQueen(addWorkers(colony)))
 #'
 #' # Add individuals to a MultiColony object
-#' nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
-#' nDrones(addDrones(apiary, nInd = 10))
+#' apiary <- addWorkers(apiary)
 #' # Add different number of workers to colonies
 #' nWorkers(addWorkers(apiary, nInd = c(50, 100)))
-#' nDrones(addDrones(apiary, nInd = c(100, 10)))
 #'
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
@@ -458,7 +429,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #'    drones replaced or added
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -477,15 +448,12 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' # Using defaults in SP$nWorkers & SP$nDrones
 #' (colony <- buildUp(colony))
 #' isProductive(colony)
-#' getWorkers(colony)@id
 #' # Build-up a MultiColony class
 #' (apiary <- buildUp(apiary))
 #' isProductive(apiary)
 #'
 #' # Specifying own number
 #' colony <- buildUp(colony, nWorkers = 100)
-#' getWorkers(colony)@id
-#' # we got new workers since new = TRUE
 #' # Build up a MultiColony class
 #' apiary <- buildUp(apiary, nWorkers = 250)
 #' # Build up with different numbers
@@ -493,33 +461,19 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' nWorkers(apiary)
 #' nDrones(apiary)
 #'
-#' colony <- buildUp(colony, nWorkers = 100, new = FALSE)
-#' getWorkers(colony)@id
-#' # we did NOT get new workers since new = FALSE and we were at the target of 100
-#'
-#' colony <- buildUp(colony, nWorkers = 150, new = FALSE)
-#' getWorkers(colony)@id
-#' # we got additional workers since new = FALSE and we were NOT at the target of 150
-#'
 #' # The user can also specify a function that will give a number
-#' colony <- createColony(x = basePop[5])
-#' colony <- cross(colony, drones = droneGroups[[4]])
+#' colony <- removeWorkers(colony) # Remove workers to start from fresh
+#' colony <- removeDrones(colony) # Remove drones to start from fresh
 #' buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 #' # nWorkers and nDrones will vary between function calls when a function is used
-#'
-#' # Store a function or a value in the SP object
+#' # You can store these functions or a values in the SP object
 #' SP$nWorkers <- nWorkersPoisson
 #' SP$nDrones <- nDronesPoisson
-#' # Create new drones and a new colony
-#' colony <- createColony(x = basePop[6])
-#' colony <- cross(colony, drones = droneGroups[[5]])
-#' buildUp(colony)
-#' buildUp(colony)
-#' # nWorkers and nDrones will vary between function calls when a function is used
+#'
 #' # Same for MultiColony class
-#' apiary <- createMultiColony(basePop[7:8], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(6, 7)])
+#' apiary <- removeWorkers(apiary)
+#' apiary <- removeDrones(apiary)
 #' buildUp(apiary)[[1]]
 #' buildUp(apiary)[[1]]
 #'
@@ -1338,7 +1292,7 @@ collapse <- function(x) {
 #' outputs have the swarm event set to \code{TRUE}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(basePop[1], n = 1000)
@@ -1359,8 +1313,8 @@ collapse <- function(x) {
 #'
 #' # Swarm all colonies in the apiary with p = 0.6 (60% of workers leave)
 #' tmp <- swarm(apiary, p = 0.6)
-#' tmp$swarm[[1]]
-#' tmp$remnant[[1]]
+#' nWorkers(tmp$swarm)
+#' nWorkers(tmp$remnant)
 #' # Swarm with different proportions
 #' nWorkers(apiary)
 #' tmp <- swarm(apiary, p = c(0.4, 0.6, 0.5, 0.5, 0.34, 0.56))
@@ -1528,18 +1482,18 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
 #' apiary <- buildUp(apiary, nWorkers = 100)
 #'
 #' # Supersede a colony
-#' getQueen(colony)
-#' getVirginQueens(colony)
+#' isQueenPresent(colony)
+#' isVirginQueensPresent(colony)
 #' colony <- supersede(colony)
-#' getQueen(colony)
-#' getVirginQueens(colony)
+#' isQueenPresent(colony)
+#' isVirginQueensPresent(colony)
 #'
 #' # Supersede all colonies in the apiary
-#' getId(mergePops(getQueen(apiary)))
-#' try(getId(mergePops(getVirginQueens(apiary)))) # No virgin queens
+#' isQueenPresent(colony)
+#' isVirginQueensPresent(colony)
 #' apiary1 <- supersede(apiary)
-#' try(getId(mergePops(getQueen(apiary1)))) # No queens
-#' getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
+#' isQueenPresent(colony)
+#' isVirginQueensPresent(colony)
 #'
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)

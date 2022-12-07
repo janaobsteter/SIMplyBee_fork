@@ -41,7 +41,7 @@ Level 3 function that removes some colonies
   from the MultiColony object based on their ID.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 mean <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
@@ -68,9 +68,6 @@ apiary <- buildUp(apiary)
 getId(apiary)
 
 getId(removeColonies(apiary, ID = 1))
-getId(removeColonies(apiary, ID = "4"))
-
-getId(removeColonies(apiary, ID = c(1, 2)))
 getId(removeColonies(apiary, ID = c("3", "4")))
 
 nColonies(apiary)

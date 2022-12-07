@@ -47,18 +47,18 @@ apiary <- cross(apiary, drones = droneGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100)
 
 # Supersede a colony
-getQueen(colony)
-getVirginQueens(colony)
+isQueenPresent(colony)
+isVirginQueensPresent(colony)
 colony <- supersede(colony)
-getQueen(colony)
-getVirginQueens(colony)
+isQueenPresent(colony)
+isVirginQueensPresent(colony)
 
 # Supersede all colonies in the apiary
-getId(mergePops(getQueen(apiary)))
-try(getId(mergePops(getVirginQueens(apiary)))) # No virgin queens
+isQueenPresent(colony)
+isVirginQueensPresent(colony)
 apiary1 <- supersede(apiary)
-try(getId(mergePops(getQueen(apiary1)))) # No queens
-getId(mergePops(getVirginQueens(apiary1))) # No virgin queens
+isQueenPresent(colony)
+isVirginQueensPresent(colony)
 
 # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 tmp <- pullColonies(apiary, p = 0.2)

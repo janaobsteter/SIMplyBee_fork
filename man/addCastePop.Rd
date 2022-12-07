@@ -79,7 +79,7 @@ This function increases queen's \code{nWorkers} and \code{nHomBrood}
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -92,66 +92,37 @@ colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, drones = droneGroups[3:4])
 
-# Add virgin queens
-addCastePop(colony, caste = "virginQueens", nInd = 20)
-# Or use a alias function
-addVirginQueens(colony, nInd = 20)
-nVirginQueens(addVirginQueens(apiary, nInd = 20))
-
+#Here we show an example for workers, but same holds for drones and virgin queens!
 # Add workers
 addCastePop(colony, caste = "workers", nInd = 20)
-# Or use a alias function
-addWorkers(colony, nInd = 20)
-nWorkers(addWorkers(apiary, nInd = 20))
-
-# Add drones
-addCastePop(colony, caste = "drones", nInd = 20)
-# Or use a alias function
-addDrones(colony, nInd = 20)
-nDrones(addDrones(apiary, nInd = 20))
+# Or use a alias function: addWorkers(colony, nInd = 20)
+# Same holds for other castes!
 
 # Using a default in SP$nWorkers
 # (just to have some individuals - change this to your needs!)
-addVirginQueens(colony)
-addDrones(colony)
 addWorkers(colony)
-nWorkers(addWorkers(apiary))
 
 # Specify own number
-SP$nVirginQueens <- 2
 SP$nWorkers <- 15
-SP$nDrones <- 3
-nVirginQueens(addVirginQueens(colony))
 nWorkers(addWorkers(colony))
-nDrones(addDrones(colony))
 # nVirginQueens/nWorkers/nDrones will NOT vary between function calls when a constant is used
 
 # Specify a function that will give a number
-nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
-nVirginQueens(addVirginQueens(colony, nInd = nVirginQueensPoisson))
 nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
 nWorkers(addWorkers(colony, nInd = nWorkersPoisson))
-nDrones(addDrones(colony, nInd = nDronesPoisson))
-nDrones(addDrones(colony, nInd = nDronesPoisson))
 # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 
 # Store a function or a value in the SP object
-SP$nVirginQueens <- nVirginQueensPoisson
 SP$nWorkers <- nWorkersPoisson
-SP$nDrones <- nDronesPoisson
-(addVirginQueens(colony))
 (addWorkers(colony))
-(addDrones(colony))
 # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 
 # Queen's counters
 getMisc(getQueen(addWorkers(colony)))
 
 # Add individuals to a MultiColony object
-nWorkers(addWorkers(apiary, nInd = 100, new = TRUE))
-nDrones(addDrones(apiary, nInd = 10))
+apiary <- addWorkers(apiary)
 # Add different number of workers to colonies
 nWorkers(addWorkers(apiary, nInd = c(50, 100)))
-nDrones(addDrones(apiary, nInd = c(100, 10)))
 
 }
