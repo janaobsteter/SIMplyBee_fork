@@ -76,33 +76,26 @@ isQueen(virginQueen1)
 ))
 
 isQueen(virginQueen1)
-isQueen(virginQueen1)
-isQueen(matedQueen1)
 isQueen(matedQueen1)
 nFathers(matedQueen1)
-getFathers(matedQueen1)@id
-
 isDrone(getFathers(matedQueen1))
 isFather(getFathers(matedQueen1))
-isVirginQueen(matedQueen1)
-isQueen(matedQueen1)
 
 virginQueen2 <- basePop[3]
 (matedQueen2 <- cross(
   x = virginQueen2,
   drones = droneGroups[[2]]
 ))
+
 isQueen(virginQueen2)
 isQueen(matedQueen2)
 nFathers(matedQueen2)
-getFathers(matedQueen2)@id
 
 matedQueens <- cross(
   x = c(basePop[4], basePop[5]),
   drones = droneGroups[c(3, 4)]
 )
-matedQueens
-isQueen(matedQueens)
+
 isQueen(matedQueens)
 nFathers(matedQueens)
 getFathers(matedQueens)

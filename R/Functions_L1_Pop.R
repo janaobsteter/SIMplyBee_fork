@@ -53,104 +53,36 @@
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #'
-#' # Using defaults in SP$nWorkers & SP$nDrones
-#' colony <- buildUp(x = colony, exact = TRUE)
-#' apiary <- buildUp(x = apiary, exact = TRUE)
-#'
-#' # Using a default in SP$nVirginQueens
+#' # Build-up and add virgin queens
+#' colony <- buildUp(x = colony)
+#' apiary <- buildUp(x = apiary)
 #' colony <- addVirginQueens(x = colony)
 #' apiary <- addVirginQueens(x = apiary)
-#' colony
-#' apiary
 #'
-#' # Comparison of getCastePop() and getQueen()
+#' # Get the queen of the colony
 #' getCastePop(colony, caste = "queen")
 #' getQueen(colony)
 #'
-#' # Comparison of getCastePop() and getFathers()
-#' getCastePop(colony, caste = "fathers")
-#' getCastePop(colony, caste = "fathers")@id
-#' getCastePop(colony, caste = "fathers", nInd = 2)@id
-#'
-#' getFathers(colony)
-#' getFathers(colony)@id
-#' getFathers(colony, nInd = 2)@id
-#'
-#' getFathers(getQueen(colony))
-#'
-#' # Comparison of getCastePop() and getVirginQueens()
-#' getCastePop(colony, caste = "virginQueens")
-#' getCastePop(colony, caste = "virginQueens")@id
-#' getCastePop(colony, caste = "virginQueens", nInd = 2)@id
-#'
-#' getVirginQueens(colony)
-#' getVirginQueens(colony)@id
-#' getVirginQueens(colony, nInd = 2)@id
-#'
 #' # Comparison of getCastePop() and getWorkers()
 #' getCastePop(colony, caste = "workers")
-#' getCastePop(colony, caste = "workers")@id
-#' getCastePop(colony, caste = "workers", nInd = 2)@id
-#'
+#' getCastePop(colony, caste = "workers")
+#' getCastePop(colony, caste = "workers", nInd = 2)
+#' # Or aliases
 #' getWorkers(colony)
-#' getWorkers(colony)@id
-#' getWorkers(colony, nInd = 2)@id
+#' # Same aliases exist for all the castes!
 #'
-#' # Comparison of getCastePop() and getDrones()
-#' getCastePop(colony, caste = "drones")
-#' getCastePop(colony, caste = "drones")@id
-#' getCastePop(colony, caste = "drones", nInd = 2)@id
-#'
-#' getDrones(colony)
-#' getDrones(colony)@id
-#' getDrones(colony, nInd = 2)@id
-#'
-#' # Comparisons on MultiColony class
+#' # Input is a MultiColony class - same behaviour as for the Colony!
 #' getCastePop(apiary, caste = "queen")
+#' # Or alias
 #' getQueen(apiary)
-#' getCastePop(apiary, caste = "queen")[[1]]@id
-#' getCastePop(apiary, caste = "queen")[[2]]@id
 #'
 #' # Sample individuals from all the castes
 #' getCastePop(colony, nInd = 5, caste = "all")
-#' # Sample individuals from all the castes as a single population
-#' getCastePop(colony, nInd = 5, caste = "all", collapse = TRUE)
 #'
-#' getCastePop(apiary, caste = "fathers")
-#' getFathers(apiary)
-#' getFathers(apiary)[[1]]@id
-#' getFathers(apiary)[[2]]@id
-#' getFathers(apiary, nInd = 2)
-#'
-#' getCastePop(apiary, caste = "virginQueens")
-#' getVirginQueens(apiary)
-#' getVirginQueens(apiary)[[1]]@id
-#' getVirginQueens(apiary)[[2]]
-#' getVirginQueens(apiary, nInd = 1)
-#' getVirginQueens(apiary, nInd = 2)
-#' mergePops(getVirginQueens(apiary))
-#'
-#' getCastePop(apiary, caste = "workers")
 #' # Get different number of workers per colony
 #' getCastePop(apiary, caste = "workers", nInd = c(10, 20))
-#' getWorkers(apiary)
-#' getWorkers(apiary)[[1]]@id
-#' getWorkers(apiary)[[2]]@id
-#' getWorkers(apiary, nInd = 2)
-#' mergePops(getWorkers(apiary))
-#'
-#' getCastePop(apiary, caste = "drones")
-#' # Get different number of drones per colony
-#' getCastePop(apiary, caste = "drones", nInd = c(10, 50))
-#' getDrones(apiary)
-#' getDrones(apiary)[[1]]@id
-#' getDrones(apiary)[[2]]
-#' getDrones(apiary, nInd = 2)
-#' mergePops(getDrones(apiary))
-#'
-#' getCastePop(apiary)
-#' getCastePop(apiary, caste = "queen")
-#' getCastePop(apiary, caste = "drones")
+#' # Or alias
+#' getWorkers(apiary, nInd = c(10, 20))
 #'
 #' # Obtain individuals from MultiColony as a single population
 #' getCastePop(apiary, caste = "queen", collapse = TRUE)
@@ -381,20 +313,22 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   named by colony ID
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
+#'
 #' # Create virgin queens on a MapPop
 #' basePop <- createCastePop(founderGenomes, caste = "virginQueens")
-#' # Or alias function: createVirginQueens(founderGenomes)
+#' # Or alias
+#' createVirginQueens(founderGenomes)
+#' # Same aliases exist for all the castes!!!
 #'
 #' # Create drones on a Pop
-#' drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
+#' drones <- createDrones(x = basePop[1],  nInd = 200)
 #' # Or create unequal number of drones from multiple virgin queens
-#' # drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
-#' # Or alias: createDrones(x = basePop[1], nInd = 100)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+#' drones <- createDrones(basePop[1:2], nInd = c(100, 200))
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = nFathersPoisson)
 #'
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
@@ -406,6 +340,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' colony@virginQueens <- createVirginQueens(colony)
 #' colony@workers <- createWorkers(colony)$workers
 #' colony@drones <- createDrones(colony)
+#' # Usually, you would use functions buildUp() or addCastePop()
 #'
 #' # These populations hold individual information
 #' # Example on the virgin queens (same holds for all castes!)
@@ -432,8 +367,6 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'
 #' # Store a function or a value in the SP object
 #' SP$nVirginQueens <- nVirginQueensPoisson
-#' SP$nWorkers <- nWorkersPoisson
-#' SP$nDrones <- nDronesPoisson
 #' createVirginQueens(colony)
 #' createVirginQueens(colony)
 #' createVirginQueens(apiary)
@@ -649,23 +582,6 @@ createVirginQueens <- function(x, nInd = NULL,
 #'
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' queen <- basePop[1]
-#' drones <- createDrones(x = basePop[2], nInd = 5)
-#' workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
-#' workers@id
-#' workers@mother
-#' workers@father
-#' SP$pedigree
-#' SP$recHist
-#' SP$recHist[[11]][[1]][1]
-#' SP$recHist[[11]][[1]][2]
 combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -702,26 +618,6 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #'
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$setTrackRec(TRUE)
-#' SP$setTrackPed(isTrackPed = TRUE)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' queen <- basePop[1]
-#' drones <- reduceGenome(
-#'   pop = basePop[2], nProgeny = 5, keepParents = FALSE,
-#'   simRecomb = TRUE
-#' )
-#' workers <- SIMplyBee:::combineBeeGametesHaploDiploid(queen, drones, nProgeny = 4)
-#' workers@id
-#' workers@mother
-#' workers@father
-#' SP$pedigree
-#' SP$recHist
-#' SP$recHist[[11]][[1]][1]
-#' SP$recHist[[11]][[1]][2]
 combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   # An attempt to have drones properly haploid, but have hit AlphaSimR limits
   #   since a lot of the underlying C++ code assumes the same ploidy for all/most
@@ -1097,29 +993,12 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' # We can't pull the queen and leave the colony queenless
 #' pullCastePop(colony, caste = "virginQueens")
 #' pullCastePop(colony, caste = "virginQueens", nInd = 2)
+#' # Or use aliases
 #' pullVirginQueens(colony)
 #' pullVirginQueens(colony, nInd = 2)
+#' # Same aliases exist for all the castes!!!
 #'
-#' pullCastePop(colony, caste = "workers")
-#' pullCastePop(colony, caste = "workers", nInd = 5)
-#' pullWorkers(colony)
-#' pullWorkers(colony, nInd = 5)
-#'
-#' pullCastePop(colony, caste = "drones")
-#' pullCastePop(colony, caste = "drones", nInd = 5)
-#' pullDrones(colony)
-#' pullDrones(colony, nInd = 5)
-#'
-#' # pullCastePop on MultiColony class
-#' pullCastePop(apiary, caste = "queen")
-#' pullQueen(apiary)
-#' nQueens(apiary)
-#' nQueens(pullQueen(apiary)$remnant)
-#'
-#' pullCastePop(apiary, caste = "virginQueens")
-#' pullVirginQueens(apiary)
-#' nVirginQueens(apiary)
-#'
+#' # pullCastePop on MultiColony class - same behaviour as for the Colony!
 #' pullCastePop(apiary, caste = "workers")
 #' # Or pull out unequal number of workers from colonies
 #' pullCastePop(apiary, caste = "workers", nInd = c(10, 20))
@@ -1127,12 +1006,6 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' nWorkers(apiary)
 #' nWorkers(pullWorkers(apiary)$remnant)
 #'
-#' pullCastePop(apiary, caste = "drones")
-#' # Or pull out unequal number of drones from colonies
-#' pullCastePop(apiary, caste = "drones", nInd = c(5, 3))
-#' pullDrones(apiary)
-#' nDrones(apiary)
-#' nDrones(pullDrones(apiary)$remnant)
 #'
 #' # Merge all the pulled populations into a single population
 #' pullCastePop(apiary, caste = "queen", collapse = TRUE)
@@ -1313,33 +1186,26 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' ))
 #'
 #' isQueen(virginQueen1)
-#' isQueen(virginQueen1)
-#' isQueen(matedQueen1)
 #' isQueen(matedQueen1)
 #' nFathers(matedQueen1)
-#' getFathers(matedQueen1)@id
-#'
 #' isDrone(getFathers(matedQueen1))
 #' isFather(getFathers(matedQueen1))
-#' isVirginQueen(matedQueen1)
-#' isQueen(matedQueen1)
 #'
 #' virginQueen2 <- basePop[3]
 #' (matedQueen2 <- cross(
 #'   x = virginQueen2,
 #'   drones = droneGroups[[2]]
 #' ))
+#'
 #' isQueen(virginQueen2)
 #' isQueen(matedQueen2)
 #' nFathers(matedQueen2)
-#' getFathers(matedQueen2)@id
 #'
 #' matedQueens <- cross(
 #'   x = c(basePop[4], basePop[5]),
 #'   drones = droneGroups[c(3, 4)]
 #' )
-#' matedQueens
-#' isQueen(matedQueens)
+#'
 #' isQueen(matedQueens)
 #' nFathers(matedQueens)
 #' getFathers(matedQueens)

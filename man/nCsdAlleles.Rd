@@ -69,10 +69,7 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 nCsdAlleles(getQueen(colony))
-nCsdAlleles(getFathers(colony))
-nCsdAlleles(getVirginQueens(colony))
 nCsdAlleles(getWorkers(colony))
-nCsdAlleles(getDrones(colony))
 
 nCsdAlleles(colony)
 nCsdAlleles(colony, collapse = TRUE)

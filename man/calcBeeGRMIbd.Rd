@@ -31,94 +31,54 @@ SP$setTrackPed(isTrackPed = TRUE)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-apiary <- createMultiColony(basePop[2:3], n = 2)
-apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 1, nDrones = nFathersPoisson)
+colony <- createColony(basePop[2])
+colony <- cross(x = colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
-haploQ <- getQueenIbdHaplo(apiary[[1]])
-haploF <- getFathersIbdHaplo(apiary[[1]])
-haploW <- getWorkersIbdHaplo(apiary[[1]])
-haploD <- getDronesIbdHaplo(apiary[[1]])
-haploV <- getVirginQueensIbdHaplo(apiary[[1]])
+haploQ <- getQueenIbdHaplo(colony)
+haploW <- getWorkersIbdHaplo(colony)
+haploD <- getDronesIbdHaplo(colony)
 SP$pedigree
 
-haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
+haplo <- rbind(haploQ, haploW, haploD)
 
 GRMs <- calcBeeGRMIbd(x = haplo)
+# You can visualise this matrix with the image() functions from the "Matrix" package
 
-# library("Matrix"); image(as(GRMs$genome, "Matrix"))
-# library("Matrix"); image(as(GRMs$indiv, "Matrix"))
-
-GRMs
-
-x <- diag(GRMs$genome)
-hist(x)
-summary(x)
-
-x <- GRMs$genome[lower.tri(x = GRMs$genome, diag = FALSE)]
-hist(x)
-summary(x)
-
+# Inspect the diagonal of the relationship matrix between individuals
 x <- diag(GRMs$indiv)
 hist(x)
 summary(x)
 
+ # Inspect the off-diagonal of the relationship matrix between individuals
 x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 hist(x)
 summary(x)
 
-qI <- getQueen(apiary[[1]])@id
-fI <- sort(getFathers(apiary[[1]])@id)
-wI <- sort(getWorkers(apiary[[1]])@id)
-dI <- sort(getDrones(apiary[[1]])@id)
-vI <- sort(getVirginQueens(apiary[[1]])@id)
+qI <- getCasteId(colony, caste = "queen")
+wI <- sort(getCasteId(colony, caste = "workers"))
+dI <- sort(getCasteId(colony, caste = "drones"))
 
 qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
-fG <- paste(fI, 1, sep = "_")
 wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
 dG <- paste(dI, 1, sep = "_")
-vG <- c(t(outer(X = vI, Y = 1:2, FUN = paste, sep = "_")))
 
-# Queen vs others
-GRMs$genome[qG, qG]
-GRMs$indiv[qI, qI]
-
-GRMs$genome[fG, qG]
-GRMs$indiv[fI, qI]
-
+# Queen vs workers
 GRMs$genome[wG, qG]
 GRMs$indiv[wI, qI]
 
+# Queen vs drones
 GRMs$genome[dG, qG]
 GRMs$indiv[dI, qI]
 
-GRMs$genome[vG, qG]
-GRMs$indiv[vI, qI]
-
-# Fathers vs others
-GRMs$genome[fG, fG]
-GRMs$indiv[fI, fI]
-
-GRMs$genome[wG, fG]
-GRMs$indiv[wI, fI]
-
-GRMs$genome[dG, fG]
-GRMs$indiv[dI, fI]
-
-GRMs$genome[vG, fG]
-GRMs$indiv[vI, fI]
-
-# Workers vs others
+# Workers vs workers
 GRMs$genome[wG, wG]
 GRMs$indiv[wI, wI]
 
+# Workers vs drones
 GRMs$genome[dG, wG]
 GRMs$indiv[dI, wI]
-
-GRMs$genome[vG, wG]
-GRMs$indiv[vI, wI]
 }
 \references{
 Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between

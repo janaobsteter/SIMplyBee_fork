@@ -146,22 +146,16 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 
 # Use getCsdAlleles on a Population
 getCsdAlleles(getQueen(colony))
-getCsdAlleles(getFathers(colony))
 getCsdAlleles(getWorkers(colony))
-getCsdAlleles(getDrones(colony))
 
 # Use getCsdAlleles on a Colony
 getCsdAlleles(colony)
 getCsdAlleles(colony, caste = "queen")
 getQueenCsdAlleles(colony)
-getCsdAlleles(colony, caste = "fathers")
-getFathersCsdAlleles(colony)
-getCsdAlleles(colony, caste = "virginQueens")
-getVirginQueensCsdAlleles(colony)
 getCsdAlleles(colony, caste = "workers")
 getWorkersCsdAlleles(colony)
-getCsdAlleles(colony, caste = "drones")
-getDronesCsdAlleles(colony)
+# Same aliases exist for all the castes!
+
 getCsdAlleles(colony, unique = TRUE)
 getCsdAlleles(colony, collapse = TRUE)
 getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
@@ -169,7 +163,6 @@ getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
 # Use getCsdAlleles on a MultiColony
 getCsdAlleles(apiary)
 getCsdAlleles(apiary, unique = TRUE)
-getCsdAlleles(apiary, collapse = TRUE)
 getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 getCsdAlleles(apiary, nInd = 2)
 }

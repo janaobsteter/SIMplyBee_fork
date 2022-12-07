@@ -23,7 +23,7 @@ Level 2 function that combines two Colony or MultiColony objects
   MultiColony) from the workspace.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(basePop[1], n = 1000)
@@ -46,27 +46,17 @@ apiary1 <- buildUp(x = apiary1, nWorkers = 100, nDrones = 20)
 apiary2 <- buildUp(x = apiary2, nWorkers = 20, nDrones = 5)
 
 # Combine
-nWorkers(colony1)
-nWorkers(colony2)
-nDrones(colony1)
-nDrones(colony2)
+nWorkers(colony1); nWorkers(colony2)
+nDrones(colony1); nDrones(colony2)
 colony1 <- combine(strong = colony1, weak = colony2)
-nWorkers(colony1)
-nWorkers(colony2)
-nDrones(colony1)
-nDrones(colony2)
-getQueen(colony1)@id
-getQueen(colony2)@id
+nWorkers(colony1); nWorkers(colony2)
+nDrones(colony1); nDrones(colony2)
 rm(colony2)
 
-nWorkers(apiary1)
-nWorkers(apiary2)
-nDrones(apiary1)
-nDrones(apiary2)
+nWorkers(apiary1); nWorkers(apiary2)
+nDrones(apiary1); nDrones(apiary2)
 apiary1 <- combine(strong = apiary1, weak = apiary2)
-nWorkers(apiary1)
-nWorkers(apiary2)
-nDrones(apiary1)
-nDrones(apiary2)
+nWorkers(apiary1); nWorkers(apiary2)
+nDrones(apiary1); nDrones(apiary2)
 rm(apiary2)
 }

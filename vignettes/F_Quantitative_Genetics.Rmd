@@ -156,7 +156,7 @@ while phenotypic values are stored in the `pheno` slot.
 basePop <- createVirginQueens(founderGenomes, n = 20)
 head(basePop@gv)
 head(basePop@pheno)
-par(mfrow=c(2,2))
+oldpar <- par(mfrow=c(2,2))
 limQ <- range(c(basePop@gv[, "queenTrait"], basePop@pheno[, "queenTrait"]))
 brkQ <- seq(from = limQ[1], to = limQ[2], length.out = 10)
 limW <- range(c(basePop@gv[, "workersTrait"], basePop@pheno[, "workersTrait"]))
@@ -165,6 +165,7 @@ hist(basePop@gv[, "queenTrait"], xlab = "Genetic value", main = "Queen effect", 
 hist(basePop@gv[, "workersTrait"], xlab = "Genetic value", main = "Workers effect", xlim = limW, breaks = brkW)
 hist(basePop@pheno[, "queenTrait"], xlab = "Phenotypic value", main = "Queen effect", xlim = limQ, breaks = brkQ)
 hist(basePop@pheno[, "workersTrait"], xlab = "Phenotypic value", main = "Workers effect", xlim = limW, breaks = brkW)
+par(oldpar)
 ```
 
 Note that these are virgin queens, yet we obtained queen and workers effect
@@ -191,9 +192,10 @@ contribute to this trait in a colony.
 # Base population drones
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 head(drones@gv)
-par(mfrow=c(1,2))
+oldpar <- par(mfrow=c(1,2))
 hist(drones@gv[, "queenTrait"], xlab = "Genetic value", main = "Queen effect")
 hist(drones@gv[, "workersTrait"], xlab = "Genetic value", main = "Workers effect")
+par(oldpar)
 ```
 
 ## Individual values in a colony

@@ -21,12 +21,15 @@ Level 2 function that creates a new \code{\link{Colony-class}}
   to initiate simulations.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 15)
 
-# Create an empty Colony class with one or multiple virgin queens
+# Create an empty Colony class
+colony <- createColony()
+
+# Create Colony class with one or multiple virgin queens
 colony1 <- createColony(x = basePop[2])
 colony1
 colony2 <- createColony(x = basePop[3:4])

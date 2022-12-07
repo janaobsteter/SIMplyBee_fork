@@ -40,6 +40,4 @@ colony <- addVirginQueens(x = colony, nInd = 4)
 # Use isCsdHeterozygous on a Population
 isCsdHeterozygous(getQueen(colony))
 isCsdHeterozygous(getWorkers(colony))
-isCsdHeterozygous(getVirginQueens(colony))
-isCsdHeterozygous(getDrones(colony))
 }

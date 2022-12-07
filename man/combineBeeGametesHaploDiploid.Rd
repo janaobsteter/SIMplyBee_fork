@@ -31,24 +31,3 @@ This would be the right approach to handle haplo-diploid inheritance
   in bees, but it causes a raft of downstream issues, since AlphaSimR assumes
   that individuals have the same ploidy. Hence, we don't use this function.
 }
-\examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-basePop <- createVirginQueens(founderGenomes)
-
-queen <- basePop[1]
-drones <- reduceGenome(
-  pop = basePop[2], nProgeny = 5, keepParents = FALSE,
-  simRecomb = TRUE
-)
-workers <- SIMplyBee:::combineBeeGametesHaploDiploid(queen, drones, nProgeny = 4)
-workers@id
-workers@mother
-workers@father
-SP$pedigree
-SP$recHist
-SP$recHist[[11]][[1]][1]
-SP$recHist[[11]][[1]][2]
-}

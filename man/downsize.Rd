@@ -37,7 +37,7 @@ Level 2 function that downsizes a Colony or MultiColony object
   Usually in the autumn, such an event occurs in preparation for the winter months.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 100)
@@ -47,20 +47,16 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = 12)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(colony)
-colony <- addVirginQueens(x = colony, nInd = 10)
-colony
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(apiary)
-nWorkers(apiary); nDrones(apiary)
-apiary <- addVirginQueens(apiary, nInd = 10)
-apiary
 
 # Downsize
 colony <- downsize(x = colony, new = TRUE, use = "rand")
 colony
 apiary <- downsize(x = apiary, new = TRUE, use = "rand")
 apiary[[1]]
+
 # Downsize with different numbers
 nWorkers(apiary); nDrones(apiary)
 apiary <- downsize(x = apiary, p = c(0.5, 0.1), new = TRUE, use = "rand")

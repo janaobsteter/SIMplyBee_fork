@@ -33,7 +33,7 @@ If the provided queen is mated, then she is saved in the queen slot
   promoted to the queen of the colony.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -43,10 +43,8 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 7, nDrones = nFathersPoisson)
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
-colony <- addVirginQueens(colony)
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[2:3])
-apiary <- addVirginQueens(apiary)
 
 # Check queen and virgin queens IDs
 getCasteId(colony, caste = "queen")
@@ -61,24 +59,18 @@ colony <- reQueen(colony, queen = virginQueens[1])
 # Check queen and virgin queens IDs
 getCasteId(colony, caste = "queen")
 getCasteId(colony, caste = "virginQueens")
+
+#' # Requeen with mated queens
+matedQueens <- cross(x = basePop[9:12], drones = droneGroups[4:7])
+colony <- reQueen(colony, queen = matedQueens[1])
+# Check queen and virgin queens IDs
+getCasteId(colony, caste = "queen")
+getCasteId(colony, caste = "virginQueens")
+
 # Requeen a MultiColony class
 apiary <- reQueen(apiary, queen = virginQueens[2:3])
 # Check queen and virgin queens IDs
 getCasteId(apiary, caste = "queen")
 getCasteId(apiary, caste = "virginQueens")
 
-# Requeen with mated queens
-matedQueens <- cross(x = basePop[9:12], drones = droneGroups[4:7])
-# Requeen a Colony class
-colony <- reQueen(colony, queen = matedQueens[1])
-# Check queen and virgin queens IDs
-getCasteId(colony, caste = "queen")
-getCasteId(colony, caste = "virginQueens")
-# Requeen a MultiColony class
-apiary <- reQueen(apiary, queen = matedQueens[2:3])
-# Check queen and virgin queens IDs
-getCasteId(apiary, caste = "queen")
-getCasteId(apiary, caste = "virginQueens")
-getCasteId(apiary, caste = "queen")
-getCasteId(apiary, caste = "virginQueens")
 }

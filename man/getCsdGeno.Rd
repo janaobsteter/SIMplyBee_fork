@@ -111,7 +111,6 @@ apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 # Use getCsdGeno on a Population
 getCsdGeno(getQueen(colony))
-getCsdGeno(getFathers(colony))
 getCsdGeno(getWorkers(colony))
 
 # Using dronesHaploid = TRUE returns drones as haploids instead of double haploids
@@ -123,20 +122,11 @@ getCsdGeno(getDrones(colony), nInd = 3, dronesHaploid = FALSE)
 getCsdGeno(colony)
 getCsdGeno(colony, caste = "queen")
 getQueenCsdGeno(colony)
-getCsdGeno(colony, caste = "fathers")
-getFathersCsdGeno(colony)
-getCsdGeno(colony, caste = "virginQueens")
-getVirginQueensCsdGeno(colony)
 getCsdGeno(colony, caste = "workers")
 getWorkersCsdGeno(colony)
-getCsdGeno(colony, caste = "drones")
-getDronesCsdGeno(colony)
+# Same aliases exist for all the castes!
 
-# Compare the use of the dronesHaploid parameter
-getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)
-getCsdGeno(colony, nInd = 4, dronesHaploid = FALSE)
-
-# Use getCsdGeno on a MultiColony
+# Use getCsdGeno on a MultiColony - same behaviour as for the Colony!
 getCsdGeno(apiary)
 getCsdGeno(apiary, nInd = 2)
 }

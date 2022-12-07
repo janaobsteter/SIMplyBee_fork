@@ -1840,10 +1840,10 @@ isProductive <- function(x) {
 #'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
 #'
 #' @examples
-#' # founderGenomes <- simulateHoneyBeeGenomes(
-#' #   nInd = 10, nChr = 1,
-#' #   nSegSites = 2, Ne = 10
-#' # )
+#' \donttest{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
+#'                                                     nChr = 1,
+#'                                                     nSegSites = 2,
+#'                                                     Ne = 10)}
 #' @export
 simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     nMelS = 0L,
@@ -2085,23 +2085,16 @@ reduceDroneGeno <- function(geno, pop) {
 #'
 #' # Use getCsdAlleles on a Population
 #' getCsdAlleles(getQueen(colony))
-#' getCsdAlleles(getFathers(colony))
 #' getCsdAlleles(getWorkers(colony))
-#' getCsdAlleles(getDrones(colony))
 #'
 #' # Use getCsdAlleles on a Colony
 #' getCsdAlleles(colony)
 #' getCsdAlleles(colony, caste = "queen")
 #' getQueenCsdAlleles(colony)
-#' getCsdAlleles(colony, caste = "fathers")
-#' getFathersCsdAlleles(colony)
-#' getCsdAlleles(colony, caste = "virginQueens")
-#' getVirginQueensCsdAlleles(colony)
 #' getCsdAlleles(colony, caste = "workers")
 #' getWorkersCsdAlleles(colony)
-#' getCsdAlleles(colony, caste = "drones")
-#' getDronesCsdAlleles(colony)
-
+#' # Same aliases exist for all the castes!
+#'
 #' getCsdAlleles(colony, unique = TRUE)
 #' getCsdAlleles(colony, collapse = TRUE)
 #' getCsdAlleles(colony, collapse = TRUE, unique = TRUE)
@@ -2109,7 +2102,6 @@ reduceDroneGeno <- function(geno, pop) {
 #' # Use getCsdAlleles on a MultiColony
 #' getCsdAlleles(apiary)
 #' getCsdAlleles(apiary, unique = TRUE)
-#' getCsdAlleles(apiary, collapse = TRUE)
 #' getCsdAlleles(apiary, collapse = TRUE, unique = TRUE)
 #' getCsdAlleles(apiary, nInd = 2)
 #' @export
@@ -2337,7 +2329,6 @@ getDronesCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = 
 #'
 #' # Use getCsdGeno on a Population
 #' getCsdGeno(getQueen(colony))
-#' getCsdGeno(getFathers(colony))
 #' getCsdGeno(getWorkers(colony))
 #'
 #' # Using dronesHaploid = TRUE returns drones as haploids instead of double haploids
@@ -2349,20 +2340,11 @@ getDronesCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = 
 #' getCsdGeno(colony)
 #' getCsdGeno(colony, caste = "queen")
 #' getQueenCsdGeno(colony)
-#' getCsdGeno(colony, caste = "fathers")
-#' getFathersCsdGeno(colony)
-#' getCsdGeno(colony, caste = "virginQueens")
-#' getVirginQueensCsdGeno(colony)
 #' getCsdGeno(colony, caste = "workers")
 #' getWorkersCsdGeno(colony)
-#' getCsdGeno(colony, caste = "drones")
-#' getDronesCsdGeno(colony)
+#' # Same aliases exist for all the castes!
 #'
-#' # Compare the use of the dronesHaploid parameter
-#' getCsdGeno(colony, nInd = 4, dronesHaploid = TRUE)
-#' getCsdGeno(colony, nInd = 4, dronesHaploid = FALSE)
-#'
-#' # Use getCsdGeno on a MultiColony
+#' # Use getCsdGeno on a MultiColony - same behaviour as for the Colony!
 #' getCsdGeno(apiary)
 #' getCsdGeno(apiary, nInd = 2)
 #' @export
@@ -2536,46 +2518,6 @@ getDronesCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
 #'
 #' @return logical
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 4)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' # Caste members taken from Colony class
-#' (tmp <- getCsdGeno(getQueen(colony)))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#'
-#' (tmp <- getCsdGeno(getVirginQueens(colony)))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#'
-#' (tmp <- getCsdGeno(getWorkers(colony)))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#'
-#' # Caste members taken from MultiColony class
-#' (tmp <- getCsdGeno(getQueen(apiary[[1]])))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#'
-#' (tmp <- getCsdGeno(getVirginQueens(apiary[[1]])))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#'
-#' (tmp <- getCsdGeno(getWorkers(apiary[[1]])))
-#' SIMplyBee:::isGenoHeterozygous(tmp)
-#' # Not exporting this function, since its just a helper and quite specific for
-#' #   our csd locus implementation
 isGenoHeterozygous <- function(x) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
@@ -2616,8 +2558,6 @@ isGenoHeterozygous <- function(x) {
 #' # Use isCsdHeterozygous on a Population
 #' isCsdHeterozygous(getQueen(colony))
 #' isCsdHeterozygous(getWorkers(colony))
-#' isCsdHeterozygous(getVirginQueens(colony))
-#' isCsdHeterozygous(getDrones(colony))
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -2693,10 +2633,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' nCsdAlleles(getQueen(colony))
-#' nCsdAlleles(getFathers(colony))
-#' nCsdAlleles(getVirginQueens(colony))
 #' nCsdAlleles(getWorkers(colony))
-#' nCsdAlleles(getDrones(colony))
 #'
 #' nCsdAlleles(colony)
 #' nCsdAlleles(colony, collapse = TRUE)
@@ -4025,7 +3962,6 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #'
-
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
@@ -4600,59 +4536,36 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' apiary <- addVirginQueens(x = apiary, nInd = 5)
 #'
 #' geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
-#' genoMeanW <- apply(X = getWorkersSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-#' genoMeanD <- apply(X = getDronesSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-#'
-#' geno <- rbind(geno, genoMeanW, genoMeanD)
-#' n <- length(rownames(geno))
-#' rownames(geno)[c(n - 1, n)] <- c("mw", "md")
-#'
 #' sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
-#' sex <- c(sex, "F", "M")
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
+#' # You can visualise this matrix with the function image() from the package 'Matrix'
 #'
-#' # library("Matrix"); image(as(GRM, "Matrix"))
-#'
+#' #Look at the diagonal at the relationship matrix
 #' x <- diag(GRM)
 #' hist(x)
 #' summary(x)
 #'
+#' #Look at the off-diagonal at the relationship matrix
 #' x <- GRM[lower.tri(x = GRM, diag = FALSE)]
 #' hist(x)
 #' summary(x)
 #'
+#' # Compare relationship between castes
 #' ids <- getCasteId(apiary[[1]])
 #' idQueen <- ids$queen
-#' idFathers <- ids$fathers
 #' idWorkers <- ids$workers
 #' idDrones <- ids$drones
-#' idVirginQueens <- ids$virginQueens
-#' mw <- "mw"
-#' md <- "md"
 #'
 #' # Queen vs others
-#' GRM[idQueen, idFathers]
 #' GRM[idQueen, idWorkers]
 #' GRM[idQueen, idDrones]
-#' GRM[idQueen, idVirginQueens]
-#' GRM[idQueen, mw]
-#' GRM[idQueen, md]
 #'
-#' # Fathers vs others
-#' GRM[idFathers, idFathers]
-#' GRM[idFathers, idWorkers]
-#' GRM[idFathers, idDrones]
-#' GRM[idFathers, idVirginQueens]
-#' GRM[idFathers, mw]
-#' GRM[idFathers, md]
-#'
-#' # Workers vs others
+#' # Workers vs worker
 #' GRM[idWorkers, idWorkers]
+#'
+#' # Workers vs drones
 #' GRM[idWorkers, idDrones]
-#' GRM[idWorkers, idVirginQueens]
-#' GRM[idWorkers, mw]
-#' GRM[idWorkers, md]
 #'
 #' # Calculating allele frequencies ourselves (say, to "shift" base population)
 #' aF <- calcBeeAlleleFreq(x = geno, sex = sex)
@@ -4758,94 +4671,54 @@ calcBeeAlleleFreq <- function(x, sex) {
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 1, nDrones = nFathersPoisson)
+#' colony <- createColony(basePop[2])
+#' colony <- cross(x = colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #'
-#' haploQ <- getQueenIbdHaplo(apiary[[1]])
-#' haploF <- getFathersIbdHaplo(apiary[[1]])
-#' haploW <- getWorkersIbdHaplo(apiary[[1]])
-#' haploD <- getDronesIbdHaplo(apiary[[1]])
-#' haploV <- getVirginQueensIbdHaplo(apiary[[1]])
+#' haploQ <- getQueenIbdHaplo(colony)
+#' haploW <- getWorkersIbdHaplo(colony)
+#' haploD <- getDronesIbdHaplo(colony)
 #' SP$pedigree
 #'
-#' haplo <- rbind(haploQ, haploF, haploW, haploD, haploV)
+#' haplo <- rbind(haploQ, haploW, haploD)
 #'
 #' GRMs <- calcBeeGRMIbd(x = haplo)
+#' # You can visualise this matrix with the image() functions from the "Matrix" package
 #'
-#' # library("Matrix"); image(as(GRMs$genome, "Matrix"))
-#' # library("Matrix"); image(as(GRMs$indiv, "Matrix"))
-#'
-#' GRMs
-#'
-#' x <- diag(GRMs$genome)
-#' hist(x)
-#' summary(x)
-#'
-#' x <- GRMs$genome[lower.tri(x = GRMs$genome, diag = FALSE)]
-#' hist(x)
-#' summary(x)
-#'
+#' # Inspect the diagonal of the relationship matrix between individuals
 #' x <- diag(GRMs$indiv)
 #' hist(x)
 #' summary(x)
 #'
+#'  # Inspect the off-diagonal of the relationship matrix between individuals
 #' x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 #' hist(x)
 #' summary(x)
 #'
-#' qI <- getQueen(apiary[[1]])@id
-#' fI <- sort(getFathers(apiary[[1]])@id)
-#' wI <- sort(getWorkers(apiary[[1]])@id)
-#' dI <- sort(getDrones(apiary[[1]])@id)
-#' vI <- sort(getVirginQueens(apiary[[1]])@id)
+#' qI <- getCasteId(colony, caste = "queen")
+#' wI <- sort(getCasteId(colony, caste = "workers"))
+#' dI <- sort(getCasteId(colony, caste = "drones"))
 #'
 #' qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
-#' fG <- paste(fI, 1, sep = "_")
 #' wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
 #' dG <- paste(dI, 1, sep = "_")
-#' vG <- c(t(outer(X = vI, Y = 1:2, FUN = paste, sep = "_")))
 #'
-#' # Queen vs others
-#' GRMs$genome[qG, qG]
-#' GRMs$indiv[qI, qI]
-#'
-#' GRMs$genome[fG, qG]
-#' GRMs$indiv[fI, qI]
-#'
+#' # Queen vs workers
 #' GRMs$genome[wG, qG]
 #' GRMs$indiv[wI, qI]
 #'
+#' # Queen vs drones
 #' GRMs$genome[dG, qG]
 #' GRMs$indiv[dI, qI]
 #'
-#' GRMs$genome[vG, qG]
-#' GRMs$indiv[vI, qI]
-#'
-#' # Fathers vs others
-#' GRMs$genome[fG, fG]
-#' GRMs$indiv[fI, fI]
-#'
-#' GRMs$genome[wG, fG]
-#' GRMs$indiv[wI, fI]
-#'
-#' GRMs$genome[dG, fG]
-#' GRMs$indiv[dI, fI]
-#'
-#' GRMs$genome[vG, fG]
-#' GRMs$indiv[vI, fI]
-#'
-#' # Workers vs others
+#' # Workers vs workers
 #' GRMs$genome[wG, wG]
 #' GRMs$indiv[wI, wI]
 #'
+#' # Workers vs drones
 #' GRMs$genome[dG, wG]
 #' GRMs$indiv[dI, wI]
-#'
-#' GRMs$genome[vG, wG]
-#' GRMs$indiv[vI, wI]
 #' @export
 calcBeeGRMIbd <- function(x) {
   if (!is.matrix(x)) {
@@ -5133,10 +5006,10 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
 #'
 #' # Colony value - shorthand version
 #' # (using the default mapCasteToColony*() functions - you can provide yours instead!)
-#' # ... phenotype value
+#' # Phenotype value
 #' calcColonyPheno(colony)
 #' calcColonyPheno(apiary)
-#' # ... genetic value
+#' # Genetic value
 #' calcColonyGv(colony)
 #' calcColonyGv(apiary)
 #'
@@ -5740,79 +5613,6 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #'   and list of vectors of breeding values when \code{x} is
 #'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitA(nQtlPerChr = 10, var = 1)
-#' SP$addSnpChip(5)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' # Input is a population
-#' SIMplyBee:::getBv(x = getQueen(colony))
-#' queens <- getQueen(apiary, collapse = TRUE)
-#' SIMplyBee:::getBv(queens)
-#'
-#' # Input is a colony
-#' SIMplyBee:::getBv(colony, caste = "queen")
-#' SIMplyBee:::getQueenBv(colony)
-#'
-#' SIMplyBee:::getBv(colony, caste = "fathers")
-#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersBv(colony)
-#' SIMplyBee:::getFathersBv(colony, nInd = 2)
-#'
-#' SIMplyBee:::getBv(colony, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensBv(colony)
-#'
-#' SIMplyBee:::getBv(colony, caste = "workers")
-#' SIMplyBee:::getWorkersBv(colony)
-#'
-#' SIMplyBee:::getBv(colony, caste = "drones")
-#' SIMplyBee:::getDronesBv(colony)
-#'
-#' # Get breeding values for all individuals
-#' SIMplyBee:::getBv(colony, caste = "all")
-#' # Get all breeding values in a single matrix
-#' SIMplyBee:::getBv(colony, caste = "all", collapse = TRUE)
-#'
-#' # Input is a MultiColony
-#' SIMplyBee:::getBv(apiary, caste = "queen")
-#' SIMplyBee:::getQueenBv(apiary)
-#'
-#' SIMplyBee:::getBv(apiary, caste = "fathers")
-#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersBv(apiary)
-#' SIMplyBee:::getFathersBv(apiary, nInd = 2)
-#'
-#' SIMplyBee:::getBv(apiary, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensBv(apiary)
-#'
-#' SIMplyBee:::getBv(apiary, caste = "workers")
-#' SIMplyBee:::getWorkersBv(apiary)
-#'
-#' SIMplyBee:::getBv(apiary, caste = "drones")
-#' SIMplyBee:::getDronesBv(apiary)
-#'
-#' # Get the breeding values of all individuals either by colony or in a single matrix
-#' SIMplyBee:::getBv(apiary, caste = "all")
-#' SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -5979,77 +5779,6 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' # Input is a population
-#' SIMplyBee:::getDd(x = getQueen(colony))
-#' queens <- getQueen(apiary, collapse = TRUE)
-#' SIMplyBee:::getDd(queens)
-#'
-#' # Input is a colony
-#' SIMplyBee:::getDd(colony, caste = "queen")
-#' SIMplyBee:::getQueenDd(colony)
-#'
-#' SIMplyBee:::getDd(colony, caste = "fathers")
-#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersDd(colony)
-#' SIMplyBee:::getFathersDd(colony, nInd = 2)
-#'
-#' SIMplyBee:::getDd(colony, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensDd(colony)
-#'
-#' SIMplyBee:::getDd(colony, caste = "workers")
-#' SIMplyBee:::getWorkersDd(colony)
-#'
-#' SIMplyBee:::getDd(colony, caste = "drones")
-#' SIMplyBee:::getDronesDd(colony)
-#'
-#' # Get dominance valued for all individuals
-#' SIMplyBee:::getDd(colony, caste = "all")
-#' # Get all dominance values in a single matrix
-#' SIMplyBee:::getDd(colony, caste = "all", collapse = TRUE)
-#'
-#' # Input is a MultiColony
-#' SIMplyBee:::getDd(apiary, caste = "queen")
-#' SIMplyBee:::getQueenDd(apiary)
-#'
-#' SIMplyBee:::getDd(apiary, caste = "fathers")
-#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersDd(apiary)
-#' SIMplyBee:::getFathersDd(apiary, nInd = 2)
-#'
-#' SIMplyBee:::getDd(apiary, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensDd(apiary)
-#'
-#' SIMplyBee:::getDd(apiary, caste = "workers")
-#' SIMplyBee:::getWorkersDd(apiary)
-#'
-#' SIMplyBee:::getDd(apiary, caste = "drones")
-#' SIMplyBee:::getDronesDd(apiary)
-#'
-#' # Get the dominance values of all individuals either by colony or in a single matrix
-#' SIMplyBee:::getDd(apiary, caste = "all")
-#' SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6216,77 +5945,6 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
-#'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
-#'
-#' # Input is a population
-#' SIMplyBee:::getAa(x = getQueen(colony))
-#' queens <- getQueen(apiary, collapse = TRUE)
-#' SIMplyBee:::getAa(queens)
-#'
-#' # Input is a colony
-#' SIMplyBee:::getAa(colony, caste = "queen")
-#' SIMplyBee:::getQueenAa(colony)
-#'
-#' SIMplyBee:::getAa(colony, caste = "fathers")
-#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersAa(colony)
-#' SIMplyBee:::getFathersAa(colony, nInd = 2)
-#'
-#' SIMplyBee:::getAa(colony, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensAa(colony)
-#'
-#' SIMplyBee:::getAa(colony, caste = "workers")
-#' SIMplyBee:::getWorkersAa(colony)
-#'
-#' SIMplyBee:::getAa(colony, caste = "drones")
-#' SIMplyBee:::getDronesAa(colony)
-#'
-#' # Get epistatic values for all individuals
-#' SIMplyBee:::getAa(colony, caste = "all")
-#' # Get all epistatic values in a single matrix
-#' SIMplyBee:::getAa(colony, caste = "all", collapse = TRUE)
-#'
-#' # Input is a MultiColony
-#' SIMplyBee:::getAa(apiary, caste = "queen")
-#' SIMplyBee:::getQueenAa(apiary)
-#'
-#' SIMplyBee:::getAa(apiary, caste = "fathers")
-#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2)
-#' SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2) # random sample!
-#' SIMplyBee:::getFathersAa(apiary)
-#' SIMplyBee:::getFathersAa(apiary, nInd = 2)
-#'
-#' SIMplyBee:::getAa(apiary, caste = "virginQueens")
-#' SIMplyBee:::getVirginQueensAa(apiary)
-#'
-#' SIMplyBee:::getAa(apiary, caste = "workers")
-#' SIMplyBee:::getWorkersAa(apiary)
-#'
-#' SIMplyBee:::getAa(apiary, caste = "drones")
-#' SIMplyBee:::getDronesAa(apiary)
-#'
-#' # Get the epistatic values of all individuals either by colony or in a single matrix
-#' SIMplyBee:::getAa(apiary, caste = "all")
-#' SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6448,17 +6106,6 @@ calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
 #' @param simParamBee global simulation parameters.
 #'
 #' @return Returns an object of \code{\link{Pop-class}}
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-#' basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
-#' nrow(getCsdAlleles(basePop, unique = TRUE))
-#' all(isCsdHeterozygous(basePop))
-#'
-#' basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
-#' nrow(getCsdAlleles(basePopEdited, unique = TRUE))
-#' all(isCsdHeterozygous(basePopEdited))
 editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)

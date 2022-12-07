@@ -49,59 +49,36 @@ apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 apiary <- addVirginQueens(x = apiary, nInd = 5)
 
 geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
-genoMeanW <- apply(X = getWorkersSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-genoMeanD <- apply(X = getDronesSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-
-geno <- rbind(geno, genoMeanW, genoMeanD)
-n <- length(rownames(geno))
-rownames(geno)[c(n - 1, n)] <- c("mw", "md")
-
 sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
-sex <- c(sex, "F", "M")
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
+# You can visualise this matrix with the function image() from the package 'Matrix'
 
-# library("Matrix"); image(as(GRM, "Matrix"))
-
+#Look at the diagonal at the relationship matrix
 x <- diag(GRM)
 hist(x)
 summary(x)
 
+#Look at the off-diagonal at the relationship matrix
 x <- GRM[lower.tri(x = GRM, diag = FALSE)]
 hist(x)
 summary(x)
 
+# Compare relationship between castes
 ids <- getCasteId(apiary[[1]])
 idQueen <- ids$queen
-idFathers <- ids$fathers
 idWorkers <- ids$workers
 idDrones <- ids$drones
-idVirginQueens <- ids$virginQueens
-mw <- "mw"
-md <- "md"
 
 # Queen vs others
-GRM[idQueen, idFathers]
 GRM[idQueen, idWorkers]
 GRM[idQueen, idDrones]
-GRM[idQueen, idVirginQueens]
-GRM[idQueen, mw]
-GRM[idQueen, md]
 
-# Fathers vs others
-GRM[idFathers, idFathers]
-GRM[idFathers, idWorkers]
-GRM[idFathers, idDrones]
-GRM[idFathers, idVirginQueens]
-GRM[idFathers, mw]
-GRM[idFathers, md]
-
-# Workers vs others
+# Workers vs worker
 GRM[idWorkers, idWorkers]
+
+# Workers vs drones
 GRM[idWorkers, idDrones]
-GRM[idWorkers, idVirginQueens]
-GRM[idWorkers, mw]
-GRM[idWorkers, md]
 
 # Calculating allele frequencies ourselves (say, to "shift" base population)
 aF <- calcBeeAlleleFreq(x = geno, sex = sex)

@@ -93,104 +93,36 @@ colony <- cross(colony, drones = droneGroups[[1]])
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
-# Using defaults in SP$nWorkers & SP$nDrones
-colony <- buildUp(x = colony, exact = TRUE)
-apiary <- buildUp(x = apiary, exact = TRUE)
-
-# Using a default in SP$nVirginQueens
+# Build-up and add virgin queens
+colony <- buildUp(x = colony)
+apiary <- buildUp(x = apiary)
 colony <- addVirginQueens(x = colony)
 apiary <- addVirginQueens(x = apiary)
-colony
-apiary
 
-# Comparison of getCastePop() and getQueen()
+# Get the queen of the colony
 getCastePop(colony, caste = "queen")
 getQueen(colony)
 
-# Comparison of getCastePop() and getFathers()
-getCastePop(colony, caste = "fathers")
-getCastePop(colony, caste = "fathers")@id
-getCastePop(colony, caste = "fathers", nInd = 2)@id
-
-getFathers(colony)
-getFathers(colony)@id
-getFathers(colony, nInd = 2)@id
-
-getFathers(getQueen(colony))
-
-# Comparison of getCastePop() and getVirginQueens()
-getCastePop(colony, caste = "virginQueens")
-getCastePop(colony, caste = "virginQueens")@id
-getCastePop(colony, caste = "virginQueens", nInd = 2)@id
-
-getVirginQueens(colony)
-getVirginQueens(colony)@id
-getVirginQueens(colony, nInd = 2)@id
-
 # Comparison of getCastePop() and getWorkers()
 getCastePop(colony, caste = "workers")
-getCastePop(colony, caste = "workers")@id
-getCastePop(colony, caste = "workers", nInd = 2)@id
-
+getCastePop(colony, caste = "workers")
+getCastePop(colony, caste = "workers", nInd = 2)
+# Or aliases
 getWorkers(colony)
-getWorkers(colony)@id
-getWorkers(colony, nInd = 2)@id
+# Same aliases exist for all the castes!
 
-# Comparison of getCastePop() and getDrones()
-getCastePop(colony, caste = "drones")
-getCastePop(colony, caste = "drones")@id
-getCastePop(colony, caste = "drones", nInd = 2)@id
-
-getDrones(colony)
-getDrones(colony)@id
-getDrones(colony, nInd = 2)@id
-
-# Comparisons on MultiColony class
+# Input is a MultiColony class - same behaviour as for the Colony!
 getCastePop(apiary, caste = "queen")
+# Or alias
 getQueen(apiary)
-getCastePop(apiary, caste = "queen")[[1]]@id
-getCastePop(apiary, caste = "queen")[[2]]@id
 
 # Sample individuals from all the castes
 getCastePop(colony, nInd = 5, caste = "all")
-# Sample individuals from all the castes as a single population
-getCastePop(colony, nInd = 5, caste = "all", collapse = TRUE)
 
-getCastePop(apiary, caste = "fathers")
-getFathers(apiary)
-getFathers(apiary)[[1]]@id
-getFathers(apiary)[[2]]@id
-getFathers(apiary, nInd = 2)
-
-getCastePop(apiary, caste = "virginQueens")
-getVirginQueens(apiary)
-getVirginQueens(apiary)[[1]]@id
-getVirginQueens(apiary)[[2]]
-getVirginQueens(apiary, nInd = 1)
-getVirginQueens(apiary, nInd = 2)
-mergePops(getVirginQueens(apiary))
-
-getCastePop(apiary, caste = "workers")
 # Get different number of workers per colony
 getCastePop(apiary, caste = "workers", nInd = c(10, 20))
-getWorkers(apiary)
-getWorkers(apiary)[[1]]@id
-getWorkers(apiary)[[2]]@id
-getWorkers(apiary, nInd = 2)
-mergePops(getWorkers(apiary))
-
-getCastePop(apiary, caste = "drones")
-# Get different number of drones per colony
-getCastePop(apiary, caste = "drones", nInd = c(10, 50))
-getDrones(apiary)
-getDrones(apiary)[[1]]@id
-getDrones(apiary)[[2]]
-getDrones(apiary, nInd = 2)
-mergePops(getDrones(apiary))
-
-getCastePop(apiary)
-getCastePop(apiary, caste = "queen")
-getCastePop(apiary, caste = "drones")
+# Or alias
+getWorkers(apiary, nInd = c(10, 20))
 
 # Obtain individuals from MultiColony as a single population
 getCastePop(apiary, caste = "queen", collapse = TRUE)

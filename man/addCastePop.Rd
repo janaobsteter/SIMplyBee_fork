@@ -95,14 +95,12 @@ apiary <- cross(apiary, drones = droneGroups[3:4])
 #Here we show an example for workers, but same holds for drones and virgin queens!
 # Add workers
 addCastePop(colony, caste = "workers", nInd = 20)
-# Or use a alias function: addWorkers(colony, nInd = 20)
-# Same holds for other castes!
+# Or use a alias function
+addWorkers(colony, nInd = 20)
+# Same aliases exist for drones and virgin queens!
 
-# Using a default in SP$nWorkers
-# (just to have some individuals - change this to your needs!)
-addWorkers(colony)
-
-# Specify own number
+# If nInd is NULL, the functions uses the default in SP$nWorkers
+# We can change this default
 SP$nWorkers <- 15
 nWorkers(addWorkers(colony))
 # nVirginQueens/nWorkers/nDrones will NOT vary between function calls when a constant is used

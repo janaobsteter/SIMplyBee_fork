@@ -24,7 +24,7 @@ Level 2 function that to set a Colony or MultiColony object
   location to (x, y) coordinates.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(basePop[1], n = 1000)

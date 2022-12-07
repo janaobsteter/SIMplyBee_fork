@@ -66,7 +66,7 @@ Level 2 function that replaces a proportion of caste individuals
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -80,35 +80,18 @@ apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, drones = droneGroups[3:4])
 
 # Add individuals
-colony <- buildUp(colony, nWorkers = 10, nDrones = 10)
-colony <- addVirginQueens(colony, nInd = 5)
-apiary <- buildUp(apiary, nWorkers = 10, nDrones = 10)
-apiary <- addVirginQueens(apiary, nInd = 20)
+colony <- buildUp(colony, nWorkers = 5, nDrones = 2)
+apiary <- buildUp(apiary, nWorkers = 5, nDrones = 2)
 
-# Replace individuals in a colony
-getVirginQueens(colony)@id
-colony <- replaceCastePop(colony, caste = "virginQueens", p = 0.5)
-# or alias: replaceVirginQueens(colony, p = 0.5)
-getVirginQueens(colony)@id
-getWorkers(colony)@id
+# Replace workers in a colony
+getCasteId(colony, caste = "workers")
 colony <- replaceCastePop(colony, caste = "workers", p = 0.5)
-# or alias: replaceWorkers(colony, p = 0.5)
-getWorkers(colony)@id
-getDrones(colony)@id
-colony <- replaceCastePop(colony, caste = "drones", p = 0.5)
-# or alias: replaceDrones(colony, p = 0.5)
-getDrones(colony)@id
+# You can also use an alias
+replaceWorkers(colony, p = 0.5)
+# Same aliases exist for all the castes!!!
+getCasteId(colony, caste = "workers")
 
-lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-apiary <- replaceVirginQueens(apiary, p = 0.5)
-lapply(getVirginQueens(apiary), FUN = function(x) x@id)
-apiary <- replaceWorkers(apiary, p = 1)
-lapply(getWorkers(apiary), FUN = function(x) x@id)
-apiary <- replaceDrones(apiary, p = 1)
-lapply(getDrones(apiary), FUN = function(x) x@id)
-# Replace with different proportions
-apiary <- replaceWorkers(apiary, p = c(1, 0.7))
-lapply(getWorkers(apiary), FUN = function(x) x@id)
-apiary <- replaceDrones(apiary, p = c(1, 0.1))
-lapply(getDrones(apiary), FUN = function(x) x@id)
+getCasteId(apiary, caste="workers")
+apiary <- replaceWorkers(apiary, p = 0.5)
+getCasteId(apiary, caste="workers")
 }
