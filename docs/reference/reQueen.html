@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -62,6 +62,9 @@
     </li>
     <li>
       <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/7_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -107,7 +110,7 @@
 <dd><p><code>Pop-class</code> with one individual that will be the
 queen of the colony; if she is not mated, she will be added as a virgin
 queen that will have to be mated later; test will be run if the individual
-<code><a href="isVirginQueen.html">isVirginQueen</a></code> or <code><a href="isQueen.html">isQueen</a></code></p></dd>
+<code><a href="isCaste.html">isVirginQueen</a></code> or <code><a href="isCaste.html">isQueen</a></code></p></dd>
 
 
 <dt>removeVirginQueens</dt>
@@ -139,19 +142,19 @@ to ensure the provided queen prevails (see details)</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">fatherGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">7</span>, nFathers <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">7</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create and cross Colony and MultiColony class</span></span></span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="createMultiColony.html">createMultiColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(basePop[3:4], n = 2):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -187,7 +190,7 @@ to ensure the provided queen prevails (see details)</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Requeen with mated queens</span></span></span>
-<span class="r-in"><span><span class="va">matedQueens</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">matedQueens</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="co"># Requeen a Colony class</span></span></span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu">reQueen</span><span class="op">(</span><span class="va">colony</span>, queen <span class="op">=</span> <span class="va">matedQueens</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>

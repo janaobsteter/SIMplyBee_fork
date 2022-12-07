@@ -1,441 +1,519 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://www.simplybee.info/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>https://www.simplybee.info/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/articles/1_Honeybee_biology.html</loc>
+    <loc>https://www.simplybee.info/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/articles/2_Colony_events.html</loc>
+    <loc>https://www.simplybee.info/articles/1_Honeybee_biology.html</loc>
   </url>
   <url>
-    <loc>/articles/3_Multiple_colonies.html</loc>
+    <loc>https://www.simplybee.info/articles/2_Colony_events.html</loc>
   </url>
   <url>
-    <loc>/articles/4_Genomics.html</loc>
+    <loc>https://www.simplybee.info/articles/3_Multiple_colonies.html</loc>
   </url>
   <url>
-    <loc>/articles/5_Sampling_functions.html</loc>
+    <loc>https://www.simplybee.info/articles/4_Genomics.html</loc>
   </url>
   <url>
-    <loc>/articles/6_Quantitative_Genetics.html</loc>
+    <loc>https://www.simplybee.info/articles/5_Sampling_functions.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://www.simplybee.info/articles/6_Quantitative_Genetics.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://www.simplybee.info/articles/A_Honeybee_biology.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://www.simplybee.info/articles/B_Multiple_colonies.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://www.simplybee.info/articles/C_Colony_events.html</loc>
   </url>
   <url>
-    <loc>/reference/Colony-class.html</loc>
+    <loc>https://www.simplybee.info/articles/D_Crossing.html</loc>
   </url>
   <url>
-    <loc>/reference/MultiColony-class.html</loc>
+    <loc>https://www.simplybee.info/articles/E_Genomics.html</loc>
   </url>
   <url>
-    <loc>/reference/SIMplyBee-package.html</loc>
+    <loc>https://www.simplybee.info/articles/FAQ.html</loc>
   </url>
   <url>
-    <loc>/reference/SimParamBee.html</loc>
+    <loc>https://www.simplybee.info/articles/F_Quantitative_Genetics.html</loc>
   </url>
   <url>
-    <loc>/reference/addDrones.html</loc>
+    <loc>https://www.simplybee.info/articles/G_Sampling_functions.html</loc>
   </url>
   <url>
-    <loc>/reference/addVirginQueens.html</loc>
+    <loc>https://www.simplybee.info/articles/H_Sampling_functions.html</loc>
   </url>
   <url>
-    <loc>/reference/addWorkers.html</loc>
+    <loc>https://www.simplybee.info/articles/index.html</loc>
   </url>
   <url>
-    <loc>/reference/buildUp.html</loc>
+    <loc>https://www.simplybee.info/authors.html</loc>
   </url>
   <url>
-    <loc>/reference/calcBeeGRMIbd.html</loc>
+    <loc>https://www.simplybee.info/index.html</loc>
   </url>
   <url>
-    <loc>/reference/calcBeeGRMIbs.html</loc>
+    <loc>https://www.simplybee.info/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/calcColonyPhenoFromCaste.html</loc>
+    <loc>https://www.simplybee.info/reference/Colony-class.html</loc>
   </url>
   <url>
-    <loc>/reference/calcQueensPHomBrood.html</loc>
+    <loc>https://www.simplybee.info/reference/MultiColony-class.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse.html</loc>
+    <loc>https://www.simplybee.info/reference/SIMplyBee-package.html</loc>
   </url>
   <url>
-    <loc>/reference/combine.html</loc>
+    <loc>https://www.simplybee.info/reference/SimParamBee.html</loc>
   </url>
   <url>
-    <loc>/reference/combineBeeGametes.html</loc>
+    <loc>https://www.simplybee.info/reference/addCastePop.html</loc>
   </url>
   <url>
-    <loc>/reference/combineBeeGametesHaploDiploid.html</loc>
+    <loc>https://www.simplybee.info/reference/addDrones.html</loc>
   </url>
   <url>
-    <loc>/reference/combineNULLAndPop.html</loc>
+    <loc>https://www.simplybee.info/reference/addVirginQueens.html</loc>
   </url>
   <url>
-    <loc>/reference/createColony.html</loc>
+    <loc>https://www.simplybee.info/reference/addWorkers.html</loc>
   </url>
   <url>
-    <loc>/reference/createDCA.html</loc>
+    <loc>https://www.simplybee.info/reference/buildUp.html</loc>
   </url>
   <url>
-    <loc>/reference/createDrones.html</loc>
+    <loc>https://www.simplybee.info/reference/calcBeeGRMIbd.html</loc>
   </url>
   <url>
-    <loc>/reference/createMultiColony.html</loc>
+    <loc>https://www.simplybee.info/reference/calcBeeGRMIbs.html</loc>
   </url>
   <url>
-    <loc>/reference/createVirginQueens.html</loc>
+    <loc>https://www.simplybee.info/reference/calcColonyPhenoFromCaste.html</loc>
   </url>
   <url>
-    <loc>/reference/createWorkers.html</loc>
+    <loc>https://www.simplybee.info/reference/calcColonyValue.html</loc>
   </url>
   <url>
-    <loc>/reference/cross.html</loc>
+    <loc>https://www.simplybee.info/reference/calcInheritanceCriterion.html</loc>
   </url>
   <url>
-    <loc>/reference/downsize.html</loc>
+    <loc>https://www.simplybee.info/reference/calcPerformanceCriterion.html</loc>
   </url>
   <url>
-    <loc>/reference/downsizePFun.html</loc>
+    <loc>https://www.simplybee.info/reference/calcQueensPHomBrood.html</loc>
   </url>
   <url>
-    <loc>/reference/editCsdLocus.html</loc>
+    <loc>https://www.simplybee.info/reference/calcSelectionCriterion.html</loc>
   </url>
   <url>
-    <loc>/reference/editGenomeGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/collapse.html</loc>
   </url>
   <url>
-    <loc>/reference/getCaste.html</loc>
+    <loc>https://www.simplybee.info/reference/combine.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteAa.html</loc>
+    <loc>https://www.simplybee.info/reference/combineBeeGametes.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteBv.html</loc>
+    <loc>https://www.simplybee.info/reference/combineBeeGametesHaploDiploid.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteDd.html</loc>
+    <loc>https://www.simplybee.info/reference/combineNULLAndPop.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteGv.html</loc>
+    <loc>https://www.simplybee.info/reference/createCastePop.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteIbdHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/createColony.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteId.html</loc>
+    <loc>https://www.simplybee.info/reference/createDCA.html</loc>
   </url>
   <url>
-    <loc>/reference/getCastePheno.html</loc>
+    <loc>https://www.simplybee.info/reference/createDrones.html</loc>
   </url>
   <url>
-    <loc>/reference/getCastePop.html</loc>
+    <loc>https://www.simplybee.info/reference/createMatingStationDCA.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteQtlGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/createMultiColony.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteQtlHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/createRandomCrossPlan.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteSegSiteGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/createVirginQueens.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteSegSiteHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/createWorkers.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteSex.html</loc>
+    <loc>https://www.simplybee.info/reference/cross.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteSnpGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/downsize.html</loc>
   </url>
   <url>
-    <loc>/reference/getCasteSnpHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/downsizePFun.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyAa.html</loc>
+    <loc>https://www.simplybee.info/reference/editCsdLocus.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyBv.html</loc>
+    <loc>https://www.simplybee.info/reference/editGenomeGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyDd.html</loc>
+    <loc>https://www.simplybee.info/reference/getAa.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyGv.html</loc>
+    <loc>https://www.simplybee.info/reference/getBv.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyIbdHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getCaste.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyPheno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteAa.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyQtlGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteBv.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonyQtlHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteDd.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonySegSiteGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteGv.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonySegSiteHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteIbdHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonySnpGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteId.html</loc>
   </url>
   <url>
-    <loc>/reference/getColonySnpHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getCastePheno.html</loc>
   </url>
   <url>
-    <loc>/reference/getCsdAlleles.html</loc>
+    <loc>https://www.simplybee.info/reference/getCastePop.html</loc>
   </url>
   <url>
-    <loc>/reference/getCsdGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteQtlGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/getEvents.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteQtlHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/getIbdHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteSegSiteGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/getId.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteSegSiteHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/getLocation.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteSex.html</loc>
   </url>
   <url>
-    <loc>/reference/getPooledGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteSnpGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/getQtlGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getCasteSnpHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/getQtlHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyAa.html</loc>
   </url>
   <url>
-    <loc>/reference/getQueenAge.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyBv.html</loc>
   </url>
   <url>
-    <loc>/reference/getQueenYearOfBirth.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyDd.html</loc>
   </url>
   <url>
-    <loc>/reference/getSegSiteGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyGv.html</loc>
   </url>
   <url>
-    <loc>/reference/getSegSiteHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyIbdHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/getSnpGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyPheno.html</loc>
   </url>
   <url>
-    <loc>/reference/getSnpHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyQtlGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/hasCollapsed.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonyQtlHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/hasSplit.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonySegSiteGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/hasSuperseded.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonySegSiteHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/hasSwarmed.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonySnpGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://www.simplybee.info/reference/getColonySnpHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/isCaste.html</loc>
+    <loc>https://www.simplybee.info/reference/getCsdAlleles.html</loc>
   </url>
   <url>
-    <loc>/reference/isCsdActive.html</loc>
+    <loc>https://www.simplybee.info/reference/getCsdGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/isCsdHeterozygous.html</loc>
+    <loc>https://www.simplybee.info/reference/getDd.html</loc>
   </url>
   <url>
-    <loc>/reference/isDrone.html</loc>
+    <loc>https://www.simplybee.info/reference/getEvents.html</loc>
   </url>
   <url>
-    <loc>/reference/isDronesPresent.html</loc>
+    <loc>https://www.simplybee.info/reference/getGv.html</loc>
   </url>
   <url>
-    <loc>/reference/isEmpty.html</loc>
+    <loc>https://www.simplybee.info/reference/getIbdHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/isFather.html</loc>
+    <loc>https://www.simplybee.info/reference/getId.html</loc>
   </url>
   <url>
-    <loc>/reference/isFathersPresent.html</loc>
+    <loc>https://www.simplybee.info/reference/getLocation.html</loc>
   </url>
   <url>
-    <loc>/reference/isGenoHeterozygous.html</loc>
+    <loc>https://www.simplybee.info/reference/getPheno.html</loc>
   </url>
   <url>
-    <loc>/reference/isNULLColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/getPooledGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/isProductive.html</loc>
+    <loc>https://www.simplybee.info/reference/getQtlGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/isQueen.html</loc>
+    <loc>https://www.simplybee.info/reference/getQtlHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/isQueenPresent.html</loc>
+    <loc>https://www.simplybee.info/reference/getQueenAge.html</loc>
   </url>
   <url>
-    <loc>/reference/isSimParamBee.html</loc>
+    <loc>https://www.simplybee.info/reference/getQueenYearOfBirth.html</loc>
   </url>
   <url>
-    <loc>/reference/isVirginQueen.html</loc>
+    <loc>https://www.simplybee.info/reference/getSegSiteGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/isVirginQueensPresent.html</loc>
+    <loc>https://www.simplybee.info/reference/getSegSiteHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/isWorker.html</loc>
+    <loc>https://www.simplybee.info/reference/getSnpGeno.html</loc>
   </url>
   <url>
-    <loc>/reference/isWorkersPresent.html</loc>
+    <loc>https://www.simplybee.info/reference/getSnpHaplo.html</loc>
   </url>
   <url>
-    <loc>/reference/nCaste.html</loc>
+    <loc>https://www.simplybee.info/reference/hasCollapsed.html</loc>
   </url>
   <url>
-    <loc>/reference/nColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/hasSplit.html</loc>
   </url>
   <url>
-    <loc>/reference/nCsdAlleles.html</loc>
+    <loc>https://www.simplybee.info/reference/hasSuperseded.html</loc>
   </url>
   <url>
-    <loc>/reference/nDrones.html</loc>
+    <loc>https://www.simplybee.info/reference/hasSwarmed.html</loc>
   </url>
   <url>
-    <loc>/reference/nDronesFun.html</loc>
+    <loc>https://www.simplybee.info/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/nEmptyColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/isCaste.html</loc>
   </url>
   <url>
-    <loc>/reference/nFathers.html</loc>
+    <loc>https://www.simplybee.info/reference/isCsdActive.html</loc>
   </url>
   <url>
-    <loc>/reference/nFathersFun.html</loc>
+    <loc>https://www.simplybee.info/reference/isCsdHeterozygous.html</loc>
   </url>
   <url>
-    <loc>/reference/nNULLColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/isDrone.html</loc>
   </url>
   <url>
-    <loc>/reference/nQueens.html</loc>
+    <loc>https://www.simplybee.info/reference/isDronesPresent.html</loc>
   </url>
   <url>
-    <loc>/reference/nVirginQueens.html</loc>
+    <loc>https://www.simplybee.info/reference/isEmpty.html</loc>
   </url>
   <url>
-    <loc>/reference/nVirginQueensFun.html</loc>
+    <loc>https://www.simplybee.info/reference/isFather.html</loc>
   </url>
   <url>
-    <loc>/reference/nWorkers.html</loc>
+    <loc>https://www.simplybee.info/reference/isFathersPresent.html</loc>
   </url>
   <url>
-    <loc>/reference/nWorkersFun.html</loc>
+    <loc>https://www.simplybee.info/reference/isGenoHeterozygous.html</loc>
   </url>
   <url>
-    <loc>/reference/pullCastePop.html</loc>
+    <loc>https://www.simplybee.info/reference/isNULLColonies.html</loc>
   </url>
   <url>
-    <loc>/reference/pullColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/isProductive.html</loc>
   </url>
   <url>
-    <loc>/reference/pullDroneGroupsFromDCA.html</loc>
+    <loc>https://www.simplybee.info/reference/isQueen.html</loc>
   </url>
   <url>
-    <loc>/reference/pullInd.html</loc>
+    <loc>https://www.simplybee.info/reference/isQueenPresent.html</loc>
   </url>
   <url>
-    <loc>/reference/reQueen.html</loc>
+    <loc>https://www.simplybee.info/reference/isSimParamBee.html</loc>
   </url>
   <url>
-    <loc>/reference/reduceDroneGeno.html</loc>
+    <loc>https://www.simplybee.info/reference/isVirginQueen.html</loc>
   </url>
   <url>
-    <loc>/reference/reduceDroneHaplo.html</loc>
+    <loc>https://www.simplybee.info/reference/isVirginQueensPresent.html</loc>
   </url>
   <url>
-    <loc>/reference/removeColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/isWorker.html</loc>
   </url>
   <url>
-    <loc>/reference/removeDrones.html</loc>
+    <loc>https://www.simplybee.info/reference/isWorkersPresent.html</loc>
   </url>
   <url>
-    <loc>/reference/removeQueen.html</loc>
+    <loc>https://www.simplybee.info/reference/mapCasteToColonyValue.html</loc>
   </url>
   <url>
-    <loc>/reference/removeVirginQueens.html</loc>
+    <loc>https://www.simplybee.info/reference/nCaste.html</loc>
   </url>
   <url>
-    <loc>/reference/removeWorkers.html</loc>
+    <loc>https://www.simplybee.info/reference/nColonies.html</loc>
   </url>
   <url>
-    <loc>/reference/replaceDrones.html</loc>
+    <loc>https://www.simplybee.info/reference/nCsdAlleles.html</loc>
   </url>
   <url>
-    <loc>/reference/replaceVirginQueens.html</loc>
+    <loc>https://www.simplybee.info/reference/nDrones.html</loc>
   </url>
   <url>
-    <loc>/reference/replaceWorkers.html</loc>
+    <loc>https://www.simplybee.info/reference/nDronesFun.html</loc>
   </url>
   <url>
-    <loc>/reference/resetEvents.html</loc>
+    <loc>https://www.simplybee.info/reference/nEmptyColonies.html</loc>
   </url>
   <url>
-    <loc>/reference/selectColonies.html</loc>
+    <loc>https://www.simplybee.info/reference/nFathers.html</loc>
   </url>
   <url>
-    <loc>/reference/setColonyPheno.html</loc>
+    <loc>https://www.simplybee.info/reference/nFathersFun.html</loc>
   </url>
   <url>
-    <loc>/reference/setLocation.html</loc>
+    <loc>https://www.simplybee.info/reference/nNULLColonies.html</loc>
   </url>
   <url>
-    <loc>/reference/setQueensYearOfBirth.html</loc>
+    <loc>https://www.simplybee.info/reference/nQueens.html</loc>
   </url>
   <url>
-    <loc>/reference/simulateHoneyBeeGenomes.html</loc>
+    <loc>https://www.simplybee.info/reference/nVirginQueens.html</loc>
   </url>
   <url>
-    <loc>/reference/split.html</loc>
+    <loc>https://www.simplybee.info/reference/nVirginQueensFun.html</loc>
   </url>
   <url>
-    <loc>/reference/splitPFun.html</loc>
+    <loc>https://www.simplybee.info/reference/nWorkers.html</loc>
   </url>
   <url>
-    <loc>/reference/supersede.html</loc>
+    <loc>https://www.simplybee.info/reference/nWorkersFun.html</loc>
   </url>
   <url>
-    <loc>/reference/swarm.html</loc>
+    <loc>https://www.simplybee.info/reference/pullCastePop.html</loc>
   </url>
   <url>
-    <loc>/reference/swarmPFun.html</loc>
+    <loc>https://www.simplybee.info/reference/pullColonies.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/pullDroneGroupsFromDCA.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/pullInd.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/reQueen.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/reduceDroneGeno.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/reduceDroneHaplo.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeCastePop.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeColonies.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeDrones.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeQueen.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeVirginQueens.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/removeWorkers.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/replaceCastePop.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/replaceDrones.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/replaceVirginQueens.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/replaceWorkers.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/resetEvents.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/selectColonies.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/setColonyPheno.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/setLocation.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/setQueensYearOfBirth.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/simulateHoneyBeeGenomes.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/split.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/splitPFun.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/supersede.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/swarm.html</loc>
+  </url>
+  <url>
+    <loc>https://www.simplybee.info/reference/swarmPFun.html</loc>
   </url>
 </urlset>

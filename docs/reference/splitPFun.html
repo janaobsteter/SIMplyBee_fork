@@ -23,7 +23,7 @@ This is just an example. You can provide your own functions that satisfy
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -66,6 +66,9 @@ This is just an example. You can provide your own functions that satisfy
     </li>
     <li>
       <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/7_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -149,8 +152,8 @@ case change <code>nWorkersFull</code> too!)</p></dd>
 <p><code>splitPColonyStrength</code> samples from a beta distribution with mean
   <code>a / (a + b)</code>, where <code>a = nWorkers + nWorkersFull</code> and <code>b =
   nWorkers</code>. This beta sampling mimics larger splits for strong colonies and
-  smaller splits for weak colonies - see examples. This is just an example,
-  based on practical experience!</p>
+  smaller splits for weak colonies - see examples. This is just an example -
+  adapt to your needs!</p>
 <p>The <code>nWorkersFull</code> default value used in this function is geared
   towards a situation where we simulate ~100 workers per colony (down-scaled
   simulation for efficiency). If you simulate more workers, you should change
@@ -170,9 +173,9 @@ removed workers in a managed split based on the colony strength</p></li>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">splitPUnif</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3175577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3782392</span>
 <span class="r-in"><span><span class="fu">splitPUnif</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3140391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2625087</span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">splitPUnif</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">p</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="splitPFun-1.png" alt="" width="700" height="433"></span>
@@ -186,11 +189,11 @@ removed workers in a managed split based on the colony strength</p></li>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="co"># weak colony</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="co"># weak colony</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="fu">splitPColonyStrength</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
@@ -198,7 +201,7 @@ removed workers in a managed split based on the colony strength</p></li>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="co"># strong colony</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="co"># strong colony</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="fu">splitPColonyStrength</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
