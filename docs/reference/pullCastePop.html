@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -63,6 +63,9 @@
     <li>
       <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
     </li>
+    <li>
+      <a href="../articles/7_FAQs.html">FAQs</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -94,15 +97,28 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">x</span>, <span class="va">caste</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, removeFathers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pullCastePop</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">caste</span>,</span>
+<span>  nInd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use <span class="op">=</span> <span class="st">"rand"</span>,</span>
+<span>  removeFathers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  collapse <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pullQueen</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu">pullQueen</span><span class="op">(</span><span class="va">x</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pullWorkers</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span>
+<span><span class="fu">pullWorkers</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pullDrones</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, removeFathers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">pullDrones</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  nInd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use <span class="op">=</span> <span class="st">"rand"</span>,</span>
+<span>  removeFathers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  collapse <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pullVirginQueens</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pullVirginQueens</span><span class="op">(</span><span class="va">x</span>, nInd <span class="op">=</span> <span class="cn">NULL</span>, use <span class="op">=</span> <span class="st">"rand"</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,7 +133,9 @@
 
 <dt>nInd</dt>
 <dd><p>numeric, number of individuals to pull, if <code>NULL</code> all
-individuals are pulled</p></dd>
+individuals are pulled. If input is <code><a href="MultiColony-class.html">MultiColony-class</a></code>,
+the input could also be a vector of the same length as the number of colonies. If
+a single value is provided, the same value will be applied to all the colonies.</p></dd>
 
 
 <dt>use</dt>
@@ -128,6 +146,11 @@ individuals are pulled</p></dd>
 <dd><p>logical, removes <code>drones</code> that have already mated;
 set to <code>FALSE</code> if you would like to get drones for mating with multiple
 virgin queens, say via insemination</p></dd>
+
+
+<dt>collapse</dt>
+<dd><p>logical, whether to return a single merged population
+for the pulled individuals (does not affect the remnant colonies)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -165,22 +188,18 @@ virgin queens, say via insemination</p></dd>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">8</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackRec</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">addTraitA</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">addSnpChip</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">fatherGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nFathers <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a Colony and a MultiColony class</span></span></span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, nWorkers <span class="op">=</span> <span class="fl">100</span>, nDrones <span class="op">=</span> <span class="fl">10</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -189,7 +208,7 @@ virgin queens, say via insemination</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="createMultiColony.html">createMultiColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(basePop[3:4], n = 2):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span>, nWorkers <span class="op">=</span> <span class="fl">100</span>, nDrones <span class="op">=</span> <span class="fl">10</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -230,34 +249,46 @@ virgin queens, say via insemination</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="fu">pullQueen</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nQueens.html">nQueens</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nQueens</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nQueens.html">nQueens</a></span><span class="op">(</span><span class="fu">pullQueen</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nQueens</a></span><span class="op">(</span><span class="fu">pullQueen</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="fu">pullVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nVirginQueens.html">nVirginQueens</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nVirginQueens</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
+<span class="r-in"><span><span class="co"># Or pull out unequal number of workers from colonies</span></span></span>
+<span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"workers"</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="fu">pullWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="fu">pullWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="fu">pullWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
+<span class="r-in"><span><span class="co"># Or pull out unequal number of drones from colonies</span></span></span>
+<span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="fu">pullDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="fu">pullDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="fu">pullDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Merge all the pulled populations into a single population</span></span></span>
+<span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
+<span class="r-in"><span><span class="fu">pullCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 </code></pre></div>
     </div>

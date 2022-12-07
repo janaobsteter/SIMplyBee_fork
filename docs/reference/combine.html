@@ -22,7 +22,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/7_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -130,25 +133,25 @@
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">fatherGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nFathers <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nDrones <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create weak and strong Colony and MultiColony class</span></span></span>
 <span class="r-in"><span><span class="va">colony1</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony1</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony1</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony1</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony1</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony2</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony2</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony2</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary1</span> <span class="op">&lt;-</span> <span class="fu"><a href="createMultiColony.html">createMultiColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(basePop[4:6], n = 3):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary1</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary1</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary1</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary1</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary2</span> <span class="op">&lt;-</span> <span class="fu"><a href="createMultiColony.html">createMultiColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">7</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(basePop[7:9], n = 3):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary2</span>, fathers <span class="op">=</span> <span class="va">fatherGroups</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary2</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Build-up</span></span></span>
@@ -162,23 +165,23 @@
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Combine</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony2' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony2' not found</span>
 <span class="r-in"><span><span class="va">colony1</span> <span class="op">&lt;-</span> <span class="fu">combine</span><span class="op">(</span>strong <span class="op">=</span> <span class="va">colony1</span>, weak <span class="op">=</span> <span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony2' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony2' not found</span>
 <span class="r-in"><span><span class="fu"><a href="getCastePop.html">getQueen</a></span><span class="op">(</span><span class="va">colony1</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony1' not found</span>
@@ -187,23 +190,23 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">colony2</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>object 'colony2' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary2' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary2' not found</span>
 <span class="r-in"><span><span class="va">apiary1</span> <span class="op">&lt;-</span> <span class="fu">combine</span><span class="op">(</span>strong <span class="op">=</span> <span class="va">apiary1</span>, weak <span class="op">=</span> <span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nWorkers.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary2' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">apiary1</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary1' not found</span>
-<span class="r-in"><span><span class="fu"><a href="nDrones.html">nDrones</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nDrones</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary2' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">apiary2</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>object 'apiary2' not found</span>
