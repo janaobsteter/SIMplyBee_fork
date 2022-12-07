@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
     <li>
       <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/7_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -118,17 +121,17 @@
     <p>Bovo et al. (2021) Application of Next Generation Semiconductor-Based
   Sequencing for the Identification of Apis mellifera Complementary Sex
   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-  <a href="https://www.mdpi.com/2075-4450/12/10/868" class="external-link">https://www.mdpi.com/2075-4450/12/10/868</a></p>
+  doi: <a href="https://doi.org//10.3390/insects12100868" class="external-link">/10.3390/insects12100868</a></p>
 <p>Lechner et al. (2014) Nucleotide variability at its limit? Insights into
  the number and evolutionary dynamics of the sex-determining specificities
  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
- 272-287. <a href="https://academic.oup.com/mbe/article/31/2/272/998263" class="external-link">https://academic.oup.com/mbe/article/31/2/272/998263</a></p>
+ 272-287. doi: <a href="https://doi.org//10.1093/molbev/mst207" class="external-link">/10.1093/molbev/mst207</a></p>
 <p>Seeley (2019) The Lives of Bees: The Untold Story of the Honey
   Bee in the Wild. Princeton: Princeton University Press.
-  <a href="https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383" class="external-link">https://doi-org.ezproxy.is.ed.ac.uk/10.1515/9780691189383</a></p>
+  doi: <a href="https://doi.org//10.1515/9780691189383" class="external-link">/10.1515/9780691189383</a></p>
 <p>Zareba et al. (2017) Uneven distribution of complementary sex determiner
   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-  <a href="https://doi.org/10.1038/s41598-017-02629-9" class="external-link">https://doi.org/10.1038/s41598-017-02629-9</a></p>
+  doi: <a href="https://doi.org//10.1038/s41598-017-02629-9" class="external-link">/10.1038/s41598-017-02629-9</a></p>
     </div>
     <div id="super-class">
     <h2>Super class</h2>
@@ -145,15 +148,14 @@
   represents ~60,000 workers in a full/strong colony (Seeley, 2019). This
   value is set in <code>SimParamBee$new()</code> to have a number to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>nWorkers</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(colony, arg = default) someCode </code>, that is, the first
   argument MUST be <code>colony</code> and any following arguments MUST have a
-  default value. See <code><a href="nWorkersFun.html">nWorkersPoisson</a></code>,
-  <code><a href="nWorkersFun.html">nWorkersTruncPoisson</a></code>, or
-  <code><a href="nWorkersFun.html">nWorkersColonyPhenotype</a></code> for examples.</p>
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="nWorkersFun.html">nWorkersPoisson</a></code>, <code><a href="nWorkersFun.html">nWorkersTruncPoisson</a></code>,
+  or <code><a href="nWorkersFun.html">nWorkersColonyPhenotype</a></code> for examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
@@ -166,14 +168,13 @@
   represents ~1,000 drones in a full/strong colony (Seeley, 2019). This
   value is set in <code>SimParamBee$new()</code> to have a number to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>nDrones</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(x, arg = default) someCode </code>, that is, the first
   argument MUST be <code>x</code> and any following arguments MUST have a
-  default value. See <code><a href="nDronesFun.html">nDronesPoisson</a></code>,
-  <code><a href="nDronesFun.html">nDronesTruncPoisson</a></code>, or
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="nDronesFun.html">nDronesPoisson</a></code>, <code><a href="nDronesFun.html">nDronesTruncPoisson</a></code>, or
   <code><a href="nDronesFun.html">nDronesColonyPhenotype</a></code> for examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
@@ -186,13 +187,13 @@
   10 new virgin queens (Seeley, 2019). This value is set in
   <code>SimParamBee$new()</code> to have a number to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>nVirginQueens</code> is a function, it should work with internals
   of other functions. Therefore, the function MUST be defined like
   <code>function(colony, arg = default) someCode </code>, that is, the first
   argument MUST be <code>colony</code> and any following arguments MUST have a
-  default value. See <code><a href="nVirginQueensFun.html">nVirginQueensPoisson</a></code>,
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="nVirginQueensFun.html">nVirginQueensPoisson</a></code>,
   <code><a href="nVirginQueensFun.html">nVirginQueensTruncPoisson</a></code>, or
   <code><a href="nVirginQueensFun.html">nVirginQueensColonyPhenotype</a></code> for examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
@@ -202,18 +203,18 @@
 <dd><p>numeric or function, a number of drones a queen mates
   with  - used in <code><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></code>,
   <code><a href="cross.html">cross</a></code>.</p>
-<p>The default value is 15, that is, a virging queen mates on average with
+<p>The default value is 15, that is, a virgin queen mates on average with
   15 drones (Seeley, 2019). This value is set in <code>SimParamBee$new()</code>
   to have a number to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>nFathers</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(arg = default) someCode </code>, that is, any arguments MUST
   have a default value. We did not use the <code>colony</code> argument here,
   because <code>nFathers</code> likely does not depend on the colony. Let us
-  know if we are wrong! See <code><a href="nFathersFun.html">nFathersPoisson</a></code> or
+  know if we are wrong!
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="nFathersFun.html">nFathersPoisson</a></code> or
   <code><a href="nFathersFun.html">nFathersTruncPoisson</a></code> for examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
@@ -226,14 +227,14 @@
   in a swarm (Seeley, 2019). This value is set in <code>SimParamBee$new()</code>
   to have a proportion to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>swarmP</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(colony, arg = default) someCode </code>, that is, the first
   argument MUST be <code>colony</code> and any following arguments MUST have a
-  default value. See <code><a href="swarmPFun.html">swarmPUnif</a></code> or
-  <code><a href="swarmPFun.html">swarmPColonyStrength</a></code> for examples.</p>
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="swarmPFun.html">swarmPUnif</a></code> for
+  examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
@@ -245,14 +246,14 @@
   a split colony from a strong colony (Seeley, 2019). This value is set
   in <code>SimParamBee$new()</code> to have a proportion to work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>splitP</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(colony, arg = default) someCode </code>, that is, the first
   argument MUST be <code>colony</code> and any following arguments MUST have a
-  default value. See <code><a href="splitPFun.html">splitPUnif</a></code> or
-  <code><a href="splitPFun.html">splitPColonyStrength</a></code> for examples.</p>
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="splitPFun.html">splitPUnif</a></code> or <code><a href="splitPFun.html">splitPColonyStrength</a></code> for
+  examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
@@ -265,24 +266,26 @@
   This value is set in <code>SimParamBee$new()</code> to have a proportion to
   work with.</p>
 <p>You can change this setting to your needs!</p>
-<p>TODO: Is Seeley (2019) good citation for the defaults in SimParamBee?
-        https://github.com/HighlanderLab/SIMplyBee/issues/242</p>
 <p>When <code>downsizeP</code> is a function, it should work with internals of
   other functions. Therefore, the function MUST be defined like
   <code>function(colony, arg = default) someCode </code>, that is, the first
   argument MUST be <code>colony</code> and any following arguments MUST have a
-  default value. See <code><a href="downsizePFun.html">downsizePUnif</a></code> for example.</p>
+  default value.
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="downsizePFun.html">downsizePUnif</a></code> for example.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
-<dt><code>colonyPheno</code></dt>
-<dd><p>function, to set colony phenotypes - used in
-  <code><a href="setColonyPheno.html">setColonyPheno</a></code>.</p>
+<dt><code>colonyValueFUN</code></dt>
+<dd><p>function, to calculate colony values - used
+  in <code><a href="calcColonyValue.html">calcColonyValue</a></code> - see also <code><a href="calcColonyValue.html">calcColonyPheno</a></code>
+  and <code><a href="calcColonyValue.html">calcColonyGv</a></code>.</p>
 <p>This function should work with internals of others functions -
   therefore the function MUST be defined like <code>function(colony, arg
   = default) someCode </code>, that is, the first argument MUST be
   <code>colony</code> and any following arguments MUST have a default value.
-  See <code><a href="calcColonyPhenoFromCaste.html">calcColonyPhenoFromCaste</a></code> for an example.</p>
+  For flexibility you can add ... argument to pass on any other argument.
+  See <code><a href="mapCasteToColonyValue.html">mapCasteToColonyValue</a></code> for an example.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
@@ -393,7 +396,7 @@ generate this object</p></dd>
 <span>  csdChr <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  csdPos <span class="op">=</span> <span class="fl">0.865</span>,</span>
 <span>  nCsdAlleles <span class="op">=</span> <span class="fl">128</span>,</span>
-<span>  colonyPheno <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  colonyValueFUN <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -455,8 +458,8 @@ to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).</p></dd>
 
 
-<dt><code>colonyPheno</code></dt>
-<dd><p>see <code>SimParamBee</code> field <code>colonyPheno</code></p></dd>
+<dt><code>colonyValueFUN</code></dt>
+<dd><p>see <code>SimParamBee</code> field <code>colonyValueFUN</code></p></dd>
 
 
 </dl><p></p></div>
@@ -506,7 +509,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span></span>
 <span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addVirginQueens</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -547,7 +550,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span></span>
 <span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span>
 <span><span class="va">SP</span><span class="op">$</span><span class="va">caste</span></span></code></pre></div><p></p></div>
 </div>
@@ -626,7 +629,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addWorkers</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -660,7 +663,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, fathers <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, drones <span class="op">=</span> <span class="va">drones</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
