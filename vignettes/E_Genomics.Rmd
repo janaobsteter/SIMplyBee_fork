@@ -1,15 +1,15 @@
 ---
-title: "SIMplyBee - Genomics"
+title: "Genomics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Genomics}
-  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 editor_options:
-   markdown:
-     wrap: 80
-     canonical: true
+  markdown:
+    wrap: 80
+    canonical: yes
 ---
 
 ```{r setup, include = FALSE}
