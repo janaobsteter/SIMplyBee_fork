@@ -22,12 +22,12 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette will introduce you to colony events. We implemented the most
-important natural events like swarming, supersedure, and collapse of the colony,
-and a beekeeping management practice called splitting. All functions that
-implement colony events work both on `Colony` and `MultiColony` objects.
+This vignette will introduce you to honeybee colony events. We implemented the
+most important natural events like swarming, supersedure, and collapse of the
+colony, and a beekeeping management practice called splitting. All functions
+that implement colony events work both on `Colony` and `MultiColony` objects.
 
-First, we again load the package, if we haven't already.
+First, we start by loading the package.
 
 ```{r}
 library(package = "SIMplyBee")
@@ -35,14 +35,14 @@ library(package = "SIMplyBee")
 
 # Swarming
 
-Swarming is the process in which honeybee colonies reproduce to form new
-colonies. When a honeybee colony outgrows its hive, becomes too congested, or
-too populated for the queen's pheromones to spread among workers, then the
-swarming begins. The workers start building swarm cells for new virgin queens.
-When the queen is ready, she leaves the hive and is followed by about 70% of the
-workers in a massive cloud of flying bees, the swarm (Rangel et al., 2012). The
-swarm will cluster on a nearby tree and the remain there until they find a
-suitable new home.
+Swarming is the process in which honeybee colonies produce new colonies. When a
+honeybee colony outgrows its hive, becomes too congested, or too populated for
+the queen's pheromones to spread among workers, then the swarming begins. The
+workers start building swarm cells for new virgin queens. When the queen is
+ready, she leaves the hive and is followed by about 70% of the workers in a
+massive cloud of flying bees, the swarm (Rangel et al., 2012). The swarm will
+cluster on a nearby tree and the remain there until they find a suitable new
+home.
 
 The virgin queens developing in the old hive are daughters of the queen that
 swarmed and are attended by the remnant workers that did not leave with the
