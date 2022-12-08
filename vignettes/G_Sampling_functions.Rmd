@@ -23,7 +23,10 @@ knitr::opts_chunk$set(
 # Introduction
 
 SIMplyBee includes functions to sample various values that are expected to vary
-between colonies and events.
+between colonies and events. These functions are used to sample numbers, usually
+individuals, and proportions. We can use the functions, pass them to other
+functions, or save them in the `SimParamBee` object so they can be used by
+default by other functions.
 
 We start by loading the package:
 
@@ -126,3 +129,4 @@ nWorkers(tmp$swarm)
 ```
 
 We see that each colony swarmed with a different percentage between 0.5 and 0.7.
+
