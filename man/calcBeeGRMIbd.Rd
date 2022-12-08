@@ -56,9 +56,10 @@ x <- GRMs$indiv[lower.tri(x = GRMs$indiv, diag = FALSE)]
 hist(x)
 summary(x)
 
-qI <- getCasteId(colony, caste = "queen")
-wI <- sort(getCasteId(colony, caste = "workers"))
-dI <- sort(getCasteId(colony, caste = "drones"))
+ids <- getCasteId(colony)
+qI <- ids$queen
+wI <- sort(ids$workers)
+dI <- sort(ids$drones)
 
 qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
 wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))

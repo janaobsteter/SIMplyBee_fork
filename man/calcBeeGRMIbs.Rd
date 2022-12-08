@@ -39,17 +39,18 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-apiary <- createMultiColony(basePop[2:3], n = 2)
-apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 1, nDrones = nFathersPoisson)
+colony <- createColony(basePop[2])
+colony <- cross(x = colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
-geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
-sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
+geno <- getSegSiteGeno(colony, collapse = TRUE)
+sex <- getCasteSex(x = colony, collapse = TRUE)
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 # You can visualise this matrix with the function image() from the package 'Matrix'
@@ -65,7 +66,7 @@ hist(x)
 summary(x)
 
 # Compare relationship between castes
-ids <- getCasteId(apiary[[1]])
+ids <- getCasteId(colony)
 idQueen <- ids$queen
 idWorkers <- ids$workers
 idDrones <- ids$drones
@@ -85,6 +86,16 @@ aF <- calcBeeAlleleFreq(x = geno, sex = sex)
 hist(aF)
 GRM2 <- calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF)
 stopifnot(identical(GRM2, GRM))
+
+# You can also create relationships with pooled genomes
+pooledGenoW <- getPooledGeno(getWorkersSegSiteGeno(colony),
+                             type = "mean",
+                             sex = getCasteSex(colony, caste="workers"))
+queenGeno <- getQueenSegSiteGeno(colony)
+# Compute relationship between pooled workers genotype and the queen
+calcBeeGRMIbs(x = rbind(queenGeno, pooledGenoW), sex = c("F","F"))
+# You can now compare how this compare to relationships between the queen
+# individual workers!
 }
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of

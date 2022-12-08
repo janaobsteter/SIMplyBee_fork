@@ -372,3 +372,4 @@ test_that("pullDroneGroupsFromDCA", {
   # Error, if nInd in DCA is smaller than nFathers
   expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nDrones = 20))
 })
+

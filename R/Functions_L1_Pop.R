@@ -1072,13 +1072,13 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                           use = use,
                           removeFathers = removeFathers,
                           collapse = collapse)
-      ret$pulled[[colony]] <- tmp$pulled
+      if (!is.null(tmp$pulled)) {
+        ret$pulled[[colony]] <- tmp$pulled
+      }
       ret$remnant[[colony]] <- tmp$remnant
     }
     if (collapse) {
       ret$pulled <- mergePops(ret$pulled)
-    } else {
-      names(ret$pulled) <- getId(x)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")

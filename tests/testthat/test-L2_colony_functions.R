@@ -144,10 +144,8 @@ test_that("BuildUpDownsize", {
    expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE)), 70)
    expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE)), 5)
    # if New = FALSE and nInd is less than n individuals
-   expect_warning(buildUp(colony, nWorkers = 70, exact = TRUE, new = FALSE))
-   suppressWarnings(expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, new = FALSE)), 100))
-   expect_warning(buildUp(colony, nDrones = 5, exact = TRUE, new = FALSE))
-   suppressWarnings(expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, new = FALSE)), 10))
+   expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, new = FALSE)), 70)
+   expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, new = FALSE)), 5)
 
    # Build Up an apiary
    # Empty apiary

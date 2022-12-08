@@ -1840,7 +1840,7 @@ isProductive <- function(x) {
 #'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
 #'
 #' @examples
-#' \donttest{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
+#' \dontrun{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
 #'                                                     nChr = 1,
 #'                                                     nSegSites = 2,
 #'                                                     Ne = 10)}
@@ -2133,7 +2133,6 @@ getCsdAlleles <- function(x, caste = NULL, nInd = NULL, allele = "all", dronesHa
     }
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!") # I think we don't want this warning
       caste <- "all"
     }
     if (caste == "all") {
@@ -2373,7 +2372,6 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
     }
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -2784,7 +2782,6 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
     ret <- pullIbdHaplo(pop = x, chr = chr, snpChip = snpChip, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!") #Do we want this warning???
       caste <- "all"
     }
     if (caste == "all") {
@@ -3039,7 +3036,6 @@ getQtlHaplo <- function(x, caste = NULL, nInd = NULL,
     ret <- pullQtlHaplo(pop = x, trait = trait, haplo = haplo, chr = chr, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -3288,7 +3284,6 @@ getQtlGeno <- function(x, caste = NULL, nInd = NULL,
     ret <- pullQtlGeno(pop = x, trait = trait, chr = chr, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -3777,7 +3772,6 @@ getSegSiteGeno <- function(x, caste = NULL, nInd = NULL,
     ret <- pullSegSiteGeno(pop = x, chr = chr, simParam = simParamBee)
   } else  if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -4019,7 +4013,6 @@ getSnpHaplo <- function(x, caste = NULL, nInd = NULL,
     ret <- pullSnpHaplo(pop = x, snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParamBee)
   } else  if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -4259,7 +4252,6 @@ getSnpGeno <- function(x, caste = NULL, nInd = NULL,
     ret <- pullSnpGeno(pop = x, snpChip = snpChip, chr = chr, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -4526,17 +4518,18 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' SP$setTrackRec(TRUE)
+#' SP$setTrackPed(isTrackPed = TRUE)
 #'
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#' apiary <- createMultiColony(basePop[2:3], n = 2)
-#' apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 1, nDrones = nFathersPoisson)
+#' colony <- createColony(basePop[2])
+#' colony <- cross(x = colony, drones = droneGroups[[1]])
+#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #'
-#' geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
-#' sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
+#' geno <- getSegSiteGeno(colony, collapse = TRUE)
+#' sex <- getCasteSex(x = colony, collapse = TRUE)
 #'
 #' GRM <- calcBeeGRMIbs(x = geno, sex = sex)
 #' # You can visualise this matrix with the function image() from the package 'Matrix'
@@ -4552,7 +4545,7 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' summary(x)
 #'
 #' # Compare relationship between castes
-#' ids <- getCasteId(apiary[[1]])
+#' ids <- getCasteId(colony)
 #' idQueen <- ids$queen
 #' idWorkers <- ids$workers
 #' idDrones <- ids$drones
@@ -4572,6 +4565,16 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' hist(aF)
 #' GRM2 <- calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF)
 #' stopifnot(identical(GRM2, GRM))
+#'
+#' # You can also create relationships with pooled genomes
+#' pooledGenoW <- getPooledGeno(getWorkersSegSiteGeno(colony),
+#'                              type = "mean",
+#'                              sex = getCasteSex(colony, caste="workers"))
+#' queenGeno <- getQueenSegSiteGeno(colony)
+#' # Compute relationship between pooled workers genotype and the queen
+#' calcBeeGRMIbs(x = rbind(queenGeno, pooledGenoW), sex = c("F","F"))
+#' # You can now compare how this compare to relationships between the queen
+#' # individual workers!
 #' @export
 calcBeeGRMIbs <- function(x, sex, alleleFreq = NULL) {
   if (!is.matrix(x)) {
@@ -4696,9 +4699,10 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' hist(x)
 #' summary(x)
 #'
-#' qI <- getCasteId(colony, caste = "queen")
-#' wI <- sort(getCasteId(colony, caste = "workers"))
-#' dI <- sort(getCasteId(colony, caste = "drones"))
+#' ids <- getCasteId(colony)
+#' qI <- ids$queen
+#' wI <- sort(ids$workers)
+#' dI <- sort(ids$drones)
 #'
 #' qG <- c(t(outer(X = qI, Y = 1:2, FUN = paste, sep = "_")))
 #' wG <- c(t(outer(X = wI, Y = 1:2, FUN = paste, sep = "_")))
@@ -4863,7 +4867,6 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
     rownames(ret) <- x@id
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -5496,7 +5499,6 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
     rownames(ret) <- x@id
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -5629,7 +5631,6 @@ getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
     ret <- bv(pop = x, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -5795,7 +5796,6 @@ getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
     ret <- dd(pop = x, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {
@@ -5961,7 +5961,6 @@ getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
     ret <-  aa(pop = x, simParam = simParamBee)
   } else if (isColony(x)) {
     if (is.null(caste)) {
-      warning("Caste not provided, returning info for all castes!")
       caste <- "all"
     }
     if (caste == "all") {

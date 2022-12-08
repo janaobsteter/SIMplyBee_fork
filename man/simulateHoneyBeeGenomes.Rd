@@ -60,7 +60,7 @@ automatically detected}
 Level 0 function that returns simulated honeybee genomes
 }
 \examples{
-\donttest{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
+\dontrun{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
                                                     nChr = 1,
                                                     nSegSites = 2,
                                                     Ne = 10)}

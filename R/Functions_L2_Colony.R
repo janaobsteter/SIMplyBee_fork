@@ -494,10 +494,13 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       n <- nWorkers - nWorkers(x)
     }
 
-    x <- addWorkers(
-      x = x, nInd = n, new = new,
-      exact = exact, simParamBee = simParamBee
-    )
+    if (n > 0) {
+      x <- addWorkers(
+        x = x, nInd = n, new = new,
+        exact = exact, simParamBee = simParamBee)
+    } else if (n < 0) {
+      x@workers <- getWorkers(x, nInd = nWorkers)
+    }
 
     # Drones
     if (is.null(nDrones)) {
@@ -515,10 +518,15 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     } else {
       n <- nDrones - nDrones(x)
     }
-    x <- addDrones(
-      x = x, nInd = n, new = new,
-      simParamBee = simParamBee
-    )
+
+    if (n > 0) {
+      x <- addDrones(
+        x = x, nInd = n, new = new,
+        simParamBee = simParamBee
+      )
+    } else if (n < 0) {
+      x@drones <- getDrones(x, nInd = nDrones)
+    }
 
     # Events
     if (resetEvents) {
