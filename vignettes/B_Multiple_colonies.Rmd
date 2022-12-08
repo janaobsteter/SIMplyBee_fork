@@ -25,12 +25,13 @@ knitr::opts_chunk$set(
 We have already introduced the Colony class that holds colony-specific
 information and caste individuals. However, when working with honeybees, we
 usually do not work with a single colony, but with apiaries or even whole
-populations instead. To cater for this, we created a `MultiColony` class. It
-behaves as a list of `Colony` objects but with additional functionality - you
-can apply function directly to the `MultiColony` objects. A `MultiColony` can
-represent different apiaries or even different subpopulations in terms of either
-age of the queens or geographical location of the apiaries. First, we again load
-the package, if we haven't already.
+populations of colonies. To cater for this, SIMplyBee provides a `MultiColony`
+class. It behaves as a list of `Colony` objects but with additional
+functionality - you can apply function directly to the `MultiColony` objects. A
+`MultiColony` can represent different apiaries or sub-populations in terms of
+either age of the queens or geographical location of the apiaries etc. This
+vignette demonstrates creating and working with `MultiColony` objects. First, we
+again load the package.
 
 ```{r}
 library(package = "SIMplyBee")
@@ -41,7 +42,7 @@ library(package = "SIMplyBee")
 We create a `MultiColony` object with `createMultiColony()` function. Let's say
 you want to create a `MultiColony` object that represents a single apiary. The
 first option is to initialise an empty `MultiColony` object that represents an
-empty apiary without any colonies and individuals within.
+empty apiary without any colonies and individuals within them.
 
 ```{r}
 # Create an empty apiary
@@ -52,9 +53,9 @@ emptyApiary
 Let's inspect the printout of the `MultiColony` object. This tells how many
 colonies are within, how many of them are `empty` and contain no individuals,
 how many are `NULL` objects, how many have experienced a split, swarm,
-supersedure, or a collapse (you can read more about this events in the Colony
+supersedure, or a collapse (you can read more about these events in the Colony
 events vignette), and how many of them are productive, meaning that we can
-collect a production phenotype from them (i.e. honey).
+collect a production phenotype from them such as honey yield.
 
 The second option is again to create an empty `MultiColony` object that
 represents an empty apiary without any individuals within, but with a defined
@@ -67,9 +68,9 @@ emptyApiary1
 ```
 
 The third option is to create a `MultiColony` object with a population of either
-virgin or mated queens. For this, we first have to initialise the simulation by
-simulating founder genomes and creating a base population of virgin queens. We
-will use 10 virgin queens to produce drones and create a DCA.
+virgin or mated queens. For this, we first have to initialise the simulation
+with founder genomes and creating a base population of virgin queens. We will
+use 10 virgin queens to produce drones and create a DCA.
 
 ```{r}
 # Create 20 founder genomes
@@ -84,8 +85,8 @@ DCA <- createDrones(basePop[1:10], nInd = 100)
 
 We will now create an apiary with 10 virgin colonies with the
 `createMultiColony()` function by providing the second set of 10 virgin queens
-as the input parameter. Let's call this apiary `apiary1` and say that it stands
-at the location 1 (1,1).
+as the input parameter. Let's call this apiary `apiary1` and say that it is
+positioned at the location `(1,1)`.
 
 ```{r}
 # Create an apiary with the remaining virgin queens
@@ -105,9 +106,9 @@ isVirginQueensPresent(apiary1)
 
 # MultiColony operations
 
-Once we have a non-empty `MultiColony` object, we can do some basic operations
-on it. First, we can select some of colonies by either specifying the IDs,
-desired number or percentage of randomly selected colonies.
+Once we have a non-empty `MultiColony` object, we can do basic operations on it.
+First, we can select some colonies by either specifying their IDs, desired
+number or percentage of randomly selected colonies.
 
 ```{r}
 # Get the IDs of the colonies
@@ -119,12 +120,12 @@ selectColonies(apiary1, p = 0.1)
 ```
 
 Second, we can pull some colonies from the `MultiColony` object. This means,
-that the pulled colonies are pulled-out and removed from the original object.
-The function `pullColonies()` therefore returns two object - the pulled colonies
-and the remnant colonies.
+that the pulled colonies are removed from the original object. The function
+`pullColonies()` therefore returns two object - the pulled colonies and the
+remnant colonies.
 
 ```{r}
-# Pull one colony - returns $remnant and $pulled object
+# Pull one colony - returns a list with $remnant and $pulled nodes
 pullColonies(apiary1, n = 1)
 ```
 
@@ -135,7 +136,7 @@ Third, we can also remove some colonies from the `MultiColony` object with
 removeColonies(apiary1, ID = 13)
 ```
 
-These three funtions can also select, pull, and remove colonies based on some
+These three functions can also select, pull, and remove colonies based on some
 values (phenotypes, genetic values ...). You can read more about that in the
 Quantitative genetics vignette.
 
@@ -151,14 +152,14 @@ of drones as we have colonies in our `MultiColony`.
 droneGroups <- pullDroneGroupsFromDCA(DCA, n = 10, nDrones = nFathersPoisson)
 # Cross all virgin queens in the apiary to the selected drones
 apiary1 <- cross(apiary1, drones = droneGroups)
-# Check whether the queens are present (and gence mated)
+# Check whether the queens are present (and hence mated)
 isQueenPresent(apiary1)
 ```
 
-Once we have mated queens in the apiary, we can apply all the events functions
+Once we have mated queens in the apiary, we can apply all the event functions
 directly to the `MultiColony` object: `buildUp()`, `downsize()`, `swarm()`,
 `split()`, `supersede()`, `collapse()` but also all the functions that either
-add, replace, or remove individuals from the castes. Let's say we know want to
+add, replace, or remove individuals from the castes. Let's say we want to
 build-up all the colonies in our apiary.
 
 ```{r}
@@ -173,11 +174,11 @@ Colony events vignette).
 
 # Working with multiple MultiColony objects
 
-Let's now initiate another `MultiColony` names `apiary2` that is placed at
-location `(2,2)`. Here, we define different `MultiColony` objects according to
+Let's now initiate another `MultiColony` named as `apiary2` that is placed at
+location `(2,2)`. Here, we define different `MultiColony` object according to
 the location of the apiary, but the objects could also be defined according to
-the age of the queens - `age0`, `age1`... `apiary2` contains only virgin queens
-and we want to mate them to a DCA made of drones in `apiary1`.
+the age of the queens (such as `age0`, `age1`...). `apiary2` contains only
+virgin queens and we want to mate them to a DCA made of drones from `apiary1`.
 
 ```{r}
 # Initiate apiary2 at the location (2,2)
@@ -210,3 +211,7 @@ droneGroups <- pullDroneGroupsFromDCA(DCA,
 # Cross virgin queens in apiary2 to selected drones
 apiary2 <- cross(apiary2, drones = droneGroups)
 ```
+
+To learn more about the `nFathersPoisson()` function and other similar
+functions, read the Sampliong functions vignette.
+
