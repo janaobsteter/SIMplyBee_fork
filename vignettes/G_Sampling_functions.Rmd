@@ -22,10 +22,10 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-SIMplyBee includes functions to sample the number or percentage of caste
-individuals.
+SIMplyBee includes functions to sample various values that are expected to vary
+between colonies and events.
 
-We again load the package, if we haven't already.
+We start by loading the package:
 
 ```{r}
 library(package = "SIMplyBee")
@@ -40,10 +40,10 @@ a Poisson or truncated Poisson distribution: `n*Poisson()` and
 argument can accept these sampling functions as an input, meaning that the
 output of such function calls will be stochastic. These functions are useful
 when you want to sample a variable number of individuals around a mean, as for
-example when mating virgin queens.
+example when mating virgin queens with a variable number of drones.
 
-Let's start again with creating a DCA and an apiary with 10 virgin colonies, as
-seen before.
+Let's start a simulation by creating a DCA and an apiary with 10 virgin
+colonies:
 
 ```{r}
 founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
@@ -58,11 +58,11 @@ apiary <- createMultiColony(basePop[11:20])
 ```
 
 From the literature we know that virgin queens on average mate to 17 drones, but
-this number actually varies around this number. Some mate with 10 drones, some
-with 20. To resemble this variation, we can use the function `nFathersPoisson()`
+the actual number varies around this mean. Some mate with 10 drones, some with
+20, etc. To resemble this variation, we can use the function `nFathersPoisson()`
 to sample variable number of drones from a DCA. The default average for this
 function is 15, but you can use any value you want. Let's use this function to
-sample 1000 values and inspect the distribution and the mean.
+sample 1,000 values and inspect the distribution and the mean.
 
 ```{r, echo = FALSE, fig.height = 3, fig.width = 6}
 par(mfrow=c(1,2))
@@ -105,14 +105,15 @@ additional function, `splitPColonyStrength()`, that determines the number of
 workers to be removed in a split according to the colony strength.
 
 Let's say we want to swarm all the colonies in our apiary with a variable
-percentage of workers that leave. We want to sample the percentage of workers
-from an uniform distribution with the mean of 0.6. For this, we use
-`swarmPUnif()` function that takes a `min` and a `max` values and sample a value
-between them. By default, the `min` is set to 0.4 and `max` to 0.6. Let's use
-this function to sample a 1000 values between 0.5 and 0.7 and inspect the mean.
+percentage of workers that leave. We want to sample this percentage from an
+uniform distribution with the mean of 0.6. For this, we use `swarmPUnif()`
+function that takes a `min` and a `max` values and sample a value between them.
+By default, the `min` is set to 0.4 and `max` to 0.6. Let's use this function to
+sample a 1,000 values between 0.5 and 0.7 and inspect the mean.
 
 ```{r, echo = FALSE, fig.height = 3, fig.width = 3}
-hist(swarmPUnif(n = 1000, min = 0.5, max = 0.7), xlab = "swarmP", main = "min=0.5, max=0.7")
+hist(swarmPUnif(n = 1000, min = 0.5, max = 0.7),
+     xlab = "swarmP", main = "min=0.5, max=0.7", xlim = c(0, 1))
 ```
 
 Let's now swarm all the colonies in our apiary with a variable percentage of
