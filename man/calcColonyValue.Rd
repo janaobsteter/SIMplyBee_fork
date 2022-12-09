@@ -91,10 +91,10 @@ apiary <- buildUp(apiary, nWorkers = nWorkers, nDrones = 3)
 
 # Colony value - shorthand version
 # (using the default mapCasteToColony*() functions - you can provide yours instead!)
-# ... phenotype value
+# Phenotype value
 calcColonyPheno(colony)
 calcColonyPheno(apiary)
-# ... genetic value
+# Genetic value
 calcColonyGv(colony)
 calcColonyGv(apiary)
 

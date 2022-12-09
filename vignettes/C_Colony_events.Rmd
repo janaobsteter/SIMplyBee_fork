@@ -1,5 +1,5 @@
 ---
-title: "SIMplyBee - Colony events"
+title: "Colony events"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -83,7 +83,7 @@ workers `(1-p)`, all the drones, and virgin queens that are daughters of the old
 queen that swarmed.
 
 ```{r swarm_figure, echo=FALSE, out.width='100%', fig.cap="Swarm function."}
-knitr::include_graphics("../man/figures/swarm.pdf")
+knitr::include_graphics("../man/figures/swarm.png")
 ```
 
 -   Swarming a Colony
@@ -222,7 +222,7 @@ and `p` workers. The `split()` function follows the same principles as the
 `swarm()`, hence we will spent less time explaining the outputs.
 
 ```{r split_figure, echo=FALSE, out.width='100%', fig.cap = "Split function"}
-knitr::include_graphics("../man/figures/split.pdf")
+knitr::include_graphics("../man/figures/split.png")
 ```
 
 -   Spliting a Colony
@@ -300,7 +300,7 @@ triggers the creation of new virgin queens from the brood (Figure 3). The
 function returns a single `Colony` or `MultiColony` object (not a list of two).
 
 ```{r supersede_figure, echo=FALSE, out.width='100%', fig.cap = "Supersede function"}
-knitr::include_graphics("../man/figures/supersede.pdf")
+knitr::include_graphics("../man/figures/supersede.png")
 ```
 
 -   Superseding a Colony
@@ -344,7 +344,7 @@ collapse. However, future operations in terms of reproduction or simulation of
 events are not allowed with a collapsed colony.
 
 ```{r collapse_figure, echo=FALSE, out.width='50%', fig.cap = "Collapse function"}
-knitr::include_graphics("../man/figures/collapse.pdf")
+knitr::include_graphics("../man/figures/collapse.png")
 ```
 
 -   Collapsing a Colony

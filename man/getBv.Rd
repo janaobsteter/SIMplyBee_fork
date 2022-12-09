@@ -43,6 +43,8 @@ vector of breeding values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of breeding values when \code{x} is
   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
   \code{\link{MultiColony-class}}
+
+# Not exporting this function, since the theory behind it is not fully developed
 }
 \description{
 Level 0 function that returns breeding values of individuals in
@@ -61,79 +63,6 @@ Level 0 function that returns breeding values of individuals in
 \item \code{getDronesBv()}: Access breeding values of drones
 
 }}
-\examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$addTraitA(nQtlPerChr = 10, var = 1)
-SP$addSnpChip(5)
-basePop <- createVirginQueens(founderGenomes)
-
-drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-
-# Create a Colony and a MultiColony class
-colony <- createColony(x = basePop[2])
-colony <- cross(colony, drones = droneGroups[[1]])
-colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-colony <- addVirginQueens(x = colony, nInd = 5)
-
-apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
-
-# Input is a population
-SIMplyBee:::getBv(x = getQueen(colony))
-queens <- getQueen(apiary, collapse = TRUE)
-SIMplyBee:::getBv(queens)
-
-# Input is a colony
-SIMplyBee:::getBv(colony, caste = "queen")
-SIMplyBee:::getQueenBv(colony)
-
-SIMplyBee:::getBv(colony, caste = "fathers")
-SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2)
-SIMplyBee:::getBv(colony, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersBv(colony)
-SIMplyBee:::getFathersBv(colony, nInd = 2)
-
-SIMplyBee:::getBv(colony, caste = "virginQueens")
-SIMplyBee:::getVirginQueensBv(colony)
-
-SIMplyBee:::getBv(colony, caste = "workers")
-SIMplyBee:::getWorkersBv(colony)
-
-SIMplyBee:::getBv(colony, caste = "drones")
-SIMplyBee:::getDronesBv(colony)
-
-# Get breeding values for all individuals
-SIMplyBee:::getBv(colony, caste = "all")
-# Get all breeding values in a single matrix
-SIMplyBee:::getBv(colony, caste = "all", collapse = TRUE)
-
-# Input is a MultiColony
-SIMplyBee:::getBv(apiary, caste = "queen")
-SIMplyBee:::getQueenBv(apiary)
-
-SIMplyBee:::getBv(apiary, caste = "fathers")
-SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2)
-SIMplyBee:::getBv(apiary, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersBv(apiary)
-SIMplyBee:::getFathersBv(apiary, nInd = 2)
-
-SIMplyBee:::getBv(apiary, caste = "virginQueens")
-SIMplyBee:::getVirginQueensBv(apiary)
-
-SIMplyBee:::getBv(apiary, caste = "workers")
-SIMplyBee:::getWorkersBv(apiary)
-
-SIMplyBee:::getBv(apiary, caste = "drones")
-SIMplyBee:::getDronesBv(apiary)
-
-# Get the breeding values of all individuals either by colony or in a single matrix
-SIMplyBee:::getBv(apiary, caste = "all")
-SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
-}
 \seealso{
 \code{\link{bv}} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}

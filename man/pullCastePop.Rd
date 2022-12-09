@@ -96,29 +96,12 @@ apiary <- addVirginQueens(x = apiary, nInd = 3)
 # We can't pull the queen and leave the colony queenless
 pullCastePop(colony, caste = "virginQueens")
 pullCastePop(colony, caste = "virginQueens", nInd = 2)
+# Or use aliases
 pullVirginQueens(colony)
 pullVirginQueens(colony, nInd = 2)
+# Same aliases exist for all the castes!!!
 
-pullCastePop(colony, caste = "workers")
-pullCastePop(colony, caste = "workers", nInd = 5)
-pullWorkers(colony)
-pullWorkers(colony, nInd = 5)
-
-pullCastePop(colony, caste = "drones")
-pullCastePop(colony, caste = "drones", nInd = 5)
-pullDrones(colony)
-pullDrones(colony, nInd = 5)
-
-# pullCastePop on MultiColony class
-pullCastePop(apiary, caste = "queen")
-pullQueen(apiary)
-nQueens(apiary)
-nQueens(pullQueen(apiary)$remnant)
-
-pullCastePop(apiary, caste = "virginQueens")
-pullVirginQueens(apiary)
-nVirginQueens(apiary)
-
+# pullCastePop on MultiColony class - same behaviour as for the Colony!
 pullCastePop(apiary, caste = "workers")
 # Or pull out unequal number of workers from colonies
 pullCastePop(apiary, caste = "workers", nInd = c(10, 20))
@@ -126,12 +109,6 @@ pullWorkers(apiary)
 nWorkers(apiary)
 nWorkers(pullWorkers(apiary)$remnant)
 
-pullCastePop(apiary, caste = "drones")
-# Or pull out unequal number of drones from colonies
-pullCastePop(apiary, caste = "drones", nInd = c(5, 3))
-pullDrones(apiary)
-nDrones(apiary)
-nDrones(pullDrones(apiary)$remnant)
 
 # Merge all the pulled populations into a single population
 pullCastePop(apiary, caste = "queen", collapse = TRUE)

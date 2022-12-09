@@ -4,7 +4,7 @@
 \name{SIMplyBee-package}
 \alias{SIMplyBee}
 \alias{SIMplyBee-package}
-\title{SIMplyBee: AlphaSimR Extension for Simulating Honeybee Populations and Breeding Programmes}
+\title{SIMplyBee: 'AlphaSimR' Extension for Simulating Honeybee Populations and Breeding Programmes}
 \description{
 See the introductory vignette on using this package by running:
 \code{vignette("Honeybee_biology", package="SIMplyBee")}

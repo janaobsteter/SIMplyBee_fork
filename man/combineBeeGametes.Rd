@@ -18,6 +18,8 @@ haploid) individual(s)}
 }
 \value{
 \code{\link{Pop-class}} with diploid individuals
+
+# Not exporting this function, since its just a helper
 }
 \description{
 Level 1 function that produces diploid offspring from a mated queen.
@@ -25,22 +27,4 @@ Level 1 function that produces diploid offspring from a mated queen.
   functionality to make this cross, but since drones are double haploids we
   get the desired outcome. This is an utility function, and you most likely
   want to use the \code{\link{cross}} functions.
-}
-\examples{
-founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$setTrackRec(TRUE)
-SP$setTrackPed(isTrackPed = TRUE)
-basePop <- createVirginQueens(founderGenomes)
-
-queen <- basePop[1]
-drones <- createDrones(x = basePop[2], nInd = 5)
-workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
-workers@id
-workers@mother
-workers@father
-SP$pedigree
-SP$recHist
-SP$recHist[[11]][[1]][1]
-SP$recHist[[11]][[1]][2]
 }

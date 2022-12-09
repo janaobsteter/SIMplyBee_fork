@@ -97,15 +97,6 @@ isProductive(colony)
 (apiary <- buildUp(apiary))
 isProductive(apiary)
 
-# Specifying own number
-colony <- buildUp(colony, nWorkers = 100)
-# Build up a MultiColony class
-apiary <- buildUp(apiary, nWorkers = 250)
-# Build up with different numbers
-apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
-nWorkers(apiary)
-nDrones(apiary)
-
 # The user can also specify a function that will give a number
 colony <- removeWorkers(colony) # Remove workers to start from fresh
 colony <- removeDrones(colony) # Remove drones to start from fresh
@@ -116,11 +107,14 @@ buildUp(colony, nWorkers = nWorkersPoisson, nDrones = nDronesPoisson)
 SP$nWorkers <- nWorkersPoisson
 SP$nDrones <- nDronesPoisson
 
-# Same for MultiColony class
-apiary <- removeWorkers(apiary)
-apiary <- removeDrones(apiary)
-buildUp(apiary)[[1]]
-buildUp(apiary)[[1]]
+# Specifying own number
+colony <- buildUp(colony, nWorkers = 100)
+# Build up a MultiColony class
+apiary <- buildUp(apiary, nWorkers = 250)
+# Build up with different numbers
+apiary <- buildUp(apiary, nWorkers = c(1000, 2000), nDrones = c(100, 150))
+nWorkers(apiary)
+nDrones(apiary)
 
 # Queen's counters
 getMisc(getQueen(buildUp(colony)))

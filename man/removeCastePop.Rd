@@ -76,7 +76,7 @@ Level 2 function that removes a proportion of virgin queens of
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -91,40 +91,19 @@ apiary <- createMultiColony(basePop[4:5], n = 2)
 apiary <- cross(apiary, drones = droneGroups[3:4])
 apiary <- buildUp(apiary)
 
-# Add virgin queens
-colony <- addVirginQueens(colony, nInd = 10)
-apiary <- addVirginQueens(apiary, nInd = 10)
-
-# Remove virgin queens
-nVirginQueens(colony)
-colony <- removeCastePop(colony, caste = "virginQueens", p = 0.5)
-# or alias: removeVirginQueens(colony, p = 0.5)
-nVirginQueens(colony)
-colony <- removeCastePop(colony, caste = "virginQueens")
-# or alias: colony <- removeVirginQueens(colony)
-nVirginQueens(colony)
+# Remove workers
 nWorkers(colony)
-nDrones(colony)
 colony <- removeCastePop(colony, caste = "workers", p = 0.3)
-# or alias: colony <- removeWorkers(colony, p = 0.3)
-colony <- removeCastePop(colony, caste = "drones", p = 0.3)
-# or alias: colony <- removeDrones(colony, p = 0.3)
+# or alias:
+colony <- removeWorkers(colony, p = 0.3)
+# Same aliases exist for all the castes!!
 
-nVirginQueens(apiary)
 nWorkers(apiary)
-nDrones(apiary)
-apiary <- removeCastePop(apiary, caste = "virginQueens", p = 0.3)
-# or alias: removeVirginQueens(apiary, p = 0.3)
-nVirginQueens(apiary)
 apiary <- removeCastePop(apiary, caste = "workers", p = 0.3)
-# or alias: removeWorkers(apiary, p = 0.3)
 nWorkers(apiary)
-#' apiary <- removeCastePop(apiary, caste = "drones", p = 0.3)
-# or alias: removeDrones(apiary, p = 0.3)
-nDrones(apiary)
+
 # Remove different proportions
 apiary <- buildUp(apiary)
-nWorkers(apiary); nDrones(apiary)
+nWorkers(apiary)
 nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
-nDrones(removeDrones(apiary, p = c(0.1, 0.9)))
 }

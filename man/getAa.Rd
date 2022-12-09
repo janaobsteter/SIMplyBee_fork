@@ -43,6 +43,8 @@ vector of epistasis values when \code{x} is
   \code{\link{Colony-class}} and list of vectors of epistasis values when
   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
   is \code{\link{MultiColony-class}}
+
+# Not exporting this function, since the theory behind it is not fully developed
 }
 \description{
 Level 0 function that returns epistasis values of
@@ -61,78 +63,6 @@ Level 0 function that returns epistasis values of
 \item \code{getDronesAa()}: Access epistasis values of drones
 
 }}
-\examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
-basePop <- createVirginQueens(founderGenomes)
-
-drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-
-# Create a Colony and a MultiColony class
-colony <- createColony(x = basePop[2])
-colony <- cross(colony, drones = droneGroups[[1]])
-colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-colony <- addVirginQueens(x = colony, nInd = 5)
-
-apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
-
-# Input is a population
-SIMplyBee:::getAa(x = getQueen(colony))
-queens <- getQueen(apiary, collapse = TRUE)
-SIMplyBee:::getAa(queens)
-
-# Input is a colony
-SIMplyBee:::getAa(colony, caste = "queen")
-SIMplyBee:::getQueenAa(colony)
-
-SIMplyBee:::getAa(colony, caste = "fathers")
-SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2)
-SIMplyBee:::getAa(colony, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersAa(colony)
-SIMplyBee:::getFathersAa(colony, nInd = 2)
-
-SIMplyBee:::getAa(colony, caste = "virginQueens")
-SIMplyBee:::getVirginQueensAa(colony)
-
-SIMplyBee:::getAa(colony, caste = "workers")
-SIMplyBee:::getWorkersAa(colony)
-
-SIMplyBee:::getAa(colony, caste = "drones")
-SIMplyBee:::getDronesAa(colony)
-
-# Get epistatic values for all individuals
-SIMplyBee:::getAa(colony, caste = "all")
-# Get all epistatic values in a single matrix
-SIMplyBee:::getAa(colony, caste = "all", collapse = TRUE)
-
-# Input is a MultiColony
-SIMplyBee:::getAa(apiary, caste = "queen")
-SIMplyBee:::getQueenAa(apiary)
-
-SIMplyBee:::getAa(apiary, caste = "fathers")
-SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2)
-SIMplyBee:::getAa(apiary, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersAa(apiary)
-SIMplyBee:::getFathersAa(apiary, nInd = 2)
-
-SIMplyBee:::getAa(apiary, caste = "virginQueens")
-SIMplyBee:::getVirginQueensAa(apiary)
-
-SIMplyBee:::getAa(apiary, caste = "workers")
-SIMplyBee:::getWorkersAa(apiary)
-
-SIMplyBee:::getAa(apiary, caste = "drones")
-SIMplyBee:::getDronesAa(apiary)
-
-# Get the epistatic values of all individuals either by colony or in a single matrix
-SIMplyBee:::getAa(apiary, caste = "all")
-SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
-}
 \seealso{
 \code{\link{dd}} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
