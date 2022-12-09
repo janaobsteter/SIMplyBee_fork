@@ -373,3 +373,43 @@ test_that("pullDroneGroupsFromDCA", {
   expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nDrones = 20))
 })
 
+test_that("combineBeeGametes", {
+   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes)
+   SP$setTrackRec(TRUE)
+   SP$setTrackPed(isTrackPed = TRUE)
+   basePop <- createVirginQueens(founderGenomes)
+
+   queen <- basePop[1]
+   drones <- createDrones(x = basePop[2], nInd = 5)
+   workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
+   workers@id
+   workers@mother
+   workers@father
+   SP$pedigree
+   SP$recHist
+   SP$recHist[[11]][[1]][1]
+   SP$recHist[[11]][[1]][2]
+})
+
+test_that("combineBeeGametesHaploidDiploid", {
+   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes)
+   SP$setTrackRec(TRUE)
+   SP$setTrackPed(isTrackPed = TRUE)
+   basePop <- createVirginQueens(founderGenomes)
+
+   queen <- basePop[1]
+   drones <- reduceGenome(
+     pop = basePop[2], nProgeny = 5, keepParents = FALSE,
+     simRecomb = TRUE
+   )
+   workers <- SIMplyBee:::combineBeeGametesHaploDiploid(queen, drones, nProgeny = 4)
+   workers@id
+   workers@mother
+   workers@father
+   SP$pedigree
+   SP$recHist
+   SP$recHist[[11]][[1]][1]
+   SP$recHist[[11]][[1]][2]
+})
