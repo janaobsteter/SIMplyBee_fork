@@ -582,6 +582,7 @@ createVirginQueens <- function(x, nInd = NULL,
 #'
 #' @return \code{\link{Pop-class}} with diploid individuals
 #'
+#' # Not exporting this function, since its just a helper
 combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)

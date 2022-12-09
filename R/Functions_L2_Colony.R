@@ -494,7 +494,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       n <- nWorkers - nWorkers(x)
     }
 
-    if (n > 0) {
+    if (0 < n) {
       x <- addWorkers(
         x = x, nInd = n, new = new,
         exact = exact, simParamBee = simParamBee)
@@ -519,7 +519,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       n <- nDrones - nDrones(x)
     }
 
-    if (n > 0) {
+    if (0 < n) {
       x <- addDrones(
         x = x, nInd = n, new = new,
         simParamBee = simParamBee

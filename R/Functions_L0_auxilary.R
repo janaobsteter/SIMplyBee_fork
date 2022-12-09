@@ -2515,7 +2515,7 @@ getDronesCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
 #' @param x integer or matrix, output from \code{\link{getCsdGeno}}
 #'
 #' @return logical
-#'
+#' # Not exporting this function, since its just a helper
 isGenoHeterozygous <- function(x) {
   if (!is.matrix(x)) {
     stop("Argument x must be a matrix class object!")
@@ -5615,6 +5615,8 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #'   and list of vectors of breeding values when \code{x} is
 #'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
+#'
+#' # Not exporting this function, since the theory behind it is not fully developed
 getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -5780,6 +5782,7 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
+#' # Not exporting this function, since the theory behind it is not fully developed
 getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -5945,6 +5948,7 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
 #'
+#' # Not exporting this function, since the theory behind it is not fully developed
 getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
