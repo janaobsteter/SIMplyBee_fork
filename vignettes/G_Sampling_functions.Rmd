@@ -9,7 +9,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 80
-    canonical: yes
+    canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -129,4 +129,3 @@ nWorkers(tmp$swarm)
 ```
 
 We see that each colony swarmed with a different percentage between 0.5 and 0.7.
-

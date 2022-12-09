@@ -214,4 +214,3 @@ apiary2 <- cross(apiary2, drones = droneGroups)
 
 To learn more about the `nFathersPoisson()` function and other similar
 functions, read the Sampliong functions vignette.
-

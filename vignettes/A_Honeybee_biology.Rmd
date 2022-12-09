@@ -9,7 +9,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 80
-    canonical: yes
+    canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -97,7 +97,10 @@ sites, `simulateHoneybeeGenomes()`, also takes a number of genomic parameters:
 effective population size, ploidy, length of chromosomes in base pairs, genetic
 length of a chromosome in Morgans, mutation rate, and recombination rate. The
 default values for these numbers follow published references (Wallberg et al.,
-2014). You can read more about these in the help page:
+2014). While you can change these parameters, we don't advise doing this because
+such demographic models, and their parameters, are estimated jointly, so we
+should not be changing them independently. You can read more about these
+parameters in the help page:
 
 ```{r deeper looking to the arguments}
 ??simulateHoneybeeGenomes
@@ -449,3 +452,4 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
+

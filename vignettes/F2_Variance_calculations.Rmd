@@ -9,7 +9,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 80
-    canonical: yes
+    canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+# Introduction WORK IN PROGRESS
 
 This document develops theory for the variance of genetic and phenotypic values
 between colonies with the aim to understand how to fine tune a SIMplyBee

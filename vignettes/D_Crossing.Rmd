@@ -1,5 +1,5 @@
 ---
-title: "SIMplyBee - Crossing"
+title: "Crossing"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,7 +9,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 80
-    canonical: yes
+    canonical: true
 ---
 
 ```{r setup, include = FALSE}

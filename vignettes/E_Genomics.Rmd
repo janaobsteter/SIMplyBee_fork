@@ -9,7 +9,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 80
-    canonical: yes
+    canonical: true
 ---
 
 ```{r setup, include = FALSE}
@@ -398,6 +398,8 @@ Queen and drones:
 ```{r  Queen vs drones}
 hist(GRMs$indiv[dI, qI], xlim = r)
 ```
+
+# References
 
 Druet and Legarra (2020) Theoretical and empirical comparisons of expected and
 realized relationships for the X-chromosome. Genetics Selection Evolution,
