@@ -11,6 +11,7 @@ isGenoHeterozygous(x)
 }
 \value{
 logical
+# Not exporting this function, since its just a helper
 }
 \description{
 Level 0 function that returns heterozygote status for a

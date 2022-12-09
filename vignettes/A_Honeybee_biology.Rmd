@@ -1,5 +1,5 @@
 ---
-title: "SIMplyBee - Honeybee biology"
+title: "Honeybee biology"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -150,8 +150,8 @@ with the basic functionality!
 show(SP)
 ```
 
-```{r initialization_diagram, echo=FALSE, out.width='100%'}
-knitr::include_graphics("../man/figures/founderpop_diagram.pdf")
+```{r initialization_diagram, echo=FALSE, out.width='100%', fig.cap = "Simulation initiation."}
+knitr::include_graphics("../man/figures/founderpop.png")
 ```
 
 From the simulated founder genomes, we first need to create virgin queens

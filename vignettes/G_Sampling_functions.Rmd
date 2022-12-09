@@ -1,9 +1,9 @@
 ---
-title: "SIMplyBee - Sampling functions"
+title: "Sampling functions"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SamplingFunctions}
+  %\VignetteIndexEntry{Sampling functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:

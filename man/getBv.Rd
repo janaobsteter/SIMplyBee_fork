@@ -43,6 +43,8 @@ vector of breeding values when \code{x} is \code{\link{Colony-class}}
   and list of vectors of breeding values when \code{x} is
   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
   \code{\link{MultiColony-class}}
+
+# Not exporting this function, since the theory behind it is not fully developed
 }
 \description{
 Level 0 function that returns breeding values of individuals in

@@ -18,6 +18,8 @@ haploid) individual(s)}
 }
 \value{
 \code{\link{Pop-class}} with diploid individuals
+
+# Not exporting this function, since its just a helper
 }
 \description{
 Level 1 function that produces diploid offspring from a mated queen.
