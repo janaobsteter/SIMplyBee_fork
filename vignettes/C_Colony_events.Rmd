@@ -283,11 +283,11 @@ apiary <- buildUp(apiary)
 
 # Supersedure
 
-Supersedure is a replacement of a queen by her daughters without interference of
-the beekeeper. Supersedure is a natural way of re-queening a colony without
-swarming. There are many reasons for supersedure: poor physical condition of a
-queen, old age, diseases, depleted spermatheca, poorly bread queen, reduced
-pheromone output and many others (Hamdan, 2010).
+Supersedure is a replacement of the queen by one of her daughters without
+interference of the beekeeper. Supersedure is a natural way of re-queening a
+colony without swarming. There are many reasons for supersedure: poor physical
+condition of a queen, old age, diseases, depleted spermatheca, poorly bread
+queen, reduced pheromone output and many others (Hamdan, 2010).
 
 Function `supersede()` removes the old queen and triggers the creation of new
 virgin queens from the brood (Figure 3). The function returns a single `Colony`
