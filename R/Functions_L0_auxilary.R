@@ -1839,11 +1839,10 @@ isProductive <- function(x) {
 #'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
 #'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
 #'
-#' @examples
-#' \dontrun{founderGenomes <- simulateHoneyBeeGenomes(nCar = 2,
-#'                                                     nChr = 1,
-#'                                                     nSegSites = 2,
-#'                                                     Ne = 10)}
+#' @seealso Due to the computational time and resources required to run this function,
+#'   we do not include an example here, but we demonstrate
+#'   its use in the Honeybee biology vignette.
+#'
 #' @export
 simulateHoneyBeeGenomes <- function(nMelN = 0L,
                                     nMelS = 0L,
