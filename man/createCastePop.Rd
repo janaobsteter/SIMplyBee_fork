@@ -97,20 +97,22 @@ Level 1 function that creates the specified number of caste
 
 }}
 \examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
+founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
+
 # Create virgin queens on a MapPop
 basePop <- createCastePop(founderGenomes, caste = "virginQueens")
-# Or alias function: createVirginQueens(founderGenomes)
+# Or alias
+createVirginQueens(founderGenomes)
+# Same aliases exist for all the castes!!!
 
 # Create drones on a Pop
-drones <- createCastePop(x = basePop[1], caste = "drones", nInd = 1000)
+drones <- createDrones(x = basePop[1],  nInd = 200)
 # Or create unequal number of drones from multiple virgin queens
-# drones <- createCastePop(basePop[1:2], caste = "drones", nInd = c(1000, 2000))
-# Or alias: createDrones(x = basePop[1], nInd = 100)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+drones <- createDrones(basePop[1:2], nInd = c(100, 200))
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = nFathersPoisson)
 
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
@@ -122,6 +124,7 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 colony@virginQueens <- createVirginQueens(colony)
 colony@workers <- createWorkers(colony)$workers
 colony@drones <- createDrones(colony)
+# Usually, you would use functions buildUp() or addCastePop()
 
 # These populations hold individual information
 # Example on the virgin queens (same holds for all castes!)
@@ -148,8 +151,6 @@ createVirginQueens(apiary, nInd = nVirginQueensPoisson)
 
 # Store a function or a value in the SP object
 SP$nVirginQueens <- nVirginQueensPoisson
-SP$nWorkers <- nWorkersPoisson
-SP$nDrones <- nDronesPoisson
 createVirginQueens(colony)
 createVirginQueens(colony)
 createVirginQueens(apiary)

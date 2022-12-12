@@ -32,14 +32,3 @@ Edits the csd locus in an entire population of individuals to
   recalculated to reflect the any changes due to editing, but other slots
   remain the same.
 }
-\examples{
-founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
-nrow(getCsdAlleles(basePop, unique = TRUE))
-all(isCsdHeterozygous(basePop))
-
-basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
-nrow(getCsdAlleles(basePopEdited, unique = TRUE))
-all(isCsdHeterozygous(basePopEdited))
-}

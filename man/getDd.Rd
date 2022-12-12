@@ -43,6 +43,8 @@ vector of dominance values when \code{x} is
   \code{\link{Colony-class}} and list of vectors of dominance values when
   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
   is \code{\link{MultiColony-class}}
+
+# Not exporting this function, since the theory behind it is not fully developed
 }
 \description{
 Level 0 function that returns dominance values of
@@ -61,78 +63,6 @@ Level 0 function that returns dominance values of
 \item \code{getDronesDd()}: Access dominance values of drones
 
 }}
-\examples{
-founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
-basePop <- createVirginQueens(founderGenomes)
-
-drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-
-# Create a Colony and a MultiColony class
-colony <- createColony(x = basePop[2])
-colony <- cross(colony, drones = droneGroups[[1]])
-colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-colony <- addVirginQueens(x = colony, nInd = 5)
-
-apiary <- createMultiColony(basePop[3:4], n = 2)
-apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
-
-# Input is a population
-SIMplyBee:::getDd(x = getQueen(colony))
-queens <- getQueen(apiary, collapse = TRUE)
-SIMplyBee:::getDd(queens)
-
-# Input is a colony
-SIMplyBee:::getDd(colony, caste = "queen")
-SIMplyBee:::getQueenDd(colony)
-
-SIMplyBee:::getDd(colony, caste = "fathers")
-SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2)
-SIMplyBee:::getDd(colony, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersDd(colony)
-SIMplyBee:::getFathersDd(colony, nInd = 2)
-
-SIMplyBee:::getDd(colony, caste = "virginQueens")
-SIMplyBee:::getVirginQueensDd(colony)
-
-SIMplyBee:::getDd(colony, caste = "workers")
-SIMplyBee:::getWorkersDd(colony)
-
-SIMplyBee:::getDd(colony, caste = "drones")
-SIMplyBee:::getDronesDd(colony)
-
-# Get dominance valued for all individuals
-SIMplyBee:::getDd(colony, caste = "all")
-# Get all dominance values in a single matrix
-SIMplyBee:::getDd(colony, caste = "all", collapse = TRUE)
-
-# Input is a MultiColony
-SIMplyBee:::getDd(apiary, caste = "queen")
-SIMplyBee:::getQueenDd(apiary)
-
-SIMplyBee:::getDd(apiary, caste = "fathers")
-SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2)
-SIMplyBee:::getDd(apiary, caste = "fathers", nInd = 2) # random sample!
-SIMplyBee:::getFathersDd(apiary)
-SIMplyBee:::getFathersDd(apiary, nInd = 2)
-
-SIMplyBee:::getDd(apiary, caste = "virginQueens")
-SIMplyBee:::getVirginQueensDd(apiary)
-
-SIMplyBee:::getDd(apiary, caste = "workers")
-SIMplyBee:::getWorkersDd(apiary)
-
-SIMplyBee:::getDd(apiary, caste = "drones")
-SIMplyBee:::getDronesDd(apiary)
-
-# Get the dominance values of all individuals either by colony or in a single matrix
-SIMplyBee:::getDd(apiary, caste = "all")
-SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
-}
 \seealso{
 \code{\link{dd}} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}

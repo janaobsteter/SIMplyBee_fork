@@ -25,7 +25,7 @@ Level 2 function that resets the slots swarm, split,
   new events in a new year.
 }
 \examples{
-founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -44,8 +44,8 @@ isProductive(colony)
 resetEvents(colony)
 
 apiary <- buildUp(apiary, nWorkers = 100)
-isProductive(apiary[[1]])
-resetEvents(apiary)[[1]]
+isProductive(apiary)
+resetEvents(apiary)
 
 # Split - this sets Split to TRUE
 tmp <- split(colony)
@@ -56,14 +56,6 @@ resetEvents(split)
 hasSplit(remnant)
 resetEvents(remnant)
 
-tmp <- split(apiary)
-(splits <- tmp$split)
-hasSplit(splits[[1]])
-resetEvents(splits)[[1]]
-(remnants <- tmp$remnant)
-hasSplit(remnants[[1]])
-resetEvents(remnants)[[1]]
-
 # Swarm - this sets Swarm to TRUE
 tmp <- swarm(colony)
 (swarm <- tmp$swarm)
@@ -73,22 +65,10 @@ resetEvents(swarm)
 hasSwarmed(remnant)
 resetEvents(remnant)
 
-tmp <- swarm(apiary)
-(swarms <- tmp$swarm)
-hasSwarmed(swarms[[1]])
-resetEvents(swarms)[[1]]
-(remnants <- tmp$remnant)
-hasSwarmed(remnants[[1]])
-resetEvents(remnants)[[1]]
-
 # Supersede - this sets Supersede to TRUE
 (tmp <- supersede(colony))
 hasSuperseded(tmp)
 resetEvents(tmp)
-
-(tmp <- supersede(apiary))
-hasSuperseded(tmp[[1]])
-resetEvents(tmp)[[1]]
 
 # Collapse - this sets Collapse to TRUE
 (tmp <- collapse(colony))
@@ -96,8 +76,12 @@ hasCollapsed(tmp)
 resetEvents(tmp)
 resetEvents(tmp, collapse = TRUE)
 
-(tmp <- collapse(apiary))
-hasCollapsed(tmp[[1]])
-resetEvents(tmp)[[1]]
-resetEvents(tmp, collapse = TRUE)[[1]]
+# Same behaviour for MultiColony (example for the split)
+tmp <- split(apiary)
+(splits <- tmp$split)
+hasSplit(splits[[1]])
+resetEvents(splits)[[1]]
+(remnants <- tmp$remnant)
+hasSplit(remnants[[1]])
+resetEvents(remnants)[[1]]
 }

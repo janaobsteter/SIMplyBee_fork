@@ -39,75 +39,63 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$setTrackRec(TRUE)
+SP$setTrackPed(isTrackPed = TRUE)
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-apiary <- createMultiColony(basePop[2:3], n = 2)
-apiary <- cross(x = apiary, drones = droneGroups[c(2, 3)])
-apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-apiary <- addVirginQueens(x = apiary, nInd = 5)
+droneGroups <- pullDroneGroupsFromDCA(drones, n = 1, nDrones = nFathersPoisson)
+colony <- createColony(basePop[2])
+colony <- cross(x = colony, drones = droneGroups[[1]])
+colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 
-geno <- getSegSiteGeno(apiary[[1]], collapse = TRUE)
-genoMeanW <- apply(X = getWorkersSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-genoMeanD <- apply(X = getDronesSegSiteGeno(apiary[[1]]), MARGIN = 2, FUN = mean)
-
-geno <- rbind(geno, genoMeanW, genoMeanD)
-n <- length(rownames(geno))
-rownames(geno)[c(n - 1, n)] <- c("mw", "md")
-
-sex <- getCasteSex(x = apiary[[1]], collapse = TRUE)
-sex <- c(sex, "F", "M")
+geno <- getSegSiteGeno(colony, collapse = TRUE)
+sex <- getCasteSex(x = colony, collapse = TRUE)
 
 GRM <- calcBeeGRMIbs(x = geno, sex = sex)
+# You can visualise this matrix with the function image() from the package 'Matrix'
 
-# library("Matrix"); image(as(GRM, "Matrix"))
-
+#Look at the diagonal at the relationship matrix
 x <- diag(GRM)
 hist(x)
 summary(x)
 
+#Look at the off-diagonal at the relationship matrix
 x <- GRM[lower.tri(x = GRM, diag = FALSE)]
 hist(x)
 summary(x)
 
-ids <- getCasteId(apiary[[1]])
+# Compare relationship between castes
+ids <- getCasteId(colony)
 idQueen <- ids$queen
-idFathers <- ids$fathers
 idWorkers <- ids$workers
 idDrones <- ids$drones
-idVirginQueens <- ids$virginQueens
-mw <- "mw"
-md <- "md"
 
 # Queen vs others
-GRM[idQueen, idFathers]
 GRM[idQueen, idWorkers]
 GRM[idQueen, idDrones]
-GRM[idQueen, idVirginQueens]
-GRM[idQueen, mw]
-GRM[idQueen, md]
 
-# Fathers vs others
-GRM[idFathers, idFathers]
-GRM[idFathers, idWorkers]
-GRM[idFathers, idDrones]
-GRM[idFathers, idVirginQueens]
-GRM[idFathers, mw]
-GRM[idFathers, md]
-
-# Workers vs others
+# Workers vs worker
 GRM[idWorkers, idWorkers]
+
+# Workers vs drones
 GRM[idWorkers, idDrones]
-GRM[idWorkers, idVirginQueens]
-GRM[idWorkers, mw]
-GRM[idWorkers, md]
 
 # Calculating allele frequencies ourselves (say, to "shift" base population)
 aF <- calcBeeAlleleFreq(x = geno, sex = sex)
 hist(aF)
 GRM2 <- calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF)
 stopifnot(identical(GRM2, GRM))
+
+# You can also create relationships with pooled genomes
+pooledGenoW <- getPooledGeno(getWorkersSegSiteGeno(colony),
+                             type = "mean",
+                             sex = getCasteSex(colony, caste="workers"))
+queenGeno <- getQueenSegSiteGeno(colony)
+# Compute relationship between pooled workers genotype and the queen
+calcBeeGRMIbs(x = rbind(queenGeno, pooledGenoW), sex = c("F","F"))
+# You can now compare how this compare to relationships between the queen
+# individual workers!
 }
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of
