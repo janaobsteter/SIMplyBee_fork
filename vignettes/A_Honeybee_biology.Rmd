@@ -95,12 +95,12 @@ save(founderGenomes2, file="FounderGenomes2_3chr.RData")
 Besides specifying the number of individuals, chromosomes, and segregating
 sites, `simulateHoneybeeGenomes()`, also takes a number of genomic parameters:
 effective population size, ploidy, length of chromosomes in base pairs, genetic
-length of a chromosome in Morgans, mutation rate, and recombination rate. The
-default values for these numbers follow published references (Wallberg et al.,
-2014). While you can change these parameters, we don't advise doing this because
-such demographic models, and their parameters, are estimated jointly, so we
-should not be changing them independently. You can read more about these
-parameters in the help page:
+length of a chromosome in Morgans, mutation rate, recombination rate, and time
+of population splits. The default values for these numbers follow published
+references (Wallberg et al., 2014). While you can change these parameters, we
+don't advise doing this because such demographic models, and their parameters,
+are estimated jointly, so we should not be changing them independently. You
+can read more about these parameters in the help page:
 
 ```{r deeper looking to the arguments}
 ??simulateHoneybeeGenomes
