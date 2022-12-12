@@ -7,10 +7,10 @@ articles:
   C_Colony_events: C_Colony_events.html
   D_Crossing: D_Crossing.html
   E_Genomics: E_Genomics.html
-  FAQ: FAQ.html
   F_Quantitative_Genetics: F_Quantitative_Genetics.html
   G_Sampling_functions: G_Sampling_functions.html
-last_built: 2022-12-07T02:09Z
+  Z_FAQ: Z_FAQ.html
+last_built: 2022-12-12T20:27Z
 urls:
   reference: https://www.simplybee.info/reference
   article: https://www.simplybee.info/articles

@@ -221,20 +221,11 @@ with phenotypes of all the individuals</p></dd>
 <span class="r-in"><span><span class="fu">getFathersPheno</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "fathers", nInd = nInd, collapse = collapse):</span> object 'colony' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(colony, caste = "virginQueens"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueensPheno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "virginQueens", nInd = nInd, collapse = collapse):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(colony, caste = "workers"):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="fu">getWorkersPheno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "workers", nInd = nInd, collapse = collapse):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(colony, caste = "drones"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getDronesPheno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "drones", nInd = nInd, collapse = collapse):</span> object 'colony' not found</span>
+<span class="r-in"><span><span class="co"># Same aliases exist for all the castes!!!</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get phenotypes for all individuals</span></span></span>
 <span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
@@ -243,37 +234,11 @@ with phenotypes of all the individuals</p></dd>
 <span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"all"</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(colony, caste = "all", collapse = TRUE):</span> object 'colony' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Input is a MultiColony</span></span></span>
+<span class="r-in"><span><span class="co"># Input is a MultiColony - same behaviour as for the Colony!</span></span></span>
 <span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "queen"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="fu">getQueenPheno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "queen", collapse = collapse):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"fathers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "fathers"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"fathers"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "fathers", nInd = 2):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"fathers"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># random sample!</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "fathers", nInd = 2):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathersPheno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "fathers", nInd = nInd, collapse = collapse):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathersPheno</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "fathers", nInd = nInd, collapse = collapse):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "virginQueens"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueensPheno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "virginQueens", nInd = nInd, collapse = collapse):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "workers"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getWorkersPheno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "workers", nInd = nInd, collapse = collapse):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(apiary, caste = "drones"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getDronesPheno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getPheno(x, caste = "drones", nInd = nInd, collapse = collapse):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get the phenotypes of all individuals either by colony or in a single matrix</span></span></span>
 <span class="r-in"><span><span class="fu">getPheno</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>

@@ -137,40 +137,6 @@
   that individuals have the same ploidy. Hence, we don't use this function.</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">3</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackRec</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">queen</span> <span class="op">&lt;-</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">reduceGenome</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  pop <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, nProgeny <span class="op">=</span> <span class="fl">5</span>, keepParents <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  simRecomb <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get("SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">workers</span> <span class="op">&lt;-</span> <span class="fu">SIMplyBee</span><span class="fu">:::</span><span class="fu">combineBeeGametesHaploDiploid</span><span class="op">(</span><span class="va">queen</span>, <span class="va">drones</span>, nProgeny <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">workers</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'workers' not found</span>
-<span class="r-in"><span><span class="va">workers</span><span class="op">@</span><span class="va">mother</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'workers' not found</span>
-<span class="r-in"><span><span class="va">workers</span><span class="op">@</span><span class="va">father</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'workers' not found</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span><span class="op">[[</span><span class="fl">11</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SP$recHist[[11]]:</span> subscript out of bounds</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span><span class="op">[[</span><span class="fl">11</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SP$recHist[[11]]:</span> subscript out of bounds</span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

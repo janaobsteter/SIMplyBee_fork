@@ -227,8 +227,6 @@ with haplotypes of all the individuals</p></dd>
 <span class="r-in"><span><span class="co"># Use getCsdGeno on a Population</span></span></span>
 <span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="fu"><a href="getCastePop.html">getQueen</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="fu"><a href="getCastePop.html">getFathers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="fu"><a href="getCastePop.html">getWorkers</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
@@ -246,30 +244,13 @@ with haplotypes of all the individuals</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">getQueenCsdGeno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"fathers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getFathersCsdGeno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueensCsdGeno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">getWorkersCsdGeno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getDronesCsdGeno</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
+<span class="r-in"><span><span class="co"># Same aliases exist for all the castes!</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Compare the use of the dronesHaploid parameter</span></span></span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">4</span>, dronesHaploid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">4</span>, dronesHaploid <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Use getCsdGeno on a MultiColony</span></span></span>
+<span class="r-in"><span><span class="co"># Use getCsdGeno on a MultiColony - same behaviour as for the Colony!</span></span></span>
 <span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">getCsdGeno</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
