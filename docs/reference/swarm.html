@@ -49,25 +49,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/2_Colony_events.html">Colony Events</a>
+      <a href="../articles/C_Colony_events.html">Colony Events</a>
     </li>
     <li>
-      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+      <a href="../articles/B_Multiple_colonies.html">Multiple colonies</a>
     </li>
     <li>
-      <a href="../articles/4_Genomics.html">Genomics</a>
+      <a href="../articles/D_Crossing.html">Crossing</a>
     </li>
     <li>
-      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+      <a href="../articles/E_Genomics.html">Genomics</a>
     </li>
     <li>
-      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+      <a href="../articles/G_Sampling_functions.html">Sampling functions</a>
     </li>
     <li>
-      <a href="../articles/7_FAQs.html">FAQs</a>
+      <a href="../articles/F_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/Z_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -153,7 +156,7 @@ outputs have the swarm event set to <code>TRUE</code></p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">10</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">8</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
@@ -187,10 +190,10 @@ outputs have the swarm event set to <code>TRUE</code></p>
 <span class="r-in"><span><span class="co"># Swarm all colonies in the apiary with p = 0.6 (60% of workers leave)</span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">swarm</span><span class="op">(</span><span class="va">apiary</span>, p <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">tmp</span><span class="op">$</span><span class="va">swarm</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tmp' not found</span>
-<span class="r-in"><span><span class="va">tmp</span><span class="op">$</span><span class="va">remnant</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tmp' not found</span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">swarm</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'tmp' not found</span>
+<span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">remnant</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'tmp' not found</span>
 <span class="r-in"><span><span class="co"># Swarm with different proportions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>

@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIMplyBee - Quantitative genetics • SIMplyBee</title>
+<title>Quantitative genetics • SIMplyBee</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="SIMplyBee - Quantitative genetics">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Quantitative genetics">
 <meta property="og:description" content="SIMplyBee">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -62,25 +62,28 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/2_Colony_events.html">Colony Events</a>
+      <a href="../articles/C_Colony_events.html">Colony Events</a>
     </li>
     <li>
-      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+      <a href="../articles/B_Multiple_colonies.html">Multiple colonies</a>
     </li>
     <li>
-      <a href="../articles/4_Genomics.html">Genomics</a>
+      <a href="../articles/D_Crossing.html">Crossing</a>
     </li>
     <li>
-      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+      <a href="../articles/E_Genomics.html">Genomics</a>
     </li>
     <li>
-      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+      <a href="../articles/G_Sampling_functions.html">Sampling functions</a>
     </li>
     <li>
-      <a href="../articles/7_FAQs.html">FAQs</a>
+      <a href="../articles/F_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/Z_FAQs.html">FAQs</a>
     </li>
   </ul>
 </li>
@@ -108,9 +111,9 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>SIMplyBee - Quantitative genetics</h1>
+      <h1 data-toc-skip>Quantitative genetics</h1>
             
-            <h4 data-toc-skip class="date">2022-12-07</h4>
+            <h4 data-toc-skip class="date">2022-12-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HighlanderLab/SIMplyBee/blob/HEAD/vignettes/F_Quantitative_Genetics.Rmd" class="external-link"><code>vignettes/F_Quantitative_Genetics.Rmd</code></a></small>
       <div class="hidden name"><code>F_Quantitative_Genetics.Rmd</code></div>
@@ -254,19 +257,19 @@ phenotypic values for both traits. The genetic values are stored in the
 <code>gv</code> slot of each <code>Pop</code> object, while phenotypic
 values are stored in the <code>pheno</code> slot.</p>
 <pre><code><span><span class="co">#&gt;      queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; [1,]  10.563838   0.06342967</span></span>
-<span><span class="co">#&gt; [2,]  10.647575   0.05143838</span></span>
-<span><span class="co">#&gt; [3,]   7.865042   0.30345051</span></span>
-<span><span class="co">#&gt; [4,]  11.403660   0.13649272</span></span>
-<span><span class="co">#&gt; [5,]   9.392506   0.16358533</span></span>
-<span><span class="co">#&gt; [6,]  10.793549   0.09844602</span></span>
+<span><span class="co">#&gt; [1,]  11.481709  -0.09813528</span></span>
+<span><span class="co">#&gt; [2,]   8.878567   0.10270368</span></span>
+<span><span class="co">#&gt; [3,]  11.207083   0.04718334</span></span>
+<span><span class="co">#&gt; [4,]   9.810856   0.16520371</span></span>
+<span><span class="co">#&gt; [5,]   9.817248   0.12795923</span></span>
+<span><span class="co">#&gt; [6,]  10.161705   0.10431416</span></span>
 <span><span class="co">#&gt;      queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; [1,]   8.615428  0.256129038</span></span>
-<span><span class="co">#&gt; [2,]   8.895940  0.009962749</span></span>
-<span><span class="co">#&gt; [3,]   6.844886 -0.495685691</span></span>
-<span><span class="co">#&gt; [4,]   5.894184 -0.659121827</span></span>
-<span><span class="co">#&gt; [5,]   9.998897 -0.107256371</span></span>
-<span><span class="co">#&gt; [6,]  11.908724  0.152940128</span></span></code></pre>
+<span><span class="co">#&gt; [1,]  10.904820   0.37584221</span></span>
+<span><span class="co">#&gt; [2,]  10.168382   0.23828365</span></span>
+<span><span class="co">#&gt; [3,]  11.706661   0.03116403</span></span>
+<span><span class="co">#&gt; [4,]   9.036691   0.33253023</span></span>
+<span><span class="co">#&gt; [5,]  10.077780   0.08814326</span></span>
+<span><span class="co">#&gt; [6,]  13.073512  -0.11993869</span></span></code></pre>
 <p><img src="F_Quantitative_Genetics_files/figure-html/basePop_virgin_queens-1.png" width="576"></p>
 <p>Note that these are virgin queens, yet we obtained queen and workers
 effect values for them! Is this wrong? No! Virgin queens carry DNA with
@@ -289,12 +292,12 @@ expressed in different castes. Therefore, drones will also have the
 queen and workers effect genetic (and phenotypic values) for honey yield
 even though they do not contribute to this trait in a colony.</p>
 <pre><code><span><span class="co">#&gt;      queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; [1,]  11.534600   0.06505637</span></span>
-<span><span class="co">#&gt; [2,]   9.361794   0.05934952</span></span>
-<span><span class="co">#&gt; [3,]  11.819305  -0.02515446</span></span>
-<span><span class="co">#&gt; [4,]  11.967240  -0.06417733</span></span>
-<span><span class="co">#&gt; [5,]  10.438442   0.17149090</span></span>
-<span><span class="co">#&gt; [6,]  10.668111   0.19727547</span></span></code></pre>
+<span><span class="co">#&gt; [1,]  12.454543  -0.21283857</span></span>
+<span><span class="co">#&gt; [2,]  14.031981  -0.04186022</span></span>
+<span><span class="co">#&gt; [3,]  11.663599  -0.13993836</span></span>
+<span><span class="co">#&gt; [4,]   9.338808   0.12649562</span></span>
+<span><span class="co">#&gt; [5,]   9.732577   0.12640086</span></span>
+<span><span class="co">#&gt; [6,]   8.533551   0.05359577</span></span></code></pre>
 <p><img src="F_Quantitative_Genetics_files/figure-html/basePop_drones-1.png" width="480"></p>
 </div>
 <div class="section level3">
@@ -312,7 +315,7 @@ queen, crossing it, and adding some workers.</p>
 <span><span class="co">#&gt; Location: </span></span>
 <span><span class="co">#&gt; Queen: 6 </span></span>
 <span><span class="co">#&gt; Number of fathers: 15 </span></span>
-<span><span class="co">#&gt; Number of workers: 50 </span></span>
+<span><span class="co">#&gt; Number of workers: 48 </span></span>
 <span><span class="co">#&gt; Number of drones: 0 </span></span>
 <span><span class="co">#&gt; Number of virgin queens: 0 </span></span>
 <span><span class="co">#&gt; Has split: FALSE </span></span>
@@ -327,45 +330,45 @@ which have the <code>caste</code> argument (see more via
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getGv.html">getGv</a></span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 6   10.79355   0.09844602</span></span>
+<span><span class="co">#&gt; 6   10.16171    0.1043142</span></span>
 <span><span class="fu"><a href="../reference/getGv.html">getGv</a></span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 36  10.329642    0.1690344</span></span>
-<span><span class="co">#&gt; 37  10.168715    0.1273167</span></span>
-<span><span class="co">#&gt; 38   8.264229    0.2618354</span></span>
-<span><span class="co">#&gt; 39  11.474876    0.1272412</span></span>
+<span><span class="co">#&gt; 36  11.440785  -0.04148267</span></span>
+<span><span class="co">#&gt; 37  10.267868   0.08461535</span></span>
+<span><span class="co">#&gt; 38   9.240134   0.20490454</span></span>
+<span><span class="co">#&gt; 39  11.317912   0.17578146</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/getPheno.html">getPheno</a></span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 6   11.90872    0.1529401</span></span>
+<span><span class="co">#&gt; 6   13.07351   -0.1199387</span></span>
 <span><span class="fu"><a href="../reference/getPheno.html">getPheno</a></span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 36  10.605922  -0.03874489</span></span>
-<span><span class="co">#&gt; 37   9.816208   0.04770439</span></span>
-<span><span class="co">#&gt; 38  10.275311   0.17483649</span></span>
-<span><span class="co">#&gt; 39  11.425403  -0.08844571</span></span></code></pre></div>
+<span><span class="co">#&gt; 36  11.869658   0.04769707</span></span>
+<span><span class="co">#&gt; 37   7.047645   0.05245002</span></span>
+<span><span class="co">#&gt; 38  10.773215   0.34428904</span></span>
+<span><span class="co">#&gt; 39   8.533599   0.27664240</span></span></code></pre></div>
 <p>For convenience, there are also alias functions for accessing the
 genetic and phenotypic values of each caste directly.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getGv.html">getQueenGv</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 6   10.79355   0.09844602</span></span>
+<span><span class="co">#&gt; 6   10.16171    0.1043142</span></span>
 <span><span class="fu"><a href="../reference/getGv.html">getWorkersGv</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 36  10.329642    0.1690344</span></span>
-<span><span class="co">#&gt; 37  10.168715    0.1273167</span></span>
-<span><span class="co">#&gt; 38   8.264229    0.2618354</span></span>
-<span><span class="co">#&gt; 39  11.474876    0.1272412</span></span>
+<span><span class="co">#&gt; 36  11.440785  -0.04148267</span></span>
+<span><span class="co">#&gt; 37  10.267868   0.08461535</span></span>
+<span><span class="co">#&gt; 38   9.240134   0.20490454</span></span>
+<span><span class="co">#&gt; 39  11.317912   0.17578146</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/getPheno.html">getQueenPheno</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 6   11.90872    0.1529401</span></span>
+<span><span class="co">#&gt; 6   13.07351   -0.1199387</span></span>
 <span><span class="fu"><a href="../reference/getPheno.html">getWorkersPheno</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 36  10.605922  -0.03874489</span></span>
-<span><span class="co">#&gt; 37   9.816208   0.04770439</span></span>
-<span><span class="co">#&gt; 38  10.275311   0.17483649</span></span>
-<span><span class="co">#&gt; 39  11.425403  -0.08844571</span></span></code></pre></div>
+<span><span class="co">#&gt; 36  11.869658   0.04769707</span></span>
+<span><span class="co">#&gt; 37   7.047645   0.05245002</span></span>
+<span><span class="co">#&gt; 38  10.773215   0.34428904</span></span>
+<span><span class="co">#&gt; 39   8.533599   0.27664240</span></span></code></pre></div>
 <p>Some phenotypes, such as honey yield, are only expressed if colony is
 at full size. This is achieved by the <code><a href="../reference/buildUp.html">buildUp()</a></code> colony
 event function that adds worker and drones and hence turns on the
@@ -385,7 +388,7 @@ production status of a colony.</p>
 <span><span class="co">#&gt; Location: </span></span>
 <span><span class="co">#&gt; Queen: 6 </span></span>
 <span><span class="co">#&gt; Number of fathers: 15 </span></span>
-<span><span class="co">#&gt; Number of workers: 100 </span></span>
+<span><span class="co">#&gt; Number of workers: 96 </span></span>
 <span><span class="co">#&gt; Number of drones: 100 </span></span>
 <span><span class="co">#&gt; Number of virgin queens: 0 </span></span>
 <span><span class="co">#&gt; Has split: FALSE </span></span>
@@ -408,12 +411,12 @@ into a single data.frame.</p>
 <span>                 pvWorkersTrait <span class="op">=</span> <span class="va">colony</span><span class="op">@</span><span class="va">workers</span><span class="op">@</span><span class="va">pheno</span><span class="op">[</span>, <span class="st">"workersTrait"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id mother father gvQueenTrait gvWorkersTrait pvQueenTrait pvWorkersTrait</span></span>
-<span><span class="co">#&gt; 1 86      6     26    10.934431     0.15951983    10.983183     0.36486372</span></span>
-<span><span class="co">#&gt; 2 87      6     24    10.657552     0.07323051    12.752420    -0.11113350</span></span>
-<span><span class="co">#&gt; 3 88      6     33     7.911966     0.22859502     4.587574     0.07106381</span></span>
-<span><span class="co">#&gt; 4 89      6     32    10.539589     0.12843868     9.455540     0.63432841</span></span>
-<span><span class="co">#&gt; 5 90      6     28     9.287043     0.25793223    11.303613     0.19923711</span></span>
-<span><span class="co">#&gt; 6 91      6     30    11.024533     0.11343953     8.223686     0.21393209</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 86      6     34     8.642224    0.120303892    10.795993     0.25618042</span></span>
+<span><span class="co">#&gt; 2 87      6     24     9.406508    0.109480813    10.347934     0.06672262</span></span>
+<span><span class="co">#&gt; 3 88      6     33     8.996463    0.152679617    11.372325     0.28987515</span></span>
+<span><span class="co">#&gt; 4 90      6     25     9.768035    0.077735159     9.685449     0.46764393</span></span>
+<span><span class="co">#&gt; 5 91      6     23    11.514175   -0.004327282    13.230613    -0.34849945</span></span>
+<span><span class="co">#&gt; 6 92      6     29    11.732344    0.049059708     9.620161     0.16463734</span></span></code></pre></div>
 <p>To visualise correlation between queen and workers effects in
 workers, we plot these effect values against each other.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -431,21 +434,21 @@ drones that the queen mated with (=fathers in a colony)!</p>
 <code class="sourceCode R"><span><span class="co"># Variation in patriline genetic values</span></span>
 <span><span class="fu"><a href="../reference/getGv.html">getFathersGv</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 21  11.534600   0.06505637</span></span>
-<span><span class="co">#&gt; 22   9.361794   0.05934952</span></span>
-<span><span class="co">#&gt; 23  11.819305  -0.02515446</span></span>
-<span><span class="co">#&gt; 24  11.967240  -0.06417733</span></span>
-<span><span class="co">#&gt; 25  10.438442   0.17149090</span></span>
-<span><span class="co">#&gt; 26  10.668111   0.19727547</span></span>
-<span><span class="co">#&gt; 27   8.066184   0.26386136</span></span>
-<span><span class="co">#&gt; 28   8.808379   0.32227711</span></span>
-<span><span class="co">#&gt; 29   6.924062   0.34051160</span></span>
-<span><span class="co">#&gt; 30  11.330158   0.14188318</span></span>
-<span><span class="co">#&gt; 31  12.228590   0.01656260</span></span>
-<span><span class="co">#&gt; 32  11.323220   0.08433334</span></span>
-<span><span class="co">#&gt; 33   6.635557   0.29093820</span></span>
-<span><span class="co">#&gt; 34   7.167726   0.27567375</span></span>
-<span><span class="co">#&gt; 35   9.945318   0.19056178</span></span></code></pre></div>
+<span><span class="co">#&gt; 21  12.454543  -0.21283857</span></span>
+<span><span class="co">#&gt; 22  14.031981  -0.04186022</span></span>
+<span><span class="co">#&gt; 23  11.663599  -0.13993836</span></span>
+<span><span class="co">#&gt; 24   9.338808   0.12649562</span></span>
+<span><span class="co">#&gt; 25   9.732577   0.12640086</span></span>
+<span><span class="co">#&gt; 26   8.533551   0.05359577</span></span>
+<span><span class="co">#&gt; 27  11.750691   0.06970117</span></span>
+<span><span class="co">#&gt; 28  11.562509   0.11821325</span></span>
+<span><span class="co">#&gt; 29  12.572728   0.03139799</span></span>
+<span><span class="co">#&gt; 30  10.206910   0.11096588</span></span>
+<span><span class="co">#&gt; 31   8.342288   0.31403581</span></span>
+<span><span class="co">#&gt; 32   8.881198   0.28364061</span></span>
+<span><span class="co">#&gt; 33   9.603508   0.22471281</span></span>
+<span><span class="co">#&gt; 34   8.923761   0.03705332</span></span>
+<span><span class="co">#&gt; 35  10.573542   0.11816116</span></span></code></pre></div>
 <p>Knowing the father of each worker, we inspect variation in the
 distribution of genetic values of worker by the patriline (workers from
 a single father drone) for the workers effect.</p>
@@ -481,7 +484,7 @@ colony.</p>
 <code class="sourceCode R"><span><span class="co"># Colony phenotype value</span></span>
 <span><span class="fu"><a href="../reference/calcColonyValue.html">calcColonyPheno</a></span><span class="op">(</span><span class="va">colony</span>, queenTrait <span class="op">=</span> <span class="st">"queenTrait"</span>, workersTrait <span class="op">=</span> <span class="st">"workersTrait"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 27.99526</span></span>
+<span><span class="co">#&gt; [1,] 18.59357</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">calcColonyPheno</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">mapCasteToColonyPheno</span><span class="op">)</span></span></code></pre></div>
 <p>These colony values are not stored in a colony, because they change
@@ -491,8 +494,8 @@ number of workers will reduce the colony honey yield.</p>
 <code class="sourceCode R"><span><span class="co"># Colony phenotype value from a reduced colony</span></span>
 <span><span class="fu"><a href="../reference/removeCastePop.html">removeWorkers</a></span><span class="op">(</span><span class="va">colony</span>, p <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/calcColonyValue.html">calcColonyPheno</a></span><span class="op">(</span>queenTrait <span class="op">=</span> <span class="st">"queenTrait"</span>, workersTrait <span class="op">=</span> <span class="st">"workersTrait"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         [,1]</span></span>
-<span><span class="co">#&gt; [1,] 20.6338</span></span></code></pre></div>
+<span><span class="co">#&gt;          [,1]</span></span>
+<span><span class="co">#&gt; [1,] 15.93611</span></span></code></pre></div>
 <p>Please note that we assumed that the queen contributes half to colony
 honey yield and workers contribute the other half. This means that
 removing workers will still give a non-zero honey yield! This shows that
@@ -503,7 +506,7 @@ values with care!</p>
 <span><span class="fu"><a href="../reference/removeCastePop.html">removeWorkers</a></span><span class="op">(</span><span class="va">colony</span>, p <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/calcColonyValue.html">calcColonyPheno</a></span><span class="op">(</span>queenTrait <span class="op">=</span> <span class="st">"queenTrait"</span>, workersTrait <span class="op">=</span> <span class="st">"workersTrait"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 12.23965</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 13.24635</span></span></code></pre></div>
 <p>Finally, note that SIMplyBee currently does not provide functionality
 for breeding values, dominance deviations, and epistatic deviations at
 caste and colony levels, despite the availabiliy of AlphaSimR
@@ -535,25 +538,25 @@ single matrix if we set the <code>collapse</code> argument to
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getGv.html">getQueenGv</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`2`</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 7   9.762565   0.04155882</span></span>
+<span><span class="co">#&gt; 7   8.165637    0.1591371</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`3`</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 8   10.58243   0.05547065</span></span>
+<span><span class="co">#&gt; 8   8.498379    0.2128088</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`4`</span></span>
 <span><span class="co">#&gt;   queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 9   10.15386  -0.04040015</span></span>
+<span><span class="co">#&gt; 9   9.403264    0.2700396</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`5`</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 10   10.81723     0.039942</span></span>
+<span><span class="co">#&gt; 10   9.410113    0.2376895</span></span>
 <span><span class="fu"><a href="../reference/getGv.html">getQueenGv</a></span><span class="op">(</span><span class="va">apiary</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    queenTrait workersTrait</span></span>
-<span><span class="co">#&gt; 7    9.762565   0.04155882</span></span>
-<span><span class="co">#&gt; 8   10.582426   0.05547065</span></span>
-<span><span class="co">#&gt; 9   10.153856  -0.04040015</span></span>
-<span><span class="co">#&gt; 10  10.817226   0.03994200</span></span></code></pre></div>
+<span><span class="co">#&gt; 7    8.165637    0.1591371</span></span>
+<span><span class="co">#&gt; 8    8.498379    0.2128088</span></span>
+<span><span class="co">#&gt; 9    9.403264    0.2700396</span></span>
+<span><span class="co">#&gt; 10   9.410113    0.2376895</span></span></code></pre></div>
 <p>In a similar manner, we can calculate colony value for all the
 colonies in our apiary, where the row names of the output represent
 colony IDs.</p>
@@ -562,20 +565,20 @@ colony IDs.</p>
 <span><span class="va">colonyPheno</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calcColonyValue.html">calcColonyPheno</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">colonyGv</span>, <span class="va">colonyPheno</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    colonyGv colonyPheno</span></span>
-<span><span class="co">#&gt; 2  19.11410    19.02903</span></span>
-<span><span class="co">#&gt; 3  20.98700    16.48352</span></span>
-<span><span class="co">#&gt; 4  15.21456    15.79872</span></span>
-<span><span class="co">#&gt; 5  16.19429    24.58672</span></span>
-<span><span class="co">#&gt; 6  18.23326    19.55708</span></span>
-<span><span class="co">#&gt; 7  24.60343    24.80856</span></span>
-<span><span class="co">#&gt; 8  15.33522    16.65622</span></span>
-<span><span class="co">#&gt; 9  27.44668    30.05704</span></span>
-<span><span class="co">#&gt; 10 16.85288    16.06883</span></span>
-<span><span class="co">#&gt; 11 19.02970    21.13236</span></span>
-<span><span class="co">#&gt; 12 26.62661    33.19283</span></span>
-<span><span class="co">#&gt; 13 16.62436    15.65510</span></span>
-<span><span class="co">#&gt; 14 27.55524    26.74435</span></span>
-<span><span class="co">#&gt; 15 28.05231    27.15087</span></span></code></pre></div>
+<span><span class="co">#&gt; 2  19.33994   20.570920</span></span>
+<span><span class="co">#&gt; 3  25.35589   24.130716</span></span>
+<span><span class="co">#&gt; 4  25.44463   21.319569</span></span>
+<span><span class="co">#&gt; 5  23.96895   26.631666</span></span>
+<span><span class="co">#&gt; 6  16.67943   22.494454</span></span>
+<span><span class="co">#&gt; 7  14.06611   11.118820</span></span>
+<span><span class="co">#&gt; 8  18.57168   20.979442</span></span>
+<span><span class="co">#&gt; 9  15.68423   18.656665</span></span>
+<span><span class="co">#&gt; 10 13.91479   17.579064</span></span>
+<span><span class="co">#&gt; 11 18.63568   21.894504</span></span>
+<span><span class="co">#&gt; 12 23.28907   19.866550</span></span>
+<span><span class="co">#&gt; 13 15.94516   11.417971</span></span>
+<span><span class="co">#&gt; 14 11.32923    9.439048</span></span>
+<span><span class="co">#&gt; 15 20.85012   17.376088</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="selection-on-colony-values">Selection on colony values<a class="anchor" aria-label="anchor" href="#selection-on-colony-values"></a>
@@ -688,43 +691,43 @@ sample a number of individuals along with their values.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/getGv.html">getQueenGv</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`1`</span></span>
 <span><span class="co">#&gt;   yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 6        9.372758         0.2117066     -0.3944845      0.003841618</span></span>
+<span><span class="co">#&gt; 6          9.7256         0.2387889      -2.072291      -0.05831141</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`2`</span></span>
 <span><span class="co">#&gt;   yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 7        8.917821        0.05902875      0.3965354      -0.02825877</span></span>
+<span><span class="co">#&gt; 7        10.72313        0.02354285       1.902781       -0.1727856</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`3`</span></span>
 <span><span class="co">#&gt;   yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 8        11.04542       0.009426489    -0.06979628       0.05076617</span></span>
+<span><span class="co">#&gt; 8        9.301975        0.03949063      0.8336575        -0.162649</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`4`</span></span>
 <span><span class="co">#&gt;   yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 9        9.420613          0.206405        1.44461      -0.03195618</span></span>
+<span><span class="co">#&gt; 9        10.84627       -0.02509943      0.7980706       0.08344773</span></span>
 <span><span class="fu"><a href="../reference/getPheno.html">getWorkersPheno</a></span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`1`</span></span>
 <span><span class="co">#&gt;     yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 521        9.640604         0.3670293     -0.2262845       0.02179408</span></span>
-<span><span class="co">#&gt; 523        5.885107         0.4227916     -0.1145347       0.10335792</span></span>
-<span><span class="co">#&gt; 524        9.275669         0.4998114     -0.5170443       0.06627435</span></span>
+<span><span class="co">#&gt; 521        7.208442         0.5963425     -1.3084346      -0.04599657</span></span>
+<span><span class="co">#&gt; 522        8.744330         0.2156471     -0.2860589      -0.11104273</span></span>
+<span><span class="co">#&gt; 523       13.132668         0.1112545     -3.0633472       0.09720800</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`2`</span></span>
 <span><span class="co">#&gt;     yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 721        8.216818        0.14243966     0.07842279     -0.008798803</span></span>
-<span><span class="co">#&gt; 722       10.674939        0.23993758     0.51488784     -0.138000648</span></span>
-<span><span class="co">#&gt; 723        6.499526        0.02522689     0.24011702     -0.068426814</span></span>
+<span><span class="co">#&gt; 721       11.441302       0.094905023      1.0176474      -0.08501485</span></span>
+<span><span class="co">#&gt; 722        6.794624      -0.051570119     -0.1306631      -0.04970458</span></span>
+<span><span class="co">#&gt; 723        8.868280      -0.005839462     -0.1306826       0.09165820</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`3`</span></span>
 <span><span class="co">#&gt;     yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 921        11.48130         0.3620991     -0.7989646       0.10430294</span></span>
-<span><span class="co">#&gt; 922        12.63590         0.6264679     -0.5260254       0.03280636</span></span>
-<span><span class="co">#&gt; 923        12.24969         0.4986110     -1.7875456       0.14435801</span></span>
+<span><span class="co">#&gt; 921        9.690480       -0.73348348     -1.9383349      -0.08292561</span></span>
+<span><span class="co">#&gt; 922       11.469539        0.06875806      1.5202377      -0.14048555</span></span>
+<span><span class="co">#&gt; 923        9.413987        0.10542742      0.5781284      -0.09013663</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`4`</span></span>
 <span><span class="co">#&gt;      yieldQueenTrait yieldWorkersTrait calmQueenTrait calmWorkersTrait</span></span>
-<span><span class="co">#&gt; 1121        8.141135         0.4963475      1.0528822     -0.004851846</span></span>
-<span><span class="co">#&gt; 1122       10.950841         0.0756129      0.5126019     -0.003303254</span></span>
-<span><span class="co">#&gt; 1123        9.777865        -0.3858276      0.6930488      0.061801443</span></span></code></pre></div>
+<span><span class="co">#&gt; 1121       11.609855       -0.05279163      0.1417974       0.05219304</span></span>
+<span><span class="co">#&gt; 1122        9.224487        0.09349545      0.5161217       0.16712780</span></span>
+<span><span class="co">#&gt; 1123       12.090329       -0.31402835      1.1376765      -0.10331365</span></span></code></pre></div>
 <p>Now, we calculate colony genetic and phenotypic values for all
 colonies in the apiary. Since we are simulating two traits, honey yield
 and calmness, we have two ways to calculate corresponding colony values.
@@ -738,22 +741,22 @@ arguments as shown here:</p>
 <span>                                traitName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yield"</span>, <span class="st">"calmness"</span><span class="op">)</span>,</span>
 <span>                                checkProduction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">colonyValues</span></span>
-<span><span class="co">#&gt;        yield   calmness</span></span>
-<span><span class="co">#&gt; 1  21.235137  2.0533803</span></span>
-<span><span class="co">#&gt; 2  13.037135 -0.9701431</span></span>
-<span><span class="co">#&gt; 3  23.104845  3.5964745</span></span>
-<span><span class="co">#&gt; 4  27.447975  3.3275200</span></span>
-<span><span class="co">#&gt; 5  19.284172  7.1014315</span></span>
-<span><span class="co">#&gt; 6  27.930922 10.3776517</span></span>
-<span><span class="co">#&gt; 7  17.264042 -3.6346679</span></span>
-<span><span class="co">#&gt; 8  14.273365 -4.2321589</span></span>
-<span><span class="co">#&gt; 9  25.585164 -4.0415467</span></span>
-<span><span class="co">#&gt; 10 24.948362 -2.5067657</span></span>
-<span><span class="co">#&gt; 11 22.432195  8.7749581</span></span>
-<span><span class="co">#&gt; 12  7.224505 -7.0041457</span></span>
-<span><span class="co">#&gt; 13 24.746675 -3.7763511</span></span>
-<span><span class="co">#&gt; 14 26.876985 -6.0152263</span></span>
-<span><span class="co">#&gt; 15 22.316771  1.5704508</span></span></code></pre></div>
+<span><span class="co">#&gt;       yield   calmness</span></span>
+<span><span class="co">#&gt; 1  33.56159 -6.4094505</span></span>
+<span><span class="co">#&gt; 2  16.67606 -3.5788338</span></span>
+<span><span class="co">#&gt; 3  11.30172 -8.8228506</span></span>
+<span><span class="co">#&gt; 4  11.26452  6.0661651</span></span>
+<span><span class="co">#&gt; 5  22.68192 -5.8328211</span></span>
+<span><span class="co">#&gt; 6  21.13854 -7.5973495</span></span>
+<span><span class="co">#&gt; 7  17.06007  0.5134326</span></span>
+<span><span class="co">#&gt; 8  16.87442  4.4277343</span></span>
+<span><span class="co">#&gt; 9  22.17312  0.6708542</span></span>
+<span><span class="co">#&gt; 10 20.29712  7.8193568</span></span>
+<span><span class="co">#&gt; 11 17.37269  3.8782068</span></span>
+<span><span class="co">#&gt; 12 10.69930  2.6241070</span></span>
+<span><span class="co">#&gt; 13 17.66907 -8.2165114</span></span>
+<span><span class="co">#&gt; 14 14.91027  9.8756556</span></span>
+<span><span class="co">#&gt; 15 26.56969  8.8314526</span></span></code></pre></div>
 <p>The second way is to create our own mapping function. An equivalent
 outcome to the above is shown below just to demonstrate use of your own
 function, but we are simply just reusing
@@ -774,22 +777,22 @@ function, but we are simply just reusing
 <span><span class="op">}</span></span>
 <span><span class="va">colonyValues</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calcColonyValue.html">calcColonyPheno</a></span><span class="op">(</span><span class="va">apiary</span>, FUN <span class="op">=</span> <span class="va">myMapCasteToColonyPheno</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">colonyValues</span></span>
-<span><span class="co">#&gt;        yield   calmness</span></span>
-<span><span class="co">#&gt; 1  21.235137  2.0533803</span></span>
-<span><span class="co">#&gt; 2  13.037135 -0.9701431</span></span>
-<span><span class="co">#&gt; 3  23.104845  3.5964745</span></span>
-<span><span class="co">#&gt; 4  27.447975  3.3275200</span></span>
-<span><span class="co">#&gt; 5  19.284172  7.1014315</span></span>
-<span><span class="co">#&gt; 6  27.930922 10.3776517</span></span>
-<span><span class="co">#&gt; 7  17.264042 -3.6346679</span></span>
-<span><span class="co">#&gt; 8  14.273365 -4.2321589</span></span>
-<span><span class="co">#&gt; 9  25.585164 -4.0415467</span></span>
-<span><span class="co">#&gt; 10 24.948362 -2.5067657</span></span>
-<span><span class="co">#&gt; 11 22.432195  8.7749581</span></span>
-<span><span class="co">#&gt; 12  7.224505 -7.0041457</span></span>
-<span><span class="co">#&gt; 13 24.746675 -3.7763511</span></span>
-<span><span class="co">#&gt; 14 26.876985 -6.0152263</span></span>
-<span><span class="co">#&gt; 15 22.316771  1.5704508</span></span></code></pre></div>
+<span><span class="co">#&gt;       yield   calmness</span></span>
+<span><span class="co">#&gt; 1  33.56159 -6.4094505</span></span>
+<span><span class="co">#&gt; 2  16.67606 -3.5788338</span></span>
+<span><span class="co">#&gt; 3  11.30172 -8.8228506</span></span>
+<span><span class="co">#&gt; 4  11.26452  6.0661651</span></span>
+<span><span class="co">#&gt; 5  22.68192 -5.8328211</span></span>
+<span><span class="co">#&gt; 6  21.13854 -7.5973495</span></span>
+<span><span class="co">#&gt; 7  17.06007  0.5134326</span></span>
+<span><span class="co">#&gt; 8  16.87442  4.4277343</span></span>
+<span><span class="co">#&gt; 9  22.17312  0.6708542</span></span>
+<span><span class="co">#&gt; 10 20.29712  7.8193568</span></span>
+<span><span class="co">#&gt; 11 17.37269  3.8782068</span></span>
+<span><span class="co">#&gt; 12 10.69930  2.6241070</span></span>
+<span><span class="co">#&gt; 13 17.66907 -8.2165114</span></span>
+<span><span class="co">#&gt; 14 14.91027  9.8756556</span></span>
+<span><span class="co">#&gt; 15 26.56969  8.8314526</span></span></code></pre></div>
 <p>Again, we can now select the best colony based on the best phenotypic
 value for either yield, calmness, or an index of both. Let’s say that
 both traits are equally important so we select on a weighted sum of both
@@ -801,7 +804,7 @@ units.</p>
 <code class="sourceCode R"><span><span class="va">colonyValues</span><span class="op">$</span><span class="va">Index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://gaynorr.github.io/AlphaSimR/reference/selIndex.html" class="external-link">selIndex</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="va">colonyValues</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">*</span> <span class="fl">10</span> <span class="op">+</span> <span class="fl">100</span></span>
 <span><span class="va">bestColony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectColonies.html">selectColonies</a></span><span class="op">(</span><span class="va">apiary</span>, n <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="va">colonyValues</span><span class="op">$</span><span class="va">Index</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/getId.html">getId</a></span><span class="op">(</span><span class="va">bestColony</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 15</span></span></code></pre></div>
 <p>We see that we selected colony with ID “4”, but we would be selecting
 a different colony based on different selection criteria (yield,
 calmness, or index).</p>
@@ -874,25 +877,25 @@ correlation on average between <code>yieldQueenTrait</code> and
 <code>yieldWorkersTrait.</code> Just like we defined in the global
 simulation parameters.</p>
 <pre><code><span><span class="co">#&gt;    fecundityQueenTrait yieldQueenTrait yieldWorkersTrait</span></span>
-<span><span class="co">#&gt; 6            102.31365       10.066125       0.134404111</span></span>
-<span><span class="co">#&gt; 7            106.77500        8.773240       0.309640296</span></span>
-<span><span class="co">#&gt; 8             97.70102        9.785575       0.086130260</span></span>
-<span><span class="co">#&gt; 9             90.31725       11.624373       0.031490841</span></span>
-<span><span class="co">#&gt; 10            96.41553       11.019020      -0.009629115</span></span>
-<span><span class="co">#&gt; 11            90.23196       11.517946      -0.022436472</span></span>
-<span><span class="co">#&gt; 12           100.20885        9.228038       0.195912930</span></span>
-<span><span class="co">#&gt; 13            95.84186       10.729266       0.114239338</span></span>
-<span><span class="co">#&gt; 14           100.30893        7.485434       0.242113729</span></span>
-<span><span class="co">#&gt; 15            91.22952        9.703827       0.096700107</span></span>
-<span><span class="co">#&gt; 16           105.59463        9.898731      -0.006849628</span></span>
-<span><span class="co">#&gt; 17           100.17675        8.646231       0.289107607</span></span>
-<span><span class="co">#&gt; 18           107.86165       10.877422       0.152422293</span></span>
-<span><span class="co">#&gt; 19           102.74176       10.385657      -0.032245345</span></span>
-<span><span class="co">#&gt; 20           103.59050       10.776851       0.123399791</span></span>
+<span><span class="co">#&gt; 6             94.28038        9.412029        0.16788730</span></span>
+<span><span class="co">#&gt; 7            103.66076       11.871344       -0.03178355</span></span>
+<span><span class="co">#&gt; 8            105.17219       10.585019        0.05786550</span></span>
+<span><span class="co">#&gt; 9            101.13254        9.665684        0.08580386</span></span>
+<span><span class="co">#&gt; 10            97.75010        7.709483        0.30314801</span></span>
+<span><span class="co">#&gt; 11           101.57864        9.277531       -0.01383327</span></span>
+<span><span class="co">#&gt; 12           106.67216       10.342568        0.07613601</span></span>
+<span><span class="co">#&gt; 13            91.09621       11.108398        0.09112114</span></span>
+<span><span class="co">#&gt; 14            88.90720        8.628389        0.29658309</span></span>
+<span><span class="co">#&gt; 15           106.63687       11.280599        0.07447584</span></span>
+<span><span class="co">#&gt; 16            94.93368       10.702364        0.10415367</span></span>
+<span><span class="co">#&gt; 17            97.96855        9.330126        0.17600133</span></span>
+<span><span class="co">#&gt; 18           102.69604       10.908822        0.07769624</span></span>
+<span><span class="co">#&gt; 19           102.65147       10.002602       -0.07400312</span></span>
+<span><span class="co">#&gt; 20           107.17532        9.705533        0.05997629</span></span>
 <span><span class="co">#&gt;                     fecundityQueenTrait yieldQueenTrait yieldWorkersTrait</span></span>
-<span><span class="co">#&gt; fecundityQueenTrait           1.0000000      -0.1530464         0.2382682</span></span>
-<span><span class="co">#&gt; yieldQueenTrait              -0.1530464       1.0000000        -0.7433399</span></span>
-<span><span class="co">#&gt; yieldWorkersTrait             0.2382682      -0.7433399         1.0000000</span></span></code></pre>
+<span><span class="co">#&gt; fecundityQueenTrait           1.0000000       0.4589595        -0.4288659</span></span>
+<span><span class="co">#&gt; yieldQueenTrait               0.4589595       1.0000000        -0.6526878</span></span>
+<span><span class="co">#&gt; yieldWorkersTrait            -0.4288659      -0.6526878         1.0000000</span></span></code></pre>
 <p><img src="F_Quantitative_Genetics_files/figure-html/queen_values-1.png" width="576"></p>
 <p>We next build-up colonies in the apiary. But instead of building them
 all up to the same fixed number of workers, we build them up according
@@ -907,21 +910,21 @@ in it’s help page.</p>
 <span>                  queenTrait <span class="op">=</span> <span class="st">"fecundityQueenTrait"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>nWorkers <span class="op">=</span> <span class="fu"><a href="../reference/nCaste.html">nWorkers</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span>, <span class="va">queenPheno</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    nWorkers fecundityQueenTrait yieldQueenTrait yieldWorkersTrait</span></span>
-<span><span class="co">#&gt; 1       105           104.74445       10.007532       0.135516950</span></span>
-<span><span class="co">#&gt; 2       102           102.44681        8.773240       0.309640296</span></span>
-<span><span class="co">#&gt; 3        97            96.95482        9.785575       0.086130260</span></span>
-<span><span class="co">#&gt; 4        88            87.70812       11.624373       0.031490841</span></span>
-<span><span class="co">#&gt; 5       107           106.86646       11.019020      -0.009629115</span></span>
-<span><span class="co">#&gt; 6        92            91.95138       11.547243      -0.022992892</span></span>
-<span><span class="co">#&gt; 7       112           112.16595        9.286631       0.194800092</span></span>
-<span><span class="co">#&gt; 8       107           106.51831       10.758562       0.113682919</span></span>
-<span><span class="co">#&gt; 9       104           103.67468        7.485434       0.242113729</span></span>
-<span><span class="co">#&gt; 10      106           106.24184        9.703827       0.096700107</span></span>
-<span><span class="co">#&gt; 11      108           107.96746        9.957323      -0.007962466</span></span>
-<span><span class="co">#&gt; 12      106           105.66336        8.616935       0.289664026</span></span>
-<span><span class="co">#&gt; 13      127           126.69449       10.906718       0.151865874</span></span>
-<span><span class="co">#&gt; 14      108           107.84071       10.356361      -0.031688926</span></span>
-<span><span class="co">#&gt; 15      106           106.35517       10.776851       0.123399791</span></span>
+<span><span class="co">#&gt; 1        92            92.12260        9.491310        0.15472462</span></span>
+<span><span class="co">#&gt; 2       118           118.35641       11.910984       -0.03836489</span></span>
+<span><span class="co">#&gt; 3       105           105.00298       10.624659        0.05128416</span></span>
+<span><span class="co">#&gt; 4        99            98.97479        9.626044        0.09238520</span></span>
+<span><span class="co">#&gt; 5        92            92.30414        7.749123        0.29656666</span></span>
+<span><span class="co">#&gt; 6       111           111.37830        9.317171       -0.02041461</span></span>
+<span><span class="co">#&gt; 7       115           115.14116       10.302928        0.08271735</span></span>
+<span><span class="co">#&gt; 8        90            89.53499       11.148039        0.08453980</span></span>
+<span><span class="co">#&gt; 9        99            99.37309        8.707670        0.28342040</span></span>
+<span><span class="co">#&gt; 10       99           103.29129       11.280599        0.07447584</span></span>
+<span><span class="co">#&gt; 11      100           100.39901       10.662724        0.11073501</span></span>
+<span><span class="co">#&gt; 12      101           101.03836        9.290485        0.18258267</span></span>
+<span><span class="co">#&gt; 13      117           116.95971       10.908822        0.07769624</span></span>
+<span><span class="co">#&gt; 14       96            96.09281        9.962961       -0.06742178</span></span>
+<span><span class="co">#&gt; 15       96            96.01215        9.665893        0.06655763</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">nWorkersColonyPhenotype</span><span class="op">)</span></span></code></pre></div>
 <p>To compute the colony value for honey yield, we again employ the
 <code><a href="../reference/calcColonyValue.html">calcColonyPheno()</a></code> function. Correlating the queen and
@@ -929,17 +932,17 @@ colony values we will now see a positive correlation because our
 individual to colony mapping function sums workers effect across all
 workers and the more workers there are the larger the sum.</p>
 <pre><code><span><span class="co">#&gt;                       nWorkers fecundityQueenTrait yieldQueenTrait</span></span>
-<span><span class="co">#&gt; nWorkers             1.0000000           0.9995166      -0.1492711</span></span>
-<span><span class="co">#&gt; fecundityQueenTrait  0.9995166           1.0000000      -0.1530464</span></span>
-<span><span class="co">#&gt; yieldQueenTrait     -0.1492711          -0.1530464       1.0000000</span></span>
-<span><span class="co">#&gt; yieldWorkersTrait    0.2337318           0.2382682      -0.7433399</span></span>
-<span><span class="co">#&gt; yield                0.4230518           0.4284173      -0.4925798</span></span>
+<span><span class="co">#&gt; nWorkers             1.0000000           0.9929006       0.4312394</span></span>
+<span><span class="co">#&gt; fecundityQueenTrait  0.9929006           1.0000000       0.4589595</span></span>
+<span><span class="co">#&gt; yieldQueenTrait      0.4312394           0.4589595       1.0000000</span></span>
+<span><span class="co">#&gt; yieldWorkersTrait   -0.4271977          -0.4288659      -0.6526878</span></span>
+<span><span class="co">#&gt; yield               -0.2270119          -0.2221012      -0.5006672</span></span>
 <span><span class="co">#&gt;                     yieldWorkersTrait      yield</span></span>
-<span><span class="co">#&gt; nWorkers                    0.2337318  0.4230518</span></span>
-<span><span class="co">#&gt; fecundityQueenTrait         0.2382682  0.4284173</span></span>
-<span><span class="co">#&gt; yieldQueenTrait            -0.7433399 -0.4925798</span></span>
-<span><span class="co">#&gt; yieldWorkersTrait           1.0000000  0.9036498</span></span>
-<span><span class="co">#&gt; yield                       0.9036498  1.0000000</span></span></code></pre>
+<span><span class="co">#&gt; nWorkers                   -0.4271977 -0.2270119</span></span>
+<span><span class="co">#&gt; fecundityQueenTrait        -0.4288659 -0.2221012</span></span>
+<span><span class="co">#&gt; yieldQueenTrait            -0.6526878 -0.5006672</span></span>
+<span><span class="co">#&gt; yieldWorkersTrait           1.0000000  0.9193874</span></span>
+<span><span class="co">#&gt; yield                       0.9193874  1.0000000</span></span></code></pre>
 <p><img src="F_Quantitative_Genetics_files/figure-html/colony_pheno_3-1.png" width="624"></p>
 </div>
   </div>

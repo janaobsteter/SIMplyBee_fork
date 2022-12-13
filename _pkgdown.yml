@@ -18,19 +18,21 @@ navbar:
       text: Articles
       menu:
       - text: Honeybee Biology
-        href: articles/1_Honeybee_biology.html
+        href: articles/A_Honeybee_biology.html
       - text: Colony Events
-        href: articles/2_Colony_events.html
+        href: articles/C_Colony_events.html
       - text: Multiple colonies
-        href: articles/3_Multiple_colonies.html
+        href: articles/B_Multiple_colonies.html
+      - text: Crossing
+        href: articles/D_Crossing.html
       - text: Genomics
-        href: articles/4_Genomics.html
+        href: articles/E_Genomics.html
       - text: Sampling functions
-        href: articles/5_Sampling_functions.html
+        href: articles/G_Sampling_functions.html
       - text: Quantitative Genetics
-        href: articles/6_Quantitative_Genetics.html
+        href: articles/F_Quantitative_Genetics.html
       - text: FAQs
-        href: articles/7_FAQs.html
+        href: articles/Z_FAQs.html
 
 reference:
   - title: Class
