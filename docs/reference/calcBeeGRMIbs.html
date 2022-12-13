@@ -49,25 +49,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/2_Colony_events.html">Colony Events</a>
+      <a href="../articles/C_Colony_events.html">Colony Events</a>
     </li>
     <li>
-      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+      <a href="../articles/B_Multiple_colonies.html">Multiple colonies</a>
     </li>
     <li>
-      <a href="../articles/4_Genomics.html">Genomics</a>
+      <a href="../articles/D_Crossing.html">Crossing</a>
     </li>
     <li>
-      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+      <a href="../articles/E_Genomics.html">Genomics</a>
     </li>
     <li>
-      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+      <a href="../articles/G_Sampling_functions.html">Sampling functions</a>
     </li>
     <li>
-      <a href="../articles/7_FAQs.html">FAQs</a>
+      <a href="../articles/F_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/Z_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -148,46 +151,32 @@ missing values are allowed (this is not checked - you will get NAs!)</p></dd>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">3</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackRec</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createVirginQueens</a></span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu"><a href="createCastePop.html">createDrones</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">1</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="createMultiColony.html">createMultiColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(basePop[2:3], n = 2):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="createColony.html">createColony</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span>, nWorkers <span class="op">=</span> <span class="fl">6</span>, nDrones <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, nWorkers <span class="op">=</span> <span class="fl">6</span>, nDrones <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">geno</span> <span class="op">&lt;-</span> <span class="fu"><a href="getSegSiteGeno.html">getSegSiteGeno</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">geno</span> <span class="op">&lt;-</span> <span class="fu"><a href="getSegSiteGeno.html">getSegSiteGeno</a></span><span class="op">(</span><span class="va">colony</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">genoMeanW</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="getSegSiteGeno.html">getWorkersSegSiteGeno</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, MARGIN <span class="op">=</span> <span class="fl">2</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="getCasteSex.html">getCasteSex</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">genoMeanD</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="getSegSiteGeno.html">getDronesSegSiteGeno</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, MARGIN <span class="op">=</span> <span class="fl">2</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">geno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">geno</span>, <span class="va">genoMeanW</span>, <span class="va">genoMeanD</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rbind(geno, genoMeanW, genoMeanD):</span> object 'geno' not found</span>
-<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">geno</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rownames(geno):</span> object 'geno' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">geno</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">1</span>, <span class="va">n</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mw"</span>, <span class="st">"md"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rownames(geno)[c(n - 1, n)] &lt;- c("mw", "md"):</span> object 'geno' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="getCasteSex.html">getCasteSex</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sex</span>, <span class="st">"F"</span>, <span class="st">"M"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'sex' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">GRM</span> <span class="op">&lt;-</span> <span class="fu">calcBeeGRMIbs</span><span class="op">(</span>x <span class="op">=</span> <span class="va">geno</span>, sex <span class="op">=</span> <span class="va">sex</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calcBeeGRMIbs(x = geno, sex = sex):</span> object 'geno' not found</span>
+<span class="r-in"><span><span class="co"># You can visualise this matrix with the function image() from the package 'Matrix'</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># library("Matrix"); image(as(GRM, "Matrix"))</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Look at the diagonal at the relationship matrix</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">GRM</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in diag(GRM):</span> object 'GRM' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
@@ -195,6 +184,7 @@ missing values are allowed (this is not checked - you will get NAs!)</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in summary(x):</span> object 'x' not found</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Look at the off-diagonal at the relationship matrix</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">GRM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html" class="external-link">lower.tri</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">GRM</span>, diag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
@@ -202,59 +192,28 @@ missing values are allowed (this is not checked - you will get NAs!)</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in summary(x):</span> object 'x' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="getCasteId.html">getCasteId</a></span><span class="op">(</span><span class="va">apiary</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Compare relationship between castes</span></span></span>
+<span class="r-in"><span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="getCasteId.html">getCasteId</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">idQueen</span> <span class="op">&lt;-</span> <span class="va">ids</span><span class="op">$</span><span class="va">queen</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ids' not found</span>
-<span class="r-in"><span><span class="va">idFathers</span> <span class="op">&lt;-</span> <span class="va">ids</span><span class="op">$</span><span class="va">fathers</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ids' not found</span>
 <span class="r-in"><span><span class="va">idWorkers</span> <span class="op">&lt;-</span> <span class="va">ids</span><span class="op">$</span><span class="va">workers</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ids' not found</span>
 <span class="r-in"><span><span class="va">idDrones</span> <span class="op">&lt;-</span> <span class="va">ids</span><span class="op">$</span><span class="va">drones</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ids' not found</span>
-<span class="r-in"><span><span class="va">idVirginQueens</span> <span class="op">&lt;-</span> <span class="va">ids</span><span class="op">$</span><span class="va">virginQueens</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ids' not found</span>
-<span class="r-in"><span><span class="va">mw</span> <span class="op">&lt;-</span> <span class="st">"mw"</span></span></span>
-<span class="r-in"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="st">"md"</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Queen vs others</span></span></span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">idFathers</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
 <span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">idWorkers</span><span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
 <span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">idDrones</span><span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">idVirginQueens</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">mw</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idQueen</span>, <span class="va">md</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fathers vs others</span></span></span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">idFathers</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">idWorkers</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">idDrones</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">idVirginQueens</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">mw</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idFathers</span>, <span class="va">md</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Workers vs others</span></span></span>
+<span class="r-in"><span><span class="co"># Workers vs worker</span></span></span>
 <span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idWorkers</span>, <span class="va">idWorkers</span><span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Workers vs drones</span></span></span>
 <span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idWorkers</span>, <span class="va">idDrones</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idWorkers</span>, <span class="va">idVirginQueens</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idWorkers</span>, <span class="va">mw</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
-<span class="r-in"><span><span class="va">GRM</span><span class="op">[</span><span class="va">idWorkers</span>, <span class="va">md</span><span class="op">]</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'GRM' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculating allele frequencies ourselves (say, to "shift" base population)</span></span></span>
@@ -266,6 +225,19 @@ missing values are allowed (this is not checked - you will get NAs!)</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calcBeeGRMIbs(x = geno, sex = sex, alleleFreq = aF):</span> object 'geno' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">GRM2</span>, <span class="va">GRM</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in identical(GRM2, GRM):</span> object 'GRM2' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># You can also create relationships with pooled genomes</span></span></span>
+<span class="r-in"><span><span class="va">pooledGenoW</span> <span class="op">&lt;-</span> <span class="fu"><a href="getPooledGeno.html">getPooledGeno</a></span><span class="op">(</span><span class="fu"><a href="getSegSiteGeno.html">getWorkersSegSiteGeno</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             type <span class="op">=</span> <span class="st">"mean"</span>,</span></span>
+<span class="r-in"><span>                             sex <span class="op">=</span> <span class="fu"><a href="getCasteSex.html">getCasteSex</a></span><span class="op">(</span><span class="va">colony</span>, caste<span class="op">=</span><span class="st">"workers"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
+<span class="r-in"><span><span class="va">queenGeno</span> <span class="op">&lt;-</span> <span class="fu"><a href="getSegSiteGeno.html">getQueenSegSiteGeno</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
+<span class="r-in"><span><span class="co"># Compute relationship between pooled workers genotype and the queen</span></span></span>
+<span class="r-in"><span><span class="fu">calcBeeGRMIbs</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">queenGeno</span>, <span class="va">pooledGenoW</span><span class="op">)</span>, sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F"</span>,<span class="st">"F"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rbind(queenGeno, pooledGenoW):</span> object 'queenGeno' not found</span>
+<span class="r-in"><span><span class="co"># You can now compare how this compare to relationships between the queen</span></span></span>
+<span class="r-in"><span><span class="co"># individual workers!</span></span></span>
 </code></pre></div>
     </div>
   </div>

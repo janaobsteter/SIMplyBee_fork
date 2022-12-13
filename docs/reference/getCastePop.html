@@ -45,25 +45,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/2_Colony_events.html">Colony Events</a>
+      <a href="../articles/C_Colony_events.html">Colony Events</a>
     </li>
     <li>
-      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+      <a href="../articles/B_Multiple_colonies.html">Multiple colonies</a>
     </li>
     <li>
-      <a href="../articles/4_Genomics.html">Genomics</a>
+      <a href="../articles/D_Crossing.html">Crossing</a>
     </li>
     <li>
-      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+      <a href="../articles/E_Genomics.html">Genomics</a>
     </li>
     <li>
-      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+      <a href="../articles/G_Sampling_functions.html">Sampling functions</a>
     </li>
     <li>
-      <a href="../articles/7_FAQs.html">FAQs</a>
+      <a href="../articles/F_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/Z_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -208,171 +211,50 @@ virgin queens, say via insemination</p></dd>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="cross.html">cross</a></span><span class="op">(</span><span class="va">apiary</span>, drones <span class="op">=</span> <span class="va">droneGroups</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Using defaults in SP$nWorkers &amp; SP$nDrones</span></span></span>
-<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Build-up and add virgin queens</span></span></span>
+<span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span>, exact <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="buildUp.html">buildUp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Using a default in SP$nVirginQueens</span></span></span>
 <span class="r-in"><span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu"><a href="addCastePop.html">addVirginQueens</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="va">colony</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="va">apiary</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Comparison of getCastePop() and getQueen()</span></span></span>
+<span class="r-in"><span><span class="co"># Get the queen of the colony</span></span></span>
 <span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="fu">getQueen</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Comparison of getCastePop() and getFathers()</span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"fathers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"fathers"</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"fathers"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="fu">getQueen</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Comparison of getCastePop() and getVirginQueens()</span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Comparison of getCastePop() and getWorkers()</span></span></span>
 <span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
+<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
+<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"workers"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Or aliases</span></span></span>
 <span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
+<span class="r-in"><span><span class="co"># Same aliases exist for all the castes!</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Comparison of getCastePop() and getDrones()</span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, caste <span class="op">=</span> <span class="st">"drones"</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Comparisons on MultiColony class</span></span></span>
+<span class="r-in"><span><span class="co"># Input is a MultiColony class - same behaviour as for the Colony!</span></span></span>
 <span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
+<span class="r-in"><span><span class="co"># Or alias</span></span></span>
 <span class="r-in"><span><span class="fu">getQueen</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Sample individuals from all the castes</span></span></span>
 <span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span>, caste <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
-<span class="r-in"><span><span class="co"># Sample individuals from all the castes as a single population</span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">5</span>, caste <span class="op">=</span> <span class="st">"all"</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'colony' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"fathers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getFathers</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Pop"):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">mergePops</span><span class="op">(</span><span class="fu">getVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"workers"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span><span class="co"># Get different number of workers per colony</span></span></span>
 <span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"workers"</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">mergePops</span><span class="op">(</span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="co"># Get different number of drones per colony</span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">id</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getDrones</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">mergePops</span><span class="op">(</span><span class="fu">getDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"queen"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
-<span class="r-in"><span><span class="fu">getCastePop</span><span class="op">(</span><span class="va">apiary</span>, caste <span class="op">=</span> <span class="st">"drones"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Or alias</span></span></span>
+<span class="r-in"><span><span class="fu">getWorkers</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(x, class2 = "Colony"):</span> object 'apiary' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Obtain individuals from MultiColony as a single population</span></span></span>
