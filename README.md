@@ -3,11 +3,15 @@
 SIMplyBee R package extends [AlphaSimR](https://CRAN.R-project.org/package=AlphaSimR)
 for simulating honeybee populations and breeding programmes
 
-This is the development site of SIMplyBee
+## Documentation
+
+http://simplybee.info
 
 ## Publication
 
-TODO
+SIMplyBee: R package for simulating honeybee populations and breeding programs
+Jana Obšteter, Laura K. Strachan, Jernej Bubnič, Janez Prešern, Gregor Gorjanc
+bioRxiv https://doi.org/10.1101/2022.12.15.520571
 
 ## Download
 
@@ -24,6 +28,6 @@ accessed from the main and devel branches using:
     # Development version of SIMplyBee
     devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
 
- <!-- badges: start -->
+<!-- badges: start -->
   [![R-CMD-check](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml)
-  <!-- badges: end -->
+<!-- badges: end -->
