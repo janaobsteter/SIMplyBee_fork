@@ -20,6 +20,18 @@ knitr::opts_chunk$set(
 )
 ```
 
+The idea of this work is:
+
+1)  We want to do honey bee simulations with individual queens, drones, and
+    workers
+
+2)  To do the above, we require individual variances and covariances
+
+3)  Literature reports only variances and covariances at the colony level
+
+4)  The aim of this paper is to show how to use variances and covariances at the
+    colony level to do simulations at the individual level.
+
 # Introduction WORK IN PROGRESS
 
 This document develops theory for the variance of genetic and phenotypic values
@@ -36,6 +48,30 @@ the ratio was aobut 1/2!
 TODO: What do we do about this? It feels like we need a full paper on all of
 this;) :(
 
+INTRODUCTION
+
+TODO: Topic 1
+
+TODO: cite this paper that does honeybee simulations, but without actually doing
+honeybee colony stuff etc. Heritability in honeybees paper:
+<https://agritrop.cirad.fr/599190/1/ece3.7389.pdf>
+
+TOOD: cite some classic papers on variances in honeybees
+
+TODO: cite recent papers from German and Dutch colleagues on variances in
+honeybees
+
+Brascamp and Bijma (2014): Methods to estimate breeding values in honey bees
+<https://gsejournal.biomedcentral.com/articles/10.1186/s12711-014-0053-9>
+
+Brascamp and Bijma (2019): A note on genetic parameters and accuracy of
+estimated breeding values in honey bees
+<https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0510-6>
+
+Andonov et al.: Modeling honey yield, defensive and swarming behaviors of
+Italian honey bees (Apis mellifera ligustica) using linear-threshold approaches
+<https://doi.org/10.1186/s12863-019-0776-2>
+
 To make use of the material in this document you should run the quantitative
 genetics vignette - the first example. Then you can continue here!
 
@@ -43,6 +79,44 @@ Having multiple colonies and their values, we can now return to the "about"
 point mentioned at the start of this section, when we defined quantitative
 genetic parameters. Recall that our starting quantitative genetic parameters for
 the queen and workers effects were:
+
+We will follow the example from Brascamp and Bijma (2019) they have:
+
+$\sigma_{g_q}^2=0.5$ - this is their $\sigma_{A_q}^2=0.5$
+
+$\sigma_{g_w}^2=1.0$ - this is their $\sigma_{A_w}^2=1.0$ among unrelated
+honeybees
+
+$\sigma_{g_w}^2=0.32$ - this is their $\sigma_{\bar{A}_w}^2=0.32$ among averages
+of groups of honeybees?
+
+$\sigma_{{g_q},{g_w}}=-0.35$
+
+$\sigma_e^2=2.0$
+
+$h^2=(a_base\sigma_{g,w}^2 + \sigma_{{g,w},{g,q}} \sigma_{g,q}^2)/\sigma_{p,c}^2=???$
+
+$h_w^2=a_base\sigma_{g,w}^2/\sigma_{p,c}^2=0.13$
+
+$h_q^2=\sigma_{g,q}^2/\sigma_{p,c}^2=0.20$
+
+$T^2=(sigma_{g,w}^2 + 2\sigma_{{g,w},{g,q}} \sigma_{g,q}^2)/\sigma_{p,c}^2=0.32$
+
+$T_w^2=\sigma_{g,w}^2/\sigma_{p,c}^2=0.41$
+
+$T_q^2=\sigma_{g,q}^2/\sigma_{p,c}^2=0.20$
+
+$r_g = cor(g_w, g_q) = -0.50$
+
+TODO: equation 3 in Brascamp and Bijma (2019) is highly relevant to our work
+here - that equation shows connection between the variance of the sum (or
+average) of worker genetic values for worker effect AND variance of worker
+genetic values for worker effect - THIS IS WHAT WE WORK WITH HERE SO WHAT IS
+NOVEL IN OUR WORK? I think its about providing a tool and demonstrate it
+clearly. Also, they work with average, while we work with the sum?
+
+TODO: show sensitivity to the number of workers - the larger the number of
+workers, the smaller the variance between workers
 
 ```{r quan_gen_param_revision}
 # Trait means
@@ -66,18 +140,21 @@ corE
 # Expected phenotypic variation - on a per colony level
 # TODO: there is in fact more stuff happening here - see below! 
 nW <- SP$nWorkers # TODO: this is not correct - we have queen-workers pairs and workers-workers (see below!)
+# Var(z)=Var(x+y)=Var(x)+Var(sum(y))=Var(x)+Var(y_1)+Var(y_2)+...
+# this is all wrong likely ...
 covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2] # variance can not be negative!
 covP[1, 1] + nW * covP[2, 2] + 2 * k * covP[1, 2]
 
 # Observed variation - on a per colony level
 var(colonyGv)
 var(colonyPheno)
-var(colonyGv) / var(colonyPheno) 
+var(colonyGv) / var(colonyPheno)
 ```
 
-Hmm, we have much higher genetic and phenotypic variances, as well as much
-higher ratio between the two than the initial value of \~1/4! Why? Let's see.
-For genetic value of a colony $g_c$ we add up the queen's genetic value for the
+Hmm, we have much higher genetic and phenotypic variances in simulation than
+based simply looking at queen and n\*workers variances, as well as much higher
+ratio between the two than the initial value of \~1/4! Why? Let's see. For
+genetic value of a colony $g_c$ we add up the queen's genetic value for the
 queen effect $g_{q,q}$ and workers' genetic values for the workers effect
 $\Sigma_{i=1}^{n_w}(g_{i,w})$:
 
@@ -101,7 +178,8 @@ $E(g_c) = \mu_{g_{q}} + E(n_w) E(g_{w,w})$ using
 
 $E(g_c) = \mu_{g_{q}} + \lambda_{n_w} \mu_{g_{w}}$
 
-which in our case turns the same. So in our case we have:
+where $\lambda_{n_w}$ is average number of workers. So, in our case this turns
+out the same as above. So in our case we have:
 
 ```{r}
 nW <- SP$nWorkers
@@ -199,12 +277,11 @@ that pair A-B adds this value, but so does the pair B-A, hence total is
 $2\frac{1}{2}\sigma^2_{g_w} = \sigma^2_{g_w}$. With $n_w$ workers we get
 $n_w n_w$ pairs (including with itself) or $n_w n_w - n_w$ pairs between
 different workers. The total covariance contribution is then
-$(\frac{n_w n_w}{2} - \frac{n_w}{2})\sigma^2_{g_w}$ (or equivalently
 $(n_w n_w - n_w)\frac{1}{2}\sigma^2_{g_w}$). In our case this would be:
 
 ```{r check_workers_variances2}
 (varSumWorkers <- nW * varA[2]) # B1
-(covSumWorkers <- (nW * nW - nW)/2 * varA[2]) # B2
+(covSumWorkers <- (nW * nW - nW) * 1/2 * varA[2]) # B2
 varSumWorkers + covSumWorkers # B
 
 g <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = "workersTrait")
@@ -214,12 +291,23 @@ sum((g - nW * mean[2])^2) / nColonies(apiary) # B
 ```
 
 If we would only have super-sisters we would have \~1 for B1, \~49.5 for B2, and
-\~50.5 for B, but with a mix of sisters and super-sisters we would have a lower
-value, which is what we see above, \~26.8 for B.
+\~50.5 for B, but with a mix of half-sisters and super-sisters we would have a
+lower value, which is what we see above, \~26.8 for B.
 
-So, now we need to work out B2 with a mix of sisters and super-sisters :( Sister
-workers are related only due to having the same mother, assuming that drones the
-queen mated with are unrelated:
+TODO: Define the setting above in intro or start of M&M - We also can have
+full-sisters, where the mother is obviously the same, but the fathers are
+different, yet they come from the same mother, which is equivalent to a
+full-sibs case in diploid species. We will assume in this work that we have
+unrelated queens and unrelated drones (=base pop) - our aim is to set variances
+in such a base population - to get the scale or the variances right. In
+simulation of our base population we generated drones from virgin queens, which
+means that our drones can in fact be brothers, so our realised variances might
+be a bit off compared to this theory. But this is fine, we are mostly trying to
+get the order of variances correct.
+
+So, now we need to work out B2 with a mix of half-sisters and super-sisters :(
+Sister workers are related only due to having the same mother, assuming that
+drones the queen mated with are unrelated:
 
 $g_{1,w} = \frac{1}{2}g_{q,w} + g_{f1,w} + r_{1,w}$
 
@@ -231,11 +319,11 @@ $Cov(g_{1,w}, g_{2,w}) = Var(\frac{1}{2}g_{q,w})$
 
 $Cov(g_{1,w}, g_{2,w}) = \frac{1}{4}Var(g_{q,w})$
 
-Hence every pair of sister workers adds $\frac{1}{4}\sigma^2_{g_w}$ to B (note,
-this is $2\frac{1}{4}\sigma^2_{g_w}$ for A-B and B-A pairs!). With $n_w$ workers
-and $n_f$ fathers we have $\frac{n_w}{n_f}$ workers per father. Further, we have
-$n_f$ groups of super-sisters and $n_f n_f - n_f$ pairs of sister groups.
-Assuming that sister groups are the same size, we have
+Hence every pair of half-sister workers adds $\frac{1}{4}\sigma^2_{g_w}$ to B
+(note, this is $2\frac{1}{4}\sigma^2_{g_w}$ for A-B and B-A pairs!). With $n_w$
+workers and $n_f$ fathers we have $\frac{n_w}{n_f}$ workers per father. Further,
+we have $n_f$ groups of super-sisters and $n_f n_f - n_f$ pairs of sister
+groups. Assuming that half-sister groups are the same size, we have
 $n_f \frac{n_w}{n_f} \frac{n_w}{n_f} = n_w \frac{n_w}{n_f} = \frac{n^2_w}{n_f}$
 pairs of super-sisters and $(n_f n_f - n_f) \frac{n_w}{n_f} \frac{n_w}{n_f}$ -
 this is
@@ -253,14 +341,14 @@ a+b
 Looks like!
 
 So, super-sister pairs add $\frac{n^2_w}{n_f} \frac{1}{2}\sigma^2_{g_w}$ and
-sister pairs add $\frac{ (n_f - 1) n^2_w}{n_f} \frac{1}{4}\sigma^2_{g_w}$. Let's
-test this:
+half-sister pairs add $\frac{ (n_f - 1) n^2_w}{n_f} \frac{1}{4}\sigma^2_{g_w}$.
+Let's test this:
 
 ```{r check_workers_variances3}
 (varSumWorkers <- nW * varA[2]) # B1
 (covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters
-(covSumWorkersSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in super-sisters
-varSumWorkers + covSumWorkersSuperSisters + covSumWorkersSisters # B
+(covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
+varSumWorkers + covSumWorkersSuperSisters + covSumWorkersHalfSisters # B
 
 g <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = "workersTrait")
 var(g) # B
@@ -268,7 +356,12 @@ var(g) # B
 sum((g - SP$nWorkers * mean[2])^2) / nColonies(apiary) # B
 ```
 
-Cool - very close!!!
+Cool - very close!!! There can be some difference because the formulae above
+assume that we have fixed sizes of half-sister and super-sister groups. Also,
+there can be full-sisters in there as well!!!
+
+TODO: We could also add full-sisters: To do this, we would have to assume how
+many brother drones we use to figure out the grups
 
 TODO: What if $n_w$ is a random variable? Following
 <https://en.wikipedia.org/wiki/Distribution_of_the_product_of_two_random_variables>
@@ -315,8 +408,8 @@ $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = n_w \sigma_{g_{q},g_{w}}$
 
 (varSumWorkers <- nW * varA[2]) # B1
 (covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters
-(covSumWorkersSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in sisters
-(varSumWorkers <- varSumWorkers + covSumWorkersSuperSisters + covSumWorkersSisters) # B
+(covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
+(varSumWorkers <- varSumWorkers + covSumWorkersSuperSisters + covSumWorkersHalfSisters) # B
 
 (covQueenSumWorkers <- nW * covA[1, 2]) # C
 
@@ -400,11 +493,11 @@ $\sigma^2_{g_c} = \sigma^2_{g_{c,q}} + \sigma^2_{g_{c,w}} + 2\sigma_{g_{c,q},g_{
 where $\sigma^2_{g_{c,q}}$ is the queen part of $\sigma^2_{g_c}$, but not
 necessarily the same as $\sigma^2_{g_w}$, or is it? Maybe that is the same, and
 $\sigma^2_{g_{c,w}}$ is a counterpart to
-$n_w \sigma^2_{g_w} + \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}, \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$,
-while $\sigma_{g_{c,q},g_{c,w}}$ is a counterpart to
-$n_w \sigma^2_{{g_q},{g_w}}$. If this is so, then it fells that we should have 3
-more inputs for genetic part, so 4 inputs to estimate 3 unknowns of which some
-are very simple transformations!!!
+$n_w \sigma^2_{g_w} + \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}, \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$
+(TODO: should we add full-sisters?), while $\sigma_{g_{c,q},g_{c,w}}$ is a
+counterpart to $n_w \sigma_{{g_q},{g_w}}$. If this is so, then it fells that we
+should have 3 more inputs for genetic part, so 4 inputs to estimate 3 unknowns
+of which some are very simple transformations!!!
 
 Additional input could be $\sigma^2_{p_c}$. For sure we don't get estimates of
 $\sigma^2_{p_c} = \sigma^2_{p_{c,q}} + \sigma^2_{p_{c,w}} + 2\sigma_{p_{c,q},p_{c,w}}$,
@@ -421,3 +514,4 @@ we can change these individual-level parameters and study how that will change
 colony-level parameters and then how we could go the other way around based on
 literature and solving the above systems of equations. We could host such a
 Shiny app on SIMplyBee.info!? Can we?
+
