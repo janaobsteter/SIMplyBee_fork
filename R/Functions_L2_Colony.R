@@ -7,7 +7,8 @@
 #'   to initiate simulations.
 #'
 #' @param x \code{\link{Pop-class}}, one queen or virgin queen(s)
-#' @param location numeric, location of the colony as \code{c(x, y)}
+#' @param location numeric, x and y coordinates of colony location as
+#'   \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
@@ -1733,58 +1734,91 @@ combine <- function(strong, weak) {
 #'   location to (x, y) coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param location numeric or list, location to be set for the
-#'   \code{\link{Colony-class}} or for \code{\link{MultiColony-class}}; when
-#'   numeric the same location will be set for all colonies; when list different
-#'   locations will be set for each colony - the list has to have the same
-#'   length at there are colonies in \code{x})
+#' @param location numeric, list, or data.frame, x and y coordinates of colony
+#'  locations as
+#'  \code{c(x1, y1)} (the same location set to all colonies),
+#'  \code{list(c(x1, y1), c(x2, y2))}, or
+#'  \code{data.frame(x = c(x1, x2), y = c(y1, y2))}
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
 #'   location
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(basePop[1], n = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10)
 #'
 #' # Create Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[3:8], n = 6)
-#' apiary <- cross(apiary, drones = droneGroups[2:7])
+#' apiary <- createMultiColony(basePop[3:5])
+#' apiary <- cross(apiary, drones = droneGroups[2:4])
 #'
 #' getLocation(colony)
 #' getLocation(apiary)
 #'
-#' loc1 <- c(512, 722)
-#' colony <- setLocation(colony, location = loc1)
+#' loc <- c(1, 1)
+#' colony <- setLocation(colony, location = loc)
 #' getLocation(colony)
 #'
 #' # Assuming one location (as in bringing colonies to one place!)
-#' apiary <- setLocation(apiary, location = loc1)
+#' apiary <- setLocation(apiary, location = loc)
+#' getLocation(apiary)
+#'
+#' # Assuming different locations
+#' locList <- list(c(0, 0), c(1, 1), c(2, 2))
+#' apiary <- setLocation(apiary, location = locList)
+#' getLocation(apiary)
+#'
+#' locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
+#' apiary <- setLocation(apiary, location = locDF)
 #' getLocation(apiary)
 #' @export
 setLocation <- function(x, location) {
   if (isColony(x)) {
+    if (is.list(location)) { # is.list() captures also is.data.frame()
+      stop("Argument location must be numeric, when x is a Colony class object!")
+    }
+    if (is.numeric(location) && length(location) != 2) {
+      stop("When argument location is a numeric, it must be of length 2!")
+    }
     x@location <- location
   } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    if (is.list(location)) {
-      if (length(location) != nCol) {
-        stop("The length of location list and the number of colonies must match!")
-      }
-      for (colony in seq_len(nCol)) {
-        if (!is.null(x[[colony]])) {
-          x[[colony]]@location <- location[[colony]]
+    n <- nColonies(x)
+    if (!is.null(location)) {
+      if (is.data.frame(location)) {
+        if (nrow(location) != n | ncol(location) != 2) {
+          stop("When argument location is a data.frame, it must have n rows and 2 columns!")
         }
-      }
-    } else {
-      for (colony in seq_len(nCol)) {
-        if (!is.null(x[[colony]])) {
-          x[[colony]]@location <- location
+      } else if (is.list(location)) {
+        if (length(location) != n) {
+          stop("When argument location is a list, it must be of length n!")
         }
+        tmp <- sapply(X = location, FUN = length)
+        if (!all(tmp == 2)) {
+          stop("When argument location is a list, each list node must be of length 2!")
+        }
+      } else if (is.numeric(location)) {
+        if (length(location) != 2) {
+          stop("When argument location is a numeric, it must be of length 2!")
+        }
+      } else {
+        stop("Argument location must be numeric, list, or data.frame!")
+      }
+    }
+    for (colony in seq_len(n)) {
+      if (is.data.frame(location)) {
+        loc <- location[colony, ]
+        loc <- c(loc$x, loc$y)
+      } else if (is.list(location)) {
+        loc <- location[[colony]]
+      } else {
+        loc <- location
+      }
+      if (!is.null(x[[colony]])) {
+        x[[colony]]@location <- loc
       }
     }
   } else {

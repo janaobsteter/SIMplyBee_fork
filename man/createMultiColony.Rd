@@ -15,7 +15,11 @@ createMultiColony(x = NULL, n = NULL, location = NULL)
 given then \code{\link{MultiColony-class}} is created with \code{n}
 \code{NULL}) individual colony - this is mostly useful for programming)}
 
-\item{location}{list, location of the colonies as \code{c(x, y)}}
+\item{location}{numeric, list, or data.frame, x and y coordinates of colony
+locations as
+\code{c(x1, y1)} (the same location set to all colonies),
+\code{list(c(x1, y1), c(x2, y2))}, or
+\code{data.frame(x = c(x1, x2), y = c(y1, y2))}}
 }
 \value{
 \code{\link{MultiColony-class}}
@@ -39,9 +43,9 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-# Create 2 virgin colonies
-apiary <- createMultiColony(x = basePop, n = 2) # specify n
-apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+# Create 3 virgin colonies
+apiary <- createMultiColony(x = basePop, n = 3) # specify n
+apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 apiary
 apiary[[1]]
 apiary[[2]]
@@ -54,4 +58,15 @@ apiary <- cross(apiary, drones = droneGroups)
 apiary
 apiary[[1]]
 apiary[[2]]
+
+# Geo-referenced colonies
+loc <- c(1, 1)
+apiary <- createMultiColony(x = basePop[1:3], location = loc)
+getLocation(apiary)
+locList <- list(c(0, 0), c(1, 1), c(2, 2))
+apiary <- createMultiColony(x = basePop[1:3], location = locList)
+getLocation(apiary)
+locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
+apiary <- createMultiColony(x = basePop[1:3], location = locDF)
+getLocation(apiary)
 }

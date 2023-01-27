@@ -12,7 +12,11 @@
 #' @param n integer, number of colonies to create (if only \code{n} is
 #'   given then \code{\link{MultiColony-class}} is created with \code{n}
 #'   \code{NULL}) individual colony - this is mostly useful for programming)
-#' @param location list, location of the colonies as \code{c(x, y)}
+#' @param location numeric, list, or data.frame, x and y coordinates of colony
+#'  locations as
+#'  \code{c(x1, y1)} (the same location set to all colonies),
+#'  \code{list(c(x1, y1), c(x2, y2))}, or
+#'  \code{data.frame(x = c(x1, x2), y = c(y1, y2))}
 #'
 #' @details When both \code{x} and \code{n} are \code{NULL}, then a
 #'   \code{\link{MultiColony-class}} with 0 colonies is created.
@@ -30,9 +34,9 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
-#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+#' # Create 3 virgin colonies
+#' apiary <- createMultiColony(x = basePop, n = 3) # specify n
+#' apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -45,6 +49,17 @@
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
+#'
+#' # Geo-referenced colonies
+#' loc <- c(1, 1)
+#' apiary <- createMultiColony(x = basePop[1:3], location = loc)
+#' getLocation(apiary)
+#' locList <- list(c(0, 0), c(1, 1), c(2, 2))
+#' apiary <- createMultiColony(x = basePop[1:3], location = locList)
+#' getLocation(apiary)
+#' locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
+#' apiary <- createMultiColony(x = basePop[1:3], location = locDF)
+#' getLocation(apiary)
 #' @export
 createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
   if (is.null(x)) {
@@ -67,11 +82,37 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
       stop("Not enough individuals in the x to create n colonies!")
     }
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
+    if (!is.null(location)) {
+      if (is.data.frame(location)) {
+        if (nrow(location) != n | ncol(location) != 2) {
+          stop("When argument location is a data.frame, it must have n rows and 2 columns!")
+        }
+      } else if (is.list(location)) {
+        if (length(location) != n) {
+          stop("When argument location is a list, it must be of length n!")
+        }
+        tmp <- sapply(X = location, FUN = length)
+        if (!all(tmp == 2)) {
+          stop("When argument location is a list, each list node must be of length 2!")
+        }
+      } else if (is.numeric(location)) {
+        if (length(location) != 2) {
+          stop("When argument location is a numeric, it must be of length 2!")
+        }
+      } else {
+        stop("Argument location must be numeric, list, or data.frame!")
+      }
+    }
     for (colony in seq_len(n)) {
-      ret[[colony]] <- createColony(
-        x = x[colony],
-        location = location[colony]
-      )
+      if (is.data.frame(location)) {
+        loc <- location[colony, ]
+        loc <- c(loc$x, loc$y)
+      } else if (is.list(location)) {
+        loc <- location[[colony]]
+      } else {
+        loc <- location
+      }
+      ret[[colony]] <- createColony(x = x[colony], location = loc)
     }
   }
   validObject(ret)
