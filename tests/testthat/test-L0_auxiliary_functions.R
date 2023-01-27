@@ -716,7 +716,7 @@ test_that("isWorkersPresent", {
   expect_true(is.vector(isWorkersPresent(apiary2)))
 })
 
-
+# ---- isGenoHeterozygous ----
 test_that("isGenoHeterozygous", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -757,6 +757,7 @@ test_that("isGenoHeterozygous", {
    SIMplyBee:::isGenoHeterozygous(tmp)
 })
 
+# ---- getBV ----
 test_that("getBV", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -831,6 +832,7 @@ test_that("getBV", {
    SIMplyBee:::getBv(apiary, caste = "all", collapse = TRUE)
 })
 
+# ---- getDd ----
 test_that("getDd", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -904,6 +906,7 @@ test_that("getDd", {
    SIMplyBee:::getDd(apiary, caste = "all", collapse = TRUE)
 })
 
+# ---- getAa ----
 test_that("getAa", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -977,6 +980,7 @@ test_that("getAa", {
    SIMplyBee:::getAa(apiary, caste = "all", collapse = TRUE)
 })
 
+# ---- editCsdLocus ----
 test_that("editCsdLocus", {
    founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -987,4 +991,29 @@ test_that("editCsdLocus", {
    basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
    nrow(getCsdAlleles(basePopEdited, unique = TRUE))
    all(isCsdHeterozygous(basePopEdited))
+})
+
+# ---- getLocation ----
+test_that("getLocation", {
+   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+   SP <- SimParamBee$new(founderGenomes)
+   basePop <- createVirginQueens(founderGenomes)
+   drones <- createDrones(x = basePop[1], nInd = 1000)
+   droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
+   colony <- createColony(x = basePop[2])
+   colony <- cross(colony, drones = droneGroups[[1]])
+   apiary <- createMultiColony(basePop[3:4], n = 2)
+   apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
+
+   expect_equal(getLocation(colony), c(0, 0))
+   expect_equal(getLocation(apiary[[1]]), c(0, 0))
+   expect_equal(getLocation(apiary), list("2" = c(0, 0), "3" = c(0, 0)))
+   tmp <- matrix(data = 0, nrow = 2, ncol = 2, dimnames = list(c("2", "3"), NULL))
+   expect_equal(getLocation(apiary, collapse = TRUE), tmp)
+
+   loc <- c(123, 456)
+   expect_equal(getLocation(setLocation(colony, location = loc)), loc)
+
+   expect_equal(getLocation(setLocation(apiary, location = loc)),
+                list("2" = loc, "3" = loc))
 })

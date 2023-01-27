@@ -210,6 +210,15 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
+\item{\code{swarmSDLocation}}{numeric, two standard deviations to sample new
+  location - one for each coordinate- used in \code{\link{swarm}} - see
+  its \code{sampleLocation} argument.
+
+  The default value is c(0, 0), that is, swarm gets the same location as
+  the original colony.
+
+  You can change this setting to your needs!}
+
 \item{\code{splitP}}{numeric or a function, the split proportion - the
   proportion of workers removed in a managed split - used in
   \code{\link{split}}.
@@ -357,6 +366,7 @@ Starts the process of building a new simulation by creating
   nVirginQueens = 10,
   nFathers = 15,
   swarmP = 0.5,
+  swarmSDLocation = c(0, 0),
   splitP = 0.3,
   downsizeP = 0.85,
   csdChr = 3,
@@ -381,6 +391,8 @@ genomes}
 \item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nFathers}}
 
 \item{\code{swarmP}}{see \code{\link{SimParamBee}} field \code{swarmP}}
+
+\item{\code{swarmSDLocation}}{see \code{\link{SimParamBee}} field \code{swarmSDLocation}}
 
 \item{\code{splitP}}{see \code{\link{SimParamBee}} field \code{splitP}}
 

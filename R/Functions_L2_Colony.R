@@ -1223,7 +1223,9 @@ collapse <- function(x) {
 #'  the current colony location and adding deviates from normal distribution to
 #'  each coordinate
 #' @param sdLocation numeric, two standard deviations to sample new location -
-#'   one for each coordinate (see \code{sampleLocation})
+#'   one for each coordinate (see \code{sampleLocation}); if \code{NULL} then
+#'   \code{\link{SimParamBee}$swarmSDLocation} is used (which uses \code{c(0, 0)},
+#'   so by default swarm does not fly far away)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
@@ -1268,13 +1270,16 @@ collapse <- function(x) {
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
 swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
-                  sampleLocation = TRUE, sdLocation = c(0, 0),
+                  sampleLocation = TRUE, sdLocation = NULL,
                   simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(p)) {
     p <- simParamBee$swarmP
+  }
+  if (is.null(sdLocation)) {
+    sdLocation <- simParamBee$swarmSDLocation
   }
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens

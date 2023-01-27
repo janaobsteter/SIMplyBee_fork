@@ -100,11 +100,8 @@ of population splits. The default values for these numbers follow published
 references (Wallberg et al., 2014). While you can change these parameters, we
 don't advise doing this because such demographic models, and their parameters,
 are estimated jointly, so we should not be changing them independently. You can
-read more about these parameters in the help page:
-
-```{r deeper looking to the arguments}
-??simulateHoneyBeeGenomes
-```
+read more about these parameters in the help page
+`help(simulateHoneyBeeGenomes)`.
 
 Now we are ready to setup global simulation parameters using `SimParamBee`.
 `SimParamBee` builds upon AlphaSimR's `SimParam`, which includes genome and
@@ -452,3 +449,4 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
+
