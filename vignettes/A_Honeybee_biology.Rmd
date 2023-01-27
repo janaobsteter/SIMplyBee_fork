@@ -89,7 +89,10 @@ running this part to an external server and save the outcome as an RData file,
 which we can load in our environment and work with it.
 
 ```{r save Rdata file}
-save(founderGenomes2, file="FounderGenomes2_3chr.RData")
+# Save the genomes on a server
+save(founderGenomes2, file = "FounderGenomes2_3chr.RData")
+# Loade the saved genomes elsewhere
+load(file = "FounderGenomes2_3chr.RData")
 ```
 
 Besides specifying the number of individuals, chromosomes, and segregating
@@ -449,4 +452,3 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
-
