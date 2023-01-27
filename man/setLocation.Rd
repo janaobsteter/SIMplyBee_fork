@@ -4,7 +4,7 @@
 \alias{setLocation}
 \title{Set colony location}
 \usage{
-setLocation(x, location)
+setLocation(x, location = c(0, 0))
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}

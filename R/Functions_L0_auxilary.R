@@ -1436,7 +1436,7 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param collapse logical, if the return value should be a single matrix
 #'   with locations of all the colonies; only applicable when input
-#'   is a \code{\link{MultiColony}} object
+#'   is a \code{\link{MultiColony-class}} object
 #'
 #' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
 #'   and a list of numeric with two values when \code{x} is

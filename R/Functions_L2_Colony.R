@@ -7,8 +7,6 @@
 #'   to initiate simulations.
 #'
 #' @param x \code{\link{Pop-class}}, one queen or virgin queen(s)
-#' @param location numeric, x and y coordinates of colony location as
-#'   \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
@@ -32,7 +30,7 @@
 #' colony1 <- cross(colony1, drones = drones)
 #' colony1
 #' @export
-createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
+createColony <- function(x = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -40,8 +38,7 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
   if (is.null(x)) {
     colony <- new(
       Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location
+      id = simParamBee$lastColonyId
     )
   } else {
     if (!isPop(x)) {
@@ -63,8 +60,8 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
     colony <- new(
       Class = "Colony",
       id = simParamBee$lastColonyId,
-      location = location,
       queen = queen,
+      location = c(0, 0),
       virginQueens = virginQueens
     )
   }
@@ -1208,7 +1205,8 @@ collapse <- function(x) {
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
 #'   remnant colony retains the other proportion of workers and all drones, and
 #'   the workers raise virgin queens, of which only one prevails. Location of
-#'   the swarm is the same as for the remnant (for now).
+#'   the swarm is the same as for the remnant or sampled as deviation from the
+#'   remnant.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
@@ -1221,13 +1219,18 @@ collapse <- function(x) {
 #'   colony; of these one is randomly selected as the new virgin queen of the
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
+#' @param sampleLocation logical, sample location of the swarm by taking
+#'  the current colony location and adding deviates from normal distribution to
+#'  each coordinate
+#' @param sdLocation numeric, two standard deviations to sample new location -
+#'   one for each coordinate (see \code{sampleLocation})
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
 #'
 #' @return list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
-#' the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
-#' outputs have the swarm event set to \code{TRUE}
+#'   the \code{swarm} and the \code{remnant} (see the description what each
+#'   colony holds!); both outputs have the swarm event set to \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
@@ -1264,7 +1267,9 @@ collapse <- function(x) {
 #' # Swarm only the pulled colonies
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
-swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...) {
+swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
+                  sampleLocation = TRUE, sdLocation = c(0, 0),
+                  simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1305,12 +1310,23 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
     tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
     currentLocation <- getLocation(x)
+    if (sampleLocation) {
+      if (length(sdLocation) != 2) {
+        stop("You must provide two values for the sdLocation argument!")
+      }
+      newLocation <- c(rnorm(n = 1, mean = currentLocation[1],
+                             sd = sdLocation[1]),
+                       rnorm(n = 1, mean = currentLocation[2],
+                             sd = sdLocation[2]))
+    } else {
+      newLocation <- currentLocation
+    }
 
     swarmColony <- createColony(x = x@queen)
     # It's not re-queening, but the function also sets the colony id
 
     swarmColony@workers <- tmp$pulled
-    swarmColony <- setLocation(x = swarmColony, location = currentLocation)
+    swarmColony <- setLocation(x = swarmColony, location = newLocation)
 
     tmpVirginQueen <- createVirginQueens(
       x = x, nInd = nVirginQueens,
@@ -1368,6 +1384,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
                      p = pColony,
                      year = year,
                      nVirginQueens = nVirginQueens,
+                     sampleLocation = sampleLocation,
+                     sdLocation = sdLocation,
                      simParamBee = simParamBee, ...
         )
         ret$swarm[[colony]] <- tmp$swarm
@@ -1776,7 +1794,7 @@ combine <- function(strong, weak) {
 #' apiary <- setLocation(apiary, location = locDF)
 #' getLocation(apiary)
 #' @export
-setLocation <- function(x, location) {
+setLocation <- function(x, location = c(0, 0)) {
   if (isColony(x)) {
     if (is.list(location)) { # is.list() captures also is.data.frame()
       stop("Argument location must be numeric, when x is a Colony class object!")
