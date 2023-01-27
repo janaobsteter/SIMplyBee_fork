@@ -1434,6 +1434,9 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
 #'   coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param collapse logical, if the return value should be a single matrix
+#'   with locations of all the colonies; only applicable when input
+#'   is a \code{\link{MultiColony}} object
 #'
 #' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
 #'   and a list of numeric with two values when \code{x} is
@@ -1458,6 +1461,7 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' getLocation(colony)
 #' getLocation(apiary[[1]])
 #' getLocation(apiary)
+#' getLocation(apiary, collapse = TRUE)
 #'
 #' loc <- c(123, 456)
 #' colony <- setLocation(colony, location = loc)
@@ -1481,7 +1485,7 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' tmp <- setLocation(c(colony1, colony2), location = list(loc1, loc2))
 #' getLocation(tmp)
 #' @export
-getLocation <- function(x) {
+getLocation <- function(x, collapse = FALSE) {
   if (isColony(x)) {
     if (is.null(x@location)) {
       ret <- NULL
@@ -1491,6 +1495,9 @@ getLocation <- function(x) {
   } else if (isMultiColony(x)) {
     ret <- lapply(x@colonies, FUN = getLocation)
     names(ret) <- getId(x)
+    if (collapse) {
+      ret <- do.call(rbind, ret)
+    }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
