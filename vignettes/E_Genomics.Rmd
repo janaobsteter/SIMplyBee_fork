@@ -68,11 +68,7 @@ collapsed together and a single matrix is returned, if `collapse = FALSE` we
 return a list by caste or by colony.
 
 We recommend that you study the index of available `get*()` functions in
-SIMplyBee and read this vignette for a short demonstration.
-
-```{r help II}
-help(SIMplyBee)
-```
+SIMplyBee and read this vignette for a short demonstration: `help(SIMplyBee)`.
 
 To show all this functionality, let's get haplotypes and genotypes across the
 segregating sites for the different castes using `getSegSitesGeno()` or
