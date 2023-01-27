@@ -47,25 +47,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/1_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
     </li>
     <li>
-      <a href="../articles/2_Colony_events.html">Colony Events</a>
+      <a href="../articles/C_Colony_events.html">Colony Events</a>
     </li>
     <li>
-      <a href="../articles/3_Multiple_colonies.html">Multiple colonies</a>
+      <a href="../articles/B_Multiple_colonies.html">Multiple colonies</a>
     </li>
     <li>
-      <a href="../articles/4_Genomics.html">Genomics</a>
+      <a href="../articles/D_Crossing.html">Crossing</a>
     </li>
     <li>
-      <a href="../articles/5_Sampling_functions.html">Sampling functions</a>
+      <a href="../articles/E_Genomics.html">Genomics</a>
     </li>
     <li>
-      <a href="../articles/6_Quantitative_Genetics.html">Quantitative Genetics</a>
+      <a href="../articles/G_Sampling_functions.html">Sampling functions</a>
     </li>
     <li>
-      <a href="../articles/7_FAQs.html">FAQs</a>
+      <a href="../articles/F_Quantitative_Genetics.html">Quantitative Genetics</a>
+    </li>
+    <li>
+      <a href="../articles/Z_FAQs.html">FAQs</a>
     </li>
   </ul></li>
 <li>
@@ -210,26 +213,26 @@ ensure heterozygosity at the csd locus.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">8</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">4</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackRec</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="fu">setTrackPed</span><span class="op">(</span>isTrackPed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create virgin queens on a MapPop</span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu">createCastePop</span><span class="op">(</span><span class="va">founderGenomes</span>, caste <span class="op">=</span> <span class="st">"virginQueens"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="co"># Or alias function: createVirginQueens(founderGenomes)</span></span></span>
+<span class="r-in"><span><span class="co"># Or alias</span></span></span>
+<span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">founderGenomes</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
+<span class="r-in"><span><span class="co"># Same aliases exist for all the castes!!!</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create drones on a Pop</span></span></span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">createCastePop</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, caste <span class="op">=</span> <span class="st">"drones"</span>, nInd <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">createDrones</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,  nInd <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="co"># Or create unequal number of drones from multiple virgin queens</span></span></span>
-<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">createCastePop</span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, caste <span class="op">=</span> <span class="st">"drones"</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">createDrones</span><span class="op">(</span><span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="co"># Check mothers</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">drones</span><span class="op">@</span><span class="va">mother</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in table(drones@mother):</span> object 'drones' not found</span>
-<span class="r-in"><span><span class="co"># Or alias: createDrones(x = basePop[1], nInd = 100)</span></span></span>
-<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">10</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">droneGroups</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullDroneGroupsFromDCA.html">pullDroneGroupsFromDCA</a></span><span class="op">(</span><span class="va">drones</span>, n <span class="op">=</span> <span class="fl">3</span>, nDrones <span class="op">=</span> <span class="va">nFathersPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a Colony and a MultiColony class</span></span></span>
@@ -249,32 +252,20 @@ ensure heterozygosity at the csd locus.</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="va">colony</span><span class="op">@</span><span class="va">drones</span> <span class="op">&lt;-</span> <span class="fu">createDrones</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
+<span class="r-in"><span><span class="co"># Usually, you would use functions buildUp() or addCastePop()</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># These populations hold individual information</span></span></span>
-<span class="r-in"><span><span class="co"># Example on the virgin queens</span></span></span>
+<span class="r-in"><span><span class="co"># Example on the virgin queens (same holds for all castes!)</span></span></span>
 <span class="r-in"><span><span class="va">virginQueens</span> <span class="op">&lt;-</span> <span class="va">colony</span><span class="op">@</span><span class="va">virginQueens</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'colony' not found</span>
 <span class="r-in"><span><span class="va">virginQueens</span><span class="op">@</span><span class="va">id</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'virginQueens' not found</span>
 <span class="r-in"><span><span class="va">virginQueens</span><span class="op">@</span><span class="va">sex</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'virginQueens' not found</span>
-<span class="r-in"><span><span class="va">virginQueens</span><span class="op">@</span><span class="va">misc</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'virginQueens' not found</span>
 <span class="r-in"><span><span class="va">virginQueens</span><span class="op">@</span><span class="va">mother</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'virginQueens' not found</span>
 <span class="r-in"><span><span class="va">virginQueens</span><span class="op">@</span><span class="va">father</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'virginQueens' not found</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">pedigree</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span><span class="op">[[</span><span class="fl">23</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SP$recHist[[23]]:</span> subscript out of bounds</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">recHist</span><span class="op">[[</span><span class="fl">23</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in SP$recHist[[23]]:</span> subscript out of bounds</span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">caste</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> factor(0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: queen fathers workers drones virginQueens</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specify own number</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">nVirginQueens</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
@@ -287,17 +278,6 @@ ensure heterozygosity at the csd locus.</p></dd>
 <span class="r-in"><span><span class="co"># Or creating unequal numbers</span></span></span>
 <span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="co"># Or creating unequal numbers</span></span></span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="co"># nVirginQueens will NOT vary between function calls when a constant is used</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specify a function that will give a number</span></span></span>
@@ -305,47 +285,28 @@ ensure heterozygosity at the csd locus.</p></dd>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="va">nVirginQueensPoisson</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="va">nWorkersPoisson</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="va">nWorkersPoisson</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="va">nDronesPoisson</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">apiary</span>, nInd <span class="op">=</span> <span class="va">nDronesPoisson</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="co"># No. of individuals will vary between function calls when a function is used</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Store a function or a value in the SP object</span></span></span>
 <span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">nVirginQueens</span> <span class="op">&lt;-</span> <span class="va">nVirginQueensPoisson</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">nWorkers</span> <span class="op">&lt;-</span> <span class="va">nWorkersPoisson</span></span></span>
-<span class="r-in"><span><span class="va">SP</span><span class="op">$</span><span class="va">nDrones</span> <span class="op">&lt;-</span> <span class="va">nDronesPoisson</span></span></span>
+<span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createWorkers</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu">createDrones</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">apiary</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="co"># No. of individuals will vary between function calls when a function is used</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># csd homozygosity - relevant when creating virgin queens</span></span></span>
-<span class="r-in"><span><span class="va">founderGenomes</span> <span class="op">&lt;-</span> <span class="fu">quickHaplo</span><span class="op">(</span>nInd <span class="op">=</span> <span class="fl">100</span>, nChr <span class="op">=</span> <span class="fl">1</span>, segSites <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">SP</span> <span class="op">&lt;-</span> <span class="va"><a href="SimParamBee.html">SimParamBee</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">founderGenomes</span>, csdChr <span class="op">=</span> <span class="fl">1</span>, nCsdAlleles <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">founderGenomes</span>, editCsd <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="getCsdAlleles.html">getCsdAlleles</a></span><span class="op">(</span><span class="va">basePop</span>, unique <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="isCsdHeterozygous.html">isCsdHeterozygous</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">basePop</span> <span class="op">&lt;-</span> <span class="fu">createVirginQueens</span><span class="op">(</span><span class="va">founderGenomes</span>, editCsd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="getCsdAlleles.html">getCsdAlleles</a></span><span class="op">(</span><span class="va">basePop</span>, unique <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="isCsdHeterozygous.html">isCsdHeterozygous</a></span><span class="op">(</span><span class="va">basePop</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(x = "SP", envir = .GlobalEnv):</span> object 'SP' not found</span>
