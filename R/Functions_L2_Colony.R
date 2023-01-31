@@ -1811,13 +1811,20 @@ setLocation <- function(x, location = c(0, 0)) {
   } else if (isMultiColony(x)) {
     n <- nColonies(x)
     if (!is.null(location)) {
-      if (is.data.frame(location)) {
-        if (nrow(location) != n | ncol(location) != 2) {
-          stop("When argument location is a data.frame, it must have n rows and 2 columns!")
+      if (is.numeric(location)) {
+        if (length(location) != 2) {
+          stop("When argument location is a numeric, it must be of length 2!")
+        }
+      } else if (is.data.frame(location)) {
+        if (nrow(location) != n) {
+          stop("When argument location is a data.frame, it must have as many rows as the number of colonies!")
+        }
+        if (ncol(location) != 2) {
+          stop("When argument location is a data.frame, it must have 2 columns!")
         }
       } else if (is.list(location)) {
         if (length(location) != n) {
-          stop("When argument location is a list, it must be of length n!")
+          stop("When argument location is a list, it must be of length equal to the number of colonies!")
         }
         tmp <- sapply(X = location, FUN = length)
         if (!all(tmp == 2)) {
