@@ -4,7 +4,16 @@
 \alias{swarm}
 \title{Swarm}
 \usage{
-swarm(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...)
+swarm(
+  x,
+  p = NULL,
+  year = NULL,
+  nVirginQueens = NULL,
+  sampleLocation = TRUE,
+  sdLocation = NULL,
+  simParamBee = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -22,6 +31,15 @@ colony; of these one is randomly selected as the new virgin queen of the
 remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
 
+\item{sampleLocation}{logical, sample location of the swarm by taking
+the current colony location and adding deviates from normal distribution to
+each coordinate}
+
+\item{sdLocation}{numeric, two standard deviations to sample new location -
+one for each coordinate (see \code{sampleLocation}); if \code{NULL} then
+\code{\link{SimParamBee}$swarmSDLocation} is used (which uses \code{c(0, 0)},
+so by default swarm does not fly far away)}
+
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{p} or \code{nVirginQueens}
@@ -29,8 +47,8 @@ when these arguments are functions}
 }
 \value{
 list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
-the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
-outputs have the swarm event set to \code{TRUE}
+  the \code{swarm} and the \code{remnant} (see the description what each
+  colony holds!); both outputs have the swarm event set to \code{TRUE}
 }
 \description{
 Level 2 function that swarms a Colony or MultiColony object -
@@ -38,7 +56,8 @@ Level 2 function that swarms a Colony or MultiColony object -
   leaves with a proportion of workers to create a new colony (the swarm). The
   remnant colony retains the other proportion of workers and all drones, and
   the workers raise virgin queens, of which only one prevails. Location of
-  the swarm is the same as for the remnant (for now).
+  the swarm is the same as for the remnant or sampled as deviation from the
+  remnant.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)

@@ -4,10 +4,14 @@
 \alias{getLocation}
 \title{Get the colony location}
 \usage{
-getLocation(x)
+getLocation(x, collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with locations of all the colonies; only applicable when input
+is a \code{\link{MultiColony-class}} object}
 }
 \value{
 numeric with two values when \code{x} is \code{\link{Colony-class}}
@@ -37,6 +41,7 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 getLocation(colony)
 getLocation(apiary[[1]])
 getLocation(apiary)
+getLocation(apiary, collapse = TRUE)
 
 loc <- c(123, 456)
 colony <- setLocation(colony, location = loc)
