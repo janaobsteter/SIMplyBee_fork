@@ -10,7 +10,7 @@ swarm(
   year = NULL,
   nVirginQueens = NULL,
   sampleLocation = TRUE,
-  sdLocation = NULL,
+  radius = NULL,
   simParamBee = NULL,
   ...
 )
@@ -32,13 +32,12 @@ remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
 
 \item{sampleLocation}{logical, sample location of the swarm by taking
-the current colony location and adding deviates from normal distribution to
-each coordinate}
+the current colony location and adding deviates to each coordinate using
+\code{\link{rcircle}}}
 
-\item{sdLocation}{numeric, two standard deviations to sample new location -
-one for each coordinate (see \code{sampleLocation}); if \code{NULL} then
-\code{\link{SimParamBee}$swarmSDLocation} is used (which uses \code{c(0, 0)},
-so by default swarm does not fly far away)}
+\item{radius}{numeric, radius of a circle within which swarm will go; if
+\code{NULL} then \code{\link{SimParamBee}$swarmRadius} is used (which uses
+\code{0}, so by default swarm does not fly far away)}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 

@@ -1220,12 +1220,11 @@ collapse <- function(x) {
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
 #' @param sampleLocation logical, sample location of the swarm by taking
-#'  the current colony location and adding deviates from normal distribution to
-#'  each coordinate
-#' @param sdLocation numeric, two standard deviations to sample new location -
-#'   one for each coordinate (see \code{sampleLocation}); if \code{NULL} then
-#'   \code{\link{SimParamBee}$swarmSDLocation} is used (which uses \code{c(0, 0)},
-#'   so by default swarm does not fly far away)
+#'  the current colony location and adding deviates to each coordinate using
+#'  \code{\link{rcircle}}
+#' @param radius numeric, radius of a circle within which swarm will go; if
+#'   \code{NULL} then \code{\link{SimParamBee}$swarmRadius} is used (which uses
+#'   \code{0}, so by default swarm does not fly far away)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
@@ -1270,7 +1269,7 @@ collapse <- function(x) {
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
 swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
-                  sampleLocation = TRUE, sdLocation = NULL,
+                  sampleLocation = TRUE, radius = NULL,
                   simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1278,8 +1277,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
   if (is.null(p)) {
     p <- simParamBee$swarmP
   }
-  if (is.null(sdLocation)) {
-    sdLocation <- simParamBee$swarmSDLocation
+  if (is.null(radius)) {
+    radius <- simParamBee$swarmRadius
   }
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
@@ -1316,13 +1315,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
     tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
     currentLocation <- getLocation(x)
     if (sampleLocation) {
-      if (length(sdLocation) != 2) {
-        stop("You must provide two values for the sdLocation argument!")
-      }
-      newLocation <- c(rnorm(n = 1, mean = currentLocation[1],
-                             sd = sdLocation[1]),
-                       rnorm(n = 1, mean = currentLocation[2],
-                             sd = sdLocation[2]))
+      newLocation <- c(currentLocation + rcircle(radius = radius))
+      # c() to convert row-matrix to a numeric vector
     } else {
       newLocation <- currentLocation
     }
@@ -1390,7 +1384,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
                      year = year,
                      nVirginQueens = nVirginQueens,
                      sampleLocation = sampleLocation,
-                     sdLocation = sdLocation,
+                     radius = radius,
                      simParamBee = simParamBee, ...
         )
         ret$swarm[[colony]] <- tmp$swarm
