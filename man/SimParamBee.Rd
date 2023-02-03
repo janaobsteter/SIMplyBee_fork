@@ -210,11 +210,11 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{swarmSDLocation}}{numeric, two standard deviations to sample new
-  location - one for each coordinate- used in \code{\link{swarm}} - see
-  its \code{sampleLocation} argument.
+\item{\code{swarmRadius}}{numeric, radius within which to sample a location of
+  of the swarm - used in \code{\link{swarm}} - see its \code{radius}
+  argument.
 
-  The default value is c(0, 0), that is, swarm gets the same location as
+  The default value is \code{0}, that is, swarm gets the same location as
   the original colony.
 
   You can change this setting to your needs!}
@@ -366,7 +366,7 @@ Starts the process of building a new simulation by creating
   nVirginQueens = 10,
   nFathers = 15,
   swarmP = 0.5,
-  swarmSDLocation = c(0, 0),
+  swarmRadius = 0,
   splitP = 0.3,
   downsizeP = 0.85,
   csdChr = 3,
@@ -392,7 +392,7 @@ genomes}
 
 \item{\code{swarmP}}{see \code{\link{SimParamBee}} field \code{swarmP}}
 
-\item{\code{swarmSDLocation}}{see \code{\link{SimParamBee}} field \code{swarmSDLocation}}
+\item{\code{swarmRadius}}{see \code{\link{SimParamBee}} field \code{swarmRadius}}
 
 \item{\code{splitP}}{see \code{\link{SimParamBee}} field \code{splitP}}
 
