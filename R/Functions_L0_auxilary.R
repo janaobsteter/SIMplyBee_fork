@@ -1529,11 +1529,11 @@ getLocation <- function(x, collapse = FALSE) {
 #' @examples
 #' x <- rcircle(n = 500)
 #' lim <- range(x)
-#' plot(x, xlim = lim, ylim = lim)
+#' plot(x, xlim = lim, ylim = lim, main = "Uniform")
 #'
 #' x <- rcircle(n = 500, uniform = FALSE)
 #' lim <- range(x)
-#' plot(x, xlim = lim, ylim = lim)
+#' plot(x, xlim = lim, ylim = lim, main = "Gaussian")
 #' @export
 rcircle <- function(n = 1, radius = 1, uniform = TRUE, normScale = 1 / 3) {
   if (n < 1) {

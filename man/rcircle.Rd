@@ -27,11 +27,11 @@ Level 0 function that samples random points (x, y) within a
 \examples{
 x <- rcircle(n = 500)
 lim <- range(x)
-plot(x, xlim = lim, ylim = lim)
+plot(x, xlim = lim, ylim = lim, main = "Uniform")
 
 x <- rcircle(n = 500, uniform = FALSE)
 lim <- range(x)
-plot(x, xlim = lim, ylim = lim)
+plot(x, xlim = lim, ylim = lim, main = "Gaussian")
 }
 \references{
 nubDotDev (2021) The BEST Way to Find a Random Point in a Circle
