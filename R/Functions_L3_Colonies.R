@@ -70,7 +70,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
     for (colony in seq_len(n)) {
       ret[[colony]] <- createColony(
         x = x[colony],
-        location = location[colony]
+        location = location[[colony]]
       )
     }
   }
