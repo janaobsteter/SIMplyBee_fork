@@ -6295,12 +6295,13 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #' crossPlan1 <- createSpatialCrossPlan(virginColonies = virginColonies1,
 #'                                      droneColonies = droneColonies,
 #'                                      radius = 1.5,
-#'                                      droneID = TRUE)
+#'                                      droneID = TRUE,
+#'                                      nFathers = 15)
 #' colonies1 <- crossDroneID(virginColonies1,
 #'                           drones = getDrones(droneColonies, collapse = TRUE),
 #'                           crossPlan = crossPlan1)
 #'
-#' # Cross according to a cross plan with colony IDs and samples the drones from them
+#' # Cross according to a cross plan with colony IDs and SAMPLE the existing drones from them
 #' crossPlan2 <- createSpatialCrossPlan(virginColonies = virginColonies2,
 #'                                      droneColonies = droneColonies,
 #'                                      radius = 1.5,
@@ -6310,6 +6311,17 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #'                           createDrones = FALSE,
 #'                           nFathers = 15,
 #'                           crossPlan = crossPlan2)
+#'
+#' # Cross according to a cross plan with colony IDs and CREATE drones from them
+#' crossPlan3 <- createSpatialCrossPlan(virginColonies = virginColonies3,
+#'                                      droneColonies = droneColonies,
+#'                                      radius = 1.5,
+#'                                      colonyID = TRUE)
+#' colonies3 <- crossColonyID(x = virginColonies3,
+#'                            droneColonies = droneColonies,
+#'                            createDrones = TRUE,
+#'                            nFathers = 15,
+#'                            crossPlan = crossPlan3)
 #'
 #' @export
 createSpatialCrossPlan <- function(virginColonies, droneColonies,
@@ -6332,13 +6344,14 @@ createSpatialCrossPlan <- function(virginColonies, droneColonies,
   spatialMatch <- nn2(droneLocations, virginLocations, searchtype = "radius", radius = radius)
   spatialMatch <- spatialMatch$nn.idx
 
-
-
   if (droneID) {
-    globalDCA <- getDrones(droneColonies)
-    crossPlan <- lapply(crossPlan,
+    globalDCA <- getDrones(droneColonies, collapse = TRUE)
+    crossPlan_colonyIDs <- lapply(1:nrow(spatialMatch),
+                                  FUN = function(x) rownames(droneLocations)[spatialMatch[x,]])
+    crossPlan <- lapply(crossPlan_colonyIDs,
                         FUN = function(x) sample(getCasteId(droneColonies[x], caste = "drones", collapse = TRUE),
-                                                 size  = nFathers))
+                                                 size  = nFathers, replace = FALSE))
+    names(crossPlan) <- getId(virginColonies)
   } else if (colonyID) {
     crossPlan <- lapply(1:nrow(spatialMatch),
                         FUN = function(x) rownames(droneLocations)[spatialMatch[x,]])

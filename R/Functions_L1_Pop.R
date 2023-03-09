@@ -1356,10 +1356,10 @@ cross <- function(x,
           if (!createDrones) {
             virginQueenDrones <- selectInd(getDrones(droneColonies[crossPlan[[virginID]]],
                                                      collapse = TRUE),
-                                           nInd = nFathers(),
+                                           nInd = nFathers,
                                            use = "rand")
           } else if (createDrones) {
-            total <-  nFathers()
+            total <-  nFathers
             n <- nFathersPoisson(n = length(crossPlan[[virginID]]),
                                  average = total / length(crossPlan[[virginID]]))
             virginQueenDrones <- mergePops(createDrones(droneColonies[crossPlan[[virginID]][n > 0]],
