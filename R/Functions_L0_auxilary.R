@@ -1504,6 +1504,64 @@ getLocation <- function(x, collapse = FALSE) {
   return(ret)
 }
 
+#' @rdname rcircle
+#' @title Sample random points within a circle
+#'
+#' @description Level 0 function that samples random points (x, y) within a
+#'   circle via rejection sampling.
+#'
+#' @param n integer, number of samples points
+#' @param radius numeric, radius of the sampled circle
+#' @param uniform logical, should sampling be uniform or according to a
+#'   bi-variate spherical (uncorrelated) Gaussian distribution (see examples)
+#' @param normScale numeric, if \code{uniform = FALSE}, a factor to scale radius
+#'   to standard deviation of the Gaussian density in x and in y (see examples)
+#'
+#' @return matrix with two columns for the x and y coordinates of the points.
+#'
+#' @references
+#' nubDotDev (2021) The BEST Way to Find a Random Point in a Circle
+#' https://youtu.be/4y_nmpv-9lI
+#'
+#' Wolfram MathWorld (2023) Disk Point Picking
+#' https://mathworld.wolfram.com/DiskPointPicking.html
+#'
+#' @examples
+#' x <- rcircle(n = 500)
+#' lim <- range(x)
+#' plot(x, xlim = lim, ylim = lim, main = "Uniform")
+#'
+#' x <- rcircle(n = 500, uniform = FALSE)
+#' lim <- range(x)
+#' plot(x, xlim = lim, ylim = lim, main = "Gaussian")
+#' @export
+rcircle <- function(n = 1, radius = 1, uniform = TRUE, normScale = 1 / 3) {
+  if (n < 1) {
+    stop("Argument n must larger than 0!")
+  }
+  if (length(radius) > 1) {
+    warning("When you provide multiple radius values, you are sampling from different circles!")
+  }
+  ret <- matrix(data = 0, nrow = n, ncol = 2)
+  for (sample in 1:n) {
+    keepGoing <- TRUE
+    while (keepGoing) {
+      if (uniform) {
+        x <- runif(n = 1, min = -radius, max = radius)
+        y <- runif(n = 1, min = -radius, max = radius)
+      } else {
+        x <- rnorm(n = 1, mean = 0, sd = radius * normScale)
+        y <- rnorm(n = 1, mean = 0, sd = radius * normScale)
+      }
+      if ((x*x + y*y) <= radius) {
+        keepGoing <- FALSE
+      }
+    }
+    ret[sample, ] <- c(x, y)
+  }
+  return(ret)
+}
+
 # Events ----
 
 #' @rdname hasSplit

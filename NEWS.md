@@ -15,8 +15,11 @@
 * getLocation(MultiColony) got the collapse argument
   Commit#f4e629c3e8920948ad576eae3615a86b26300790
 
-* We can now sample location of a swarm - see sampleLocation and sdLocation
-  arugments in swarm() PR#500
+* We can now sample location of a swarm - see sampleLocation and radius
+  arugments in swarm() PR#500 PR#502
+  
+* New function rcircle() to sample a random point within a circle with a given
+  radius PR#502
 
 ## Bug fixes ##
 

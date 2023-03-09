@@ -150,17 +150,17 @@ SimParamBee <- R6Class(
     #'   You can provide your own functions that satisfy your needs!
     swarmP = "numericOrFunction",
 
-    # swarmSDLocation field ----
-    #' @field swarmSDLocation numeric, two standard deviations to sample new
-    #'   location - one for each coordinate- used in \code{\link{swarm}} - see
-    #'   its \code{sampleLocation} argument.
+    # swarmRadius field ----
+    #' @field swarmRadius numeric, radius within which to sample a location of
+    #'   of the swarm - used in \code{\link{swarm}} - see its \code{radius}
+    #'   argument.
     #'
-    #'   The default value is c(0, 0), that is, swarm gets the same location as
+    #'   The default value is \code{0}, that is, swarm gets the same location as
     #'   the original colony.
     #'
     #'   You can change this setting to your needs!
     #'
-    swarmSDLocation = "numeric",
+    swarmRadius = "numeric",
 
     # splitP field ----
     #' @field splitP numeric or a function, the split proportion - the
@@ -234,7 +234,7 @@ SimParamBee <- R6Class(
     #' @param nVirginQueens see \code{\link{SimParamBee}} field \code{nVirginQueens}
     #' @param nFathers see \code{\link{SimParamBee}} field \code{nFathers}
     #' @param swarmP see \code{\link{SimParamBee}} field \code{swarmP}
-    #' @param swarmSDLocation see \code{\link{SimParamBee}} field \code{swarmSDLocation}
+    #' @param swarmRadius see \code{\link{SimParamBee}} field \code{swarmRadius}
     #' @param splitP see \code{\link{SimParamBee}} field \code{splitP}
     #' @param downsizeP see \code{\link{SimParamBee}} field \code{downsizeP}
     #' @param csdChr integer, chromosome that will carry the csd locus, by
@@ -288,7 +288,7 @@ SimParamBee <- R6Class(
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 100,
                           nVirginQueens = 10, nFathers = 15,
-                          swarmP = 0.5, swarmSDLocation = c(0, 0),
+                          swarmP = 0.5, swarmRadius = 0,
                           splitP = 0.3, downsizeP = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
                           colonyValueFUN = NULL) {
@@ -304,7 +304,7 @@ SimParamBee <- R6Class(
       self$nVirginQueens <- nVirginQueens
       self$nFathers <- nFathers
       self$swarmP <- swarmP
-      self$swarmSDLocation <- swarmSDLocation
+      self$swarmRadius <- swarmRadius
       self$splitP <- splitP
       self$downsizeP <- downsizeP
 
