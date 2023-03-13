@@ -69,7 +69,7 @@ setClass(
   Class = "Colony",
   slots = c(
     id = "integer",
-    location = "numericOrNULL",
+    location = "numeric",
     queen = "PopOrNULL",
     workers = "PopOrNULL",
     drones = "PopOrNULL",

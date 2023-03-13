@@ -53,7 +53,7 @@ and being in linkage equilibrium. We use this approach only for demonstrations
 and testing.
 
 Alternatively, you can more accurately simulate honeybee genomes with
-SIMplyBee's `simulateHoneybeeGenomes()`. This function simulates the honeybee
+SIMplyBee's `simulateHoneyBeeGenomes()`. This function simulates the honeybee
 genome using MaCS (Chen et al., 2009) for three subspecies: *A. m. ligustica*,
 *A. m. carnica*, and *A. m. mellifera* according to the demographic model
 described by Wallberg et al. (2014).
@@ -68,7 +68,7 @@ simulation here.
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 ```
 
-Alternatively, we use `simulateHoneybeeGenomes()` to sample genomes of a founder
+Alternatively, we use `simulateHoneyBeeGenomes()` to sample genomes of a founder
 population including 4 *A. m. mellifera* (North) individuals and 2 *A. m.
 carnica* individuals. The genomes will be represented by only three chromosomes
 and 5 segregating sites per chromosome. These numbers are of course extremely
@@ -89,22 +89,22 @@ running this part to an external server and save the outcome as an RData file,
 which we can load in our environment and work with it.
 
 ```{r save Rdata file}
-save(founderGenomes2, file="FounderGenomes2_3chr.RData")
+# Save the genomes on a server
+save(founderGenomes2, file = "FounderGenomes2_3chr.RData")
+# Loade the saved genomes elsewhere
+load(file = "FounderGenomes2_3chr.RData")
 ```
 
 Besides specifying the number of individuals, chromosomes, and segregating
-sites, `simulateHoneybeeGenomes()`, also takes a number of genomic parameters:
+sites, `simulateHoneyBeeGenomes()`, also takes a number of genomic parameters:
 effective population size, ploidy, length of chromosomes in base pairs, genetic
 length of a chromosome in Morgans, mutation rate, recombination rate, and time
 of population splits. The default values for these numbers follow published
 references (Wallberg et al., 2014). While you can change these parameters, we
 don't advise doing this because such demographic models, and their parameters,
-are estimated jointly, so we should not be changing them independently. You
-can read more about these parameters in the help page:
-
-```{r deeper looking to the arguments}
-??simulateHoneybeeGenomes
-```
+are estimated jointly, so we should not be changing them independently. You can
+read more about these parameters in the help page
+`help(simulateHoneyBeeGenomes)`.
 
 Now we are ready to setup global simulation parameters using `SimParamBee`.
 `SimParamBee` builds upon AlphaSimR's `SimParam`, which includes genome and
@@ -452,4 +452,3 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
-

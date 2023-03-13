@@ -4,7 +4,7 @@
 \alias{createMultiColony}
 \title{Create MultiColony object}
 \usage{
-createMultiColony(x = NULL, n = NULL, location = NULL)
+createMultiColony(x = NULL, n = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
@@ -14,8 +14,6 @@ createMultiColony(x = NULL, n = NULL, location = NULL)
 \item{n}{integer, number of colonies to create (if only \code{n} is
 given then \code{\link{MultiColony-class}} is created with \code{n}
 \code{NULL}) individual colony - this is mostly useful for programming)}
-
-\item{location}{list, location of the colonies as \code{c(x, y)}}
 }
 \value{
 \code{\link{MultiColony-class}}
@@ -39,9 +37,9 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-# Create 2 virgin colonies
-apiary <- createMultiColony(x = basePop, n = 2) # specify n
-apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+# Create 3 virgin colonies
+apiary <- createMultiColony(x = basePop, n = 3) # specify n
+apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 apiary
 apiary[[1]]
 apiary[[2]]
@@ -54,4 +52,5 @@ apiary <- cross(apiary, drones = droneGroups)
 apiary
 apiary[[1]]
 apiary[[2]]
+
 }
