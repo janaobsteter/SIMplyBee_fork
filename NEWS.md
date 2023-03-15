@@ -11,6 +11,7 @@
 * TODO
 
 ## Bug fixes ##
+* Bug fix - get*Haplo() functions were returning diploid drones when input was a Pop-class
 
 
 # SIMplyBee version 0.3.0 #

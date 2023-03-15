@@ -1969,10 +1969,10 @@ isCsdActive <- function(simParamBee = NULL) {
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 2)
 #'
-#' (tmp <- getSegSiteHaplo(drones))
+#' (tmp <- getSegSiteHaplo(drones, dronesHaploid = FALSE))
 #' reduceDroneHaplo(haplo = tmp, pop = drones)
 #'
-#' (tmp <- getSegSiteHaplo(c(basePop, drones)))
+#' (tmp <- getSegSiteHaplo(c(basePop, drones), dronesHaploid = FALSE))
 #' reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 #' @export
 reduceDroneHaplo <- function(haplo, pop) {
@@ -2786,6 +2786,9 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
     ret <- NULL
   } else if (isPop(x)) {
     ret <- pullIbdHaplo(pop = x, chr = chr, snpChip = snpChip, simParam = simParamBee)
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneHaplo(haplo = ret, pop = x)
+    }
   } else if (isColony(x)) {
     if (is.null(caste)) {
       caste <- "all"
@@ -2812,9 +2815,6 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
         ret <- NULL
       } else {
         ret <- getIbdHaplo(x = tmp, chr = chr, snpChip = snpChip, simParamBee = simParamBee)
-        if (dronesHaploid && any(tmp@sex == "M")) {
-          ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
-        }
       }
     }
   } else if (isMultiColony(x)) {
@@ -3040,6 +3040,9 @@ getQtlHaplo <- function(x, caste = NULL, nInd = NULL,
     ret <- NULL
   } else if (isPop(x)) {
     ret <- pullQtlHaplo(pop = x, trait = trait, haplo = haplo, chr = chr, simParam = simParamBee)
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneHaplo(haplo = ret, pop = x)
+    }
   } else if (isColony(x)) {
     if (is.null(caste)) {
       caste <- "all"
@@ -3068,9 +3071,6 @@ getQtlHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- NULL
       } else {
         ret <- getQtlHaplo(x = tmp, haplo = haplo, trait = trait, chr = chr, simParamBee = simParamBee)
-        if (dronesHaploid && any(tmp@sex == "M")) {
-          ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
-        }
       }
     }
   } else if (isMultiColony(x)) {
@@ -3535,6 +3535,9 @@ getSegSiteHaplo <- function(x, caste = NULL, nInd = NULL,
     ret <- NULL
   } else if (isPop(x)) {
     ret <- pullSegSiteHaplo(pop = x, haplo = haplo, chr = chr, simParam = simParamBee)
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneHaplo(haplo = ret, pop = x)
+    }
   } else  if (isColony(x)) {
     if (caste == "all") {
       ret <- vector(mode = "list", length = 5)
@@ -3560,9 +3563,6 @@ getSegSiteHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- NULL
       } else {
         ret <- getSegSiteHaplo(x = tmp, haplo = haplo, chr = chr, simParamBee = simParamBee)
-        if (dronesHaploid && any(tmp@sex == "M")) {
-          ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
-        }
       }
     }
   } else if (isMultiColony(x)) {
@@ -4017,6 +4017,9 @@ getSnpHaplo <- function(x, caste = NULL, nInd = NULL,
     ret <- NULL
   } else if (isPop(x)) {
     ret <- pullSnpHaplo(pop = x, snpChip = snpChip, haplo = haplo, chr = chr, simParam = simParamBee)
+    if (dronesHaploid && any(x@sex == "M")) {
+      ret <- reduceDroneHaplo(haplo = ret, pop = x)
+    }
   } else  if (isColony(x)) {
     if (is.null(caste)) {
       caste <- "all"
@@ -4045,9 +4048,6 @@ getSnpHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- NULL
       } else {
         ret <- getSnpHaplo(x = tmp, haplo = haplo, snpChip = snpChip, chr = chr, simParamBee = simParamBee)
-        if (dronesHaploid && any(tmp@sex == "M")) {
-          ret <- reduceDroneHaplo(haplo = ret, pop = tmp)
-        }
       }
     }
   } else if (isMultiColony(x)) {
@@ -6304,8 +6304,25 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #' # Cross according to a cross plan with colony IDs and SAMPLE the existing drones from them
 #' crossPlan2 <- createSpatialCrossPlan(virginColonies = virginColonies2,
 #'                                      droneColonies = droneColonies,
+#'                                      createDrones = FALSE,
 #'                                      radius = 1.5,
 #'                                      colonyID = TRUE)
+#'
+#' # Plot the crossing for the first colony in the crossPlan2
+#' virginLocations2 <- as.data.frame(getLocation(virginColonies2, collapse = T))
+#' virginLocations2$Type <- "Virgin"
+#' droneLocations <- as.data.frame(getLocation(droneColonies, collapse = T))
+#' droneLocations$Type <- "Drone"
+#' locations2 <- rbind(virginLocations2, droneLocations)
+#'
+#' # Blue marks the target virgin colony and blue marks the drone colonies in the chosen radius
+#' ggplot(data = locations2, aes(x = V1, y = V2, shape = Type )) +
+#'   geom_point(colour = ifelse(rownames(locations2) %in% crossPlan2[[1]],
+#'                              "red",
+#'                              ifelse(rownames(locations2) == names(crossPlan2)[[1]], "blue", "black")),
+#'              size = 3) +
+#'   xlab("x") + ylab("y")
+#'
 #' colonies2 <- crossColonyID(x = virginColonies2,
 #'                           droneColonies = droneColonies,
 #'                           createDrones = FALSE,
