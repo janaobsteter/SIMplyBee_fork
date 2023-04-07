@@ -1207,7 +1207,8 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   queens. You can use \code{checkMating} to alert you about this situation.
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
-#'   queen.
+#'   queen.  For more examples for mating with either externally or internally created cross plan,
+#'  please see \code{\link{\createCrossPlan}}
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
@@ -1283,7 +1284,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' droneProducingColonies <- cross(droneProducingColonies, drones = droneGroups[10:15])
 #' apiary2 <- createMultiColony(basePop[16:20])
 #' # Create a random cross plan
-#' randomCrossPlan <- createCrossPlan(virgin = apiary2,
+#' randomCrossPlan <- createCrossPlan(x = apiary2,
 #'                                    droneColonies = droneProducingColonies,
 #'                                    spatial = FALSE, nDPC = 5)
 #' apiary2 <- cross(x = apiary2,
@@ -1292,8 +1293,9 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'                  nFathers = 15)
 #' nFathers(apiary2)
 #'
+#'
 #' @seealso For crossing virgin queens according to a cross plan, see
-#'   \code{\link{createRandomCrossPlan}}.
+#'   \code{\link{createCrossPlan}}.
 #'   For crossing virgin queens on a mating stations, see
 #'   \code{\link{createMatingStationDCA}}
 #'
@@ -1365,7 +1367,7 @@ cross <- function(x,
   crossPlan_create <-  is.null(drones) && (!is.null(droneColonies) && is.null(crossPlan))
 
   if (crossPlan_create) {
-    crossPlan <- createCrossPlan(virgin = x,
+    crossPlan <- createCrossPlan(x = x,
                                  droneColonies = droneColonies,
                                  spatial = spatial,
                                  radius = radius,
@@ -1506,15 +1508,13 @@ crossDroneID <- function(x,
 #' @export
 crossColonyID <- function(x,
                           droneColonies = NULL,
-                          createDrones = FALSE,
                           nFathers = 15,
                           crossPlan = NULL,
                           checkMating = "error",
                           simParamBee = NULL) {
   ret <- cross(x,
-               droneID = FALSE, drones = NULL,
-               colonyID = TRUE, droneColonies = droneColonies,
-               createDrones = createDrones,
+               drones = NULL,
+               droneColonies = droneColonies,
                nFathers = nFathers,
                crossPlan = crossPlan,
                checkMating = checkMating,
