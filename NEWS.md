@@ -4,14 +4,27 @@
 
 ## Major changes ##
 
-* TODO
+* createColony() and createMultiColony() do not have the location argument
+  anymore; use setLocation() instead; by default, location is now c(0, 0) PR#500
 
 ## New features ##
 
-* TODO
+* In setLocation(MultiColony) we can set one location (numeric) or multiple
+  (list or data.frame) PR#500
+  
+* getLocation(MultiColony) got the collapse argument
+  Commit#f4e629c3e8920948ad576eae3615a86b26300790
+
+* We can now sample location of a swarm - see sampleLocation and radius
+  arugments in swarm() PR#500 PR#502
+  
+* New function rcircle() to sample a random point within a circle with a given
+  radius PR#502
 
 ## Bug fixes ##
 * Bug fix - get*Haplo() functions were returning diploid drones when input was a Pop-class
+
+* TODO
 
 
 # SIMplyBee version 0.3.0 #
