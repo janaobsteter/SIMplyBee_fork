@@ -62,7 +62,7 @@ crossPlanColonies <- createRandomCrossPlan(IDs = getId(c(colony1, apiary1)),
                                            nDrones = nFathersPoisson)
 
 # Cross the colonies according to the cross plan
-colony1 <- cross(colony1, drones = DCA, crossPlan = crossPlanColonies)
+colony1 <- cross(colony1, droneID = TRUE, drones = DCA, crossPlan = crossPlanColonies)
 apiary1 <- cross(apiary1, drones = DCA, crossPlan = crossPlanColonies)
 nFathers(colony1)
 nFathers(apiary1)

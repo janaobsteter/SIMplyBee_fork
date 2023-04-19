@@ -6309,15 +6309,20 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #'   the object with the virgin queens that need to be crossed. When \code{spatial = TRUE},
 #'   the argument needs to be a code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'   with the location set
+#' @param drones \code{\link{Pop-class}}, a population drones (resembling a drone
+#'   congregation ares) available for mating. When \code{spatial = TRUE}, the user can not
+#'   provide drones, but needs to provide drone colonies instead
 #' @param droneColonies \code{\link{MultiColony-class}}, drone producing colonies
 #'   available for mating. When \code{spatial = TRUE},
 #'   the object needs to have the location set
+#' @param nDrones, integer or function, number of drones to sample for each crossing
 #' @param spatial logical, whether the drone producing colonies should be sampled according
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius around the virgin colony in which to sample mating partners,
 #'   only needed when \code{spatial = TRUE}
 #' @param nDPC integer or function, the number of drone producing colonies to sample for each virgin
 #'   queen or colony, only needed when \code{spatial = FALSE}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return named list with names being virgin input IDs with each
 #'   list element holding the IDs of selected drone
@@ -6331,32 +6336,37 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #' # Create three virgin MultiColony objects with locations
 #' virginColonies1 <- createMultiColony(basePop[1:30])
 #' virginColonies1 <- setLocation(virginColonies1,
-#'                                location = Map(c, runif(30, 0, 2*pi), runif(30, 0, 2*pi)))
+#'                                location = Map(c, runif(30, 0, 2*pi),
+#'                                                  runif(30, 0, 2*pi)))
 #' virginColonies2 <- createMultiColony(basePop[31:60])
 #' virginColonies2 <- setLocation(virginColonies2,
-#'                                location = Map(c, runif(30, 0, 2*pi), runif(30, 0, 2*pi)))
+#'                                location = Map(c, runif(30, 0, 2*pi),
+#'                                                  runif(30, 0, 2*pi)))
 #' virginColonies3 <- createMultiColony(basePop[61:90])
 #' virginColonies3 <- setLocation(virginColonies3,
-#'                                location = Map(c, runif(30, 0, 2*pi), runif(30, 0, 2*pi)))
-#' virginColonies4 <- createMultiColony(basePop[91:120])
-#' virginColonies4 <- setLocation(virginColonies4,
-#'                                location = Map(c, runif(30, 0, 2*pi), runif(30, 0, 2*pi)))
+#'                                location = Map(c, runif(30, 0, 2*pi),
+#'                                                  runif(30, 0, 2*pi)))
 #'
 #' # Create drone colonies
 #' droneColonies <- createMultiColony(basePop[121:200])
-#' droneColonies <- setLocation(droneColonies, location = Map(c, runif(80, 0, 2*pi), runif(80, 0, 2*pi)))
+#' droneColonies <- setLocation(droneColonies,
+#'                              location = Map(c, runif(80, 0, 2*pi),
+#'                                                runif(80, 0, 2*pi)))
+#'
 #' # Create some drones to mate initial drone colonies with
-#' droneGroups <- pullDroneGroupsFromDCA(createDrones(basePop[201:300], nInd = 20),
-#'                                       n = nColonies(droneColonies),
-#'                                       nDrones = nFathersPoisson)
-#' droneColonies <- cross(droneColonies, drones = droneGroups)
+#' DCA <- createDrones(basePop[201:300], nInd = 20)
+#' # Cross initial virgin drone colonies to the DCA with a random cross plan
+#' randomCrossPlan <- createCrossPlan(x = droneColonies,
+#'                                    drones = DCA,
+#'                                    nDrones = nFathersPoisson,
+#'                                    spatial = FALSE)
+#' droneColonies <- cross(droneColonies,
+#'                        drones = DCA,
+#'                        crossPlan = randomCrossPlan)
 #'
-#'
-#' # PROBLEM: If we don't allow for cross plan to include drone ID, how can we cross initial drone colonies via
-#' #mating plan (we can only create drones from MapPop queens or mated queens in a colony).
-#'
-#' #' # Plot the colonies in space
-#' virginLocations <- as.data.frame(getLocation(c(virginColonies1, virginColonies2, virginColonies3), collapse = T))
+#' # Plot the colonies in space
+#' virginLocations <- as.data.frame(getLocation(c(virginColonies1, virginColonies2, virginColonies3),
+#'                                              collapse = T))
 #' virginLocations$Type <- "Virgin"
 #' droneLocations <- as.data.frame(getLocation(droneColonies, collapse = T))
 #' droneLocations$Type <- "Drone"
@@ -6364,13 +6374,11 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #'
 #' ggplot(data = locations, aes(x = V1, y = V2, colour = Type)) + geom_point()
 #'
-#' # Cross according to a pre-existing spatial cross plan
-#' # Cross plan can be created either manually or via the function createCrossPlan
-#'
-#' # Cross according to a random cross plan regardless of colonies locations
-#' crossPlanRandom <- createCrossPlan(x = virginColonies1,
+#' # Cross according to a spatial cross plan according to the colonies' locations
+#' crossPlanSpatial <- createCrossPlan(x = virginColonies1,
 #'                                    droneColonies = droneColonies,
-#'                                    spatial = FALSE)
+#'                                    spatial = TRUE,
+#'                                    radius = 1.5)
 #'
 #' # Plot the crossing for the first colony in the crossPlan
 #' virginLocations1 <- as.data.frame(getLocation(virginColonies1, collapse = T))
@@ -6381,48 +6389,28 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #'
 #' # Blue marks the target virgin colony and blue marks the drone colonies in the chosen radius
 #' ggplot(data = locations1, aes(x = V1, y = V2, shape = Type )) +
-#'   geom_point(colour = ifelse(rownames(locations1) %in% crossPlanRandom[[1]],
+#'   geom_point(colour = ifelse(rownames(locations1) %in% crossPlanSpatial[[1]],
 #'                              "red",
-#'                              ifelse(rownames(locations1) == names(crossPlanRandom)[[1]], "blue", "black")),
+#'                              ifelse(rownames(locations1) == names(crossPlanSpatial)[[1]], "blue", "black")),
 #'              size = 3) +
 #'   xlab("x") + ylab("y")
 #'
-#'
-#' # Cross according to a spatial cross plan according to the colonies' locations
-#' crossPlanSpatial <- createCrossPlan(x = virginColonies2,
-#'                                    droneColonies = droneColonies,
-#'                                    spatial = TRUE,
-#'                                    radius = 1.5)
-#'
-#' # Plot the crossing for the first colony in the crossPlan
-#' virginLocations2 <- as.data.frame(getLocation(virginColonies2, collapse = T))
-#' virginLocations2$Type <- "Virgin"
-#' droneLocations <- as.data.frame(getLocation(droneColonies, collapse = T))
-#' droneLocations$Type <- "Drone"
-#' locations2 <- rbind(virginLocations2, droneLocations)
-#'
-#' # Blue marks the target virgin colony and blue marks the drone colonies in the chosen radius
-#' ggplot(data = locations2, aes(x = V1, y = V2, shape = Type )) +
-#'   geom_point(colour = ifelse(rownames(locations2) %in% crossPlanSpatial[[1]],
-#'                              "red",
-#'                              ifelse(rownames(locations2) == names(crossPlanSpatial)[[1]], "blue", "black")),
-#'              size = 3) +
-#'   xlab("x") + ylab("y")
-#'
-#' colonies2 <- cross(x = virginColonies2,
+#' colonies1 <- cross(x = virginColonies1,
 #'                    droneColonies = droneColonies,
 #'                    crossPlan = crossPlanSpatial)
 #'
 #'
 #' # Cross according to a cross plan that is created internally within the cross function
 #' # The cross plan is created at random, regardless the location of the colonies
-#' colonies3 <- cross(x = virginColonies3,
+#' colonies2 <- cross(x = virginColonies2,
 #'                    droneColonies = droneColonies,
+#'                    crossPlan = "create",
 #'                    nDPC = 5)
 #'
 #' # Mate spatially with cross plan created internally by the cross function
-#' colonies4 <- cross(x = virginColonies4,
+#' colonies3 <- cross(x = virginColonies3,
 #'                    droneColonies = droneColonies,
+#'                    crossPlan = "create",
 #'                    spatial = TRUE,
 #'                    radius = 1,
 #'                    nDPC = 5)
@@ -6430,7 +6418,9 @@ createRandomCrossPlan <- function(IDs, drones, nDrones) {
 #'
 #' @export
 createCrossPlan <- function(x,
-                            droneColonies,
+                            drones = NULL,
+                            droneColonies = NULL,
+                            nDrones = NULL,
                             spatial = FALSE,
                             radius,
                             nDPC = 5,
@@ -6438,20 +6428,34 @@ createCrossPlan <- function(x,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  # if (is.null(nFathers)) {
-  #   nFathers <- simParamBee$nFathers #TODO: revise this!!! Put in the SP?
-  # }
-  if (is.function(nDPC)) {
-    nDPC <- nDPC(x = x, ...)
+  if (!is.null(drones) && !is.null(droneColonies)) {
+    stop("You can either provide drones as a single Pop-class or droneColonies as
+          a single MultiColony-class, but not both!")
   }
   if (spatial && !(isColony(x) | isMultiColony(x))) {
-    error("When creating a spatial cross plan, the x argument needs to be a
+    stop("When creating a spatial cross plan, the x argument needs to be a
           Colony or a MultiColony object with set location!")
   }
+  if (is.null(droneColonies) && spatial) {
+    stop("When creating a spatial cross plan, you must provide droneColonies as a
+         MultiColony object with location set!")
+  }
+  if (is.null(droneColonies) && !isPop(drones)) {
+    stop("Argument drones must be a Pop class!")
+  }
+  if (spatial && !any(isColony(x), isMultiColony(x))) {
+    stop("When creating a spatial cross plan, the x argument must be a Colony
+         or MultiColony class with location set!")
+  }
+  drones <- drones[isDrone(drones)]
+
+  if (is.function(nDPC)) {
+    nDPC <- nDPC()
+  }
   virginId <- getId(x)
-  droneColonyId <- getId(droneColonies)
 
   if (spatial) {
+    droneColonyId <- getId(droneColonies)
     virginLocations <- getLocation(x, collapse = TRUE)
     droneLocations <- getLocation(droneColonies, collapse = TRUE)
 
@@ -6460,7 +6464,27 @@ createCrossPlan <- function(x,
     crossPlan <- lapply(1:nrow(spatialMatch),
                         FUN = function(x) rownames(droneLocations)[spatialMatch[x,]])
   } else  {
-    crossPlan <- lapply(virginId, FUN = function(x) sample(droneColonyId, nDPC, replace = FALSE))
+    if (!is.null(drones)) {
+      ids <- drones@id
+      if (is.null(nDrones)) {
+        nDrones <- simParamBee$nFathers
+      }
+
+      if (is.function(nDrones)) {
+        nDrones <- nDrones(n = length(IDs))
+        fathersMatch <- rep.int(virginId, times = nDrones)
+      } else {
+        fathersMatch <- rep(virginId, each = nDrones)
+      }
+
+      fatherIDs <- sample(drones@id, size = length(fathersMatch), replace = FALSE)
+      crossPlan <- base::split(fatherIDs, fathersMatch)
+
+    } else {
+      ids <- getId(droneColonies)
+      crossPlan <- lapply(virginId, FUN = function(x) sample(x = ids, size = nDPC, replace = FALSE))
+
+    }
   }
   names(crossPlan) <- virginId
   return(crossPlan)
