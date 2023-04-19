@@ -2,30 +2,80 @@
 % Please edit documentation in R/Functions_L1_Pop.R
 \name{cross}
 \alias{cross}
+\alias{crossDronePackages}
+\alias{crossDronePop}
+\alias{crossDroneColonies}
 \title{Cross (mate) virgin queen(s) as a population, of a colony, or
   of all given colonies}
 \usage{
-cross(x, drones, crossPlan = NULL, checkMating = "error", simParamBee = NULL)
+cross(
+  x,
+  crossPlan = NULL,
+  drones = NULL,
+  droneColonies = NULL,
+  nDPC = NULL,
+  nDrones = NULL,
+  spatial = FALSE,
+  radius = NULL,
+  checkMating = "error",
+  simParamBee = NULL
+)
+
+crossDronePackages(x, drones = NULL, checkMating = "error", simParamBee = NULL)
+
+crossDronePop(
+  x,
+  drones = NULL,
+  crossPlan = NULL,
+  checkMating = "error",
+  simParamBee = NULL
+)
+
+crossDroneColonies(
+  x,
+  droneColonies = NULL,
+  nFathers = 15,
+  crossPlan = NULL,
+  checkMating = "error",
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 one or more virgin queens / colonies to be mated;}
 
-\item{drones}{\code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
-group(s) of drones that will be mated with virgin queen(s); if there is
-more than one virgin queen, the user has to provide a list of drone
-\code{\link{Pop-class}}. For this, the user can use \code{\link{pullDroneGroupsFromDCA}}}
-
 \item{crossPlan, }{named list with names being virgin queen or colony IDs with
-each list element holding the IDs of selected drones. Also see
-\code{\link{createRandomCrossPlan}}. If cross plan is \code{NULL}, we cross
-each virgin queen with the element-wise element of \code{drones}, which
-should be the same length as the number of virgin queens If the cross plan
-is provided, the \code{drones} argument must be a single \code{\link{Pop-class}}.}
+each list element holding the IDs of either selected drones or selected
+drone producing colonies, OR a string "create" if you for the cross plan to be created
+internally. The function can create a random (\code{spatial = F})
+or spatial (\code{spatial = T}) cross plan internally. Also see
+\code{\link{createCrossPlan}}.}
 
-\item{checkMating}{character, throw a warning (when \code{checkMating = "warning"}),
-or stop error (when \code{checkMating = "error"}) when some matings fail (see
-Details)}
+\item{drones}{a \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
+group(s) of drones that will be mated with virgin queen(s).
+See \code{\link{pullDroneGroupsFromDCA}})to create such object and
+\code{crossDronePackages}. A single \code{\link{Pop-class}} is only allowed when mating
+a single virgin queen or colony.}
+
+\item{droneColonies}{\code{\link{MultiColony-class}} with all available
+drone producing colonies. Provided when \code{drones} is not provided (NULL). When
+providing drone producing colonies, the cross function uses a cross plan, that can
+either be provided by the user (\code{crossPlan}) or created internally (when \code{crossPlan}
+is NULL)}
+
+\item{nDPC}{integer or function, the number of drone producing colonies to sample for each virgin
+queen or colony, only needed when \code{spatial = FALSE}}
+
+\item{nDrones}{numeric of function, the number of drones to sample to mate with each
+virgin queen when using a cross plan}
+
+\item{spatial}{logical, whether the drone producing colonies should be sampled according
+to their distance from the virgin colony (that is, in a radius)}
+
+\item{radius}{numeric, the radius around the virgin colony in which to sample mating partners,
+only needed when \code{spatial = TRUE}}
+
+\item{checkMating}{character, throw a warning (when \code{checkMating = "warning"}),}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
