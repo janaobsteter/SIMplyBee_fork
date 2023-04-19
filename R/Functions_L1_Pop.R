@@ -1494,7 +1494,6 @@ cross <- function(x,
             colonyDrones <- drones
           }
         }
-
         ret[[colony]] <- cross(
           x = x[[colony]],
           drones = colonyDrones,
@@ -1535,9 +1534,29 @@ crossDronePackages <- function(x,
 crossDronePop <- function(x,
                           drones = NULL,
                           crossPlan = NULL,
-                          nDrones = NULL,
                           checkMating = "error",
                           simParamBee = NULL) {
+  ret <- cross(x,
+               droneID = TRUE, drones = drones,
+               colonyID = FALSE, droneColonies = NULL,
+               createDrones = FALSE,
+               nFathers = NULL,
+               crossPlan = crossPlan,
+               checkMating = checkMating,
+               simParamBee = simParamBee)
+  return(ret)
+}
+
+#' @describeIn cross Cross virgin queens or colonies with drone producing colonies
+#' @export
+crossDroneColonies <- function(x,
+                               droneColonies = NULL,
+                               nFathers = 15,
+                               >>>>>>> b2d2cf4fe2e444246b3840a30bd3be78b24f7e2f
+                               crossPlan = NULL,
+                               nDrones = NULL,
+                               checkMating = "error",
+                               simParamBee = NULL) {
   ret <- cross(x,
                crossPlan = crossPlan,
                drones = drones,
