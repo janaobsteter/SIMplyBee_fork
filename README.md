@@ -5,7 +5,8 @@ for simulating honeybee populations and breeding programmes
 
 ## Publication
 
-Pre-print: Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2022. bioRxiv. https://doi.org/10.1101/2022.12.15.520571
+Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetics Selection Evolution,  55, 31. https://doi.org/10.1186/s12711-023-00798-y
+
 
 ## Download
 
