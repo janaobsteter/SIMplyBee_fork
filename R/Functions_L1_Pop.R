@@ -1133,37 +1133,6 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   function with multiple input arguments, we recomment the use of alias
 #'   functions that cater a specific mating purpose. For a better understanding
 #'   of crossing and the functions have a look at the "Crossing" vignette.
-#'     - \code{\link{crossDronePackages}}: crosses virgin queens to specific drones.
-#'     The function takes either a population of virgin queens,
-#'     colony, or a multi-colony and mates them to pre-defined packages of drones. Each
-#'     of the packages is represented as a \code{\link{Pop-class}} of drones. The number
-#'     of packages has to match either the number of virgin queens or virgin colonies.
-#'     The packages can be constructed with \code{\link{pullDroneGroupsFromDCA}} function
-#'     - \code{\link{crossDroneID}}: crosses virgin queens in a DCA.
-#'     The function takes either a population of virgin queens,
-#'     colony, or a multi-colony and mates the virgin queens in a "global" DCA according
-#'     to a cross plan. The user hence has to provide a "global" DCA with all available drones (a single
-#'     \code{\link{Pop-class}}) and a cross plan. The cross plan is a list, in which the names
-#'     are either the virgin queens' or virgin colonies' IDs, and the elements of the list
-#'     are the IDs of the drones each queen will mate with. The cross plan can be constructed
-#'     with \code{\link{createRandomCrossPlan}} or with \code{\link{createSpatialCrossPlan}}.
-#'     Such an solution was implemented to avoid having a large number of drone \code{\link{Pop-class}}
-#'     objects, i.e. packages, when mating a large number of virgin queens.
-#'     - \code{\link{crossColonyID}}: crosses virgin queens to a pool of drone producting colonis.
-#'     This function takes either a population of virgin queens,
-#'     colony, or a multi-colony and mates the virgin queens to a "global" pool of
-#'     drone producing colonies according to a cross plan.
-#'     The user hence has to provide a "global" pool of drone producing colonies - DPCs (a single
-#'     \code{\link{MultiColony-class}}) and a cross plan. The cross plan is a list, in which the names
-#'     are either the virgin queens' or virgin colonies' IDs, and the elements of the list
-#'     are the IDs of the DPC that will provide the drones for the virgin queen to mate with.
-#'     The drones can be either pulled out of the colonies or created on the spot (meaning that
-#'     the DPCs don't actually have to include any drones).
-#'     The cross plan can be constructed with \code{\link{createRandomCrossPlan}} or with
-#'     \code{\link{createSpatialCrossPlan}}. Such an solution was implemented to avoid having
-#'     a large number of drone \code{\link{Pop-class}} objects, i.e. packages,
-#'     or having a large DCA of all possible drones, both of which could get very large with large
-#'     number of virgin queens.
 #'
 #' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #'   one or more virgin queens / colonies to be mated;
@@ -1185,8 +1154,6 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   is NULL)
 #' @param nDrones numeric of function, the number of drones to sample to mate with each
 #'   virgin queen when using a cross plan
-#' @param nDPC integer or function, the number of drone producing colonies to sample for each virgin
-#'   queen or colony, only needed when \code{spatial = FALSE}
 #' @param spatial logical, whether the drone producing colonies should be sampled according
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius around the virgin colony in which to sample mating partners,
@@ -1208,7 +1175,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'
 #' @seealso \code{\link{Colony-class}} on how we store the fathers along the
 #'   queen.  For more examples for mating with either externally or internally created cross plan,
-#'  please see \code{\link{\createCrossPlan}}
+#'  please see \code{\link{createCrossPlan}}
 #'
 #' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
@@ -1282,6 +1249,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' # Mate with drone producing colonies and a given cross plan
 #' droneColonies <- createMultiColony(basePop[10:15])
 #' droneColonies <- cross(droneColonies, drones = droneGroups[10:15])
+#' nFathers(droneColonies)
 #' apiary2 <- createMultiColony(basePop[16:20])
 #' apiary3 <- createMultiColony(basePop[21:25])
 #' apiary4 <- createMultiColony(basePop[26:30])
@@ -1289,19 +1257,19 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' # Create a random cross plan
 #' randomCrossPlan <- createCrossPlan(x = apiary2,
 #'                                    droneColonies = droneColonies,
-#'                                    spatial = FALSE,
-#'                                    nDPC = 5)
+#'                                    spatial = FALSE)
 #' apiary2 <- cross(x = apiary2,
 #'                  droneColonies = droneColonies,
 #'                  crossPlan = randomCrossPlan,
-#'                  nFathers = 15)
+#'                  nDrones = 15)
 #' nFathers(apiary2)
 #'
 #' # Mate colonies according to a cross plan that is created internally within the cross function
 #' apiary3 <- cross(x = apiary3,
 #'                  droneColonies = droneColonies,
-#'                  nDPC = 5,
-#'                  nFathers = 15)
+#'                  crossPlan = "create",
+#'                  nDrones = 15)
+#' nFathers(apiary3)
 #'
 #' # Mate colonies according to a cross plan that is created internally within the cross function
 #' # For this, all the colonies have to have a set location
@@ -1312,9 +1280,12 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'
 #' apiary4 <- cross(x = apiary4,
 #'                  droneColonies = droneColonies,
+#'                  crossPlan = "create",
+#'                  nDrones = 15,
 #'                  spatial = TRUE,
-#'                  radius = 1,
-#'                  nDPC = 5)
+#'                  checkMating = "warning",
+#'                  radius = 3)
+#' nFathers(apiary4)
 #'
 #' @seealso For crossing virgin queens according to a cross plan, see
 #'   \code{\link{createCrossPlan}}.
@@ -1326,7 +1297,6 @@ cross <- function(x,
                   crossPlan = NULL,
                   drones = NULL,
                   droneColonies = NULL,
-                  nDPC = NULL,
                   nDrones = NULL,
                   spatial = FALSE,
                   radius = NULL,
@@ -1339,14 +1309,16 @@ cross <- function(x,
     nDrones <- simParamBee$nFathers
   }
   if (is.function(nDrones)) {
-    nDrones <- nDrones(x = x, ...)
+    nD <- nDrones(x = x, ...)
+  } else {
+    nD <- nDrones
   }
 
   IDs <- as.character(getId(x))
   oneColony <- (isPop(drones)) && (length(IDs) == 1) && (is.null(crossPlan))
   dronePackages <- is.list(drones)
   crossPlan_given <- !dronePackages && is.list(crossPlan)
-  crossPlan_create <-  !dronePackages && (crossPlan[1] == "create")
+  crossPlan_create <-  ifelse(!is.null(crossPlan) && !dronePackages, (crossPlan[1] == "create"), FALSE)
   crossPlan_droneID <- (!is.null(crossPlan)) && !is.null(drones)
   crossPlan_colonyID <- (!is.null(crossPlan)) && !is.null(droneColonies)
 
@@ -1402,7 +1374,6 @@ cross <- function(x,
                                  nDrones = nDrones,
                                  spatial = spatial,
                                  radius = radius,
-                                 nDPC = nDPC,
                                  simParamBee = simParamBee)
     noMatches <- sapply(crossPlan, FUN = length)
     if (0 %in% noMatches) {
@@ -1424,21 +1395,27 @@ cross <- function(x,
         } else if (crossPlan_colonyID) {
           virginMatches <- crossPlan[[virginID]]
           if (length(virginMatches) > 0) {
-            total <-  nDrones
-            n <- nFathersPoisson(n = length(crossPlan[[virginID]]),
-                                 average = total / length(crossPlan[[virginID]]))
-            virginQueenDrones <- mergePops(createDrones(droneColonies[as.character(crossPlan[[virginID]][n > 0])],
-                                                        nInd = n[n > 0]))
+            nSelected <- table(sample(virginMatches, size = nDrones, replace = TRUE))
+            virginQueenDrones <- mergePops(createDrones(droneColonies[names(nSelected)],
+                                                        nInd = nSelected))
           } else {
             virginQueenDrones <- new("Pop")
           }
         }
       }
 
-      if (!all(isDrone(virginQueenDrones))) {
-        stop("Individuals in drones must be drones!")
-      }
-      if (virginQueenDrones@nInd > 0) {
+      if (any((virginQueenDrones@nInd == 0), (length(virginQueenDrones@nInd) == 0))) {
+        msg <- "Mating failed!"
+        options(warn = 1)
+        if (checkMating == "warning") {
+          warning(msg)
+        } else if (checkMating == "error") {
+          stop(msg)
+        }
+      } else if (virginQueenDrones@nInd > 0) {
+        if (!all(isDrone(virginQueenDrones))) {
+          stop("Individuals in drones must be drones!")
+        }
         if (isPop(x)) {
           virginQueen <- x[virgin]
         } else if (isColony(x)) {
@@ -1457,13 +1434,6 @@ cross <- function(x,
           val <- NA
         }
         virginQueen <- setMisc(x = virginQueen, node = "pHomBrood", value = val)
-      } else if (any((virginQueenDrones@nInd == 0), (length(virginQueenDrones@nInd) == 0))) {
-        msg <- "Mating failed!"
-        if (checkMating == "warning") {
-          warning(msg)
-        } else if (checkMating == "error") {
-          stop(msg)
-        }
       }
       if (isPop(x)) {
         ret[[virgin]] <- virginQueen
@@ -1499,7 +1469,6 @@ cross <- function(x,
           drones = colonyDrones,
           crossPlan = crossPlan,
           droneColonies = droneColonies,
-          nDPC = nDPC,
           nDrones = nDrones,
           spatial = spatial,
           radius = radius,
@@ -1510,80 +1479,6 @@ cross <- function(x,
     }
   }
   validObject(ret)
-  return(ret)
-}
-
-#' @describeIn cross Cross virgin queens or colonies with drone packages
-#' @export
-crossDronePackages <- function(x,
-                               drones = NULL,
-                               checkMating = "error",
-                               simParamBee = NULL) {
-  ret <- cross(x,
-               crossPlan = NULL,
-               drones = drones,
-               droneColonies = NULL,
-               nDrones = NULL,
-               checkMating = checkMating,
-               simParamBee = simParamBee)
-  return(ret)
-}
-
-#' @describeIn cross Cross virgin queens or colonies with a cross plan and a population of drones
-#' @export
-crossDronePop <- function(x,
-                          drones = NULL,
-                          crossPlan = NULL,
-                          checkMating = "error",
-                          simParamBee = NULL) {
-  ret <- cross(x,
-               droneID = TRUE, drones = drones,
-               colonyID = FALSE, droneColonies = NULL,
-               createDrones = FALSE,
-               nFathers = NULL,
-               crossPlan = crossPlan,
-               checkMating = checkMating,
-               simParamBee = simParamBee)
-  return(ret)
-}
-
-#' @describeIn cross Cross virgin queens or colonies with drone producing colonies
-#' @export
-crossDroneColonies <- function(x,
-                               droneColonies = NULL,
-                               nFathers = 15,
-                               >>>>>>> b2d2cf4fe2e444246b3840a30bd3be78b24f7e2f
-                               crossPlan = NULL,
-                               nDrones = NULL,
-                               checkMating = "error",
-                               simParamBee = NULL) {
-  ret <- cross(x,
-               crossPlan = crossPlan,
-               drones = drones,
-               droneColonies = NULL,
-               nDrones = 15,
-               checkMating = checkMating,
-               simParamBee = simParamBee)
-  return(ret)
-}
-
-#' @describeIn cross Cross virgin queens or colonies with drone producing colonies
-#' @export
-crossDroneColonies <- function(x,
-                               crossPlan = NULL,
-                               droneColonies = NULL,
-                               nDPC = 15,
-                               nDrones = 15,
-                               checkMating = "error",
-                               simParamBee = NULL) {
-  ret <- cross(x,
-               crossPlan = crossPlan,
-               drones = NULL,
-               droneColonies = droneColonies,
-               nDPC = nDPC,
-               nDrones = nDrones,
-               checkMating = checkMating,
-               simParamBee = simParamBee)
   return(ret)
 }
 
