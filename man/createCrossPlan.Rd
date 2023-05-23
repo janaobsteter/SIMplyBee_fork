@@ -2,9 +2,7 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{createCrossPlan}
 \alias{createCrossPlan}
-\title{Create a cross plan by sampling drone producing
- colonies either at random or according to the distance with the virgin
- colony}
+\title{Create a plan for crossing virgin queens}
 \usage{
 createCrossPlan(
   x,
@@ -13,7 +11,8 @@ createCrossPlan(
   nDrones = NULL,
   spatial = FALSE,
   radius,
-  simParamBee = NULL
+  simParamBee = NULL,
+  ...
 )
 }
 \arguments{
@@ -22,33 +21,36 @@ the object with the virgin queens that need to be crossed. When \code{spatial = 
 the argument needs to be a code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 with the location set}
 
-\item{drones}{\code{\link{Pop-class}}, a population drones (resembling a drone
-congregation ares) available for mating. When \code{spatial = TRUE}, the user can not
-provide drones, but needs to provide drone colonies instead}
+\item{drones}{\code{\link{Pop-class}}, a population of drones (resembling a drone
+congregation area) available for mating. When \code{spatial = TRUE}, the user can not
+provide drones, but needs to provide drone producing colonies instead
+(see argument \code{droneColonies})}
 
 \item{droneColonies}{\code{\link{MultiColony-class}}, drone producing colonies
 available for mating. When \code{spatial = TRUE},
 the object needs to have the location set}
 
-\item{nDrones, }{integer or function, number of drones to sample for each crossing}
+\item{nDrones, }{integer or function, number of drones to sample for each crossing. You need to provide
+this to provide this argument even when sampling drone producing colonies (otherwise, the default value
+will be used)}
 
 \item{spatial}{logical, whether the drone producing colonies should be sampled according
 to their distance from the virgin colony (that is, in a radius)}
 
-\item{radius}{numeric, the radius around the virgin colony in which to sample mating partners,
+\item{radius}{numeric, the radius from the virgin colony in which to sample mating partners,
 only needed when \code{spatial = TRUE}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
-named list with names being virgin input IDs with each
-  list element holding the IDs of selected drone
-  producing colonies
+named list with names being virgin queens/colonies IDs with each
+  list element holding the IDs of selected drones or drone producing colonies
 }
 \description{
-Level 0 function that creates a cross plan by sampling
-  drone producing colonies to mate with a specific virgin queen
-  either at random (\code{spatial = FALSE}) or according to a radius (\code{spatial = TRUE})
+Level 0 function that creates a plan for crossing virgin queens or
+  virgin colonies by sampling drones or drone producing colonies to mate with a the
+  virgin queens/colonies either at random (\code{spatial = FALSE})
+  or according to the distance between colonies (\code{spatial = TRUE}).
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
@@ -80,10 +82,11 @@ DCA <- createDrones(basePop[201:300], nInd = 20)
 # Cross initial virgin drone colonies to the DCA with a random cross plan
 randomCrossPlan <- createCrossPlan(x = droneColonies,
                                    drones = DCA,
-                                   nDrones = 12,
+                                   nDrones = nFathersPoisson,
                                    spatial = FALSE)
 droneColonies <- cross(droneColonies,
                        drones = DCA,
+                       nDrones = nFathersPoisson,
                        crossPlan = randomCrossPlan)
 
 # Plot the colonies in space
@@ -94,11 +97,12 @@ droneLocations <- as.data.frame(getLocation(droneColonies, collapse= TRUE))
 droneLocations$Type <- "Drone"
 locations <- rbind(virginLocations, droneLocations)
 
-ggplot(data = locations, aes(x = V1, y = V2, colour = Type)) + geom_point()
+plot(x = locations$V1, y = locations$V2, col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
 
 # Cross according to a spatial cross plan according to the colonies' locations
 crossPlanSpatial <- createCrossPlan(x = virginColonies1,
                                    droneColonies = droneColonies,
+                                   nDrones = nFathersPoisson,
                                    spatial = TRUE,
                                    radius = 1.5)
 
@@ -110,30 +114,30 @@ droneLocations$Type <- "Drone"
 locations1 <- rbind(virginLocations1, droneLocations)
 
 # Blue marks the target virgin colony and blue marks the drone colonies in the chosen radius
-ggplot(data = locations1, aes(x = V1, y = V2, shape = Type )) +
-  geom_point(colour = ifelse(rownames(locations1) \%in\% crossPlanSpatial[[1]],
+plot(x = locations1$V1, y = locations1$V2, pch = c(1, 2)[as.numeric(as.factor(locations1$Type))],
+  col = ifelse(rownames(locations1) \%in\% crossPlanSpatial[[1]],
                              "red",
                              ifelse(rownames(locations1) == names(crossPlanSpatial)[[1]],
-                             "blue", "black")),
-             size = 3) +
-  xlab("x") + ylab("y")
+                             "blue", "black")))
 
 colonies1 <- cross(x = virginColonies1,
+                   crossPlan = crossPlanSpatial,
                    droneColonies = droneColonies,
-                   crossPlan = crossPlanSpatial)
-
+                   nDrones = nFathersPoisson)
+nFathers(colonies1)
 
 # Cross according to a cross plan that is created internally within the cross function
 # The cross plan is created at random, regardless the location of the colonies
 colonies2 <- cross(x = virginColonies2,
                    droneColonies = droneColonies,
+                   nDrones = nFathersPoisson,
                    crossPlan = "create")
 
 # Mate spatially with cross plan created internally by the cross function
 colonies3 <- cross(x = virginColonies3,
                    droneColonies = droneColonies,
                    crossPlan = "create",
-                   checkMating = "warning",
+                   checkCross = "warning",
                    spatial = TRUE,
                    radius = 1)
 

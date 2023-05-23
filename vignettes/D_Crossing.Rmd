@@ -23,14 +23,14 @@ knitr::opts_chunk$set(
 # Introduction
 
 Crossing the queen is the most complicated action in SIMplyBee, since mating of
-honeybees is versatile. Queens can be mated in a controlled manner, either in
-artificial insemination or on a mating station, or uncontrolled in an open
-mating setting. In the latter case, the mating depends on the distance between
-the queen and the drones or drone producing colonies.
+honeybees is versatile. Virgin queens can be mated in a controlled manner,
+either using artificial insemination or a mating station, or uncontrolled in an
+open mating setting. In the latter case, the mating depends on the distance
+between the virgin queens and the drones or drone producing colonies.
 
-In this vignette, we first explain five technical ways of mating a virgin queens
-and at the end we describe two special cases of mating the queen on a mating
-station and mating multiple queens in varyin manner.
+In this vignette, we first explain five ways of mating virgin queens and at the
+end we describe two special cases of mating virgin queens on a mating station
+and mating multiple virgin queens in different ways.
 
 ```{r crossing_decision_tree, echo=FALSE, out.width='50%', fig.cap = "Crossing decision tree"}
 knitr::include_graphics("../man/figures/decisionTreeCrossing.png")
@@ -81,8 +81,8 @@ following the questions:
         such as on a mating stations. You can also use an auxiliary function
         `createCrossPlan()` to create the cross plan, but in this case, you
         probably want to move to question 4.
--   **create the cross plan internally**, either by sampling the mates randomly
-    or spatially. Continue to question 4.
+-   **create the cross plan internally**, either by sampling the drones or drone
+    producing colonies randomly or spatially. Continue to question 4.
 
 4.  When mating **according to an internally created cross plan**, you can
     either:
@@ -159,8 +159,8 @@ queen1 <- cross(x = virginQueen1, drones = drones)
 nFathers(queen1)
 ```
 
-Here, we show an example for mating the virgin queen in a `Pop` object, but
-exact same holds for `Colony` and `MultiColony` objects with a single queen.
+The above code shows an example for mating the virgin queen in a `Pop` object,
+but exact same holds for `Colony` and `MultiColony` objects with a single queen.
 
 # Option2: Cross with drone packages (pre-selecting drone populations)
 
