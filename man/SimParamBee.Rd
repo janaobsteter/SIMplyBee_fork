@@ -319,6 +319,7 @@ generate this object}
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChip'><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChipByName'><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addStructuredSnpChip'><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToPed'><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToRec'><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
@@ -338,6 +339,7 @@ generate this object}
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-resetPed'><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-restrSegSites'><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setCorE'><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setFounderHap'><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setRecombRatio'><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setSexes'><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackPed'><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>

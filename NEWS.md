@@ -20,10 +20,17 @@
   
 * New function rcircle() to sample a random point within a circle with a given
   radius PR#502
+  
+* Removed the function createRandomCrossPlan() - that option is now included in the newly added createCrossPlan() fuction
+
+* Added the funcionality for spatially-aware mating of honeybee colonies. The new funcionality is included in the createCrossPlan(), that allows to create the cross plan according to the colonies' locations, and in the cross() function, that crosses bees according to their location
+ 
 
 ## Bug fixes ##
+* Bug fix - get*Haplo() functions were returning diploid drones when input was a Pop-class
 
-* TODO
+
+*
 
 
 # SIMplyBee version 0.3.0 #
