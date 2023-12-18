@@ -3,6 +3,7 @@
 test_that("getCastePop", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(basePop[1], n = 15)
 
@@ -37,6 +38,7 @@ test_that("getCastePop", {
 test_that("createVirginQueens", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   #check that output is virginqueens ?
   expect_true(all(isVirginQueen(createVirginQueens(founderGenomes))))
 
@@ -87,6 +89,7 @@ test_that("createVirginQueens", {
 test_that("createDrones", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   # Error: x can't be a MapPop
   expect_error(createDrones(founderGenomes))
 
@@ -132,6 +135,7 @@ test_that("createDrones", {
 test_that("combineBeeGametes", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(basePop[1], n = 15)
 
@@ -162,6 +166,7 @@ test_that("combineBeeGametes", {
 test_that("pullCastePop", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(basePop[1], n = 15)
 
@@ -217,6 +222,7 @@ test_that("pullCastePop", {
 test_that("cross", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes, nInd = 100)
   drones <- createDrones(basePop[1], n = 1000)
   dronesGroups <- pullDroneGroupsFromDCA(drones, n = 7, nDrones = 15)
@@ -280,6 +286,7 @@ test_that("cross", {
 test_that("setQueensYearOfBirth", {
   founderGenomes <- quickHaplo(nInd = 7, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes, nInd = 100)
   drones <- createDrones(x = basePop[1], nInd = 1000)
   dronesGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
@@ -311,6 +318,7 @@ test_that("setQueensYearOfBirth", {
 test_that("createDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -347,6 +355,7 @@ test_that("createDCA", {
 test_that("pullDroneGroupsFromDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow{SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -376,6 +385,7 @@ test_that("pullDroneGroupsFromDCA", {
 test_that("combineBeeGametes", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
+   \dontshow{SP$nThreads = 1L}
    SP$setTrackRec(TRUE)
    SP$setTrackPed(isTrackPed = TRUE)
    basePop <- createVirginQueens(founderGenomes)
@@ -395,6 +405,7 @@ test_that("combineBeeGametes", {
 test_that("combineBeeGametesHaploidDiploid", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
+   \dontshow{SP$nThreads = 1L}
    SP$setTrackRec(TRUE)
    SP$setTrackPed(isTrackPed = TRUE)
    basePop <- createVirginQueens(founderGenomes)
