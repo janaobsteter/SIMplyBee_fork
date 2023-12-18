@@ -56,14 +56,14 @@ baseDrones <- createDrones(baseVirginQueen[1])
 
 # A colony
 colony <- createColony(baseVirginQueen[2])
-colony <- cross(colony, baseDrones)
+colony <- cross(x = colony, drones = baseDrones)
 colony <- addDrones(colony, nInd = 100)
 colony
 
 # Crossing one of the remaining virgin queens with drones from the 
 DCA <- createDCA(colony, nInd = 50)
 DCA
-queen <- cross(baseVirginQueen[3], DCA)
+queen <- cross(x = baseVirginQueen[3], drones = DCA)
 queen
 getFathers(queen)
 

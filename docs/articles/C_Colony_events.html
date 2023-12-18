@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -62,7 +62,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -113,7 +113,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Colony events</h1>
             
-            <h4 data-toc-skip class="date">2022-12-13</h4>
+            <h4 data-toc-skip class="date">2023-12-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HighlanderLab/SIMplyBee/blob/HEAD/vignettes/C_Colony_events.Rmd" class="external-link"><code>vignettes/C_Colony_events.Rmd</code></a></small>
       <div class="hidden name"><code>C_Colony_events.Rmd</code></div>
@@ -202,7 +202,7 @@ Swarm function.
 <span><span class="co">#&gt; $swarm</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 11 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 40 </span></span>
@@ -217,7 +217,7 @@ Swarm function.
 <span><span class="co">#&gt; $remnant</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 9 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 60 </span></span>
@@ -257,7 +257,7 @@ production status back to <code>TRUE</code>.</p>
 <span><span class="va">colony</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 11 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 100 </span></span>
@@ -327,7 +327,7 @@ third colony.</p>
 <code class="sourceCode R"><span><span class="va">tmp</span><span class="op">$</span><span class="va">swarm</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 14 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 14 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 35 </span></span>
@@ -342,7 +342,7 @@ third colony.</p>
 <code class="sourceCode R"><span><span class="va">tmp</span><span class="op">$</span><span class="va">remnant</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 15 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 65 </span></span>
@@ -368,7 +368,7 @@ colony has a different percentage of workers that stayed or left.</p>
 <code class="sourceCode R"><span><span class="va">tmp</span><span class="op">$</span><span class="va">swarm</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 22 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 12 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 30 </span></span>
@@ -383,7 +383,7 @@ colony has a different percentage of workers that stayed or left.</p>
 <code class="sourceCode R"><span><span class="va">tmp</span><span class="op">$</span><span class="va">swarm</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 26 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 14 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 50 </span></span>
@@ -423,7 +423,7 @@ queen, but contains virgin queens and <code>p</code> workers. The
 <code><a href="../reference/split.html">split()</a></code> function follows the same principles as the
 <code><a href="../reference/swarm.html">swarm()</a></code>, hence we will limit explaining the outputs.</p>
 <div class="figure">
-<img src="../reference/figures/split.png" alt="Split function" width="100%"><p class="caption">
+<img src="../reference/figures/split.png" alt="Split function" width="80%"><p class="caption">
 Split function
 </p>
 </div>
@@ -436,7 +436,7 @@ Split function
 <span><span class="co">#&gt; $split</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 34 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 30 </span></span>
@@ -451,7 +451,7 @@ Split function
 <span><span class="co">#&gt; $remnant</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 11 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 70 </span></span>
@@ -480,7 +480,7 @@ it tracks its genetics and location.</p>
 <span><span class="va">colony</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 11 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 70 </span></span>
@@ -507,7 +507,7 @@ function - see <code>SimParamBee$splitP</code>.</p>
 <span><span class="va">tmp</span><span class="op">$</span><span class="va">remnant</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 22 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 12 </span></span>
 <span><span class="co">#&gt; Number of fathers: 10 </span></span>
 <span><span class="co">#&gt; Number of workers: 70 </span></span>
@@ -523,7 +523,7 @@ function - see <code>SimParamBee$splitP</code>.</p>
 <code class="sourceCode R"><span><span class="va">tmp</span><span class="op">$</span><span class="va">split</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 35 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 30 </span></span>
@@ -557,7 +557,7 @@ the creation of new virgin queens from the brood (Figure 3). The
 function returns a single <code>Colony</code> or
 <code>MultiColony</code> object (not a list of two).</p>
 <div class="figure">
-<img src="../reference/figures/supersede.png" alt="Supersede function" width="100%"><p class="caption">
+<img src="../reference/figures/supersede.png" alt="Supersede function" width="50%"><p class="caption">
 Supersede function
 </p>
 </div>
@@ -569,7 +569,7 @@ Supersede function
 <span><span class="va">colony</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 100 </span></span>
@@ -638,7 +638,7 @@ Collapse function
 <span><span class="va">colony</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 8 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
 <span><span class="co">#&gt; Number of workers: 100 </span></span>
@@ -661,10 +661,10 @@ the <code><a href="../reference/selectColonies.html">selectColonies()</a></code>
 <span><span class="va">apiary</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 26 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: NA </span></span>
 <span><span class="co">#&gt; Number of fathers: 0 </span></span>
-<span><span class="co">#&gt; Number of workers: 94 </span></span>
+<span><span class="co">#&gt; Number of workers: 100 </span></span>
 <span><span class="co">#&gt; Number of drones: 100 </span></span>
 <span><span class="co">#&gt; Number of virgin queens: 1 </span></span>
 <span><span class="co">#&gt; Has split: TRUE </span></span>
@@ -714,7 +714,7 @@ and significance of the swarm fraction. Insectes sociaux, 59(4):453-462.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

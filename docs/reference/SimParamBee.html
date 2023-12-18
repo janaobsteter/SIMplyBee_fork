@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -51,7 +51,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -124,17 +124,17 @@
     <p>Bovo et al. (2021) Application of Next Generation Semiconductor-Based
   Sequencing for the Identification of Apis mellifera Complementary Sex
   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-  doi: <a href="https://doi.org//10.3390/insects12100868" class="external-link">/10.3390/insects12100868</a></p>
+  <a href="https://doi.org//10.3390/insects12100868" class="external-link">doi:/10.3390/insects12100868</a></p>
 <p>Lechner et al. (2014) Nucleotide variability at its limit? Insights into
  the number and evolutionary dynamics of the sex-determining specificities
  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
- 272-287. doi: <a href="https://doi.org//10.1093/molbev/mst207" class="external-link">/10.1093/molbev/mst207</a></p>
+ 272-287. <a href="https://doi.org//10.1093/molbev/mst207" class="external-link">doi:/10.1093/molbev/mst207</a></p>
 <p>Seeley (2019) The Lives of Bees: The Untold Story of the Honey
   Bee in the Wild. Princeton: Princeton University Press.
-  doi: <a href="https://doi.org//10.1515/9780691189383" class="external-link">/10.1515/9780691189383</a></p>
+  <a href="https://doi.org//10.1515/9780691189383" class="external-link">doi:/10.1515/9780691189383</a></p>
 <p>Zareba et al. (2017) Uneven distribution of complementary sex determiner
   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-  doi: <a href="https://doi.org//10.1038/s41598-017-02629-9" class="external-link">/10.1038/s41598-017-02629-9</a></p>
+  <a href="https://doi.org//10.1038/s41598-017-02629-9" class="external-link">doi:/10.1038/s41598-017-02629-9</a></p>
     </div>
     <div id="super-class">
     <h2>Super class</h2>
@@ -239,6 +239,15 @@
   See <code><a href="swarmPFun.html">swarmPUnif</a></code> for
   examples.</p>
 <p>You can provide your own functions that satisfy your needs!</p></dd>
+
+
+<dt><code>swarmRadius</code></dt>
+<dd><p>numeric, radius within which to sample a location of
+  of the swarm - used in <code><a href="swarm.html">swarm</a></code> - see its <code>radius</code>
+  argument.</p>
+<p>The default value is <code>0</code>, that is, swarm gets the same location as
+  the original colony.</p>
+<p>You can change this setting to your needs!</p></dd>
 
 
 <dt><code>splitP</code></dt>
@@ -352,6 +361,7 @@ generate this object</p></dd>
 <li><p><a href="#method-SimParamBee-updateLastColonyId"><code>SimParamBee$updateLastColonyId()</code></a></p></li>
 <li><p><a href="#method-SimParamBee-clone"><code>SimParamBee$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addSnpChip"><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addSnpChipByName"><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addStructuredSnpChip"><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToPed"><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToRec"><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
@@ -371,6 +381,7 @@ generate this object</p></dd>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-resetPed"><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-restrSegSites"><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setCorE"><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setFounderHap"><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setRecombRatio"><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setSexes"><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setTrackPed"><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
@@ -394,6 +405,7 @@ generate this object</p></dd>
 <span>  nVirginQueens <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  nFathers <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  swarmP <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  swarmRadius <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  splitP <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  downsizeP <span class="op">=</span> <span class="fl">0.85</span>,</span>
 <span>  csdChr <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -428,6 +440,10 @@ genomes</p></dd>
 
 <dt><code>swarmP</code></dt>
 <dd><p>see <code>SimParamBee</code> field <code>swarmP</code></p></dd>
+
+
+<dt><code>swarmRadius</code></dt>
+<dd><p>see <code>SimParamBee</code> field <code>swarmRadius</code></p></dd>
 
 
 <dt><code>splitP</code></dt>
@@ -687,7 +703,7 @@ drones, "V" for virgin queens, and "F" for fathers</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
