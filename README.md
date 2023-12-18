@@ -10,7 +10,7 @@ Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetic
 
 ## Download
 
-SIMplyBee is available on CRAN. You can install it with
+SIMplyBee is available on CRAN. You can install it with:
 
     install.packages(pkg = "SIMplyBee")
 
