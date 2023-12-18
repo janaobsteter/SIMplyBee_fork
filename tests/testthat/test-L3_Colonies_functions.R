@@ -5,7 +5,7 @@
 test_that("createMultiColony", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow {SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 100, simParamBee = SP)
   # Error if individuals x are not vq or q
@@ -42,7 +42,7 @@ test_that("createMultiColony", {
 test_that("selectColonies", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow {SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
   drones <- createDrones(x = basePop[1:4], nInd = 100, simParamBee = SP)
@@ -87,7 +87,7 @@ test_that("selectColonies", {
 test_that("pullColonies", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow {SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   # Error if argument multicolony isn't a multicolony class
   expect_error(pullColonies(basePop))
@@ -128,7 +128,7 @@ test_that("pullColonies", {
 test_that("removeColonies", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow {SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   # Error if argument multicolony isn't a multicolony class
   expect_error(removeColonies(basePop))

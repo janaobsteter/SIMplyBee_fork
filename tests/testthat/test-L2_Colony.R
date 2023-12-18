@@ -6,7 +6,7 @@
 test_that("supersede", {
     founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -42,7 +42,7 @@ test_that("supersede", {
 test_that("split", {
     founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -83,7 +83,7 @@ test_that("split", {
 test_that("resetEvents", {
     founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
 
     drones <- createDrones(x = basePop[1], nInd = 100)
@@ -121,7 +121,7 @@ test_that("resetEvents", {
 test_that("Combine", {
     founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -157,7 +157,7 @@ test_that("Combine", {
 test_that("swarm", {
     founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -198,7 +198,7 @@ test_that("swarm", {
 test_that("collapse", {
     founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     SP <- SimParamBee$new(founderGenomes)
-    \dontshow {SP$nThreads = 1L}
+    SP$nThreads = 1L
     basePop <- createVirginQueens(founderGenomes)
     drones <- createDrones(basePop[1], n = 1000)
     fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
