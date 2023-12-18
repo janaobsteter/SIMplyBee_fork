@@ -3,6 +3,7 @@
 test_that("createColony", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
+   \dontshow {SP$nThreads = 1L}
    basePop <- createVirginQueens(founderGenomes)
    drones <- createDrones(x = basePop[1], nInd = 15)
    matedQueen <- cross(basePop[2], drones = drones)
@@ -23,6 +24,7 @@ test_that("createColony", {
 test_that("reQueen", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow {SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 30)
   virginQueen <- basePop[2]
@@ -64,6 +66,7 @@ test_that("reQueen", {
 test_that("Add functions", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
+   \dontshow {SP$nThreads = 1L}
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 100)
@@ -119,6 +122,7 @@ test_that("Add functions", {
 test_that("BuildUpDownsize", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
+   \dontshow {SP$nThreads = 1L}
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -173,6 +177,7 @@ test_that("BuildUpDownsize", {
 test_that("replaceFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow {SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 100)
@@ -226,6 +231,7 @@ test_that("replaceFunctions", {
 test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow {SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 100)
@@ -271,6 +277,7 @@ test_that("removeFunctions", {
 test_that("setLocation", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
+  \dontshow {SP$nThreads = 1L}
   basePop <- createVirginQueens(founderGenomes)
 
   emptyColony <- createColony()

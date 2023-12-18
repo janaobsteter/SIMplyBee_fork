@@ -22,6 +22,7 @@
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow {SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' # Create 2 empty (NULL) colonies
@@ -105,6 +106,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow {SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -240,6 +242,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow {SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -353,6 +356,7 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow {SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
