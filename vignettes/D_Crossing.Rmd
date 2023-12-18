@@ -22,16 +22,85 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette shows how you can cross virgin queens in SIMplyBee. Here, we
-present how you can cross:
+Crossing the queen is the most complicated action in SIMplyBee, since mating of
+honeybees is versatile. Virgin queens can be mated in a controlled manner,
+either using artificial insemination or a mating station, or uncontrolled in an
+open mating setting. In the latter case, the mating depends on the distance
+between the virgin queens and the drones or drone producing colonies.
 
--   single or multiple virgin queens (class `Pop`), virgin queen in a colony
-    (class `Colony`), or all the virgin queens in an apiary or population (class
-    `MultiColony`);
--   cross either with pre-selected population of drones or according to a cross
-    plan, and
--   cross queens at an open drone congregation area (DCA) or at a mating
-    station.
+In this vignette, we first explain five ways of mating virgin queens and at the
+end we describe two special cases of mating virgin queens on a mating station
+and mating multiple virgin queens in different ways.
+
+```{r crossing_decision_tree, echo=FALSE, out.width='50%', fig.cap = "Crossing decision tree"}
+knitr::include_graphics("../man/figures/decisionTreeCrossing.png")
+```
+
+To facilitate the understanding of the crossing function and choosing the
+correct option for your need, we created a diagram with a decision tree
+following the questions:
+
+1.  How many virgin queens/colonies are you mating?
+
+-   **one virgin queen** (Pop-class with one individual) or one virgin colony
+    (Colony-class or MultiColony-class with a single colony). This is marked as
+    **option 1** on the diagram. For this, you need to provide the females as
+    either `Pop`, `Colony`, `MultiColony` class and males as a single `Pop`
+    class object.
+-   **multiple virgin queens** (Pop-class with multiple individuals) or multiple
+    virgin colonies (MultiColony-class with multiple colonies). Continue to
+    question 2.
+
+2.  If you are mating **multiple virgin queens/colonies**, do you want to:
+
+-   cross with **drone packages**, that is pre-prepared populations of drones
+    for each queen? You probably want to use this if you want more control over
+    the drones that mate with each queen, such as in artificial insemination.
+    This crossing option is suitable when mating a smaller number of virgin
+    queens since it is computationally not the most efficient. For this option,
+    you need to provide the females as either `Pop`, `Colony`, `MultiColony`
+    class and males as a list of `Pop` class object - one for each virgin
+    queen/colony.
+-   cross **according to a cross plan**. This option is the recommended option
+    when mating a larger number of virgin queens/colonies. Continue to question
+    3.  
+
+3.  When mating **according to a cross plan**, you can either:
+
+-   **provide a cross plan**, which is a list where the list names are either
+    virgin queens' or virgin colonies IDs and the content for each virgin
+    queen/colony is either
+    -   the IDs drones she will mate with; in this case, you also have to
+        provide `drones` argument as a single `Pop` class that represents the
+        DCA with all the drones;
+    -   the IDs of the drone producing colonies that she will mate with; in this
+        case, you also have to provide the `droneColonies` argument as a
+        `MultiColony` class with all drone producing colonies. You probably want
+        to use this option when you are simulating an existing pedigree or
+        trying to have more control over mating for a larger number of queens,
+        such as on a mating stations. You can also use an auxiliary function
+        `createCrossPlan()` to create the cross plan, but in this case, you
+        probably want to move to question 4.
+-   **create the cross plan internally**, either by sampling the drones or drone
+    producing colonies randomly or spatially. Continue to question 4.
+
+4.  When mating **according to an internally created cross plan**, you can
+    either:
+
+-   cross according to a **random cross plan**, where the mates for mating are
+    sampled randomly. For this, you need to provide the females as either `Pop`,
+    `Colony`, `MultiColony` class and males either through the `drones` argument
+    as a `Pop` class object, or through the `droneColonies` argument as a
+    `MultiColony` class object. You probably want to use this option if you are
+    not concerned with spatial simulation or are simulation a small area with a
+    single DCA. You can also use this option to mate virgin queens on a mating
+    station in combination with the `createMatingStationsDCA()` function.
+-   cross according to a **spatial cross plan**, where the mates for mating are
+    sampled according to their geographic location in a set radius. For this,
+    you need to provide both females and males as `MultiColony` objects with
+    **the location set**, hence males have to be provided through the
+    `droneColonies` argument. You probably want to use this option when
+    simulating realistic breeding programs and populations.
 
 Start by loading the package:
 
@@ -39,12 +108,13 @@ Start by loading the package:
 library(package = "SIMplyBee")
 ```
 
-First, we create a founder population and some virgin queen, virgin colonies,
-and virgin apiaries that we will later cross.
+First, we create a founder population and some virgin queen and virgin colonies
+for crossing. We will also create four `MultiColony` objects that will represent
+colonies from four different beekeepers.
 
 ```{r}
 # Simulate 40 founder genomes
-founderGenomes <- quickHaplo(nInd = 50, nChr = 1, segSites = 100)
+founderGenomes <- quickHaplo(nInd = 60, nChr = 1, segSites = 100)
 # Set global population paramaters
 SP <- SimParamBee$new(founderGenomes)
 # Create a base population of 40 virgin queens
@@ -52,22 +122,16 @@ basePop <- createVirginQueens(founderGenomes)
 
 # Prepare populations with a single virgin queen
 virginQueen1 <- basePop[1]
-virginQueen2 <- basePop[2]
-virginQueen3 <- basePop[3]
 # Prepare populations with multiple virgin queens
-virginQueens1 <- basePop[4:6]
-virginQueens2 <- basePop[7:9]
-virginQueens3 <- basePop[10:12]
-# Prepare virgin Colony objects
-colony1 <- createColony(basePop[13])
-colony2 <- createColony(basePop[14])
-colony3 <- createColony(basePop[15])
-colony4 <- createColony(basePop[16])
+virginQueens1 <- basePop[2:4]
 # Prepare virgin MultiColony objects
-apiary1 <- createMultiColony(basePop[17:21])
-apiary2 <- createMultiColony(basePop[22:26])
-apiary3 <- createMultiColony(basePop[27:31])
-apiary4 <- createMultiColony(basePop[32:41])
+beekeeper1 <- createMultiColony(basePop[6:11])
+beekeeper2 <- createMultiColony(basePop[12:16])
+beekeeper3 <- createMultiColony(basePop[17:21])
+beekeeper4 <- createMultiColony(basePop[22:31])
+beekeeper5 <- createMultiColony(basePop[32:40])
+beekeeper6 <- createMultiColony(basePop[41:50]) 
+beekeeper7 <- createMultiColony(basePop[51:60]) 
 ```
 
 We will now create a groups of drones from the remaining queens with 1,000
@@ -78,19 +142,40 @@ drones per queen that will represent a drone congregation area (DCA).
 DCA <- createDrones(basePop[42:50], nInd = 1000)
 ```
 
-# Cross virgin queens at an open DCA
+# Option 1: Cross a single virgin queen/colony
 
-## Cross by pre-selecting drone populations
+We start by crossing a single virgin queen that can be provided either in a
+`Pop`, `Colony`, or `MultiColony` objects. In this case, you just need to
+provide a `Pop` of drones she will mate with. Note that no sampling is applied
+to the drones! Hence, if you provide a `Pop` with 100 drones, she will be mated
+to 100 drones!
 
-We start by crossing our populations and colonies to pre-selected populations of
-drones. We pre-select the groups by pulling a desired number of drone packages
-from a DCA with the function `pullDroneGroupsFromDCA()`. This function requires
-you to specify a group of drones (`DCA`), how many groups you want to pull from
-the DCA (`n`), and how many drones per group you want (`nDrones`). For
-`nDrones`, you can either specify an integer or a sampling function, which
-results in a different number of drones in each of the pulled groups (you can
-read more about this in the Sampling functions vignette). These sampling
-functions are particularly useful in crossing simulations:
+```{r}
+# Samples some drone for mating from the DCA
+drones <- selectInd(DCA, nInd = 10, use = "rand")
+# Mate the virgin queen with the drones
+queen1 <- cross(x = virginQueen1, drones = drones)
+# Check the number of fathers for the queen
+nFathers(queen1)
+```
+
+The above code shows an example for mating the virgin queen in a `Pop` object,
+but exact same holds for `Colony` and `MultiColony` objects with a single queen.
+
+# Option2: Cross with drone packages (pre-selecting drone populations)
+
+We continue by crossing our virgin females to drone packages, that is a
+pre-selected populations of drones. We recommend this option when mating a
+larger number of queens, although it could be used for mating a single virgin
+queen/colony as well, and when you want more control over the drone selection.
+We pre-select the groups by pulling a desired number of drone packages from a
+DCA with the function `pullDroneGroupsFromDCA()`. This function requires you to
+specify a group of drones (`DCA`), how many groups you want to pull from the DCA
+(`n`), and how many drones per group you want (`nDrones`). For `nDrones`, you
+can either specify an integer or a sampling function, which results in a
+different number of drones in each of the pulled groups (you can read more about
+this in the Sampling functions vignette). These sampling functions are
+particularly useful in crossing simulations:
 
 -   `nFathersPoisson()`: samples the number of drones from a Poisson
     distribution with a default mean of 15 (the user can specify a different
@@ -110,8 +195,8 @@ all at once.
 droneGroups <- pullDroneGroupsFromDCA(DCA, n = 20, nDrones = nFathersTruncPoisson)
 ```
 
-Once we inspect these drone groups, we see there is a different number of drones
-in each group because we used a sampling function:
+There is a different number of drones in each group because we used a sampling
+function:
 
 ```{r}
 sapply(droneGroups, FUN = nInd)
@@ -120,96 +205,202 @@ sapply(droneGroups, FUN = nInd)
 Now, we can cross our virgin queens to drone groups.
 
 ```{r}
-# A single virgin queen
-virginQueen1 <- cross(virginQueen1, drones = droneGroups[[1]])
-nFathers(virginQueen1)
+# Pop-class with multiple queens
+queens1 <- cross(virginQueens1, drones = droneGroups[1:3])
+nFathers(queens1)
 ```
 
 ```{r}
-# Multiple virgin queens
-virginQueens1 <- cross(virginQueens1, drones = droneGroups[2:4])
-nFathers(virginQueens1)
+# MultiColony-class
+beekeeper1 <- cross(x = beekeeper1, drones = droneGroups[4:9])
+nFathers(beekeeper1)
 ```
+
+# Option 3: Cross according to a provided cross plan
+
+When mating a large number of queens, creating drone populations can be
+computationally demanding! A better option is to cross according to a cross plan
+that includes all the females and the males that they will mate with, and males
+as a single object. The cross plan is a list whose names are the IDs of either
+the virgin queens or the colonies you want to cross (but not both in the same
+cross plan!), and the content for each queen is either the IDs of drone or drone
+producing colonies she will mate with (again, use either only drone or only
+drone producing colony's IDs in one cross plan!). When providing drone IDs, you
+also have to provide the males through the `drones` argument as a single `Pop`
+class that represents the DCA with all the drones. The DCA can represent a DCA
+of randomly assembled drones in the vicinity, a 'global' DCA of all drones
+available at a time, or a DCA at a mating station. If you are providing drone
+producing colonies' IDs, you need to provide the males through the
+`droneColonies` argument as a single `MultiColony` class. Mating with drone
+producing colonies might be computationally more efficient since only the drones
+needed for mating are created on the spot.
+
+You can use the cross plan either to gain more control over mating and create
+the cross plan in a manual manner, or to simply reduce the computational burden
+when mating a large number of virgin queens. For that, you can either use the
+function `createCrossPlan()`, if you want to inspect the cross plan before
+deployment, or simply let the `cross()` function to create the cross plan
+internally (see options 5 and 6). The latter is just a shortcut since it calls
+the `createCrossPlan()` function from within the `cross()`. Both option hence
+allow to create the cross plan by randomly sampling available drones or drone
+producing queens, or sample them according to their geographical proximity to
+the virgin colony. Do note that to perform spatial sampling, the females and
+males have to be provided and `MultiColony` objects with a set location. Another
+situation where you would want to use the cross plan is when you want.
+
+NOTE: You can create one cross plan for a number of virgin queens or colonies
+and then mate each one separately. Let's say you have 100 colonies from two
+beekeepers. You can create a cross plan for all of them in one go, and then mate
+colonies from each beekeeper separately by providing the same cross plan. Do
+note again, that one cross plan can either contain only virgin queen or only
+virgin colonies' IDs, no mix and and match!
+
+Let us now create a random cross plan with drone IDs to mate the virgin colonies
+from one of the beekeepers.
 
 ```{r}
-# A colony
-colony1 <- cross(colony1, drones = droneGroups[[5]])
-nFathers(colony1)
+crossPlan1 <- createCrossPlan(x = beekeeper2,
+                              drones = DCA,
+                              nDrones = nFathersPoisson)
+# Inspect the cross plan
+crossPlan
+sapply(crossPlan1, length)
 ```
+
+We see that the cross plan is a list, with names being colony IDs and elements
+of the list being the ID of drones that each virgin colony will mate with. Now,
+we can cross the colonies of each beekeeper by providing the `crossPlan1` to the
+`cross()` function and the created DCA through the `drones` argument.
 
 ```{r}
-# An apiary
-apiary1 <- cross(x = apiary1, drones = droneGroups[6:10])
-nFathers(apiary1)
+# Cross the colonies of the beekeeper 2
+beekeeper2 <- cross(x = beekeeper2, drones = DCA, crossPlan = crossPlan1)
+nFathers(beekeeper2)
 ```
 
-## Cross according to a cross plan
+Now, let us now create a spatial cross plan, this time by sampling drone
+producing colonies that will provide drones to mate with another one of our
+virgin apiaries. We will mate colonies of beekeeper 3. In this examples,
+colonies from beekeeper 1 and beekeeper 2 will serve as drone producing
+colonies. Although we are not sampling drones directly, you still need to
+provide `nDrones` argument to determine the number of sampled drone producing
+colonies.
 
-Another option is to provide a cross plan with IDs of the virgin queens/colonies
-and drones, and a single drone population with all the drones listed in the
-cross plan. You can create a cross plan with the function
-`createRandomCrossPlan()`. This function creates a cross plan by randomly
-sampling a desired number of drone IDs from a DCA and assigning them to either
-virgin queen ID or colony ID. When crossing a virgin queen from a colony, you
-have to provide the colony ID, since there could be multiple virgin queens
-within the colony. In that case, the random selection of one virgin queen occurs
-within the `cross()` function. To create a cross plan you therefore have to
-provide the IDs of either the virgin queens or the colonies you want to cross
-(but not both in the same cross plan!!!), the drone population, and the number
-of drones you want to cross to a particular virgin queen. This can again be a
-fixed number or a sampling function. We can create a separate cross plan for
-each mating or create one combined cross plan for multiple matings (but can not
-have virgin queen and colony IDs in the cross plan at the same time!!!). Here,
-we again mate a single virgin queen, a population of virgin queens, virgin
-queens from a colony, and from an apiary.
+For spatial mating, we need to set the location to our apiaries (all the
+colonies within an beekeeper will have the same location). Here, we are setting
+this locations randomly, but these could be actual coordinated of colonies
+within a country.
 
 ```{r}
-# Create a combined cross for mating a single queen (virginQueen2) and a population
-# of virgin queen (virginQueens2)
-(crossPlanQueens <- createRandomCrossPlan(IDs = c(getId(virginQueen2),
-                                                  getId(virginQueens2)),
-                                         drones = DCA,
-                                         nDrones = 15))
+# Set location to apiaries
+beekeeper1 <-  setLocation(beekeeper1, 
+                           location = Map(c, runif(nColonies(beekeeper1), 0, 2*pi), runif(nColonies(beekeeper1), 0, 2*pi)))
+beekeeper2 <-  setLocation(beekeeper2, 
+                           location = Map(c, runif(nColonies(beekeeper2), 0, 2*pi), runif(nColonies(beekeeper2), 0, 2*pi)))
+beekeeper3 <-  setLocation(beekeeper3, 
+                           location = Map(c, runif(nColonies(beekeeper2), 0, 2*pi), runif(nColonies(beekeeper3), 0, 2*pi)))
+
 ```
 
-We see that the created cross plan is a list with IDs corresponding to the
-virgin queen's IDs and the elements of each list being the IDs of the drones the
-virgin queen will mate with. Now we can cross these virgin queens by providing
-the `crossPlanQueens` to the `cross()` functions.
+We can plot the location of colonies to see how they arrange in space. Again, we
+want to mate the virgin queens of beekeeper 3 with drone produced by colonies of
+beekeepers 1 and 2.
 
 ```{r}
-# Cross a single virgin queen
-virginQueen2 <- cross(virginQueen2, drones = DCA, crossPlan = crossPlanQueens)
-nFathers(virginQueen2)
-# Cross multiple virgin queens
-virginQueens2 <- cross(virginQueens2, drones = DCA, crossPlan = crossPlanQueens)
-nFathers(virginQueens2)
+locationsDF <- data.frame(Location = getLocation(c(beekeeper1, beekeeper2, beekeeper3), collapse = TRUE),
+                          Beekeeper = c(rep("Beekeeper1", nColonies(beekeeper1)),
+                                        rep("Beekeeper2", nColonies(beekeeper2)),
+                                        rep("Beekeeper3", nColonies(beekeeper3))))
+
+ggplot(data = locationsDF, aes(x = Location.1, y = Location.2, colour = Beekeeper)) + 
+  geom_point()
 ```
 
-As already mentioned, we need to create a separate plan for crossing virgin
-queens already in colonies, since here we need to provide colony IDs.
+Next, we create a spatial cross plan for mating our colonies. We set the radius
+to however far we believe our drone can fly according to the scale of locations
+coordinates. All the drones within that area then have the same probability of
+mating with the queen, which follows the believe that drones aggregate in a DCA.
 
 ```{r}
-(crossPlanColonies <- createRandomCrossPlan(IDs = c(getId(colony2), getId(apiary2)),
-                                           drones = DCA,
-                                           nDrones = nFathersPoisson))
+crossPlan2 <- createCrossPlan(x = beekeeper3,
+                              droneColonies = c(beekeeper1, beekeeper2),
+                              spatial = TRUE,
+                              radius = 3,
+                              nDrones = 13)
+# Inspect the cross plan
+crossPlan2
+sapply(crossPlan2, length)
 ```
 
-We again see that the cross plan is a list, now with colony IDs and elements of
-the list being the ID of drones the virgin queen within each colony will mate
-with. Now, we can cross our "colonies" by providing the `crossPlanColonies` to
-the `cross()` function.
+We see that there is a different number of drone producing queen for each virgin
+queen in the specified radius . It could also happen, there are no drone
+producing colonies in that radius. In that case, you can either increase the
+radius, if you think that is sensible, or some virgin queens will remain
+unmated. Once we have the spatial cross plan, we can mate our colonies.
 
 ```{r}
-# Cross a single colony
-colony2 <- cross(colony2, drones = DCA, crossPlan = crossPlanColonies)
-nFathers(colony2)
-# Cross an apiary
-apiary2 <- cross(x = apiary2, drones = DCA, crossPlan = crossPlanColonies)
-nFathers(apiary2)
+beekeeper3 <- cross(beekeeper3, 
+                    crossPlan = crossPlan2,
+                    droneColonies = c(beekeeper1, beekeeper2),
+                    nDrones = 13)
+# Inspect the number of fathers
+nFathers(beekeeper3)
 ```
 
-# Cross virgin queens at a mating station
+As you see, we have duplicated quite some information in running first a
+function that creates a cross plan and then performing the crossing. If you are
+not really keen on inspecting the cross plan before mating, we suggest you use
+the options 4 and 5 (see below).
+
+You may also want to provide an existing cross plan if you want to create more
+tailored cross plans and cross virgin queens with different methods (i.e. you
+want to mate one queen in the apiary in an artificial insemination, some of them
+would be open mated etc.). For that, see the section "Special cases" at the end
+of this vignette.
+
+# Options 4 and 5: Cross according to an internally created cross plan
+
+The procedure behind this option is exactly the same as described in option 4
+with using `createCrossPlan()` function to create either a random and spatial
+cross plan and then crossing according to the plan. The difference is that in
+this option, the two steps are combined within the `cross()` function.
+
+Let us mate the colonies of the remaining beekeepers 4 and 5 with colonies of
+beekeepers 1 to 3 as drone producing colonies. Let's first set the locations of
+the beekeepers 4 and 5 colonies.
+
+```{r}
+beekeeper4 <-  setLocation(beekeeper4, 
+                           location = Map(c, runif(nColonies(beekeeper4), 0, 2*pi), runif(nColonies(beekeeper4), 0, 2*pi)))
+beekeeper5 <-  setLocation(beekeeper5, 
+                           location = Map(c, runif(nColonies(beekeeper5), 0, 2*pi), runif(nColonies(beekeeper5), 0, 2*pi)))
+```
+
+Now, we will mate the colonies of beekeeper 4 in a random manner and colonies of
+beekeeper 5 in a spatial manner, all within the `cross()` function. For this,
+you have to pass a keyword "create" to the `crossPlan` argument in the
+`cross()`.
+
+```{r}
+beekeeper4 <- cross(x = beekeeper4,
+                    droneColonies = c(beekeeper1, beekeeper2, beekeeper3),
+                    crossPlan = "create",
+                    spatial = FALSE,
+                    nDrones = 12)
+nFathers(beekeeper4)
+
+beekeeper5 <- cross(x = beekeeper5,
+                    droneColonies = c(beekeeper1, beekeeper2, beekeeper3),
+                    crossPlan = "create",
+                    spatial = TRUE,
+                    radius = 3,
+                    nDrones = 12)
+nFathers(beekeeper5)
+```
+
+# Special cases
+
+## Cross virgin queens at a mating station
 
 Mating virgin queens at a mating station is no different than mating them at an
 open DCA - the difference is in the DCA itself. In the case of open mating, the
@@ -218,66 +409,67 @@ In the case of a mating station, the DCA consists of drones coming from a sister
 group of drone producing queens (DPQ), the queen of which is known. This allows
 us to track the pedigree on the paternal side.
 
-To simulate this situation, we first create a mating station DCA using
-`createMatingStationDCA()` function, which takes a single "sire" colony (queen
-of the DPQs). From the "sire" colony, the function first produces a desired
-number of sister DPQs, and next produces a desired number of drones per DPQ. The
-produced drones represent the mating station's DCA.
+To simulate this, you can either: \* create a group of sister queens and provide
+them to the `cross()` function through the `droneColonies` argument; \* create a
+mating stations DCA and then either pull drone packages from it, create a random
+plan from it, or provide it directly to the `cross()` function through the
+`drones` argument.
+
+Here, we will demonstrate one of the options. We will create a mating station
+DCA using `createMatingStationDCA()` function, which takes a single "sire"
+colony (queen of the DPQs). From the "sire" colony, the function first produces
+a desired number of sister DPQs, and next produces a desired number of drones
+per DPQ. The produced drones represent the mating station's DCA.
 
 ```{r}
 # Create a DCA at a mating station from colony1
-(matingStationDCA <- createMatingStationDCA(colony1, nDPQs = 20, nDronePerDPQ = 1000))
+(matingStationDCA <- createMatingStationDCA(beekeeper1[[3]], nDPQs = 20, nDronePerDPQ = 1000))
 ```
 
 We see that the output of the function is a single population of 20,000 drones
-that represents the DCA. Once you have the DCA, you can cross virgin queens
-either by pulling out populations of drones or creating a mating plan as
-described above.
-
-Here, we will mate a single colony (`colony3`) and a group of colonies
-(`apiary3`) at a mating station according to a cross plan.
+that represents the DCA. As mentioned, once you have the DCA, you can use it in
+different manners. Here, we will feed it directly to the `cross()` function and
+assume random sampling of drones. Spatial sampling does not make sense here,
+since all the drones and the virgin colonies are at the same location - the
+mating station.
 
 ```{r}
-# Mate only an apiary
-crossPlanMatingStation <- createRandomCrossPlan(IDs = c(getId(colony3), 
-                                                        getId(apiary3)),
-                                                drones = matingStationDCA,
-                                                nDrones = nFathersTruncPoisson)
-# Cross a colony
-colony3 <- cross(colony3, crossPlan = crossPlanMatingStation, drones = matingStationDCA)
-nFathers(colony3)
-# Cross an apiary
-apiary3 <- cross(apiary3, crossPlan = crossPlanMatingStation, drones = matingStationDCA)
-nFathers(apiary3)
+# Mate only an beekeeper
+beekeeper6 <- cross(beekeeper6,
+                    drones = matingStationDCA,
+                    spatial = FALSE,
+                    crossPlan = "create",
+                    nDrones = 15)
+nFathers(beekeeper6)
 ```
 
-# Cross virgin queens with different methods
+## Cross colonies with varying methods
 
 It could happen that you have some virgin colonies in an apiary and you want to
 inseminate one of the virgin queens artificially with a single drone, take three
 of them to a mating station, and mate the rest of them openly at a local DCA.
 Since the cross plan is a named list, you can concatenate multiple cross plans
-into one. Let's mate the multicolony `apiary4` in such a manner.
+into one. Let's mate the multicolony of beekeeper 4 in such a manner.
 
 ```{r}
-# Create a single drone for single drone insemination
-singleDrone = createDrones(colony2, nInd = 1)
+o# Create a single drone for single drone insemination
+singleDrone = createDrones(beekeeper1[[1]], nInd = 1)
 # Create a cross plan for crossing some of the colonies in an open DCA, 
 # some with single drone, and some on a mating station
-crossPlanApiary4 <- c(
-  createRandomCrossPlan(IDs = getId(apiary4)[1], 
+crossPlanBeekeeper7 <- c(
+  createRandomCrossPlan(IDs = getId(beekeeper7)[1], 
                         drones = singleDrone, 
                         nDrones = 1),
-  createRandomCrossPlan(IDs = getId(apiary4)[2:6], 
+  createRandomCrossPlan(IDs = getId(beekeeper7)[2:6], 
                         drones = DCA, 
                         nDrones = nFathersTruncPoisson),
-  createRandomCrossPlan(IDs = getId(apiary4)[7:10], 
+  createRandomCrossPlan(IDs = getId(beekeeper7)[7:10], 
                         drones = matingStationDCA, 
                         nDrones = nFathersTruncPoisson)
   )
 
-apiary4 <- cross(apiary4, 
-                 crossPlan = crossPlanApiary4, 
-                 drones = c(singleDrone, DCA, matingStationDCA))
-nFathers(apiary4)
+beekeeper7 <- cross(beekeeper7, 
+                    crossPlan = crossPlanBeekeeper7, 
+                    drones = c(singleDrone, DCA, matingStationDCA))
+nFathers(beekeeper7)
 ```

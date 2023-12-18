@@ -16,8 +16,6 @@ test_that("createColony", {
    expect_s4_class(createColony(x = matedQueen), "Colony")
    # Create a colony with a drones
    expect_error(createColony(x = drones[1]))
-   # Set a location
-   expect_s4_class(createColony(location = c(1,2)), "Colony")
 })
 
 ####-----   REQUEEN ---- ####
@@ -275,10 +273,28 @@ test_that("removeFunctions", {
 
 ####----- SetLocation ---- ####
 test_that("setLocation", {
-  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
+  drones <- createDrones(basePop[1], n = 1000)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10)
+  colony <- createColony(x = basePop[2])
+  colony <- cross(colony, drones = droneGroups[[1]])
+  apiary <- createMultiColony(basePop[3:5])
+  apiary <- cross(apiary, drones = droneGroups[2:4])
+
+  loc <- c(1, 1)
+  expect_equal(getLocation(setLocation(colony, location = loc)), loc)
+
+  expect_equal(getLocation(setLocation(apiary, location = loc)),
+               list("2" = loc, "3" = loc, "4" = loc))
+
+  locList <- list("2" = c(0, 0), "3" = c(1, 1), "4" = c(2, 2))
+  expect_equal(getLocation(setLocation(apiary, location = locList)), locList)
+
+  locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
+  expect_equal(getLocation(setLocation(apiary, location = locDF)), locList)
 
   emptyColony <- createColony()
   expect_s4_class(setLocation(emptyColony, location = c(1,1)), "Colony")
@@ -291,9 +307,5 @@ test_that("setLocation", {
   expect_error(setLocation(emptyApiary, location = list(1,2))) # Lengths do not match
   expect_s4_class(setLocation(emptyApiary, location = list(1:2, 3:4, 4:5)), "MultiColony") #Not setting anything, if all are NULL!!!!
   expect_s4_class(setLocation(apiary, location = c(1,2)), "MultiColony")
-  expect_error(setLocation(apiary, location = list(1,2))) # Lengths do not match
   expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5)), "MultiColony")
 })
-
-
-

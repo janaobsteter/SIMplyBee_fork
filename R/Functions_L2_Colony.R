@@ -7,7 +7,6 @@
 #'   to initiate simulations.
 #'
 #' @param x \code{\link{Pop-class}}, one queen or virgin queen(s)
-#' @param location numeric, location of the colony as \code{c(x, y)}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return new \code{\link{Colony-class}}
@@ -32,7 +31,7 @@
 #' colony1 <- cross(colony1, drones = drones)
 #' colony1
 #' @export
-createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
+createColony <- function(x = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -40,8 +39,7 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
   if (is.null(x)) {
     colony <- new(
       Class = "Colony",
-      id = simParamBee$lastColonyId,
-      location = location
+      id = simParamBee$lastColonyId
     )
   } else {
     if (!isPop(x)) {
@@ -63,8 +61,8 @@ createColony <- function(x = NULL, location = NULL, simParamBee = NULL) {
     colony <- new(
       Class = "Colony",
       id = simParamBee$lastColonyId,
-      location = location,
       queen = queen,
+      location = c(0, 0),
       virginQueens = virginQueens
     )
   }
@@ -1216,7 +1214,8 @@ collapse <- function(x) {
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
 #'   remnant colony retains the other proportion of workers and all drones, and
 #'   the workers raise virgin queens, of which only one prevails. Location of
-#'   the swarm is the same as for the remnant (for now).
+#'   the swarm is the same as for the remnant or sampled as deviation from the
+#'   remnant.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
@@ -1229,13 +1228,19 @@ collapse <- function(x) {
 #'   colony; of these one is randomly selected as the new virgin queen of the
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
+#' @param sampleLocation logical, sample location of the swarm by taking
+#'  the current colony location and adding deviates to each coordinate using
+#'  \code{\link{rcircle}}
+#' @param radius numeric, radius of a circle within which swarm will go; if
+#'   \code{NULL} then \code{\link{SimParamBee}$swarmRadius} is used (which uses
+#'   \code{0}, so by default swarm does not fly far away)
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
 #'
 #' @return list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
-#' the \code{swarm} and the \code{remnant} (see the description what each colony holds!); both
-#' outputs have the swarm event set to \code{TRUE}
+#'   the \code{swarm} and the \code{remnant} (see the description what each
+#'   colony holds!); both outputs have the swarm event set to \code{TRUE}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 50)
@@ -1273,12 +1278,17 @@ collapse <- function(x) {
 #' # Swarm only the pulled colonies
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
-swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...) {
+swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
+                  sampleLocation = TRUE, radius = NULL,
+                  simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(p)) {
     p <- simParamBee$swarmP
+  }
+  if (is.null(radius)) {
+    radius <- simParamBee$swarmRadius
   }
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
@@ -1314,12 +1324,18 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
     tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
     currentLocation <- getLocation(x)
+    if (sampleLocation) {
+      newLocation <- c(currentLocation + rcircle(radius = radius))
+      # c() to convert row-matrix to a numeric vector
+    } else {
+      newLocation <- currentLocation
+    }
 
     swarmColony <- createColony(x = x@queen)
     # It's not re-queening, but the function also sets the colony id
 
     swarmColony@workers <- tmp$pulled
-    swarmColony <- setLocation(x = swarmColony, location = currentLocation)
+    swarmColony <- setLocation(x = swarmColony, location = newLocation)
 
     tmpVirginQueen <- createVirginQueens(
       x = x, nInd = nVirginQueens,
@@ -1377,6 +1393,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL, simParamBee = 
                      p = pColony,
                      year = year,
                      nVirginQueens = nVirginQueens,
+                     sampleLocation = sampleLocation,
+                     radius = radius,
                      simParamBee = simParamBee, ...
         )
         ret$swarm[[colony]] <- tmp$swarm
@@ -1746,59 +1764,99 @@ combine <- function(strong, weak) {
 #'   location to (x, y) coordinates.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param location numeric or list, location to be set for the
-#'   \code{\link{Colony-class}} or for \code{\link{MultiColony-class}}; when
-#'   numeric the same location will be set for all colonies; when list different
-#'   locations will be set for each colony - the list has to have the same
-#'   length at there are colonies in \code{x})
+#' @param location numeric, list, or data.frame, x and y coordinates of colony
+#'  locations as
+#'  \code{c(x1, y1)} (the same location set to all colonies),
+#'  \code{list(c(x1, y1), c(x2, y2))}, or
+#'  \code{data.frame(x = c(x1, x2), y = c(y1, y2))}
 #'
 #' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
 #'   location
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
+#' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow {SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(basePop[1], n = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10)
 #'
 #' # Create Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[3:8], n = 6)
-#' apiary <- cross(apiary, drones = droneGroups[2:7])
+#' apiary <- createMultiColony(basePop[3:5])
+#' apiary <- cross(apiary, drones = droneGroups[2:4])
 #'
 #' getLocation(colony)
 #' getLocation(apiary)
 #'
-#' loc1 <- c(512, 722)
-#' colony <- setLocation(colony, location = loc1)
+#' loc <- c(1, 1)
+#' colony <- setLocation(colony, location = loc)
 #' getLocation(colony)
 #'
 #' # Assuming one location (as in bringing colonies to one place!)
-#' apiary <- setLocation(apiary, location = loc1)
+#' apiary <- setLocation(apiary, location = loc)
+#' getLocation(apiary)
+#'
+#' # Assuming different locations
+#' locList <- list(c(0, 0), c(1, 1), c(2, 2))
+#' apiary <- setLocation(apiary, location = locList)
+#' getLocation(apiary)
+#'
+#' locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
+#' apiary <- setLocation(apiary, location = locDF)
 #' getLocation(apiary)
 #' @export
-setLocation <- function(x, location) {
+setLocation <- function(x, location = c(0, 0)) {
   if (isColony(x)) {
+    if (is.list(location)) { # is.list() captures also is.data.frame()
+      stop("Argument location must be numeric, when x is a Colony class object!")
+    }
+    if (is.numeric(location) && length(location) != 2) {
+      stop("When argument location is a numeric, it must be of length 2!")
+    }
     x@location <- location
   } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    if (is.list(location)) {
-      if (length(location) != nCol) {
-        stop("The length of location list and the number of colonies must match!")
-      }
-      for (colony in seq_len(nCol)) {
-        if (!is.null(x[[colony]])) {
-          x[[colony]]@location <- location[[colony]]
+    n <- nColonies(x)
+    if (!is.null(location)) {
+      if (is.numeric(location)) {
+        if (length(location) != 2) {
+          stop("When argument location is a numeric, it must be of length 2!")
         }
-      }
-    } else {
-      for (colony in seq_len(nCol)) {
-        if (!is.null(x[[colony]])) {
-          x[[colony]]@location <- location
+      } else if (is.data.frame(location)) {
+        if (nrow(location) != n) {
+          stop("When argument location is a data.frame, it must have as many rows as the number of colonies!")
         }
+        if (ncol(location) != 2) {
+          stop("When argument location is a data.frame, it must have 2 columns!")
+        }
+      } else if (is.list(location)) {
+        if (length(location) != n) {
+          stop("When argument location is a list, it must be of length equal to the number of colonies!")
+        }
+        tmp <- sapply(X = location, FUN = length)
+        if (!all(tmp == 2)) {
+          stop("When argument location is a list, each list node must be of length 2!")
+        }
+      } else if (is.numeric(location)) {
+        if (length(location) != 2) {
+          stop("When argument location is a numeric, it must be of length 2!")
+        }
+      } else {
+        stop("Argument location must be numeric, list, or data.frame!")
+      }
+    }
+    for (colony in seq_len(n)) {
+      if (is.data.frame(location)) {
+        loc <- location[colony, ]
+        loc <- c(loc$x, loc$y)
+      } else if (is.list(location)) {
+        loc <- location[[colony]]
+      } else {
+        loc <- location
+      }
+      if (!is.null(x[[colony]])) {
+        x[[colony]]@location <- loc
       }
     }
   } else {

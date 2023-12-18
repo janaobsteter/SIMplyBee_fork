@@ -32,9 +32,9 @@ SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 
-(tmp <- getSegSiteHaplo(drones))
+(tmp <- getSegSiteHaplo(drones, dronesHaploid = FALSE))
 reduceDroneHaplo(haplo = tmp, pop = drones)
 
-(tmp <- getSegSiteHaplo(c(basePop, drones)))
+(tmp <- getSegSiteHaplo(c(basePop, drones), dronesHaploid = FALSE))
 reduceDroneHaplo(haplo = tmp, pop = c(basePop, drones))
 }

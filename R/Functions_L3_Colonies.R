@@ -12,7 +12,6 @@
 #' @param n integer, number of colonies to create (if only \code{n} is
 #'   given then \code{\link{MultiColony-class}} is created with \code{n}
 #'   \code{NULL}) individual colony - this is mostly useful for programming)
-#' @param location list, location of the colonies as \code{c(x, y)}
 #'
 #' @details When both \code{x} and \code{n} are \code{NULL}, then a
 #'   \code{\link{MultiColony-class}} with 0 colonies is created.
@@ -31,9 +30,9 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
-#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+#' # Create 3 virgin colonies
+#' apiary <- createMultiColony(x = basePop, n = 3) # specify n
+#' apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -46,8 +45,9 @@
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
+#'
 #' @export
-createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
+createMultiColony <- function(x = NULL, n = NULL) {
   if (is.null(x)) {
     if (is.null(n)) {
       ret <- new(Class = "MultiColony")
@@ -69,10 +69,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
     }
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     for (colony in seq_len(n)) {
-      ret[[colony]] <- createColony(
-        x = x[colony],
-        location = location[colony]
-      )
+      ret[[colony]] <- createColony(x = x[colony])
     }
   }
   validObject(ret)

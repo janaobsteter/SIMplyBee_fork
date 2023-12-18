@@ -5,8 +5,11 @@ for simulating honeybee populations and breeding programmes
 
 ## Publication
 
-Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetics Selection Evolution,  55, 31. https://doi.org/10.1186/s12711-023-00798-y
+Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetics Selection Evolution, 55, 31. https://doi.org/10.1186/s12711-023-00798-y
 
+## Documentation
+
+http://simplybee.info
 
 ## Download
 
@@ -23,6 +26,6 @@ accessed from the main and devel GitHub branches using:
     # Development version of SIMplyBee
     devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
 
- <!-- badges: start -->
+<!-- badges: start -->
   [![R-CMD-check](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml)
-  <!-- badges: end -->
+<!-- badges: end -->

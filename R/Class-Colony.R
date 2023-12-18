@@ -42,6 +42,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -69,7 +70,7 @@ setClass(
   Class = "Colony",
   slots = c(
     id = "integer",
-    location = "numericOrNULL",
+    location = "numeric",
     queen = "PopOrNULL",
     workers = "PopOrNULL",
     drones = "PopOrNULL",

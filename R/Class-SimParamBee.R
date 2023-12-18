@@ -150,6 +150,18 @@ SimParamBee <- R6Class(
     #'   You can provide your own functions that satisfy your needs!
     swarmP = "numericOrFunction",
 
+    # swarmRadius field ----
+    #' @field swarmRadius numeric, radius within which to sample a location of
+    #'   of the swarm - used in \code{\link{swarm}} - see its \code{radius}
+    #'   argument.
+    #'
+    #'   The default value is \code{0}, that is, swarm gets the same location as
+    #'   the original colony.
+    #'
+    #'   You can change this setting to your needs!
+    #'
+    swarmRadius = "numeric",
+
     # splitP field ----
     #' @field splitP numeric or a function, the split proportion - the
     #'   proportion of workers removed in a managed split - used in
@@ -222,6 +234,7 @@ SimParamBee <- R6Class(
     #' @param nVirginQueens see \code{\link{SimParamBee}} field \code{nVirginQueens}
     #' @param nFathers see \code{\link{SimParamBee}} field \code{nFathers}
     #' @param swarmP see \code{\link{SimParamBee}} field \code{swarmP}
+    #' @param swarmRadius see \code{\link{SimParamBee}} field \code{swarmRadius}
     #' @param splitP see \code{\link{SimParamBee}} field \code{splitP}
     #' @param downsizeP see \code{\link{SimParamBee}} field \code{downsizeP}
     #' @param csdChr integer, chromosome that will carry the csd locus, by
@@ -262,20 +275,25 @@ SimParamBee <- R6Class(
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
+    #' \dontshow{SP$nThreads = 1L}
     #'
     #' # We need enough segregating sites
     #' try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
+    #' \dontshow{SP$nThreads = 1L}
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+    #' \dontshow{SP$nThreads = 1L}
     #'
     #' # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+    #' \dontshow{SP$nThreads = 1L}
 
     initialize = function(founderPop,
                           nWorkers = 100, nDrones = 100,
                           nVirginQueens = 10, nFathers = 15,
-                          swarmP = 0.5, splitP = 0.3, downsizeP = 0.85,
+                          swarmP = 0.5, swarmRadius = 0,
+                          splitP = 0.3, downsizeP = 0.85,
                           csdChr = 3, csdPos = 0.865, nCsdAlleles = 128,
                           colonyValueFUN = NULL) {
       # Get all the goodies from AlphaSimR::SimParam$new(founderPop)
@@ -290,6 +308,7 @@ SimParamBee <- R6Class(
       self$nVirginQueens <- nVirginQueens
       self$nFathers <- nFathers
       self$swarmP <- swarmP
+      self$swarmRadius <- swarmRadius
       self$splitP <- splitP
       self$downsizeP <- downsizeP
 
@@ -355,6 +374,7 @@ SimParamBee <- R6Class(
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes)
+    #' \dontshow{SP$nThreads = 1L}
     #' SP$setTrackPed(isTrackPed = TRUE)
     #' basePop <- createVirginQueens(founderGenomes)
     #'
@@ -383,6 +403,7 @@ SimParamBee <- R6Class(
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
     #' SP <- SimParamBee$new(founderGenomes)
+    #' \dontshow{SP$nThreads = 1L}
     #' SP$setTrackPed(isTrackPed = TRUE)
     #' basePop <- createVirginQueens(founderGenomes)
     #' SP$pedigree
@@ -540,6 +561,7 @@ SimParamBee <- R6Class(
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' isSimParamBee(SP)
 #' @export
 isSimParamBee <- function(x) {
@@ -604,6 +626,7 @@ isSimParamBee <- function(x) {
 #' # Example for nWorkersColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' average <- 100
 #' h2 <- 0.1
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
@@ -709,6 +732,7 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' # Example for nDronesColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' average <- 100
 #' h2 <- 0.1
 #' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
@@ -819,6 +843,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' # Example for nVirginQueensColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' # Setting trait scale such that mean is 10 split into queen and workers effects
 #' meanP <- c(5, 5 / SP$nWorkers)
 #' # setup variances such that the total phenotype variance will match the mean
@@ -1006,6 +1031,7 @@ swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
 #' # Example for splitPColonyStrength()
 #' founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(x = basePop[1], nInd = 15)
 #' colony <- createColony(x = basePop[2])
@@ -1150,6 +1176,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #'
 #' # Define two traits that collectively affect colony honey yield:
 #' # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype
