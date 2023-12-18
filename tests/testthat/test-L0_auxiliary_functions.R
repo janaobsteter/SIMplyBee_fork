@@ -2,7 +2,7 @@
 test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
   expect_equal(nColonies(createMultiColony(n = 2)), 2)
   expect_equal(nColonies(createMultiColony()), 0)
@@ -14,7 +14,7 @@ test_that("nColonies", {
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 45)
   droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = 10)
@@ -42,7 +42,7 @@ test_that("nCaste", {
 test_that("nQueens", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(basePop[1], n = 1000)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -62,7 +62,7 @@ test_that("nQueens", {
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(basePop[1], n = 1000)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -105,7 +105,7 @@ test_that("isGenoHeterozygous", {
 test_that("isCaste", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -138,7 +138,7 @@ test_that("isCaste", {
 test_that("calcQueensPHomBrood", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -169,7 +169,7 @@ test_that("calcQueensPHomBrood", {
 test_that("pHomBrood", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -201,7 +201,7 @@ test_that("pHomBrood", {
 test_that("nHomBrood", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -233,7 +233,7 @@ test_that("nHomBrood", {
 test_that("isQueenPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -261,7 +261,7 @@ test_that("isQueenPresent", {
 test_that("isVirginQueensPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -291,7 +291,7 @@ test_that("isVirginQueensPresent", {
 test_that("isProductive", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -325,7 +325,7 @@ test_that("isProductive", {
 test_that("reduceDroneHaplo", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 2)
   virginQueens <- c(basePop[2:3])
@@ -349,7 +349,7 @@ test_that("reduceDroneHaplo", {
 test_that("reduceDroneGeno", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
   drones <- createDrones(x = basePop[1], nInd = 2)
   virginQueens <- c(basePop[2:3])
@@ -373,7 +373,7 @@ test_that("reduceDroneGeno", {
 test_that("getCsdAlleles", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -390,7 +390,7 @@ test_that("getCsdAlleles", {
   # set CSD to NULL
   rm(SP)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -430,7 +430,7 @@ test_that("getCsdAlleles", {
 test_that("getCsdGeno", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -449,7 +449,7 @@ test_that("getCsdGeno", {
   expect_equal(nrow(geno$fathers), 10)
 
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -469,7 +469,7 @@ test_that("getCsdGeno", {
 test_that("isCsdHeterozygous", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -488,7 +488,7 @@ test_that("isCsdHeterozygous", {
 
   # set CSD to NULL
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -507,7 +507,7 @@ test_that("isCsdHeterozygous", {
 test_that("nCsdAlleles", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -525,7 +525,7 @@ test_that("nCsdAlleles", {
 
   # set CSD to NULL
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -559,7 +559,7 @@ test_that("nCsdAlleles", {
 test_that("calcBeeGRMIbs", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   SP$setTrackRec(TRUE)
   SP$setTrackPed(isTrackPed = TRUE)
   SP$addTraitA(10)
@@ -616,7 +616,7 @@ test_that("calcBeeGRMIbs", {
 test_that("editCsdLocus", {
   founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
   nrow(getCsdAlleles(basePop, unique = TRUE))
   all(isCsdHeterozygous(basePop))
@@ -668,7 +668,7 @@ test_that("emptyNULL", {
 test_that("isDronesPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -693,7 +693,7 @@ test_that("isDronesPresent", {
 test_that("isFathersPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -721,7 +721,7 @@ test_that("isFathersPresent", {
 test_that("isWorkersPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
-  \dontshow{SP$nThreads = 1L}
+  SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes)
 
   drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -746,7 +746,7 @@ test_that("isWorkersPresent", {
 test_that("isGenoHeterozygous", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes)
 
    drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -788,7 +788,7 @@ test_that("isGenoHeterozygous", {
 test_that("getBV", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    SP$addTraitA(nQtlPerChr = 10, var = 1)
    SP$addSnpChip(5)
    basePop <- createVirginQueens(founderGenomes)
@@ -864,7 +864,7 @@ test_that("getBV", {
 test_that("getDd", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
    basePop <- createVirginQueens(founderGenomes)
 
@@ -939,7 +939,7 @@ test_that("getDd", {
 test_that("getAa", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
    basePop <- createVirginQueens(founderGenomes)
 
@@ -1014,7 +1014,7 @@ test_that("getAa", {
 test_that("editCsdLocus", {
    founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
    nrow(getCsdAlleles(basePop, unique = TRUE))
    all(isCsdHeterozygous(basePop))
@@ -1028,7 +1028,7 @@ test_that("editCsdLocus", {
 test_that("getLocation", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
-   \dontshow{SP$nThreads = 1L}
+   SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes)
    drones <- createDrones(x = basePop[1], nInd = 1000)
    droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
