@@ -1,6 +1,9 @@
 title: SIMplyBee
 url: https://www.simplybee.info
 
+development:
+  mode: auto
+
 navbar:
   structure:
     left: [home, reference, articles, news]
