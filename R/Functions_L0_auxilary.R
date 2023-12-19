@@ -84,6 +84,7 @@ nEmptyColonies <- function(multicolony) {
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
 #'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
@@ -254,12 +255,14 @@ nVirginQueens <- function(x) {
 #'
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso Demo in the introductory vignette
 #'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
 #' @return numeric, expected csd homozygosity named by colony id when \code{x}
 #'   is \code{\link{MultiColony-class}}
+#'
 #'
 #' @examples
 #' # This is a bit long example - the key is at the end!
@@ -926,6 +929,7 @@ areVirginQueensPresent <- isVirginQueensPresent
 #' @param x \code{\link{Pop-class}} (one or more than one queen),
 #'   \code{\link{Colony-class}} (one colony), or
 #'   \code{\link{MultiColony-class}} (more colonies)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return numeric, the year of birth of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
@@ -994,6 +998,7 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
 #' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}}
 #' @param currentYear integer, current year
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return numeric, the age of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
@@ -5214,6 +5219,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @return integer when \code{x} is
 #'   \code{\link{Colony-class}} and a named list when \code{x} is
 #'   \code{\link{MultiColony-class}}, where names are colony IDs

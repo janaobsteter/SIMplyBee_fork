@@ -593,6 +593,7 @@ isSimParamBee <- function(x) {
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
@@ -699,6 +700,7 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nDronesPoisson} samples from a Poisson distribution with a
@@ -816,6 +818,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nVirginQueensPoisson} samples from a Poisson distribution,
