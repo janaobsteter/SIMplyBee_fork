@@ -1026,6 +1026,9 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                          removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -1418,7 +1421,7 @@ cross <- function(x,
             nD <- ifelse(is.function(nDrones), nDrones(...), nDrones)
             selectedDPQ <- table(sample(virginMatches, size = nD, replace = TRUE))
             virginQueenDrones <- mergePops(createDrones(droneColonies[names(selectedDPQ)],
-                                                        nInd = selectedDPQ))
+                                                        nInd = selectedDPQ, simParamBee = simParamBee))
           } else {
             virginQueenDrones <- new("Pop")
           }
@@ -1449,7 +1452,7 @@ cross <- function(x,
         virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
         virginQueen <- setMisc(x = virginQueen, node = "nHomBrood", value = 0)
         if (isCsdActive(simParamBee = simParamBee)) {
-          val <- calcQueensPHomBrood(x = virginQueen)
+          val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
         } else {
           val <- NA
         }
@@ -1458,8 +1461,8 @@ cross <- function(x,
       if (isPop(x)) {
         ret[[virgin]] <- virginQueen
       } else if (isColony(x)) {
-        x <- reQueen(x, virginQueen)
-        x <- removeVirginQueens(x)
+        x <- reQueen(x, virginQueen, simParamBee = simParamBee)
+        x <- removeVirginQueens(x, simParamBee = simParamBee)
         ret <- x
       }
     }
