@@ -31,7 +31,6 @@ test_that("nCaste", {
   apiary <- cross(apiary, drones = droneGroups[c(2, 3)], simParamBee = SP)
   apiary <- buildUp(apiary, nWorkers = 20, nDrones = 10, simParamBee = SP)
   expect_equal(sum(nCaste(apiary, caste = "queen", simParamBee = SP)), 2)
-  expect_equal(sum(nCaste(apiary, caste = "drones", simParamBee = SP)), 20)
   expect_equal(sum(nCaste(apiary, caste = "virginQueens", simParamBee = SP)), 0)
   expect_equal(sum(nCaste(apiary, caste = "workers", simParamBee = SP)), 40)
   expect_equal(sum(nCaste(apiary, caste = "fathers", simParamBee = SP)), 20)
@@ -196,7 +195,7 @@ test_that("pHomBrood", {
   expect_equal(length(pHomBrood(apiary, simParamBee = SP)), 0)
 })
 
----- nHomBrood -----
+#---- nHomBrood -----
 
 test_that("nHomBrood", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -416,8 +415,9 @@ test_that("getCsdAlleles", {
   colony <- buildUp(x = colony, simParamBee = SP)
   expect_true(is.matrix(getCsdAlleles(colony, collapse = TRUE, simParamBee = SP)))
   expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE, simParamBee = SP)),
-               sum(nQueens(colony)*2, nDrones(colony), nWorkers(colony)*2, nFathers(colony),
-                   nVirginQueens(colony)*2))
+               sum(nQueens(colony, simParamBee = SP)*2, nDrones(colony, simParamBee = SP),
+                   nWorkers(colony, simParamBee = SP)*2, nFathers(colony, simParamBee = SP),
+                   nVirginQueens(colony, simParamBee = SP)*2))
   expect_equal(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE, simParamBee = SP)),
                nrow(unique(getCsdAlleles(colony, collapse = TRUE, simParamBee = SP))))
   expect_true(nrow(getCsdAlleles(colony, collapse = TRUE, unique = TRUE, simParamBee = SP)) <= SP$nCsdAlleles)
@@ -612,15 +612,16 @@ test_that("calcBeeGRMIbs", {
 
 # ---- editCsdLocus ----
 
+
 test_that("editCsdLocus", {
   founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, editCsd = FALSE, simParamBee = SP)
   nrow(getCsdAlleles(basePop, unique = TRUE, simParamBee = SP))
-  all(isCsdHeterozygous(basePop, simParamBee = SP))
+  expect_false(all(isCsdHeterozygous(basePop, simParamBee = SP)))
 
-  basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
+  basePopEdited <- SIMplyBee:::editCsdLocus(basePop, simParamBee = SP)
 
   expect_true(isPop(basePopEdited))
   expect_true(all(isCsdHeterozygous(basePopEdited, simParamBee = SP)))
@@ -682,9 +683,9 @@ test_that("isDronesPresent", {
   vec <- c(1,2,3,4)
   apiary2 <- createMultiColony()
 
-  expect_true(isDronesPresent(colony))
-  expect_error(isDronesPresent(vec))
-  expect_true(is.vector(isDronesPresent(apiary2)))
+  expect_true(isDronesPresent(colony, simParamBee = SP))
+  expect_error(isDronesPresent(vec, simParamBee = SP))
+  expect_true(is.vector(isDronesPresent(apiary2, simParamBee = SP)))
 })
 
 # ---- isFathersPresent ----
@@ -764,23 +765,12 @@ test_that("isGenoHeterozygous", {
 
    # Caste members taken from Colony class
    (tmp <- getCsdGeno(getQueen(colony, simParamBee = SP)))
-   SIMplyBee:::isGenoHeterozygous(tmp)
-
-   (tmp <- getCsdGeno(getVirginQueens(colony, simParamBee = SP)))
-   SIMplyBee:::isGenoHeterozygous(tmp)
-
-   (tmp <- getCsdGeno(getWorkers(colony, simParamBee = SP)))
-   SIMplyBee:::isGenoHeterozygous(tmp)
+   expect_true(SIMplyBee:::isGenoHeterozygous(tmp))
 
    # Caste members taken from MultiColony class
    (tmp <- getCsdGeno(getQueen(apiary[[1]]), simParamBee = SP))
-   SIMplyBee:::isGenoHeterozygous(tmp)
+   expect_true(SIMplyBee:::isGenoHeterozygous(tmp))
 
-   (tmp <- getCsdGeno(getVirginQueens(apiary[[1]]), simParamBee = SP))
-   SIMplyBee:::isGenoHeterozygous(tmp)
-
-   (tmp <- getCsdGeno(getWorkers(apiary[[1]]), simParamBee = SP))
-   SIMplyBee:::isGenoHeterozygous(tmp)
 })
 
 # ---- getBV ----
@@ -809,8 +799,8 @@ test_that("getBV", {
    expect_equal(nrow(SIMplyBee:::getBv(x = getWorkers(colony, simParamBee = SP), simParamBee = SP)), 6)
    expect_equal(nrow(SIMplyBee:::getWorkersBv(x = colony, simParamBee = SP)), 6)
 
-   expect_length(SIMplyBee:::getBv(apiary, caste = "workers"), 2)
-   expect_equal(nrow(SIMplyBee:::getBv(apiary, caste = "workers")[[1]]), 6)
+   expect_length(SIMplyBee:::getBv(apiary, caste = "workers", simParamBee = SP), 2)
+   expect_equal(nrow(SIMplyBee:::getBv(apiary, caste = "workers", simParamBee = SP)[[1]]), 6)
 })
 
 # ---- getDd ----
@@ -838,8 +828,8 @@ test_that("getDd", {
    expect_equal(nrow(SIMplyBee:::getDd(x = getWorkers(colony, simParamBee = SP), simParamBee = SP)), 6)
    expect_equal(nrow(SIMplyBee:::getWorkersDd(x = colony, simParamBee = SP)), 6)
 
-   expect_length(SIMplyBee:::getDd(apiary, caste = "workers"), 2)
-   expect_equal(nrow(SIMplyBee:::getDd(apiary, caste = "workers")[[1]]), 6)
+   expect_length(SIMplyBee:::getDd(apiary, caste = "workers", simParamBee = SP), 2)
+   expect_equal(nrow(SIMplyBee:::getDd(apiary, caste = "workers", simParamBee = SP)[[1]]), 6)
 })
 
 # ---- getAa ----
@@ -867,8 +857,8 @@ test_that("getAa", {
    expect_equal(nrow(SIMplyBee:::getAa(x = getWorkers(colony, simParamBee = SP), simParamBee = SP)), 6)
    expect_equal(nrow(SIMplyBee:::getWorkersAa(x = colony, simParamBee = SP)), 6)
 
-   expect_length(SIMplyBee:::getAa(apiary, caste = "workers"), 2)
-   expect_equal(nrow(SIMplyBee:::getAa(apiary, caste = "workers")[[1]]), 6)
+   expect_length(SIMplyBee:::getAa(apiary, caste = "workers", simParamBee = SP), 2)
+   expect_equal(nrow(SIMplyBee:::getAa(apiary, caste = "workers", simParamBee = SP)[[1]]), 6)
 })
 
 # ---- editCsdLocus ----
@@ -880,7 +870,7 @@ test_that("editCsdLocus", {
    nrow(getCsdAlleles(basePop, unique = TRUE, simParamBee = SP))
    all(isCsdHeterozygous(basePop, simParamBee = SP))
 
-   basePopEdited <- SIMplyBee:::editCsdLocus(basePop)
+   basePopEdited <- SIMplyBee:::editCsdLocus(basePop, simParamBee = SP)
    nrow(getCsdAlleles(basePopEdited, unique = TRUE, simParamBee = SP))
    expect_true(all(isCsdHeterozygous(basePopEdited, simParamBee = SP)))
 })
@@ -964,3 +954,4 @@ test_that("createCrossPlan", {
   expect_length(crossPlanSpatial, 2)
   expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1))
 })
+

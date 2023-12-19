@@ -552,6 +552,7 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #'   present/alive or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -580,10 +581,13 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' colony <- removeQueen(colony)
 #' isQueenPresent(colony)
 #' @export
-isQueenPresent <- function(x) {
+isQueenPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nQueens(x)) > 0) {
-      ret <- nQueens(x) > 0
+    if (length(nQueens(x, simParamBee = simParamBee)) > 0) {
+      ret <- nQueens(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -601,6 +605,7 @@ isQueenPresent <- function(x) {
 #'   present or not, which means the queen is mated).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -626,10 +631,13 @@ isQueenPresent <- function(x) {
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' isFathersPresent(removeDrones(apiary))
 #' @export
-isFathersPresent <- function(x) {
+isFathersPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nFathers(x)) > 0) {
-      ret <- nFathers(x) > 0
+    if (length(nFathers(x, simParamBee = simParamBee)) > 0) {
+      ret <- nFathers(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -650,6 +658,7 @@ areFathersPresent <- isFathersPresent
 #'   present or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -677,10 +686,13 @@ areFathersPresent <- isFathersPresent
 #' isWorkersPresent(apiary)
 #' isWorkersPresent(removeWorkers(apiary))
 #' @export
-isWorkersPresent <- function(x) {
+isWorkersPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nWorkers(x)) > 0) {
-      ret <- nWorkers(x) > 0
+    if (length(nWorkers(x, simParamBee = simParamBee)) > 0) {
+      ret <- nWorkers(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -701,6 +713,7 @@ areWorkersPresent <- isWorkersPresent
 #'   present or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -728,10 +741,13 @@ areWorkersPresent <- isWorkersPresent
 #' isDronesPresent(apiary)
 #' isDronesPresent(removeDrones(apiary))
 #' @export
-isDronesPresent <- function(x) {
+isDronesPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nDrones(x)) > 0) {
-      ret <- nDrones(x) > 0
+    if (length(nDrones(x, simParamBee = simParamBee)) > 0) {
+      ret <- nDrones(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -781,10 +797,13 @@ areDronesPresent <- isDronesPresent
 #' isVirginQueensPresent(tmp$swarm)
 #' isVirginQueensPresent(tmp$remnant)
 #' @export
-isVirginQueensPresent <- function(x) {
+isVirginQueensPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nVirginQueens(x)) > 0) {
-      ret <- nVirginQueens(x) > 0
+    if (length(nVirginQueens(x, simParamBee = simParamBee)) > 0) {
+      ret <- nVirginQueens(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
