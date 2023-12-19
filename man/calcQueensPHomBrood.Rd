@@ -15,6 +15,8 @@ nHomBrood(x, simParamBee = NULL)
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 \code{\link{MultiColony-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 numeric, expected csd homozygosity named by colony id when \code{x}
