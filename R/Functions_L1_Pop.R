@@ -24,6 +24,7 @@
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -967,6 +968,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
 #'   for the pulled individuals (does not affect the remnant colonies)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
@@ -1506,6 +1508,7 @@ cross <- function(x,
 #'   \code{\link{Colony-class}} (one colony), or
 #'   \code{\link{MultiColony-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}} with queens having the year of birth set
