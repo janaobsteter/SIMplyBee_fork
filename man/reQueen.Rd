@@ -35,6 +35,7 @@ If the provided queen is mated, then she is saved in the queen slot
 \examples{
 founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 200)

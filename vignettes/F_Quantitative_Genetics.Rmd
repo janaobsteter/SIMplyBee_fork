@@ -365,7 +365,7 @@ apiary.
 apiary <- createMultiColony(basePop[7:20])
 drones <- createDrones(basePop[1:5], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = nColonies(apiary), nDrones = 15)
-apiary <- cross(apiary, droneGroups)
+apiary <- cross(x = apiary, drones = droneGroups)
 apiary <- buildUp(apiary)
 ```
 

@@ -26,6 +26,7 @@ Level 1 function that pulls individuals from a population and
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParam$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- newPop(founderGenomes)
 
 pullInd(basePop, nInd = 2)

@@ -55,6 +55,7 @@ Level 0 function that calculate value(s) of a colony.
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 
 # Define two traits that collectively affect colony honey yield:
 # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype

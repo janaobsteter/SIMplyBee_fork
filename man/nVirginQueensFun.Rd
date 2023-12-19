@@ -91,6 +91,7 @@ table(n)
 # Example for nVirginQueensColonyPhenotype()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 # Setting trait scale such that mean is 10 split into queen and workers effects
 meanP <- c(5, 5 / SP$nWorkers)
 # setup variances such that the total phenotype variance will match the mean

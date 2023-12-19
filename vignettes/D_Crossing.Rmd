@@ -106,6 +106,7 @@ Start by loading the package:
 
 ```{r}
 library(package = "SIMplyBee")
+library(package = "ggplot2")
 ```
 
 First, we create a founder population and some virgin queen and virgin colonies
@@ -263,7 +264,7 @@ crossPlan1 <- createCrossPlan(x = beekeeper2,
                               drones = DCA,
                               nDrones = nFathersPoisson)
 # Inspect the cross plan
-crossPlan
+crossPlan1
 sapply(crossPlan1, length)
 ```
 
@@ -452,20 +453,20 @@ Since the cross plan is a named list, you can concatenate multiple cross plans
 into one. Let's mate the multicolony of beekeeper 4 in such a manner.
 
 ```{r}
-o# Create a single drone for single drone insemination
+# Create a single drone for single drone insemination
 singleDrone = createDrones(beekeeper1[[1]], nInd = 1)
 # Create a cross plan for crossing some of the colonies in an open DCA, 
 # some with single drone, and some on a mating station
 crossPlanBeekeeper7 <- c(
-  createRandomCrossPlan(IDs = getId(beekeeper7)[1], 
-                        drones = singleDrone, 
-                        nDrones = 1),
-  createRandomCrossPlan(IDs = getId(beekeeper7)[2:6], 
-                        drones = DCA, 
-                        nDrones = nFathersTruncPoisson),
-  createRandomCrossPlan(IDs = getId(beekeeper7)[7:10], 
-                        drones = matingStationDCA, 
-                        nDrones = nFathersTruncPoisson)
+  createCrossPlan(x = beekeeper7[1], 
+                  drones = singleDrone, 
+                  nDrones = 1),
+  createCrossPlan(x = beekeeper7[2:6], 
+                  drones = DCA, 
+                  nDrones = nFathersTruncPoisson),
+  createCrossPlan(x = beekeeper7[7:10], 
+                  drones = matingStationDCA, 
+                  nDrones = nFathersTruncPoisson)
   )
 
 beekeeper7 <- cross(beekeeper7, 
