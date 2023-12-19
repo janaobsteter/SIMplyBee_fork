@@ -5,9 +5,9 @@
 \alias{areVirginQueensPresent}
 \title{Are virgin queen(s) present}
 \usage{
-isVirginQueensPresent(x)
+isVirginQueensPresent(x, simParamBee = NULL)
 
-areVirginQueensPresent(x)
+areVirginQueensPresent(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}

@@ -4,7 +4,7 @@
 \alias{pullInd}
 \title{Pull individuals from a population}
 \usage{
-pullInd(pop, nInd = NULL, use = "rand")
+pullInd(pop, nInd = NULL, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}}
