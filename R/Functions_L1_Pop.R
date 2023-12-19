@@ -92,7 +92,10 @@
 #' getDrones(apiary, nInd = 3, collapse = TRUE)
 #' @export
 getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
-                        removeFathers = TRUE, collapse = FALSE) {
+                        removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -132,7 +135,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
         ret <- NULL
       } else {
         if (caste == "drones" && removeFathers) {
-          test <- isDrone(pop)
+          test <- isDrone(pop, simParamBee = simParamBee)
           if (any(!test)) {
             pop <- pop[test]
           }
@@ -425,7 +428,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     if (caste != "drones") { # Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
     }
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     if (length(nInd) == 1) {
@@ -832,8 +835,8 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
   if (is.function(nDronePerDPQ)) {
     nDronePerDPQ <- nDronePerDPQ(n = nDPQs)
   }
-  DPQs <- createVirginQueens(colony, nInd = nDPQs)
-  drones <- createDrones(DPQs, nInd = nDronePerDPQ)
+  DPQs <- createVirginQueens(colony, nInd = nDPQs, simParamBee = simParamBee)
+  drones <- createDrones(DPQs, nInd = nDronePerDPQ, simParamBee = simParamBee)
   return(drones)
 }
 
@@ -923,8 +926,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     stop("Argument DCA must be a Pop class object!")
   }
   # Keep only the drones (remove the fathers)
-  DCA <- DCA[isDrone(DCA)]
-  if (any(!isDrone(DCA))) {
+  DCA <- DCA[isDrone(DCA, simParamBee = simParamBee)]
+  if (any(!isDrone(DCA, simParamBee = simParamBee))) {
     stop("Individuals in DCA must be drones!")
   }
   if (is.null(nDrones)) {
@@ -1020,7 +1023,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' pullCastePop(apiary, caste = "virginQueens", collapse = TRUE)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
-                         removeFathers = TRUE, collapse = FALSE) {
+                         removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -1045,7 +1048,7 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
         slot(x, caste) <- tmp$remnant
       }
       if (caste == "drones" && removeFathers) {
-        test <- isDrone(tmp$pulled)
+        test <- isDrone(tmp$pulled, simParamBee = simParamBee)
         if (any(!test)) {
           tmp$pulled <- tmp$pulled[test]
         }
@@ -1367,7 +1370,7 @@ cross <- function(x,
     stop("Cross plan must include all the virgin queens/colonies!")
   }
   if (isPop(x)) {
-    if (any(!isVirginQueen(x))) {
+    if (any(!isVirginQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in pop must be virgin queens!")
     }
   }
@@ -1427,7 +1430,7 @@ cross <- function(x,
           stop(msg)
         }
       } else if (virginQueenDrones@nInd > 0) {
-        if (!all(isDrone(virginQueenDrones))) {
+        if (!all(isDrone(virginQueenDrones, simParamBee = simParamBee))) {
           stop("Individuals in drones must be drones!")
         }
         if (isPop(x)) {
@@ -1505,7 +1508,7 @@ cross <- function(x,
 #'   \code{\link{Colony-class}} (one colony), or
 #'   \code{\link{MultiColony-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
-#'
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}} with queens having the year of birth set
 #'
@@ -1538,9 +1541,12 @@ cross <- function(x,
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueenYearOfBirth(apiary)
 #' @export
-setQueensYearOfBirth <- function(x, year) {
+setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)
