@@ -166,7 +166,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        ret[[caste]] <- nCaste(x = x, caste = caste)
+        ret[[caste]] <- nCaste(x = x, caste = caste, simParamBee = simParamBee)
       }
     } else {
       if (caste == "fathers") {
@@ -179,7 +179,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
     }
   } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste)))
+    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste, simParamBee = simParamBee)))
     names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
@@ -190,8 +190,11 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
 
 #' @describeIn nCaste Number of queens in a colony
 #' @export
-nQueens <- function(x) {
-  ret <- nCaste(x, caste = "queen")
+nQueens <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- nCaste(x, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -213,29 +216,35 @@ nFathers <- function(x, simParamBee = NULL) {
       }
     }
   } else {
-    ret <- nCaste(x, caste = "fathers")
+    ret <- nCaste(x, caste = "fathers", simParamBee = simParamBee)
   }
   return(ret)
 }
 
 #' @describeIn nCaste Number of workers in a colony
 #' @export
-nWorkers <- function(x) {
-  ret <- nCaste(x, caste = "workers")
+nWorkers <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- nCaste(x, caste = "workers", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of drones in a colony
 #' @export
-nDrones <- function(x) {
-  ret <- nCaste(x, caste = "drones")
+nDrones <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  ret <- nCaste(x, caste = "drones", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of virgin queens in a colony
 #' @export
 nVirginQueens <- function(x) {
-  ret <- nCaste(x, caste = "virginQueens")
+  ret <- nCaste(x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
 

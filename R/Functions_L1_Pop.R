@@ -133,7 +133,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
         ret <- NULL
       } else {
         if (caste == "drones" && removeFathers) {
-          test <- isDrone(pop)
+          test <- isDrone(pop, simParamBee = simParamBee)
           if (any(!test)) {
             pop <- pop[test]
           }
@@ -390,7 +390,8 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 createCastePop <- function(x, caste = NULL, nInd = NULL,
                            exact = TRUE, year = NULL,
                            editCsd = TRUE, csdAlleles = NULL,
-                           simParamBee = NULL, ...) {
+                           simParamBee = NULL,
+                           ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -411,7 +412,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     if (caste != "virginQueens") { # Creating virgin queens if input  is a MapPop
       stop("MapPop-class can only be used to create virgin queens!")
     }
-    ret <- newPop(x)
+    ret <- newPop(x, simParam = simParamBee)
     if (!is.null(simParamBee$csdChr)) {
       if (editCsd) {
         ret <- editCsdLocus(ret, alleles = csdAlleles, simParamBee = simParamBee)
@@ -426,7 +427,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     if (caste != "drones") { # Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
     }
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     if (length(nInd) == 1) {
@@ -543,6 +544,9 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 #' @describeIn createCastePop Create workers from a colony
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   ret <- createCastePop(x, caste = "workers", nInd = nInd,
                         exact = exact, simParamBee = simParamBee, ...)
   return(ret)
@@ -551,6 +555,9 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...
 #' @describeIn createCastePop Create drones from a colony
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   ret <- createCastePop(x, caste = "drones", nInd = nInd,
                         simParamBee = simParamBee, ...)
   return(ret)
@@ -561,7 +568,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
 createVirginQueens <- function(x, nInd = NULL,
                                year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
-                               simParamBee = NULL, ...) {
+                               simParamBee = NULL,
+                               ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
                         csdAlleles = csdAlleles, simParamBee = simParamBee, ...)
@@ -924,8 +935,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     stop("Argument DCA must be a Pop class object!")
   }
   # Keep only the drones (remove the fathers)
-  DCA <- DCA[isDrone(DCA)]
-  if (any(!isDrone(DCA))) {
+  DCA <- DCA[isDrone(DCA, simParamBee = simParamBee)]
+  if (any(!isDrone(DCA, simParamBee = simParamBee))) {
     stop("Individuals in DCA must be drones!")
   }
   if (is.null(nDrones)) {
@@ -1047,7 +1058,7 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
         slot(x, caste) <- tmp$remnant
       }
       if (caste == "drones" && removeFathers) {
-        test <- isDrone(tmp$pulled)
+        test <- isDrone(tmp$pulled, simParamBee = simParamBee)
         if (any(!test)) {
           tmp$pulled <- tmp$pulled[test]
         }
@@ -1370,7 +1381,7 @@ cross <- function(x,
     stop("Cross plan must include all the virgin queens/colonies!")
   }
   if (isPop(x)) {
-    if (any(!isVirginQueen(x))) {
+    if (any(!isVirginQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in pop must be virgin queens!")
     }
   }
@@ -1430,7 +1441,7 @@ cross <- function(x,
           stop(msg)
         }
       } else if (virginQueenDrones@nInd > 0) {
-        if (!all(isDrone(virginQueenDrones))) {
+        if (!all(isDrone(virginQueenDrones, simParamBee = simParamBee))) {
           stop("Individuals in drones must be drones!")
         }
         if (isPop(x)) {
@@ -1446,7 +1457,7 @@ cross <- function(x,
         virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
         virginQueen <- setMisc(x = virginQueen, node = "nHomBrood", value = 0)
         if (isCsdActive(simParamBee = simParamBee)) {
-          val <- calcQueensPHomBrood(x = virginQueen)
+          val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
         } else {
           val <- NA
         }
@@ -1544,7 +1555,7 @@ cross <- function(x,
 #' @export
 setQueensYearOfBirth <- function(x, year) {
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueens(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)
