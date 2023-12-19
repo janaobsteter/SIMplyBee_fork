@@ -858,6 +858,7 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
 #'   individuals
 #' @param use character, all options provided by \code{\link{selectInd}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
 #'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
@@ -1396,7 +1397,7 @@ cross <- function(x,
     if (any(isQueenPresent(x))) {
       stop("Queen already present in the colony!")
     }
-    if (any(!isVirginQueensPresent(x))) {
+    if (any(!isVirginQueenPresent(x))) {
       stop("No virgin queen(s) in the colony to cross!")
     }
   }
@@ -1565,7 +1566,7 @@ setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    if (any(!(isVirginQueens(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)

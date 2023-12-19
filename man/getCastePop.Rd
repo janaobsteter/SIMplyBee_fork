@@ -19,15 +19,28 @@ getCastePop(
   simParamBee = NULL
 )
 
-getQueen(x, collapse = FALSE)
+getQueen(x, collapse = FALSE, simParamBee = NULL)
 
-getFathers(x, nInd = NULL, use = "rand", collapse = FALSE)
+getFathers(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL)
 
-getWorkers(x, nInd = NULL, use = "rand", collapse = FALSE)
+getWorkers(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL)
 
-getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE)
+getDrones(
+  x,
+  nInd = NULL,
+  use = "rand",
+  removeFathers = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
-getVirginQueens(x, nInd = NULL, use = "rand", collapse = FALSE)
+getVirginQueens(
+  x,
+  nInd = NULL,
+  use = "rand",
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},

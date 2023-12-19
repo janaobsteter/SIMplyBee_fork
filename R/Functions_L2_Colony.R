@@ -1449,17 +1449,17 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 #'
 #' # Supersede a colony
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' colony <- supersede(colony)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Supersede all colonies in the apiary
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' apiary1 <- supersede(apiary)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)

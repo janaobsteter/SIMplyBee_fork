@@ -6,6 +6,7 @@
 \alias{isFather}
 \alias{isWorker}
 \alias{isDrone}
+\alias{isVirginQueens}
 \alias{isVirginQueen}
 \title{Is individual a member of a specific caste}
 \usage{
@@ -18,6 +19,8 @@ isFather(x, simParamBee = NULL)
 isWorker(x, simParamBee = NULL)
 
 isDrone(x, simParamBee = NULL)
+
+isVirginQueens(x, simParamBee = NULL)
 
 isVirginQueen(x, simParamBee = NULL)
 }
@@ -45,6 +48,8 @@ Level 0 function that tests if individuals are members of a
 \item \code{isWorker()}: Is individual a worker
 
 \item \code{isDrone()}: Is individual a drone
+
+\item \code{isVirginQueens()}: Is individual a virgin queen
 
 \item \code{isVirginQueen()}: Is individual a virgin queen
 
@@ -104,6 +109,7 @@ isVirginQueen(getVirginQueens(colony, nInd = 2))
 }
 \seealso{
 \code{\link{isQueen}}, \code{\link{isFather}},
-  \code{\link{isVirginQueen}}, \code{\link{isWorker}}, and
+  \code{\link{isVirginQueen}},
+  \code{\link{isWorker}}, and
   \code{\link{isDrone}}
 }

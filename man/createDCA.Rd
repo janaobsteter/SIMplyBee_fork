@@ -4,7 +4,7 @@
 \alias{createDCA}
 \title{Create a drone congregation area (DCA)}
 \usage{
-createDCA(x, nInd = NULL, removeFathers = TRUE)
+createDCA(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -15,6 +15,8 @@ if \code{NULL} all drones in a colony are pulled}
 \item{removeFathers}{logical, removes \code{drones} that have already mated;
 set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}}

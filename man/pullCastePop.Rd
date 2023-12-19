@@ -18,19 +18,26 @@ pullCastePop(
   simParamBee = NULL
 )
 
-pullQueen(x, collapse = FALSE)
+pullQueen(x, collapse = FALSE, simParamBee = NULL)
 
-pullWorkers(x, nInd = NULL, use = "rand", collapse = FALSE)
+pullWorkers(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL)
 
 pullDrones(
   x,
   nInd = NULL,
   use = "rand",
   removeFathers = TRUE,
-  collapse = FALSE
+  collapse = FALSE,
+  simParamBee = NULL
 )
 
-pullVirginQueens(x, nInd = NULL, use = "rand", collapse = FALSE)
+pullVirginQueens(
+  x,
+  nInd = NULL,
+  use = "rand",
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
