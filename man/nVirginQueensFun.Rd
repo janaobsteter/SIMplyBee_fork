@@ -16,6 +16,7 @@ nVirginQueensColonyPhenotype(
   workersTrait = 2,
   checkProduction = FALSE,
   lowerLimit = 0,
+  simParamBee = NULL,
   ...
 )
 }

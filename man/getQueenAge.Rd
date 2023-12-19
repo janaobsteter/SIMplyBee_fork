@@ -4,7 +4,7 @@
 \alias{getQueenAge}
 \title{Get (calculate) the queen's age}
 \usage{
-getQueenAge(x, currentYear)
+getQueenAge(x, currentYear, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or

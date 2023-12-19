@@ -4,7 +4,13 @@
 \alias{calcInheritanceCriterion}
 \title{Calculate the inheritance criterion}
 \usage{
-calcInheritanceCriterion(x, queenTrait = 1, workersTrait = 2, use = "gv")
+calcInheritanceCriterion(
+  x,
+  queenTrait = 1,
+  workersTrait = 2,
+  use = "gv",
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}} or

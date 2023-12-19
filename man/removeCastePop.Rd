@@ -27,11 +27,11 @@ removeQueen(
   simParamBee = NULL
 )
 
-removeWorkers(x, p = 1, use = "rand")
+removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
-removeDrones(x, p = 1, use = "rand")
+removeDrones(x, p = 1, use = "rand", simParamBee = NULL)
 
-removeVirginQueens(x, p = 1, use = "rand")
+removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}

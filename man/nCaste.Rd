@@ -10,11 +10,11 @@
 \title{Level 0 function that returns the number of individuals of a caste in a
   colony}
 \usage{
-nCaste(x, caste = "all")
+nCaste(x, caste = "all", simParamBee = NULL)
 
 nQueens(x)
 
-nFathers(x)
+nFathers(x, simParamBee = NULL)
 
 nWorkers(x)
 

@@ -16,6 +16,7 @@ nDronesColonyPhenotype(
   workersTrait = NULL,
   checkProduction = FALSE,
   lowerLimit = 0,
+  simParamBee = NULL,
   ...
 )
 }

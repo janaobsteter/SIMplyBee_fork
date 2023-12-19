@@ -6,11 +6,11 @@
 \alias{nHomBrood}
 \title{The expected proportion and a realised number of csd homozygous brood}
 \usage{
-calcQueensPHomBrood(x)
+calcQueensPHomBrood(x, simParamBee = NULL)
 
-pHomBrood(x)
+pHomBrood(x, simParamBee = NULL)
 
-nHomBrood(x)
+nHomBrood(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or

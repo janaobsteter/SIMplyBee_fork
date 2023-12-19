@@ -4,7 +4,7 @@
 \alias{getQueenYearOfBirth}
 \title{Access the queen's year of birth}
 \usage{
-getQueenYearOfBirth(x)
+getQueenYearOfBirth(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),

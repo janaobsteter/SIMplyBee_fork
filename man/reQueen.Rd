@@ -4,7 +4,7 @@
 \alias{reQueen}
 \title{Re-queen}
 \usage{
-reQueen(x, queen, removeVirginQueens = TRUE)
+reQueen(x, queen, removeVirginQueens = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
