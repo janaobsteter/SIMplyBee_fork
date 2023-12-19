@@ -106,7 +106,7 @@ Start by loading the package:
 
 ```{r}
 library(package = "SIMplyBee")
-library(ggplot2)
+library(package = "ggplot2")
 ```
 
 First, we create a founder population and some virgin queen and virgin colonies
