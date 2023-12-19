@@ -14,7 +14,8 @@ pullCastePop(
   nInd = NULL,
   use = "rand",
   removeFathers = TRUE,
-  collapse = FALSE
+  collapse = FALSE,
+  simParamBee = NULL
 )
 
 pullQueen(x, collapse = FALSE)

@@ -15,7 +15,8 @@ getCastePop(
   nInd = NULL,
   use = "rand",
   removeFathers = TRUE,
-  collapse = FALSE
+  collapse = FALSE,
+  simParamBee = NULL
 )
 
 getQueen(x, collapse = FALSE)

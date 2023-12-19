@@ -4,7 +4,7 @@
 \alias{setQueensYearOfBirth}
 \title{Set the queen's year of birth}
 \usage{
-setQueensYearOfBirth(x, year)
+setQueensYearOfBirth(x, year, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
