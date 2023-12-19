@@ -339,9 +339,6 @@ pHomBrood <- function(x) {
       }
     }
   } else if (isColony(x)) {
-    # TODO: report queen's and colony's pHomBrood / nHomBrood
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/80
-    #       https://github.com/HighlanderLab/SIMplyBee/issues/104
     if (is.null(x@queen@misc[[1]]$pHomBrood)) {
       ret <- NA
     } else {
