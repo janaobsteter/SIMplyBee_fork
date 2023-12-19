@@ -41,6 +41,8 @@ that represents workers's effect on the colony phenotype (defined in
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
 \item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
 \value{

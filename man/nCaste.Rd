@@ -27,6 +27,8 @@ nVirginQueens(x)
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for

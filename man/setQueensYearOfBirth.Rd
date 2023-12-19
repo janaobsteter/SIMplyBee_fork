@@ -12,6 +12,8 @@ setQueensYearOfBirth(x, year)
 \code{\link{MultiColony-class}} (more colonies)}
 
 \item{year}{integer, the year of the birth of the queen}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}}, \code{\link{Colony-class}}, or

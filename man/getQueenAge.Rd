@@ -11,6 +11,8 @@ getQueenAge(x, currentYear, simParamBee = NULL)
 \code{\link{MultiColony-class}}}
 
 \item{currentYear}{integer, current year}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 numeric, the age of the queen(s); named when theres is more
