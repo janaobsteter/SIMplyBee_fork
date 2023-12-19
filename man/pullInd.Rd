@@ -13,6 +13,8 @@ pullInd(pop, nInd = NULL, use = "rand", simParamBee = NULL)
 individuals}
 
 \item{use}{character, all options provided by \code{\link{selectInd}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with a node \code{pulled} holding \code{\link{Pop-class}} of

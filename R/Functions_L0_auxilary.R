@@ -417,7 +417,8 @@ nHomBrood <- function(x, simParamBee = NULL) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{isQueen}}, \code{\link{isFather}},
-#'   \code{\link{isVirginQueen}}, \code{\link{isWorker}}, and
+#'   \code{\link{isVirginQueen}},
+#'   \code{\link{isWorker}}, and
 #'   \code{\link{isDrone}}
 #'
 #' @return logical
@@ -537,13 +538,17 @@ isDrone <- function(x, simParamBee = NULL) {
 
 #' @describeIn isCaste Is individual a virgin queen
 #' @export
-isVirginQueen <- function(x, simParamBee = NULL) {
+isVirginQueens <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   ret <- isCaste(x = x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
+
+#' @describeIn isCaste Is individual a virgin queen
+#' @export
+isVirginQueen <- isVirginQueens
 
 #' @rdname isQueenPresent
 #' @title Is the queen present
@@ -767,6 +772,7 @@ areDronesPresent <- isDronesPresent
 #' @description Level 0 function that returns virgin queen(s) presence status.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -784,24 +790,24 @@ areDronesPresent <- isDronesPresent
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' colony <- addVirginQueens(x = colony, nInd = 4)
-#' isVirginQueensPresent(colony)
-#' isVirginQueensPresent(pullVirginQueens(colony)$remnant)
-#' isVirginQueensPresent(removeQueen(colony))
+#' isVirginQueenPresent(colony)
+#' isVirginQueenPresent(pullVirginQueens(colony)$remnant)
+#' isVirginQueenPresent(removeQueen(colony))
 #'
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
-#' isVirginQueensPresent(apiary)
+#' isVirginQueenPresent(apiary)
 #'
 #' tmp <- swarm(x = apiary)
-#' isVirginQueensPresent(tmp$swarm)
-#' isVirginQueensPresent(tmp$remnant)
+#' isVirginQueenPresent(tmp$swarm)
+#' isVirginQueenPresent(tmp$remnant)
 #' @export
 isVirginQueensPresent <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x, simParamBee = simParamBee)) {
+  if (isColony(x) | isMultiColony(x)) {
     if (length(nVirginQueens(x, simParamBee = simParamBee)) > 0) {
       ret <- nVirginQueens(x, simParamBee = simParamBee) > 0
     } else {
@@ -812,6 +818,14 @@ isVirginQueensPresent <- function(x, simParamBee = NULL) {
   }
   return(ret)
 }
+
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+isVirginQueenPresent <- isVirginQueensPresent
+
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+areVirginQueensPresent <- isVirginQueensPresent
 
 #' @rdname isEmpty
 #' @title Check whether a population, colony or a multicolony
@@ -935,10 +949,6 @@ isNULLColonies <- function(multicolony) {
 }
 
 # get (general) ----
-
-#' @describeIn isVirginQueensPresent Are virgin queen(s) present
-#' @export
-areVirginQueensPresent <- isVirginQueensPresent
 
 #' @rdname getQueenYearOfBirth
 #' @title Access the queen's year of birth
