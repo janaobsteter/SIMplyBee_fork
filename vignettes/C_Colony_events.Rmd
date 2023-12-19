@@ -216,7 +216,7 @@ and `(1-p)` workers; and split that doesn't contain a queen, but contains virgin
 queens and `p` workers. The `split()` function follows the same principles as
 the `swarm()`, hence we will limit explaining the outputs.
 
-```{r split_figure, echo=FALSE, out.width='100%', fig.cap = "Split function"}
+```{r split_figure, echo=FALSE, out.width='80%', fig.cap = "Split function"}
 knitr::include_graphics("../man/figures/split.png")
 ```
 
@@ -293,7 +293,7 @@ Function `supersede()` removes the old queen and triggers the creation of new
 virgin queens from the brood (Figure 3). The function returns a single `Colony`
 or `MultiColony` object (not a list of two).
 
-```{r supersede_figure, echo=FALSE, out.width='100%', fig.cap = "Supersede function"}
+```{r supersede_figure, echo=FALSE, out.width='50%', fig.cap = "Supersede function"}
 knitr::include_graphics("../man/figures/supersede.png")
 ```
 
