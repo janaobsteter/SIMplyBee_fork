@@ -190,8 +190,8 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
 
 #' @describeIn nCaste Number of queens in a colony
 #' @export
-nQueens <- function(x) {
-  ret <- nCaste(x, caste = "queen")
+nQueens <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -220,22 +220,22 @@ nFathers <- function(x, simParamBee = NULL) {
 
 #' @describeIn nCaste Number of workers in a colony
 #' @export
-nWorkers <- function(x) {
-  ret <- nCaste(x, caste = "workers")
+nWorkers <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "workers", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of drones in a colony
 #' @export
-nDrones <- function(x) {
-  ret <- nCaste(x, caste = "drones")
+nDrones <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "drones", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of virgin queens in a colony
 #' @export
-nVirginQueens <- function(x) {
-  ret <- nCaste(x, caste = "virginQueens")
+nVirginQueens <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -2255,7 +2255,7 @@ getCsdAlleles <- function(x, caste = NULL, nInd = NULL, allele = "all", dronesHa
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
         tmp <- getCsdAlleles(
-          x = getCastePop(x, caste), allele = allele,
+          x = getCastePop(x, caste, simParamBee = simParamBee), allele = allele,
           dronesHaploid = dronesHaploid,
           unique = unique,
           simParamBee = simParamBee
