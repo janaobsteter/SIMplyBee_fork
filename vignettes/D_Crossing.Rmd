@@ -207,7 +207,7 @@ Now, we can cross our virgin queens to drone groups.
 
 ```{r}
 # Pop-class with multiple queens
-queens1 <- cross(virginQueens1, drones = droneGroups[1:3])
+queens1 <- cross(x = virginQueens1, drones = droneGroups[1:3])
 nFathers(queens1)
 ```
 
@@ -340,7 +340,7 @@ radius, if you think that is sensible, or some virgin queens will remain
 unmated. Once we have the spatial cross plan, we can mate our colonies.
 
 ```{r}
-beekeeper3 <- cross(beekeeper3, 
+beekeeper3 <- cross(x = beekeeper3, 
                     crossPlan = crossPlan2,
                     droneColonies = c(beekeeper1, beekeeper2),
                     nDrones = 13)
@@ -469,7 +469,7 @@ crossPlanBeekeeper7 <- c(
                   nDrones = nFathersTruncPoisson)
   )
 
-beekeeper7 <- cross(beekeeper7, 
+beekeeper7 <- cross(x = beekeeper7, 
                     crossPlan = crossPlanBeekeeper7, 
                     drones = c(singleDrone, DCA, matingStationDCA))
 nFathers(beekeeper7)

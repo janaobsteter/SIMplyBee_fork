@@ -153,7 +153,10 @@ nEmptyColonies <- function(multicolony) {
 #' nVirginQueens(apiary)
 #'
 #' @export
-nCaste <- function(x, caste = "all") {
+nCaste <- function(x, caste = "all", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (length(caste) > 1) {
     stop("Argument caste must be of length 1!")
   }
@@ -168,7 +171,7 @@ nCaste <- function(x, caste = "all") {
       if (caste == "fathers") {
         ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
       } else if (caste == "drones") {
-        ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x@drones)), 0)
+        ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x = x@drones, simParamBee = simParamBee)), 0)
       } else {
         ret <- ifelse(!is.null(slot(x, caste)), nInd(slot(x, caste)), 0)
       }
@@ -193,15 +196,18 @@ nQueens <- function(x) {
 
 #' @describeIn nCaste Number of fathers in a colony
 #' @export
-nFathers <- function(x) {
+nFathers <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!(isQueen(x)))) {
+    if (any(!(isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be queens!")
     }
     nInd <- nInd(x)
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (isQueen(x[ind])) {
+      if (isQueen(x[ind], simParamBee = simParamBee)) {
         ret[ind] <- nInd(x@misc[[ind]]$fathers)
       }
     }
@@ -297,19 +303,22 @@ nVirginQueens <- function(x) {
 #' nHomBrood(addWorkers(colony2, nInd = 100))
 #' # nHomBrood will vary between function calls due to inheritance process
 #' @export
-calcQueensPHomBrood <- function(x) {
+calcQueensPHomBrood <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!(all(isQueen(x)))) {
+      if (!(all(isQueen(x, simParamBee = simParamBee)))) {
         stop("calcQueensPHomBrood can only be used with queens!")
       } else {
         queensCsd <- apply(
-          X = getCsdAlleles(x[ind]), MARGIN = 1,
+          X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
           FUN = function(x) paste0(x, collapse = "")
         )
         fathersCsd <- apply(
-          X = getCsdAlleles(x@misc[[ind]]$fathers), MARGIN = 1,
+          X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
           FUN = function(x) paste0(x, collapse = "")
         )
         nComb <- length(queensCsd) * length(fathersCsd)
@@ -330,9 +339,12 @@ calcQueensPHomBrood <- function(x) {
 #' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
 #'   of a queen / colony
 #' @export
-pHomBrood <- function(x) {
+pHomBrood <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!isQueen(x))) {
+    if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
     ret <- rep(x = NA, times = nInd(x))
@@ -359,9 +371,12 @@ pHomBrood <- function(x) {
 #' @describeIn calcQueensPHomBrood Realised number of csd homozygous brood
 #'   produced by a queen
 #' @export
-nHomBrood <- function(x) {
+nHomBrood <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!isQueen(x))) {
+    if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
     ret <- rep(x = NA, times = nInd(x))
@@ -942,9 +957,12 @@ areVirginQueensPresent <- isVirginQueensPresent
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueenYearOfBirth(apiary)
 #' @export
-getQueenYearOfBirth <- function(x) {
+getQueenYearOfBirth <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)
@@ -1005,9 +1023,12 @@ getQueenYearOfBirth <- function(x) {
 #' apiary <- setQueensYearOfBirth(apiary, year = 2018)
 #' getQueenAge(apiary, currentYear = 2022)
 #' @export
-getQueenAge <- function(x, currentYear) {
+getQueenAge <- function(x, currentYear, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)
@@ -1192,7 +1213,7 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
       }
     }
   } else if (isMultiColony(x)) {
-    ret <- lapply(X = x@colonies, FUN = getCasteId, caste = caste)
+    ret <- lapply(X = x@colonies, FUN = getCasteId, caste = caste, simParamBee = simParamBee)
     if (collapse) {
       ret <- as.vector(unlist(ret))
     } else {
@@ -1320,7 +1341,7 @@ getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) 
     if (collapse) {
       ret <- do.call("c", ret)
     } else {
-      names(ret) <- getCaste(x)
+      names(ret) <- getCaste(x = x, simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -1421,7 +1442,7 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
-        ret[[caste]] <- getCaste(tmp)
+        ret[[caste]] <- getCaste(x = tmp, simParamBee = simParamBee)
       }
     }
     if (collapse) {
@@ -2213,7 +2234,7 @@ getCsdAlleles <- function(x, caste = NULL, nInd = NULL, allele = "all", dronesHa
   } else if (isPop(x)) {
     ret <- pullMarkerHaplo(x, markers = paste(simParamBee$csdChr,
                                               simParamBee$csdPosStart:simParamBee$csdPosStop,
-                                              sep="_"))
+                                              sep="_"), simParam = simParamBee)
     if (dronesHaploid && any(x@sex == "M")) {
       ret <- reduceDroneHaplo(haplo = ret, pop = x)
     }
@@ -2456,7 +2477,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
   } else if (isPop(x)) {
     ret <- pullMarkerGeno(x, markers = paste(simParamBee$csdChr,
                                              simParamBee$csdPosStart:simParamBee$csdPosStop,
-                                             sep="_"))
+                                             sep="_"), simParam = simParamBee)
     if (dronesHaploid && any(x@sex == "M")) {
       ret <- reduceDroneGeno(geno = ret, pop = x)
     }
@@ -5167,6 +5188,9 @@ calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
 #' @describeIn calcColonyValue Calculate colony phenotype value from caste individuals' phenotype values
 #' @export
 calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -5236,12 +5260,15 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' calcInheritanceCriterion(apiary, queenTrait = 1, workersTrait = 2)
 #'
 #' @export
-calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = "gv") {
+calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = "gv", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
   }
   if (isPop(x)) {
-    if(!all(isQueen(x))) {
+    if(!all(isQueen(x, simParamBee = simParamBee))) {
       stop("x must be queens!")
     }
     if (is.null(queenTrait)) {
@@ -5693,6 +5720,9 @@ getDronesGv <- function(x, nInd = NULL, collapse = FALSE) {
 #' @describeIn calcColonyValue Calculate colony genetic value from caste individuals' genetic values
 #' @export
 calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -5859,6 +5889,9 @@ getDronesBv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 
 #' @describeIn calcColonyValue Calculate colony breeding value from caste individuals' breeding values
 calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -6025,6 +6058,9 @@ getDronesDd <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 
 #' @describeIn calcColonyValue Calculate colony dominance value from caste individuals' dominance values
 calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -6191,6 +6227,9 @@ getDronesAa <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
 
 #' @describeIn calcColonyValue Calculate colony epistasis value from caste individuals' epistasis value
 calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   calcColonyValue(x = x, FUN = FUN, simParamBee = simParamBee, ...)
 }
 
@@ -6238,13 +6277,13 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
   }
 
   # Pull out csd haplotype matrix
-  csdH = pullMarkerHaplo(pop, markers = paste(simParamBee$csdChr, csdSites, sep="_"))
+  csdH = pullMarkerHaplo(pop, markers = paste(simParamBee$csdChr, csdSites, sep="_"), simParam = simParamBee)
   # Prepare the haplotype matrix
   alleles <- as.matrix(do.call(rbind, alleles))
   rownames(alleles) <- rownames(csdH)
   colnames(alleles) <- colnames(csdH)
 
-  pop <- setMarkerHaplo(pop, haplo=alleles)
+  pop <- setMarkerHaplo(pop, haplo=alleles, simParam = simParamBee)
   return(pop)
 }
 
@@ -6401,7 +6440,7 @@ createCrossPlan <- function(x,
     stop("When creating a spatial cross plan, the x argument must be a Colony
          or MultiColony class with location set!")
   }
-  drones <- drones[isDrone(drones)]
+  drones <- drones[isDrone(x = drones, simParamBee = simParamBee)]
   virginId <- getId(x)
 
   if (is.function(nDrones)) {
@@ -6425,7 +6464,7 @@ createCrossPlan <- function(x,
     if (!is.null(drones)) {
       fathersMatch <- rep.int(virginId, times = nDrones)
       fatherIDs <- sample(drones@id, size = length(fathersMatch), replace = FALSE)
-      crossPlan <- base::split(fatherIDs, fathersMatch)
+      crossPlan <- base::split(fatherIDs, fathersMatch, simParamBee = simParamBee)
     } else {
       print("Cross plan, drone colonies")
       ids <- getId(droneColonies)

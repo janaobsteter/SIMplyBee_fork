@@ -20,8 +20,8 @@ navbar:
       icon: fa-book
       text: Articles
       menu:
-      - text: Honeybee Biology
-        href: articles/A_Honeybee_biology.html
+      - text: Introduction to honeybee biology
+        href: articles/A_Introduction_to_honeybee_biology.html
       - text: Colony Events
         href: articles/C_Colony_events.html
       - text: Multiple colonies
@@ -56,6 +56,7 @@ reference:
     - pullColonies
     - removeColonies
     - getId
+    - rcircle
   - subtitle: Events
     contents:
     - cross
@@ -285,8 +286,9 @@ reference:
   - subtitile:
     contents:
     - createMatingStationDCA
-    - createRandomCrossPlan
+    - createCrossPlan
     - mapCasteToColonyValue
+    - cross
 
   - title: Quantitative Genetics
   - subtitle: Genetic values
