@@ -42,6 +42,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -95,7 +96,7 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
-  if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
+  if (nQueens(object) > 1) {
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {

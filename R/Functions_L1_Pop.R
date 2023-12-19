@@ -42,6 +42,7 @@
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -314,6 +315,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' SP$setTrackRec(TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
 #'
@@ -374,6 +376,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'
 #' # csd homozygosity - relevant when creating virgin queens
 #' SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
 #' all(isCsdHeterozygous(basePop))
 #'
@@ -736,6 +739,7 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -794,6 +798,7 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #' drones <- createDrones(basePop[1], n = 1000)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
@@ -850,6 +855,7 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParam$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- newPop(founderGenomes)
 #'
 #' pullInd(basePop, nInd = 2)
@@ -891,6 +897,7 @@ pullInd <- function(pop, nInd = NULL, use = "rand") {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -973,6 +980,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1188,6 +1196,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -1503,6 +1512,7 @@ cross <- function(x,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
