@@ -155,7 +155,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
         if (use == "order") {
           ret <- pop[start:nIndRequested]
         } else {
-          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use, simParam = simParamBee)
         }
       }
     }
@@ -219,7 +219,7 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
           if (is.null(nInd)) {
             n <- nInd(z$fathers)
           }
-          ret <- selectInd(pop = z$fathers, nInd = n, use = use)
+          ret <- selectInd(pop = z$fathers, nInd = n, use = use, simParam = simParamBee)
         }
       }
     )
@@ -874,14 +874,17 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' pullInd(basePop, nInd = 3)
 #' pullInd(basePop)
 #' @export
-pullInd <- function(pop, nInd = NULL, use = "rand") {
+pullInd <- function(pop, nInd = NULL, use = "rand", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
   if (is.null(nInd)) {
     nInd <- nInd(pop)
   }
-  pulled <- selectInd(pop = pop, nInd = nInd, use = use)
+  pulled <- selectInd(pop = pop, nInd = nInd, use = use, simParam = simParamBee)
   sel <- pop@id %in% pulled@id
   remnant <- pop[!sel]
   ret <- list(pulled = pulled, remnant = remnant)
