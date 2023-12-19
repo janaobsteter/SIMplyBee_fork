@@ -99,6 +99,7 @@ Level 1 function that creates the specified number of caste
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 
@@ -159,6 +160,7 @@ createVirginQueens(apiary)
 
 # csd homozygosity - relevant when creating virgin queens
 SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes, editCsd = FALSE)
 all(isCsdHeterozygous(basePop))
 

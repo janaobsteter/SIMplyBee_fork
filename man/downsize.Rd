@@ -39,6 +39,7 @@ Level 2 function that downsizes a Colony or MultiColony object
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = 12)

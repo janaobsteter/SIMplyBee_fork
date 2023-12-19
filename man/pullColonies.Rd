@@ -10,7 +10,8 @@ pullColonies(
   n = NULL,
   p = NULL,
   by = NULL,
-  pullTop = TRUE
+  pullTop = TRUE,
+  simParamBee = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ with \code{n} or \code{p} to determine the number of pulled colonies, and
 \code{pullTop} to determine whether to pull the best or the worst colonies.}
 
 \item{pullTop}{logical, pull highest (lowest) values if \code{TRUE} (\code{FALSE})}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with two \code{\link{MultiColony-class}}, the \code{pulled}
@@ -44,6 +47,7 @@ Level 3 function that pulls out some colonies
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 mean <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c(

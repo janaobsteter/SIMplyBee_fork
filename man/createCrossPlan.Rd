@@ -55,6 +55,7 @@ Level 0 function that creates a plan for crossing virgin queens or
 \examples{
 founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 # Create three virgin MultiColony objects with locations

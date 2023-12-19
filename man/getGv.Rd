@@ -62,6 +62,7 @@ Level 0 function that returns genetic values of individuals
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$addSnpChip(5)
 basePop <- createVirginQueens(founderGenomes)

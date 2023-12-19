@@ -68,6 +68,7 @@ hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 # Example for splitPColonyStrength()
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 15)
 colony <- createColony(x = basePop[2])

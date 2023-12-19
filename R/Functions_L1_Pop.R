@@ -1463,9 +1463,9 @@ cross <- function(x,
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
-      ret <- createMultiColony()
+      ret <- createMultiColony(simParamBee = simParamBee)
     } else {
-      ret <- createMultiColony(n = nCol)
+      ret <- createMultiColony(n = nCol, simParamBee = simParamBee)
       for (colony in seq_len(nCol)) {
         if (oneColony) {
           colonyDrones <- drones

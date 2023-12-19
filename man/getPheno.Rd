@@ -62,6 +62,7 @@ Level 0 function that returns phenotype values of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$addTraitA(nQtlPerChr = 10, var = 1)
 SP$setVarE(varE = 1)
 

@@ -81,6 +81,7 @@ This function increases queen's \code{nWorkers} and \code{nHomBrood}
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 100)

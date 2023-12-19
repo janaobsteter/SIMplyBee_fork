@@ -4,7 +4,7 @@
 \alias{reQueen}
 \title{Re-queen}
 \usage{
-reQueen(x, queen, removeVirginQueens = TRUE)
+reQueen(x, queen, removeVirginQueens = TRUE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
@@ -35,6 +35,7 @@ If the provided queen is mated, then she is saved in the queen slot
 \examples{
 founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 200)

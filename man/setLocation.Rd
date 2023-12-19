@@ -26,6 +26,7 @@ Level 2 function that to set a Colony or MultiColony object
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(basePop[1], n = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10)

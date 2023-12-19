@@ -29,6 +29,7 @@ While this function is meant to work on male (drone) haplotypes, we
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
 SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 

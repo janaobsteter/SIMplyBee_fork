@@ -127,6 +127,7 @@ Level 0 function that returns QTL haplotypes of individuals in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$addTraitA(nQtlPerChr = 10)
 basePop <- createVirginQueens(founderGenomes)
 

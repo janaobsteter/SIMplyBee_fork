@@ -16,6 +16,7 @@ nDronesColonyPhenotype(
   workersTrait = NULL,
   checkProduction = FALSE,
   lowerLimit = 0,
+  simParamBee = NULL,
   ...
 )
 }
@@ -92,6 +93,7 @@ table(n)
 # Example for nDronesColonyPhenotype()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 average <- 100
 h2 <- 0.1
 SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
