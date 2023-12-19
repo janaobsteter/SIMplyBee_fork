@@ -136,7 +136,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
         ret <- NULL
       } else {
         if (caste == "drones" && removeFathers) {
-          test <- isDrone(pop, simParamBee = SimParamBee)
+          test <- isDrone(pop, simParamBee = simParamBee)
           if (any(!test)) {
             pop <- pop[test]
           }
@@ -1548,12 +1548,12 @@ cross <- function(x,
 #' apiary <- setQueensYearOfBirth(apiary, year = 2022)
 #' getQueenYearOfBirth(apiary)
 #' @export
-setQueensYearOfBirth <- function(x, year, SimParamBee = NULL) {
+setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = SimParamBee)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)

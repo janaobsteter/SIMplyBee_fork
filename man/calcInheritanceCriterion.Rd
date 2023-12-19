@@ -27,6 +27,8 @@ then this effect is 0}
 \item{use}{character, the measure to use for the calculation, being
 either "gv" (genetic value), "ebv" (estimated breeding value),
 or "pheno" (phenotypic value)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer when \code{x} is

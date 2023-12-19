@@ -64,8 +64,6 @@ colony}
 
 \item{\code{production}}{logical, is colony productive}
 
-\item{\code{last_event}}{character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10}
-
 \item{\code{misc}}{list, available for storing extra information about the colony}
 }}
 

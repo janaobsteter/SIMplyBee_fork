@@ -41,6 +41,8 @@ to their distance from the virgin colony (that is, in a radius)}
 only needed when \code{spatial = TRUE}}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{
 named list with names being virgin queens/colonies IDs with each
@@ -98,7 +100,8 @@ droneLocations <- as.data.frame(getLocation(droneColonies, collapse= TRUE))
 droneLocations$Type <- "Drone"
 locations <- rbind(virginLocations, droneLocations)
 
-plot(x = locations$V1, y = locations$V2, col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
+plot(x = locations$V1, y = locations$V2,
+     col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
 
 # Cross according to a spatial cross plan according to the colonies' locations
 crossPlanSpatial <- createCrossPlan(x = virginColonies1,

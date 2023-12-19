@@ -57,6 +57,8 @@ only needed when \code{spatial = TRUE}}
 \item{checkCross}{character, throw a warning (when \code{checkCross = "warning"}),}
 
 \item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+
+\item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{
 \code{\link{Pop-class}} with mated queen(s). The misc slot of the
