@@ -784,7 +784,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
       warning("More than one value in the p argument, taking only the first value!")
       p <- p[1]
     }
-    nInd <- nCaste(x, caste)
+    nInd <- nCaste(x, caste, simParamBee = simParamBee)
     if (nInd > 0) {
       nIndReplaced <- round(nInd * p)
       if (nIndReplaced < nInd) {
@@ -967,7 +967,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
     if (p == 1) {
       slot(x, caste) <- NULL
     } else {
-      nIndStay <- round(nCaste(x, caste) * (1 - p))
+      nIndStay <- round(nCaste(x, caste, simParamBee = simParamBee) * (1 - p))
       if (nIndStay > 0) {
         slot(x, caste) <- selectInd(
           pop = slot(x, caste),
@@ -1377,13 +1377,13 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
     }
     if (nCol == 0) {
       ret <- list(
-        swarm = createMultiColony(),
-        remnant = createMultiColony()
+        swarm = createMultiColony(simParamBee = simParamBee),
+        remnant = createMultiColony(simParamBee = simParamBee)
       )
     } else {
       ret <- list(
-        swarm = createMultiColony(n = nCol),
-        remnant = createMultiColony(n = nCol)
+        swarm = createMultiColony(n = nCol, simParamBee = simParamBee),
+        remnant = createMultiColony(n = nCol, simParamBee = simParamBee)
       )
       for (colony in seq_len(nCol)) {
         if (is.null(p)) {
@@ -1497,7 +1497,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
-      x <- createMultiColony()
+      x <- createMultiColony(simParamBee = simParamBee)
     } else {
       for (colony in seq_len(nCol)) {
         x[[colony]] <- supersede(x[[colony]],
@@ -1649,13 +1649,13 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     }
     if (nCol == 0) {
       ret <- list(
-        split = createMultiColony(),
-        remnant = createMultiColony()
+        split = createMultiColony(simParamBee = simParamBee),
+        remnant = createMultiColony(simParamBee = simParamBee)
       )
     } else {
       ret <- list(
-        split = createMultiColony(n = nCol),
-        remnant = createMultiColony(n = nCol)
+        split = createMultiColony(n = nCol, simParamBee = simParamBee),
+        remnant = createMultiColony(n = nCol, simParamBee = simParamBee)
       )
       for (colony in seq_len(nCol)) {
         if (is.null(p)) {
