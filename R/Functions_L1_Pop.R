@@ -544,9 +544,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 #' @describeIn createCastePop Create workers from a colony
 #' @export
 createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
   ret <- createCastePop(x, caste = "workers", nInd = nInd,
                         exact = exact, simParamBee = simParamBee, ...)
   return(ret)
@@ -555,9 +552,6 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...
 #' @describeIn createCastePop Create drones from a colony
 #' @export
 createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
   ret <- createCastePop(x, caste = "drones", nInd = nInd,
                         simParamBee = simParamBee, ...)
   return(ret)
@@ -570,9 +564,6 @@ createVirginQueens <- function(x, nInd = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL,
                                ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
                         csdAlleles = csdAlleles, simParamBee = simParamBee, ...)
