@@ -2773,16 +2773,16 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
     } else {
       ret <- vector(mode = "list", length = 6)
       names(ret) <- c("queen", "fathers", "queenAndFathers", "workers", "drones", "virginQueens")
-      ret$queen <- nCsdAlleles(x = getQueen(x), simParamBee = simParamBee)
-      ret$fathers <- nCsdAlleles(x = getFathers(x), simParamBee = simParamBee)
-      ret$workers <- nCsdAlleles(x = getWorkers(x), simParamBee = simParamBee)
-      ret$drones <- nCsdAlleles(x = getDrones(x), simParamBee = simParamBee)
-      ret$virginQueens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
+      ret$queen <- nCsdAlleles(x = getQueen(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$fathers <- nCsdAlleles(x = getFathers(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$workers <- nCsdAlleles(x = getWorkers(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$drones <- nCsdAlleles(x = getDrones(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$virginQueens <- nCsdAlleles(x = getVirginQueens(x, simParamBee = simParamBee), simParamBee = simParamBee)
       # Can't combine queen (diploid) and fathers (haploid) using c(getQueen(x), getFathers(x)),
       #   so we will get their alleles and count them
       tmp <- rbind(
-        getCsdAlleles(x = getQueen(x), simParamBee = simParamBee),
-        getCsdAlleles(x = getFathers(x), simParamBee = simParamBee)
+        getCsdAlleles(x = getQueen(x, simParamBee = simParamBee), simParamBee = simParamBee),
+        getCsdAlleles(x = getFathers(x, simParamBee = simParamBee), simParamBee = simParamBee)
       )
       tmp <- tmp[!duplicated(tmp), , drop = FALSE]
       ret$queenAndFathers <- nrow(tmp)
@@ -5294,7 +5294,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
     }
-    ret <- calcInheritanceCriterion(getQueen(colony),
+    ret <- calcInheritanceCriterion(getQueen(colony, simParamBee = simParamBee),
                                     queenTrait = queenTrait,
                                     workersTrait = workersTrait,
                                     use = use)

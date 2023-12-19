@@ -255,19 +255,21 @@ getWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
 
 #' @describeIn getCastePop Access drones
 #' @export
-getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE) {
+getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
   ret <- getCastePop(x,
                      caste = "drones", nInd = nInd, use = use,
                      removeFathers = removeFathers,
-                     collapse = collapse
+                     collapse = collapse,
+                     simParamBee = simParamBee
   )
   return(ret)
 }
 
 #' @describeIn getCastePop Access virgin queens
 #' @export
-getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
-  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
+getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use,
+                     collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -465,7 +467,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- vector(mode = "list", length = 2)
       names(ret) <- c("workers", "nHomBrood")
       workers <- combineBeeGametes(
-        queen = getQueen(x), drones = getFathers(x),
+        queen = getQueen(x, simParamBee = simParamBee), drones = getFathers(x, simParamBee = simParamBee),
         nProgeny = nInd, simParamBee = simParamBee
       )
       if (isCsdActive(simParamBee = simParamBee)) {
@@ -477,8 +479,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             nMiss <- nInd - nInd(ret$workers)
             while (0 < nMiss) {
               workers <- combineBeeGametes(
-                queen = getQueen(x),
-                drones = getFathers(x),
+                queen = getQueen(x, simParamBee = simParamBee),
+                drones = getFathers(x, simParamBee = simParamBee),
                 nProgeny = nMiss,
                 simParamBee = simParamBee
               )
@@ -505,7 +507,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
     } else if (caste == "drones") { # Creating drones if input is a Colony
       ret <- makeDH(
-        pop = getQueen(x), nDH = nInd, keepParents = FALSE,
+        pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
         simParam = simParamBee
       )
       ret@sex[] <- "M"
@@ -732,6 +734,7 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details In reality, drones leave the colony to mate. They die after that.
 #'   In this function we only get a copy of drones from \code{x}, for
@@ -765,14 +768,14 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
 #' @export
-createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
+createDCA <- function(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL) {
   if (isColony(x)) {
-    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers, simParamBee = simParamBee)
     if (is.null(DCA)) {
       warning("No available drones!")
     }
   } else if (isMultiColony(x)) {
-    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers, simParamBee = simParamBee)
     DCA <- DCA[sapply(DCA, FUN = function(z) !is.null(z))]
     if (length(DCA) != 0) {
       DCA <- mergePops(popList = DCA)
