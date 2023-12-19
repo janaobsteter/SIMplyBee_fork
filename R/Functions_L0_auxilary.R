@@ -166,7 +166,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        ret[[caste]] <- nCaste(x = x, caste = caste)
+        ret[[caste]] <- nCaste(x = x, caste = caste, simParamBee = simParamBee)
       }
     } else {
       if (caste == "fathers") {
@@ -179,7 +179,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
     }
   } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste)))
+    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste, simParamBee = simParamBee)))
     names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
@@ -190,8 +190,8 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
 
 #' @describeIn nCaste Number of queens in a colony
 #' @export
-nQueens <- function(x) {
-  ret <- nCaste(x, caste = "queen")
+nQueens <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "queen", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -213,29 +213,29 @@ nFathers <- function(x, simParamBee = NULL) {
       }
     }
   } else {
-    ret <- nCaste(x, caste = "fathers")
+    ret <- nCaste(x, caste = "fathers", simParamBee = simParamBee)
   }
   return(ret)
 }
 
 #' @describeIn nCaste Number of workers in a colony
 #' @export
-nWorkers <- function(x) {
-  ret <- nCaste(x, caste = "workers")
+nWorkers <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "workers", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of drones in a colony
 #' @export
-nDrones <- function(x) {
-  ret <- nCaste(x, caste = "drones")
+nDrones <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "drones", simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn nCaste Number of virgin queens in a colony
 #' @export
-nVirginQueens <- function(x) {
-  ret <- nCaste(x, caste = "virginQueens")
+nVirginQueens <- function(x, simParamBee = NULL) {
+  ret <- nCaste(x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
 
@@ -580,10 +580,13 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #' colony <- removeQueen(colony)
 #' isQueenPresent(colony)
 #' @export
-isQueenPresent <- function(x) {
+isQueenPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nQueens(x)) > 0) {
-      ret <- nQueens(x) > 0
+    if (length(nQueens(x, simParamBee = simParamBee)) > 0) {
+      ret <- nQueens(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -626,10 +629,13 @@ isQueenPresent <- function(x) {
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' isFathersPresent(removeDrones(apiary))
 #' @export
-isFathersPresent <- function(x) {
+isFathersPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nFathers(x)) > 0) {
-      ret <- nFathers(x) > 0
+    if (length(nFathers(x, simParamBee = simParamBee)) > 0) {
+      ret <- nFathers(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -677,10 +683,13 @@ areFathersPresent <- isFathersPresent
 #' isWorkersPresent(apiary)
 #' isWorkersPresent(removeWorkers(apiary))
 #' @export
-isWorkersPresent <- function(x) {
+isWorkersPresent <- function(x, simParamBee = NULL) {
+ if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nWorkers(x)) > 0) {
-      ret <- nWorkers(x) > 0
+    if (length(nWorkers(x, simParamBee = simParamBee)) > 0) {
+      ret <- nWorkers(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -728,10 +737,13 @@ areWorkersPresent <- isWorkersPresent
 #' isDronesPresent(apiary)
 #' isDronesPresent(removeDrones(apiary))
 #' @export
-isDronesPresent <- function(x) {
+isDronesPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x) | isMultiColony(x)) {
-    if (length(nDrones(x)) > 0) {
-      ret <- nDrones(x) > 0
+    if (length(nDrones(x, simParamBee = simParamBee)) > 0) {
+      ret <- nDrones(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -781,10 +793,13 @@ areDronesPresent <- isDronesPresent
 #' isVirginQueensPresent(tmp$swarm)
 #' isVirginQueensPresent(tmp$remnant)
 #' @export
-isVirginQueensPresent <- function(x) {
-  if (isColony(x) | isMultiColony(x)) {
-    if (length(nVirginQueens(x)) > 0) {
-      ret <- nVirginQueens(x) > 0
+isVirginQueensPresent <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isColony(x) | isMultiColony(x, simParamBee = simParamBee)) {
+    if (length(nVirginQueens(x, simParamBee = simParamBee)) > 0) {
+      ret <- nVirginQueens(x, simParamBee = simParamBee) > 0
     } else {
       ret <- FALSE
     }
@@ -6452,7 +6467,7 @@ createCrossPlan <- function(x,
   virginId <- getId(x)
 
   if (is.function(nDrones)) {
-    nDrones <- nDrones(n = length(virginId), ...)
+    nDrones <- nDrones(n = length(virginId), simParamBee = simParamBee, ...)
   } else {
     nDrones <- rep(nDrones, length(virginId))
   }
