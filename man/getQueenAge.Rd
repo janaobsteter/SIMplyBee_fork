@@ -4,7 +4,7 @@
 \alias{getQueenAge}
 \title{Get (calculate) the queen's age}
 \usage{
-getQueenAge(x, currentYear)
+getQueenAge(x, currentYear, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -22,6 +22,7 @@ Level 0 function that returns the queen's age.
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

@@ -10,7 +10,8 @@ removeColonies(
   n = NULL,
   p = NULL,
   by = NULL,
-  removeTop = FALSE
+  removeTop = FALSE,
+  simParamBee = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ with \code{n} or \code{p} to determine the number of removed colonies, and
 \code{removeTop} to determine whether to remove the best or the worst colonies.}
 
 \item{removeTop}{logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{MultiColony-class}} with some colonies removed
@@ -43,6 +46,7 @@ Level 3 function that removes some colonies
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 mean <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c(

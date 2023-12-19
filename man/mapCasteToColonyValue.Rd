@@ -124,6 +124,7 @@ This is a utility/mapping function meant to be called by
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 
 # Define two traits that collectively affect colony honey yield:
 # 1) queen's effect on colony honey yield, say via pheromone secretion phenotype

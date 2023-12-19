@@ -76,6 +76,7 @@ Level 1 function that pulls individuals from a caste in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

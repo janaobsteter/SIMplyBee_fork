@@ -593,6 +593,7 @@ isSimParamBee <- function(x) {
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
@@ -658,12 +659,17 @@ nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
 #' @export
 nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
                                     checkProduction = FALSE, lowerLimit = 0,
+                                    simParamBee = NULL,
                                     ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   ret <- round(mapCasteToColonyPheno(
     colony = colony,
     queenTrait = queenTrait,
     workersTrait = workersTrait,
     checkProduction = checkProduction,
+    simParamBee = simParamBee,
     ...
   ))
   if (ret < (lowerLimit + 1)) {
@@ -694,6 +700,7 @@ nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nDronesPoisson} samples from a Poisson distribution with a
@@ -764,7 +771,11 @@ nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
 #' @export
 nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
                                    checkProduction = FALSE, lowerLimit = 0,
+                                   simParamBee = NULL,
                                    ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   # This one is special because we cater drone production from base population
   #   virgin queens and colonies
   if (isPop(x)) {
@@ -775,6 +786,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
       queenTrait = queenTrait,
       workersTrait = workersTrait,
       checkProduction = checkProduction,
+      simParamBee = simParamBee,
       ...
     ))
   }
@@ -806,6 +818,7 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
 #' @param checkProduction logical, does the phenotype depend on the production
 #'   status of colony; if yes and production is not \code{TRUE}, the result is
 #'   above \code{lowerLimit}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link{mapCasteToColonyPheno}}
 #'
 #' @details \code{nVirginQueensPoisson} samples from a Poisson distribution,
@@ -886,11 +899,18 @@ nVirginQueensTruncPoisson <- function(colony, n = 1, average = 10, lowerLimit = 
 nVirginQueensColonyPhenotype <- function(colony, queenTrait = 1,
                                          workersTrait = 2,
                                          checkProduction = FALSE,
-                                         lowerLimit = 0, ...) {
+                                         lowerLimit = 0,
+                                         simParamBee = NULL,
+                                         ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   ret <- round(mapCasteToColonyPheno(
     colony = colony,
     queenTrait = queenTrait,
-    workersTrait = workersTrait, ...
+    workersTrait = workersTrait,
+    simParamBee = simParamBee,
+    ...
   ))
   if (ret < (lowerLimit + 1)) {
     ret <- lowerLimit + 1
@@ -1301,26 +1321,41 @@ mapCasteToColonyValue <- function(colony,
 #' @describeIn mapCasteToColonyValue Map caste member (individual) phenotype values to a colony phenotype value
 #' @export
 mapCasteToColonyPheno <- function(colony, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   mapCasteToColonyValue(colony, value = "pheno", simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) genetic values to a colony genetic value
 #' @export
 mapCasteToColonyGv <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   mapCasteToColonyValue(colony, value = "gv", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) breeding values to a colony breeding value
 mapCasteToColonyBv <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   mapCasteToColonyValue(colony, value = "bv", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) dominance values to a colony dominance value
 mapCasteToColonyDd <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   mapCasteToColonyValue(colony, value = "dd", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) epistasis values to a colony epistasis value
 mapCasteToColonyAa <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   mapCasteToColonyValue(colony, value = "aa", checkProduction = checkProduction, simParamBee = simParamBee, ...)
 }

@@ -96,7 +96,7 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
-  if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
+  if (nQueens(object) > 1) {
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {

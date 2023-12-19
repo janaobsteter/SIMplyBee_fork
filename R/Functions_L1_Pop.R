@@ -24,6 +24,7 @@
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
 #'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
@@ -970,6 +971,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
 #'   for the pulled individuals (does not affect the remnant colonies)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
 #'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
@@ -1173,6 +1175,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   only needed when \code{spatial = TRUE}
 #' @param checkCross character, throw a warning (when \code{checkCross = "warning"}),
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @details This function changes caste for the mated drones to fathers, and
 #'   mated virgin queens to queens. See examples. This means that you can not
@@ -1466,9 +1469,9 @@ cross <- function(x,
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     if (nCol == 0) {
-      ret <- createMultiColony()
+      ret <- createMultiColony(simParamBee = simParamBee)
     } else {
-      ret <- createMultiColony(n = nCol)
+      ret <- createMultiColony(n = nCol, simParamBee = simParamBee)
       for (colony in seq_len(nCol)) {
         if (oneColony) {
           colonyDrones <- drones
@@ -1509,6 +1512,7 @@ cross <- function(x,
 #'   \code{\link{MultiColony-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
 #' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
 #'   \code{\link{MultiColony-class}} with queens having the year of birth set
 #'

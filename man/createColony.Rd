@@ -21,6 +21,7 @@ Level 2 function that creates a new \code{\link{Colony-class}}
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 15)
 

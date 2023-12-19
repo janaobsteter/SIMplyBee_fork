@@ -10,11 +10,11 @@
 \title{Level 0 function that returns the number of individuals of a caste in a
   colony}
 \usage{
-nCaste(x, caste = "all")
+nCaste(x, caste = "all", simParamBee = NULL)
 
 nQueens(x)
 
-nFathers(x)
+nFathers(x, simParamBee = NULL)
 
 nWorkers(x)
 
@@ -54,6 +54,7 @@ Returns the number of individuals of a caste in a colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

@@ -24,6 +24,7 @@ Level 0 function that reduces drone's genotype to a single
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 5)
 SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 2)
 

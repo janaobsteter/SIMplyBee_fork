@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -98,7 +98,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="cn">NULL</span>, location <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,10 +113,6 @@
 <dd><p>integer, number of colonies to create (if only <code>n</code> is
 given then <code><a href="MultiColony-class.html">MultiColony-class</a></code> is created with <code>n</code>
 <code>NULL</code>) individual colony - this is mostly useful for programming)</p></dd>
-
-
-<dt>location</dt>
-<dd><p>list, location of the colonies as <code>c(x, y)</code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -157,11 +153,11 @@ given then <code><a href="MultiColony-class.html">MultiColony-class</a></code> i
 <span class="r-in"><span><span class="va">apiary</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create 2 virgin colonies</span></span></span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># specify n</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(x = basePop, n = 2):</span> object 'basePop' not found</span>
-<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="co"># take all provided</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(x = basePop[1:2]):</span> object 'basePop' not found</span>
+<span class="r-in"><span><span class="co"># Create 3 virgin colonies</span></span></span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># specify n</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(x = basePop, n = 3):</span> object 'basePop' not found</span>
+<span class="r-in"><span><span class="va">apiary</span> <span class="op">&lt;-</span> <span class="fu">createMultiColony</span><span class="op">(</span>x <span class="op">=</span> <span class="va">basePop</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span> <span class="co"># take all provided</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in createMultiColony(x = basePop[1:3]):</span> object 'basePop' not found</span>
 <span class="r-in"><span><span class="va">apiary</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "MultiColony" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of colonies: 2 </span>
@@ -200,6 +196,7 @@ given then <code><a href="MultiColony-class.html">MultiColony-class</a></code> i
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span><span class="va">apiary</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -214,7 +211,7 @@ given then <code><a href="MultiColony-class.html">MultiColony-class</a></code> i
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

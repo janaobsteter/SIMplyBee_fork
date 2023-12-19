@@ -76,6 +76,7 @@ TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

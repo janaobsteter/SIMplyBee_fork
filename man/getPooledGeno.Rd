@@ -27,6 +27,7 @@ Level 0 function that returns a pooled genotype from true
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1], nInd = 1000)

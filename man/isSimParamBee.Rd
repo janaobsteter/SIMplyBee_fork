@@ -18,5 +18,6 @@ Test if x is a \code{\link{SimParamBee}} class object
 \examples{
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 isSimParamBee(SP)
 }

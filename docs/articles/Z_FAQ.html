@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -62,7 +62,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -113,7 +113,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Frequently asked questions</h1>
             
-            <h4 data-toc-skip class="date">2022-12-13</h4>
+            <h4 data-toc-skip class="date">2023-12-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HighlanderLab/SIMplyBee/blob/HEAD/vignettes/Z_FAQ.Rmd" class="external-link"><code>vignettes/Z_FAQ.Rmd</code></a></small>
       <div class="hidden name"><code>Z_FAQ.Rmd</code></div>
@@ -167,12 +167,12 @@ remain in the colony.</p>
 <span></span>
 <span><span class="co"># A colony</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createColony.html">createColony</a></span><span class="op">(</span><span class="va">baseVirginQueen</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">colony</span>, <span class="va">baseDrones</span><span class="op">)</span></span>
+<span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">colony</span>, drones <span class="op">=</span> <span class="va">baseDrones</span><span class="op">)</span></span>
 <span><span class="va">colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addCastePop.html">addDrones</a></span><span class="op">(</span><span class="va">colony</span>, nInd <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">colony</span></span>
 <span><span class="co">#&gt; An object of class "Colony" </span></span>
 <span><span class="co">#&gt; Id: 1 </span></span>
-<span><span class="co">#&gt; Location: </span></span>
+<span><span class="co">#&gt; Location: 0 0 </span></span>
 <span><span class="co">#&gt; Queen: 2 </span></span>
 <span><span class="co">#&gt; Number of fathers: 100 </span></span>
 <span><span class="co">#&gt; Number of workers: 0 </span></span>
@@ -193,7 +193,7 @@ remain in the colony.</p>
 <span><span class="co">#&gt; Chromosomes: 1 </span></span>
 <span><span class="co">#&gt; Loci: 10 </span></span>
 <span><span class="co">#&gt; Traits: 0</span></span>
-<span><span class="va">queen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span><span class="va">baseVirginQueen</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">DCA</span><span class="op">)</span></span>
+<span><span class="va">queen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cross.html">cross</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">baseVirginQueen</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, drones <span class="op">=</span> <span class="va">DCA</span><span class="op">)</span></span>
 <span><span class="va">queen</span></span>
 <span><span class="co">#&gt; An object of class "Pop" </span></span>
 <span><span class="co">#&gt; Ploidy: 2 </span></span>
@@ -224,8 +224,6 @@ remain in the colony.</p>
 <span><span class="co">#&gt;  drones fathers </span></span>
 <span><span class="co">#&gt;      50      50</span></span>
 <span><span class="fu"><a href="../reference/getCastePop.html">getDrones</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span> <span class="co"># 50 drones</span></span>
-<span><span class="co">#&gt; Warning in getCastePop(x, caste = "drones", nInd = nInd, use = use,</span></span>
-<span><span class="co">#&gt; removeFathers = removeFathers, : Taking only drones that have not yet mated!</span></span>
 <span><span class="co">#&gt; An object of class "Pop" </span></span>
 <span><span class="co">#&gt; Ploidy: 2 </span></span>
 <span><span class="co">#&gt; Individuals: 50 </span></span>
@@ -252,7 +250,7 @@ remain in the colony.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
