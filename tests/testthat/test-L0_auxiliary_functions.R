@@ -22,16 +22,16 @@ test_that("nCaste", {
   colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
   colony <- buildUp(colony, nDrones = 15, nWorkers = 20, simParamBee = SP)
   expect_equal(nCaste(colony, caste = "queen"), 1)
-  expect_equal(nCaste(colony, caste = "drones"), 15)
+  expect_equal(nCaste(colony, caste = "drones"), 10)
   expect_equal(nCaste(colony, caste = "virginQueens"), 0)
   expect_equal(nCaste(colony, caste = "workers"), nWorkers(colony))
   expect_equal(nCaste(colony, caste = "fathers"), 10)
 
-  apiary <- createMultiColony(basePop[3:4], n = 2)
+  apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = droneGroups[c(2, 3)], simParamBee = SP)
   apiary <- buildUp(apiary, nWorkers = 20, nDrones = 10, simParamBee = SP)
   expect_equal(sum(nCaste(apiary, caste = "queen")), 2)
-  expect_equal(sum(nCaste(apiary, caste = "drones")), 20)
+  expect_equal(sum(nCaste(apiary, caste = "drones")), 10)
   expect_equal(sum(nCaste(apiary, caste = "virginQueens")), 0)
   expect_equal(sum(nCaste(apiary, caste = "workers")), sum(nWorkers(apiary)))
   expect_equal(sum(nCaste(apiary, caste = "fathers")), 20)
@@ -49,7 +49,7 @@ test_that("nQueens", {
 
   colony1 <- createColony(x = basePop[1], simParamBee = SP)
   colony1 <- cross(colony1, drones = fatherGroups[[1]], simParamBee = SP)
-  apiary <- createMultiColony(basePop[3:4], n = 2)
+  apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = fatherGroups[c(2, 3)], simParamBee = SP)
 
   expect_equal(nQueens(colony1), 1)
@@ -1048,4 +1048,58 @@ test_that("getLocation", {
 
    expect_equal(getLocation(setLocation(apiary, location = loc)),
                 list("2" = loc, "3" = loc))
+})
+
+test_that("createCrossPlan", {
+  founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  SP$nThreads = 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+
+  # Create three virgin MultiColony objects with locations
+  virginColonies1 <- createMultiColony(basePop[1:2], simParamBee = SP)
+  virginColonies1 <- setLocation(virginColonies1,
+                                 location = Map(c, runif(2, 0, 2*pi),
+                                                runif(2, 0, 2*pi)))
+  virginColonies2 <- createMultiColony(basePop[3:4])
+  virginColonies2 <- setLocation(virginColonies2,
+                                 location = Map(c, runif(2, 0, 2*pi),
+                                                runif(2, 0, 2*pi)))
+  virginColonies3 <- createMultiColony(basePop[5:6])
+  virginColonies3 <- setLocation(virginColonies3,
+                                 location = Map(c, runif(2, 0, 2*pi),
+                                                runif(2, 0, 2*pi)))
+
+  # Create drone colonies
+  droneColonies <- createMultiColony(basePop[7:9])
+  droneColonies <- setLocation(droneColonies,
+                               location = Map(c, runif(3, 0, 2*pi),
+                                              runif(3, 0, 2*pi)))
+
+  # Create some drones to mate initial drone colonies with
+  DCA <- createDrones(basePop[10:12], nInd = 20)
+  # Cross initial virgin drone colonies to the DCA with a random cross plan
+  randomCrossPlan <- createCrossPlan(x = droneColonies,
+                                     drones = DCA,
+                                     nDrones = 15,
+                                     spatial = FALSE,
+                                     simParamBee = SP)
+  expect_length(randomCrossPlan, 3)
+  droneColonies <- cross(droneColonies,
+                         drones = DCA,
+                         nDrones = nFathersPoisson,
+                         crossPlan = randomCrossPlan,
+                         simParamBee = SP)
+
+  expect_equal(as.vector(nFathers(droneColonies)), c(15, 15, 15))
+
+  # Cross according to a spatial cross plan according to the colonies' locations
+  crossPlanSpatial <- createCrossPlan(x = virginColonies1,
+                                      droneColonies = droneColonies,
+                                      nDrones = nFathersPoisson,
+                                      spatial = TRUE,
+                                      radius = 1.5)
+
+  expect_length(crossPlanSpatial, 2)
+  expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1))
 })
