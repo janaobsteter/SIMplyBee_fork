@@ -771,7 +771,6 @@ nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
                                    checkProduction = FALSE, lowerLimit = 0,
                                    simParamBee = NULL,
                                    ...) {
-
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
