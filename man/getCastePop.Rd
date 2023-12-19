@@ -52,6 +52,8 @@ set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
 
 \item{collapse}{logical, whether to return a single merged population}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is

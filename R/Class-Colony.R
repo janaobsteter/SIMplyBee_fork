@@ -27,7 +27,6 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @slot supersedure logical, has colony superseded
 #' @slot collapse logical, has colony collapsed
 #' @slot production logical, is colony productive
-#' @slot last_event character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10
 #' @slot misc list, available for storing extra information about the colony
 #'
 #' @param object \code{\link{Colony-class}}
@@ -80,7 +79,6 @@ setClass(
     supersedure = "logicalOrNULL",
     collapse = "logicalOrNULL",
     production = "logicalOrNULL",
-    last_event = "character",
     misc = "listOrNULL"
   )
 )
