@@ -6314,6 +6314,7 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' @param radius numeric, the radius from the virgin colony in which to sample mating partners,
 #'   only needed when \code{spatial = TRUE}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @return named list with names being virgin queens/colonies IDs with each
 #'   list element holding the IDs of selected drones or drone producing colonies
@@ -6364,7 +6365,8 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' droneLocations$Type <- "Drone"
 #' locations <- rbind(virginLocations, droneLocations)
 #'
-#' plot(x = locations$V1, y = locations$V2, col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
+#' plot(x = locations$V1, y = locations$V2,
+#'      col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
 #'
 #' # Cross according to a spatial cross plan according to the colonies' locations
 #' crossPlanSpatial <- createCrossPlan(x = virginColonies1,
@@ -6464,7 +6466,7 @@ createCrossPlan <- function(x,
     if (!is.null(drones)) {
       fathersMatch <- rep.int(virginId, times = nDrones)
       fatherIDs <- sample(drones@id, size = length(fathersMatch), replace = FALSE)
-      crossPlan <- base::split(fatherIDs, fathersMatch, simParamBee = simParamBee)
+      crossPlan <- base::split(fatherIDs, fathersMatch)
     } else {
       print("Cross plan, drone colonies")
       ids <- getId(droneColonies)

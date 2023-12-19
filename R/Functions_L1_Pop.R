@@ -1170,6 +1170,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 #'   only needed when \code{spatial = TRUE}
 #' @param checkCross character, throw a warning (when \code{checkCross = "warning"}),
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @details This function changes caste for the mated drones to fathers, and
 #'   mated virgin queens to queens. See examples. This means that you can not

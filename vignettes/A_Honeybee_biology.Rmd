@@ -33,6 +33,9 @@ biology. Specifically, it describes:
 
 4.  complementary sex determining (*CSD*) locus.
 
+Further topics about honeybee biology, such as colony events, reproduction, and
+other aspects, are covered in other vignettes.
+
 First, you need to install the package with
 `install.packages(pkg = "SIMplyBee")`.
 
