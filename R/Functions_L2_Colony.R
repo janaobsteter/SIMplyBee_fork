@@ -86,6 +86,7 @@ createColony <- function(x = NULL, simParamBee = NULL) {
 #' @param removeVirginQueens logical, remove existing virgin queens, default is
 #'   \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
 #'   to ensure the provided queen prevails (see details)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details If the provided queen is mated, then she is saved in the queen slot
 #'   of the colony. If she is not mated, then she is saved in the virgin queen
@@ -1356,9 +1357,6 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 
     remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
-    remnantColony@last_event <- "remnant"
-    swarmColony@last_event <- "swarm"
-
     remnantColony@swarm <- TRUE
     swarmColony@swarm <- TRUE
     remnantColony@production <- FALSE
@@ -1492,7 +1490,6 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
     #       aggressive one), by creating many virgin queens and then picking the
     #       one with highest pheno for competition or some other criteria
     #       https://github.com/HighlanderLab/SIMplyBee/issues/239
-    x@last_event <- "superseded"
     x@supersedure <- TRUE
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
@@ -1626,9 +1623,6 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     splitColony <- createColony(x = tmpVirginQueens, simParamBee = simParamBee)
     splitColony@workers <- tmp$pulled
     splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
-
-    remnantColony@last_event <- "remnant"
-    splitColony@last_event <- "split"
 
     remnantColony@split <- TRUE
     splitColony@split <- TRUE

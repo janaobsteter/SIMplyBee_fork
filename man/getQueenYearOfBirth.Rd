@@ -10,6 +10,8 @@ getQueenYearOfBirth(x, simParamBee = NULL)
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
 \code{\link{Colony-class}} (one colony), or
 \code{\link{MultiColony-class}} (more colonies)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 numeric, the year of birth of the queen(s); named when theres is more

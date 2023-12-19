@@ -166,7 +166,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        ret[[caste]] <- nCaste(x = x, caste = caste)
+        ret[[caste]] <- nCaste(x = x, caste = caste, simParamBee = simParamBee)
       }
     } else {
       if (caste == "fathers") {
@@ -179,7 +179,7 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
     }
   } else if (isMultiColony(x)) {
     fun <- ifelse(caste == "all", lapply, sapply)
-    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste)))
+    ret <- fun(x@colonies, FUN = function(z) ifelse(isEmpty(z), 0, nCaste(x = z, caste = caste, simParamBee = simParamBee)))
     names(ret) <- getId(x)
   } else {
     stop("Argument colony must be a Colony or MultiColony class object!")
@@ -213,7 +213,7 @@ nFathers <- function(x, simParamBee = NULL) {
       }
     }
   } else {
-    ret <- nCaste(x, caste = "fathers")
+    ret <- nCaste(x, caste = "fathers", simParamBee = simParamBee)
   }
   return(ret)
 }
@@ -801,7 +801,7 @@ isVirginQueensPresent <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x)) {
+  if (isColony(x) | isMultiColony(x, simParamBee = simParamBee)) {
     if (length(nVirginQueens(x, simParamBee = simParamBee)) > 0) {
       ret <- nVirginQueens(x, simParamBee = simParamBee) > 0
     } else {
@@ -6475,7 +6475,7 @@ createCrossPlan <- function(x,
   virginId <- getId(x)
 
   if (is.function(nDrones)) {
-    nDrones <- nDrones(n = length(virginId), ...)
+    nDrones <- nDrones(n = length(virginId), simParamBee = simParamBee, ...)
   } else {
     nDrones <- rep(nDrones, length(virginId))
   }

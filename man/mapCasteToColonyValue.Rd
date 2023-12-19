@@ -27,13 +27,13 @@ mapCasteToColonyValue(
 
 mapCasteToColonyPheno(colony, simParamBee = NULL, ...)
 
-mapCasteToColonyGv(colony, checkProduction = FALSE, simParamBee = NULL, ...)
+mapCasteToColonyGv(colony, simParamBee = NULL, ...)
 
-mapCasteToColonyBv(colony, checkProduction = FALSE, simParamBee = NULL, ...)
+mapCasteToColonyBv(colony, simParamBee = NULL, ...)
 
-mapCasteToColonyDd(colony, checkProduction = FALSE, simParamBee = NULL, ...)
+mapCasteToColonyDd(colony, simParamBee = NULL, ...)
 
-mapCasteToColonyAa(colony, checkProduction = FALSE, simParamBee = NULL, ...)
+mapCasteToColonyAa(colony, simParamBee = NULL, ...)
 }
 \arguments{
 \item{colony}{\code{\link{Colony-class}}}

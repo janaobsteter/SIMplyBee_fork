@@ -14,7 +14,8 @@ pullCastePop(
   nInd = NULL,
   use = "rand",
   removeFathers = TRUE,
-  collapse = FALSE
+  collapse = FALSE,
+  simParamBee = NULL
 )
 
 pullQueen(x, collapse = FALSE)
@@ -49,6 +50,8 @@ virgin queens, say via insemination}
 
 \item{collapse}{logical, whether to return a single merged population
 for the pulled individuals (does not affect the remnant colonies)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
