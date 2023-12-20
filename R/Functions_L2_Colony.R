@@ -1360,9 +1360,6 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 
     remnantColony <- setLocation(x = remnantColony, location = currentLocation)
 
-    remnantColony@last_event <- "remnant"
-    swarmColony@last_event <- "swarm"
-
     remnantColony@swarm <- TRUE
     swarmColony@swarm <- TRUE
     remnantColony@production <- FALSE
@@ -1455,17 +1452,17 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 #'
 #' # Supersede a colony
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' colony <- supersede(colony)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Supersede all colonies in the apiary
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' apiary1 <- supersede(apiary)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)
@@ -1496,7 +1493,6 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
     #       aggressive one), by creating many virgin queens and then picking the
     #       one with highest pheno for competition or some other criteria
     #       https://github.com/HighlanderLab/SIMplyBee/issues/239
-    x@last_event <- "superseded"
     x@supersedure <- TRUE
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
@@ -1630,9 +1626,6 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     splitColony <- createColony(x = tmpVirginQueens, simParamBee = simParamBee)
     splitColony@workers <- tmp$pulled
     splitColony <- setLocation(x = splitColony, location = getLocation(splitColony))
-
-    remnantColony@last_event <- "remnant"
-    splitColony@last_event <- "split"
 
     remnantColony@split <- TRUE
     splitColony@split <- TRUE

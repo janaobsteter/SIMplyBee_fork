@@ -1329,33 +1329,33 @@ mapCasteToColonyPheno <- function(colony, simParamBee = NULL, ...) {
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) genetic values to a colony genetic value
 #' @export
-mapCasteToColonyGv <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+mapCasteToColonyGv <- function(colony, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "gv", checkProduction = checkProduction, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(colony, value = "gv", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) breeding values to a colony breeding value
-mapCasteToColonyBv <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+mapCasteToColonyBv <- function(colony, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "bv", checkProduction = checkProduction, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(colony, value = "bv", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) dominance values to a colony dominance value
-mapCasteToColonyDd <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+mapCasteToColonyDd <- function(colony, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "dd", checkProduction = checkProduction, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(colony, value = "dd", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) epistasis values to a colony epistasis value
-mapCasteToColonyAa <- function(colony, checkProduction = FALSE, simParamBee = NULL, ...) {
+mapCasteToColonyAa <- function(colony, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "aa", checkProduction = checkProduction, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(colony, value = "aa", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }

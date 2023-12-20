@@ -4,7 +4,7 @@
 \alias{pullInd}
 \title{Pull individuals from a population}
 \usage{
-pullInd(pop, nInd = NULL, use = "rand")
+pullInd(pop, nInd = NULL, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{pop}{\code{\link{Pop-class}}}
@@ -13,6 +13,8 @@ pullInd(pop, nInd = NULL, use = "rand")
 individuals}
 
 \item{use}{character, all options provided by \code{\link{selectInd}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 list with a node \code{pulled} holding \code{\link{Pop-class}} of
