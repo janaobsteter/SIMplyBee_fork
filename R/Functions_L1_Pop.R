@@ -125,7 +125,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
       }
     } else {
       if (caste == "fathers") {
-        if (isQueenPresent(x)) {
+        if (isQueenPresent(x, simParamBee = simParamBee)) {
           pop <- x@queen@misc[[1]]$fathers
         } else {
           pop <- NULL
@@ -214,6 +214,9 @@ getQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
@@ -457,7 +460,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     ret@sex[] <- "M"
     simParamBee$addToCaste(id = ret@id, caste = "D")
   } else if (isColony(x)) {
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("Missing queen!")
     }
     if (length(nInd) > 1) {
@@ -1394,10 +1397,10 @@ cross <- function(x,
     }
   }
   if (isColony(x) | isMultiColony(x)) {
-    if (any(isQueenPresent(x))) {
+    if (any(isQueenPresent(x, simParamBee = simParamBee))) {
       stop("Queen already present in the colony!")
     }
-    if (any(!isVirginQueenPresent(x))) {
+    if (any(!isVirginQueensPresent(x, simParamBee = simParamBee))) {
       stop("No virgin queen(s) in the colony to cross!")
     }
   }
@@ -1572,7 +1575,7 @@ setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
     nInd <- nInd(x)
     x <- setMisc(x = x, node = "yearOfBirth", value = year)
   } else if (isColony(x)) {
-    if (isQueenPresent(x)) {
+    if (isQueenPresent(x, simParamBee = simParamBee)) {
       x@queen <- setMisc(x = x@queen, node = "yearOfBirth", value = year)
     } else {
       stop("Missing queen!")

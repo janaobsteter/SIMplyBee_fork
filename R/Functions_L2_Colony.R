@@ -139,6 +139,9 @@ createColony <- function(x = NULL, simParamBee = NULL) {
 #'
 #' @export
 reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
   }
@@ -275,7 +278,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not add individuals (from the queen) to it!"))
     }
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("Missing queen!")
     }
     if (length(nInd) > 1) {
@@ -778,7 +781,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not replace individuals in it!"))
     }
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("Missing queen!")
     }
     if (length(p) > 1) {
@@ -1299,10 +1302,10 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence it can not swarm!"))
     }
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen present in the colony!")
     }
-    if (!isWorkersPresent(x)) {
+    if (!isWorkersPresent(x, simParamBee = simParamBee)) {
       stop("No workers present in the colony!")
     }
     if (is.function(p)) {
@@ -1477,7 +1480,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence it can not supresede!"))
     }
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen present in the colony!")
     }
     if (is.function(nVirginQueens)) {
@@ -1583,10 +1586,10 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not split it!"))
     }
-    if (!isQueenPresent(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen present in the colony!")
     }
-    if (!isWorkersPresent(x)) {
+    if (!isWorkersPresent(x, simParamBee = simParamBee)) {
       stop("No workers present in the colony!")
     }
     if (is.function(p)) {
