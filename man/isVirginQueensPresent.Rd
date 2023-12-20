@@ -8,8 +8,11 @@
 \usage{
 isVirginQueensPresent(x, simParamBee = NULL)
 
+<<<<<<< HEAD
+=======
 isVirginQueenPresent(x, simParamBee = NULL)
 
+>>>>>>> a56d9f58ca8ca951afeb7c1e0ec93ab48ca45751
 areVirginQueensPresent(x, simParamBee = NULL)
 }
 \arguments{

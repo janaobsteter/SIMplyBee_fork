@@ -1076,7 +1076,7 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
       names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
-    if (isQueenPresent(x)) {
+    if (isQueenPresent(x, simParamBee = simParamBee)) {
       ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
     } else {
       ret <- NA
@@ -5320,7 +5320,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     }
     ret <- queenEffect + workerEffect
   } else if (isColony(x)) {
-    if(!isQueenPresent(x)) {
+    if(!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen in the Colony!")
     }
     ret <- calcInheritanceCriterion(getQueen(colony, simParamBee = simParamBee),
@@ -5331,7 +5331,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      if (isQueenPresent(x[[colony]])) {
+      if (isQueenPresent(x[[colony]], simParamBee = simParamBee)) {
         ret[[colony]] <- calcInheritanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
                                                   workersTrait = workersTrait,
@@ -5367,6 +5367,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value),"ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{calcSelectionCriterion}} and
 #'   \code{\link{calcInheritanceCriterion}} and  as well as
@@ -5418,15 +5419,19 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'
 #' @export
 calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
-                                     workersTraitFUN = sum, use = "gv") {
+                                     workersTraitFUN = sum, use = "gv",
+                                     simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
   }
   if (isColony(x)) {
-    if(!isQueenPresent(x)) {
+    if(!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen in the Colony!")
     }
-    if (!isWorkersPresent(x)) {
+    if (!isWorkersPresent(x, simParamBee = simParamBee)) {
       stop("No workers in the Colony!")
     }
     if (is.null(queenTrait)) {
@@ -5444,12 +5449,13 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      if (isQueenPresent(x[[colony]])) {
+      if (isQueenPresent(x[[colony]], simParamBee = simParamBee)) {
         ret[[colony]] <- calcPerformanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
                                                   workersTrait = workersTrait,
                                                   workersTraitFUN = workersTraitFUN,
-                                                  use = use)
+                                                  use = use,
+                                                  simParamBee = simParamBee)
       } else {
         ret[colony] <- list(NULL)
       }
@@ -5483,6 +5489,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{calcInheritanceCriterion}} and
 #'   \code{\link{calcPerformanceCriterion}} and  as well as
@@ -5539,15 +5546,18 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' @export
 calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
                                    workersTrait = 2, workersTraitFUN = sum,
-                                   use = "gv") {
+                                   use = "gv", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!use %in% c("gv", "ebv", "pheno")) {
     stop("Argument use must be 'gv', 'ebv', or 'pheno'!")
   }
   if (isColony(x)) {
-    if(!isQueenPresent(x)) {
+    if(!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen in the Colony!")
     }
-    if (!isWorkersPresent(x)) {
+    if (!isWorkersPresent(x, simParamBee = simParamBee)) {
       stop("No workers in the Colony!")
     }
     if (is.null(queenTrait)) {
@@ -5565,13 +5575,14 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      if (isQueenPresent(x[[colony]])) {
+      if (isQueenPresent(x[[colony]], simParamBee = simParamBee)) {
         ret[[colony]] <- calcSelectionCriterion(x[[colony]],
                                                 queenTrait = queenTrait,
                                                 queenTraitFUN = queenTraitFUN,
                                                 workersTrait = workersTrait,
                                                 workersTraitFUN = workersTraitFUN,
-                                                use = use)
+                                                use = use,
+                                                simParamBee = simParamBee)
       } else {
         ret[colony] <- list(NULL)
       }
