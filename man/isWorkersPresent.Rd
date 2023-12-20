@@ -6,14 +6,16 @@
 \alias{areDronesPresent}
 \title{Are workers present}
 \usage{
-isWorkersPresent(x)
+isWorkersPresent(x, simParamBee = NULL)
 
-areWorkersPresent(x)
+areWorkersPresent(x, simParamBee = NULL)
 
-areDronesPresent(x)
+areDronesPresent(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical, named by colony id when \code{x} is

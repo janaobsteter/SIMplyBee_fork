@@ -12,15 +12,15 @@
 \usage{
 nCaste(x, caste = "all", simParamBee = NULL)
 
-nQueens(x)
+nQueens(x, simParamBee = NULL)
 
 nFathers(x, simParamBee = NULL)
 
-nWorkers(x)
+nWorkers(x, simParamBee = NULL)
 
-nDrones(x)
+nDrones(x, simParamBee = NULL)
 
-nVirginQueens(x)
+nVirginQueens(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}

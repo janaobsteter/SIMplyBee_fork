@@ -62,7 +62,7 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL) {
     if (!isPop(x)) {
       stop("Argument x must be a Pop class object!")
     }
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     if (is.null(n)) {
