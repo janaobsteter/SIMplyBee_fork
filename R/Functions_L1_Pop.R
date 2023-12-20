@@ -204,14 +204,17 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
 
 #' @describeIn getCastePop Access the queen
 #' @export
-getQueen <- function(x, collapse = FALSE) {
+getQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
   ret <- getCastePop(x, caste = "queen", nInd = 1, collapse = collapse)
   return(ret)
 }
 
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
-getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
@@ -246,14 +249,14 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
 
 #' @describeIn getCastePop Access workers
 #' @export
-getWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+getWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
   ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
 
 #' @describeIn getCastePop Access drones
 #' @export
-getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE) {
+getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
   ret <- getCastePop(x,
                      caste = "drones", nInd = nInd, use = use,
                      removeFathers = removeFathers,
@@ -264,7 +267,7 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collap
 
 #' @describeIn getCastePop Access virgin queens
 #' @export
-getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
+getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
   ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
   return(ret)
 }
@@ -563,7 +566,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
 #' @describeIn createCastePop Create virgin queens from a colony
 #' @export
 createVirginQueens <- function(x, nInd = NULL,
-                               year = NULL,
+                               year =if (0 < n) {
+                                 x <- addDrones(x = x, nInd = n, new = new, simParamBee = simParamBee)
+                               } else if (n < 0) {
+                                 x@drones <- getDrones(x, nInd = nDrones, simParamBee = simParamBee)
+                               } NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL,
                                ...) {

@@ -797,7 +797,7 @@ isVirginQueensPresent <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x) | isMultiColony(x, simParamBee = simParamBee)) {
+  if (isColony(x) | isMultiColony(x)) {
     if (length(nVirginQueens(x, simParamBee = simParamBee)) > 0) {
       ret <- nVirginQueens(x, simParamBee = simParamBee) > 0
     } else {
