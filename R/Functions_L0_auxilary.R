@@ -558,6 +558,7 @@ isVirginQueen <- isVirginQueens
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
 #'
