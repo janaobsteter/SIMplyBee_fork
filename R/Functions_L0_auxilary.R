@@ -6460,7 +6460,6 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'                    spatial = TRUE,
 #'                    radius = 1)
 #'
-#'
 #' @export
 createCrossPlan <- function(x,
                             drones = NULL,
@@ -6496,7 +6495,7 @@ createCrossPlan <- function(x,
   virginId <- getId(x)
 
   if (is.function(nDrones)) {
-    nDrones <- nDrones(n = length(virginId), simParamBee = simParamBee, ...)
+    nDrones <- nDrones(n = length(virginId), ...)
   } else {
     nDrones <- rep(nDrones, length(virginId))
   }

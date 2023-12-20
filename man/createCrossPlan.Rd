@@ -145,5 +145,4 @@ colonies3 <- cross(x = virginColonies3,
                    spatial = TRUE,
                    radius = 1)
 
-
 }

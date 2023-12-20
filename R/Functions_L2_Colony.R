@@ -169,7 +169,8 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
     for (colony in seq_len(nCol)) {
       x[[colony]] <- reQueen(
         x = x[[colony]],
-        queen = queen[colony]
+        queen = queen[colony],
+        simParamBee = simParamBee
       )
     }
   } else {
