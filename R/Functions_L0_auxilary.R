@@ -2513,7 +2513,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
                                              simParamBee$csdPosStart:simParamBee$csdPosStop,
                                              sep="_"), simParam = simParamBee)
     if (dronesHaploid && any(x@sex == "M")) {
-      ret <- reduceDroneGeno(geno = ret, pop = x, simParamBee = SP)
+      ret <- reduceDroneGeno(geno = ret, pop = x)
     }
   } else if (isColony(x)) {
     if (is.null(caste)) {
@@ -2539,8 +2539,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
     } else {
       ret <- getCsdGeno(
         x = getCastePop(x, caste, simParamBee = simParamBee), nInd = nInd,
-        dronesHaploid = dronesHaploid,
-        simParamBee = simParamBee
+          dronesHaploid = dronesHaploid, simParamBee = simParamBee
       )
     }
   } else if (isMultiColony(x)) {
