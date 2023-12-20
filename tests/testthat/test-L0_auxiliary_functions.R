@@ -4,9 +4,9 @@ test_that("nColonies", {
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
-  expect_equal(nColonies(createMultiColony(n = 2)), 2)
-  expect_equal(nColonies(createMultiColony()), 0)
-  expect_equal(nColonies(createMultiColony(n = 10)), 10)
+  expect_equal(nColonies(createMultiColony(n = 2, simParamBee = SP)), 2)
+  expect_equal(nColonies(createMultiColony(simParamBee = SP)), 0)
+  expect_equal(nColonies(createMultiColony(n = 10, simParamBee = SP)), 10)
 })
 
 
@@ -441,7 +441,7 @@ test_that("getCsdGeno", {
   colony <- buildUp(x = colony, simParamBee = SP)
 
   expect_true(is.list(getCsdGeno(colony, simParamBee = SP)))
-  expect_true(is.matrix(getCsdGeno(getQueen(colony, simParamBee = SP))))
+  expect_true(is.matrix(getCsdGeno(getQueen(colony, simParamBee = SP), simParamBee = SP)))
   expect_true(nCsdAlleles(colony, collapse = TRUE, simParamBee = SP) <= SP$nCsdAlleles)
 
   geno <- getCsdGeno(colony, simParamBee = SP)
@@ -764,7 +764,7 @@ test_that("isGenoHeterozygous", {
    apiary <- addVirginQueens(x = apiary, nInd = 5, simParamBee = SP)
 
    # Caste members taken from Colony class
-   (tmp <- getCsdGeno(getQueen(colony, simParamBee = SP)))
+   (tmp <- getCsdGeno(getQueen(colony, simParamBee = SP), simParamBee = SP))
    expect_true(SIMplyBee:::isGenoHeterozygous(tmp))
 
    # Caste members taken from MultiColony class

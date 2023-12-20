@@ -285,7 +285,7 @@ test_that("setLocation", {
   droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10, simParamBee = SP)
   colony <- createColony(x = basePop[2], simParamBee = SP)
   colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
-  apiary <- createMultiColony(basePop[3:5], simParamBee = simParamBee)
+  apiary <- createMultiColony(basePop[3:5], simParamBee = SP)
   apiary <- cross(apiary, drones = droneGroups[2:4], simParamBee = SP)
 
   loc <- c(1, 1)
@@ -322,17 +322,17 @@ test_that("supersede", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create Colony and MultiColony class
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  colony <- buildUp(colony, nWorkers = 100)
-  apiary <- createMultiColony(basePop[3:8], n = 6)
-  apiary <- cross(apiary, drones = fatherGroups[2:7])
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(colony, nWorkers = 100, simParamBee = SP)
+  apiary <- createMultiColony(basePop[3:8], simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[2:7], simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
   expect_true(isQueenPresent(colony))
   expect_true(all(isQueenPresent(apiary)))
@@ -473,39 +473,39 @@ test_that("swarm", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
   nWorkers = 100
   # Create Colony and MultiColony class
   colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  apiary <- createMultiColony(basePop[3:8], n = 6)
-  apiary <- cross(apiary, drones = fatherGroups[2:7])
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- cross(x = colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  apiary <- createMultiColony(basePop[3:8], n = 6, simParamBee = SP)
+  apiary <- cross(x = apiary, drones = fatherGroups[2:7], simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
   # Swarm a colony
-  tmp <- swarm(colony, p = 0.5)
+  tmp <- swarm(colony, p = 0.5, simParamBee = SP)
 
-  expect_true(isQueenPresent(tmp$swarm))
-  expect_true(areVirginQueensPresent(tmp$remnant))
+  expect_true(isQueenPresent(tmp$swarm, simParamBee = SP))
+  expect_true(areVirginQueensPresent(tmp$remnant, simParamBee = SP))
   expect_equal(colony@queen@id, tmp$swarm@queen@id)
-  expect_equal(nWorkers(tmp$swarm), nWorkers/2)
+  expect_equal(nWorkers(tmp$swarm, simParamBee = SP), nWorkers/2)
   expect_equal(length(tmp), 2)
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  tmp <- swarm(colony, p = 1)
-  expect_equal(nWorkers(tmp$swarm), 100)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  tmp <- swarm(colony, p = 1, simParamBee = SP)
+  expect_equal(nWorkers(tmp$swarm, simParamBee = SP), 100)
   colony <- tmp$swarm
   colony@queen <- NULL
-  expect_error(swarm(colony, p = 0.4))
+  expect_error(swarm(colony, p = 0.4, simParamBee = SP))
 
   #Apiary test
-  tmp <- swarm(apiary, p = 0.5)
+  tmp <- swarm(apiary, p = 0.5, simParamBee = SP)
   expect_equal(nColonies(tmp$swarm), 6)
   expect_equal(nColonies(tmp$remnant), 6)
-  expect_true(isQueenPresent(tmp$swarm[[4]]))
-  expect_true(areVirginQueensPresent(tmp$remnant[[4]]))
+  expect_true(isQueenPresent(tmp$swarm[[4]], simParamBee = SP))
+  expect_true(areVirginQueensPresent(tmp$remnant[[4]], simParamBee = SP))
 })
 
 # ---- Collapse -----
