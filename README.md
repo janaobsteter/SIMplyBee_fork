@@ -27,3 +27,7 @@ accessed from the main and devel GitHub branches using:
  <!-- badges: start -->
 [![R-CMD-check](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml/badge.svg?branch=devel)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml)
   <!-- badges: end -->
+
+<!-- badges: start -->
+  [![pages-build-deployment](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pages/pages-build-deployment)
+<!-- badges: end -->
