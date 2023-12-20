@@ -774,6 +774,9 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' createDCA(apiary, nInd = 10)
 #' @export
 createDCA <- function(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isColony(x)) {
     DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers, simParamBee = simParamBee)
     if (is.null(DCA)) {
