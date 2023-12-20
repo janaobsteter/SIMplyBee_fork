@@ -31,3 +31,7 @@ accessed from the main and devel GitHub branches using:
 <!-- badges: start -->
   [![pages-build-deployment](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pages/pages-build-deployment)
 <!-- badges: end -->
+
+<!-- badges: start -->
+[![pkgdown](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/pkgdown.yaml)
+<!-- badges: end -->
