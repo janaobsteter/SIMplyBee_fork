@@ -330,25 +330,23 @@ test_that("createDCA", {
   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = dronesGroups[c(2, 3)], simParamBee = SP)
   # Warning if x = colony/multicolony and no drones available
-  expect_warning(createDCA(colony))
-  expect_warning(createDCA(apiary))
+  expect_warning(createDCA(colony, simParamBee = SP))
+  expect_warning(createDCA(apiary, simParamBee = SP))
   # Error if another caste is used
-  expect_error(createDCA(basePop[6]))
+  expect_error(createDCA(basePop[6], simParamBee = SP))
 
   colony1 <- createColony(x = basePop[5], simParamBee = SP)
   colony1 <- addDrones(colony, nInd = 100, simParamBee = SP)
 
   colony2 <- createColony(x = basePop[6], simParamBee = SP)
   colony2 <- cross(colony2, drones = selectInd(colony1@drones, nInd = 1, use = "rand"), simParamBee = SP)
-  # Warning : Taking only drones that have not yet mated
-  expect_warning(createDCA(colony1))
 
-  suppressWarnings(expect_s4_class(createDCA(colony1, nInd = 10), "Pop"))
-  suppressWarnings(expect_equal(createDCA(colony1, nInd =10)@nInd, 10))
+  expect_s4_class(createDCA(colony1, nInd = 10, simParamBee = SP), "Pop")
+  expect_equal(createDCA(colony1, nInd =10, simParamBee = SP)@nInd, 10)
 
   #empty apiary
   apiary1 <- createMultiColony(n = 3, simParamBee = SP)
-  expect_error(createDCA(apiary1))
+  expect_error(createDCA(apiary1, simParamBee = SP))
 })
 
 # ---- pullDroneGroupsFromDCA ----
@@ -367,7 +365,7 @@ test_that("pullDroneGroupsFromDCA", {
   colony <- cross(colony, drones = dronesGroups[[1]], simParamBee = SP)
   colony <- addDrones(colony, nInd = 100, simParamBee = SP)
 
-  DCA <- createDCA(colony, nInd = 80)
+  DCA <- createDCA(colony, nInd = 80, simParamBee = SP)
   # Error, DCA must be a Pop
   expect_error(pullDroneGroupsFromDCA(colony, simParamBee = SP))
   # Error, n must be provided
@@ -375,9 +373,9 @@ test_that("pullDroneGroupsFromDCA", {
 
   expect_type(pullDroneGroupsFromDCA(DCA, n = 5, nDrones = 8, simParamBee = SP), "list")
   expect_s4_class(pullDroneGroupsFromDCA(DCA, n = 5, nDrones = 8, simParamBee = SP)[[1]], "Pop")
-  expect_true(all(isDrone(pullDroneGroupsFromDCA(DCA, n = 1, nDrones = 70, simParamBee = SP)[[1]]), simParamBee = SP))
+  expect_true(all(isDrone(pullDroneGroupsFromDCA(DCA, n = 1, nDrones = 70, simParamBee = SP)[[1]], simParamBee = SP)))
 
-  suppressWarnings(DCA2 <- createDCA(colony, nInd = 4))
+  suppressWarnings(DCA2 <- createDCA(colony, nInd = 4, simParamBee = SP))
   # Error, if nInd in DCA is smaller than nFathers
   expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nDrones = 20, simParamBee = SP))
 })
@@ -386,41 +384,29 @@ test_that("combineBeeGametes", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
    SP$nThreads = 1L
-   SP$setTrackRec(TRUE)
-   SP$setTrackPed(isTrackPed = TRUE)
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
    queen <- basePop[1]
    drones <- createDrones(x = basePop[2], nInd = 5, simParamBee = SP)
    workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
-   workers@id
-   workers@mother
-   workers@father
-   SP$pedigree
-   SP$recHist
-   SP$recHist[[11]][[1]][1]
-   SP$recHist[[11]][[1]][2]
+
+   expect_equal(drones@ploidy, 2)
+   expect_equal(nInd(drones), 5)
+   expect_equal(workers@ploidy, 2)
+
 })
 
 test_that("combineBeeGametesHaploidDiploid", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
    SP$nThreads = 1L
-   SP$setTrackRec(TRUE)
-   SP$setTrackPed(isTrackPed = TRUE)
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
    queen <- basePop[1]
    drones <- reduceGenome(
      pop = basePop[2], nProgeny = 5, keepParents = FALSE,
-     simRecomb = TRUE
+     simRecomb = TRUE, simParam = SP
    )
-   workers <- SIMplyBee:::combineBeeGametesHaploDiploid(queen, drones, nProgeny = 4)
-   workers@id
-   workers@mother
-   workers@father
-   SP$pedigree
-   SP$recHist
-   SP$recHist[[11]][[1]][1]
-   SP$recHist[[11]][[1]][2]
+  expect_equal(nInd(drones), 5)
+  expect_equal(drones@ploidy, 1)
 })

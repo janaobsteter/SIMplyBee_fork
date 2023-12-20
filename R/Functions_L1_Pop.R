@@ -1448,6 +1448,7 @@ cross <- function(x,
         msg <- "Crossing failed!"
         if (checkCross == "warning") {
           message(msg)
+          ret <- x
         } else if (checkCross == "error") {
           stop(msg)
         }
@@ -1458,7 +1459,7 @@ cross <- function(x,
         if (isPop(x)) {
           virginQueen <- x[virgin]
         } else if (isColony(x)) {
-          virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand")
+          virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
         }
         virginQueen@misc[[1]]$fathers <- virginQueenDrones
         simParamBee$changeCaste(id = virginQueen@id, caste = "Q")
@@ -1473,13 +1474,14 @@ cross <- function(x,
           val <- NA
         }
         virginQueen <- setMisc(x = virginQueen, node = "pHomBrood", value = val)
-      }
-      if (isPop(x)) {
-        ret[[virgin]] <- virginQueen
-      } else if (isColony(x)) {
-        x <- reQueen(x, virginQueen, simParamBee = simParamBee)
-        x <- removeVirginQueens(x, simParamBee = simParamBee)
-        ret <- x
+
+        if (isPop(x)) {
+          ret[[virgin]] <- virginQueen
+        } else if (isColony(x)) {
+          x <- reQueen(x = x, queen = virginQueen, simParamBee = simParamBee)
+          x <- removeVirginQueens(x, simParamBee = simParamBee)
+          ret <- x
+       }
       }
     }
     if (isPop(x)) {
