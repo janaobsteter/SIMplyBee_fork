@@ -214,6 +214,9 @@ getQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
@@ -567,7 +570,11 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
 #' @describeIn createCastePop Create virgin queens from a colony
 #' @export
 createVirginQueens <- function(x, nInd = NULL,
-                               year = NULL,
+                               year =if (0 < n) {
+                                 x <- addDrones(x = x, nInd = n, new = new, simParamBee = simParamBee)
+                               } else if (n < 0) {
+                                 x@drones <- getDrones(x, nInd = nDrones, simParamBee = simParamBee)
+                               } NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL,
                                ...) {
