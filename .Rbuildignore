@@ -2,13 +2,10 @@
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^docs$
-^pkgdown$
 ^vignettes/*F2*
 ^vignettes/*R
 ^vignettes/*RData
 ^vignettes/*pdf
 ^man/figures/*pdf
-^README.Rmd
-^tests/*
 ^\.github$
 ^LICENSE\.md$
