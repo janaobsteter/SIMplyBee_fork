@@ -959,7 +959,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     if (nInd(DCA) < nD) {
       stop("We ran out of drones in the DCA!")
     }
-    tmp <- pullInd(pop = DCA, nInd = nD)
+    tmp <- pullInd(pop = DCA, nInd = nD, simParamBee = simParamBee)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remnant
   }
