@@ -12,21 +12,23 @@
 \usage{
 nCaste(x, caste = "all", simParamBee = NULL)
 
-nQueens(x)
+nQueens(x, simParamBee = NULL)
 
 nFathers(x, simParamBee = NULL)
 
-nWorkers(x)
+nWorkers(x, simParamBee = NULL)
 
-nDrones(x)
+nDrones(x, simParamBee = NULL)
 
-nVirginQueens(x)
+nVirginQueens(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for

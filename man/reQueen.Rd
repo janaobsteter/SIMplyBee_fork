@@ -17,6 +17,8 @@ queen that will have to be mated later; test will be run if the individual
 \item{removeVirginQueens}{logical, remove existing virgin queens, default is
 \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
 to ensure the provided queen prevails (see details)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with new queen(s) (see details)

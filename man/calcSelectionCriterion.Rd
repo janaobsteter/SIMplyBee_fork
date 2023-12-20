@@ -10,7 +10,8 @@ calcSelectionCriterion(
   queenTraitFUN = sum,
   workersTrait = 2,
   workersTraitFUN = sum,
-  use = "gv"
+  use = "gv",
+  simParamBee = NULL
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ function will depend on how you will setup simulation!}
 \item{use}{character, the measure to use for the calculation, being
 either "gv" (genetic value), "ebv" (estimated breeding value),
 or "pheno" (phenotypic value)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer when \code{x} is
