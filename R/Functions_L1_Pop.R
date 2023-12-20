@@ -1063,7 +1063,7 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
       if (is.null(nInd)) {
         nInd <- nInd(slot(x, caste))
       }
-      tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use)
+      tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use, simParamBee = simParamBee)
       if (caste == "queen") {
         slot(x, caste) <- NULL
       } else {

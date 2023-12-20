@@ -245,12 +245,12 @@ test_that("isQueenPresent", {
   apiary2 <- createMultiColony(simParamBee = SP)
   colony2 <- createColony(simParamBee = SP)
 
-  expect_true(isQueenPresent(colony))
-  expect_false(isQueenPresent(apiary))
-  expect_error(isQueenPresent(vec))
-  expect_true(is.vector(isQueenPresent(apiary2)))
-  expect_false(isQueenPresent(apiary2))
-  expect_false(isQueenPresent(colony2))
+  expect_true(isQueenPresent(colony, simParamBee = SP))
+  expect_false(isQueenPresent(apiary2, simParamBee = SP))
+  expect_error(isQueenPresent(vec, simParamBee = SP))
+  expect_true(is.vector(isQueenPresent(apiary2, simParamBee = SP)))
+  expect_false(isQueenPresent(apiary2, simParamBee = SP))
+  expect_false(isQueenPresent(colony2, simParamBee = SP))
 })
 
 # ---- isVirginQueensPresent ----
@@ -275,12 +275,12 @@ test_that("isVirginQueensPresent", {
   colony2 <- createColony(simParamBee = SP)
 
 
-  expect_true(isVirginQueensPresent(colony))
-  expect_false(isVirginQueensPresent(apiary))
-  expect_error(isVirginQueenPresent(vec))
-  expect_true(is.vector(isVirginQueensPresent(apiary2)))
-  expect_false(isVirginQueensPresent(apiary2))
-  expect_false(isVirginQueensPresent(colony2))
+  expect_true(isVirginQueensPresent(colony, simParamBee = SP))
+  expect_false(isVirginQueensPresent(apiary2, simParamBee = SP))
+  expect_error(isVirginQueenPresent(vec, simParamBee = SP))
+  expect_true(is.vector(isVirginQueensPresent(apiary2, simParamBee = SP)))
+  expect_false(isVirginQueensPresent(apiary2, simParamBee = SP))
+  expect_false(isVirginQueensPresent(colony2, simParamBee = SP))
 })
 
 # ---- isProductive ----
@@ -940,16 +940,17 @@ test_that("createCrossPlan", {
                          crossPlan = randomCrossPlan,
                          simParamBee = SP)
 
-  expect_equal(as.vector(nFathers(droneColonies)), c(15, 15, 15))
+  expect_equal(as.vector(nFathers(droneColonies, simParamBee = SP)), c(15, 15, 15))
 
   # Cross according to a spatial cross plan according to the colonies' locations
   crossPlanSpatial <- createCrossPlan(x = virginColonies1,
                                       droneColonies = droneColonies,
                                       nDrones = nFathersPoisson,
                                       spatial = TRUE,
-                                      radius = 1.5)
+                                      radius = 1.5,
+                                      simParamBee = SP)
 
   expect_length(crossPlanSpatial, 2)
-  expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1))
+  expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1, simParamBee = SP))
 })
 

@@ -207,7 +207,7 @@ test_that("pullCastePop", {
   # type
   expect_type(pullCastePop(colony, caste = "workers", simParamBee = SP), "list")
   expect_type(pullCastePop(colony, caste = "queen", simParamBee = SP), "list")
-  suppressWarnings(expect_type(pullCastePop(colony, caste = "drones"), "list"))
+  suppressWarnings(expect_type(pullCastePop(colony, caste = "drones", simParamBee = SP), "list"))
 
   expect_type(pullCastePop(apiary, caste = "workers", simParamBee = SP), "list")
   expect_type(pullCastePop(apiary, caste = "queen", simParamBee = SP), "list")
@@ -339,7 +339,7 @@ test_that("createDCA", {
   colony1 <- addDrones(colony, nInd = 100, simParamBee = SP)
 
   colony2 <- createColony(x = basePop[6], simParamBee = SP)
-  colony2 <- cross(colony2, drones = selectInd(colony1@drones, nInd = 1, use = "rand"), simParamBee = SP)
+  colony2 <- cross(colony2, drones = selectInd(colony1@drones, nInd = 1, use = "rand", simParam = SP), simParamBee = SP)
 
   expect_s4_class(createDCA(colony1, nInd = 10, simParamBee = SP), "Pop")
   expect_equal(createDCA(colony1, nInd =10, simParamBee = SP)@nInd, 10)
@@ -388,7 +388,7 @@ test_that("combineBeeGametes", {
 
    queen <- basePop[1]
    drones <- createDrones(x = basePop[2], nInd = 5, simParamBee = SP)
-   workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4)
+   workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4, simParamBee = SP)
 
    expect_equal(drones@ploidy, 2)
    expect_equal(nInd(drones), 5)
