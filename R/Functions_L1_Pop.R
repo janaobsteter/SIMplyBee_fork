@@ -959,7 +959,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
     if (nInd(DCA) < nD) {
       stop("We ran out of drones in the DCA!")
     }
-    tmp <- pullInd(pop = DCA, nInd = nD)
+    tmp <- pullInd(pop = DCA, nInd = nD, simParamBee = simParamBee)
     ret[[group]] <- tmp$pulled
     DCA <- tmp$remnant
   }
@@ -1458,7 +1458,7 @@ cross <- function(x,
         if (isPop(x)) {
           virginQueen <- x[virgin]
         } else if (isColony(x)) {
-          virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand")
+          virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
         }
         virginQueen@misc[[1]]$fathers <- virginQueenDrones
         simParamBee$changeCaste(id = virginQueen@id, caste = "Q")
