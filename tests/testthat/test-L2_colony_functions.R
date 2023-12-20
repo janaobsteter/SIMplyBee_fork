@@ -36,29 +36,29 @@ test_that("reQueen", {
   # Create mated colony
   matedColony <- createColony(x = matedQueen, simParamBee = SP)
   # Requeen a virgin colony with a virgin queen
-  expect_s4_class(reQueen(virginColony, queen = virginQueen1), "Colony")
-  expect_false(isQueenPresent(reQueen(virginColony, queen = virginQueen1)))
-  expect_true(isVirginQueensPresent(reQueen(virginColony, queen = virginQueen1)))
+  expect_s4_class(reQueen(virginColony, queen = virginQueen1, simParamBee = SP), "Colony")
+  expect_false(isQueenPresent(reQueen(virginColony, queen = virginQueen1, simParamBee = SP), simParamBee = SP))
+  expect_true(isVirginQueensPresent(reQueen(virginColony, queen = virginQueen1, simParamBee = SP), simParamBee = SP))
   # Try to requeen with a drone
-  expect_error(isVirginQueensPresent(reQueen(virginColony, queen = drones[1])))
+  expect_error(isVirginQueensPresent(reQueen(virginColony, queen = drones[1], simParamBee = SP), simParamBee = SP))
   # We can't requeen with a workers
-  expect_error(reQueen(virginColony, queen = createWorkers(matedColony, nInd = 1, simParamBee = SP)$workers))
+  expect_error(reQueen(virginColony, queen = createWorkers(matedColony, nInd = 1, simParamBee = SP)$workers, simParamBee = SP))
   # It can accept multiple virgin queens, but not multiple queens
-  expect_s4_class(reQueen(virginColony, queen = c(virginQueen, virginQueen)), "Colony")
-  expect_error(reQueen(virginColony, queen = c(matedQueen, matedQueen)))
+  expect_s4_class(reQueen(virginColony, queen = c(virginQueen, virginQueen), simParamBee = SP), "Colony")
+  expect_error(reQueen(virginColony, queen = c(matedQueen, matedQueen), simParamBee = SP))
 
   # Requeen a virgin colony with a mated queen
-  expect_s4_class(reQueen(virginColony, queen = matedQueen1), "Colony")
-  expect_false(isVirginQueensPresent(reQueen(virginColony, queen = matedQueen1)))
-  expect_true(isVirginQueensPresent(reQueen(virginColony, queen = matedQueen1, removeVirginQueens = FALSE)))
+  expect_s4_class(reQueen(virginColony, queen = matedQueen1, simParamBee = SP), "Colony")
+  expect_false(isVirginQueensPresent(reQueen(virginColony, queen = matedQueen1, simParamBee = SP), simParamBee = SP))
+  expect_true(isVirginQueensPresent(reQueen(virginColony, queen = matedQueen1, removeVirginQueens = FALSE, simParamBee = SP), simParamBee = SP))
 
   # Requeen a mated colony with a virgin queen
-  expect_s4_class(reQueen(matedColony, queen = virginQueen1), "Colony")
-  expect_false(isQueenPresent(reQueen(matedColony, queen = virginQueen1)))
+  expect_s4_class(reQueen(matedColony, queen = virginQueen1, simParamBee = SP), "Colony")
+  expect_false(isQueenPresent(reQueen(matedColony, queen = virginQueen1, simParamBee = SP), simParamBee = SP))
 
   # Requeen a mated colony with a mated queen
-  expect_s4_class(reQueen(matedColony, queen = matedQueen1), "Colony")
-  expect_true(isQueenPresent(reQueen(matedColony, queen = matedQueen1)))
+  expect_s4_class(reQueen(matedColony, queen = matedQueen1, simParamBee = SP), "Colony")
+  expect_true(isQueenPresent(reQueen(matedColony, queen = matedQueen1, simParamBee = SP), simParamBee = SP))
 })
 
 # ----  Add Functions ----
@@ -76,37 +76,37 @@ test_that("Add functions", {
    emptyColony <- createColony(simParamBee = SP)
    colony <- createColony(x = basePop[2], simParamBee = SP)
    colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
-   emptyApiary <- createMultiColony(simParamBee = simParamBee)
-   apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = simParamBee)
+   emptyApiary <- createMultiColony(simParamBee = SP)
+   apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = SP)
    apiary <- cross(apiary, drones = droneGroups[3:4], simParamBee = SP)
 
    # Add virgin queens to an empty colony --> missing queen error
    expect_error(addVirginQueens(emptyColony, nInd = 10, simParamBee = SP))
    expect_error(addWorkers(emptyColony, nInd = 10, simParamBee = SP))
-   expect_error(addDrones(emptyColony, nInd = 10, simParamBee = SP, simParamBee = SP))
+   expect_error(addDrones(emptyColony, nInd = 10, simParamBee = SP))
    expect_s4_class(addVirginQueens(apiary, nInd = 5, simParamBee = SP), "MultiColony")
    expect_s4_class(addWorkers(apiary, nInd = 5, simParamBee = SP), "MultiColony")
-   expect_s4_class(addDrones(apiary, nInd = 5, simParamBee = SP, simParamBee = SP), "MultiColony")
+   expect_s4_class(addDrones(apiary, nInd = 5, simParamBee = SP), "MultiColony")
 
    # Add virgin queens in the colony
-   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, simParamBee = SP)), 5)
-   expect_equal(nWorkers(addWorkers(colony, nInd = 5, simParamBee = SP)), 5)
-   expect_equal(nDrones(addDrones(colony, nInd = 5, simParamBee = SP)), 5)
+   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 5)
+   expect_equal(nWorkers(addWorkers(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 5)
+   expect_equal(nDrones(addDrones(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 5)
    colony <- addVirginQueens(colony, nInd = 5, simParamBee = SP)
    colony <- addWorkers(colony, nInd = 5, simParamBee = SP)
    colony <- addDrones(colony, nInd = 5, simParamBee = SP)
    # Adding 0 individuals doesn't change the number
-   suppressWarnings(expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 0, simParamBee = SP)), 5))
-   expect_warning(nWorkers(addWorkers(colony, nInd = 0, simParamBee = SP)))
-   suppressWarnings(expect_equal(nWorkers(addWorkers(colony, nInd = 0, simParamBee = SP)), 5))
-   expect_warning(nDrones(addDrones(colony, nInd = 0, simParamBee = SP)))
+   suppressWarnings(expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 0, simParamBee = SP), simParamBee = SP), 5))
+   expect_warning(nWorkers(addWorkers(colony, nInd = 0, simParamBee = SP), simParamBee = SP))
+   suppressWarnings(expect_equal(nWorkers(addWorkers(colony, nInd = 0, simParamBee = SP), simParamBee = SP), 5))
+   expect_warning(nDrones(addDrones(colony, nInd = 0, simParamBee = SP), simParamBee = SP))
    # Adding them in sums the number expect when new is TRUE
-   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, simParamBee = SP)), 10)
-   expect_equal(nWorkers(addWorkers(colony, nInd = 5, simParamBee = SP)), 10)
-   expect_equal(nDrones(addDrones(colony, nInd = 5, simParamBee = SP)), 10)
-   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, new = TRUE, simParamBee = SP)), 5)
-   expect_equal(nWorkers(addWorkers(colony, nInd = 5, new = TRUE, simParamBee = SP)), 5)
-   expect_equal(nDrones(addDrones(colony, nInd = 5, new = TRUE, simParamBee = SP)), 5)
+   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 10)
+   expect_equal(nWorkers(addWorkers(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 10)
+   expect_equal(nDrones(addDrones(colony, nInd = 5, simParamBee = SP), simParamBee = SP), 10)
+   expect_equal(nVirginQueens(addVirginQueens(colony, nInd = 5, new = TRUE, simParamBee = SP), simParamBee = SP), 5)
+   expect_equal(nWorkers(addWorkers(colony, nInd = 5, new = TRUE, simParamBee = SP), simParamBee = SP), 5)
+   expect_equal(nDrones(addDrones(colony, nInd = 5, new = TRUE, simParamBee = SP), simParamBee = SP), 5)
    # If input is an apiary
    # Empty apiary - you can add, but nothing happens - returns an empty apiary
    expect_s4_class(addVirginQueens(emptyApiary, nInd = 5, simParamBee = SP), "MultiColony")
@@ -133,24 +133,24 @@ test_that("BuildUpDownsize", {
    emptyColony <- createColony(simParamBee = SP)
    colony <- createColony(x = basePop[2], simParamBee = SP)
    colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
-   emptyApiary <- createMultiColony(simParamBee = simParamBee)
-   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = simParamBee)
+   emptyApiary <- createMultiColony(simParamBee = SP)
+   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
    apiary <- cross(apiary, drones = droneGroups[c(2, 3)], simParamBee = SP)
 
    #BuildUp empty colony - missing queen error
    expect_error(buildUp(emptyColony, simParamBee = SP))
    # Build up non-empty colony
    expect_s4_class(buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP), "Colony")
-   expect_equal(nWorkers(buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP)), 100)
-   expect_equal(nDrones(buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP)), 10)
+   expect_equal(nWorkers(buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP), simParamBee = SP), 100)
+   expect_equal(nDrones(buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP), simParamBee = SP), 10)
    colony <- buildUp(colony, nWorkers = 100, nDrones = 10, exact = TRUE, simParamBee = SP)
    workerIDs <- getId(colony@workers)
-   # if New = TRUE (deafult), add in fresh workers of a desired number (even if less that what's already in)
-   expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, simParamBee = SP)), 70)
-   expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, simParamBee = SP)), 5)
+   # if New = TRUE (default), add in fresh workers of a desired number (even if less that what's already in)
+   expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, simParamBee = SP), simParamBee = SP), 70)
+   expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, simParamBee = SP), simParamBee = SP), 5)
    # if New = FALSE and nInd is less than n individuals
-   expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, new = FALSE, simParamBee = SP)), 70)
-   expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, new = FALSE, simParamBee = SP)), 5)
+   expect_equal(nWorkers(buildUp(colony, nWorkers = 70, exact = TRUE, new = FALSE, simParamBee = SP), simParamBee = SP), 70)
+   expect_equal(nDrones(buildUp(colony, nDrones = 5, exact = TRUE, new = FALSE, simParamBee = SP), simParamBee = SP), 5)
 
    # Build Up an apiary
    # Empty apiary
@@ -162,9 +162,9 @@ test_that("BuildUpDownsize", {
    downsize(emptyColony, simParamBee = SP)
 
    expect_s4_class(downsize(colony, p = 0.5, simParamBee = SP), "Colony")
-   expect_equal(nWorkers(downsize(colony, p = 0.5, simParamBee = SP)), 50)
-   expect_error(nWorkers(downsize(colony, n = 10, simParamBee = SP)))
-   expect_error(nWorkers(downsize(colony, p = 1.2, simParamBee = SP)))
+   expect_equal(nWorkers(downsize(colony, p = 0.5, simParamBee = SP), simParamBee = SP), 50)
+   expect_error(nWorkers(downsize(colony, n = 10, simParamBee = SP), simParamBee = SP))
+   expect_error(nWorkers(downsize(colony, p = 1.2, simParamBee = SP), simParamBee = SP))
    workersIDs <- getId(colony@workers)
    expect_length(intersect(getId(getWorkers(downsize(colony, p = 0.1, new = TRUE, simParamBee = SP))), workersIDs), 0)
 
@@ -191,8 +191,8 @@ test_that("replaceFunctions", {
   colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 10, simParamBee = SP)
   colony <- addVirginQueens(colony, nInd = 10, simParamBee = SP)
-  emptyApiary <- createMultiColony(simParamBee = simParamBee)
-  apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = simParamBee)
+  emptyApiary <- createMultiColony(simParamBee = SP)
+  apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = droneGroups[3:4], simParamBee = SP)
   apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10, simParamBee = SP)
   apiary <- addVirginQueens(apiary, nInd = 10, simParamBee = SP)
@@ -209,9 +209,9 @@ test_that("replaceFunctions", {
   expect_s4_class(replaceVirginQueens(colony, simParamBee = SP), "Colony")
   expect_s4_class(replaceWorkers(colony, simParamBee = SP), "Colony")
   expect_s4_class(replaceDrones(colony, simParamBee = SP), "Colony")
-  expect_equal(nVirginQueens(replaceVirginQueens(colony, p = 1, simParamBee = SP)), nVirginQueens(colony))
-  expect_equal(nWorkers(replaceWorkers(colony, p = 0.5, simParamBee = SP)), nWorkers(colony))
-  expect_equal(nDrones(replaceDrones(colony, p = 0, simParamBee = SP)), nDrones(colony))
+  expect_equal(nVirginQueens(replaceVirginQueens(colony, p = 1, simParamBee = SP), simParamBee = SP), nVirginQueens(colony))
+  expect_equal(nWorkers(replaceWorkers(colony, p = 0.5, simParamBee = SP), simParamBee = SP), nWorkers(colony))
+  expect_equal(nDrones(replaceDrones(colony, p = 0, simParamBee = SP), simParamBee = SP), nDrones(colony))
   virginQueensIDs <- getId(colony@virginQueens)
   workerIDs <- getId(colony@workers)
   droneIDs <- getId(colony@drones)
@@ -230,6 +230,7 @@ test_that("replaceFunctions", {
 })
 
 # ---- Remove functions  ----
+
 test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -245,8 +246,8 @@ test_that("removeFunctions", {
   colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
   colony <- buildUp(colony, nWorkers = 100, nDrones = 10, simParamBee = SP)
   colony <- addVirginQueens(colony, nInd = 10, simParamBee = SP)
-  emptyApiary <- createMultiColony(simParamBee = simParamBee)
-  apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = simParamBee)
+  emptyApiary <- createMultiColony(simParamBee = SP)
+  apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = droneGroups[3:4], simParamBee = SP)
   apiary <- buildUp(apiary, nWorkers = 100, nDrones = 10, simParamBee = SP)
   apiary <- addVirginQueens(apiary, nInd = 10, simParamBee = SP)
@@ -264,12 +265,12 @@ test_that("removeFunctions", {
   expect_s4_class(removeWorkers(colony), "Colony")
   expect_s4_class(removeDrones(colony), "Colony")
   expect_equal(nVirginQueens(removeVirginQueens(colony, p = 1)), 0)
-  expect_equal(nWorkers(removeWorkers(colony, p = 0.5)), nWorkers(colony)/2)
-  expect_equal(nDrones(removeDrones(colony, p = 0)), nDrones(colony))
+  expect_equal(nWorkers(removeWorkers(colony, p = 0.5), simParamBee = SP), nWorkers(colony)/2)
+  expect_equal(nDrones(removeDrones(colony, p = 0), simParamBee = SP), nDrones(colony))
 
   expect_s4_class(removeVirginQueens(apiary), "MultiColony")
   expect_s4_class(removeWorkers(apiary), "MultiColony")
-  expect_s4_class(removeDrones(apiary), "MultiColony")
+  expect_s4_class(removeDrones(apiary, simParamBee = SP), "MultiColony")
   expect_equal(nColonies(removeVirginQueens(apiary, p = 1)), nColonies(apiary))
   expect_equal(nColonies(removeWorkers(apiary, p = 0.5)), nColonies(apiary))
   expect_equal(nColonies(removeDrones(apiary, p = 0)), nColonies(apiary))
@@ -285,7 +286,7 @@ test_that("setLocation", {
   droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10, simParamBee = SP)
   colony <- createColony(x = basePop[2], simParamBee = SP)
   colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
-  apiary <- createMultiColony(basePop[3:5], simParamBee = simParamBee)
+  apiary <- createMultiColony(basePop[3:5], simParamBee = SP)
   apiary <- cross(apiary, drones = droneGroups[2:4], simParamBee = SP)
 
   loc <- c(1, 1)
@@ -304,8 +305,8 @@ test_that("setLocation", {
   expect_s4_class(setLocation(emptyColony, location = c(1,1)), "Colony")
   expect_equal(setLocation(emptyColony, location = c(1,1))@location, c(1,1))
 
-  emptyApiary <- createMultiColony(n = 3, simParamBee = simParamBee)
-  apiary <- createMultiColony(basePop[1:3], simParamBee = simParamBee)
+  emptyApiary <- createMultiColony(n = 3, simParamBee = SP)
+  apiary <- createMultiColony(basePop[1:3], simParamBee = SP)
 
   expect_s4_class(setLocation(emptyApiary, location = c(1,2)), "MultiColony")
   expect_error(setLocation(emptyApiary, location = list(1,2))) # Lengths do not match
@@ -314,42 +315,40 @@ test_that("setLocation", {
   expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5)), "MultiColony")
 })
 
-
-
 # ---- Supersede ----
 
 test_that("supersede", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create Colony and MultiColony class
-  colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  colony <- buildUp(colony, nWorkers = 100)
-  apiary <- createMultiColony(basePop[3:8], n = 6)
-  apiary <- cross(apiary, drones = fatherGroups[2:7])
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(colony, nWorkers = 100, simParamBee = SP)
+  apiary <- createMultiColony(basePop[3:8], n = 6, simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[2:7], simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
-  expect_true(isQueenPresent(colony))
-  expect_true(all(isQueenPresent(apiary)))
-  expect_false(isVirginQueensPresent(colony))
-  expect_false(all(isVirginQueensPresent(apiary)))
+  expect_true(isQueenPresent(colony, simParamBee = SP))
+  expect_true(all(isQueenPresent(apiary, simParamBee = SP)))
+  expect_false(isVirginQueensPresent(colony, simParamBee = SP))
+  expect_false(all(isVirginQueensPresent(apiary, simParamBee = SP)))
   # Supersede a colony and an apiary
-  colony <- supersede(colony)
-  apiary <- supersede(apiary)
+  colony <- supersede(colony, simParamBee = SP)
+  apiary <- supersede(apiary, simParamBee = SP)
 
-  expect_false(isQueenPresent(colony))
-  expect_false(all(isQueenPresent(apiary)))
-  expect_true(isVirginQueensPresent(colony))
-  expect_true(all(isVirginQueensPresent(apiary)))
+  expect_false(isQueenPresent(colony, simParamBee = SP))
+  expect_false(all(isQueenPresent(apiary, simParamBee = SP)))
+  expect_true(isVirginQueensPresent(colony, simParamBee = SP))
+  expect_true(all(isVirginQueensPresent(apiary, simParamBee = SP)))
   #test error
-  colony <- createColony(x = basePop[2])
+  colony <- createColony(x = basePop[2], simParamBee = SP)
   colony@queen <- NULL
-  expect_error(supersede(colony))
+  expect_error(supersede(colony, simParamBee = SP))
 })
 
 # ---- Split ----
@@ -358,36 +357,36 @@ test_that("split", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
   nWorkers = 100
 
   # Create Colony and MultiColony class
-  colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  apiary <- createMultiColony(basePop[3:8], n = 6)
-  apiary <- cross(apiary, drones = fatherGroups[2:7])
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  apiary <- createMultiColony(basePop[3:8], n = 6, simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[2:7], simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
-  expect_error(split(colony, p = 1.2))
+  expect_error(split(colony, p = 1.2, simParamBee = SP))
   # Split a colony
-  tmp <- split(colony, p = 0.5)
+  tmp <- split(colony, p = 0.5, simParamBee = SP)
   colony <- tmp$remnant
   expect_true(hasSplit(colony))
-  expect_equal(nWorkers(colony), nWorkers/2)
+  expect_equal(nWorkers(colony, simParamBee = SP), nWorkers/2)
   colony@workers <- NULL
-  expect_error(split(colony, p = 0.5))
+  expect_error(split(colony, p = 0.5, simParamBee = SP))
   expect_equal(length(tmp), 2)
 
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  tmp <- split(colony, p = 1)
-  expect_equal(nWorkers(tmp$split), 100)
-  colony <- buildUp(colony, nWorkers = nWorkers)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  tmp <- split(colony, p = 1, simParamBee = SP)
+  expect_equal(nWorkers(tmp$split, simParamBee = SP), 100)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
   colony@queen <- NULL
-  expect_error(split(colony, p = 0.5))
-  tmp <- split(apiary)
+  expect_error(split(colony, p = 0.5, simParamBee = SP))
+  tmp <- split(apiary, simParamBee = SP)
   expect_equal(nColonies(tmp$split), 6)
   expect_equal(nColonies(tmp$remnant), 6)
 
@@ -399,23 +398,23 @@ test_that("resetEvents", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
-  drones <- createDrones(x = basePop[1], nInd = 100)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = 10)
+  drones <- createDrones(x = basePop[1], nInd = 100, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = 10, simParamBee = SP)
 
   # Create and cross Colony and MultiColony class
-  colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  apiary <- createMultiColony(basePop[4:5], n = 2)
-  apiary <- cross(apiary, drones = fatherGroups[3:4])
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[3:4], simParamBee = SP)
 
   # Build-up - this sets Productive to TRUE
-  colony <- buildUp(colony, nWorkers = 100)
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- buildUp(colony, nWorkers = 100, simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
   # Supersede - this sets Supersede to TRUE
-  colony <- supersede(colony)
-  apiary <- supersede(apiary)
+  colony <- supersede(colony, simParamBee = SP)
+  apiary <- supersede(apiary, simParamBee = SP)
 
   expect_true(isProductive(colony))
   expect_true(all(isProductive(apiary)))
@@ -437,31 +436,31 @@ test_that("Combine", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create weak and strong Colony and MultiColony class
-  colony1 <- createColony(x = basePop[2])
-  colony1 <- cross(colony1, drones = fatherGroups[[1]])
-  colony2 <- createColony(x = basePop[3])
-  colony2 <- cross(colony2, drones = fatherGroups[[2]])
-  apiary1 <- createMultiColony(basePop[4:6], n = 3)
-  apiary1 <- cross(apiary1, drones = fatherGroups[3:5])
-  apiary2 <- createMultiColony(basePop[7:9], n = 3)
-  apiary2 <- cross(apiary2, drones = fatherGroups[6:8])
+  colony1 <- createColony(x = basePop[2], simParamBee = SP)
+  colony1 <- cross(colony1, drones = fatherGroups[[1]], simParamBee = SP)
+  colony2 <- createColony(x = basePop[3], simParamBee = SP)
+  colony2 <- cross(colony2, drones = fatherGroups[[2]], simParamBee = SP)
+  apiary1 <- createMultiColony(basePop[4:6], n = 3, simParamBee = SP)
+  apiary1 <- cross(apiary1, drones = fatherGroups[3:5], simParamBee = SP)
+  apiary2 <- createMultiColony(basePop[7:9], n = 3, simParamBee = SP)
+  apiary2 <- cross(apiary2, drones = fatherGroups[6:8], simParamBee = SP)
 
   # Build-up
-  colony1 <- buildUp(x = colony1, nWorkers = 100, nDrones = 20)
-  colony2 <- buildUp(x = colony2, nWorkers = 20, nDrones = 5)
-  apiary1 <- buildUp(x = apiary1, nWorkers = 100, nDrones = 20)
-  apiary2 <- buildUp(x = apiary2, nWorkers = 20, nDrones = 5)
+  colony1 <- buildUp(x = colony1, nWorkers = 100, nDrones = 20, simParamBee = SP)
+  colony2 <- buildUp(x = colony2, nWorkers = 20, nDrones = 5, simParamBee = SP)
+  apiary1 <- buildUp(x = apiary1, nWorkers = 100, nDrones = 20, simParamBee = SP)
+  apiary2 <- buildUp(x = apiary2, nWorkers = 20, nDrones = 5, simParamBee = SP)
 
   colony3 <- combine(strong = colony1, weak = colony2)
   apiary3 <- combine(strong = apiary1, weak = apiary2)
-  expect_equal(nWorkers(colony3),sum(nWorkers(colony1), nWorkers(colony2)))
+  expect_equal(nWorkers(colony3, simParamBee = SP),sum(nWorkers(colony1, simParamBee = SP), nWorkers(colony2, simParamBee = SP)))
   expect_equal(colony1@queen@id, colony3@queen@id)
-  expect_equal(nWorkers(apiary3[[2]]),sum(nWorkers(apiary1[[2]]), nWorkers(apiary2[[2]])))
+  expect_equal(nWorkers(apiary3[[2]], simParamBee = SP),sum(nWorkers(apiary1[[2]], simParamBee = SP), nWorkers(apiary2[[2]], simParamBee = SP)))
   colony1 <- NULL
   colony2 <- NULL
   expect_error(combine(strong = colony1, weak = colony2)) # discus the output
@@ -473,39 +472,39 @@ test_that("swarm", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
   nWorkers = 100
   # Create Colony and MultiColony class
-  colony <- createColony(x = basePop[2])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  apiary <- createMultiColony(basePop[3:8], n = 6)
-  apiary <- cross(apiary, drones = fatherGroups[2:7])
-  apiary <- buildUp(apiary, nWorkers = 100)
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  apiary <- createMultiColony(basePop[3:8], n = 6, simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[2:7], simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
   # Swarm a colony
-  tmp <- swarm(colony, p = 0.5)
+  tmp <- swarm(colony, p = 0.5, simParamBee = SP)
 
-  expect_true(isQueenPresent(tmp$swarm))
-  expect_true(areVirginQueensPresent(tmp$remnant))
+  expect_true(isQueenPresent(tmp$swarm, simParamBee = SP))
+  expect_true(areVirginQueensPresent(tmp$remnant, simParamBee = SP))
   expect_equal(colony@queen@id, tmp$swarm@queen@id)
-  expect_equal(nWorkers(tmp$swarm), nWorkers/2)
+  expect_equal(nWorkers(tmp$swarm, simParamBee = SP), nWorkers/2)
   expect_equal(length(tmp), 2)
-  colony <- buildUp(colony, nWorkers = nWorkers)
-  tmp <- swarm(colony, p = 1)
-  expect_equal(nWorkers(tmp$swarm), 100)
+  colony <- buildUp(colony, nWorkers = nWorkers, simParamBee = SP)
+  tmp <- swarm(colony, p = 1, simParamBee = SP)
+  expect_equal(nWorkers(tmp$swarm, simParamBee = SP), 100)
   colony <- tmp$swarm
   colony@queen <- NULL
-  expect_error(swarm(colony, p = 0.4))
+  expect_error(swarm(colony, p = 0.4, simParamBee = SP))
 
   #Apiary test
-  tmp <- swarm(apiary, p = 0.5)
+  tmp <- swarm(apiary, p = 0.5, simParamBee = SP)
   expect_equal(nColonies(tmp$swarm), 6)
   expect_equal(nColonies(tmp$remnant), 6)
-  expect_true(isQueenPresent(tmp$swarm[[4]]))
-  expect_true(areVirginQueensPresent(tmp$remnant[[4]]))
+  expect_true(isQueenPresent(tmp$swarm[[4]], simParamBee = SP))
+  expect_true(areVirginQueensPresent(tmp$remnant[[4]], simParamBee = SP))
 })
 
 # ---- Collapse -----
@@ -514,15 +513,15 @@ test_that("collapse", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads = 1L
-  basePop <- createVirginQueens(founderGenomes)
-  drones <- createDrones(basePop[1], n = 1000)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create Colony and MultiColony class
-  colony <- createColony(x = basePop[1])
-  colony <- cross(colony, drones = fatherGroups[[1]])
-  apiary <- createMultiColony(x = basePop[2:10], n = 9)
-  apiary <- cross(apiary, drones = fatherGroups[2:10])
+  colony <- createColony(x = basePop[1], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  apiary <- createMultiColony(x = basePop[2:10], n = 9, simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups[2:10], simParamBee = SP)
 
   # Collapse
   expect_false(hasCollapsed(colony))
@@ -530,7 +529,7 @@ test_that("collapse", {
   expect_true(hasCollapsed(colony))
 
   expect_false(all(hasCollapsed(apiary)))
-  tmp <- pullColonies(apiary, n = 2)
+  tmp <- pullColonies(apiary, n = 2, simParamBee = SP)
   apiaryLost <- collapse(tmp$pulled)
   expect_true(all(hasCollapsed(apiaryLost)))
   apiaryLeft <- tmp$remnant
