@@ -502,7 +502,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
         x = x, nInd = n, new = new,
         exact = exact, simParamBee = simParamBee)
     } else if (n < 0) {
-      x@workers <- getWorkers(x, nInd = nWorkers)
+      x@workers <- getWorkers(x, nInd = nWorkers, simParamBee = simParamBee)
     }
 
     # Drones
@@ -528,7 +528,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
         simParamBee = simParamBee
       )
     } else if (n < 0) {
-      x@drones <- getDrones(x, nInd = nDrones)
+      x@drones <- getDrones(x, nInd = nDrones, simParamBee = simParamBee)
     }
 
     # Events
@@ -1347,8 +1347,8 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
     tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
 
     remnantColony <- createColony(x = tmpVirginQueen, simParamBee = simParamBee)
-    remnantColony@workers <- getWorkers(tmp$remnant)
-    remnantColony@drones <- getDrones(x)
+    remnantColony@workers <- getWorkers(tmp$remnant, simParamBee = simParamBee)
+    remnantColony@drones <- getDrones(x, simParamBee = simParamBee)
     # Workers raise virgin queens from eggs laid by the queen and one random
     #   virgin queen prevails, so we create just one
     # Could consider that a non-random one prevails (say the more aggressive one),
@@ -1449,17 +1449,17 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 #'
 #' # Supersede a colony
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' colony <- supersede(colony)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Supersede all colonies in the apiary
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #' apiary1 <- supersede(apiary)
 #' isQueenPresent(colony)
-#' isVirginQueensPresent(colony)
+#' isVirginQueenPresent(colony)
 #'
 #' # Sample colonies from the apiary that will supersede (sample with probability of 0.2)
 #' tmp <- pullColonies(apiary, p = 0.2)

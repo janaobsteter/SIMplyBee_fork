@@ -9,17 +9,17 @@
 \alias{getDronesGv}
 \title{Access genetic values of individuals in a caste}
 \usage{
-getGv(x, caste = NULL, nInd = NULL, collapse = FALSE)
+getGv(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getQueenGv(x, collapse = FALSE)
+getQueenGv(x, collapse = FALSE, simParamBee = NULL)
 
-getFathersGv(x, nInd = NULL, collapse = FALSE)
+getFathersGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getVirginQueensGv(x, nInd = NULL, collapse = FALSE)
+getVirginQueensGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getWorkersGv(x, nInd = NULL, collapse = FALSE)
+getWorkersGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 
-getDronesGv(x, nInd = NULL, collapse = FALSE)
+getDronesGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -35,6 +35,8 @@ individuals are accessed, otherwise a random sample}
 
 \item{collapse}{logical, if the return value should be a single matrix
 with genetic values of all the individuals}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 vector of phenotype values when \code{x} is \code{\link{Colony-class}}

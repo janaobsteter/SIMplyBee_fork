@@ -112,7 +112,8 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use, removeFathers = removeFathers)
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use = use,
+                           removeFathers = removeFathers, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -184,7 +185,8 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
                          nInd = nIndColony,
                          use = use,
                          removeFathers = removeFathers,
-                         collapse = collapse)
+                         collapse = collapse,
+                         simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -205,7 +207,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
 #' @describeIn getCastePop Access the queen
 #' @export
 getQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
-  ret <- getCastePop(x, caste = "queen", nInd = 1, collapse = collapse)
+  ret <- getCastePop(x, caste = "queen", nInd = 1, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -233,7 +235,7 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
       ret <- ret[[1]]
     }
   } else if (isColony(x) | isMultiColony(x)) {
-    ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use, collapse = collapse)
+    ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use, collapse = collapse, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
@@ -250,7 +252,7 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
 #' @describeIn getCastePop Access workers
 #' @export
 getWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
-  ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse)
+  ret <- getCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -260,7 +262,8 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collap
   ret <- getCastePop(x,
                      caste = "drones", nInd = nInd, use = use,
                      removeFathers = removeFathers,
-                     collapse = collapse
+                     collapse = collapse,
+                     simParamBee = simParamBee
   )
   return(ret)
 }
@@ -268,7 +271,8 @@ getDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collap
 #' @describeIn getCastePop Access virgin queens
 #' @export
 getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
-  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
+  ret <- getCastePop(x, caste = "virginQueens", nInd = nInd, use = use,
+                     collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -427,7 +431,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     ret@sex[] <- "F"
     simParamBee$changeCaste(id = ret@id, caste = "V")
     if (!is.null(year)) {
-      ret <- setQueensYearOfBirth(x = ret, year = year)
+      ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
     }
   } else if (isPop(x)) {
     if (caste != "drones") { # Creating drones if input is a Pop
@@ -467,7 +471,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- vector(mode = "list", length = 2)
       names(ret) <- c("workers", "nHomBrood")
       workers <- combineBeeGametes(
-        queen = getQueen(x), drones = getFathers(x),
+        queen = getQueen(x, simParamBee = simParamBee), drones = getFathers(x, simParamBee = simParamBee),
         nProgeny = nInd, simParamBee = simParamBee
       )
       if (isCsdActive(simParamBee = simParamBee)) {
@@ -479,8 +483,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             nMiss <- nInd - nInd(ret$workers)
             while (0 < nMiss) {
               workers <- combineBeeGametes(
-                queen = getQueen(x),
-                drones = getFathers(x),
+                queen = getQueen(x, simParamBee = simParamBee),
+                drones = getFathers(x, simParamBee = simParamBee),
                 nProgeny = nMiss,
                 simParamBee = simParamBee
               )
@@ -503,11 +507,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret@sex[] <- "F"
       simParamBee$changeCaste(id = ret@id, caste = "V")
       if (!is.null(year)) {
-        ret <- setQueensYearOfBirth(x = ret, year = year)
+        ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
       }
     } else if (caste == "drones") { # Creating drones if input is a Colony
       ret <- makeDH(
-        pop = getQueen(x), nDH = nInd, keepParents = FALSE,
+        pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
         simParam = simParamBee
       )
       ret@sex[] <- "M"
@@ -739,6 +743,7 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details In reality, drones leave the colony to mate. They die after that.
 #'   In this function we only get a copy of drones from \code{x}, for
@@ -772,14 +777,14 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #' createDCA(apiary)
 #' createDCA(apiary, nInd = 10)
 #' @export
-createDCA <- function(x, nInd = NULL, removeFathers = TRUE) {
+createDCA <- function(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL) {
   if (isColony(x)) {
-    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers, simParamBee = simParamBee)
     if (is.null(DCA)) {
       warning("No available drones!")
     }
   } else if (isMultiColony(x)) {
-    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers)
+    DCA <- getDrones(x, nInd = nInd, removeFathers = removeFathers, simParamBee = simParamBee)
     DCA <- DCA[sapply(DCA, FUN = function(z) !is.null(z))]
     if (length(DCA) != 0) {
       DCA <- mergePops(popList = DCA)
@@ -860,6 +865,7 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
 #'   individuals
 #' @param use character, all options provided by \code{\link{selectInd}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
 #'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
@@ -1098,7 +1104,8 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                           nInd = nIndColony,
                           use = use,
                           removeFathers = removeFathers,
-                          collapse = collapse)
+                          collapse = collapse,
+                          simParamBee = simParamBee)
       if (!is.null(tmp$pulled)) {
         ret$pulled[[colony]] <- tmp$pulled
       }
@@ -1115,33 +1122,34 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
 
 #' @describeIn pullCastePop Pull queen from a colony
 #' @export
-pullQueen <- function(x, collapse = FALSE) {
-  ret <- pullCastePop(x, caste = "queen", collapse = collapse)
+pullQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
+  ret <- pullCastePop(x, caste = "queen", collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull workers from a colony
 #' @export
-pullWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
-  ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse)
+pullWorkers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  ret <- pullCastePop(x, caste = "workers", nInd = nInd, use = use, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull drones from a colony
 #' @export
-pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE) {
+pullDrones <- function(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
   ret <- pullCastePop(x,
                       caste = "drones", nInd = nInd, use = use,
                       removeFathers = removeFathers,
-                      collapse = collapse
+                      collapse = collapse,
+                      simParamBee = simParamBee
   )
   return(ret)
 }
 
 #' @describeIn pullCastePop Pull virgin queens from a colony
 #' @export
-pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE) {
-  ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse)
+pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  ret <- pullCastePop(x, caste = "virginQueens", nInd = nInd, use = use, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1396,7 +1404,7 @@ cross <- function(x,
     if (any(isQueenPresent(x))) {
       stop("Queen already present in the colony!")
     }
-    if (any(!isVirginQueensPresent(x))) {
+    if (any(!isVirginQueenPresent(x))) {
       stop("No virgin queen(s) in the colony to cross!")
     }
   }
@@ -1565,7 +1573,7 @@ setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    if (any(!(isVirginQueens(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     nInd <- nInd(x)

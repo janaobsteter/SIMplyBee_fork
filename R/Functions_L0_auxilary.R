@@ -417,7 +417,8 @@ nHomBrood <- function(x, simParamBee = NULL) {
 #' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{isQueen}}, \code{\link{isFather}},
-#'   \code{\link{isVirginQueen}}, \code{\link{isWorker}}, and
+#'   \code{\link{isVirginQueen}},
+#'   \code{\link{isWorker}}, and
 #'   \code{\link{isDrone}}
 #'
 #' @return logical
@@ -537,13 +538,17 @@ isDrone <- function(x, simParamBee = NULL) {
 
 #' @describeIn isCaste Is individual a virgin queen
 #' @export
-isVirginQueen <- function(x, simParamBee = NULL) {
+isVirginQueens <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   ret <- isCaste(x = x, caste = "virginQueens", simParamBee = simParamBee)
   return(ret)
 }
+
+#' @describeIn isCaste Is individual a virgin queen
+#' @export
+isVirginQueen <- isVirginQueens
 
 #' @rdname isQueenPresent
 #' @title Is the queen present
@@ -552,6 +557,7 @@ isVirginQueen <- function(x, simParamBee = NULL) {
 #'   present/alive or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -604,6 +610,7 @@ isQueenPresent <- function(x, simParamBee = NULL) {
 #'   present or not, which means the queen is mated).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -656,6 +663,7 @@ areFathersPresent <- isFathersPresent
 #'   present or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -684,7 +692,7 @@ areFathersPresent <- isFathersPresent
 #' isWorkersPresent(removeWorkers(apiary))
 #' @export
 isWorkersPresent <- function(x, simParamBee = NULL) {
- if (is.null(simParamBee)) {
+  if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isColony(x) | isMultiColony(x)) {
@@ -710,6 +718,7 @@ areWorkersPresent <- isWorkersPresent
 #'   present or not).
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -763,6 +772,7 @@ areDronesPresent <- isDronesPresent
 #' @description Level 0 function that returns virgin queen(s) presence status.
 #'
 #' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
 #'   \code{\link{MultiColony-class}}
@@ -780,18 +790,18 @@ areDronesPresent <- isDronesPresent
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' colony <- addVirginQueens(x = colony, nInd = 4)
-#' isVirginQueensPresent(colony)
-#' isVirginQueensPresent(pullVirginQueens(colony)$remnant)
-#' isVirginQueensPresent(removeQueen(colony))
+#' isVirginQueenPresent(colony)
+#' isVirginQueenPresent(pullVirginQueens(colony)$remnant)
+#' isVirginQueenPresent(removeQueen(colony))
 #'
 #' apiary <- createMultiColony(basePop[3:4], n = 2)
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
-#' isVirginQueensPresent(apiary)
+#' isVirginQueenPresent(apiary)
 #'
 #' tmp <- swarm(x = apiary)
-#' isVirginQueensPresent(tmp$swarm)
-#' isVirginQueensPresent(tmp$remnant)
+#' isVirginQueenPresent(tmp$swarm)
+#' isVirginQueenPresent(tmp$remnant)
 #' @export
 isVirginQueensPresent <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
@@ -808,6 +818,14 @@ isVirginQueensPresent <- function(x, simParamBee = NULL) {
   }
   return(ret)
 }
+
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+isVirginQueenPresent <- isVirginQueensPresent
+
+#' @describeIn isVirginQueensPresent Are virgin queen(s) present
+#' @export
+areVirginQueensPresent <- isVirginQueensPresent
 
 #' @rdname isEmpty
 #' @title Check whether a population, colony or a multicolony
@@ -932,10 +950,6 @@ isNULLColonies <- function(multicolony) {
 
 # get (general) ----
 
-#' @describeIn isVirginQueensPresent Are virgin queen(s) present
-#' @export
-areVirginQueensPresent <- isVirginQueensPresent
-
 #' @rdname getQueenYearOfBirth
 #' @title Access the queen's year of birth
 #'
@@ -997,7 +1011,7 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
   } else if (isColony(x)) {
     ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth)
+    ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -1214,7 +1228,7 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        tmp <- getCastePop(x = x, caste = caste)
+        tmp <- getCastePop(x = x, caste = caste, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -1225,7 +1239,7 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
         ret <- as.vector(unlist(ret))
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste)
+      tmp <- getCastePop(x = x, caste = caste, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -1337,7 +1351,7 @@ getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) 
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        tmp <- getCastePop(x = x, caste = caste)
+        tmp <- getCastePop(x = x, caste = caste, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -1348,7 +1362,7 @@ getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) 
         ret <- do.call("c", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste)
+      tmp <- getCastePop(x = x, caste = caste, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -1458,7 +1472,7 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
     ret <- vector(mode = "list", length = 5)
     names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
     for (caste in names(ret)) {
-      tmp <- getCastePop(x = x, caste = caste)
+      tmp <- getCastePop(x = x, caste = caste, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[caste] <- list(NULL)
       } else {
@@ -2270,7 +2284,7 @@ getCsdAlleles <- function(x, caste = NULL, nInd = NULL, allele = "all", dronesHa
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
         tmp <- getCsdAlleles(
-          x = getCastePop(x, caste), allele = allele,
+          x = getCastePop(x, caste, simParamBee = simParamBee), allele = allele,
           dronesHaploid = dronesHaploid,
           unique = unique,
           simParamBee = simParamBee
@@ -2289,7 +2303,7 @@ getCsdAlleles <- function(x, caste = NULL, nInd = NULL, allele = "all", dronesHa
       }
     } else {
       ret <- getCsdAlleles(
-        x = getCastePop(x, caste), allele = allele,
+        x = getCastePop(x, caste, simParamBee = simParamBee), allele = allele,
         dronesHaploid = dronesHaploid,
         unique = unique,
         simParamBee = simParamBee
@@ -2509,7 +2523,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+        tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -2524,7 +2538,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
       }
     } else {
       ret <- getCsdGeno(
-        x = getCastePop(x, caste), nInd = nInd,
+        x = getCastePop(x, caste, simParamBee = simParamBee), nInd = nInd,
         dronesHaploid = dronesHaploid,
         simParamBee = simParamBee
       )
@@ -2788,16 +2802,16 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
     } else {
       ret <- vector(mode = "list", length = 6)
       names(ret) <- c("queen", "fathers", "queenAndFathers", "workers", "drones", "virginQueens")
-      ret$queen <- nCsdAlleles(x = getQueen(x), simParamBee = simParamBee)
-      ret$fathers <- nCsdAlleles(x = getFathers(x), simParamBee = simParamBee)
-      ret$workers <- nCsdAlleles(x = getWorkers(x), simParamBee = simParamBee)
-      ret$drones <- nCsdAlleles(x = getDrones(x), simParamBee = simParamBee)
-      ret$virginQueens <- nCsdAlleles(x = getVirginQueens(x), simParamBee = simParamBee)
+      ret$queen <- nCsdAlleles(x = getQueen(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$fathers <- nCsdAlleles(x = getFathers(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$workers <- nCsdAlleles(x = getWorkers(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$drones <- nCsdAlleles(x = getDrones(x, simParamBee = simParamBee), simParamBee = simParamBee)
+      ret$virginQueens <- nCsdAlleles(x = getVirginQueens(x, simParamBee = simParamBee), simParamBee = simParamBee)
       # Can't combine queen (diploid) and fathers (haploid) using c(getQueen(x), getFathers(x)),
       #   so we will get their alleles and count them
       tmp <- rbind(
-        getCsdAlleles(x = getQueen(x), simParamBee = simParamBee),
-        getCsdAlleles(x = getFathers(x), simParamBee = simParamBee)
+        getCsdAlleles(x = getQueen(x, simParamBee = simParamBee), simParamBee = simParamBee),
+        getCsdAlleles(x = getFathers(x, simParamBee = simParamBee), simParamBee = simParamBee)
       )
       tmp <- tmp[!duplicated(tmp), , drop = FALSE]
       ret$queenAndFathers <- nrow(tmp)
@@ -2938,7 +2952,7 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -3195,7 +3209,7 @@ getQtlHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -3441,7 +3455,7 @@ getQtlGeno <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -3689,7 +3703,7 @@ getSegSiteHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -3930,7 +3944,7 @@ getSegSiteGeno <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -4176,7 +4190,7 @@ getSnpHaplo <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -4412,7 +4426,7 @@ getSnpGeno <- function(x, caste = NULL, nInd = NULL,
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -4933,6 +4947,7 @@ calcBeeGRMIbd <- function(x) {
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with phenotypes of all the individuals
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{pheno}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
@@ -4997,7 +5012,7 @@ calcBeeGRMIbd <- function(x) {
 #' getPheno(apiary, caste = "all")
 #' getPheno(apiary, caste = "all", collapse = TRUE)
 #' @export
-getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
+getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (length(caste) > 1) {
     stop("Argument caste must be of length 1!")
   }
@@ -5018,7 +5033,7 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
         tmp <- getPheno(x = x, caste = caste, nInd = nInd,
-                        collapse = collapse)
+                        collapse = collapse, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -5029,7 +5044,7 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order")
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order", simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -5041,7 +5056,8 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getPheno(x = x[[colony]], caste = caste, nInd = nInd, collapse = collapse)
+      tmp <- getPheno(x = x[[colony]], caste = caste, nInd = nInd,
+                      collapse = collapse, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -5061,36 +5077,36 @@ getPheno <- function(x, caste = NULL, nInd = NULL, collapse = FALSE) {
 
 #' @describeIn getPheno Access phenotype value of the queen
 #' @export
-getQueenPheno <- function(x, collapse = FALSE) {
-  ret <- getPheno(x, caste = "queen", collapse = collapse)
+getQueenPheno <- function(x, collapse = FALSE, simParamBee = NULL) {
+  ret <- getPheno(x, caste = "queen", collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getPheno Access phenotype values of fathers
 #' @export
-getFathersPheno <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getPheno(x, caste = "fathers", nInd = nInd, collapse = collapse)
+getFathersPheno <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getPheno(x, caste = "fathers", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getPheno Access phenotype values of virgin queens
 #' @export
-getVirginQueensPheno <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getPheno(x, caste = "virginQueens", nInd = nInd, collapse = collapse)
+getVirginQueensPheno <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getPheno(x, caste = "virginQueens", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getPheno Access phenotype values of workers
 #' @export
-getWorkersPheno <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getPheno(x, caste = "workers", nInd = nInd, collapse = collapse)
+getWorkersPheno <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getPheno(x, caste = "workers", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getPheno Access phenotype values of drones
 #' @export
-getDronesPheno <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getPheno(x, caste = "drones", nInd = nInd, collapse = collapse)
+getDronesPheno <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getPheno(x, caste = "drones", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -5307,7 +5323,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     if(!isQueenPresent(x)) {
       stop("No queen in the Colony!")
     }
-    ret <- calcInheritanceCriterion(getQueen(colony),
+    ret <- calcInheritanceCriterion(getQueen(colony, simParamBee = simParamBee),
                                     queenTrait = queenTrait,
                                     workersTrait = workersTrait,
                                     use = use)
@@ -5584,6 +5600,7 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genetic values of all the individuals
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @seealso \code{\link{gv}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
@@ -5641,7 +5658,7 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
 #' getGv(apiary, caste = "all")
 #' getGv(apiary, caste = "all", collapse = TRUE)
 #' @export
-getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
+getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
   if (length(caste) > 1) {
     stop("Argument caste must be of length 1!")
   }
@@ -5662,7 +5679,7 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
         tmp <- getGv(x = x, caste = caste, nInd = nInd,
-                     collapse = collapse)
+                     collapse = collapse, simParamBee = simParamBee)
         if (is.null(tmp)) {
           ret[caste] <- list(NULL)
         } else {
@@ -5673,7 +5690,7 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order")
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, use="order", simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -5685,7 +5702,8 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      tmp <- getGv(x = x[[colony]], caste = caste, nInd = nInd, collapse = collapse)
+      tmp <- getGv(x = x[[colony]], caste = caste, nInd = nInd,
+                   collapse = collapse, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret[colony] <- list(NULL)
       } else {
@@ -5705,36 +5723,36 @@ getGv <- function(x, caste =NULL, nInd = NULL, collapse = FALSE) {
 
 #' @describeIn getGv Access genetic value of the queen
 #' @export
-getQueenGv <- function(x, collapse = FALSE) {
-  ret <- getGv(x, caste = "queen", collapse = collapse)
+getQueenGv <- function(x, collapse = FALSE, simParamBee = NULL) {
+  ret <- getGv(x, caste = "queen", collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getGv Access genetic values of fathers
 #' @export
-getFathersGv <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getGv(x, caste = "fathers", nInd = nInd, collapse = collapse)
+getFathersGv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getGv(x, caste = "fathers", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getGv Access genetic values of virgin queens
 #' @export
-getVirginQueensGv <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getGv(x, caste = "virginQueens", nInd = nInd, collapse = collapse)
+getVirginQueensGv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getGv(x, caste = "virginQueens", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getGv Access genetic values of workers
 #' @export
-getWorkersGv <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getGv(x, caste = "workers", nInd = nInd, collapse = collapse)
+getWorkersGv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getGv(x, caste = "workers", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
 #' @describeIn getGv Access genetic values of drones
 #' @export
-getDronesGv <- function(x, nInd = NULL, collapse = FALSE) {
-  ret <- getGv(x, caste = "drones", nInd = nInd, collapse = collapse)
+getDronesGv <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
+  ret <- getGv(x, caste = "drones", nInd = nInd, collapse = collapse, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -5810,7 +5828,7 @@ getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -5979,7 +5997,7 @@ getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
@@ -6148,7 +6166,7 @@ getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = 
         ret <- do.call("rbind", ret)
       }
     } else {
-      tmp <- getCastePop(x = x, caste = caste, nInd = nInd)
+      tmp <- getCastePop(x = x, caste = caste, nInd = nInd, simParamBee = simParamBee)
       if (is.null(tmp)) {
         ret <- NULL
       } else {
