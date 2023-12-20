@@ -185,36 +185,36 @@ test_that("pullCastePop", {
   apiary1 <- createMultiColony(x = basePop[1], n = 0, simParamBee = SP)
   apiary2 <- createMultiColony(n = 2, simParamBee = SP)
   # test on empty apiary
-  expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1)$pulled, "list")
-  expect_error(pullCastePop(apiary2, caste = "queen", nInd = 1))
+  expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1, simParamBee = SP)$pulled, "list")
+  expect_error(pullCastePop(apiary2, caste = "queen", nInd = 1, simParamBee = SP))
   # Warning- if pulling drones, pulls drones that are not yet mated
-  expect_warning(pullCastePop(colony, caste = "drones", nInd = 150))
-  suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones")$pulled, "Pop"))
-  suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones")$remnant, "Colony"))
+  expect_warning(pullCastePop(colony, caste = "drones", nInd = 150, simParamBee = SP))
+  suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones", simParamBee = SP)$pulled, "Pop"))
+  suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones", simParamBee = SP)$remnant, "Colony"))
 
-  expect_s4_class(pullCastePop(colony, caste = "workers")$pulled, "Pop")
-  expect_s4_class(pullCastePop(colony, caste = "workers")$remnant, "Colony")
+  expect_s4_class(pullCastePop(colony, caste = "workers", simParamBee = SP)$pulled, "Pop")
+  expect_s4_class(pullCastePop(colony, caste = "workers", simParamBee = SP)$remnant, "Colony")
 
-  expect_s4_class(pullCastePop(colony, caste = "queen")$pulled, "Pop")
-  expect_null(pullCastePop(colony, caste = "virginQueens")$pulled)
+  expect_s4_class(pullCastePop(colony, caste = "queen", simParamBee = SP)$pulled, "Pop")
+  expect_null(pullCastePop(colony, caste = "virginQueens", simParamBee = SP)$pulled)
 
   # test on fathers - GitHub  issue made
 
   # Error is "caste" argument is missing
-  expect_error(pullCastePop(colony))
-  expect_error(pullCastePop(apiary))
+  expect_error(pullCastePop(colony, simParamBee = SP))
+  expect_error(pullCastePop(apiary, simParamBee = SP))
 
   # type
-  expect_type(pullCastePop(colony, caste = "workers"), "list")
-  expect_type(pullCastePop(colony, caste = "queen"), "list")
+  expect_type(pullCastePop(colony, caste = "workers", simParamBee = SP), "list")
+  expect_type(pullCastePop(colony, caste = "queen", simParamBee = SP), "list")
   suppressWarnings(expect_type(pullCastePop(colony, caste = "drones"), "list"))
 
-  expect_type(pullCastePop(apiary, caste = "workers"), "list")
-  expect_type(pullCastePop(apiary, caste = "queen"), "list")
-  expect_type(pullCastePop(apiary, caste = "drones"), "list")
+  expect_type(pullCastePop(apiary, caste = "workers", simParamBee = SP), "list")
+  expect_type(pullCastePop(apiary, caste = "queen", simParamBee = SP), "list")
+  expect_type(pullCastePop(apiary, caste = "drones", simParamBee = SP), "list")
 
   # Test whether you pull out more individuals that available
-  expect_equal(pullCastePop(colony, caste = "workers", nInd = 10)$pulled@nInd, 10)
+  expect_equal(pullCastePop(colony, caste = "workers", nInd = 10, simParamBee = SP)$pulled@nInd, 10)
 
 })
 
@@ -295,23 +295,23 @@ test_that("setQueensYearOfBirth", {
   colony <- cross(x = colony, drones = dronesGroups[[1]], simParamBee = SP)
   colony <- buildUp(colony, simParamBee = SP)
   # Error if x = pop, and not a vq or q
-  expect_error(setQueensYearOfBirth(colony@workers))
-  expect_error(setQueensYearOfBirth(colony@drones))
+  expect_error(setQueensYearOfBirth(colony@workers, simParamBee = SP))
+  expect_error(setQueensYearOfBirth(colony@drones, simParamBee = SP))
 
   colony <- removeQueen(colony, simParamBee = SP)
   # Error if x = colony and no queen is present
-  expect_error(setQueensYearOfBirth(colony))
+  expect_error(setQueensYearOfBirth(colony, simParamBee = SP))
 
   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = dronesGroups[c(2, 3)], simParamBee = SP)
 
   colony1 <- createColony(x = basePop[5], simParamBee = SP)
   colony1 <- cross(colony1, drones = dronesGroups[[4]], simParamBee = SP)
-  queen1 <- getQueen(colony1)
+  queen1 <- getQueen(colony1, simParamBee = SP)
 
-  expect_s4_class(setQueensYearOfBirth(queen1, year = 2022), "Pop")
-  expect_s4_class(setQueensYearOfBirth(colony1, year = 2022), "Colony")
-  expect_s4_class(setQueensYearOfBirth(apiary, year = 2022), "MultiColony")
+  expect_s4_class(setQueensYearOfBirth(queen1, year = 2022, simParamBee = SP), "Pop")
+  expect_s4_class(setQueensYearOfBirth(colony1, year = 2022, simParamBee = SP), "Colony")
+  expect_s4_class(setQueensYearOfBirth(apiary, year = 2022, simParamBee = SP), "MultiColony")
 })
 
 # ---- createDCA ----

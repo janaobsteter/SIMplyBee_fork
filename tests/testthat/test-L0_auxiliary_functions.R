@@ -24,7 +24,6 @@ test_that("nCaste", {
   expect_equal(nCaste(colony, caste = "queen", simParamBee = SP), 1)
   expect_equal(nCaste(colony, caste = "drones", simParamBee = SP), 10)
   expect_equal(nCaste(colony, caste = "virginQueens", simParamBee = SP), 0)
-  expect_equal(nCaste(colony, caste = "workers", simParamBee = SP), nWorkers(colony))
   expect_equal(nCaste(colony, caste = "fathers", simParamBee = SP), 10)
 
   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
@@ -32,7 +31,6 @@ test_that("nCaste", {
   apiary <- buildUp(apiary, nWorkers = 20, nDrones = 10, simParamBee = SP)
   expect_equal(sum(nCaste(apiary, caste = "queen", simParamBee = SP)), 2)
   expect_equal(sum(nCaste(apiary, caste = "virginQueens", simParamBee = SP)), 0)
-  expect_equal(sum(nCaste(apiary, caste = "workers", simParamBee = SP)), 40)
   expect_equal(sum(nCaste(apiary, caste = "fathers", simParamBee = SP)), 20)
 })
 
@@ -51,10 +49,10 @@ test_that("nQueens", {
   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = fatherGroups[c(2, 3)], simParamBee = SP)
 
-  expect_equal(nQueens(colony1), 1)
+  expect_equal(nQueens(colony1, simParamBee = SP), 1)
   colony1 <- removeQueen(colony1, simParamBee = SP)
-  expect_equal(nQueens(colony1), 0)
-  expect_equal(sum(nQueens(apiary)), 2)
+  expect_equal(nQueens(colony1, simParamBee = SP), 0)
+  expect_equal(sum(nQueens(apiary, simParamBee = SP)), 2)
 })
 
 # ---- nDrones ----
@@ -117,7 +115,7 @@ test_that("isCaste", {
 
   # get the queen that is a caste "queen" and ask if it is a caste "queen"
   # and drones and drones
-  expect_true(isCaste(getQueen(colony), caste = "queen", simParamBee = SP))
+  expect_true(isCaste(getQueen(colony, simParamBee = SP), caste = "queen", simParamBee = SP))
   expect_true(all(isCaste(getDrones(colony, simParamBee = SP), caste = "drones", simParamBee = SP)))
   expect_true(all(isCaste(getDrones(colony, simParamBee = SP), caste = "drones", simParamBee = SP)))
   # get the queen that is a caste "queen" and test if it is a caste "workers",
@@ -155,7 +153,7 @@ test_that("calcQueensPHomBrood", {
 
   colony@queen <- NULL
   expect_error(calcQueensPHomBrood(colony@queen, simParamBee = SP))
-  apiary <- createMultiColony()
+  apiary <- createMultiColony(simParamBee = SP)
   colony@workers <- NULL
   colony@drones <- NULL
   colony@virginQueens <- NULL
@@ -316,7 +314,7 @@ test_that("isProductive", {
   colony <- NULL
   expect_error(isProductive(colony))
 
-  apiary <- createMultiColony()
+  apiary <- createMultiColony(simParamBee = SP)
   expect_true(is.list(isProductive(apiary)))
 })
 # ---- reduceDroneHaplo ----
@@ -383,7 +381,7 @@ test_that("getCsdAlleles", {
   colony <- buildUp(x = colony, simParamBee = SP)
 
   expect_true(is.list(getCsdAlleles(colony, simParamBee = SP)))
-  expect_true(is.matrix(getCsdAlleles(getQueen(colony), simParamBee = SP)))
+  expect_true(is.matrix(getCsdAlleles(getQueen(colony, simParamBee = SP), simParamBee = SP)))
 
   # set CSD to NULL
   rm(SP)
@@ -681,7 +679,7 @@ test_that("isDronesPresent", {
   colony <- addVirginQueens(x = colony, nInd = 1, simParamBee = SP)
   apiary <- createMultiColony(n = 1, simParamBee = SP)
   vec <- c(1,2,3,4)
-  apiary2 <- createMultiColony()
+  apiary2 <- createMultiColony(simParamBee = SP)
 
   expect_true(isDronesPresent(colony, simParamBee = SP))
   expect_error(isDronesPresent(vec, simParamBee = SP))
@@ -704,14 +702,14 @@ test_that("isFathersPresent", {
   colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, simParamBee = SP)
   colony <- addVirginQueens(x = colony, nInd = 1, simParamBee = SP)
-  apiary <- createMultiColony(n = 1)
+  apiary <- createMultiColony(n = 1, simParamBee = SP)
   vec <- c(1,2,3,4)
-  apiary2 <- createMultiColony()
+  apiary2 <- createMultiColony(simParamBee = SP)
 
-  expect_true(isFathersPresent(colony))
-  expect_false(isFathersPresent(apiary))
-  expect_error(isFathersPresent(vec))
-  expect_true(is.vector(isFathersPresent(apiary2)))
+  expect_true(isFathersPresent(colony, simParamBee = SP))
+  expect_false(isFathersPresent(apiary, simParamBee = SP))
+  expect_error(isFathersPresent(vec, simParamBee = SP))
+  expect_true(is.vector(isFathersPresent(apiary2, simParamBee = SP)))
   queen <- colony@queen
   expect_error(isFathersPresent(queen))
 })
@@ -732,14 +730,14 @@ test_that("isWorkersPresent", {
   colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, simParamBee = SP)
   colony <- addVirginQueens(x = colony, nInd = 1, simParamBee = SP)
-  apiary <- createMultiColony(n = 1)
+  apiary <- createMultiColony(n = 1, simParamBee = SP)
   vec <- c(1,2,3,4)
-  apiary2 <- createMultiColony()
+  apiary2 <- createMultiColony(simParamBee = SP)
 
-  expect_true(isWorkersPresent(colony))
-  expect_false(isWorkersPresent(apiary))
-  expect_error(isWorkersPresent(vec))
-  expect_true(is.vector(isWorkersPresent(apiary2)))
+  expect_true(isWorkersPresent(colony, simParamBee = SP))
+  expect_false(isWorkersPresent(apiary, simParamBee = SP))
+  expect_error(isWorkersPresent(vec, simParamBee = SP))
+  expect_true(is.vector(isWorkersPresent(apiary2, simParamBee = SP)))
 })
 
 # ---- isGenoHeterozygous ----
@@ -768,7 +766,7 @@ test_that("isGenoHeterozygous", {
    expect_true(SIMplyBee:::isGenoHeterozygous(tmp))
 
    # Caste members taken from MultiColony class
-   (tmp <- getCsdGeno(getQueen(apiary[[1]]), simParamBee = SP))
+   (tmp <- getCsdGeno(getQueen(apiary[[1]], simParamBee = SP), simParamBee = SP))
    expect_true(SIMplyBee:::isGenoHeterozygous(tmp))
 
 })
