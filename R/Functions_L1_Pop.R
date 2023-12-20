@@ -159,7 +159,7 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
         if (use == "order") {
           ret <- pop[start:nIndRequested]
         } else {
-          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use)
+          ret <- selectInd(pop = pop, nInd = nIndRequested, use = use, simParam = simParamBee)
         }
       }
     }
@@ -214,6 +214,9 @@ getQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @describeIn getCastePop Access fathers (drones the queen mated with)
 #' @export
 getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
     ret <- lapply(
       X = x@misc,
@@ -224,7 +227,7 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
           if (is.null(nInd)) {
             n <- nInd(z$fathers)
           }
-          ret <- selectInd(pop = z$fathers, nInd = n, use = use)
+          ret <- selectInd(pop = z$fathers, nInd = n, use = use, simParam = simParamBee)
         }
       }
     )
@@ -397,7 +400,8 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 createCastePop <- function(x, caste = NULL, nInd = NULL,
                            exact = TRUE, year = NULL,
                            editCsd = TRUE, csdAlleles = NULL,
-                           simParamBee = NULL, ...) {
+                           simParamBee = NULL,
+                           ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -418,7 +422,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     if (caste != "virginQueens") { # Creating virgin queens if input  is a MapPop
       stop("MapPop-class can only be used to create virgin queens!")
     }
-    ret <- newPop(x)
+    ret <- newPop(x, simParam = simParamBee)
     if (!is.null(simParamBee$csdChr)) {
       if (editCsd) {
         ret <- editCsdLocus(ret, alleles = csdAlleles, simParamBee = simParamBee)
@@ -568,7 +572,8 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
 createVirginQueens <- function(x, nInd = NULL,
                                year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
-                               simParamBee = NULL, ...) {
+                               simParamBee = NULL,
+                               ...) {
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
                         csdAlleles = csdAlleles, simParamBee = simParamBee, ...)
@@ -856,6 +861,7 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
 #'   individuals
 #' @param use character, all options provided by \code{\link{selectInd}}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
 #'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
@@ -871,14 +877,17 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' pullInd(basePop, nInd = 3)
 #' pullInd(basePop)
 #' @export
-pullInd <- function(pop, nInd = NULL, use = "rand") {
+pullInd <- function(pop, nInd = NULL, use = "rand", simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (!isPop(pop)) {
     stop("Argument pop must be a Pop class object!")
   }
   if (is.null(nInd)) {
     nInd <- nInd(pop)
   }
-  pulled <- selectInd(pop = pop, nInd = nInd, use = use)
+  pulled <- selectInd(pop = pop, nInd = nInd, use = use, simParam = simParamBee)
   sel <- pop@id %in% pulled@id
   remnant <- pop[!sel]
   ret <- list(pulled = pulled, remnant = remnant)
@@ -1031,6 +1040,9 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                          removeFathers = TRUE, collapse = FALSE, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (length(caste) > 1) {
     stop("Argument caste can be only of length 1!")
   }
@@ -1425,7 +1437,7 @@ cross <- function(x,
             nD <- ifelse(is.function(nDrones), nDrones(...), nDrones)
             selectedDPQ <- table(sample(virginMatches, size = nD, replace = TRUE))
             virginQueenDrones <- mergePops(createDrones(droneColonies[names(selectedDPQ)],
-                                                        nInd = selectedDPQ))
+                                                        nInd = selectedDPQ, simParamBee = simParamBee))
           } else {
             virginQueenDrones <- new("Pop")
           }

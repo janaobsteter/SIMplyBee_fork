@@ -2,11 +2,17 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{isVirginQueensPresent}
 \alias{isVirginQueensPresent}
+\alias{isVirginQueenPresent}
 \alias{areVirginQueensPresent}
 \title{Are virgin queen(s) present}
 \usage{
 isVirginQueensPresent(x, simParamBee = NULL)
 
+<<<<<<< HEAD
+=======
+isVirginQueenPresent(x, simParamBee = NULL)
+
+>>>>>>> a56d9f58ca8ca951afeb7c1e0ec93ab48ca45751
 areVirginQueensPresent(x, simParamBee = NULL)
 }
 \arguments{
@@ -23,6 +29,8 @@ Level 0 function that returns virgin queen(s) presence status.
 }
 \section{Functions}{
 \itemize{
+\item \code{isVirginQueenPresent()}: Are virgin queen(s) present
+
 \item \code{areVirginQueensPresent()}: Are virgin queen(s) present
 
 }}
@@ -39,16 +47,16 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- addVirginQueens(x = colony, nInd = 4)
-isVirginQueensPresent(colony)
-isVirginQueensPresent(pullVirginQueens(colony)$remnant)
-isVirginQueensPresent(removeQueen(colony))
+isVirginQueenPresent(colony)
+isVirginQueenPresent(pullVirginQueens(colony)$remnant)
+isVirginQueenPresent(removeQueen(colony))
 
 apiary <- createMultiColony(basePop[3:4], n = 2)
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 apiary <- buildUp(x = apiary, nWorkers = 100, nDrones = 10)
-isVirginQueensPresent(apiary)
+isVirginQueenPresent(apiary)
 
 tmp <- swarm(x = apiary)
-isVirginQueensPresent(tmp$swarm)
-isVirginQueensPresent(tmp$remnant)
+isVirginQueenPresent(tmp$swarm)
+isVirginQueenPresent(tmp$remnant)
 }

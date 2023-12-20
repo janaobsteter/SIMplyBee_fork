@@ -27,7 +27,6 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @slot supersedure logical, has colony superseded
 #' @slot collapse logical, has colony collapsed
 #' @slot production logical, is colony productive
-#' @slot last_event character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10
 #' @slot misc list, available for storing extra information about the colony
 #'
 #' @param object \code{\link{Colony-class}}
@@ -80,7 +79,6 @@ setClass(
     supersedure = "logicalOrNULL",
     collapse = "logicalOrNULL",
     production = "logicalOrNULL",
-    last_event = "character",
     misc = "listOrNULL"
   )
 )
@@ -96,7 +94,7 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
-  if (nQueens(object) > 1) {
+  if ((ifelse(test = !is.null(slot(object, name = "queen")), yes = nInd(slot(object, name = "queen")), no = 0)) > 1) { #Don't use nQueen because of the SP problem
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {
