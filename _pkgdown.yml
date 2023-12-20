@@ -55,7 +55,6 @@ reference:
   - pullColonies
   - removeColonies
   - getId
-  - rcircle
 - subtitle: Events
   contents:
   - cross
@@ -269,7 +268,7 @@ reference:
 - subtitile: ~
   contents:
   - createMatingStationDCA
-  - createCrossPlan
+  - createRandomCrossPlan
   - mapCasteToColonyValue
   - cross
 - title: Quantitative Genetics
