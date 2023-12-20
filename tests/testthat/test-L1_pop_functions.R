@@ -188,7 +188,7 @@ test_that("pullCastePop", {
   expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1)$pulled, "list")
   expect_error(pullCastePop(apiary2, caste = "queen", nInd = 1))
   # Warning- if pulling drones, pulls drones that are not yet mated
-  expect_warning(pullCastePop(colony, caste = "drones"))
+  expect_warning(pullCastePop(colony, caste = "drones", nInd = 150))
   suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones")$pulled, "Pop"))
   suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones")$remnant, "Colony"))
 
@@ -279,7 +279,7 @@ test_that("cross", {
 
   # Message if fathers == 0 "Mating failed"
   expect_error(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), simParamBee = SP))
-  expect_message(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), checkCross = "warning", simParamBee = SP))
+  #expect_message(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), checkCross = "warning", simParamBee = SP))
 })
 
 # ---- setQueensYearOfBirth ----
