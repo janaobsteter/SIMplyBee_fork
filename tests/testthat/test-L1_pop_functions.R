@@ -14,23 +14,23 @@ test_that("getCastePop", {
   # Colony without workers
   colony1 <- removeWorkers(colony, simParamBee = SP)
 
-  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony, simParamBee = SP), n = 2, nDrones = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony, simParamBee = SP), n = 2, nDrones = 15, simParamBee = SP)
   apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = dronesGroups, simParamBee = SP)
   apiary <- addWorkers(apiary, nInd = 100, simParamBee = SP)
 
-  expect_warning(getCastePop(colony, caste = "drones"))
-  suppressWarnings(expect_s4_class(getCastePop(colony, caste = "drones"), "Pop"))
-  expect_s4_class(getCastePop(colony, caste = "workers"), "Pop")
-  expect_s4_class(getCastePop(colony, caste = "queen"), "Pop")
-  expect_null(getCastePop(colony, caste = "virginQueens"))
-  suppressWarnings(expect_length(getCastePop(colony), 5))
-  suppressWarnings(expect_length(getCastePop(colony1), 5))
-  expect_type(getCastePop(apiary), "list")
-  expect_length(getCastePop(apiary), 2)
+  expect_warning(getCastePop(colony, caste = "drones", nInd = 150, simParamBee = SP))
+  suppressWarnings(expect_s4_class(getCastePop(colony, caste = "drones", simParamBee = SP), "Pop"))
+  expect_s4_class(getCastePop(colony, caste = "workers", simParamBee = SP), "Pop")
+  expect_s4_class(getCastePop(colony, caste = "queen", simParamBee = SP), "Pop")
+  expect_null(getCastePop(colony, caste = "virginQueens", simParamBee = SP))
+  suppressWarnings(expect_length(getCastePop(colony, simParamBee = SP), 5))
+  suppressWarnings(expect_length(getCastePop(colony1, simParamBee = SP, ), 5))
+  expect_type(getCastePop(apiary, simParamBee = SP), "list")
+  expect_length(getCastePop(apiary, simParamBee = SP), 2)
   # Test whether you pull out more individuals that available
-  expect_equal(getCastePop(colony, caste = "workers", nInd = 10)@nInd, 10)
-  expect_equal(getCastePop(colony, caste = "workers", nInd = 100)@nInd, 100)
+  expect_equal(getCastePop(colony, caste = "workers", nInd = 10, simParamBee = SP)@nInd, 10)
+  expect_equal(getCastePop(colony, caste = "workers", nInd = 100, simParamBee = SP)@nInd, 100)
 })
 
 # ---- createVirginQueens ----
@@ -56,7 +56,7 @@ test_that("createVirginQueens", {
   # If no queen in colony - queen is missing
   expect_error(createVirginQueens(x= colony1, nInd = 5, simParamBee = SP))
 
-  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony, simParamBee = SP), n = 2, nDrones = 15)
+  dronesGroups <- pullDroneGroupsFromDCA(getDrones(colony, simParamBee = SP), n = 2, nDrones = 15, simParamBee = SP)
   apiary <- createMultiColony(basePop[4:5], n = 2, simParamBee = SP)
   apiary <- cross(apiary, drones = dronesGroups, simParamBee = SP)
   # Input = multicolony       Output = named list (by colony ID) of pop class
@@ -149,16 +149,16 @@ test_that("combineBeeGametes", {
   apiary <- cross(apiary, drones = dronesGroups, simParamBee = SP)
 
   # Error if used on multicolony or colony class
-  expect_error(combineBeeGametes(queen = apiary, drones = dronesGroups))
-  expect_error(combineBeeGametes(queen = colony, drones = drones))
+  expect_error(combineBeeGametes(queen = apiary, drones = dronesGroups, simParamBee = SP))
+  expect_error(combineBeeGametes(queen = colony, drones = drones, simParamBee = SP))
   #Error if more than one queen is provided
-  expect_error(combineBeeGametes(queen = basePop[5:6], drones = drones))
+  expect_error(combineBeeGametes(queen = basePop[5:6], drones = drones, simParamBee = SP))
   # AlphaSimR error - invalid crossPlan
-  expect_error(combineBeeGametes(queen = basePop[0], drones = dronesGroups[[1]]))
+  expect_error(combineBeeGametes(queen = basePop[0], drones = dronesGroups[[1]], simParamBee = SP))
   #check the class
-  expect_s4_class(combineBeeGametes(basePop[5], drones = drones), "Pop")
-  expect_equal(combineBeeGametes(basePop[5], drones = drones, nProgeny = 5)@nInd, 5)
-  suppressWarnings(expect_error(combineBeeGametes(basePop[5], drones = drones, nProgeny = 0)))
+  expect_s4_class(combineBeeGametes(basePop[5], drones = drones, simParamBee = SP), "Pop")
+  expect_equal(combineBeeGametes(basePop[5], drones = drones, nProgeny = 5, simParamBee = SP)@nInd, 5)
+  suppressWarnings(expect_error(combineBeeGametes(basePop[5], drones = drones, nProgeny = 0, simParamBee = SP)))
 })
 
 # ---- pullCastePop ----
@@ -261,7 +261,7 @@ test_that("cross", {
 
   # If x = multicolony, length of fathers must match length of colonies
   expect_error(cross(apiary, drones = dronesGroups[1], simParamBee = SP))
-  expect_true(all(isVirginQueensPresent(apiary)))
+  expect_true(all(isVirginQueensPresent(apiary, simParamBee = SP)))
   # Cannot mate with already-mated drones
   expect_error(cross(colony1, drones = drones, simParamBee = SP))
   expect_true(isVirginQueen(colony1@virginQueens, simParamBee = SP))
@@ -278,8 +278,8 @@ test_that("cross", {
   expect_error(cross(colony2, drones = dronesGroups[7], simParamBee = SP))
 
   # Message if fathers == 0 "Mating failed"
-  expect_error(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParamBee = SP)))
-  expect_warning(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParamBee = SP), checkMating = "warning"))
+  expect_error(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), simParamBee = SP))
+  expect_message(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), checkCross = "warning", simParamBee = SP))
 })
 
 # ---- setQueensYearOfBirth ----
