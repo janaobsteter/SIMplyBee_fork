@@ -2513,7 +2513,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
                                              simParamBee$csdPosStart:simParamBee$csdPosStop,
                                              sep="_"), simParam = simParamBee)
     if (dronesHaploid && any(x@sex == "M")) {
-      ret <- reduceDroneGeno(geno = ret, pop = x, simParamBee = SP)
+      ret <- reduceDroneGeno(geno = ret, pop = x)
     }
   } else if (isColony(x)) {
     if (is.null(caste)) {

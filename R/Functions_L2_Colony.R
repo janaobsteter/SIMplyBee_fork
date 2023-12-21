@@ -498,7 +498,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (new) {
       n <- nWorkers
     } else {
-      n <- nWorkers - nWorkers(x)
+      n <- nWorkers - nWorkers(x, simParamBee = simParamBee)
     }
 
     if (0 < n) {
@@ -667,7 +667,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
       p <- p[1]
     }
     if (new == TRUE) {
-      n <- round(nWorkers(x) * (1 - p))
+      n <- round(nWorkers(x, simParamBee = simParamBee) * (1 - p))
       x <- addWorkers(x = x, nInd = n, new = TRUE, simParamBee = simParamBee)
     } else {
       x <- removeWorkers(x = x, p = p, use = use, simParamBee = simParamBee)
@@ -1323,12 +1323,12 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
     if (is.function(nVirginQueens)) {
       nVirginQueens <- nVirginQueens(x, ...)
     }
-    nWorkers <- nWorkers(x)
+    nWorkers <- nWorkers(x, simParamBee = simParamBee)
     nWorkersSwarm <- round(nWorkers * p)
 
     # TODO: Add use="something" to select pWorkers that swarm
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
-    tmp <- pullWorkers(x = x, nInd = nWorkersSwarm)
+    tmp <- pullWorkers(x = x, nInd = nWorkersSwarm, simParamBee = simParamBee)
     currentLocation <- getLocation(x)
     if (sampleLocation) {
       newLocation <- c(currentLocation + rcircle(radius = radius))
@@ -1604,12 +1604,12 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
         p <- p[1]
       }
     }
-    nWorkers <- nWorkers(x)
+    nWorkers <- nWorkers(x, simParamBee = simParamBee)
     nWorkersSplit <- round(nWorkers * p)
     # TODO: Split colony at random by default, but we could make it as a
     #       function of some parameters
     #       https://github.com/HighlanderLab/SIMplyBee/issues/179
-    tmp <- pullWorkers(x = x, nInd = nWorkersSplit)
+    tmp <- pullWorkers(x = x, nInd = nWorkersSplit, simParamBee = simParamBee)
     remnantColony <- tmp$remnant
     tmpVirginQueens <- createVirginQueens(
       x = x, nInd = 1,
