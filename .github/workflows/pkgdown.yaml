@@ -37,7 +37,7 @@ jobs:
     
       - name: Build site
         run: |
-          pkdown::build_home_index()
+          pkgdown::build_home_index()
           pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
         shell: Rscript {0}
 
