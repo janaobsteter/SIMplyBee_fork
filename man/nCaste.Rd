@@ -10,23 +10,25 @@
 \title{Level 0 function that returns the number of individuals of a caste in a
   colony}
 \usage{
-nCaste(x, caste = "all")
+nCaste(x, caste = "all", simParamBee = NULL)
 
-nQueens(x)
+nQueens(x, simParamBee = NULL)
 
-nFathers(x)
+nFathers(x, simParamBee = NULL)
 
-nWorkers(x)
+nWorkers(x, simParamBee = NULL)
 
-nDrones(x)
+nDrones(x, simParamBee = NULL)
 
-nVirginQueens(x)
+nVirginQueens(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is integer for
@@ -54,6 +56,7 @@ Returns the number of individuals of a caste in a colony
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

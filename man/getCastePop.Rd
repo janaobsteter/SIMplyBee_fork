@@ -15,18 +15,32 @@ getCastePop(
   nInd = NULL,
   use = "rand",
   removeFathers = TRUE,
-  collapse = FALSE
+  collapse = FALSE,
+  simParamBee = NULL
 )
 
-getQueen(x, collapse = FALSE)
+getQueen(x, collapse = FALSE, simParamBee = NULL)
 
-getFathers(x, nInd = NULL, use = "rand", collapse = FALSE)
+getFathers(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL)
 
-getWorkers(x, nInd = NULL, use = "rand", collapse = FALSE)
+getWorkers(x, nInd = NULL, use = "rand", collapse = FALSE, simParamBee = NULL)
 
-getDrones(x, nInd = NULL, use = "rand", removeFathers = TRUE, collapse = FALSE)
+getDrones(
+  x,
+  nInd = NULL,
+  use = "rand",
+  removeFathers = TRUE,
+  collapse = FALSE,
+  simParamBee = NULL
+)
 
-getVirginQueens(x, nInd = NULL, use = "rand", collapse = FALSE)
+getVirginQueens(
+  x,
+  nInd = NULL,
+  use = "rand",
+  collapse = FALSE,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
@@ -52,6 +66,8 @@ set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
 
 \item{collapse}{logical, whether to return a single merged population}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 when \code{x} is \code{\link{Colony-class}} return is
@@ -82,6 +98,7 @@ Level 1 function that returns individuals of a caste. These
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

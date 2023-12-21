@@ -16,6 +16,7 @@ nVirginQueensColonyPhenotype(
   workersTrait = 2,
   checkProduction = FALSE,
   lowerLimit = 0,
+  simParamBee = NULL,
   ...
 )
 }
@@ -39,6 +40,8 @@ that represents workers's effect on the colony phenotype (defined in
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
@@ -91,6 +94,7 @@ table(n)
 # Example for nVirginQueensColonyPhenotype()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 # Setting trait scale such that mean is 10 split into queen and workers effects
 meanP <- c(5, 5 / SP$nWorkers)
 # setup variances such that the total phenotype variance will match the mean

@@ -4,10 +4,12 @@
 \alias{isQueenPresent}
 \title{Is the queen present}
 \usage{
-isQueenPresent(x)
+isQueenPresent(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical, named by colony id when \code{x} is
@@ -20,6 +22,7 @@ Level 0 function that returns queen's presence status (is she
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

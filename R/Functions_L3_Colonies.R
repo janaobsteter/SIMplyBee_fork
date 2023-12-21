@@ -12,7 +12,7 @@
 #' @param n integer, number of colonies to create (if only \code{n} is
 #'   given then \code{\link{MultiColony-class}} is created with \code{n}
 #'   \code{NULL}) individual colony - this is mostly useful for programming)
-#' @param location list, location of the colonies as \code{c(x, y)}
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @details When both \code{x} and \code{n} are \code{NULL}, then a
 #'   \code{\link{MultiColony-class}} with 0 colonies is created.
@@ -22,6 +22,7 @@
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' # Create 2 empty (NULL) colonies
@@ -30,9 +31,9 @@
 #' apiary[[1]]
 #' apiary[[2]]
 #'
-#' # Create 2 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 2) # specify n
-#' apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+#' # Create 3 virgin colonies
+#' apiary <- createMultiColony(x = basePop, n = 3) # specify n
+#' apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
@@ -45,8 +46,12 @@
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
+#'
 #' @export
-createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
+createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
   if (is.null(x)) {
     if (is.null(n)) {
       ret <- new(Class = "MultiColony")
@@ -57,7 +62,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
     if (!isPop(x)) {
       stop("Argument x must be a Pop class object!")
     }
-    if (any(!(isVirginQueen(x) | isQueen(x)))) {
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     if (is.null(n)) {
@@ -68,10 +73,7 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
     }
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     for (colony in seq_len(n)) {
-      ret[[colony]] <- createColony(
-        x = x[colony],
-        location = location[colony]
-      )
+      ret[[colony]] <- createColony(x = x[colony], simParamBee = simParamBee)
     }
   }
   validObject(ret)
@@ -99,12 +101,14 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'   with \code{n} or \code{p} to determine the number of selected colonies, and
 #'   \code{selectTop} to determine whether to select the best or the worst colonies.
 #' @param selectTop logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{MultiColony-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -160,7 +164,10 @@ createMultiColony <- function(x = NULL, n = NULL, location = NULL) {
 #'
 #' @export
 selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
-                           by = NULL, selectTop = TRUE) {
+                           by = NULL, selectTop = TRUE, simParamBee = NULL) {
+  if (!isMultiColony(multicolony)) {
+    stop("Argument multicolony must be a MultiColony class object!")
+  }
   if (!is.null(ID)) {
     if (!(is.character(ID) | is.numeric(ID))) {
       stop("ID must be character or numeric!")
@@ -185,8 +192,8 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
       stop("p must not be less than 0!")
     }
   }
-  if (!isMultiColony(multicolony)) {
-    stop("Argument multicolony must be a MultiColony class object!")
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(ID)) {
     ID <- as.character(ID)
@@ -205,7 +212,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
     if (length(lSel) > 0) {
       ret <- multicolony[lSel]
     } else {
-      ret <- createMultiColony()
+      ret <- createMultiColony(simParamBee = simParamBee)
     }
   } else {
     stop("Provide either ID, n, or p!")
@@ -233,6 +240,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'   with \code{n} or \code{p} to determine the number of pulled colonies, and
 #'   \code{pullTop} to determine whether to pull the best or the worst colonies.
 #' @param pullTop logical, pull highest (lowest) values if \code{TRUE} (\code{FALSE})
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
 #'   and the \code{remnant}
@@ -240,6 +248,7 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -285,9 +294,12 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' pullColonies(apiary, n = 1, by = colonyGv)
 #' @export
 pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
-                         by = NULL, pullTop = TRUE) {
+                         by = NULL, pullTop = TRUE, simParamBee = NULL) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
+  }
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(ID)) {
     trueID <- ID %in% getId(multicolony)
@@ -295,8 +307,9 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
       ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
-    pulled <- selectColonies(multicolony, ID) # selectColonies does the checking of the IDs
-    remnant <- removeColonies(multicolony, ID)
+    pulled <- selectColonies(multicolony, ID,
+                             simParamBee = simParamBee) # selectColonies does the checking of the IDs
+    remnant <- removeColonies(multicolony, ID, simParamBee = simParamBee)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
     if (!is.null(p)) {
@@ -316,7 +329,7 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
       pulled <- multicolony[lPull]
       remnant <- multicolony[lStay]
     } else {
-      pulled <- createMultiColony()
+      pulled <- createMultiColony(simParamBee = simParamBee)
       remnant <- multicolony
     }
   } else {
@@ -347,12 +360,14 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'   with \code{n} or \code{p} to determine the number of removed colonies, and
 #'   \code{removeTop} to determine whether to remove the best or the worst colonies.
 #' @param removeTop logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})
+#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link{MultiColony-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' mean <- c(10, 10 / SP$nWorkers)
 #' varA <- c(1, 1 / SP$nWorkers)
 #' corA <- matrix(data = c(
@@ -392,9 +407,12 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #'
 #' @export
 removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL,
-                           by = NULL, removeTop = FALSE) {
+                           by = NULL, removeTop = FALSE, simParamBee = NULL) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
+  }
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(ID)) {
     trueID <- ID %in% getId(multicolony)
@@ -402,7 +420,9 @@ removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL,
       ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
-    ret <- selectColonies(multicolony, ID = getId(multicolony)[!getId(multicolony) %in% ID])
+    ret <- selectColonies(multicolony,
+                          ID = getId(multicolony)[!getId(multicolony) %in% ID],
+                          simParamBee = simParamBee)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
     if (!is.null(p)) {

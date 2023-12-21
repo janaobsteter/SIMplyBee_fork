@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -51,7 +51,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -241,6 +241,15 @@
 <p>You can provide your own functions that satisfy your needs!</p></dd>
 
 
+<dt><code>swarmRadius</code></dt>
+<dd><p>numeric, radius within which to sample a location of
+  of the swarm - used in <code><a href="swarm.html">swarm</a></code> - see its <code>radius</code>
+  argument.</p>
+<p>The default value is <code>0</code>, that is, swarm gets the same location as
+  the original colony.</p>
+<p>You can change this setting to your needs!</p></dd>
+
+
 <dt><code>splitP</code></dt>
 <dd><p>numeric or a function, the split proportion - the
   proportion of workers removed in a managed split - used in
@@ -352,6 +361,7 @@ generate this object</p></dd>
 <li><p><a href="#method-SimParamBee-updateLastColonyId"><code>SimParamBee$updateLastColonyId()</code></a></p></li>
 <li><p><a href="#method-SimParamBee-clone"><code>SimParamBee$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addSnpChip"><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addSnpChipByName"><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addStructuredSnpChip"><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToPed"><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-addToRec"><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
@@ -371,6 +381,7 @@ generate this object</p></dd>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-resetPed"><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-restrSegSites"><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setCorE"><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setFounderHap"><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setRecombRatio"><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setSexes"><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href="https://gaynorr.github.io/AlphaSimR/reference/SimParam.html#method-setTrackPed"><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
@@ -394,6 +405,7 @@ generate this object</p></dd>
 <span>  nVirginQueens <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  nFathers <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  swarmP <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  swarmRadius <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  splitP <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  downsizeP <span class="op">=</span> <span class="fl">0.85</span>,</span>
 <span>  csdChr <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -428,6 +440,10 @@ genomes</p></dd>
 
 <dt><code>swarmP</code></dt>
 <dd><p>see <code>SimParamBee</code> field <code>swarmP</code></p></dd>
+
+
+<dt><code>swarmRadius</code></dt>
+<dd><p>see <code>SimParamBee</code> field <code>swarmRadius</code></p></dd>
 
 
 <dt><code>splitP</code></dt>

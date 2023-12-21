@@ -16,6 +16,7 @@ nWorkersColonyPhenotype(
   workersTrait = NULL,
   checkProduction = FALSE,
   lowerLimit = 0,
+  simParamBee = NULL,
   ...
 )
 }
@@ -39,6 +40,8 @@ that represents workers's effect on the colony phenotype (defined in
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
 }
@@ -87,6 +90,7 @@ table(n)
 # Example for nWorkersColonyPhenotype()
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 average <- 100
 h2 <- 0.1
 SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)

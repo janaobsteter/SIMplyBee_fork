@@ -3,7 +3,7 @@ title: "Frequently asked questions"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{FAQ}
+  %\VignetteIndexEntry{Frequently asked questions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -56,14 +56,14 @@ baseDrones <- createDrones(baseVirginQueen[1])
 
 # A colony
 colony <- createColony(baseVirginQueen[2])
-colony <- cross(colony, baseDrones)
+colony <- cross(x = colony, crossPlan = "create", drones = baseDrones)
 colony <- addDrones(colony, nInd = 100)
 colony
 
 # Crossing one of the remaining virgin queens with drones from the 
 DCA <- createDCA(colony, nInd = 50)
 DCA
-queen <- cross(baseVirginQueen[3], DCA)
+queen <- cross(x = baseVirginQueen[3], crossPlan = "create", drones = DCA)
 queen
 getFathers(queen)
 

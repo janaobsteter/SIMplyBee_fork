@@ -30,15 +30,19 @@ See also \code{vignette(package = "SIMplyBee")} for descriptions of how
 
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
+\dontshow{SP$nThreads = 1L}
 
 # We need enough segregating sites
 try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
+\dontshow{SP$nThreads = 1L}
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+\dontshow{SP$nThreads = 1L}
 
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+\dontshow{SP$nThreads = 1L}
 
 ## ------------------------------------------------
 ## Method `SimParamBee$addToCaste`
@@ -46,6 +50,7 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -65,6 +70,7 @@ SP$caste
 
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 SP$pedigree
@@ -210,6 +216,15 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
+\item{\code{swarmRadius}}{numeric, radius within which to sample a location of
+  of the swarm - used in \code{\link{swarm}} - see its \code{radius}
+  argument.
+
+  The default value is \code{0}, that is, swarm gets the same location as
+  the original colony.
+
+  You can change this setting to your needs!}
+
 \item{\code{splitP}}{numeric or a function, the split proportion - the
   proportion of workers removed in a managed split - used in
   \code{\link{split}}.
@@ -310,6 +325,7 @@ generate this object}
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChip'><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChipByName'><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addStructuredSnpChip'><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToPed'><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToRec'><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
@@ -329,6 +345,7 @@ generate this object}
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-resetPed'><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-restrSegSites'><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setCorE'><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setFounderHap'><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setRecombRatio'><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setSexes'><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackPed'><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
@@ -357,6 +374,7 @@ Starts the process of building a new simulation by creating
   nVirginQueens = 10,
   nFathers = 15,
   swarmP = 0.5,
+  swarmRadius = 0,
   splitP = 0.3,
   downsizeP = 0.85,
   csdChr = 3,
@@ -381,6 +399,8 @@ genomes}
 \item{\code{nFathers}}{see \code{\link{SimParamBee}} field \code{nFathers}}
 
 \item{\code{swarmP}}{see \code{\link{SimParamBee}} field \code{swarmP}}
+
+\item{\code{swarmRadius}}{see \code{\link{SimParamBee}} field \code{swarmRadius}}
 
 \item{\code{splitP}}{see \code{\link{SimParamBee}} field \code{splitP}}
 
@@ -411,15 +431,19 @@ to 128, which is at the upper end of the reported number of csd alleles
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
+\dontshow{SP$nThreads = 1L}
 
 # We need enough segregating sites
 try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
+\dontshow{SP$nThreads = 1L}
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+\dontshow{SP$nThreads = 1L}
 
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
+\dontshow{SP$nThreads = 1L}
 }
 \if{html}{\out{</div>}}
 
@@ -449,6 +473,7 @@ drones, "V" for virgin queens, and "F" for fathers}
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -490,6 +515,7 @@ drones, "V" for virgin queens, and "F" for fathers}
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 SP$pedigree

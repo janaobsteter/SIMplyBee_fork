@@ -64,14 +64,13 @@ colony}
 
 \item{\code{production}}{logical, is colony productive}
 
-\item{\code{last_event}}{character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10}
-
 \item{\code{misc}}{list, available for storing extra information about the colony}
 }}
 
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

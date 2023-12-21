@@ -4,7 +4,7 @@
 \alias{createMultiColony}
 \title{Create MultiColony object}
 \usage{
-createMultiColony(x = NULL, n = NULL, location = NULL)
+createMultiColony(x = NULL, n = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
@@ -15,7 +15,7 @@ createMultiColony(x = NULL, n = NULL, location = NULL)
 given then \code{\link{MultiColony-class}} is created with \code{n}
 \code{NULL}) individual colony - this is mostly useful for programming)}
 
-\item{location}{list, location of the colonies as \code{c(x, y)}}
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{MultiColony-class}}
@@ -31,6 +31,7 @@ When both \code{x} and \code{n} are \code{NULL}, then a
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 # Create 2 empty (NULL) colonies
@@ -39,9 +40,9 @@ apiary
 apiary[[1]]
 apiary[[2]]
 
-# Create 2 virgin colonies
-apiary <- createMultiColony(x = basePop, n = 2) # specify n
-apiary <- createMultiColony(x = basePop[1:2]) # take all provided
+# Create 3 virgin colonies
+apiary <- createMultiColony(x = basePop, n = 3) # specify n
+apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 apiary
 apiary[[1]]
 apiary[[2]]
@@ -54,4 +55,5 @@ apiary <- cross(apiary, drones = droneGroups)
 apiary
 apiary[[1]]
 apiary[[2]]
+
 }

@@ -4,7 +4,13 @@
 \alias{calcInheritanceCriterion}
 \title{Calculate the inheritance criterion}
 \usage{
-calcInheritanceCriterion(x, queenTrait = 1, workersTrait = 2, use = "gv")
+calcInheritanceCriterion(
+  x,
+  queenTrait = 1,
+  workersTrait = 2,
+  use = "gv",
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}} or
@@ -21,6 +27,8 @@ then this effect is 0}
 \item{use}{character, the measure to use for the calculation, being
 either "gv" (genetic value), "ebv" (estimated breeding value),
 or "pheno" (phenotypic value)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer when \code{x} is
@@ -37,6 +45,7 @@ Level 0 function that calculates the inheritance criterion as the
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 meanA <- c(10, 10 / SP$nWorkers)
 varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5,

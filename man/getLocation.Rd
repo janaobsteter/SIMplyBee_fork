@@ -4,10 +4,14 @@
 \alias{getLocation}
 \title{Get the colony location}
 \usage{
-getLocation(x)
+getLocation(x, collapse = FALSE)
 }
 \arguments{
 \item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+
+\item{collapse}{logical, if the return value should be a single matrix
+with locations of all the colonies; only applicable when input
+is a \code{\link{MultiColony-class}} object}
 }
 \value{
 numeric with two values when \code{x} is \code{\link{Colony-class}}
@@ -22,6 +26,7 @@ Level 0 function that returns the colony location as (x, y)
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -37,6 +42,7 @@ apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 getLocation(colony)
 getLocation(apiary[[1]])
 getLocation(apiary)
+getLocation(apiary, collapse = TRUE)
 
 loc <- c(123, 456)
 colony <- setLocation(colony, location = loc)

@@ -20,8 +20,10 @@ Level 0 function that checks if the csd locus has been
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+\dontshow{SP$nThreads = 1L}
 isCsdActive()
 
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 isCsdActive()
 }

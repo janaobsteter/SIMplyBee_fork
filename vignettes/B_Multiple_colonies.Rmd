@@ -37,6 +37,22 @@ again load the package.
 library(package = "SIMplyBee")
 ```
 
+# Initial settings
+
+We first initiate our simulation with founders genomes, simulation parameters,
+base population of virgin queens and a drone congregation area (DCA).
+
+```{r}
+# Create 20 founder genomes
+founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
+# Set up new global simulation parameters
+SP <- SimParamBee$new(founderGenomes)
+# Create a base population of 20 virgin queens
+basePop <- createVirginQueens(founderGenomes)
+# Create a DCA from the drones of the first 10 queens
+DCA <- createDrones(basePop[1:10], nInd = 100)
+```
+
 # Creating a MultiColony object
 
 We create a `MultiColony` object with `createMultiColony()` function. Let's say
@@ -70,18 +86,8 @@ emptyApiary1
 The third option is to create a `MultiColony` object with a population of either
 virgin or mated queens. For this, we first have to initialise the simulation
 with founder genomes and creating a base population of virgin queens. We will
-use 10 virgin queens to produce drones and create a DCA.
-
-```{r}
-# Create 20 founder genomes
-founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
-# Set up new global simulation parameters
-SP <- SimParamBee$new(founderGenomes)
-# Create a base population of 20 virgin queens
-basePop <- createVirginQueens(founderGenomes)
-# Create a DCA from the drones of the first 10 queens
-DCA <- createDrones(basePop[1:10], nInd = 100)
-```
+use 10 virgin queens to produce drones and create a DCA - we will take these
+from the initial settings above.
 
 We will now create an apiary with 10 virgin colonies with the
 `createMultiColony()` function by providing the second set of 10 virgin queens

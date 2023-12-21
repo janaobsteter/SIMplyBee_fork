@@ -32,8 +32,8 @@ Level 0 function that returns the number of colonies in a
 \examples{
 founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
-
 emptyApiary <- createMultiColony(n = 3)
 emptyApiary1 <- c(createColony(), createColony())
 nonEmptyApiary <- createMultiColony(basePop[2:3], n = 2)

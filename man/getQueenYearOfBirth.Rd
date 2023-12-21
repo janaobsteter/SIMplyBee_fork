@@ -4,12 +4,14 @@
 \alias{getQueenYearOfBirth}
 \title{Access the queen's year of birth}
 \usage{
-getQueenYearOfBirth(x)
+getQueenYearOfBirth(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
 \code{\link{Colony-class}} (one colony), or
 \code{\link{MultiColony-class}} (more colonies)}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 numeric, the year of birth of the queen(s); named when theres is more
@@ -21,6 +23,7 @@ Level 0 function that returns the queen's year of birth.
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

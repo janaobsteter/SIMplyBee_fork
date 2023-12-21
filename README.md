@@ -1,12 +1,15 @@
-# SIMplyBee README <img src="man/figures/SIMplyBeelogo_small.png" align="right" height="200"/>
+# SIMplyBee README <img src="vignettes/SIMplyBeelogo_small.png" align="right" height="200"/>
 
 SIMplyBee R package extends [AlphaSimR](https://CRAN.R-project.org/package=AlphaSimR)
 for simulating honeybee populations and breeding programmes
 
 ## Publication
 
-Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetics Selection Evolution,  55, 31. https://doi.org/10.1186/s12711-023-00798-y
+Obšteter J., Strachan. L. K., Bubnič J., Prešern J., Gorjanc G. 2023. Genetics Selection Evolution, 55, 31. https://doi.org/10.1186/s12711-023-00798-y
 
+## Documentation
+
+http://simplybee.info
 
 ## Download
 
@@ -22,7 +25,6 @@ accessed from the main and devel GitHub branches using:
 
     # Development version of SIMplyBee
     devtools::install_github(repo="HighlanderLab/SIMplyBee@devel")
-
 
  <!-- badges: start -->
 [![R-CMD-check](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml/badge.svg?branch=devel)](https://github.com/HighlanderLab/SIMplyBee/actions/workflows/R-CMD-check.yaml)

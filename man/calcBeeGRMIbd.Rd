@@ -26,6 +26,7 @@ Level 0 function that returns Genomic Relatedness Matrix (GRM)
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 

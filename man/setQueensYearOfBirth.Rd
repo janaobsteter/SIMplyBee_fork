@@ -4,7 +4,7 @@
 \alias{setQueensYearOfBirth}
 \title{Set the queen's year of birth}
 \usage{
-setQueensYearOfBirth(x, year)
+setQueensYearOfBirth(x, year, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link{Pop-class}} (one or more than one queen),
@@ -12,6 +12,8 @@ setQueensYearOfBirth(x, year)
 \code{\link{MultiColony-class}} (more colonies)}
 
 \item{year}{integer, the year of the birth of the queen}
+
+\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
@@ -23,6 +25,7 @@ Level 1 function that sets the queen's year of birth.
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

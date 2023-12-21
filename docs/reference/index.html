@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SIMplyBee</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/A_Honeybee_biology.html">Honeybee Biology</a>
+      <a href="../articles/A_Introduction_to_honeybee_biology.html">Introduction to honeybee biology</a>
     </li>
     <li>
       <a href="../articles/C_Colony_events.html">Colony Events</a>
@@ -145,6 +145,10 @@
           <p><code><a href="getId.html">getId()</a></code> </p>
         </td>
         <td><p>Get the colony ID</p></td>
+      </tr><tr><td>
+          <p><code><a href="rcircle.html">rcircle()</a></code> </p>
+        </td>
+        <td><p>Sample random points within a circle</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h3 id="events">Events <a href="#events" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
@@ -604,14 +608,18 @@
         </td>
         <td><p>Create a DCA of drones at a mating stations</p></td>
       </tr><tr><td>
-          <p><code><a href="createRandomCrossPlan.html">createRandomCrossPlan()</a></code> </p>
+          <p><code><a href="createCrossPlan.html">createCrossPlan()</a></code> </p>
         </td>
-        <td><p>Create a cross plan by randomly sampling drones for each queen
-  from a drone population</p></td>
+        <td><p>Create a plan for crossing virgin queens</p></td>
       </tr><tr><td>
           <p><code><a href="mapCasteToColonyValue.html">mapCasteToColonyValue()</a></code> <code><a href="mapCasteToColonyValue.html">mapCasteToColonyPheno()</a></code> <code><a href="mapCasteToColonyValue.html">mapCasteToColonyGv()</a></code> <code><a href="mapCasteToColonyValue.html">mapCasteToColonyBv()</a></code> <code><a href="mapCasteToColonyValue.html">mapCasteToColonyDd()</a></code> <code><a href="mapCasteToColonyValue.html">mapCasteToColonyAa()</a></code> </p>
         </td>
         <td><p>Map caste member (individual) values to a colony value</p></td>
+      </tr><tr><td>
+          <p><code><a href="cross.html">cross()</a></code> </p>
+        </td>
+        <td><p>Cross (mate) virgin queen(s) as a population, of a colony, or
+  of all given colonies</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="quantitative-genetics">Quantitative Genetics <a href="#quantitative-genetics" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>

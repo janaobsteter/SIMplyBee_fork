@@ -117,6 +117,7 @@ Level 0 function that returns IBD (identity by descent)
 \examples{
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
+\dontshow{SP$nThreads = 1L}
 SP$setTrackRec(TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)

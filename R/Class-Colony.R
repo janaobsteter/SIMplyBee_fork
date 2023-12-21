@@ -27,7 +27,6 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @slot supersedure logical, has colony superseded
 #' @slot collapse logical, has colony collapsed
 #' @slot production logical, is colony productive
-#' @slot last_event character, the last event of the colony TODO: revise https://github.com/HighlanderLab/SIMplyBee/issues/10
 #' @slot misc list, available for storing extra information about the colony
 #'
 #' @param object \code{\link{Colony-class}}
@@ -42,6 +41,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
+#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' drones <- createDrones(x = basePop[1], nInd = 1000)
@@ -69,7 +69,7 @@ setClass(
   Class = "Colony",
   slots = c(
     id = "integer",
-    location = "numericOrNULL",
+    location = "numeric",
     queen = "PopOrNULL",
     workers = "PopOrNULL",
     drones = "PopOrNULL",
@@ -79,7 +79,6 @@ setClass(
     supersedure = "logicalOrNULL",
     collapse = "logicalOrNULL",
     production = "logicalOrNULL",
-    last_event = "character",
     misc = "listOrNULL"
   )
 )
@@ -95,7 +94,7 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
-  if (isQueenPresent(object) && nInd(getQueen(object)) > 1) {
+  if ((ifelse(test = !is.null(slot(object, name = "queen")), yes = nInd(slot(object, name = "queen")), no = 0)) > 1) { #Don't use nQueen because of the SP problem
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {
