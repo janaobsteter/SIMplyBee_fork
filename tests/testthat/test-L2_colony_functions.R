@@ -65,7 +65,7 @@ test_that("reQueen", {
 
 test_that("Add functions", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -122,7 +122,7 @@ test_that("Add functions", {
 
 test_that("BuildUpDownsize", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -178,7 +178,7 @@ test_that("BuildUpDownsize", {
 
 test_that("replaceFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -233,7 +233,7 @@ test_that("replaceFunctions", {
 
 test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -355,7 +355,7 @@ test_that("supersede", {
 
 test_that("split", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
@@ -434,7 +434,7 @@ test_that("resetEvents", {
 
 test_that("Combine", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
@@ -470,7 +470,7 @@ test_that("Combine", {
 
 test_that("swarm", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)

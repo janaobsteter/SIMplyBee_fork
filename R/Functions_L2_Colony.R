@@ -489,7 +489,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x, simParamBee = simParamBee ,...)
+      nWorkers <- nWorkers(colony = x,...)
     }
     if (length(nWorkers) > 1) {
       warning("More than one value in the nWorkers argument, taking only the first value!")
