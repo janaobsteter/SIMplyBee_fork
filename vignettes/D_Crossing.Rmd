@@ -33,7 +33,7 @@ end we describe two special cases of mating virgin queens on a mating station
 and mating multiple virgin queens in different ways.
 
 ```{r crossing_decision_tree, echo=FALSE, out.width='90%', fig.cap = "Crossing decision tree"}
-knitr::include_graphics("../vignettes/decisionTreeCrossing.png")
+knitr::include_graphics("decisionTreeCrossing.png")
 ```
 
 To facilitate the understanding of the crossing function and choosing the
