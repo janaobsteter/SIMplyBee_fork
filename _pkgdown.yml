@@ -1,13 +1,15 @@
 title: SIMplyBee
-url: https://www.simplybee.info
-
+url: http://www.simplybee.info
 development:
   mode: auto
-
 navbar:
   structure:
-    left: [home, reference, articles, news]
-    right: [github]
+    left:
+    - home
+    - reference
+    - articles
+    - news
+    right: github
   components:
     home:
       icon: fa-home
@@ -36,7 +38,6 @@ navbar:
         href: articles/F_Quantitative_Genetics.html
       - text: FAQs
         href: articles/Z_FAQs.html
-
 reference:
   - title: Class
     contents:
@@ -321,5 +322,3 @@ reference:
     contents:
     - combineBeeGametesHaploDiploid
     - combineBeeGametes
-
-
