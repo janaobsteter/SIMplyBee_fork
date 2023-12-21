@@ -41,7 +41,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Rewrite homepage index.html
-        run:  |
+        run: |
           pkgdown::build_home_index()
         shell: Rscript {0}
 
