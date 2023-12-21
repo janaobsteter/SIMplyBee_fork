@@ -1,7 +1,7 @@
 # ---- nColonies ----
 test_that("nColonies", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   expect_equal(nColonies(createMultiColony(n = 2, simParamBee = SP)), 2)
@@ -13,7 +13,7 @@ test_that("nColonies", {
 # ---- nCaste ----
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 45, simParamBee = SP)
@@ -38,7 +38,7 @@ test_that("nCaste", {
 
 test_that("nQueens", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
@@ -58,7 +58,7 @@ test_that("nQueens", {
 # ---- nDrones ----
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
@@ -101,7 +101,7 @@ test_that("isGenoHeterozygous", {
 
 test_that("isCaste", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -229,7 +229,7 @@ test_that("nHomBrood", {
 
 test_that("isQueenPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -257,7 +257,7 @@ test_that("isQueenPresent", {
 
 test_that("isVirginQueensPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -287,7 +287,7 @@ test_that("isVirginQueensPresent", {
 
 test_that("isProductive", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -321,7 +321,7 @@ test_that("isProductive", {
 
 test_that("reduceDroneHaplo", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 2, simParamBee = SP)
@@ -345,7 +345,7 @@ test_that("reduceDroneHaplo", {
 
 test_that("reduceDroneGeno", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 2, simParamBee = SP)
@@ -555,7 +555,7 @@ test_that("nCsdAlleles", {
 
 test_that("calcBeeGRMIbs", {
   founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   SP$setTrackRec(TRUE)
   SP$setTrackPed(isTrackPed = TRUE)
@@ -665,7 +665,7 @@ test_that("emptyNULL", {
 
 test_that("isDronesPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -690,7 +690,7 @@ test_that("isDronesPresent", {
 
 test_that("isFathersPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -718,7 +718,7 @@ test_that("isFathersPresent", {
 
 test_that("isWorkersPresent", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -774,7 +774,7 @@ test_that("isGenoHeterozygous", {
 # ---- getBV ----
 test_that("getBV", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    SP$addTraitA(nQtlPerChr = 10, var = 1)
    SP$addSnpChip(5)
@@ -804,7 +804,7 @@ test_that("getBV", {
 # ---- getDd ----
 test_that("getDd", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    SP$addTraitAD(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1)
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
@@ -833,7 +833,7 @@ test_that("getDd", {
 # ---- getAa ----
 test_that("getAa", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    SP$addTraitADE(nQtlPerChr = 10, meanDD = 0.2, varDD = 0.1, relAA = 0.5)
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
