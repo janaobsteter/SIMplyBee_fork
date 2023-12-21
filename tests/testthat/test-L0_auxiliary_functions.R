@@ -12,8 +12,8 @@ test_that("nColonies", {
 
 # ---- nCaste ----
 test_that("nCaste", {
-  founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100, csdChr = NULL)
-  SP <- SimParamBee$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
 
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 45, simParamBee = SP)
@@ -743,7 +743,7 @@ test_that("isWorkersPresent", {
 # ---- isGenoHeterozygous ----
 test_that("isGenoHeterozygous", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+   SP <- SimParamBee$new(founderGenomes)
    SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
