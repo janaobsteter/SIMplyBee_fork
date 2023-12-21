@@ -626,8 +626,6 @@ test_that("editCsdLocus", {
 })
 
 # ---- emptyNULL ----
-
-####----- emptyNULL ---- ####
 test_that("emptyNULL", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -899,6 +897,7 @@ test_that("getLocation", {
                 list("2" = loc, "3" = loc))
 })
 
+# ---- createCrossPlan ----
 test_that("createCrossPlan", {
   founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -953,4 +952,76 @@ test_that("createCrossPlan", {
   expect_length(crossPlanSpatial, 2)
   expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1, simParamBee = SP))
 })
+
+
+# ---- Get Caste ----
+test_that("getCaste", {
+  founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  SP$nThreads = 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  expect_vector(getCaste(basePop, simParamBee = SP), "virginQueens")
+
+  #Create drones
+  drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson, simParamBee = SP)
+  expect_vector(getCaste(drones, simParamBee = SP), "drones")
+
+  # Create a Colony and a MultiColony class
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
+
+  # test that all drones in colony are now fathers. Colony should only contain queen and fathers
+  expect_vector(getCaste(getQueen(colony, simParamBee = SP), simParamBee = SP), "queen")
+  expect_vector(getCaste(getFathers(colony, simParamBee = SP), simParamBee = SP), "fathers")
+  expect_error(getCaste(getWorkers(colony, simParamBee = SP), simParamBee = SP))
+  expect_error(getCaste(getDrones(colony, simParamBee = SP), simParamBee = SP))
+  expect_error(getCaste(getVirginQueens(colony, simParamBee = SP), simParamBee = SP))
+
+  # all caste members are now present
+  colony <- buildUp(x = colony, nWorkers = 20, nDrones = 5, simParamBee = SP)
+  colony <- addVirginQueens(colony, nInd = 5, simParamBee = SP)
+  expect_vector(getCaste(getQueen(colony, simParamBee = SP), simParamBee = SP), "queen")
+  expect_vector(getCaste(getFathers(colony, simParamBee = SP), simParamBee = SP), "fathers")
+  expect_vector(getCaste(getWorkers(colony, simParamBee = SP), simParamBee = SP), "workers")
+  expect_vector(getCaste(getDrones(colony, simParamBee = SP), simParamBee = SP), "drones")
+  expect_vector(getCaste(getVirginQueens(colony, simParamBee = SP), simParamBee = SP), "virginQueen")
+
+  # Check colony collapses
+  expect_length(getCaste(colony, collapse = FALSE, simParamBee = SP), 5)
+  expect_vector(getCaste(colony, collapse = TRUE, simParamBee = SP), c("queen", "fathers", "workers", "drones", "virginQueens"))
+
+  # Create virgin apiary containing 2 colonies
+  apiary <- createMultiColony(basePop[3:4], n = 2, simParamBee = SP)
+  expect_length(getCaste(apiary, simParamBee = SP), 2)
+  expect_vector(getCaste(getVirginQueens(apiary[[1]], simParamBee = SP), simParamBee = SP), "virginQueen")
+
+  # Mate apiaries, now only contains queens and fathers
+  apiary <- cross(apiary, drones = droneGroups[c(2, 3)], simParamBee = SP)
+  expect_vector(getCaste(getQueen(apiary[[1]], simParamBee = SP), simParamBee = SP), "queen")
+  expect_vector(getCaste(getFathers(apiary[[1]], simParamBee = SP), simParamBee = SP), "fathers")
+
+  # all caste members are now present in apiary
+  apiary <- buildUp(x = apiary, nWorkers = 10, nDrones = 2, simParamBee = SP)
+  apiary <- addVirginQueens(apiary, nInd = 4, simParamBee = SP)
+  expect_vector(getCaste(getWorkers(apiary[[1]], simParamBee = SP), simParamBee = SP), "workers")
+  expect_vector(getCaste(getDrones(apiary[[1]], simParamBee = SP), simParamBee = SP), "drones")
+  expect_vector(getCaste(getVirginQueens(apiary[[1]], simParamBee = SP), simParamBee = SP), "virginQueen")
+
+
+  bees <- c(
+    getQueen(colony, simParamBee = SP),
+    getFathers(colony, nInd = 2, simParamBee = SP),
+    getWorkers(colony, nInd = 2, simParamBee = SP),
+    getDrones(colony, nInd = 2, simParamBee = SP),
+    getVirginQueens(colony, nInd = 2, simParamBee = SP)
+  )
+  expect_vector(getCaste(bees, simParamBee = SP), c("queen", "fathers", "workers", "drones", "virginQueens"))
+
+
+})
+
+
+
+
 
