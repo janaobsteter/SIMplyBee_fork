@@ -2539,8 +2539,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
     } else {
       ret <- getCsdGeno(
         x = getCastePop(x, caste, simParamBee = simParamBee), nInd = nInd,
-        dronesHaploid = dronesHaploid,
-        simParamBee = simParamBee
+          dronesHaploid = dronesHaploid, simParamBee = simParamBee
       )
     }
   } else if (isMultiColony(x)) {

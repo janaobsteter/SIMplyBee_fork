@@ -89,7 +89,7 @@ test_that("pullColonies", {
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   # Error if argument multicolony isn't a multicolony class
-  expect_error(pullColonies(basePop))
+  expect_error(pullColonies(basePop, simParamBee = SP))
 
   drones <- createDrones(x = basePop[1:4], nInd = 100, simParamBee = SP)
   droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -97,29 +97,29 @@ test_that("pullColonies", {
   apiary <- cross(apiary, drones = droneGroups[1:4], simParamBee = SP)
 
   # Error: argument ID must be a character or numeric
-  expect_error(pullColonies(apiary, ID = TRUE))
-  expect_error(pullColonies(apiary, ID = all))
+  expect_error(pullColonies(apiary, ID = TRUE, simParamBee = SP))
+  expect_error(pullColonies(apiary, ID = all, simParamBee = SP))
   # Message : if ID isn't provided "Randomly selecting colonies"
-  expect_message(pullColonies(apiary, n = 2))
-  expect_message(pullColonies(apiary, p = 0.5))
+  expect_message(pullColonies(apiary, n = 2, simParamBee = SP))
+  expect_message(pullColonies(apiary, p = 0.5, simParamBee = SP))
   # Error: n / p/ ID must be provided
-  expect_error(pullColonies(apiary))
+  expect_error(pullColonies(apiary, simParamBee = SP))
 
   # Show how ID can be character or numeric.    Are both examples needed???
-  expect_s4_class(pullColonies(apiary, ID = "1")$pulled, "MultiColony")
-  expect_s4_class(pullColonies(apiary, ID = 1)$pulled, "MultiColony")
-  expect_s4_class(pullColonies(apiary, ID = c(1, 2))$pulled, "MultiColony")
+  expect_s4_class(pullColonies(apiary, ID = "1", simParamBee = SP)$pulled, "MultiColony")
+  expect_s4_class(pullColonies(apiary, ID = 1, simParamBee = SP)$pulled, "MultiColony")
+  expect_s4_class(pullColonies(apiary, ID = c(1, 2), simParamBee = SP)$pulled, "MultiColony")
   # ID bug Github issue made
   #Show use of n and p arguments
-  expect_s4_class(pullColonies(apiary, n = 1)$pulled, "MultiColony")
-  expect_s4_class(pullColonies(apiary, p = 0.25)$pulled, "MultiColony")
+  expect_s4_class(pullColonies(apiary, n = 1, simParamBee = SP)$pulled, "MultiColony")
+  expect_s4_class(pullColonies(apiary, p = 0.25, simParamBee = SP)$pulled, "MultiColony")
 
 
   # Check if pull is working properly
-  expect_equal(nColonies(pullColonies(apiary, ID = c(1, 2))$pulled), 2)
-  expect_length(pullColonies(apiary, ID = c(1, 2)), 2)
-  expect_equal(nColonies(pullColonies(apiary, n = 3)$pulled), 3)
-  expect_equal(nColonies(pullColonies(apiary, p = 0.25)$pulled), 1)
+  expect_equal(nColonies(pullColonies(apiary, ID = c(1, 2), simParamBee = SP)$pulled), 2)
+  expect_length(pullColonies(apiary, ID = c(1, 2), simParamBee = SP), 2)
+  expect_equal(nColonies(pullColonies(apiary, n = 3, simParamBee = SP)$pulled), 3)
+  expect_equal(nColonies(pullColonies(apiary, p = 0.25, simParamBee = SP)$pulled), 1)
 })
 
 # ---- removeColonies ----
@@ -139,8 +139,8 @@ test_that("removeColonies", {
   apiary2 <- createMultiColony(n = 0, simParamBee = SP)
 
   # Error: argument ID must be a character or numeric
-  expect_error(pullColonies(apiary, ID = TRUE))
-  expect_error(pullColonies(apiary, ID = all))
+  expect_error(pullColonies(apiary, ID = TRUE, simParamBee = SP))
+  expect_error(pullColonies(apiary, ID = all, simParamBee = SP))
 
   expect_s4_class(removeColonies(apiary, ID = 1, simParamBee = SP), "MultiColony")
   expect_equal(nColonies(removeColonies(apiary, ID = 1, simParamBee = SP)), 3)

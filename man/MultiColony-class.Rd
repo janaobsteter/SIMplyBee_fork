@@ -9,8 +9,8 @@
 \alias{c,MultiColonyOrNULL-method}
 \alias{[,MultiColony,integerOrNumericOrLogical,ANY,ANY-method}
 \alias{[,MultiColony,character,ANY,ANY-method}
-\alias{[[,MultiColony,integerOrNumericOrLogical,ANY-method}
-\alias{[[,MultiColony,character,ANY-method}
+\alias{[[,MultiColony,integerOrNumericOrLogical-method}
+\alias{[[,MultiColony,character-method}
 \alias{[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony-method}
 \alias{[[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}
 \title{Honeybee multicolony object}

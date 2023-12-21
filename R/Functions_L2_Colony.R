@@ -489,7 +489,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       nWorkers <- simParamBee$nWorkers
     }
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x, ...)
+      nWorkers <- nWorkers(colony = x, simParamBee = simParamBee ,...)
     }
     if (length(nWorkers) > 1) {
       warning("More than one value in the nWorkers argument, taking only the first value!")
@@ -523,7 +523,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (new) {
       n <- nDrones
     } else {
-      n <- nDrones - nDrones(x)
+      n <- nDrones - nDrones(x, simParamBee = simParamBee)
     }
 
     if (0 < n) {
@@ -810,7 +810,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
           }
 
           slot(x, caste) <- c(
-            selectInd(slot(x, caste), nInd = nIndStay, use = use),
+            selectInd(slot(x, caste), nInd = nIndStay, use = use, simParam = simParamBee),
             tmp
           )
         }
@@ -977,7 +977,8 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
         slot(x, caste) <- selectInd(
           pop = slot(x, caste),
           nInd = nIndStay,
-          use = use
+          use = use,
+          simParam = simParamBee
         )
       } else {
         x <- removeCastePop(x, caste, simParamBee = simParamBee)
@@ -1348,7 +1349,7 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
       year = year,
       simParamBee = simParamBee
     )
-    tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand")
+    tmpVirginQueen <- selectInd(tmpVirginQueen, nInd = 1, use = "rand", simParam = simParamBee)
 
     remnantColony <- createColony(x = tmpVirginQueen, simParamBee = simParamBee)
     remnantColony@workers <- getWorkers(tmp$remnant, simParamBee = simParamBee)
@@ -1489,7 +1490,7 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
     }
     x <- removeQueen(x, addVirginQueens = TRUE, nVirginQueens = nVirginQueens,
                      year = year, simParamBee = simParamBee)
-    x@virginQueens <- selectInd(x@virginQueens, nInd = 1, use = "rand")
+    x@virginQueens <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most
     #       aggressive one), by creating many virgin queens and then picking the
     #       one with highest pheno for competition or some other criteria
