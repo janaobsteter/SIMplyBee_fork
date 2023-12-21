@@ -37,8 +37,12 @@ jobs:
     
       - name: Build site
         run: |
-          pkgdown::build_home_index()
           pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Rewrite homepage index.html
+        run:  |
+          pkgdown::build_home_index()
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
