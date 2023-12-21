@@ -32,22 +32,12 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.,  any::devtools
+          extra-packages: any::pkgdown, local::.
           needs: website
-      
-      - name: Install dependencies
-        run: |
-          remotes::install_deps(dependencies = TRUE)
-          install.packages("pkgdown")
-          install.packages("devtools")
-        shell: Rscript {0}
-
+    
       - name: Build site
         run: |
-          pkgdown::clean_site()
-          devtools::build_readme() 
-          pkgdown::build_home()
-          pkgdown::build_site()
+          pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
