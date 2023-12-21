@@ -2,10 +2,6 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    paths:
-      - docs/**
-      - README.md
-      - .github/workflows/pkgdown.yaml 
     branches: [main, master]
   pull_request:
     branches: [main, master]
@@ -39,14 +35,12 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      - name: Copy README.md to docs/index.md
-        run: cp README.md docs/index.md
-
-      - name: Update r-package/index.md figures source 
-        run: sed -i 's/\"r-package\//\"/g' docs/index.md
-
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = TRUE, install = FALSE)
+        run: |
+          pkgdown::clean_site()
+          devtools::build_readme() 
+          pkgdown::build_home()
+          pkgdown::build_site()
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
