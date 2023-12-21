@@ -154,7 +154,7 @@ print(SP)
 ```
 
 ```{r initialization_diagram, echo=FALSE, out.width='100%', fig.cap = "Simulation initiation."}
-knitr::include_graphics("../man/figures/founderpop.png")
+knitr::include_graphics("../vignettes/founderpop.png")
 ```
 
 From the simulated founder genomes, we can create virgin queens (Figure 1).
