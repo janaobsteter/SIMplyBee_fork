@@ -36,4 +36,5 @@ Suggests:
     testthat (>= 3.0.0),
     Matrix
 Config/testthat/edition: 3
+Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr
