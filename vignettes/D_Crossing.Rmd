@@ -32,8 +32,8 @@ In this vignette, we first explain five ways of mating virgin queens and at the
 end we describe two special cases of mating virgin queens on a mating station
 and mating multiple virgin queens in different ways.
 
-```{r crossing_decision_tree, echo=FALSE, out.width='50%', fig.cap = "Crossing decision tree"}
-knitr::include_graphics("../man/figures/decisionTreeCrossing.png")
+```{r crossing_decision_tree, echo=FALSE, out.width='90%', fig.cap = "Crossing decision tree"}
+knitr::include_graphics("../vignettes/decisionTreeCrossing.png")
 ```
 
 To facilitate the understanding of the crossing function and choosing the
