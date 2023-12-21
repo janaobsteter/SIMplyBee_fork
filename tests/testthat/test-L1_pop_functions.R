@@ -2,7 +2,7 @@
 
 test_that("getCastePop", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 15, simParamBee = SP)
@@ -37,7 +37,7 @@ test_that("getCastePop", {
 
 test_that("createVirginQueens", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   #check that output is virginqueens ?
   expect_true(all(isVirginQueen(createVirginQueens(founderGenomes, simParamBee = SP), simParamBee = SP)))
@@ -88,7 +88,7 @@ test_that("createVirginQueens", {
 
 test_that("createDrones", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   # Error: x can't be a MapPop
   expect_error(createDrones(founderGenomes, simParamBee = SP))
@@ -134,7 +134,7 @@ test_that("createDrones", {
 
 test_that("combineBeeGametes", {
   founderGenomes <- quickHaplo(nInd = 6, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 15, simParamBee = SP)
@@ -165,7 +165,7 @@ test_that("combineBeeGametes", {
 
 test_that("pullCastePop", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 15, simParamBee = SP)
@@ -221,7 +221,7 @@ test_that("pullCastePop", {
 # ---- cross ----
 test_that("cross", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, nInd = 100, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
@@ -285,7 +285,7 @@ test_that("cross", {
 # ---- setQueensYearOfBirth ----
 test_that("setQueensYearOfBirth", {
   founderGenomes <- quickHaplo(nInd = 7, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, nInd = 100, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
@@ -317,7 +317,7 @@ test_that("setQueensYearOfBirth", {
 # ---- createDCA ----
 test_that("createDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -352,7 +352,7 @@ test_that("createDCA", {
 # ---- pullDroneGroupsFromDCA ----
 test_that("pullDroneGroupsFromDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -382,7 +382,7 @@ test_that("pullDroneGroupsFromDCA", {
 
 test_that("combineBeeGametes", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
@@ -398,7 +398,7 @@ test_that("combineBeeGametes", {
 
 test_that("combineBeeGametesHaploidDiploid", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-   SP <- SimParamBee$new(founderGenomes)
+   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
