@@ -94,7 +94,7 @@ which we can load in our environment and work with it.
 ```{r save Rdata file}
 # Save the genomes on a server
 save(founderGenomes2, file = "FounderGenomes2_3chr.RData")
-# Loade the saved genomes elsewhere
+# Load the saved genomes elsewhere
 load(file = "FounderGenomes2_3chr.RData")
 ```
 
@@ -154,7 +154,7 @@ print(SP)
 ```
 
 ```{r initialization_diagram, echo=FALSE, out.width='100%', fig.cap = "Simulation initiation."}
-knitr::include_graphics("../vignettes/founderpop.png")
+knitr::include_graphics("founderpop.png")
 ```
 
 From the simulated founder genomes, we can create virgin queens (Figure 1).
