@@ -429,7 +429,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
     }
     ret@sex[] <- "F"
-    simParamBee$changeCaste(id = ret@id, caste = "V")
+    simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
     if (!is.null(year)) {
       ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
     }
@@ -458,7 +458,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- mergePops(ret)
     }
     ret@sex[] <- "M"
-    simParamBee$addToCaste(id = ret@id, caste = "D")
+    simParamBee$addToCaste(id = ret@id, caste = "drones")
   } else if (isColony(x)) {
     if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("Missing queen!")
@@ -500,12 +500,12 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         ret$nHomBrood <- NA
       }
       ret$workers@sex[] <- "F"
-      simParamBee$addToCaste(id = ret$workers@id, caste = "W")
+      simParamBee$addToCaste(id = ret$workers@id, caste = "workers")
     } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
       ret <- createCastePop(x = x, caste = "workers",
                             nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
       ret@sex[] <- "F"
-      simParamBee$changeCaste(id = ret@id, caste = "V")
+      simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
       if (!is.null(year)) {
         ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
       }
@@ -515,7 +515,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         simParam = simParamBee
       )
       ret@sex[] <- "M"
-      simParamBee$addToCaste(id = ret@id, caste = "D")
+      simParamBee$addToCaste(id = ret@id, caste = "drones")
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
@@ -1465,8 +1465,8 @@ cross <- function(x,
           virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
         }
         virginQueen@misc[[1]]$fathers <- virginQueenDrones
-        simParamBee$changeCaste(id = virginQueen@id, caste = "Q")
-        simParamBee$changeCaste(id = virginQueenDrones@id, caste = "F")
+        simParamBee$changeCaste(id = virginQueen@id, caste = "queen")
+        simParamBee$changeCaste(id = virginQueenDrones@id, caste = "fathers")
 
         virginQueen <- setMisc(x = virginQueen, node = "nWorkers", value = 0)
         virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
