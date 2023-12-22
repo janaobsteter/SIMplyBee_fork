@@ -1,9 +1,11 @@
 ## SIMplyBee first publication
 bibentry(
   bibtype = "Article",
-  title = "SIMplyBee: {R} package for simulating honeybee populations and breeding programs",
+  title = "{SIMplyBee}: {R} package for simulating honeybee populations and breeding programs",
   author = "Obšteter, J and Strachan, L K and Bubnič, J and Prešern, J and Gorjanc, G",
-  journal = "bioRxiv",
-  year = "2022",
-  doi = "10.1101/2022.12.15.520571"
+  journal = "Genetics Selection Evolution",
+  year = "2023",
+  volume = "55",
+  number = "31",
+  doi = "10.1186/s12711-023-00798-y"
 )

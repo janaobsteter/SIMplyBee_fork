@@ -205,7 +205,7 @@ it, and adding some workers.
 
 ```{r create_colony}
 colony <- createColony(x = basePop[6])
-colony <- cross(x = colony, drones = drones)
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
 colony <- addWorkers(x = colony, nInd = 50)
 colony
 ```
@@ -365,7 +365,7 @@ apiary.
 apiary <- createMultiColony(basePop[7:20])
 drones <- createDrones(basePop[1:5], nInd = 100)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups)
+apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
 apiary <- buildUp(apiary)
 ```
 
@@ -460,7 +460,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 100)
 apiary <- createMultiColony(basePop[6:20])
 droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups)
+apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
 apiary <- buildUp(apiary)
 apiary
 ```
@@ -588,7 +588,7 @@ basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 100)
 apiary <- createMultiColony(basePop[6:20])
 droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups)
+apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
 ```
 
 Let's explore queen's genetic and phenotypic values for fecundity and honey

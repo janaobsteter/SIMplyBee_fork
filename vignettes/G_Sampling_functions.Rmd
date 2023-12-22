@@ -80,7 +80,7 @@ DCA to mate with each of the 10 virgin queens.
 
 ```{r}
 droneGroups <- pullDroneGroupsFromDCA(DCA = DCA, n = 10, nDrones = nFathersPoisson)
-apiary <- cross(apiary, drones = droneGroups)
+apiary <- cross(apiary, drones = droneGroups, checkCross = "warning")
 ```
 
 And inspect the number of fathers in each of the colony and their mean.
