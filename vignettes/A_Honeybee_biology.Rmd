@@ -425,4 +425,3 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
-

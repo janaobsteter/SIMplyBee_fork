@@ -6,8 +6,6 @@
 ^_pkgdown\.yml
 ^SIMplyBee\.Rproj
 ^docs
-^vignettes/*F2*
-^vignettes/*R
 ^vignettes/*RData
 ^vignettes/*pdf
 ^vignettes/F2\_Variance\_calculations*
@@ -16,3 +14,5 @@
 ^vignettes/SIMplyBee\_logo\_small\.png
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^doc$
+^Meta$
