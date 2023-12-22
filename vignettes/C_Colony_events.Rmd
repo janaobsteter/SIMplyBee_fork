@@ -44,11 +44,11 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 30, nDrones = 10)
 
 # Create Colony and MultiColony class, cross them and build them up
 colony <- createColony(x = basePop[11])
-colony <- cross(colony, drones = fatherGroups[[1]])
+colony <- cross(colony, drones = fatherGroups[[1]], checkCross = "warning")
 colony <- buildUp(colony, nWorkers = 100, nDrones = 20)
 
 apiary <- createMultiColony(basePop[12:17])
-apiary <- cross(apiary, drones = fatherGroups[2:7])
+apiary <- cross(apiary, drones = fatherGroups[2:7], checkCross = "warning")
 apiary <- buildUp(apiary, nWorkers = 100, nDrones = 20, exact = TRUE)
 ```
 
