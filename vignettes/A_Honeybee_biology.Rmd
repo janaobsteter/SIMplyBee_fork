@@ -52,14 +52,15 @@ honeybee genomes that represent the founder population. You can quickly generate
 random genomes using AlphaSimR's `quickHaplo()`. These founder genomes are
 rapidly simulated by sampling chromosomes as series of 0s and 1s, and do not
 include any species-specific demographic history. This is equivalent to all loci
-having allele frequency 0.5 and being in linkage equilibrium. We use this approach
-only for demonstrations and testing.
+having allele frequency 0.5 and being in linkage equilibrium. We use this
+approach only for demonstrations and testing.
 
 Alternatively, you can more accurately simulate honeybee genomes with
 SIMplyBee's `simulateHoneyBeeGenomes()`. This function simulates the honeybee
-genome using coalescent simulation of whole chromosomes using MaCS (Chen et al., 2009)
-for three subspecies: *A. m. ligustica*, *A. m. carnica*, and *A. m. mellifera*
-according to the demographic model described by Wallberg et al. (2014).
+genome using coalescent simulation of whole chromosomes using MaCS (Chen et al.,
+2009) for three subspecies: *A. m. ligustica*, *A. m. carnica*, and *A. m.
+mellifera* according to the demographic model described by Wallberg et al.
+(2014).
 
 As a demonstration, we will use `quickHaplo()` and simulate genomes of two
 founding individuals. In this example, the genomes will be represented by only
@@ -71,12 +72,12 @@ simulation here.
 founderGenomes <- quickHaplo(nInd = 2, nChr = 3, segSites = 100)
 ```
 
-As mentioned, the `simulateHoneyBeeGenomes()` generates more realistic chromosome
-samples, but also requires much more time. Hence, when you use `simulateHoneyBeeGenomes()`,
-we suggest you save the output to an RData file that you then load in your
-environment and work with it. See the function documentation using 
-`help(simulateHoneyBeeGenomes)` to learn all the parameters involved in the
-function.
+As mentioned, the `simulateHoneyBeeGenomes()` generates more realistic
+chromosome samples, but also requires much more time. Hence, when you use
+`simulateHoneyBeeGenomes()`, we suggest you save the output to an RData file
+that you then load in your environment and work with it. See the function
+documentation using `help(simulateHoneyBeeGenomes)` to learn all the parameters
+involved in the function.
 
 Now we are ready to setup global simulation parameters using `SimParamBee`.
 `SimParamBee` builds upon AlphaSimR's `SimParam`, which includes genome and
@@ -122,8 +123,8 @@ with the basic functionality!
 print(SP)
 ```
 
-```{r initialization diagram, echo=FALSE, out.width='20%', fig.cap = "Simulation initiation"}
-  knitr::include_graphics("supersede.png")
+```{r initialization_diagram, echo=FALSE, out.width='100%', fig.cap = "Simulation initiation"}
+knitr::include_graphics("founderpop.png")
 ```
 
 From the simulated founder genomes, we can create virgin queens (Figure 1).
@@ -424,3 +425,4 @@ Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
 sequence variation provides insight into the evolutionary history of the
 honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
 <https://doi.org/10.1038/ng.3077>
+
