@@ -6,6 +6,7 @@
 ^_pkgdown\.yml
 ^SIMplyBee\.Rproj
 ^docs
+^vignettes/*R
 ^vignettes/*RData
 ^vignettes/*pdf
 ^vignettes/F2\_Variance\_calculations*
