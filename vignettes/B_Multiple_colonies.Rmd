@@ -157,7 +157,7 @@ of drones as we have colonies in our `MultiColony`.
 # Pull 10 groups of drones from the DCA
 droneGroups <- pullDroneGroupsFromDCA(DCA, n = 10, nDrones = nFathersPoisson)
 # Cross all virgin queens in the apiary to the selected drones
-apiary1 <- cross(apiary1, drones = droneGroups)
+apiary1 <- cross(apiary1, drones = droneGroups, checkCross = "warning")
 # Check whether the queens are present (and hence mated)
 isQueenPresent(apiary1)
 ```
@@ -215,7 +215,7 @@ droneGroups <- pullDroneGroupsFromDCA(DCA,
                                       n = nColonies(apiary2), 
                                       nDrones = nFathersPoisson)
 # Cross virgin queens in apiary2 to selected drones
-apiary2 <- cross(apiary2, drones = droneGroups)
+apiary2 <- cross(apiary2, drones = droneGroups, checkCross = "warning")
 ```
 
 To learn more about the `nFathersPoisson()` function and other similar

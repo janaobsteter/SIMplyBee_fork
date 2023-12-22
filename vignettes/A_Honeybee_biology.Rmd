@@ -138,8 +138,8 @@ with the basic functionality!
 print(SP)
 ```
 
-```{r initialization_diagram, echo=FALSE, out.width='100%', fig.cap = "Simulation initiation"}
-knitr::include_graphics("founderpop.png")
+```{r initialization diagram, echo=FALSE, out.width='20%', fig.cap = "Simulation initiation"}
+  knitr::include_graphics("supersede.png")
 ```
 
 From the simulated founder genomes, we can create virgin queens (Figure 1).
@@ -215,7 +215,7 @@ Let's now mate our virgin queen, so that she is promoted to a queen and can
 start laying eggs of her own workers and drones.
 
 ```{r cross colony}
-colony <- cross(colony, drones = baseDrones)
+colony <- cross(colony, drones = baseDrones, checkCross = "warning")
 colony
 ```
 
@@ -238,7 +238,7 @@ buildUp(colony)
 All the functions in SIMplyBee return objects, hence we need to save them as an
 object, otherwise they are lost.
 
-```{r}
+```{r buildup and save}
 colony <- buildUp(colony)
 colony
 ```
@@ -308,13 +308,13 @@ look at `pull*()` functions. These functions return a list of objects: `pulled`
 being the pulled individuals (`Pop` object), and `remnant` being the remaining
 colony without the pulled individuals.
 
-```{r}
+```{r remnant}
 tmp <- pullWorkers(colony, n = 10)
 colony <- tmp$remnant
 colony
 ```
 
-```{r}
+```{r pulled workers}
 pulledWorkers <- tmp$pulled
 pulledWorkers
 ```
@@ -357,7 +357,7 @@ corresponding `pHomBrood()` and `nHombrood()` functions that can be applied
 either on the queen (`Pop` class) or colony (`Colony` class) directly. You can
 obtain the entire `misc` slot with the `getMisc()` function.
 
-```{r}
+```{r misc}
 getMisc(getQueen(colony))
 ```
 
@@ -387,7 +387,7 @@ current colony and mate her with her brothers. Oh, dear.
 ```{r inbred colony}
 inbredColony <- createColony(x = createVirginQueens(x = colony, nInd = 1))
 fathers <- selectInd(drones, nInd = SP$nFathers, use = "rand")
-inbredColony <- cross(inbredColony, drones = fathers)
+inbredColony <- cross(inbredColony, drones = fathers, checkCross = "warning")
 getCsdAlleles(inbredColony)
 getCsdAlleles(inbredColony, unique = TRUE)
 ```
