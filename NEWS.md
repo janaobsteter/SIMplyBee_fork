@@ -7,6 +7,9 @@
 * createColony() and createMultiColony() do not have the location argument
   anymore; use setLocation() instead; by default, location is now c(0, 0) PR#500
 
+* Our website: www.simplybee.info now is fully updated and autoupdates with every Github change
+
+
 ## New features ##
 
 * In setLocation(MultiColony) we can set one location (numeric) or multiple
@@ -24,14 +27,15 @@
 * Removed the function createRandomCrossPlan() - that option is now included in the newly added createCrossPlan() fuction
 
 * Added the funcionality for spatially-aware mating of honeybee colonies. The new funcionality is included in the createCrossPlan(), that allows to create the cross plan according to the colonies' locations, and in the cross() function, that crosses bees according to their location
+
+* Through blood, sweat and tears behind the scenes, we now consistently pass SimParamBee in all functions and test. 
  
 
 ## Bug fixes ##
 * Bug fix - get*Haplo() functions were returning diploid drones when input was a Pop-class
+* Bug fix - Honeybee Biology vignette was not recognising founderpop.png during devel::check
 
-
-*
-
+  
 
 # SIMplyBee version 0.3.0 #
 
