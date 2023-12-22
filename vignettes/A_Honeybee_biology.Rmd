@@ -75,28 +75,13 @@ Alternatively, we use `simulateHoneyBeeGenomes()` to sample genomes of a founder
 population including 4 *A. m. mellifera* (North) individuals and 2 *A. m.
 carnica* individuals. The genomes will be represented by only three chromosomes
 and 5 segregating sites per chromosome. These numbers are of course extremely
-low because we want a quick examample for demonstrative reasons. This chunk of
-code should take a few minutes to run.
-
-```{r simulate honeybee genomes}
-founderGenomes2 <- simulateHoneyBeeGenomes(nMelN = 4,
-                                           nCar = 2,
-                                           nChr = 3,
-                                           nSegSites = 5)
-```
+low because we want a quick example for demonstrative reasons.
 
 Unfortunately, due to the complexity of this function, even using such small
 numbers takes a while to run. Simulating a group of founder genomes with more
 realistic numbers will therefore require a lot of time to run. We suggest
 running this part to an external server and save the outcome as an RData file,
 which we can load in our environment and work with it.
-
-```{r save Rdata file}
-# Save the genomes on a server
-save(founderGenomes2, file = "FounderGenomes2_3chr.RData")
-# Loade the saved genomes elsewhere
-load(file = "FounderGenomes2_3chr.RData")
-```
 
 Besides specifying the number of individuals, chromosomes, and segregating
 sites, `simulateHoneyBeeGenomes()`, also takes a number of genomic parameters:
