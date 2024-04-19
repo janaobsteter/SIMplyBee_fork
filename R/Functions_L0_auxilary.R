@@ -6566,10 +6566,17 @@ setMisc <- function(x, node = NULL, value = NULL) {
       x@misc[[node]] = value
     }else{
       # Legacy misc slot
-      for (ind in seq_len(n)) {
-        if (!is.null(value[ind])) {
-          x@misc[[ind]][node] <- value[ind]
-        }
+      names(value) = rep(x = node, times = n)
+      inode = match(names(x@misc[[1]]),node)
+      inode = inode[!is.na(inode)]
+      if(length(inode) == 0){
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])
+        },simplify = FALSE)
+      }else{
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])[-inode]
+        },simplify = FALSE)
       }
     }
 
@@ -6601,13 +6608,8 @@ getMisc <- function(x, node = NULL) {
         ret = x@misc[[node]]
       }else{
         # Legacy misc slot
-        nInd <- nInd(x)
-        ret <- vector(mode = "list", length = nInd)
-        for (ind in seq_len(nInd)) {
-          if (!is.null(x@misc[[ind]][[node]])) {
-            ret[ind] <- x@misc[[ind]][node]
-          }
-        }
+        nInd = nInd(x)
+        ret = lapply(x@misc,'[[',node)
       }
     }
   } else {
