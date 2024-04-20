@@ -170,7 +170,15 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       }
     } else {
       if (caste == "fathers") {
-        ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          ret <- ifelse(!is.null(slot(x, "queen")),
+                        nInd(x@queen@misc$fathers[[1]]),
+                        0)
+        }else{
+          ret <- ifelse(!is.null(slot(x, "queen")),
+                        nInd(x@queen@misc[[1]]$fathers),
+                        0)
+        }
       } else if (caste == "drones") {
         ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x = x@drones, simParamBee = simParamBee)), 0)
       } else {
@@ -209,7 +217,11 @@ nFathers <- function(x, simParamBee = NULL) {
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
       if (isQueen(x[ind], simParamBee = simParamBee)) {
-        ret[ind] <- nInd(x@misc[[ind]]$fathers)
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          ret[ind] <- nInd(x@misc$fathers[[ind]])
+        }else{
+          ret[ind] <- nInd(x@misc[[ind]]$fathers)
+        }
       }
     }
   } else {
@@ -320,10 +332,17 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
           X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
           FUN = function(x) paste0(x, collapse = "")
         )
-        fathersCsd <- apply(
-          X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
-          FUN = function(x) paste0(x, collapse = "")
-        )
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          fathersCsd <- apply(
+            X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
+            FUN = function(x) paste0(x, collapse = "")
+          )
+        }else{
+          fathersCsd <- apply(
+            X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
+            FUN = function(x) paste0(x, collapse = "")
+          )
+        }
         nComb <- length(queensCsd) * length(fathersCsd)
         ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
       }
@@ -352,15 +371,29 @@ pHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$pHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$pHomBrood
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$pHomBrood[[ind]])) {
+          ret[ind] <- x@misc$pHomBrood[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$pHomBrood)) {
+          ret[ind] <- x@misc[[ind]]$pHomBrood
+        }
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$pHomBrood)) {
-      ret <- NA
-    } else {
-      ret <- x@queen@misc[[1]]$pHomBrood
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      if (is.null(x@queen@misc$pHomBrood[[1]])) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc$pHomBrood[[1]]
+      }
+    }else{
+      if (is.null(x@queen@misc[[1]]$pHomBrood)) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc[[1]]$pHomBrood
+      }
     }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = pHomBrood)
@@ -384,15 +417,29 @@ nHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$nHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$nHomBrood
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$nHomBrood[[ind]])) {
+          ret[ind] <- x@misc$nHomBrood[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$nHomBrood)) {
+          ret[ind] <- x@misc[[ind]]$nHomBrood
+        }
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$nHomBrood)) {
-      ret <- NA
-    } else {
-      ret <- x@queen@misc[[1]]$nHomBrood
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      if (is.null(x@queen@misc$nHomBrood[[1]])) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc$nHomBrood[[1]]
+      }
+    }else{
+      if (is.null(x@queen@misc[[1]]$nHomBrood)) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc[[1]]$nHomBrood
+      }
     }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = nHomBrood)
@@ -1001,15 +1048,25 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- x@misc[[ind]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$yearOfBirth[[ind]])) {
+          ret[ind] <- x@misc$yearOfBirth[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+          ret[ind] <- x@misc[[ind]]$yearOfBirth
+        }
       }
     }
     if (nInd > 1) {
       names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
-    ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      ret <- ifelse(is.null(x@queen@misc$yearOfBirth[[1]]), NA, x@queen@misc[[1]]$yearOfBirth)
+    }else{
+      ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
+    }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth, simParamBee = simParamBee)
     names(ret) <- getId(x)
@@ -1068,8 +1125,14 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$yearOfBirth[[ind]])) {
+          ret[ind] <- currentYear - x@misc$yearOfBirth[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+          ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+        }
       }
     }
     if (nInd > 1) {
@@ -1077,7 +1140,11 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x, simParamBee = simParamBee)) {
-      ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        ret <- currentYear - x@queen@misc$yearOfBirth[[1]]
+      }else{
+        ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      }
     } else {
       ret <- NA
     }
