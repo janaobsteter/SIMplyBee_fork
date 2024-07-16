@@ -44,11 +44,11 @@ fatherGroups <- pullDroneGroupsFromDCA(drones, n = 30, nDrones = 10)
 
 # Create Colony and MultiColony class, cross them and build them up
 colony <- createColony(x = basePop[11])
-colony <- cross(colony, drones = fatherGroups[[1]])
+colony <- cross(colony, drones = fatherGroups[[1]], checkCross = "warning")
 colony <- buildUp(colony, nWorkers = 100, nDrones = 20)
 
 apiary <- createMultiColony(basePop[12:17])
-apiary <- cross(apiary, drones = fatherGroups[2:7])
+apiary <- cross(apiary, drones = fatherGroups[2:7], checkCross = "warning")
 apiary <- buildUp(apiary, nWorkers = 100, nDrones = 20, exact = TRUE)
 ```
 
@@ -78,8 +78,8 @@ and `remnant`. The `swarm` contains the old queen and `p` percentage of workers
 that left the hive. The `remnant` contains the rest of workers `(1-p)`, all the
 drones, and virgin queens that are daughters of the old queen that swarmed.
 
-```{r swarm_figure, echo=FALSE, out.width='100%', fig.cap="Swarm function."}
-knitr::include_graphics("../man/figures/swarm.png")
+```{r swarm_figure, echo=FALSE, out.width='100%', fig.cap="Swarm function"}
+knitr::include_graphics("swarm.png")
 ```
 
 -   Swarming a Colony
@@ -217,7 +217,7 @@ queens and `p` workers. The `split()` function follows the same principles as
 the `swarm()`, hence we will limit explaining the outputs.
 
 ```{r split_figure, echo=FALSE, out.width='80%', fig.cap = "Split function"}
-knitr::include_graphics("../man/figures/split.png")
+knitr::include_graphics("split.png")
 ```
 
 -   Splitting a Colony
@@ -294,7 +294,7 @@ virgin queens from the brood (Figure 3). The function returns a single `Colony`
 or `MultiColony` object (not a list of two).
 
 ```{r supersede_figure, echo=FALSE, out.width='50%', fig.cap = "Supersede function"}
-knitr::include_graphics("../man/figures/supersede.png")
+knitr::include_graphics("supersede.png")
 ```
 
 -   Superseding a Colony
@@ -339,7 +339,7 @@ in terms of reproduction or simulation of events are not allowed with a
 collapsed colony.
 
 ```{r collapse_figure, echo=FALSE, out.width='50%', fig.cap = "Collapse function"}
-knitr::include_graphics("../man/figures/collapse.png")
+knitr::include_graphics("collapse.png")
 ```
 
 -   Collapsing a Colony
