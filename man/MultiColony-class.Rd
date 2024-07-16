@@ -7,10 +7,10 @@
 \alias{show,MultiColony-method}
 \alias{c,MultiColony-method}
 \alias{c,MultiColonyOrNULL-method}
-\alias{[,MultiColony,integerOrNumericOrLogical,ANY,ANY-method}
-\alias{[,MultiColony,character,ANY,ANY-method}
-\alias{[[,MultiColony,integerOrNumericOrLogical,ANY-method}
-\alias{[[,MultiColony,character,ANY-method}
+\alias{[,MultiColony,integerOrNumericOrLogical-method}
+\alias{[,MultiColony,character-method}
+\alias{[[,MultiColony,integerOrNumericOrLogical-method}
+\alias{[[,MultiColony,character-method}
 \alias{[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony-method}
 \alias{[[<-,MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony-method}
 \title{Honeybee multicolony object}
@@ -23,13 +23,13 @@ isMultiColony(x)
 
 \S4method{c}{MultiColonyOrNULL}(x, ...)
 
-\S4method{[}{MultiColony,integerOrNumericOrLogical,ANY,ANY}(x, i, j, drop)
+\S4method{[}{MultiColony,integerOrNumericOrLogical}(x, i, j, drop)
 
-\S4method{[}{MultiColony,character,ANY,ANY}(x, i, j, drop)
+\S4method{[}{MultiColony,character}(x, i, j, drop)
 
-\S4method{[[}{MultiColony,integerOrNumericOrLogical,ANY}(x, i)
+\S4method{[[}{MultiColony,integerOrNumericOrLogical}(x, i)
 
-\S4method{[[}{MultiColony,character,ANY}(x, i)
+\S4method{[[}{MultiColony,character}(x, i)
 
 \S4method{[}{MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,MultiColony}(x, i, j) <- value
 
