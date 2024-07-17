@@ -108,7 +108,11 @@ test_that("createDrones", {
   #Check the caste
   expect_true(all(isDrone(colony@drones, simParamBee = SP)))
   expect_false(all(isDrone(colony@workers, simParamBee = SP)))
-  expect_false(all(isDrone(colony@queen@misc[[1]]$fathers, simParamBee = SP)))
+  if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+    expect_false(all(isDrone(colony@queen@misc$fathers[[1]], simParamBee = SP)))
+  }else{
+    expect_false(all(isDrone(colony@queen@misc[[1]]$fathers, simParamBee = SP)))
+  }
 
   colony1  <- createColony(basePop[4], simParamBee = SP)
   colony1 <- cross(colony1, drones = drones2, simParamBee = SP)
