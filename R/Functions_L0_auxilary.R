@@ -12,7 +12,6 @@
 #' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
 #' @return integer
 #'
-#' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
@@ -2703,16 +2702,25 @@ isGenoHeterozygous <- function(x) {
 #' isCsdHeterozygous(getWorkers(colony))
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  if(is(pop,"MapPop")){
+    genMap = pop@genMap
+  }else{
+    if(is.null(simParamBee)){
+      simParamBee <- get("SP",envir=.GlobalEnv)
+    }
+    nThreads = simParamBee$nThreads
+    genMap = simParamBee$genMap
   }
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
-  }
+
+  # Map markers to genetic map
+  markers = paste(simParamBee$csdChr,
+                  simParamBee$csdPosStart:simParamBee$csdPosStop,
+                  sep="_")
+  lociMap = AlphaSimR:::mapLoci(markers, genMap)
   geno <- getCsdGeno(x = pop, simParamBee = simParamBee, dronesHaploid = FALSE)
   # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
   # to test than isCsdHeterozygous()
-  ret <- isGenoHeterozygous(x = geno)
+  ret <- isGenoHeterozygous(geno)
   return(ret)
 }
 
