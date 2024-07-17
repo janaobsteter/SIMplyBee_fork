@@ -4,6 +4,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom stats rnorm rbeta runif rpois
 #' @importFrom extraDistr rtpois
+#' @importFrom utils packageVersion
 # see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
 #' @description

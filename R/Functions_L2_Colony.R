@@ -301,11 +301,20 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       if (caste == "workers") {
         homInds <- newInds$nHomBrood
         newInds <- newInds$workers
-        x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
-        x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nInd(newInds)
+          x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + homInds
+        }else{
+          x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
+          x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
+        }
       }
       if (caste == "drones") {
-        x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd(newInds)
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nInd(newInds)
+        }else{
+          x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd(newInds)
+        }
       }
       if (is.null(slot(x, caste)) | new) {
         slot(x, caste) <- newInds
@@ -801,12 +810,21 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
                                 year = year, simParamBee = simParamBee
           )
           if (caste == "workers") {
-            x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
-            x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
+            if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+              x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nIndReplaced
+              x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + tmp$nHomBrood
+            }else{
+              x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
+              x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
+            }
             tmp <- tmp$workers
           }
           if (caste == "drones") {
-            x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nIndReplaced
+            if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+              x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nIndReplaced
+            }else{
+              x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nIndReplaced
+            }
           }
 
           slot(x, caste) <- c(
