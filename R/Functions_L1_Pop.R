@@ -126,7 +126,11 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x, simParamBee = simParamBee)) {
-          pop <- x@queen@misc[[1]]$fathers
+          if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+            pop <- x@queen@misc$fathers[[1]]
+          }else{
+            pop <- x@queen@misc[[1]]$fathers
+          }
         } else {
           pop <- NULL
         }
@@ -218,19 +222,34 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
-    ret <- lapply(
-      X = x@misc,
-      FUN = function(z) {
-        if (is.null(z$fathers)) {
-          ret <- NULL
-        } else {
-          if (is.null(nInd)) {
-            n <- nInd(z$fathers)
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      ret = lapply(X = x@misc$fathers,
+                   FUN = function(z){
+                     if(is.null(z)){
+                       ret = NULL
+                     }else{
+                       if (is.null(nInd)) {
+                         n <- nInd(z)
+                       }
+                       ret <- selectInd(pop = z, nInd = n, use = use, simParam = simParamBee)
+                     }
+                   }
+      )
+    }else{
+      ret <- lapply(
+        X = x@misc,
+        FUN = function(z) {
+          if (is.null(z$fathers)) {
+            ret <- NULL
+          } else {
+            if (is.null(nInd)) {
+              n <- nInd(z$fathers)
+            }
+            ret <- selectInd(pop = z$fathers, nInd = n, use = use, simParam = simParamBee)
           }
-          ret <- selectInd(pop = z$fathers, nInd = n, use = use, simParam = simParamBee)
         }
-      }
-    )
+      )
+    }
     if (nInd(x) == 1) {
       ret <- ret[[1]]
     }
@@ -1464,7 +1483,12 @@ cross <- function(x,
         } else if (isColony(x)) {
           virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
         }
-        virginQueen@misc[[1]]$fathers <- virginQueenDrones
+
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          virginQueen@misc$fathers[[1]] <- virginQueenDrones
+        }else{
+          virginQueen@misc[[1]]$fathers <- virginQueenDrones
+        }
         simParamBee$changeCaste(id = virginQueen@id, caste = "queen")
         simParamBee$changeCaste(id = virginQueenDrones@id, caste = "fathers")
 

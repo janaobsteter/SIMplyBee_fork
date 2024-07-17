@@ -169,7 +169,15 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       }
     } else {
       if (caste == "fathers") {
-        ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          ret <- ifelse(!is.null(slot(x, "queen")),
+                        nInd(x@queen@misc$fathers[[1]]),
+                        0)
+        }else{
+          ret <- ifelse(!is.null(slot(x, "queen")),
+                        nInd(x@queen@misc[[1]]$fathers),
+                        0)
+        }
       } else if (caste == "drones") {
         ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x = x@drones, simParamBee = simParamBee)), 0)
       } else {
@@ -208,7 +216,11 @@ nFathers <- function(x, simParamBee = NULL) {
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
       if (isQueen(x[ind], simParamBee = simParamBee)) {
-        ret[ind] <- nInd(x@misc[[ind]]$fathers)
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          ret[ind] <- nInd(x@misc$fathers[[ind]])
+        }else{
+          ret[ind] <- nInd(x@misc[[ind]]$fathers)
+        }
       }
     }
   } else {
@@ -319,10 +331,17 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
           X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
           FUN = function(x) paste0(x, collapse = "")
         )
-        fathersCsd <- apply(
-          X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
-          FUN = function(x) paste0(x, collapse = "")
-        )
+        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+          fathersCsd <- apply(
+            X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
+            FUN = function(x) paste0(x, collapse = "")
+          )
+        }else{
+          fathersCsd <- apply(
+            X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
+            FUN = function(x) paste0(x, collapse = "")
+          )
+        }
         nComb <- length(queensCsd) * length(fathersCsd)
         ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
       }
@@ -351,15 +370,29 @@ pHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$pHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$pHomBrood
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$pHomBrood[[ind]])) {
+          ret[ind] <- x@misc$pHomBrood[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$pHomBrood)) {
+          ret[ind] <- x@misc[[ind]]$pHomBrood
+        }
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$pHomBrood)) {
-      ret <- NA
-    } else {
-      ret <- x@queen@misc[[1]]$pHomBrood
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      if (is.null(x@queen@misc$pHomBrood[[1]])) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc$pHomBrood[[1]]
+      }
+    }else{
+      if (is.null(x@queen@misc[[1]]$pHomBrood)) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc[[1]]$pHomBrood
+      }
     }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = pHomBrood)
@@ -383,15 +416,29 @@ nHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$nHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$nHomBrood
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$nHomBrood[[ind]])) {
+          ret[ind] <- x@misc$nHomBrood[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$nHomBrood)) {
+          ret[ind] <- x@misc[[ind]]$nHomBrood
+        }
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$nHomBrood)) {
-      ret <- NA
-    } else {
-      ret <- x@queen@misc[[1]]$nHomBrood
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      if (is.null(x@queen@misc$nHomBrood[[1]])) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc$nHomBrood[[1]]
+      }
+    }else{
+      if (is.null(x@queen@misc[[1]]$nHomBrood)) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc[[1]]$nHomBrood
+      }
     }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = nHomBrood)
@@ -1000,15 +1047,25 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- x@misc[[ind]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$yearOfBirth[[ind]])) {
+          ret[ind] <- x@misc$yearOfBirth[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+          ret[ind] <- x@misc[[ind]]$yearOfBirth
+        }
       }
     }
     if (nInd > 1) {
       names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
-    ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      ret <- ifelse(is.null(x@queen@misc$yearOfBirth[[1]]), NA, x@queen@misc[[1]]$yearOfBirth)
+    }else{
+      ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
+    }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth, simParamBee = simParamBee)
     names(ret) <- getId(x)
@@ -1067,8 +1124,14 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        if (!is.null(x@misc$yearOfBirth[[ind]])) {
+          ret[ind] <- currentYear - x@misc$yearOfBirth[[ind]]
+        }
+      }else{
+        if (!is.null(x@misc[[ind]]$yearOfBirth)) {
+          ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+        }
       }
     }
     if (nInd > 1) {
@@ -1076,7 +1139,11 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x, simParamBee = simParamBee)) {
-      ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        ret <- currentYear - x@queen@misc$yearOfBirth[[1]]
+      }else{
+        ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      }
     } else {
       ret <- NA
     }
@@ -6532,3 +6599,97 @@ createCrossPlan <- function(x,
   names(crossPlan) <- virginId
   return(crossPlan)
 }
+
+# Misc helpers
+# These functions replace the defunct functions of the same name in AlphaSimR
+
+#' @rdname setMisc
+#' @title Set miscellaneous information in a population
+#'
+#' @description Set miscellaneous information in a population
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param node character, name of the node to set within the \code{x@misc} slot
+#' @param value, value to be saved into \code{x@misc[[*]][[node]]}; length of
+#'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
+#'   it is repeated using \code{rep} (see examples)
+#'
+#' @details A \code{NULL} in \code{value} is ignored
+#'
+#' @return \code{\link{Pop-class}}
+#'
+#' @export
+setMisc <- function(x, node = NULL, value = NULL) {
+  if (isPop(x)) {
+    if (is.null(node)) {
+      stop("Argument node must be provided!")
+    }
+    if (is.null(value)) {
+      stop("Argument value must be provided!")
+    }
+    n <- nInd(x)
+    if (length(value) == 1 && n > 1) {
+      value <- rep(x = value, times = n)
+    }
+    if (length(value) != n) {
+      stop("Argument value must be of length 1 or nInd(x)!")
+    }
+
+    # Check current AlphaSimR version for new or legacy misc slot
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      # New misc slot
+      x@misc[[node]] = value
+    }else{
+      # Legacy misc slot
+      names(value) = rep(x = node, times = n)
+      inode = match(names(x@misc[[1]]),node)
+      inode = inode[!is.na(inode)]
+      if(length(inode) == 0){
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])
+        },simplify = FALSE)
+      }else{
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])[-inode]
+        },simplify = FALSE)
+      }
+    }
+
+  }
+
+  return(x)
+}
+
+#' @rdname getMisc
+#' @title Get miscellaneous information in a population
+#'
+#' @description Get miscellaneous information in a population
+#'
+#' @param x \code{\link{Pop-class}}
+#' @param node character, name of the node to get from the \code{x@misc} slot;
+#'   if \code{NULL} the whole \code{x@misc} slot is returned
+#'
+#' @return The \code{x@misc} slot or its nodes \code{x@misc[[*]][[node]]}
+#'
+#' @export
+getMisc <- function(x, node = NULL) {
+  if (isPop(x)) {
+    if (is.null(node)) {
+      ret <- x@misc
+    } else {
+      # Check current AlphaSimR version for new or legacy misc slot
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        # New misc slot
+        ret = x@misc[[node]]
+      }else{
+        # Legacy misc slot
+        nInd = nInd(x)
+        ret = lapply(x@misc,'[[',node)
+      }
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
