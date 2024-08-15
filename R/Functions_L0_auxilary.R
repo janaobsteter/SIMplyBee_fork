@@ -2779,6 +2779,10 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
     genMap = simParamBee$genMap
   }
 
+  if (is.null(simParamBee$csdChr)) {
+    stop("Csd locus not set.")
+  }
+
   # Map markers to genetic map
   markers = paste(simParamBee$csdChr,
                   simParamBee$csdPosStart:simParamBee$csdPosStop,
@@ -2788,6 +2792,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
   # to test than isCsdHeterozygous()
   ret <- isGenoHeterozygous(geno)
+  ret <- isHeterozygous(pop@geno, lociMap$lociPerChr, lociMap$lociLoc, nThreads = 1)
   return(ret)
 }
 
