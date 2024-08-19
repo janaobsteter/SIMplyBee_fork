@@ -5,6 +5,7 @@
 #include <bitset>
 #include "isHeterozygous.h"
 #ifdef _OPENMP
+#include <omp.h>
 #endif
 
 #endif

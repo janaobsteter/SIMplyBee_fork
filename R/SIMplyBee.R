@@ -1,3 +1,5 @@
+#' @useDynLib SIMplyBee, .registration = TRUE
+#' @import Rcpp
 #' @import AlphaSimR
 #' @importFrom methods classLabel is new setClass setClassUnion setValidity
 #' @importFrom methods setMethod show slot slot<- validObject
