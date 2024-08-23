@@ -1186,7 +1186,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   stored for producing progeny at a later stage. For a better understanding
 #'   of crossing and the functions have a look at the "Crossing" vignette.
 #'
-#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #'   one or more virgin queens / colonies to be mated;
 #' @param crossPlan, named list with names being virgin queen or colony IDs with
 #'   each list element holding the IDs of either selected drones or selected

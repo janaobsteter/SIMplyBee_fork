@@ -525,7 +525,7 @@ test_that("swarm1", {
   apiary <- buildUp(apiary, nWorkers = 100, simParamBee = SP)
 
   # Swarm a colony
-  expect_length(swarm1(colony, p = 0.5, simParamBee = SP),2)
+  expect_length(swarm(colony, p = 0.5, simParamBee = SP),2)
 })
 
 # ---- Collapse -----

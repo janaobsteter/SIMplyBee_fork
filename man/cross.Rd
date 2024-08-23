@@ -19,7 +19,7 @@ cross(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 one or more virgin queens / colonies to be mated;}
 
 \item{crossPlan, }{named list with names being virgin queen or colony IDs with

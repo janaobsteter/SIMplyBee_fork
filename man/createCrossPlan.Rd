@@ -16,9 +16,9 @@ createCrossPlan(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 the object with the virgin queens that need to be crossed. When \code{spatial = TRUE},
-the argument needs to be a code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+the argument needs to be a \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 with the location set}
 
 \item{drones}{\code{\link{Pop-class}}, a population of drones (resembling a drone

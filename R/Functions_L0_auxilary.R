@@ -12,6 +12,7 @@
 #' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
 #' @return integer
 #'
+#' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
@@ -1062,7 +1063,7 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
     }
   } else if (isColony(x)) {
     if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-      ret <- ifelse(is.null(x@queen@misc$yearOfBirth[[1]]), NA, x@queen@misc[[1]]$yearOfBirth)
+      ret <- ifelse(is.null(x@queen@misc$yearOfBirth[[1]]), NA, x@queen@misc$yearOfBirth[[1]])
     }else{
       ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
     }
@@ -2775,7 +2776,6 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
     if(is.null(simParamBee)){
       simParamBee <- get("SP",envir=.GlobalEnv)
     }
-    nThreads = simParamBee$nThreads
     genMap = simParamBee$genMap
   }
 
@@ -2787,12 +2787,12 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
   markers = paste(simParamBee$csdChr,
                   simParamBee$csdPosStart:simParamBee$csdPosStop,
                   sep="_")
-  lociMap = AlphaSimR:::mapLoci(markers, genMap)
-  geno <- getCsdGeno(x = pop, simParamBee = simParamBee, dronesHaploid = FALSE)
-  # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
-  # to test than isCsdHeterozygous()
-  ret <- isGenoHeterozygous(geno)
-  ret <- isHeterozygous(pop@geno, lociMap$lociPerChr, lociMap$lociLoc, nThreads = 1)
+  lociMap = mapLoci(markers, genMap)
+
+  ret <- as.logical(as.vector(isHeterozygous(pop@geno, lociMap$lociPerChr, lociMap$lociLoc, simParamBee$nThreads)))
+  names(ret) <- pop@id
+  caste <- getCaste(pop, simParamBee = simParamBee)
+  ret[caste == "drones"] <- TRUE
   return(ret)
 }
 
@@ -6424,9 +6424,9 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'   virgin queens/colonies either at random (\code{spatial = FALSE})
 #'   or according to the distance between colonies (\code{spatial = TRUE}).
 #'
-#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
 #'   the object with the virgin queens that need to be crossed. When \code{spatial = TRUE},
-#'   the argument needs to be a code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'   the argument needs to be a \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
 #'   with the location set
 #' @param drones \code{\link{Pop-class}}, a population of drones (resembling a drone
 #'   congregation area) available for mating. When \code{spatial = TRUE}, the user can not
@@ -6698,3 +6698,41 @@ getMisc <- function(x, node = NULL) {
   return(ret)
 }
 
+
+#' @rdname mapLoci
+#' @title Finds loci on a genetic map and return a list of positions
+#'
+#' @description Finds loci on a genetic map and return a list of positions.
+#' This function is adopted from AlphaSimR (Gaynor et al., 2021)
+#'
+#' @param markers character, vector of marker positions as "chr_position"
+#' @param genMap list, genetic map
+#'
+#' @return A list with number of loci per chromosome and genetic positions of the markers
+mapLoci = function(markers, genMap){
+  # Check that the markers are present on the map
+  genMapMarkerNames = unlist(lapply(genMap, names))
+  stopifnot(all(markers%in%genMapMarkerNames))
+
+  # Create lociPerChr and lociLoc
+  lociPerChr = integer(length(genMap))
+  lociLoc = vector("list", length(genMap))
+
+  # Loop through chromosomes
+  for(i in 1:length(genMap)){
+
+    # Initialize lociLoc
+    lociLoc[[i]] = integer()
+
+    # Find matches if they exist
+    take = match(names(genMap[[i]]), markers)
+    lociPerChr[i] = length(na.omit(take))
+    if(lociPerChr[i]>0L){
+      lociLoc[[i]] = which(!is.na(take))
+    }
+  }
+  lociLoc = unlist(lociLoc)
+
+  return(list(lociPerChr=lociPerChr,
+              lociLoc=lociLoc))
+}
