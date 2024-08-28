@@ -10,22 +10,22 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' @description An object holding a collection of honeybee colonies. It behaves
 #'   like a list.
 #'
-#' @slot colonies list, a collection of \code{\link{Colony-class}} objects
+#' @slot colonies list, a collection of \code{\link[SIMplyBee]{Colony-class}} objects
 #'
-#' @param object \code{\link{MultiColony-class}}
-#' @param x \code{\link{MultiColony-class}}
+#' @param object \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param i integer, numeric, logical, or character, index or ID to select
 #'   a colony (see examples)
 #' @param j not used
 #' @param drop not used
-#' @param value \code{\link{Colony-class}} or \code{\link{MultiColony-class}} to
+#' @param value \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} to
 #'   assign into \code{x} based on colony index or name \code{i}
-#' @param ... \code{NULL}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
+#' @param ... \code{NULL}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @seealso \code{\link{createMultiColony}}
+#' @seealso \code{\link[SIMplyBee]{createMultiColony}}
 #'
-#' @return \code{\link{MultiColony-class}} or \code{\link{Colony-class}}
+#' @return \code{\link[SIMplyBee]{MultiColony-class}} or \code{\link[SIMplyBee]{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -206,7 +206,7 @@ setMethod(
 )
 
 # [ ----
-#' @describeIn MultiColony-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{MultiColony-class}})
+#' @describeIn MultiColony-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
 setMethod(
   f = "[",
   signature(x = "MultiColony", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
@@ -217,7 +217,7 @@ setMethod(
   }
 )
 
-#' @describeIn MultiColony-class Extract a colony (one or more!) with a character ID (name) (return \code{\link{MultiColony-class}})
+#' @describeIn MultiColony-class Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
 setMethod(
   f = "[",
   signature(x = "MultiColony", i = "character", j = "ANY", drop = "ANY"),
@@ -230,7 +230,7 @@ setMethod(
 )
 
 # [[ ----
-#' @describeIn MultiColony-class Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
+#' @describeIn MultiColony-class Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
 setMethod(
   f = "[[",
   signature(x = "MultiColony", i = "integerOrNumericOrLogical"),
@@ -246,7 +246,7 @@ setMethod(
   }
 )
 
-#' @describeIn MultiColony-class Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
+#' @describeIn MultiColony-class Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
 setMethod(
   f = "[[",
   signature(x = "MultiColony", i = "character"),

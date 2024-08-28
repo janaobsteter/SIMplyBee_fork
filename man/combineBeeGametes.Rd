@@ -7,17 +7,17 @@
 combineBeeGametes(queen, drones, nProgeny = 1, simParamBee = NULL)
 }
 \arguments{
-\item{queen}{\code{\link{Pop-class}}, with a single diploid individual}
+\item{queen}{\code{\link[AlphaSimR]{Pop-class}}, with a single diploid individual}
 
-\item{drones}{\code{\link{Pop-class}}, with one or more diploid (double
+\item{drones}{\code{\link[AlphaSimR]{Pop-class}}, with one or more diploid (double
 haploid) individual(s)}
 
 \item{nProgeny}{integer, number of progeny to create per cross}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with diploid individuals
+\code{\link[AlphaSimR]{Pop-class}} with diploid individuals
 
 # Not exporting this function, since its just a helper
 }
@@ -26,5 +26,5 @@ Level 1 function that produces diploid offspring from a mated queen.
   Queen is diploid, while drones are double haploids so we use AlphaSimR diploid
   functionality to make this cross, but since drones are double haploids we
   get the desired outcome. This is an utility function, and you most likely
-  want to use the \code{\link{cross}} functions.
+  want to use the \code{\link[SIMplyBee]{cross}} functions.
 }

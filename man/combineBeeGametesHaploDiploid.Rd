@@ -7,16 +7,16 @@
 combineBeeGametesHaploDiploid(queen, drones, nProgeny = 1, simParamBee = NULL)
 }
 \arguments{
-\item{queen}{\code{\link{Pop-class}}, with a single diploid individual}
+\item{queen}{\code{\link[AlphaSimR]{Pop-class}}, with a single diploid individual}
 
-\item{drones}{\code{\link{Pop-class}}, with one or more haploid individual(s)}
+\item{drones}{\code{\link[AlphaSimR]{Pop-class}}, with one or more haploid individual(s)}
 
 \item{nProgeny}{integer, number of progeny to create per cross}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with diploid individuals
+\code{\link[AlphaSimR]{Pop-class}} with diploid individuals
 }
 \description{
 Level 1 function that produces diploid offspring from a mated queen.
@@ -24,7 +24,7 @@ Level 1 function that produces diploid offspring from a mated queen.
   (with recombination) from her and merge them with drone genomes (=gametes),
   where we randomly re-sample drones to get the desired number of progeny.
   This is an utility function, and you most likely want to use the
-  \code{\link{cross}} function.
+  \code{\link[SIMplyBee]{cross}} function.
 }
 \details{
 This would be the right approach to handle haplo-diploid inheritance

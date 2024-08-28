@@ -36,12 +36,12 @@ isMultiColony(x)
 \S4method{[[}{MultiColony,integerOrNumericOrLogicalOrCharacter,ANY,Colony}(x, i, j) <- value
 }
 \arguments{
-\item{x}{\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{object}{\code{\link{MultiColony-class}}}
+\item{object}{\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{...}{\code{NULL}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{...}{\code{NULL}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{i}{integer, numeric, logical, or character, index or ID to select
 a colony (see examples)}
@@ -50,11 +50,11 @@ a colony (see examples)}
 
 \item{drop}{not used}
 
-\item{value}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}} to
+\item{value}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} to
 assign into \code{x} based on colony index or name \code{i}}
 }
 \value{
-\code{\link{MultiColony-class}} or \code{\link{Colony-class}}
+\code{\link[SIMplyBee]{MultiColony-class}} or \code{\link[SIMplyBee]{Colony-class}}
 }
 \description{
 An object holding a collection of honeybee colonies. It behaves
@@ -70,13 +70,13 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{c(MultiColonyOrNULL)}: Combine multiple Colony and MultiColony objects
 
-\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
 
-\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
 
 \item \code{`[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into MultiColony
 
@@ -86,7 +86,7 @@ An object holding a collection of honeybee colonies. It behaves
 \section{Slots}{
 
 \describe{
-\item{\code{colonies}}{list, a collection of \code{\link{Colony-class}} objects}
+\item{\code{colonies}}{list, a collection of \code{\link[SIMplyBee]{Colony-class}} objects}
 }}
 
 \examples{
@@ -160,5 +160,5 @@ try(apiary2[c("4", "5")] <- apiary1)
 try(apiary2[c("4", "5")] <- apiary1)
 }
 \seealso{
-\code{\link{createMultiColony}}
+\code{\link[SIMplyBee]{createMultiColony}}
 }

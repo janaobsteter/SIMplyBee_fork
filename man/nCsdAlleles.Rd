@@ -7,8 +7,8 @@
 nCsdAlleles(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return the number
 of distinct csd alleles in either the entire population, colony, or
@@ -16,19 +16,19 @@ multicolony. Note this has nothing to do with the colony collapse. It's
 like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
 examples about this behaviour.Default is \code{FALSE}.}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer representing the number of distinct csd alleles when \code{x}
-  is \code{\link{Pop-class}} (or ), list of integer
-  when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
-  list of a list of integer when \code{x} is \code{\link{MultiColony-class}},
+  is \code{\link[AlphaSimR]{Pop-class}} (or ), list of integer
+  when \code{x} is \code{\link[SIMplyBee]{Colony-class}} (list nodes named by caste) and
+  list of a list of integer when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}},
   outer list is named by colony id when \code{x} is
-  \code{\link{MultiColony-class}}; the integer rep
+  \code{\link[SIMplyBee]{MultiColony-class}}; the integer rep
 }
 \description{
 Level 0 function that returns the number of distinct csd alleles
-  in input. See \code{\link{SimParamBee}} for more information about the csd
+  in input. See \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd
   locus.
 }
 \details{
@@ -41,7 +41,7 @@ Queen has 2 distinct csd alleles, since she has to be heterozygous
   of \code{nCsdAlleles()} from queens and fathers. For this reason, we also
   report \code{nCsdAlleles()} from queens and fathers combined (see the
   \code{queenAndFathers} list node) when \code{x} is
-  \code{\link{Colony-class}}. This last measure is then the expected number
+  \code{\link[SIMplyBee]{Colony-class}}. This last measure is then the expected number
   of csd alleles in a colony as opposed to realised number of csd alleles in
   a sample of virgin queens and workers. Similarly as for virgin queens and
   workers, \code{nCsdAlleles()} from drones gives a noisy realisation of

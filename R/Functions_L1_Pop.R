@@ -4,41 +4,41 @@
 #' @title Access individuals of a caste
 #'
 #' @description Level 1 function that returns individuals of a caste. These
-#'   individuals stay in the colony (compared to \code{\link{pullCastePop}}).
+#'   individuals stay in the colony (compared to \code{\link[SIMplyBee]{pullCastePop}}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
-#'   exceptionally \code{\link{Pop-class}} for calling \code{getFathers}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
+#'   exceptionally \code{\link[AlphaSimR]{Pop-class}} for calling \code{getFathers}
 #'   on a queen population
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed; if there are less individuals than requested,
 #'   we return the ones available - this can return \code{NULL}.
-#'   If input is \code{\link{MultiColony-class}},
+#'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies.
-#' @param use character, all options provided by \code{\link{selectInd}} and
+#' @param use character, all options provided by \code{\link[AlphaSimR]{selectInd}} and
 #'   \code{"order"} that selects \code{1:nInd} individuals (meaning it always
 #'   returns at least one individual, even if \code{nInd = 0})
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQueen}}, \code{\link{getFathers}},
-#'   \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
-#'   \code{\link{getDrones}}
+#' @seealso \code{\link[SIMplyBee]{getQueen}}, \code{\link[SIMplyBee]{getFathers}},
+#'   \code{\link[SIMplyBee]{getVirginQueens}}, \code{\link[SIMplyBee]{getWorkers}}, and
+#'   \code{\link[SIMplyBee]{getDrones}}
 #'
-#' @return when \code{x} is \code{\link{Colony-class}} return is
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
+#' @return when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or list for \code{caste
 #'   == "all"} with nodes named by caste; when \code{x} is
-#'   \code{\link{MultiColony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
-#'   all the populations in the list with \code{\link{mergePops}} function.
+#'   \code{\link[SIMplyBee]{MultiColony-class}} return is a named list of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste == "all"}. You can merge
+#'   all the populations in the list with \code{\link[AlphaSimR]{mergePops}} function.
 #'
-#' @seealso \code{\link{getCasteId}} and \code{\link{getCaste}}
+#' @seealso \code{\link[SIMplyBee]{getCasteId}} and \code{\link[SIMplyBee]{getCaste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -126,11 +126,8 @@ getCastePop <- function(x, caste = "all", nInd = NULL, use = "rand",
     } else {
       if (caste == "fathers") {
         if (isQueenPresent(x, simParamBee = simParamBee)) {
-          if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-            pop <- x@queen@misc$fathers[[1]]
-          }else{
-            pop <- x@queen@misc[[1]]$fathers
-          }
+          pop <- x@queen@misc$fathers[[1]]
+
         } else {
           pop <- NULL
         }
@@ -222,34 +219,18 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
-    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-      ret = lapply(X = x@misc$fathers,
-                   FUN = function(z){
-                     if(is.null(z)){
-                       ret = NULL
-                     }else{
-                       if (is.null(nInd)) {
-                         n <- nInd(z)
-                       }
-                       ret <- selectInd(pop = z, nInd = n, use = use, simParam = simParamBee)
+    ret = lapply(X = x@misc$fathers,
+                 FUN = function(z){
+                   if(is.null(z)){
+                     ret = NULL
+                   }else{
+                     if (is.null(nInd)) {
+                       n <- nInd(z)
                      }
+                     ret <- selectInd(pop = z, nInd = n, use = use, simParam = simParamBee)
                    }
-      )
-    }else{
-      ret <- lapply(
-        X = x@misc,
-        FUN = function(z) {
-          if (is.null(z$fathers)) {
-            ret <- NULL
-          } else {
-            if (is.null(nInd)) {
-              n <- nInd(z$fathers)
-            }
-            ret <- selectInd(pop = z$fathers, nInd = n, use = use, simParam = simParamBee)
-          }
-        }
-      )
-    }
+                 }
+    )
     if (nInd(x) == 1) {
       ret <- ret[[1]]
     }
@@ -304,42 +285,42 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #'   locus is active, it takes it into account and any csd homozygotes are
 #'   removed and counted towards homozygous brood.
 #'
-#' @param x \code{link{MapPop-class}} (only if caste is "virginQueens"), or
-#'   \code{Pop} (only if caste is "drones") or \code{\link{Colony-class}}
-#'   or \code{\link{MultiColony-class}}
+#' @param x \code{link[AlphaSimR]{MapPop-class}} (only if caste is "virginQueens"), or
+#'   \code{Pop} (only if caste is "drones") or \code{\link[SIMplyBee]{Colony-class}}
+#'   or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
 #' @param nInd numeric or function, number of caste individuals; if \code{NULL} then
-#'   \code{\link{SimParamBee}$nWorkers},  \code{\link{SimParamBee}$nDrones}
-#'   or \code{\link{SimParamBee}$nVirginQueens} is used depending on the caste;
-#'   only used when \code{x} is \code{\link{Colony-class}} or
-#'   \code{\link{MultiColony-class}}, when \code{x} is \code{link{MapPop-class}}
+#'   \code{\link[SIMplyBee]{SimParamBee}$nWorkers},  \code{\link[SIMplyBee]{SimParamBee}$nDrones}
+#'   or \code{\link[SIMplyBee]{SimParamBee}$nVirginQueens} is used depending on the caste;
+#'   only used when \code{x} is \code{\link[SIMplyBee]{Colony-class}} or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, when \code{x} is \code{link[AlphaSimR]{MapPop-class}}
 #'   all individuals in \code{x} are converted into virgin queens
 #' @param exact logical, only relevant when creating workers,
 #'   if the csd locus is active and exact is \code{TRUE},
 #'   create the exactly specified number of viable workers (heterozygous on the
 #'   csd locus)
 #' @param year numeric, year of birth for virgin queens
-#' @param editCsd logical (only active when \code{x} is \code{link{MapPop-class}}),
+#' @param editCsd logical (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}}),
 #'   whether the csd locus should be edited to ensure heterozygosity at the csd
 #'   locus (to get viable virgin queens); see \code{csdAlleles}
-#' @param csdAlleles \code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+#' @param csdAlleles \code{NULL} or list (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}});
 #'   If \code{NULL}, then the function samples a heterozygous csd genotype for
 #'   each virgin queen from all possible csd alleles.
 #'   If not \code{NULL}, the user provides a list of length \code{nInd} with each
 #'   node holding a matrix or a data.frame, each having two rows and n columns.
 #'   Each row must hold one csd haplotype (allele) that will be assigned to a
 #'   virgin queen. The n columns span the length of the csd locus as specified
-#'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
+#'   in \code{\link[SIMplyBee]{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
-#' @return when \code{x} is \code{link{MapPop-class}} returns
-#'   \code{virginQueens} (a \code{\link{Pop-class}});
-#'   when \code{x} is \code{\link{Colony-class}} returns
-#'   \code{virginQueens} (a \code{\link{Pop-class}});
-#'   when \code{x} is \code{\link{MultiColony-class}}
-#'   return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
+#' @return when \code{x} is \code{\link[AlphaSimR]{MapPop-class}} returns
+#'   \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
+#'   when \code{x} is \code{\link[SIMplyBee]{Colony-class}} returns
+#'   \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
+#'   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
+#'   return is a named list of \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
 #'   named by colony ID
 #'
 #' @examples
@@ -448,7 +429,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
     }
     ret@sex[] <- "F"
-    simParamBee$changeCaste(id = ret@id, caste = "V")
+    simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
     if (!is.null(year)) {
       ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
     }
@@ -477,7 +458,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       ret <- mergePops(ret)
     }
     ret@sex[] <- "M"
-    simParamBee$addToCaste(id = ret@id, caste = "D")
+    simParamBee$addToCaste(id = ret@id, caste = "drones")
   } else if (isColony(x)) {
     if (!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("Missing queen!")
@@ -519,12 +500,12 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         ret$nHomBrood <- NA
       }
       ret$workers@sex[] <- "F"
-      simParamBee$addToCaste(id = ret$workers@id, caste = "W")
+      simParamBee$addToCaste(id = ret$workers@id, caste = "workers")
     } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
       ret <- createCastePop(x = x, caste = "workers",
                             nInd = nInd, exact = TRUE, simParamBee = simParamBee)$workers
       ret@sex[] <- "F"
-      simParamBee$changeCaste(id = ret@id, caste = "V")
+      simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
       if (!is.null(year)) {
         ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
       }
@@ -534,7 +515,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         simParam = simParamBee
       )
       ret@sex[] <- "M"
-      simParamBee$addToCaste(id = ret@id, caste = "D")
+      simParamBee$addToCaste(id = ret@id, caste = "drones")
     }
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
@@ -606,15 +587,15 @@ createVirginQueens <- function(x, nInd = NULL,
 #'   Queen is diploid, while drones are double haploids so we use AlphaSimR diploid
 #'   functionality to make this cross, but since drones are double haploids we
 #'   get the desired outcome. This is an utility function, and you most likely
-#'   want to use the \code{\link{cross}} functions.
+#'   want to use the \code{\link[SIMplyBee]{cross}} functions.
 #'
-#' @param queen \code{\link{Pop-class}}, with a single diploid individual
-#' @param drones \code{\link{Pop-class}}, with one or more diploid (double
+#' @param queen \code{\link[AlphaSimR]{Pop-class}}, with a single diploid individual
+#' @param drones \code{\link[AlphaSimR]{Pop-class}}, with one or more diploid (double
 #'   haploid) individual(s)
 #' @param nProgeny integer, number of progeny to create per cross
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Pop-class}} with diploid individuals
+#' @return \code{\link[AlphaSimR]{Pop-class}} with diploid individuals
 #'
 #' # Not exporting this function, since its just a helper
 combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
@@ -640,18 +621,18 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
 #'   (with recombination) from her and merge them with drone genomes (=gametes),
 #'   where we randomly re-sample drones to get the desired number of progeny.
 #'   This is an utility function, and you most likely want to use the
-#'   \code{\link{cross}} function.
+#'   \code{\link[SIMplyBee]{cross}} function.
 #'
-#' @param queen \code{\link{Pop-class}}, with a single diploid individual
-#' @param drones \code{\link{Pop-class}}, with one or more haploid individual(s)
+#' @param queen \code{\link[AlphaSimR]{Pop-class}}, with a single diploid individual
+#' @param drones \code{\link[AlphaSimR]{Pop-class}}, with one or more haploid individual(s)
 #' @param nProgeny integer, number of progeny to create per cross
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details This would be the right approach to handle haplo-diploid inheritance
 #'   in bees, but it causes a raft of downstream issues, since AlphaSimR assumes
 #'   that individuals have the same ploidy. Hence, we don't use this function.
 #'
-#' @return \code{\link{Pop-class}} with diploid individuals
+#' @return \code{\link[AlphaSimR]{Pop-class}} with diploid individuals
 #'
 combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   # An attempt to have drones properly haploid, but have hit AlphaSimR limits
@@ -752,22 +733,22 @@ combineBeeGametesHaploDiploid <- function(queen, drones, nProgeny = 1, simParamB
 #'   or MultiColony.  Such a population is often referred to as a drone
 #'   congregation area (DCA).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param nInd numeric, number of random drones to pull from each colony,
 #'   if \code{NULL} all drones in a colony are pulled
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details In reality, drones leave the colony to mate. They die after that.
 #'   In this function we only get a copy of drones from \code{x}, for
 #'   computational efficiency and ease of use. However, any mating will change
 #'   the caste of drones to fathers, and they won't be available for future
-#'   matings (see \code{\link{cross}}). Not unless
+#'   matings (see \code{\link[SIMplyBee]{cross}}). Not unless
 #'   \code{removeFathers = FALSE}.
 #'
-#' @return \code{\link{Pop-class}}
+#' @return \code{\link[AlphaSimR]{Pop-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -824,12 +805,12 @@ createDCA <- function(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL) 
 #'   and second, produces drones from the DPQs. All the created drones form a
 #'   DCA at a mating station.
 #'
-#' @param colony \code{\link{Colony-class}} to produce drone producing queens from
+#' @param colony \code{\link[SIMplyBee]{Colony-class}} to produce drone producing queens from
 #' @param nDPQs integer, the number of drone producing queens
 #' @param nDronePerDPQ integer, number of drones each DPQ contributed to the DCA
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Pop-class}} with created drones resembling a DCA at a mating station
+#' @return \code{\link[AlphaSimR]{Pop-class}} with created drones resembling a DCA at a mating station
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -879,14 +860,14 @@ createMatingStationDCA <- function(colony, nDPQs = 20, nDronePerDPQ = NULL, simP
 #' @description Level 1 function that pulls individuals from a population and
 #'   update the population (these individuals don't stay in a population).
 #'
-#' @param pop \code{\link{Pop-class}}
+#' @param pop \code{\link[AlphaSimR]{Pop-class}}
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} pull all
 #'   individuals
-#' @param use character, all options provided by \code{\link{selectInd}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param use character, all options provided by \code{\link[AlphaSimR]{selectInd}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return list with a node \code{pulled} holding \code{\link{Pop-class}} of
-#'   pulled individuals and a node \code{remnant)} holding \code{\link{Pop-class}}
+#' @return list with a node \code{pulled} holding \code{\link[AlphaSimR]{Pop-class}} of
+#'   pulled individuals and a node \code{remnant)} holding \code{\link[AlphaSimR]{Pop-class}}
 #'   of remaining individuals
 #'
 #' @examples
@@ -925,14 +906,14 @@ pullInd <- function(pop, nInd = NULL, use = "rand", simParamBee = NULL) {
 #'   die after mating, so they can't be present in the DCA anymore. Be careful
 #'   what you do with the DCA object outside function to avoid drone "copies".
 #'
-#' @param DCA \code{\link{Pop-class}}, population of drones
+#' @param DCA \code{\link[AlphaSimR]{Pop-class}}, population of drones
 #' @param n integer, number of drone groups to be created
 #' @param nDrones numeric of function, number of drones that a virgin queen
-#'    mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#'    mates with; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nFathers} is used
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nDrones} when this argument is a function
 #'
-#' @return list of \code{\link{Pop-class}}
+#' @return list of \code{\link[AlphaSimR]{Pop-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -993,30 +974,30 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #'
 #' @description Level 1 function that pulls individuals from a caste in a
 #'   colony. These individuals are removed from the colony (compared to
-#'   \code{\link{getCaste}}).
+#'   \code{\link[SIMplyBee]{getCaste}}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "queen", "workers", "drones", or "virginQueens"
 #' @param nInd numeric, number of individuals to pull, if \code{NULL} all
-#'   individuals are pulled. If input is \code{\link{MultiColony-class}},
+#'   individuals are pulled. If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies.
-#' @param use character, all options provided by \code{\link{selectInd}}
+#' @param use character, all options provided by \code{\link[AlphaSimR]{selectInd}}
 #' @param removeFathers logical, removes \code{drones} that have already mated;
 #'   set to \code{FALSE} if you would like to get drones for mating with multiple
 #'   virgin queens, say via insemination
 #' @param collapse logical, whether to return a single merged population
 #'   for the pulled individuals (does not affect the remnant colonies)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{pullQueen}}, \code{\link{pullVirginQueens}},
-#'   \code{\link{pullWorkers}}, and \code{\link{pullDrones}}
+#' @seealso \code{\link[SIMplyBee]{pullQueen}}, \code{\link[SIMplyBee]{pullVirginQueens}},
+#'   \code{\link[SIMplyBee]{pullWorkers}}, and \code{\link[SIMplyBee]{pullDrones}}
 #'
-#' @return list of \code{\link{Pop-class}} and \code{\link{Colony-class}}
-#'   when \code{x} is \code{\link{Colony-class}} and list of (a list of
-#'   \code{\link{Pop-class}} named by colony id) and
-#'   \code{\link{MultiColony-class}} when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#' @return list of \code{\link[AlphaSimR]{Pop-class}} and \code{\link[SIMplyBee]{Colony-class}}
+#'   when \code{x} is \code{\link[SIMplyBee]{Colony-class}} and list of (a list of
+#'   \code{\link[AlphaSimR]{Pop-class}} named by colony id) and
+#'   \code{\link[SIMplyBee]{MultiColony-class}} when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1176,34 +1157,34 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   of all given colonies
 #'
 #' @description Level 1 function that crosses (mates) a virgin queen to a group
-#'   of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
-#'   in a colony (\code{\link{Colony-class}}), or multi-colony (\code{\link{MultiColony-class}}).
+#'   of drones. The virgin queen(s) could be within a population (\code{\link[AlphaSimR]{Pop-class}}),
+#'   in a colony (\code{\link[SIMplyBee]{Colony-class}}), or multi-colony (\code{\link[SIMplyBee]{MultiColony-class}}).
 #'   This function does not create any progeny, it only stores the mated drones
 #'   (fathers) so we can later create progeny as needed. When input is a
-#'   (\code{\link{Colony-class}}) or (\code{\link{MultiColony-class}}), one
+#'   (\code{\link[SIMplyBee]{Colony-class}}) or (\code{\link[SIMplyBee]{MultiColony-class}}), one
 #'   virgin queens is selected at random, mated, and promoted to the queen of
 #'   the colony. Other virgin queens are destroyed. Mated drones (fathers) are
 #'   stored for producing progeny at a later stage. For a better understanding
 #'   of crossing and the functions have a look at the "Crossing" vignette.
 #'
-#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @param x \code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 #'   one or more virgin queens / colonies to be mated;
 #' @param crossPlan, named list with names being virgin queen or colony IDs with
 #'   each list element holding the IDs of either selected drones or selected
 #'   drone producing colonies, OR a string "create" if you want the cross plan to be created
 #'   internally. The function can create a random (\code{spatial = FALSE})
 #'   or spatial (\code{spatial = TRUE}) cross plan internally. Also see
-#'   \code{\link{createCrossPlan}}.
-#' @param drones a \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
+#'   \code{\link[SIMplyBee]{createCrossPlan}}.
+#' @param drones a \code{\link[AlphaSimR]{Pop-class}} or a list of \code{\link[AlphaSimR]{Pop-class}},
 #'   group(s) of drones that will be mated with virgin queen(s).
-#'   See \code{\link{pullDroneGroupsFromDCA}}) to create a list of drone "packages".
-#'   A single \code{\link{Pop-class}} is only allowed when mating
+#'   See \code{\link[SIMplyBee]{pullDroneGroupsFromDCA}}) to create a list of drone "packages".
+#'   A single \code{\link[AlphaSimR]{Pop-class}} is only allowed when mating
 #'   a single virgin queen or colony, or when mating according to a cross plan that
 #'   includes drones' IDs. When creating a spatial cross plan internally, males
-#'   can not be provided through the \code{drones} argument as a \code{\link{Pop-class}},
+#'   can not be provided through the \code{drones} argument as a \code{\link[AlphaSimR]{Pop-class}},
 #'   but should be provided through the \code{droneColonies} argument as
-#'   or \code{\link{MultiColony-class}}
-#' @param droneColonies \code{\link{MultiColony-class}} with all available
+#'   or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param droneColonies \code{\link[SIMplyBee]{MultiColony-class}} with all available
 #'   drone producing colonies. Provided when \code{drones} is not provided (NULL). When
 #'   providing drone producing colonies, the cross function uses a cross plan, that can
 #'   either be provided by the user through (\code{crossPlan}) argument or created
@@ -1215,7 +1196,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #' @param radius numeric, the radius around the virgin colony in which to sample mating partners,
 #'   only needed when \code{spatial = TRUE}
 #' @param checkCross character, throw a warning (when \code{checkCross = "warning"}),
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @details This function changes caste for the mated drones to fathers, and
@@ -1223,19 +1204,19 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   use these individuals in matings any more!
 #'
 #'   If the supplied drone population is empty (has 0 individuals), which
-#'   can happen in edge cases or when \code{\link{nFathersPoisson}} is used
-#'   instead of \code{\link{nFathersTruncPoisson}}, or when performing spatially-aware mating
+#'   can happen in edge cases or when \code{\link[SIMplyBee]{nFathersPoisson}} is used
+#'   instead of \code{\link[SIMplyBee]{nFathersTruncPoisson}}, or when performing spatially-aware mating
 #'   and no drone producing colonies are found in the vicinity, then mating of a virgin
 #'   queen will fail and she will stay virgin. This can happen for just a few
 #'   of many virgin queens, which can be annoying to track down, but you can use
-#'   \code{\link{isQueen}} or \code{\link{isVirginQueen}} to find such virgin
+#'   \code{\link[SIMplyBee]{isQueen}} or \code{\link[SIMplyBee]{isVirginQueen}} to find such virgin
 #'   queens. You can use \code{checkCross} to alert you about this situation.
 #'
-#' @seealso \code{\link{Colony-class}} on how we store the fathers along the
+#' @seealso \code{\link[SIMplyBee]{Colony-class}} on how we store the fathers along the
 #'   queen.  For more examples for mating with either externally or internally created cross plan,
-#'  please see \code{\link{createCrossPlan}}
+#'  please see \code{\link[SIMplyBee]{createCrossPlan}}
 #'
-#' @return \code{\link{Pop-class}} with mated queen(s). The misc slot of the
+#' @return \code{\link[AlphaSimR]{Pop-class}} with mated queen(s). The misc slot of the
 #'   queens contains additional information about the number of workers, drones,
 #'   and homozygous brood produced, and the expected percentage of csd homozygous
 #'   brood.
@@ -1348,9 +1329,9 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #' nFathers(apiary4)
 #'
 #' @seealso For crossing virgin queens according to a cross plan, see
-#'   \code{\link{createCrossPlan}}.
+#'   \code{\link[SIMplyBee]{createCrossPlan}}.
 #'   For crossing virgin queens on a mating stations, see
-#'   \code{\link{createMatingStationDCA}}
+#'   \code{\link[SIMplyBee]{createMatingStationDCA}}
 #'
 #' @export
 cross <- function(x,
@@ -1483,13 +1464,11 @@ cross <- function(x,
         } else if (isColony(x)) {
           virginQueen <- selectInd(x@virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
         }
-        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-          virginQueen@misc$fathers[[1]] <- virginQueenDrones
-        }else{
-          virginQueen@misc[[1]]$fathers <- virginQueenDrones
-        }
-        simParamBee$changeCaste(id = virginQueen@id, caste = "Q")
-        simParamBee$changeCaste(id = virginQueenDrones@id, caste = "F")
+
+        virginQueen@misc$fathers[[1]] <- virginQueenDrones
+
+        simParamBee$changeCaste(id = virginQueen@id, caste = "queen")
+        simParamBee$changeCaste(id = virginQueenDrones@id, caste = "fathers")
 
         virginQueen <- setMisc(x = virginQueen, node = "nWorkers", value = 0)
         virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
@@ -1507,7 +1486,7 @@ cross <- function(x,
           x <- reQueen(x = x, queen = virginQueen, simParamBee = simParamBee)
           x <- removeVirginQueens(x, simParamBee = simParamBee)
           ret <- x
-       }
+        }
       }
     }
     if (isPop(x)) {
@@ -1554,14 +1533,14 @@ cross <- function(x,
 #'
 #' @description Level 1 function that sets the queen's year of birth.
 #'
-#' @param x \code{\link{Pop-class}} (one or more than one queen),
-#'   \code{\link{Colony-class}} (one colony), or
-#'   \code{\link{MultiColony-class}} (more colonies)
+#' @param x \code{\link[AlphaSimR]{Pop-class}} (one or more than one queen),
+#'   \code{\link[SIMplyBee]{Colony-class}} (one colony), or
+#'   \code{\link[SIMplyBee]{MultiColony-class}} (more colonies)
 #' @param year integer, the year of the birth of the queen
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}} with queens having the year of birth set
+#' @return \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}} with queens having the year of birth set
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

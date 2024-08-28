@@ -13,8 +13,8 @@ calcInheritanceCriterion(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}} or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}} or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{queenTrait}{numeric (column position) or character (column name), trait
 that represents queen's effect on the colony value; if \code{NULL}
@@ -28,12 +28,12 @@ then this effect is 0}
 either "gv" (genetic value), "ebv" (estimated breeding value),
 or "pheno" (phenotypic value)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer when \code{x} is
-  \code{\link{Colony-class}} and a named list when \code{x} is
-  \code{\link{MultiColony-class}}, where names are colony IDs
+  \code{\link[SIMplyBee]{Colony-class}} and a named list when \code{x} is
+  \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 }
 \description{
 Level 0 function that calculates the inheritance criterion as the
@@ -78,10 +78,10 @@ calcInheritanceCriterion(apiary, queenTrait = 1, workersTrait = 2)
 \references{
 Du, M., et al. (2021) Short-term effects of controlled mating and selection
   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-  \doi{/10.1038/s41437-021-00411-2}
+  \doi{10.1038/s41437-021-00411-2}
 }
 \seealso{
-\code{\link{calcSelectionCriterion}} and
-  \code{\link{calcPerformanceCriterion}} and  as well as
+\code{\link[SIMplyBee]{calcSelectionCriterion}} and
+  \code{\link[SIMplyBee]{calcPerformanceCriterion}} and  as well as
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

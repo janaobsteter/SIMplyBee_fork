@@ -21,7 +21,7 @@ nVirginQueensColonyPhenotype(
 )
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
 
 \item{n}{integer, number of samples}
 
@@ -31,26 +31,26 @@ nVirginQueensColonyPhenotype(
 
 \item{queenTrait}{numeric (column position) or character (column name), trait
 that represents queen's effect on the colony phenotype (defined in
-\code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
+\code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
 
 \item{workersTrait}{numeric (column position) or character (column name), trait
 that represents workers's effect on the colony phenotype (defined in
-\code{\link{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
+\code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{NULL} then this effect is 0}
 
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
+\item{...}{other arguments of \code{\link[SIMplyBee]{mapCasteToColonyPheno}}}
 }
 \value{
 numeric, number of virgin queens
 }
 \description{
 Sample a number of virgin queens - used when
-  \code{nFathers = NULL} (see \code{\link{SimParamBee}$nVirginQueens}).
+  \code{nFathers = NULL} (see \code{\link[SIMplyBee]{SimParamBee}$nVirginQueens}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -66,9 +66,9 @@ Sample a number of virgin queens - used when
   \code{nVirginQueensColonyPhenotype} returns a number (above
   \code{lowerLimit}) as a function of colony phenotype, say swarming
   tendency. Colony phenotype is provided by
-  \code{\link{mapCasteToColonyPheno}}. You need to set up traits
+  \code{\link[SIMplyBee]{mapCasteToColonyPheno}}. You need to set up traits
   influencing the colony phenotype and their parameters (mean and variances)
-  via \code{\link{SimParamBee}} (see examples).
+  via \code{\link[SIMplyBee]{SimParamBee}} (see examples).
 }
 \section{Functions}{
 \itemize{
@@ -122,6 +122,6 @@ nVirginQueensColonyPhenotype(colony1)
 nVirginQueensColonyPhenotype(colony2)
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{nVirginQueens} and
+\code{\link[SIMplyBee]{SimParamBee}} field \code{nVirginQueens} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

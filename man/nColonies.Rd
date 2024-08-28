@@ -13,7 +13,7 @@ nNULLColonies(multicolony)
 nEmptyColonies(multicolony)
 }
 \arguments{
-\item{multicolony}{\code{\link{MultiColony-class}}}
+\item{multicolony}{\code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
 integer
@@ -57,5 +57,5 @@ nNULLColonies(nonEmptyApiary)
 
 }
 \seealso{
-\code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
+\code{\link[SIMplyBee]{nNULLColonies}} and \code{\link[SIMplyBee]{nEmptyColonies}}
 }

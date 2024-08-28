@@ -41,12 +41,12 @@ getDronesCsdGeno(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-and character when \code{x} is a \code{\link{Colony-class}} or
- \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+ \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
  "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
@@ -57,25 +57,25 @@ are taken; this can be useful as a test of sampling individuals}
 \item{collapse}{logical, if the return value should be a single matrix
 with haplotypes of all the individuals}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
-  of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
+matrix with genotypes when \code{x} is \code{\link[AlphaSimR]{Pop-class}}, list
+  of matrices with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with genotypes
-  when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
+  when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, outer list is named by
+  colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}; \code{NULL} when
   \code{x} is \code{NULL}
 }
 \description{
 Level 0 function that returns genotypes from the csd locus. See
-  \code{\link{SimParamBee}} for more information about the csd locus and how
+  \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd locus and how
   we have implemented it.
 }
 \details{
 The returned genotypes are spanning multiple bi-allelic SNP of
   a non-recombining csd locus / haplotype. In most cases you will want to use
-  \code{\link{getCsdAlleles}}.
+  \code{\link[SIMplyBee]{getCsdAlleles}}.
 }
 \section{Functions}{
 \itemize{

@@ -507,6 +507,7 @@ test_that("swarm", {
   expect_true(areVirginQueensPresent(tmp$remnant[[4]], simParamBee = SP))
 })
 
+
 # ---- Collapse -----
 
 test_that("collapse", {

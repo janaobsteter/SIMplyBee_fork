@@ -15,7 +15,7 @@ calcSelectionCriterion(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{queenTrait}{numeric (column position) or character (column name), trait
 that represents queen's effect on the colony value; if \code{NULL} then this contribution is 0}
@@ -35,12 +35,12 @@ function will depend on how you will setup simulation!}
 either "gv" (genetic value), "ebv" (estimated breeding value),
 or "pheno" (phenotypic value)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 integer when \code{x} is
-  \code{\link{Colony-class}} and a named list when \code{x} is
-  \code{\link{MultiColony-class}}, where names are colony IDs
+  \code{\link[SIMplyBee]{Colony-class}} and a named list when \code{x} is
+  \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 }
 \description{
 Level 0 function that calculates the selection criterion as the
@@ -92,9 +92,9 @@ calcSelectionCriterion(apiary, queenTrait = 1,
 \references{
 Du, M., et al. (2021) Short-term effects of controlled mating and selection
   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-  \doi{/10.1038/s41437-021-00411-2}
+  \doi{10.1038/s41437-021-00411-2}
 }
 \seealso{
-\code{\link{calcInheritanceCriterion}} and
-  \code{\link{calcPerformanceCriterion}} and  as well as
+\code{\link[SIMplyBee]{calcInheritanceCriterion}} and
+  \code{\link[SIMplyBee]{calcPerformanceCriterion}} and  as well as
 }

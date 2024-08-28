@@ -16,17 +16,17 @@ buildUp(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{nWorkers}{numeric or function, number of worker to add to the colony,
-but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
-is used. If input is \code{\link{MultiColony-class}},
+but see \code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nWorkers}
+is used. If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies.}
 
 \item{nDrones}{numeric or function, number of drones to add to the colony,
-but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
-is used. If input is \code{\link{MultiColony-class}},
+but see \code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nDrones}
+is used. If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies.}
 
@@ -38,16 +38,16 @@ should we only top-up the existing number of workers and drones to
 create the exact specified number of only viable workers (heterozygous on
 the csd locus)}
 
-\item{resetEvents}{logical, call \code{\link{resetEvents}} as part of the
+\item{resetEvents}{logical, call \code{\link[SIMplyBee]{resetEvents}} as part of the
 build up}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
 when these arguments are a function}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers and
    drones replaced or added
 }
 \description{
@@ -66,7 +66,7 @@ This function increases queen's \code{nWorkers}, \code{nHomBrood},
   targeting and hence \code{new = TRUE} is default. Second, if you are
   modelling shorter period cycles, you will likely want \code{new = FALSE} to
   just top up the current workers and drones - you might also want to look at
-  \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
+  \code{\link[SIMplyBee]{replaceWorkers}} and \code{\link[SIMplyBee]{replaceDrones}}.
 
 TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
       We are not sure this is easy to achieve with current implementation

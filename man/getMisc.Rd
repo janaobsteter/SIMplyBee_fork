@@ -7,7 +7,7 @@
 getMisc(x, node = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}}
 
 \item{node}{character, name of the node to get from the \code{x@misc} slot;
 if \code{NULL} the whole \code{x@misc} slot is returned}

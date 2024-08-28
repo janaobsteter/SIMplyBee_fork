@@ -7,16 +7,16 @@
 getLocation(x, collapse = FALSE)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{collapse}{logical, if the return value should be a single matrix
 with locations of all the colonies; only applicable when input
-is a \code{\link{MultiColony-class}} object}
+is a \code{\link[SIMplyBee]{MultiColony-class}} object}
 }
 \value{
-numeric with two values when \code{x} is \code{\link{Colony-class}}
+numeric with two values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
   and a list of numeric with two values when \code{x} is
-  \code{\link{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
+  \code{\link[SIMplyBee]{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
   when location not set
 }
 \description{

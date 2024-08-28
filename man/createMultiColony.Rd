@@ -7,18 +7,18 @@
 createMultiColony(x = NULL, n = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, virgin queens or queens for the colonies
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, virgin queens or queens for the colonies
 (selected at random if there are more than \code{n} in \code{Pop}, while
  all are used when \code{n} is \code{NULL})}
 
 \item{n}{integer, number of colonies to create (if only \code{n} is
-given then \code{\link{MultiColony-class}} is created with \code{n}
+given then \code{\link[SIMplyBee]{MultiColony-class}} is created with \code{n}
 \code{NULL}) individual colony - this is mostly useful for programming)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{MultiColony-class}}
+\code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Level 3 function that creates a set of colonies. Usually to
@@ -26,7 +26,7 @@ Level 3 function that creates a set of colonies. Usually to
 }
 \details{
 When both \code{x} and \code{n} are \code{NULL}, then a
-  \code{\link{MultiColony-class}} with 0 colonies is created.
+  \code{\link[SIMplyBee]{MultiColony-class}} with 0 colonies is created.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)

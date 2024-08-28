@@ -6,18 +6,18 @@
 #' @description Level 3 function that creates a set of colonies. Usually to
 #'   start a simulation.
 #'
-#' @param x \code{\link{Pop-class}}, virgin queens or queens for the colonies
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, virgin queens or queens for the colonies
 #'   (selected at random if there are more than \code{n} in \code{Pop}, while
 #'    all are used when \code{n} is \code{NULL})
 #' @param n integer, number of colonies to create (if only \code{n} is
-#'   given then \code{\link{MultiColony-class}} is created with \code{n}
+#'   given then \code{\link[SIMplyBee]{MultiColony-class}} is created with \code{n}
 #'   \code{NULL}) individual colony - this is mostly useful for programming)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details When both \code{x} and \code{n} are \code{NULL}, then a
-#'   \code{\link{MultiColony-class}} with 0 colonies is created.
+#'   \code{\link[SIMplyBee]{MultiColony-class}} with 0 colonies is created.
 #'
-#' @return \code{\link{MultiColony-class}}
+#' @return \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -88,22 +88,22 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL) {
 #'   Whilst user can provide all three arguments ID, p and n, there is a priority
 #'   list: ID takes first priority. If no ID is provided, p takes precedence over n.
 #'
-#' @param multicolony \code{\link{MultiColony-class}}
+#' @param multicolony \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param ID character or numeric, ID of a colony (one or more) to be
 #'   selected
 #' @param n numeric, number of colonies to select
 #' @param p numeric, percentage of colonies selected (takes precedence
 #'   over \code{n})
 #' @param by matrix, matrix of values to select by with names being
-#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   colony IDs (can be obtained with \code{\link[SIMplyBee]{calcColonyValue}}.
 #'   If NULL, the colonies are selected at random.
 #'   This parameter is used in combination
 #'   with \code{n} or \code{p} to determine the number of selected colonies, and
 #'   \code{selectTop} to determine whether to select the best or the worst colonies.
 #' @param selectTop logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{MultiColony-class}} with selected colonies
+#' @return \code{\link[SIMplyBee]{MultiColony-class}} with selected colonies
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -227,22 +227,22 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @description Level 3 function that pulls out some colonies
 #'   from the MultiColony based on colony ID or random selection.
 #'
-#' @param multicolony \code{\link{MultiColony-class}}
+#' @param multicolony \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param ID character or numeric, ID of a colony (one or more) to be pulled
 #'   out
 #' @param n numeric, number of colonies to select
 #' @param p numeric, percentage of colonies pulled out (takes precedence
 #'   over \code{n})
 #' @param by matrix, matrix of values to select by with names being
-#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   colony IDs (can be obtained with \code{\link[SIMplyBee]{calcColonyValue}}.
 #'   If NULL, the colonies are pulled at random.
 #'   This parameter is used in combination
 #'   with \code{n} or \code{p} to determine the number of pulled colonies, and
 #'   \code{pullTop} to determine whether to pull the best or the worst colonies.
 #' @param pullTop logical, pull highest (lowest) values if \code{TRUE} (\code{FALSE})
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return list with two \code{\link{MultiColony-class}}, the \code{pulled}
+#' @return list with two \code{\link[SIMplyBee]{MultiColony-class}}, the \code{pulled}
 #'   and the \code{remnant}
 #'
 #' @examples
@@ -347,22 +347,22 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' @description Level 3 function that removes some colonies
 #'   from the MultiColony object based on their ID.
 #'
-#' @param multicolony \code{\link{MultiColony-class}}
+#' @param multicolony \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param ID character or numeric, ID of a colony (one or more) to be
 #'   removed
 #' @param n numeric, number of colonies to remove
 #' @param p numeric, percentage of colonies removed (takes precedence
 #'   over \code{n})
 #' @param by matrix, matrix of values to select by with names being
-#'   colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+#'   colony IDs (can be obtained with \code{\link[SIMplyBee]{calcColonyValue}}.
 #'   If NULL, the colonies are removed at random.
 #'   This parameter is used in combination
 #'   with \code{n} or \code{p} to determine the number of removed colonies, and
 #'   \code{removeTop} to determine whether to remove the best or the worst colonies.
 #' @param removeTop logical, remove highest (lowest) values if \code{TRUE} (\code{FALSE})
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{MultiColony-class}} with some colonies removed
+#' @return \code{\link[SIMplyBee]{MultiColony-class}} with some colonies removed
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)

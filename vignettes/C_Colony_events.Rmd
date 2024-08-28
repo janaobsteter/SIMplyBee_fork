@@ -365,7 +365,7 @@ apiary
 
 Clemson Cooperative Extension (2021) Frequently asked questions about honey bee
 swarms.
-<https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms>
+<https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms/>
 (accessed on 2022-11-11)
 
 Hamdan K. (2010) Natural Supersedure of Queens in Honey Bee Colonies. Bee World,

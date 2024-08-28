@@ -43,8 +43,8 @@ getVirginQueens(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}},
-exceptionally \code{\link{Pop-class}} for calling \code{getFathers}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
+exceptionally \code{\link[AlphaSimR]{Pop-class}} for calling \code{getFathers}
 on a queen population}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
@@ -53,11 +53,11 @@ on a queen population}
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
 individuals are accessed; if there are less individuals than requested,
 we return the ones available - this can return \code{NULL}.
-If input is \code{\link{MultiColony-class}},
+If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies.}
 
-\item{use}{character, all options provided by \code{\link{selectInd}} and
+\item{use}{character, all options provided by \code{\link[AlphaSimR]{selectInd}} and
 \code{"order"} that selects \code{1:nInd} individuals (meaning it always
 returns at least one individual, even if \code{nInd = 0})}
 
@@ -67,20 +67,20 @@ virgin queens, say via insemination}
 
 \item{collapse}{logical, whether to return a single merged population}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Colony-class}} return is
-  \code{\link{Pop-class}} for \code{caste != "all"} or list for \code{caste
+when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or list for \code{caste
   == "all"} with nodes named by caste; when \code{x} is
-  \code{\link{MultiColony-class}} return is a named list of
-  \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-  \code{\link{Pop-class}} for \code{caste == "all"}. You can merge
-  all the populations in the list with \code{\link{mergePops}} function.
+  \code{\link[SIMplyBee]{MultiColony-class}} return is a named list of
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or named list of lists of
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste == "all"}. You can merge
+  all the populations in the list with \code{\link[AlphaSimR]{mergePops}} function.
 }
 \description{
 Level 1 function that returns individuals of a caste. These
-  individuals stay in the colony (compared to \code{\link{pullCastePop}}).
+  individuals stay in the colony (compared to \code{\link[SIMplyBee]{pullCastePop}}).
 }
 \section{Functions}{
 \itemize{
@@ -148,9 +148,9 @@ getWorkers(apiary, nInd = 10, collapse = TRUE)
 getDrones(apiary, nInd = 3, collapse = TRUE)
 }
 \seealso{
-\code{\link{getQueen}}, \code{\link{getFathers}},
-  \code{\link{getVirginQueens}}, \code{\link{getWorkers}}, and
-  \code{\link{getDrones}}
+\code{\link[SIMplyBee]{getQueen}}, \code{\link[SIMplyBee]{getFathers}},
+  \code{\link[SIMplyBee]{getVirginQueens}}, \code{\link[SIMplyBee]{getWorkers}}, and
+  \code{\link[SIMplyBee]{getDrones}}
 
-\code{\link{getCasteId}} and \code{\link{getCaste}}
+\code{\link[SIMplyBee]{getCasteId}} and \code{\link[SIMplyBee]{getCaste}}
 }

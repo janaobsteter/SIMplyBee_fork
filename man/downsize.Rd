@@ -8,27 +8,27 @@
 downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL, ...)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers to be removed from the colony; if
-\code{NULL} then \code{\link{SimParamBee}$downsizeP} is used.
-If input is \code{\link{MultiColony-class}},
+\code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$downsizeP} is used.
+If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies}
 
-\item{use}{character, all the options provided by \code{\link{selectInd}};
+\item{use}{character, all the options provided by \code{\link[AlphaSimR]{selectInd}};
 it guides the selection of workers that will be removed}
 
 \item{new}{logical, should we remove all current workers and add a targeted
 proportion anew (say, create winter workers)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{p} when this argument is a
 function}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers reduced and
   drones/virgin queens removed
 }
 \description{

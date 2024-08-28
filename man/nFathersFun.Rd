@@ -21,7 +21,7 @@ numeric, number of fathers
 }
 \description{
 Sample a number of fathers - use when \code{nFathers = NULL}
-  (see \code{\link{SimParamBee}$nFathers}).
+  (see \code{\link[SIMplyBee]{SimParamBee}$nFathers}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -52,5 +52,5 @@ hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 40))
 table(n)
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{nFathers}
+\code{\link[SIMplyBee]{SimParamBee}} field \code{nFathers}
 }

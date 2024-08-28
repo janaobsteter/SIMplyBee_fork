@@ -7,21 +7,21 @@
 isCsdHeterozygous(pop, simParamBee = NULL)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{pop}{\code{\link[AlphaSimR]{Pop-class}}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical
 }
 \description{
 Level 0 function that returns if individuals of a population are
-  heterozygous at the csd locus. See \code{\link{SimParamBee}} for more
+  heterozygous at the csd locus. See \code{\link[SIMplyBee]{SimParamBee}} for more
   information about the csd locus.
 }
 \details{
 We could expand \code{isCsdHeterozygous} to work also with
-  \code{\link{Colony-class}} and \code{\link{MultiColony-class}} if needed
+  \code{\link[SIMplyBee]{Colony-class}} and \code{\link[SIMplyBee]{MultiColony-class}} if needed
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

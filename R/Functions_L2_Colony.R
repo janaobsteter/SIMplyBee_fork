@@ -3,13 +3,13 @@
 #' @rdname createColony
 #' @title Create a new Colony
 #'
-#' @description Level 2 function that creates a new \code{\link{Colony-class}}
+#' @description Level 2 function that creates a new \code{\link[SIMplyBee]{Colony-class}}
 #'   to initiate simulations.
 #'
-#' @param x \code{\link{Pop-class}}, one queen or virgin queen(s)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return new \code{\link{Colony-class}}
+#' @return new \code{\link[SIMplyBee]{Colony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
@@ -78,22 +78,22 @@ createColony <- function(x = NULL, simParamBee = NULL) {
 #'   MultiColony object by adding a mated or a virgin queen, removing the
 #'   previous queen, and changing the colony id to the new mated queen.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param queen \code{\link{Pop-class}} with one individual that will be the
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param queen \code{\link[AlphaSimR]{Pop-class}} with one individual that will be the
 #'   queen of the colony; if she is not mated, she will be added as a virgin
 #'   queen that will have to be mated later; test will be run if the individual
-#'   \code{\link{isVirginQueen}} or \code{\link{isQueen}}
+#'   \code{\link[SIMplyBee]{isVirginQueen}} or \code{\link[SIMplyBee]{isQueen}}
 #' @param removeVirginQueens logical, remove existing virgin queens, default is
-#'   \code{\link{TRUE}} since bee-keepers tend to remove any virgin queen cells
+#'   \code{TRUE} since bee-keepers tend to remove any virgin queen cells
 #'   to ensure the provided queen prevails (see details)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details If the provided queen is mated, then she is saved in the queen slot
 #'   of the colony. If she is not mated, then she is saved in the virgin queen
 #'   slot (replacing any existing virgin queens) and once she is mated will be
 #'   promoted to the queen of the colony.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with new queen(s) (see details)
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with new queen(s) (see details)
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 50)
@@ -188,11 +188,11 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
 #'   offspring from a mated queen. If there are already some individuals present
 #'   in the caste, new and present individuals are combined.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
 #' @param nInd numeric or function, number of workers to be added, but see
-#'   \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used.
-#'   If input is \code{\link{MultiColony-class}},
+#'   \code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nWorkers} is used.
+#'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be used for all the colonies.
 #' @param new logical, should the number of individuals be added to the caste population
@@ -201,13 +201,13 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
 #'  on and exact is \code{TRUE}, we add the exact specified number of viable workers
 #'  (heterozygous at the csd locus)
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
 #' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
 #'   counters.
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
 #'   workers added
 #'
 #' @examples
@@ -301,20 +301,11 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       if (caste == "workers") {
         homInds <- newInds$nHomBrood
         newInds <- newInds$workers
-        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-          x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nInd(newInds)
-          x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + homInds
-        }else{
-          x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nInd(newInds)
-          x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + homInds
-        }
+        x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nInd(newInds)
+        x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + homInds
       }
       if (caste == "drones") {
-        if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-          x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nInd(newInds)
-        }else{
-          x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nInd(newInds)
-        }
+        x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nInd(newInds)
       }
       if (is.null(slot(x, caste)) | new) {
         slot(x, caste) <- newInds
@@ -393,15 +384,15 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #'   (raising) workers and drones usually in spring or after events such as split or
 #'   swarming.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param nWorkers numeric or function, number of worker to add to the colony,
-#'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers}
-#'   is used. If input is \code{\link{MultiColony-class}},
+#'   but see \code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nWorkers}
+#'   is used. If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies.
 #' @param nDrones numeric or function, number of drones to add to the colony,
-#'   but see \code{new}; if \code{NULL} then \code{\link{SimParamBee}$nDrones}
-#'   is used. If input is \code{\link{MultiColony-class}},
+#'   but see \code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nDrones}
+#'   is used. If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies.
 #' @param new logical, should the number of workers and drones be added anew or
@@ -410,9 +401,9 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @param exact logical, if the csd locus is turned on and exact is \code{TRUE},
 #'   create the exact specified number of only viable workers (heterozygous on
 #'   the csd locus)
-#' @param resetEvents logical, call \code{\link{resetEvents}} as part of the
+#' @param resetEvents logical, call \code{\link[SIMplyBee]{resetEvents}} as part of the
 #'   build up
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nWorkers} or \code{nDrones}
 #'   when these arguments are a function
 #'
@@ -426,14 +417,14 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #'   targeting and hence \code{new = TRUE} is default. Second, if you are
 #'   modelling shorter period cycles, you will likely want \code{new = FALSE} to
 #'   just top up the current workers and drones - you might also want to look at
-#'   \code{\link{replaceWorkers}} and \code{\link{replaceDrones}}.
+#'   \code{\link[SIMplyBee]{replaceWorkers}} and \code{\link[SIMplyBee]{replaceDrones}}.
 #'
 #' TODO: Discuss on how to model day-to-day variation with \code{new = FALSE}.
 #'       We are not sure this is easy to achieve with current implementation
 #'       just now, but could be expanded.
 #'       https://github.com/HighlanderLab/SIMplyBee/issues/176
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers and
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers and
 #'    drones replaced or added
 #'
 #' @examples
@@ -489,16 +480,24 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
+  # Workers
+  if (is.null(nWorkers)) {
+    nWorkers <- simParamBee$nWorkers
+  }
+
+  if (is.null(nDrones)) {
+    nDrones <- simParamBee$nDrones
+  }
+  if (is.function(nDrones)) {
+    nDrones <- nDrones(x = x, ...)
+  }
+
   if (isColony(x)) {
-    if (hasCollapsed(x)) {
-      stop(paste0("The colony ", getId(x), " collapsed, hence you can not build it up!"))
-    }
-    # Workers
-    if (is.null(nWorkers)) {
-      nWorkers <- simParamBee$nWorkers
-    }
     if (is.function(nWorkers)) {
       nWorkers <- nWorkers(colony = x,...)
+    }
+    if (hasCollapsed(x)) {
+      stop(paste0("The colony ", getId(x), " collapsed, hence you can not build it up!"))
     }
     if (length(nWorkers) > 1) {
       warning("More than one value in the nWorkers argument, taking only the first value!")
@@ -519,12 +518,6 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     }
 
     # Drones
-    if (is.null(nDrones)) {
-      nDrones <- simParamBee$nDrones
-    }
-    if (is.function(nDrones)) {
-      nDrones <- nDrones(x = x, ...)
-    }
     if (length(nDrones) > 1) {
       warning("More than one value in the nDrones argument, taking only the first value!")
       nDrones <- nDrones[1]
@@ -596,6 +589,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
   return(x)
 }
 
+
 #' @rdname downsize
 #' @title Reduce number of workers and remove all drones and virgin queens from
 #'   a Colony or MultiColony object
@@ -604,21 +598,21 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #'   by removing a proportion of workers, all drones and all virgin queens.
 #'   Usually in the autumn, such an event occurs in preparation for the winter months.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param p numeric, proportion of workers to be removed from the colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$downsizeP} is used.
-#'   If input is \code{\link{MultiColony-class}},
+#'   \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$downsizeP} is used.
+#'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
-#' @param use character, all the options provided by \code{\link{selectInd}};
+#' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}};
 #'   it guides the selection of workers that will be removed
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} when this argument is a
 #'   function
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with workers reduced and
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers reduced and
 #'   drones/virgin queens removed
 #'
 #' @examples
@@ -724,13 +718,13 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #'   events like season change, swarming, supersedure, etc. due to the short life span
 #'   honeybees.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "workers", "drones", or "virginQueens"
 #' @param p numeric, proportion of caste individuals to be replaced with new ones;
-#'   if input is \code{\link{MultiColony-class}},
+#'   if input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
-#' @param use character, all the options provided by \code{\link{selectInd}} -
+#' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 #'   guides selection of caste individuals that stay when \code{p < 1}
 #' @param exact logical, only relevant when adding workers - if the csd locus is turned
 #'  on and exact is \code{TRUE}, we replace the exact specified number of viable workers
@@ -738,9 +732,9 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #'  replace with the same number of workers.
 #' @param year numeric, only relevant when replacing virgin queens,
 #'   year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}} or  or \code{\link{MultiColony-class}} with
+#' @return \code{\link[SIMplyBee]{Colony-class}} or  or \code{\link[SIMplyBee]{MultiColony-class}} with
 #'   replaced virgin queens
 #'
 #' @examples
@@ -810,21 +804,12 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
                                 year = year, simParamBee = simParamBee
           )
           if (caste == "workers") {
-            if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-              x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nIndReplaced
-              x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + tmp$nHomBrood
-            }else{
-              x@queen@misc[[1]]$nWorkers <- x@queen@misc[[1]]$nWorkers + nIndReplaced
-              x@queen@misc[[1]]$nHomBrood <- x@queen@misc[[1]]$nHomBrood + tmp$nHomBrood
-            }
+            x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nIndReplaced
+            x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + tmp$nHomBrood
             tmp <- tmp$workers
           }
           if (caste == "drones") {
-            if(packageVersion("AlphaSimR") > package_version("1.5.3")){
-              x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nIndReplaced
-            }else{
-              x@queen@misc[[1]]$nDrones <- x@queen@misc[[1]]$nDrones + nIndReplaced
-            }
+            x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nIndReplaced
           }
 
           slot(x, caste) <- c(
@@ -906,12 +891,12 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' @description Level 2 function that removes a proportion of virgin queens of
 #'   a Colony or MultiColony object
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "queen", "workers", "drones", or "virginQueens"
-#' @param p numeric, proportion to be removed; if input is \code{\link{MultiColony-class}},
+#' @param p numeric, proportion to be removed; if input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
-#' @param use character, all the options provided by \code{\link{selectInd}} -
+#' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
 #' @param addVirginQueens logical, whether virgin queens should be added; only
 #'   used when removing the queen from the colony
@@ -920,9 +905,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #'   queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} without virgin queens
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
@@ -1069,13 +1054,13 @@ removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #'   Useful at the end of a yearly cycle to reset the events, allowing the user to track
 #'   new events in a new year.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param collapse logical, reset the collapse event (only sensible in setting
 #'   up a new colony, which the default of \code{NULL} caters for; otherwise, a
 #'   collapsed colony should be left collapsed forever, unless you force
 #'   resetting this event with \code{collapse = TRUE})
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
 #'   events reset
 #'
 #' @examples
@@ -1177,9 +1162,9 @@ resetEvents <- function(x, collapse = NULL) {
 #'   by setting the collapse event slot to \code{TRUE}. The production status
 #'   slot is also changed (to \code{FALSE}).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the collapse
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the collapse
 #'   event set to \code{TRUE}
 #'
 #' @details You should use this function in an edge-case when you
@@ -1242,10 +1227,10 @@ collapse <- function(x) {
 #'   the swarm is the same as for the remnant or sampled as deviation from the
 #'   remnant.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param p numeric, proportion of workers that will leave with the swarm colony;
-#'   if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used.
-#'   If input is \code{\link{MultiColony-class}},
+#'   if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmP} is used.
+#'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param year numeric, year of birth for virgin queens
@@ -1255,15 +1240,15 @@ collapse <- function(x) {
 #'   is used
 #' @param sampleLocation logical, sample location of the swarm by taking
 #'  the current colony location and adding deviates to each coordinate using
-#'  \code{\link{rcircle}}
+#'  \code{\link[SIMplyBee]{rcircle}}
 #' @param radius numeric, radius of a circle within which swarm will go; if
-#'   \code{NULL} then \code{\link{SimParamBee}$swarmRadius} is used (which uses
+#'   \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmRadius} is used (which uses
 #'   \code{0}, so by default swarm does not fly far away)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
 #'
-#' @return list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @return list with two \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the \code{swarm} and the \code{remnant} (see the description what each
 #'   colony holds!); both outputs have the swarm event set to \code{TRUE}
 #'
@@ -1441,17 +1426,17 @@ swarm <- function(x, p = NULL, year = NULL, nVirginQueens = NULL,
 #'   queen dies. The workers and drones stay unchanged, but workers raise virgin
 #'   queens, of which only one prevails.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param year numeric, year of birth for virgin queens
 #' @param nVirginQueens integer, the number of virgin queens to be created in the
 #'   colony; of these one is randomly selected as the new virgin queen of the
 #'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 #'   is used
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nVirginQueens} when this
 #'   argument is a function
 #'
-#' @return  \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the
+#' @return  \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the
 #' supersede event set to \code{TRUE}
 #'
 #' @examples
@@ -1544,18 +1529,18 @@ supersede <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, 
 #'   the other part of the workers, which raise virgin queens, of which only one
 #'   prevails. Location of the split is the same as for the remnant.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony; if
-#'   \code{NULL} then \code{\link{SimParamBee}$splitP} is used.
-#'   If input is \code{\link{MultiColony-class}},
+#'   \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$splitP} is used.
+#'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param year numeric, year of birth for virgin queens
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{p} when this argument is a
 #'   function
 #'
-#' @return list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @return list with two  \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 #' the \code{split} and the \code{remnant} (see the description what each colony holds!);
 #' both outputs have the split even slot set do \code{TRUE}
 #'
@@ -1708,10 +1693,10 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
 #'   colony are added to the strong. User has to remove the weak colony (or
 #'   MultiColony) from the workspace.
 #'
-#' @param strong \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param weak \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param strong \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param weak \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return a combined \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @return a combined \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
@@ -1783,14 +1768,14 @@ combine <- function(strong, weak) {
 #' @description Level 2 function that to set a Colony or MultiColony object
 #'   location to (x, y) coordinates.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param location numeric, list, or data.frame, x and y coordinates of colony
 #'  locations as
 #'  \code{c(x1, y1)} (the same location set to all colonies),
 #'  \code{list(c(x1, y1), c(x2, y2))}, or
 #'  \code{data.frame(x = c(x1, x2), y = c(y1, y2))}
 #'
-#' @return \code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
+#' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with set
 #'   location
 #'
 #' @examples

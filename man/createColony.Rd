@@ -7,15 +7,15 @@
 createColony(x = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, one queen or virgin queen(s)}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-new \code{\link{Colony-class}}
+new \code{\link[SIMplyBee]{Colony-class}}
 }
 \description{
-Level 2 function that creates a new \code{\link{Colony-class}}
+Level 2 function that creates a new \code{\link[SIMplyBee]{Colony-class}}
   to initiate simulations.
 }
 \examples{

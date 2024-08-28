@@ -22,12 +22,12 @@ getWorkersGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 getDronesGv(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-and character when \code{x} is a \code{\link{Colony-class}} or
- \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+ \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
  "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -36,13 +36,13 @@ individuals are accessed, otherwise a random sample}
 \item{collapse}{logical, if the return value should be a single matrix
 with genetic values of all the individuals}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-vector of phenotype values when \code{x} is \code{\link{Colony-class}}
+vector of phenotype values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
   and list of vectors of genetic values when \code{x} is
-  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-  \code{\link{MultiColony-class}}
+  \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Level 0 function that returns genetic values of individuals
@@ -110,6 +110,6 @@ getGv(apiary, caste = "all")
 getGv(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{gv}} and
+\code{\link[AlphaSimR]{gv}} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

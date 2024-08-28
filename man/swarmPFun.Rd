@@ -7,7 +7,7 @@
 swarmPUnif(colony, n = 1, min = 0.4, max = 0.6)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
 
 \item{n}{integer, number of samples}
 
@@ -20,7 +20,7 @@ numeric, swarm proportion
 }
 \description{
 Sample the swarm proportion - the proportion of workers that
-  swarm - used when \code{p = NULL} (see \code{\link{SimParamBee}$swarmP}).
+  swarm - used when \code{p = NULL} (see \code{\link[SIMplyBee]{SimParamBee}$swarmP}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -41,5 +41,5 @@ p <- swarmPUnif(n = 1000)
 hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{swarmP}
+\code{\link[SIMplyBee]{SimParamBee}} field \code{swarmP}
 }
