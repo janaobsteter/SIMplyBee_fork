@@ -15,15 +15,15 @@ isColony(x)
 \S4method{c}{ColonyOrNULL}(x, ...)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}}}
 
-\item{object}{\code{\link{Colony-class}}}
+\item{object}{\code{\link[SIMplyBee]{Colony-class}}}
 
-\item{...}{\code{NULL}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{...}{\code{NULL}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 An object holding honeybee colony
@@ -44,15 +44,15 @@ An object holding honeybee colony
 
 \item{\code{location}}{numeric, location of the colony (x, y)}
 
-\item{\code{queen}}{\code{\link{Pop-class}}, the queen of the colony (we use
+\item{\code{queen}}{\code{\link[AlphaSimR]{Pop-class}}, the queen of the colony (we use
 its misc slot for queen's age and drones (fathers) she mated with)}
 
-\item{\code{virginQueens}}{\code{\link{Pop-class}}, virgin queens of the
+\item{\code{virginQueens}}{\code{\link[AlphaSimR]{Pop-class}}, virgin queens of the
 colony}
 
-\item{\code{drones}}{\code{\link{Pop-class}}, drones of the colony}
+\item{\code{drones}}{\code{\link[AlphaSimR]{Pop-class}}, drones of the colony}
 
-\item{\code{workers}}{\code{\link{Pop-class}}, workers of the colony}
+\item{\code{workers}}{\code{\link[AlphaSimR]{Pop-class}}, workers of the colony}
 
 \item{\code{split}}{logical, has colony split}
 
@@ -95,5 +95,5 @@ c(apiary, colony3)
 c(colony3, apiary)
 }
 \seealso{
-\code{\link{createColony}}
+\code{\link[SIMplyBee]{createColony}}
 }

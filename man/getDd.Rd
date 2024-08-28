@@ -22,12 +22,12 @@ getWorkersDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 getDronesDd(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-and character when \code{x} is a \code{\link{Colony-class}} or
- \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+ \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
  "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -36,13 +36,13 @@ individuals are accessed, otherwise a random sample}
 \item{collapse}{logical, if the return value should be a single matrix
 with dominance values of all the individuals}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 vector of dominance values when \code{x} is
-  \code{\link{Colony-class}} and list of vectors of dominance values when
-  \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
-  is \code{\link{MultiColony-class}}
+  \code{\link[SIMplyBee]{Colony-class}} and list of vectors of dominance values when
+  \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x}
+  is \code{\link[SIMplyBee]{MultiColony-class}}
 
 # Not exporting this function, since the theory behind it is not fully developed
 }
@@ -64,6 +64,6 @@ Level 0 function that returns dominance values of
 
 }}
 \seealso{
-\code{\link{dd}} and
+\code{\link[AlphaSimR]{dd}} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

@@ -9,7 +9,7 @@ reduceDroneGeno(geno, pop)
 \arguments{
 \item{geno}{\code{\link{matrix-class}}}
 
-\item{pop}{\code{\link{Pop-class}}}
+\item{pop}{\code{\link[AlphaSimR]{Pop-class}}}
 }
 \value{
 matrix with genotype as one haplotype per drone instead of two - the

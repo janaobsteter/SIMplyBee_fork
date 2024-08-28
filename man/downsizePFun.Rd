@@ -8,7 +8,7 @@
 downsizePUnif(colony, n = 1, min = 0.8, max = 0.9)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
 
 \item{n}{integer, number of samples}
 
@@ -22,7 +22,7 @@ numeric, downsize proportion
 \description{
 Sample the downsize proportion - proportion of removed workers
   in downsizing - used when \code{p = NULL} (see
-  \code{\link{SimParamBee}$downsizeP}).
+  \code{\link[SIMplyBee]{SimParamBee}$downsizeP}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -34,5 +34,5 @@ p <- downsizePUnif(n = 1000)
 hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{downsizeP}
+\code{\link[SIMplyBee]{SimParamBee}} field \code{downsizeP}
 }

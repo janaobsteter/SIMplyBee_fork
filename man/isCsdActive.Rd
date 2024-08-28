@@ -7,14 +7,14 @@
 isCsdActive(simParamBee = NULL)
 }
 \arguments{
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical
 }
 \description{
 Level 0 function that checks if the csd locus has been
-  activated. See \code{\link{SimParamBee}} for more information about the csd
+  activated. See \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd
   locus.
 }
 \examples{

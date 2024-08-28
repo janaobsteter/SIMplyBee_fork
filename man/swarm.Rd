@@ -16,11 +16,11 @@ swarm(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will leave with the swarm colony;
-if \code{NULL} then \code{\link{SimParamBee}$swarmP} is used.
-If input is \code{\link{MultiColony-class}},
+if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmP} is used.
+If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies}
 
@@ -33,19 +33,19 @@ is used}
 
 \item{sampleLocation}{logical, sample location of the swarm by taking
 the current colony location and adding deviates to each coordinate using
-\code{\link{rcircle}}}
+\code{\link[SIMplyBee]{rcircle}}}
 
 \item{radius}{numeric, radius of a circle within which swarm will go; if
-\code{NULL} then \code{\link{SimParamBee}$swarmRadius} is used (which uses
+\code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmRadius} is used (which uses
 \code{0}, so by default swarm does not fly far away)}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{p} or \code{nVirginQueens}
 when these arguments are functions}
 }
 \value{
-list with two \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+list with two \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
   the \code{swarm} and the \code{remnant} (see the description what each
   colony holds!); both outputs have the swarm event set to \code{TRUE}
 }

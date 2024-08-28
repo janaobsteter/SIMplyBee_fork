@@ -7,19 +7,19 @@
 getCaste(x, collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{collapse}{logical, if \code{TRUE}, the function will return a single
 vector with caste information}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-When x is \code{\link{Pop-class}}, character of caste status; if you
+When x is \code{\link[AlphaSimR]{Pop-class}}, character of caste status; if you
   get \code{NA} note that this is not supposed to happen. When x is
-  \code{\link{Colony-class}}, list with character vectors (list is named with
-  caste). When x is \code{\link{MultiColony-class}}, list of lists with
+  \code{\link[SIMplyBee]{Colony-class}}, list with character vectors (list is named with
+  caste). When x is \code{\link[SIMplyBee]{MultiColony-class}}, list of lists with
   character vectors (list is named with colony id).
 }
 \description{
@@ -86,5 +86,5 @@ head(tmp)
 tail(tmp)
 }
 \seealso{
-\code{\link{getCastePop}} and \code{\link{getCasteId}}
+\code{\link[SIMplyBee]{getCastePop}} and \code{\link[SIMplyBee]{getCasteId}}
 }

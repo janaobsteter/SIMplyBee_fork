@@ -7,30 +7,30 @@
 getCasteId(x, caste = "all", collapse = FALSE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
 
 \item{collapse}{logical, if all IDs should be returned as a single vector}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+when \code{x} is \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
  or list for \code{caste == "all"} with ID nodes named by caste;
-   when \code{x} is \code{\link{Colony-class}} return is a named list of
-  \code{\link{Pop-class}} for \code{caste != "all"}
+   when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is a named list of
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
   or named list for \code{caste == "all"} indluding caste members IDs;
-   when \code{x} is \code{\link{MultiColony-class}} return is a named list of
-  \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-  \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is a named list of
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or named list of lists of
+  \code{\link[AlphaSimR]{Pop-class}} for \code{caste == "all"} indluding caste members IDs
 }
 \description{
 Level 0 function that returns the ID individuals of a caste. To
-  get the individuals, use \code{\link{getCastePop}}. To get individuals'
-  caste, use \code{\link{getCaste}}.
+  get the individuals, use \code{\link[SIMplyBee]{getCastePop}}. To get individuals'
+  caste, use \code{\link[SIMplyBee]{getCaste}}.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -83,7 +83,7 @@ head(tmp)
 tail(tmp)
 }
 \seealso{
-\code{\link{getCaste}}
+\code{\link[SIMplyBee]{getCaste}}
 
-\code{\link{getCastePop}} and \code{\link{getCaste}}
+\code{\link[SIMplyBee]{getCastePop}} and \code{\link[SIMplyBee]{getCaste}}
 }

@@ -7,7 +7,7 @@
 setMisc(x, node = NULL, value = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}}
 
 \item{node}{character, name of the node to set within the \code{x@misc} slot}
 
@@ -16,7 +16,7 @@ setMisc(x, node = NULL, value = NULL)
 it is repeated using \code{rep} (see examples)}
 }
 \value{
-\code{\link{Pop-class}}
+\code{\link[AlphaSimR]{Pop-class}}
 }
 \description{
 Set miscellaneous information in a population

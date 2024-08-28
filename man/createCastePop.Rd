@@ -34,17 +34,17 @@ createVirginQueens(
 )
 }
 \arguments{
-\item{x}{\code{link{MapPop-class}} (only if caste is "virginQueens"), or
-\code{Pop} (only if caste is "drones") or \code{\link{Colony-class}}
-or \code{\link{MultiColony-class}}}
+\item{x}{\code{link[AlphaSimR]{MapPop-class}} (only if caste is "virginQueens"), or
+\code{Pop} (only if caste is "drones") or \code{\link[SIMplyBee]{Colony-class}}
+or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{caste}{character, "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric or function, number of caste individuals; if \code{NULL} then
-\code{\link{SimParamBee}$nWorkers},  \code{\link{SimParamBee}$nDrones}
-or \code{\link{SimParamBee}$nVirginQueens} is used depending on the caste;
-only used when \code{x} is \code{\link{Colony-class}} or
-\code{\link{MultiColony-class}}, when \code{x} is \code{link{MapPop-class}}
+\code{\link[SIMplyBee]{SimParamBee}$nWorkers},  \code{\link[SIMplyBee]{SimParamBee}$nDrones}
+or \code{\link[SIMplyBee]{SimParamBee}$nVirginQueens} is used depending on the caste;
+only used when \code{x} is \code{\link[SIMplyBee]{Colony-class}} or
+\code{\link[SIMplyBee]{MultiColony-class}}, when \code{x} is \code{link[AlphaSimR]{MapPop-class}}
 all individuals in \code{x} are converted into virgin queens}
 
 \item{exact}{logical, only relevant when creating workers,
@@ -54,31 +54,31 @@ csd locus)}
 
 \item{year}{numeric, year of birth for virgin queens}
 
-\item{editCsd}{logical (only active when \code{x} is \code{link{MapPop-class}}),
+\item{editCsd}{logical (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}}),
 whether the csd locus should be edited to ensure heterozygosity at the csd
 locus (to get viable virgin queens); see \code{csdAlleles}}
 
-\item{csdAlleles}{\code{NULL} or list (only active when \code{x} is \code{link{MapPop-class}});
+\item{csdAlleles}{\code{NULL} or list (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}});
 If \code{NULL}, then the function samples a heterozygous csd genotype for
 each virgin queen from all possible csd alleles.
 If not \code{NULL}, the user provides a list of length \code{nInd} with each
 node holding a matrix or a data.frame, each having two rows and n columns.
 Each row must hold one csd haplotype (allele) that will be assigned to a
 virgin queen. The n columns span the length of the csd locus as specified
-in \code{\link{SimParamBee}}. The two csd alleles must be different to
+in \code{\link[SIMplyBee]{SimParamBee}}. The two csd alleles must be different to
 ensure heterozygosity at the csd locus.}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
-when \code{x} is \code{link{MapPop-class}} returns
-  \code{virginQueens} (a \code{\link{Pop-class}});
-  when \code{x} is \code{\link{Colony-class}} returns
-  \code{virginQueens} (a \code{\link{Pop-class}});
-  when \code{x} is \code{\link{MultiColony-class}}
-  return is a named list of \code{virginQueens} (a \code{\link{Pop-class}});
+when \code{x} is \code{\link[AlphaSimR]{MapPop-class}} returns
+  \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
+  when \code{x} is \code{\link[SIMplyBee]{Colony-class}} returns
+  \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
+  when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
+  return is a named list of \code{virginQueens} (a \code{\link[AlphaSimR]{Pop-class}});
   named by colony ID
 }
 \description{

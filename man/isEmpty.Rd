@@ -8,13 +8,13 @@
 isEmpty(x)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-boolean when \code{x} is \code{\link{Pop-class}} or
-  \code{\link{Colony-class}}, and named vector of boolean when
-  \code{x} is \code{\link{MultiColony-class}}
+boolean when \code{x} is \code{\link[AlphaSimR]{Pop-class}} or
+  \code{\link[SIMplyBee]{Colony-class}}, and named vector of boolean when
+  \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Check whether a population, colony or a multicolony

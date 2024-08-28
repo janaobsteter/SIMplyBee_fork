@@ -36,7 +36,7 @@ mapCasteToColonyDd(colony, simParamBee = NULL, ...)
 mapCasteToColonyAa(colony, simParamBee = NULL, ...)
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}}}
+\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
 
 \item{value}{character, one of \code{pheno} or \code{gv}}
 
@@ -80,7 +80,7 @@ per trait coming out of \code{combineFUN})}
 you can pass more than one logical value here (one per trait coming out of
 \code{combineFUN})}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments of \code{mapCasteToColonyValue} (for its aliases)}
 }
@@ -90,9 +90,9 @@ numeric matrix with one value or a row of values
 \description{
 Maps caste member (individual) values to a colony value - for
   phenotype, genetic, breeding, dominance, and epistasis values. This function
-  can be used as \code{FUN} argument in \code{\link{calcColonyValue}}
+  can be used as \code{FUN} argument in \code{\link[SIMplyBee]{calcColonyValue}}
   function(s). It can also be saved in \code{SimParamBee$colonyValueFUN} as a
-  default function called by \code{\link{calcColonyValue}} function(s).
+  default function called by \code{\link[SIMplyBee]{calcColonyValue}} function(s).
 
   This is just an example - quite a flexible one! You can provide your
   own "caste functions" that satisfy your needs within this mapping function
@@ -105,8 +105,8 @@ Maps caste member (individual) values to a colony value - for
 }
 \details{
 This is a utility/mapping function meant to be called by
-  \code{\link{calcColonyValue}}. It only works on a single colony - use
-  \code{\link{calcColonyValue}} to get Colony or MultiColony values.
+  \code{\link[SIMplyBee]{calcColonyValue}}. It only works on a single colony - use
+  \code{\link[SIMplyBee]{calcColonyValue}} to get Colony or MultiColony values.
 }
 \section{Functions}{
 \itemize{
@@ -170,9 +170,9 @@ getWorkersGv(colony)
 
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{colonyValueFUN} and functions
-  \code{\link{calcColonyValue}}, \code{\link{calcColonyPheno}},
-  \code{\link{calcColonyGv}}, \code{\link{getEvents}},
-  \code{\link{pheno}}, and \code{\link{gv}}, as well as
+\code{\link[SIMplyBee]{SimParamBee}} field \code{colonyValueFUN} and functions
+  \code{\link[SIMplyBee]{calcColonyValue}}, \code{\link[SIMplyBee]{calcColonyPheno}},
+  \code{\link[SIMplyBee]{calcColonyGv}}, \code{\link[SIMplyBee]{getEvents}},
+  \code{\link[AlphaSimR]{pheno}}, and \code{\link[AlphaSimR]{gv}}, as well as
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

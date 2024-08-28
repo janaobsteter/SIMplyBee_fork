@@ -23,7 +23,7 @@ editor_options:
     Commit#f4e629c3e8920948ad576eae3615a86b26300790
 
 -   We can now sample location of a swarm - see sampleLocation and
-    radius arugments in swarm() PR#500 PR#502
+    radius arguments in swarm() PR#500 PR#502
 
 -   New function rcircle() to sample a random point within a circle with
     a given radius PR#502
@@ -37,6 +37,10 @@ editor_options:
     the colonies' locations, and in the cross() function, that crosses
     bees according to their location. This did not break the old
     functionality of the cross function.
+    
+-  Unified setMisc and getMisc behaviour to comply with the new AlphaSimR behaviour
+
+-  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous()
 
 ## Bug fixes
 

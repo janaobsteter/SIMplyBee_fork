@@ -12,16 +12,16 @@ createMatingStationDCA(
 )
 }
 \arguments{
-\item{colony}{\code{\link{Colony-class}} to produce drone producing queens from}
+\item{colony}{\code{\link[SIMplyBee]{Colony-class}} to produce drone producing queens from}
 
 \item{nDPQs}{integer, the number of drone producing queens}
 
 \item{nDronePerDPQ}{integer, number of drones each DPQ contributed to the DCA}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}} with created drones resembling a DCA at a mating station
+\code{\link[AlphaSimR]{Pop-class}} with created drones resembling a DCA at a mating station
 }
 \description{
 Level 1 function that creates a DCA at a classical honeybee

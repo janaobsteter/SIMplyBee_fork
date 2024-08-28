@@ -15,7 +15,7 @@ selectColonies(
 )
 }
 \arguments{
-\item{multicolony}{\code{\link{MultiColony-class}}}
+\item{multicolony}{\code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{ID}{character or numeric, ID of a colony (one or more) to be
 selected}
@@ -26,7 +26,7 @@ selected}
 over \code{n})}
 
 \item{by}{matrix, matrix of values to select by with names being
-colony IDs (can be obtained with \code{\link{calcColonyValue}}.
+colony IDs (can be obtained with \code{\link[SIMplyBee]{calcColonyValue}}.
 If NULL, the colonies are selected at random.
 This parameter is used in combination
 with \code{n} or \code{p} to determine the number of selected colonies, and
@@ -34,10 +34,10 @@ with \code{n} or \code{p} to determine the number of selected colonies, and
 
 \item{selectTop}{logical, selects highest (lowest) values if \code{TRUE} (\code{FALSE})}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{MultiColony-class}} with selected colonies
+\code{\link[SIMplyBee]{MultiColony-class}} with selected colonies
 }
 \description{
 Level 3 function that selects colonies from

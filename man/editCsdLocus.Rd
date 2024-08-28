@@ -7,7 +7,7 @@
 editCsdLocus(pop, alleles = NULL, simParamBee = NULL)
 }
 \arguments{
-\item{pop}{\code{\link{Pop-class}}}
+\item{pop}{\code{\link[AlphaSimR]{Pop-class}}}
 
 \item{alleles}{\code{NULL} or list;
 If \code{NULL}, then the function samples a heterozygous csd genotype for
@@ -16,13 +16,13 @@ If not \code{NULL}, the user provides a list of length \code{nInd} with each
 node holding a matrix or a data.frame, each having two rows and n columns.
 Each row must hold one csd haplotype (allele) that will be assigned to a
 virgin queen. The n columns span the length of the csd locus as specified
-in \code{\link{SimParamBee}}. The two csd alleles must be different to
+in \code{\link[SIMplyBee]{SimParamBee}}. The two csd alleles must be different to
 ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{global simulation parameters.}
 }
 \value{
-Returns an object of \code{\link{Pop-class}}
+Returns an object of \code{\link[AlphaSimR]{Pop-class}}
 }
 \description{
 Edits the csd locus in an entire population of individuals to

@@ -22,19 +22,19 @@ calcColonyDd(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...)
 calcColonyAa(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{FUN}{function, that calculates colony value from values of
 colony members}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments of \code{FUN}}
 }
 \value{
 a matrix with one value or a row of values when \code{x} is
-  \code{\link{Colony-class}} and a row-named matrix when \code{x} is
-  \code{\link{MultiColony-class}}, where names are colony IDs
+  \code{\link[SIMplyBee]{Colony-class}} and a row-named matrix when \code{x} is
+  \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 }
 \description{
 Level 0 function that calculate value(s) of a colony.
@@ -112,8 +112,8 @@ calcColonyValue(apiary)
 
 }
 \seealso{
-\code{\link{mapCasteToColonyValue}} as an example of \code{FUN},
-  \code{\link{selectColonies}} for example for to select colonies based
+\code{\link[SIMplyBee]{mapCasteToColonyValue}} as an example of \code{FUN},
+  \code{\link[SIMplyBee]{selectColonies}} for example for to select colonies based
   on these values, and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

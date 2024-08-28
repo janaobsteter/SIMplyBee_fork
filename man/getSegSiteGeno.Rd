@@ -57,12 +57,12 @@ getDronesSegSiteGeno(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-and character when \code{x} is a \code{\link{Colony-class}} or
- \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+ \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
  "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, number of individuals to access, if \code{NULL} all
@@ -76,13 +76,13 @@ are retrieved}
 \item{collapse}{logical, if the return value should be a single matrix
 with genotypes of all the individuals}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+matrix with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}} and
   list of matrices with genotypes when \code{x} is
-  \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-  \code{\link{MultiColony-class}}
+  \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+  \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Level 0 function that returns genotypes for all segregating
@@ -148,5 +148,5 @@ getSegSiteGeno(apiary, caste = "all")
 getSegSiteGeno(apiary, caste = "all", collapse = TRUE)
 }
 \seealso{
-\code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
+\code{\link[SIMplyBee]{getSegSiteGeno}} and \code{\link[AlphaSimR]{pullSegSiteGeno}}
 }

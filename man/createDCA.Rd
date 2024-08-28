@@ -7,7 +7,7 @@
 createDCA(x, nInd = NULL, removeFathers = TRUE, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{nInd}{numeric, number of random drones to pull from each colony,
 if \code{NULL} all drones in a colony are pulled}
@@ -16,10 +16,10 @@ if \code{NULL} all drones in a colony are pulled}
 set to \code{FALSE} if you would like to get drones for mating with multiple
 virgin queens, say via insemination}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}}
+\code{\link[AlphaSimR]{Pop-class}}
 }
 \description{
 Level 1 function that creates a population of drones from a Colony
@@ -31,7 +31,7 @@ In reality, drones leave the colony to mate. They die after that.
   In this function we only get a copy of drones from \code{x}, for
   computational efficiency and ease of use. However, any mating will change
   the caste of drones to fathers, and they won't be available for future
-  matings (see \code{\link{cross}}). Not unless
+  matings (see \code{\link[SIMplyBee]{cross}}). Not unless
   \code{removeFathers = FALSE}.
 }
 \examples{

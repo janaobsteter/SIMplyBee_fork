@@ -7,17 +7,17 @@
 setQueensYearOfBirth(x, year, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} (one or more than one queen),
-\code{\link{Colony-class}} (one colony), or
-\code{\link{MultiColony-class}} (more colonies)}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}} (one or more than one queen),
+\code{\link[SIMplyBee]{Colony-class}} (one colony), or
+\code{\link[SIMplyBee]{MultiColony-class}} (more colonies)}
 
 \item{year}{integer, the year of the birth of the queen}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-  \code{\link{MultiColony-class}} with queens having the year of birth set
+\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+  \code{\link[SIMplyBee]{MultiColony-class}} with queens having the year of birth set
 }
 \description{
 Level 1 function that sets the queen's year of birth.

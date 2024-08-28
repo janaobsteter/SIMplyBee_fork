@@ -7,10 +7,10 @@
 collapse(x)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with the collapse
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the collapse
   event set to \code{TRUE}
 }
 \description{

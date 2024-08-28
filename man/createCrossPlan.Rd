@@ -16,17 +16,17 @@ createCrossPlan(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+\item{x}{\code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 the object with the virgin queens that need to be crossed. When \code{spatial = TRUE},
-the argument needs to be a \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+the argument needs to be a \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 with the location set}
 
-\item{drones}{\code{\link{Pop-class}}, a population of drones (resembling a drone
+\item{drones}{\code{\link[AlphaSimR]{Pop-class}}, a population of drones (resembling a drone
 congregation area) available for mating. When \code{spatial = TRUE}, the user can not
 provide drones, but needs to provide drone producing colonies instead
 (see argument \code{droneColonies})}
 
-\item{droneColonies}{\code{\link{MultiColony-class}}, drone producing colonies
+\item{droneColonies}{\code{\link[SIMplyBee]{MultiColony-class}}, drone producing colonies
 available for mating. When \code{spatial = TRUE},
 the object needs to have the location set}
 
@@ -40,7 +40,7 @@ to their distance from the virgin colony (that is, in a radius)}
 \item{radius}{numeric, the radius from the virgin colony in which to sample mating partners,
 only needed when \code{spatial = TRUE}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }

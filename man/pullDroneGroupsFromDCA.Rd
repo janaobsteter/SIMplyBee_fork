@@ -7,19 +7,19 @@
 pullDroneGroupsFromDCA(DCA, n, nDrones = NULL, simParamBee = NULL, ...)
 }
 \arguments{
-\item{DCA}{\code{\link{Pop-class}}, population of drones}
+\item{DCA}{\code{\link[AlphaSimR]{Pop-class}}, population of drones}
 
 \item{n}{integer, number of drone groups to be created}
 
 \item{nDrones}{numeric of function, number of drones that a virgin queen
-mates with; if \code{NULL} then \code{\link{SimParamBee}$nFathers} is used}
+mates with; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nFathers} is used}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nDrones} when this argument is a function}
 }
 \value{
-list of \code{\link{Pop-class}}
+list of \code{\link[AlphaSimR]{Pop-class}}
 }
 \description{
 Level 1 function that pulls drone groups from a Drone

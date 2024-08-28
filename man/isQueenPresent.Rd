@@ -7,13 +7,13 @@
 isQueenPresent(x, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 logical, named by colony id when \code{x} is
-  \code{\link{MultiColony-class}}
+  \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Level 0 function that returns queen's presence status (is she
