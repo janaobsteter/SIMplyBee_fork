@@ -14,11 +14,10 @@ editor_options:
     argument anymore; use setLocation() instead; by default, location is
     now c(0, 0) PR#500
 
-## New features
 
+## New features ##
 -   In setLocation(MultiColony) we can set one location (numeric) or
     multiple (list or data.frame) PR#500
-
 -   getLocation(MultiColony) got the collapse argument
     Commit#f4e629c3e8920948ad576eae3615a86b26300790
 
@@ -40,7 +39,7 @@ editor_options:
     
 -  Unified setMisc and getMisc behaviour to comply with the new AlphaSimR behaviour
 
--  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous()
+-  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous() 
 
 ## Bug fixes
 

@@ -4774,6 +4774,10 @@ calcBeeGRMIbs <- function(x, sex, alleleFreq = NULL) {
     }
   }
   for (site in 1:nSite) {
+    # TODO: if speed ever becomes an issue, and RAM is available, we could do
+    #       alleleFreq = matrix(data = ploidy * alleleFreq, nrow = 1, ncol = ncol(x))
+    #       x = x - rep(x = 1, times = nInd(pop)) %*% alleleFreq
+    #       This would overwrite x only once, at expense of doubling RAM
     x[, site] <- x[, site] - ploidy * alleleFreq[site]
   }
   G <- tcrossprod(x) / (2 * sum(alleleFreq * (1 - alleleFreq)))
