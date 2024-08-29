@@ -1,58 +1,67 @@
-# SIMplyBee version 0.4.0 #
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-* 2023-MM-DD TODO
+# SIMplyBee version 0.4.0
 
-## Major changes ##
+-   2024-08-23
 
-* createColony() and createMultiColony() do not have the location argument
-  anymore; use setLocation() instead; by default, location is now c(0, 0) PR#500
+## Major changes
 
-* Our website: www.simplybee.info now is fully updated and autoupdates with every Github change
+-   createColony() and createMultiColony() do not have the location
+    argument anymore; use setLocation() instead; by default, location is
+    now c(0, 0) PR#500
 
 
 ## New features ##
+-   In setLocation(MultiColony) we can set one location (numeric) or
+    multiple (list or data.frame) PR#500
+-   getLocation(MultiColony) got the collapse argument
+    Commit#f4e629c3e8920948ad576eae3615a86b26300790
 
-* In setLocation(MultiColony) we can set one location (numeric) or multiple
-  (list or data.frame) PR#500
-  
-* getLocation(MultiColony) got the collapse argument
-  Commit#f4e629c3e8920948ad576eae3615a86b26300790
+-   We can now sample location of a swarm - see sampleLocation and
+    radius arguments in swarm() PR#500 PR#502
 
-* We can now sample location of a swarm - see sampleLocation and radius
-  arugments in swarm() PR#500 PR#502
-  
-* New function rcircle() to sample a random point within a circle with a given
-  radius PR#502
-  
-* Removed the function createRandomCrossPlan() - that option is now included in the newly added createCrossPlan() fuction
+-   New function rcircle() to sample a random point within a circle with
+    a given radius PR#502
 
-* Added the funcionality for spatially-aware mating of honeybee colonies. The new funcionality is included in the createCrossPlan(), that allows to create the cross plan according to the colonies' locations, and in the cross() function, that crosses bees according to their location
+-   Removed the function createRandomCrossPlan() - that option is now
+    included in the newly added createCrossPlan() fuction
 
-* Through blood, sweat and tears behind the scenes, we now consistently pass SimParamBee in all functions and test. 
- 
+-   Added the **functionality for spatially-aware mating** of honeybee
+    colonies. The new functionality is included in the
+    createCrossPlan(), that allows to create the cross plan according to
+    the colonies' locations, and in the cross() function, that crosses
+    bees according to their location. This did not break the old
+    functionality of the cross function.
+    
+-  Unified setMisc and getMisc behaviour to comply with the new AlphaSimR behaviour
 
-## Bug fixes ##
-* Bug fix - get*Haplo() functions were returning diploid drones when input was a Pop-class
-* Bug fix - Honeybee Biology vignette was not recognising founderpop.png during devel::check
+-  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous() 
 
-  
+## Bug fixes
 
-# SIMplyBee version 0.3.0 #
+-   Bug fix - get\*Haplo() functions were returning diploid drones when
+    input was a Pop-class
 
-* 2022-12-05 First public/CRAN version of the package
+-   
 
-## Major changes ##
+# SIMplyBee version 0.3.0
 
-* ~2 years of work went into this first public version!
+-   2022-12-05 First public/CRAN version of the package
 
-## New features ##
+## Major changes
 
-* Many;) See the vignettes and help pages.
+-   \~2 years of work went into this first public version!
 
-## Bug fixes ##
+## New features
 
-* Many bugs and issues squashed - see https://github.com/HighlanderLab/SIMplyBee/issues.
-  Please contribute to the development of this package.
+-   Many;) See the vignettes and help pages.
 
+## Bug fixes
 
-
+-   Many bugs and issues squashed - see
+    <https://github.com/HighlanderLab/SIMplyBee/issues>. Please
+    contribute to the development of this package.

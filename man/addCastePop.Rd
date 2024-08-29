@@ -32,13 +32,13 @@ addVirginQueens(
 )
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{caste}{character, "workers", "drones", or "virginQueens"}
 
 \item{nInd}{numeric or function, number of workers to be added, but see
-\code{new}; if \code{NULL} then \code{\link{SimParamBee}$nWorkers} is used.
-If input is \code{\link{MultiColony-class}},
+\code{new}; if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$nWorkers} is used.
+If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be used for all the colonies.}
 
@@ -51,12 +51,12 @@ on and exact is \code{TRUE}, we add the exact specified number of viable workers
 
 \item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
   workers added
 }
 \description{

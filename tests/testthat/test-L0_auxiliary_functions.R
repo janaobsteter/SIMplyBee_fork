@@ -480,7 +480,7 @@ test_that("isCsdHeterozygous", {
 
   expect_true(isCsdHeterozygous(colony@queen, simParamBee = SP))
   expect_true(is.vector(isCsdHeterozygous(colony@workers, simParamBee = SP)))
-  expect_false(all(isCsdHeterozygous(colony@drones, simParamBee = SP)))
+  expect_true(all(isCsdHeterozygous(colony@drones, simParamBee = SP)))
   expect_true(isCsdHeterozygous(colony@virginQueens, simParamBee = SP))
 
   # set CSD to NULL

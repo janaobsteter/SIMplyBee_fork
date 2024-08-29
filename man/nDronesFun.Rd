@@ -21,7 +21,7 @@ nDronesColonyPhenotype(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or \code{\link{Colony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}}}
 
 \item{n}{integer, number of samples}
 
@@ -31,26 +31,26 @@ nDronesColonyPhenotype(
 
 \item{queenTrait}{numeric (column position) or character (column name), trait
 that represents queen's effect on the colony phenotype (defined in
-\code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0}
+\code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{0} then this effect is 0}
 
 \item{workersTrait}{numeric (column position) or character (column name), trait
 that represents workers's effect on the colony phenotype (defined in
-\code{\link{SimParamBee}} - see examples); if \code{0} then this effect is 0}
+\code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{0} then this effect is 0}
 
 \item{checkProduction}{logical, does the phenotype depend on the production
 status of colony; if yes and production is not \code{TRUE}, the result is
 above \code{lowerLimit}}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{...}{other arguments of \code{\link{mapCasteToColonyPheno}}}
+\item{...}{other arguments of \code{\link[SIMplyBee]{mapCasteToColonyPheno}}}
 }
 \value{
 numeric, number of drones
 }
 \description{
 Sample a number of drones - used when \code{nDrones = NULL}
-  (see \code{\link{SimParamBee}$nDrones}).
+  (see \code{\link[SIMplyBee]{SimParamBee}$nDrones}).
 
   This is just an example. You can provide your own functions that satisfy
   your needs!
@@ -64,11 +64,11 @@ Sample a number of drones - used when \code{nDrones = NULL}
 
   \code{nDronesColonyPhenotype} returns a number (above \code{lowerLimit}) as
   a function of colony phenotype, say queen's fecundity. Colony phenotype is
-  provided by \code{\link{mapCasteToColonyPheno}}. You need to set up
+  provided by \code{\link[SIMplyBee]{mapCasteToColonyPheno}}. You need to set up
   traits influencing the colony phenotype and their parameters (mean and
-  variances) via \code{\link{SimParamBee}} (see examples).
+  variances) via \code{\link[SIMplyBee]{SimParamBee}} (see examples).
 
-  When \code{x} is \code{\link{Pop-class}}, only \code{workersTrait} is not
+  When \code{x} is \code{\link[AlphaSimR]{Pop-class}}, only \code{workersTrait} is not
   used, that is, only \code{queenTrait} is used.
 }
 \section{Functions}{
@@ -113,6 +113,6 @@ createDrones(colony1, nInd = nDronesColonyPhenotype)
 createDrones(colony2, nInd = nDronesColonyPhenotype)
 }
 \seealso{
-\code{\link{SimParamBee}} field \code{nDrones} and
+\code{\link[SIMplyBee]{SimParamBee}} field \code{nDrones} and
   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 }

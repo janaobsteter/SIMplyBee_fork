@@ -67,12 +67,12 @@ getDronesCsdAlleles(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-\code{\link{MultiColony-class}}}
+\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{caste}{NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-and character when \code{x} is a \code{\link{Colony-class}} or
- \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+\item{caste}{NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+ \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
  "workers", "drones", "virginQueens", or "all"}
 
 \item{nInd}{numeric, for how many individuals; if \code{NULL} all individuals
@@ -96,19 +96,19 @@ Default is \code{FALSE}. See examples about this behaviour.}
 interacts with \code{collapse}. Default is \code{FALSE}. See examples about
 this behaviour.}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
-  of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
+matrix with haplotypes when \code{x} is \code{\link[AlphaSimR]{Pop-class}}, list
+  of matrices with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
   (list nodes named by caste) and list of a list of matrices with haplotypes
-  when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
-  colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
+  when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, outer list is named by
+  colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}; \code{NULL} when
   \code{x} is \code{NULL}
 }
 \description{
 Level 0 function that returns alleles from the csd locus. See
-  \code{\link{SimParamBee}} for more information about the csd locus.
+  \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd locus.
 }
 \details{
 If both collapse and unique are \code{TRUE}, the function returns a

@@ -7,23 +7,23 @@
 split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{p}{numeric, proportion of workers that will go to the split colony; if
-\code{NULL} then \code{\link{SimParamBee}$splitP} is used.
-If input is \code{\link{MultiColony-class}},
+\code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$splitP} is used.
+If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies}
 
 \item{year}{numeric, year of birth for virgin queens}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{p} when this argument is a
 function}
 }
 \value{
-list with two  \code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+list with two  \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 the \code{split} and the \code{remnant} (see the description what each colony holds!);
 both outputs have the split even slot set do \code{TRUE}
 }

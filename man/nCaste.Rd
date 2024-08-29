@@ -23,17 +23,17 @@ nDrones(x, simParamBee = NULL)
 nVirginQueens(x, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-when \code{x} is \code{\link{Colony-class}} return is integer for
+when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is integer for
   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
-  by caste; when \code{x} is \code{\link{MultiColony-class}} return is named
+  by caste; when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is named
   integer for \code{caste != "all"} or named list of lists for
   \code{caste == "all"}
 }
@@ -112,7 +112,7 @@ nVirginQueens(apiary)
 
 }
 \seealso{
-\code{\link{nQueens}}, \code{\link{nFathers}},
-  \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
-  \code{\link{nDrones}}
+\code{\link[SIMplyBee]{nQueens}}, \code{\link[SIMplyBee]{nFathers}},
+  \code{\link[SIMplyBee]{nVirginQueens}}, \code{\link[SIMplyBee]{nWorkers}}, and
+  \code{\link[SIMplyBee]{nDrones}}
 }

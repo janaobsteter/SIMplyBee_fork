@@ -20,7 +20,7 @@ missing values are allowed (this is not checked - you will get NAs!)}
 \code{x} - \code{"F"} for female and \code{"M"} for male}
 
 \item{alleleFreq}{numeric, vector of allele frequencies for the sites in
-\code{x}; if \code{NULL}, then \code{\link{calcBeeAlleleFreq}} is used}
+\code{x}; if \code{NULL}, then \code{\link[SIMplyBee]{calcBeeAlleleFreq}} is used}
 }
 \value{
 matrix of genomic relatedness coefficients
@@ -101,5 +101,5 @@ calcBeeGRMIbs(x = rbind(queenGeno, pooledGenoW), sex = c("F","F"))
 \references{
 Druet and Legarra (2020) Theoretical and empirical comparisons of
   expected and realized relationships for the X-chromosome. Genetics
-  Selection Evolution, 52:50 \doi{/10.1186/s12711-020-00570-6}
+  Selection Evolution, 52:50 \doi{10.1186/s12711-020-00570-6}
 }

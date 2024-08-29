@@ -19,7 +19,7 @@ cross(
 )
 }
 \arguments{
-\item{x}{\code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+\item{x}{\code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 one or more virgin queens / colonies to be mated;}
 
 \item{crossPlan, }{named list with names being virgin queen or colony IDs with
@@ -27,19 +27,19 @@ each list element holding the IDs of either selected drones or selected
 drone producing colonies, OR a string "create" if you want the cross plan to be created
 internally. The function can create a random (\code{spatial = FALSE})
 or spatial (\code{spatial = TRUE}) cross plan internally. Also see
-\code{\link{createCrossPlan}}.}
+\code{\link[SIMplyBee]{createCrossPlan}}.}
 
-\item{drones}{a \code{\link{Pop-class}} or a list of \code{\link{Pop-class}},
+\item{drones}{a \code{\link[AlphaSimR]{Pop-class}} or a list of \code{\link[AlphaSimR]{Pop-class}},
 group(s) of drones that will be mated with virgin queen(s).
-See \code{\link{pullDroneGroupsFromDCA}}) to create a list of drone "packages".
-A single \code{\link{Pop-class}} is only allowed when mating
+See \code{\link[SIMplyBee]{pullDroneGroupsFromDCA}}) to create a list of drone "packages".
+A single \code{\link[AlphaSimR]{Pop-class}} is only allowed when mating
 a single virgin queen or colony, or when mating according to a cross plan that
 includes drones' IDs. When creating a spatial cross plan internally, males
-can not be provided through the \code{drones} argument as a \code{\link{Pop-class}},
+can not be provided through the \code{drones} argument as a \code{\link[AlphaSimR]{Pop-class}},
 but should be provided through the \code{droneColonies} argument as
-or \code{\link{MultiColony-class}}}
+or \code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{droneColonies}{\code{\link{MultiColony-class}} with all available
+\item{droneColonies}{\code{\link[SIMplyBee]{MultiColony-class}} with all available
 drone producing colonies. Provided when \code{drones} is not provided (NULL). When
 providing drone producing colonies, the cross function uses a cross plan, that can
 either be provided by the user through (\code{crossPlan}) argument or created
@@ -56,23 +56,23 @@ only needed when \code{spatial = TRUE}}
 
 \item{checkCross}{character, throw a warning (when \code{checkCross = "warning"}),}
 
-\item{simParamBee}{\code{\link{SimParamBee}}, global simulation parameters}
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{
-\code{\link{Pop-class}} with mated queen(s). The misc slot of the
+\code{\link[AlphaSimR]{Pop-class}} with mated queen(s). The misc slot of the
   queens contains additional information about the number of workers, drones,
   and homozygous brood produced, and the expected percentage of csd homozygous
   brood.
 }
 \description{
 Level 1 function that crosses (mates) a virgin queen to a group
-  of drones. The virgin queen(s) could be within a population (\code{\link{Pop-class}}),
-  in a colony (\code{\link{Colony-class}}), or multi-colony (\code{\link{MultiColony-class}}).
+  of drones. The virgin queen(s) could be within a population (\code{\link[AlphaSimR]{Pop-class}}),
+  in a colony (\code{\link[SIMplyBee]{Colony-class}}), or multi-colony (\code{\link[SIMplyBee]{MultiColony-class}}).
   This function does not create any progeny, it only stores the mated drones
   (fathers) so we can later create progeny as needed. When input is a
-  (\code{\link{Colony-class}}) or (\code{\link{MultiColony-class}}), one
+  (\code{\link[SIMplyBee]{Colony-class}}) or (\code{\link[SIMplyBee]{MultiColony-class}}), one
   virgin queens is selected at random, mated, and promoted to the queen of
   the colony. Other virgin queens are destroyed. Mated drones (fathers) are
   stored for producing progeny at a later stage. For a better understanding
@@ -84,12 +84,12 @@ This function changes caste for the mated drones to fathers, and
   use these individuals in matings any more!
 
   If the supplied drone population is empty (has 0 individuals), which
-  can happen in edge cases or when \code{\link{nFathersPoisson}} is used
-  instead of \code{\link{nFathersTruncPoisson}}, or when performing spatially-aware mating
+  can happen in edge cases or when \code{\link[SIMplyBee]{nFathersPoisson}} is used
+  instead of \code{\link[SIMplyBee]{nFathersTruncPoisson}}, or when performing spatially-aware mating
   and no drone producing colonies are found in the vicinity, then mating of a virgin
   queen will fail and she will stay virgin. This can happen for just a few
   of many virgin queens, which can be annoying to track down, but you can use
-  \code{\link{isQueen}} or \code{\link{isVirginQueen}} to find such virgin
+  \code{\link[SIMplyBee]{isQueen}} or \code{\link[SIMplyBee]{isVirginQueen}} to find such virgin
   queens. You can use \code{checkCross} to alert you about this situation.
 }
 \examples{
@@ -201,12 +201,12 @@ nFathers(apiary4)
 
 }
 \seealso{
-\code{\link{Colony-class}} on how we store the fathers along the
+\code{\link[SIMplyBee]{Colony-class}} on how we store the fathers along the
   queen.  For more examples for mating with either externally or internally created cross plan,
- please see \code{\link{createCrossPlan}}
+ please see \code{\link[SIMplyBee]{createCrossPlan}}
 
 For crossing virgin queens according to a cross plan, see
-  \code{\link{createCrossPlan}}.
+  \code{\link[SIMplyBee]{createCrossPlan}}.
   For crossing virgin queens on a mating stations, see
-  \code{\link{createMatingStationDCA}}
+  \code{\link[SIMplyBee]{createMatingStationDCA}}
 }

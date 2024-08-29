@@ -7,7 +7,7 @@
 isGenoHeterozygous(x)
 }
 \arguments{
-\item{x}{integer or matrix, output from \code{\link{getCsdGeno}}}
+\item{x}{integer or matrix, output from \code{\link[SIMplyBee]{getCsdGeno}}}
 }
 \value{
 logical

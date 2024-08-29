@@ -7,7 +7,7 @@
 setLocation(x, location = c(0, 0))
 }
 \arguments{
-\item{x}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{location}{numeric, list, or data.frame, x and y coordinates of colony
 locations as
@@ -16,7 +16,7 @@ locations as
 \code{data.frame(x = c(x1, x2), y = c(y1, y2))}}
 }
 \value{
-\code{\link{Colony-class}} or \code{\link{MultiColony-class}} with set
+\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with set
   location
 }
 \description{

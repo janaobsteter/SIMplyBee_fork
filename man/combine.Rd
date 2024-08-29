@@ -7,12 +7,12 @@
 combine(strong, weak)
 }
 \arguments{
-\item{strong}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{strong}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
-\item{weak}{\code{\link{Colony-class}} or \code{\link{MultiColony-class}}}
+\item{weak}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-a combined \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+a combined \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Level 2 function that combines two Colony or MultiColony objects

@@ -85,21 +85,21 @@ GRMs$indiv[dI, wI]
 \references{
 Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
   relatives for X-chromosomal loci. The Journal of Heredity,
-  \doi{/10.1093/oxfordjournals.jhered.a110812}
+  \doi{10.1093/oxfordjournals.jhered.a110812}
 
 Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
   loci in a population in disequilibrium. Theoretical and Applied Genetics,
-  \doi{/10.1007/bf00305821}
+  \doi{10.1007/bf00305821}
 
 Fernando and Grossman (1990) Genetic evaluation with autosomal
   and X-chromosomal inheritance. Theoretical and Applied Genetics,
- \doi{/10.1007/bf00224018}
+ \doi{10.1007/bf00224018}
 
 Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
   prediction of breeding values. Genetics,
- \doi{/10.1093/genetics/137.1.319}
+ \doi{10.1093/genetics/137.1.319}
 
 Hill and Weir (2011) Variation in actual relationship as a consequence of
   Mendelian sampling and linkage. Genetics Research,
-  \doi{/10.1017/s0016672310000480}
+  \doi{10.1017/s0016672310000480}
 }

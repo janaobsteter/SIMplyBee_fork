@@ -7,9 +7,9 @@
 #' @description Level 0 function that returns the number of colonies in a
 #'   MultiColony object.
 #'
-#' @param multicolony \code{\link{MultiColony-class}}
+#' @param multicolony \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @seealso \code{\link{nNULLColonies}} and \code{\link{nEmptyColonies}}
+#' @seealso \code{\link[SIMplyBee]{nNULLColonies}} and \code{\link[SIMplyBee]{nEmptyColonies}}
 #' @return integer
 #'
 #' @examples
@@ -81,18 +81,18 @@ nEmptyColonies <- function(multicolony) {
 #'
 #' @description Returns the number of individuals of a caste in a colony
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{nQueens}}, \code{\link{nFathers}},
-#'   \code{\link{nVirginQueens}}, \code{\link{nWorkers}}, and
-#'   \code{\link{nDrones}}
+#' @seealso \code{\link[SIMplyBee]{nQueens}}, \code{\link[SIMplyBee]{nFathers}},
+#'   \code{\link[SIMplyBee]{nVirginQueens}}, \code{\link[SIMplyBee]{nWorkers}}, and
+#'   \code{\link[SIMplyBee]{nDrones}}
 #'
-#' @return when \code{x} is \code{\link{Colony-class}} return is integer for
+#' @return when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is integer for
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
-#'   by caste; when \code{x} is \code{\link{MultiColony-class}} return is named
+#'   by caste; when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is named
 #'   integer for \code{caste != "all"} or named list of lists for
 #'   \code{caste == "all"}
 #'
@@ -170,7 +170,9 @@ nCaste <- function(x, caste = "all", simParamBee = NULL) {
       }
     } else {
       if (caste == "fathers") {
-        ret <- ifelse(!is.null(slot(x, "queen")), nInd(x@queen@misc[[1]]$fathers), 0)
+        ret <- ifelse(!is.null(slot(x, "queen")),
+                      nInd(x@queen@misc$fathers[[1]]),
+                      0)
       } else if (caste == "drones") {
         ret <- ifelse(!is.null(slot(x, caste)), sum(isDrone(x = x@drones, simParamBee = simParamBee)), 0)
       } else {
@@ -209,7 +211,7 @@ nFathers <- function(x, simParamBee = NULL) {
     ret <- rep(x = 0, times = nInd)
     for (ind in seq_len(nInd)) {
       if (isQueen(x[ind], simParamBee = simParamBee)) {
-        ret[ind] <- nInd(x@misc[[ind]]$fathers)
+        ret[ind] <- nInd(x@misc$fathers[[ind]])
       }
     }
   } else {
@@ -253,15 +255,15 @@ nVirginQueens <- function(x, simParamBee = NULL) {
 #'   inheritance process. See \code{vignette(package = "SIMplyBee")} for more
 #'   details.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @seealso Demo in the introductory vignette
 #'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
 #' @return numeric, expected csd homozygosity named by colony id when \code{x}
-#'   is \code{\link{MultiColony-class}}
+#'   is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #'
 #' @examples
@@ -321,7 +323,7 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
           FUN = function(x) paste0(x, collapse = "")
         )
         fathersCsd <- apply(
-          X = getCsdAlleles(x@misc[[ind]]$fathers, simParamBee = simParamBee), MARGIN = 1,
+          X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
           FUN = function(x) paste0(x, collapse = "")
         )
         nComb <- length(queensCsd) * length(fathersCsd)
@@ -352,16 +354,16 @@ pHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$pHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$pHomBrood
+      if (!is.null(x@misc$pHomBrood[[ind]])) {
+        ret[ind] <- x@misc$pHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$pHomBrood)) {
-      ret <- NA
-    } else {
-      ret <- x@queen@misc[[1]]$pHomBrood
-    }
+      if (is.null(x@queen@misc$pHomBrood[[1]])) {
+        ret <- NA
+      } else {
+        ret <- x@queen@misc$pHomBrood[[1]]
+      }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = pHomBrood)
     names(ret) <- getId(x)
@@ -384,15 +386,15 @@ nHomBrood <- function(x, simParamBee = NULL) {
     }
     ret <- rep(x = NA, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
-      if (!is.null(x@misc[[ind]]$nHomBrood)) {
-        ret[ind] <- x@misc[[ind]]$nHomBrood
+      if (!is.null(x@misc$nHomBrood[[ind]])) {
+        ret[ind] <- x@misc$nHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc[[1]]$nHomBrood)) {
+    if (is.null(x@queen@misc$nHomBrood[[1]])) {
       ret <- NA
     } else {
-      ret <- x@queen@misc[[1]]$nHomBrood
+      ret <- x@queen@misc$nHomBrood[[1]]
     }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = nHomBrood)
@@ -411,15 +413,15 @@ nHomBrood <- function(x, simParamBee = NULL) {
 #' @description Level 0 function that tests if individuals are members of a
 #'   specific caste
 #'
-#' @param x \code{\link{Pop-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}
 #' @param caste character, one of "queen", "fathers", "workers", "drones", or
 #'   "virginQueens"; only single value is used
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{isQueen}}, \code{\link{isFather}},
-#'   \code{\link{isVirginQueen}},
-#'   \code{\link{isWorker}}, and
-#'   \code{\link{isDrone}}
+#' @seealso \code{\link[SIMplyBee]{isQueen}}, \code{\link[SIMplyBee]{isFather}},
+#'   \code{\link[SIMplyBee]{isVirginQueen}},
+#'   \code{\link[SIMplyBee]{isWorker}}, and
+#'   \code{\link[SIMplyBee]{isDrone}}
 #'
 #' @return logical
 #'
@@ -556,11 +558,11 @@ isVirginQueen <- isVirginQueens
 #' @description Level 0 function that returns queen's presence status (is she
 #'   present/alive or not).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -609,11 +611,11 @@ isQueenPresent <- function(x, simParamBee = NULL) {
 #' @description Level 0 function that returns fathers presence status (are they
 #'   present or not, which means the queen is mated).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -662,11 +664,11 @@ areFathersPresent <- isFathersPresent
 #' @description Level 0 function that returns workers presence status (are they
 #'   present or not).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -717,11 +719,11 @@ areWorkersPresent <- isWorkersPresent
 #' @description Level 0 function that returns drones presence status (are they
 #'   present or not).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -771,11 +773,11 @@ areDronesPresent <- isDronesPresent
 #'
 #' @description Level 0 function that returns virgin queen(s) presence status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -834,12 +836,12 @@ areVirginQueensPresent <- isVirginQueensPresent
 #' @description Check whether a population, colony or a multicolony
 #'   object has no individuals within.
 #'
-#' @param x \code{\link{Pop-class}} or \code{\link{Colony-class}} or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return boolean when \code{x} is \code{\link{Pop-class}} or
-#'   \code{\link{Colony-class}}, and named vector of boolean when
-#'   \code{x} is \code{\link{MultiColony-class}}
+#' @return boolean when \code{x} is \code{\link[AlphaSimR]{Pop-class}} or
+#'   \code{\link[SIMplyBee]{Colony-class}}, and named vector of boolean when
+#'   \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -909,7 +911,7 @@ isEmpty <- function(x) {
 #'
 #' @description Check which of the colonies in a multicolony are NULL
 #'
-#' @param multicolony  \code{\link{MultiColony-class}}
+#' @param multicolony  \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @return Named vector of boolean
 #'
@@ -955,10 +957,10 @@ isNULLColonies <- function(multicolony) {
 #'
 #' @description Level 0 function that returns the queen's year of birth.
 #'
-#' @param x \code{\link{Pop-class}} (one or more than one queen),
-#'   \code{\link{Colony-class}} (one colony), or
-#'   \code{\link{MultiColony-class}} (more colonies)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[AlphaSimR]{Pop-class}} (one or more than one queen),
+#'   \code{\link[SIMplyBee]{Colony-class}} (one colony), or
+#'   \code{\link[SIMplyBee]{MultiColony-class}} (more colonies)
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return numeric, the year of birth of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
@@ -1001,15 +1003,15 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- x@misc[[ind]]$yearOfBirth
+      if (!is.null(x@misc$yearOfBirth[[ind]])) {
+        ret[ind] <- x@misc$yearOfBirth[[ind]]
       }
     }
     if (nInd > 1) {
       names(ret) <- getId(x)
     }
   } else if (isColony(x)) {
-    ret <- ifelse(is.null(x@queen@misc[[1]]$yearOfBirth), NA, x@queen@misc[[1]]$yearOfBirth)
+    ret <- ifelse(is.null(x@queen@misc$yearOfBirth[[1]]), NA, x@queen@misc$yearOfBirth[[1]])
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = getQueenYearOfBirth, simParamBee = simParamBee)
     names(ret) <- getId(x)
@@ -1024,10 +1026,10 @@ getQueenYearOfBirth <- function(x, simParamBee = NULL) {
 #'
 #' @description Level 0 function that returns the queen's age.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param currentYear integer, current year
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return numeric, the age of the queen(s); named when theres is more
 #'   than one queen; \code{NA} if queen not present
@@ -1068,8 +1070,8 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     nInd <- nInd(x)
     ret <- rep(x = NA, times = nInd)
     for (ind in seq_len(nInd)) {
-      if (!is.null(x@misc[[ind]]$yearOfBirth)) {
-        ret[ind] <- currentYear - x@misc[[ind]]$yearOfBirth
+      if (!is.null(x@misc$yearOfBirth[[ind]])) {
+        ret[ind] <- currentYear - x@misc$yearOfBirth[[ind]]
       }
     }
     if (nInd > 1) {
@@ -1077,7 +1079,11 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
     }
   } else if (isColony(x)) {
     if (isQueenPresent(x, simParamBee = simParamBee)) {
-      ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+        ret <- currentYear - x@queen@misc$yearOfBirth[[1]]
+      }else{
+        ret <- currentYear - x@queen@misc[[1]]$yearOfBirth
+      }
     } else {
       ret <- NA
     }
@@ -1096,7 +1102,7 @@ getQueenAge <- function(x, currentYear, simParamBee = NULL) {
 #' @description Level 0 function that returns the colony ID. This is by
 #'   definition the ID of the queen.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @return character, \code{NA} when queen not present
 #'
@@ -1141,28 +1147,28 @@ getId <- function(x) {
 #' @title Get IDs of individuals of a caste, or ID of all members of colony
 #'
 #' @description Level 0 function that returns the ID individuals of a caste. To
-#'   get the individuals, use \code{\link{getCastePop}}. To get individuals'
-#'   caste, use \code{\link{getCaste}}.
+#'   get the individuals, use \code{\link[SIMplyBee]{getCastePop}}. To get individuals'
+#'   caste, use \code{\link[SIMplyBee]{getCaste}}.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param collapse logical, if all IDs should be returned as a single vector
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getCaste}}
+#' @seealso \code{\link[SIMplyBee]{getCaste}}
 #'
-#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#' @return when \code{x} is \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
 #'  or list for \code{caste == "all"} with ID nodes named by caste;
-#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'    when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is a named list of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
 #'   or named list for \code{caste == "all"} indluding caste members IDs;
-#'    when \code{x} is \code{\link{MultiColony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members IDs
+#'    when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is a named list of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste == "all"} indluding caste members IDs
 #'
-#' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
+#' @seealso \code{\link[SIMplyBee]{getCastePop}} and \code{\link[SIMplyBee]{getCaste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1263,29 +1269,29 @@ getCasteId <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) {
 #' @title Get sex of individuals of a caste, or sex of all members of colony
 #'
 #' @description Level 0 function that returns the sex individuals of a caste. To
-#'   get the individuals, use \code{\link{getCastePop}}. To get individuals'
-#'   caste, use \code{\link{getCaste}}.
+#'   get the individuals, use \code{\link[SIMplyBee]{getCastePop}}. To get individuals'
+#'   caste, use \code{\link[SIMplyBee]{getCaste}}.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param collapse logical, if \code{TRUE}, the function will return a single
 #'   vector with sex information
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getCaste}}
+#' @seealso \code{\link[SIMplyBee]{getCaste}}
 #'
-#' @return when \code{x} is \code{\link{Pop-class}} for \code{caste != "all"}
+#' @return when \code{x} is \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
 #'  or list for \code{caste == "all"} with sex nodes named by caste;
-#'    when \code{x} is \code{\link{Colony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"}
+#'    when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is a named list of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"}
 #'   or named list for \code{caste == "all"} indluding caste members sexes;
-#'    when \code{x} is \code{\link{MultiColony-class}} return is a named list of
-#'   \code{\link{Pop-class}} for \code{caste != "all"} or named list of lists of
-#'   \code{\link{Pop-class}} for \code{caste == "all"} indluding caste members sexes
+#'    when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is a named list of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste != "all"} or named list of lists of
+#'   \code{\link[AlphaSimR]{Pop-class}} for \code{caste == "all"} indluding caste members sexes
 #'
-#' @seealso \code{\link{getCastePop}} and \code{\link{getCaste}}
+#' @seealso \code{\link[SIMplyBee]{getCastePop}} and \code{\link[SIMplyBee]{getCaste}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1388,18 +1394,18 @@ getCasteSex <- function(x, caste = "all", collapse = FALSE, simParamBee = NULL) 
 #'
 #' @description Level 0 function that reports caste of an individual
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param collapse logical, if \code{TRUE}, the function will return a single
 #'   vector with caste information
-#' @return When x is \code{\link{Pop-class}}, character of caste status; if you
+#' @return When x is \code{\link[AlphaSimR]{Pop-class}}, character of caste status; if you
 #'   get \code{NA} note that this is not supposed to happen. When x is
-#'   \code{\link{Colony-class}}, list with character vectors (list is named with
-#'   caste). When x is \code{\link{MultiColony-class}}, list of lists with
+#'   \code{\link[SIMplyBee]{Colony-class}}, list with character vectors (list is named with
+#'   caste). When x is \code{\link[SIMplyBee]{MultiColony-class}}, list of lists with
 #'   character vectors (list is named with colony id).
 #'
-#' @seealso \code{\link{getCastePop}} and \code{\link{getCasteId}}
+#' @seealso \code{\link[SIMplyBee]{getCastePop}} and \code{\link[SIMplyBee]{getCasteId}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1501,14 +1507,14 @@ getCaste <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @description Level 0 function that returns the colony location as (x, y)
 #'   coordinates.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param collapse logical, if the return value should be a single matrix
 #'   with locations of all the colonies; only applicable when input
-#'   is a \code{\link{MultiColony-class}} object
+#'   is a \code{\link[SIMplyBee]{MultiColony-class}} object
 #'
-#' @return numeric with two values when \code{x} is \code{\link{Colony-class}}
+#' @return numeric with two values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and a list of numeric with two values when \code{x} is
-#'   \code{\link{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
+#'   \code{\link[SIMplyBee]{MultiColony-class}} (list named after colonies); \code{c(NA, NA)}
 #'   when location not set
 #'
 #' @examples
@@ -1639,9 +1645,9 @@ rcircle <- function(n = 1, radius = 1, uniform = TRUE, normScale = 1 / 3) {
 #' @description Level 0 function that returns colony split status. This will
 #'   obviously impact colony strength.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1691,10 +1697,10 @@ hasSplit <- function(x) {
 #'   collapse, and production. These events impact colony status, strength, and
 #'   could also impact downstream phenotypes.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @return matrix of logicals, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1744,9 +1750,9 @@ getEvents <- function(x) {
 #' @description Level 0 function that returns colony swarmed status. This will
 #'   obviously have major impact on the colony and its downstream events.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1794,9 +1800,9 @@ hasSwarmed <- function(x) {
 #'
 #' @description Level 0 function that returns colony supersedure status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1842,9 +1848,9 @@ hasSuperseded <- function(x) {
 #'
 #' @description Level 0 function that returns colony collapse status.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1891,9 +1897,9 @@ hasCollapsed <- function(x) {
 #' @description Level 0 function that returns colony production status. This can
 #'   be used to decided if colony production can be simulated.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return logical, named by colony id when \code{x} is \code{\link{MultiColony-class}}
+#' @return logical, named by colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1958,26 +1964,26 @@ isProductive <- function(x) {
 #'   chromosomes in parallel. If \code{NULL}, the number of threads is
 #'   automatically detected
 #'
-#' @return \code{\link{MapPop-class}}
+#' @return \code{\link[AlphaSimR]{MapPop-class}}
 #'
 #' @references
 #' Wallberg, A., Bunikis, I., Pettersson, O.V. et al.
 #'   A hybrid de novo genome assembly of the honeybee, Apis mellifera,
 #'   with chromosome-length scaffolds. 2019, BMC Genomics 20:275.
-#'   \doi{/10.1186/s12864-019-5642-0}
+#'   \doi{10.1186/s12864-019-5642-0}
 #'
 #' Beye M, Gattermeier I, Hasselmann M, et al. Exceptionally high levels
 #'   of recombination across the honey bee genome.
-#'   2006, Genome Res 16(11):1339-1344. \doi{/10.1101/gr.5680406}
+#'   2006, Genome Res 16(11):1339-1344. \doi{10.1101/gr.5680406}
 #'
 #' Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
 #'   genome sequence variation provides insight into the evolutionary
 #'   history of the honeybee Apis mellifera.
-#'   2014, Nat Genet 46:1081–1088. \doi{/10.1038/ng.3077}
+#'   2014, Nat Genet 46:1081–1088. \doi{10.1038/ng.3077}
 #'
 #' Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
 #'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
-#'   2015, Nature 523(7561):463-7. \doi{/10.1038/nature14649}.
+#'   2015, Nature 523(7561):463-7. \doi{10.1038/nature14649}.
 #'
 #' @seealso Due to the computational time and resources required to run this function,
 #'   we do not include an example here, but we demonstrate
@@ -2055,10 +2061,10 @@ simulateHoneyBeeGenomes <- function(nMelN = 0L,
 #' @title Is csd locus activated
 #'
 #' @description Level 0 function that checks if the csd locus has been
-#'   activated. See \code{\link{SimParamBee}} for more information about the csd
+#'   activated. See \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd
 #'   locus.
 #'
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return logical
 #'
@@ -2088,7 +2094,7 @@ isCsdActive <- function(simParamBee = NULL) {
 #'   internal utility function that you likely don't need to use.
 #'
 #' @param haplo \code{\link{matrix-class}}
-#' @param pop \code{\link{Pop-class}}
+#' @param pop \code{\link[AlphaSimR]{Pop-class}}
 #'
 #' @details While this function is meant to work on male (drone) haplotypes, we
 #'   handle cases where the \code{haplo} matrix contains male and female
@@ -2136,7 +2142,7 @@ reduceDroneHaplo <- function(haplo, pop) {
 #'   to use.
 #'
 #' @param geno \code{\link{matrix-class}}
-#' @param pop \code{\link{Pop-class}}
+#' @param pop \code{\link[AlphaSimR]{Pop-class}}
 #'
 #' @return matrix with genotype as one haplotype per drone instead of two - the
 #'   order of individuals and the number of rows stays the same!
@@ -2173,13 +2179,13 @@ reduceDroneGeno <- function(geno, pop) {
 #' @title Get csd alleles
 #'
 #' @description Level 0 function that returns alleles from the csd locus. See
-#'   \code{\link{SimParamBee}} for more information about the csd locus.
+#'   \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd locus.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
 #'   are taken; this can be useful as a test of sampling individuals
@@ -2197,16 +2203,16 @@ reduceDroneGeno <- function(geno, pop) {
 #' @param unique logical, return only the unique set of csd alleles. This argument
 #'   interacts with \code{collapse}. Default is \code{FALSE}. See examples about
 #'   this behaviour.
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details If both collapse and unique are \code{TRUE}, the function returns a
 #'   unique set of csd alleles in the entire population, colony, or multicolony
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Pop-class}}, list
-#'   of matrices with haplotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link[AlphaSimR]{Pop-class}}, list
+#'   of matrices with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with haplotypes
-#'   when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
+#'   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}; \code{NULL} when
 #'   \code{x} is \code{NULL}
 #'
 #' @examples
@@ -2424,31 +2430,31 @@ getDronesCsdAlleles <- function(x, nInd = NULL, allele = "all", dronesHaploid = 
 #' @title Get genotypes from the csd locus
 #'
 #' @description Level 0 function that returns genotypes from the csd locus. See
-#'   \code{\link{SimParamBee}} for more information about the csd locus and how
+#'   \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd locus and how
 #'   we have implemented it.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, for how many individuals; if \code{NULL} all individuals
 #'   are taken; this can be useful as a test of sampling individuals
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with haplotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details The returned genotypes are spanning multiple bi-allelic SNP of
 #'   a non-recombining csd locus / haplotype. In most cases you will want to use
-#'   \code{\link{getCsdAlleles}}.
+#'   \code{\link[SIMplyBee]{getCsdAlleles}}.
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Pop-class}}, list
-#'   of matrices with genotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with genotypes when \code{x} is \code{\link[AlphaSimR]{Pop-class}}, list
+#'   of matrices with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   (list nodes named by caste) and list of a list of matrices with genotypes
-#'   when \code{x} is \code{\link{MultiColony-class}}, outer list is named by
-#'   colony id when \code{x} is \code{\link{MultiColony-class}}; \code{NULL} when
+#'   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, outer list is named by
+#'   colony id when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}; \code{NULL} when
 #'   \code{x} is \code{NULL}
 #'
 #' @examples
@@ -2656,7 +2662,7 @@ getDronesCsdGeno <- function(x, nInd = NULL, dronesHaploid = TRUE,
 #' @description Level 0 function that returns heterozygote status for a
 #'   multilocus genotype.
 #'
-#' @param x integer or matrix, output from \code{\link{getCsdGeno}}
+#' @param x integer or matrix, output from \code{\link[SIMplyBee]{getCsdGeno}}
 #'
 #' @return logical
 #' # Not exporting this function, since its just a helper
@@ -2672,14 +2678,14 @@ isGenoHeterozygous <- function(x) {
 #' @title Test if individuals are heterozygous at the csd locus
 #'
 #' @description Level 0 function that returns if individuals of a population are
-#'   heterozygous at the csd locus. See \code{\link{SimParamBee}} for more
+#'   heterozygous at the csd locus. See \code{\link[SIMplyBee]{SimParamBee}} for more
 #'   information about the csd locus.
 #'
-#' @param pop \code{\link{Pop-class}}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param pop \code{\link[AlphaSimR]{Pop-class}}
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details We could expand \code{isCsdHeterozygous} to work also with
-#'   \code{\link{Colony-class}} and \code{\link{MultiColony-class}} if needed
+#'   \code{\link[SIMplyBee]{Colony-class}} and \code{\link[SIMplyBee]{MultiColony-class}} if needed
 #'
 #' @return logical
 #'
@@ -2703,16 +2709,29 @@ isGenoHeterozygous <- function(x) {
 #' isCsdHeterozygous(getWorkers(colony))
 #' @export
 isCsdHeterozygous <- function(pop, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  if(is(pop,"MapPop")){
+    genMap = pop@genMap
+  }else{
+    if(is.null(simParamBee)){
+      simParamBee <- get("SP",envir=.GlobalEnv)
+    }
+    genMap = simParamBee$genMap
   }
-  if (!isPop(pop)) {
-    stop("Argument pop must be a Pop class object!")
+
+  if (is.null(simParamBee$csdChr)) {
+    stop("Csd locus not set.")
   }
-  geno <- getCsdGeno(x = pop, simParamBee = simParamBee, dronesHaploid = FALSE)
-  # Could inline isGenoHeterozygous() here, but isGenoHeterozygous is far easier
-  # to test than isCsdHeterozygous()
-  ret <- isGenoHeterozygous(x = geno)
+
+  # Map markers to genetic map
+  markers = paste(simParamBee$csdChr,
+                  simParamBee$csdPosStart:simParamBee$csdPosStop,
+                  sep="_")
+  lociMap = mapLoci(markers, genMap)
+
+  ret <- as.logical(as.vector(isHeterozygous(pop@geno, lociMap$lociPerChr, lociMap$lociLoc, simParamBee$nThreads)))
+  names(ret) <- pop@id
+  caste <- getCaste(pop, simParamBee = simParamBee)
+  ret[caste == "drones"] <- TRUE
   return(ret)
 }
 
@@ -2720,17 +2739,17 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #' @title Report the number of distinct csd alleles
 #'
 #' @description Level 0 function that returns the number of distinct csd alleles
-#'   in input. See \code{\link{SimParamBee}} for more information about the csd
+#'   in input. See \code{\link[SIMplyBee]{SimParamBee}} for more information about the csd
 #'   locus.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param collapse logical, if \code{TRUE}, the function will return the number
 #'   of distinct csd alleles in either the entire population, colony, or
 #'   multicolony. Note this has nothing to do with the colony collapse. It's
 #'   like \code{paste(..., collapse = TRUE)}. Default is \code{FALSE}. See
 #'   examples about this behaviour.Default is \code{FALSE}.
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @details Queen has 2 distinct csd alleles, since she has to be heterozygous
 #'   to be viable. The same holds for individual virgin queens and workers, but
@@ -2741,7 +2760,7 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   of \code{nCsdAlleles()} from queens and fathers. For this reason, we also
 #'   report \code{nCsdAlleles()} from queens and fathers combined (see the
 #'   \code{queenAndFathers} list node) when \code{x} is
-#'   \code{\link{Colony-class}}. This last measure is then the expected number
+#'   \code{\link[SIMplyBee]{Colony-class}}. This last measure is then the expected number
 #'   of csd alleles in a colony as opposed to realised number of csd alleles in
 #'   a sample of virgin queens and workers. Similarly as for virgin queens and
 #'   workers, \code{nCsdAlleles()} from drones gives a noisy realisation of
@@ -2750,11 +2769,11 @@ isCsdHeterozygous <- function(pop, simParamBee = NULL) {
 #'   individuals there should be minimal amount of noise.
 #'
 #' @return integer representing the number of distinct csd alleles when \code{x}
-#'   is \code{\link{Pop-class}} (or ), list of integer
-#'   when \code{x} is \code{\link{Colony-class}} (list nodes named by caste) and
-#'   list of a list of integer when \code{x} is \code{\link{MultiColony-class}},
+#'   is \code{\link[AlphaSimR]{Pop-class}} (or ), list of integer
+#'   when \code{x} is \code{\link[SIMplyBee]{Colony-class}} (list nodes named by caste) and
+#'   list of a list of integer when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   outer list is named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}; the integer rep
+#'   \code{\link[SIMplyBee]{MultiColony-class}}; the integer rep
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -2837,11 +2856,11 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @description Level 0 function that returns IBD (identity by descent)
 #'   haplotypes of individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -2852,14 +2871,14 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with haplotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getIbdHaplo}} and \code{\link{pullIbdHaplo}}
+#' @seealso \code{\link[SIMplyBee]{getIbdHaplo}} and \code{\link[AlphaSimR]{pullIbdHaplo}}
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -3089,11 +3108,11 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' @description Level 0 function that returns QTL haplotypes of individuals in a
 #'   caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3107,15 +3126,15 @@ getDronesIbdHaplo <- function(x, nInd = NULL, chr = NULL, snpChip = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with haplotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlHaplo}} and \code{\link{pullQtlHaplo}} as well as
+#' @seealso \code{\link[SIMplyBee]{getQtlHaplo}} and \code{\link[AlphaSimR]{pullQtlHaplo}} as well as
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -3342,11 +3361,11 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns QTL genotypes of individuals in a
 #'   caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3357,15 +3376,15 @@ getDronesQtlHaplo <- function(x, nInd = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getQtlGeno}} and \code{\link{pullQtlGeno}} as well as
+#' @seealso \code{\link[SIMplyBee]{getQtlGeno}} and \code{\link[AlphaSimR]{pullQtlGeno}} as well as
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#' @return matrix with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -3591,11 +3610,11 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @description Level 0 function that returns haplotypes for all segregating
 #'   sites of individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3607,14 +3626,14 @@ getDronesQtlGeno <- function(x, nInd = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with haplotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getSegSiteHaplo}} and \code{\link{pullSegSiteHaplo}}
+#' @seealso \code{\link[SIMplyBee]{getSegSiteHaplo}} and \code{\link[AlphaSimR]{pullSegSiteHaplo}}
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -3836,11 +3855,11 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns genotypes for all segregating
 #'   sites of individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -3849,14 +3868,14 @@ getDronesSegSiteHaplo <- function(x, nInd = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getSegSiteGeno}} and \code{\link{pullSegSiteGeno}}
+#' @seealso \code{\link[SIMplyBee]{getSegSiteGeno}} and \code{\link[AlphaSimR]{pullSegSiteGeno}}
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#' @return matrix with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -4072,11 +4091,11 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @description Level 0 function that returns SNP array haplotypes of
 #'   individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -4089,14 +4108,14 @@ getDronesSegSiteGeno <- function(x, nInd = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with haplotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getSnpHaplo}} and \code{\link{pullSnpHaplo}}
+#' @seealso \code{\link[SIMplyBee]{getSnpHaplo}} and \code{\link[AlphaSimR]{pullSnpHaplo}}
 #'
-#' @return matrix with haplotypes when \code{x} is \code{\link{Colony-class}}
+#' @return matrix with haplotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of matrices with haplotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -4316,11 +4335,11 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @description Level 0 function that returns SNP array genotypes of individuals
 #'   in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
@@ -4330,14 +4349,14 @@ getDronesSnpHaplo <- function(x, nInd = NULL,
 #' @param dronesHaploid logical, return haploid result for drones?
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{getSnpGeno}} and \code{\link{pullSnpGeno}}
+#' @seealso \code{\link[SIMplyBee]{getSnpGeno}} and \code{\link[AlphaSimR]{pullSnpGeno}}
 #'
-#' @return matrix with genotypes when \code{x} is \code{\link{Colony-class}} and
+#' @return matrix with genotypes when \code{x} is \code{\link[SIMplyBee]{Colony-class}} and
 #'   list of matrices with genotypes when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -4661,13 +4680,13 @@ getPooledGeno <- function(x, type = NULL, sex = NULL) {
 #' @param sex character vector denoting sex for individuals with genotypes in
 #'   \code{x} - \code{"F"} for female and \code{"M"} for male
 #' @param alleleFreq numeric, vector of allele frequencies for the sites in
-#'   \code{x}; if \code{NULL}, then \code{\link{calcBeeAlleleFreq}} is used
+#'   \code{x}; if \code{NULL}, then \code{\link[SIMplyBee]{calcBeeAlleleFreq}} is used
 #'
 #' @return matrix of genomic relatedness coefficients
 #'
 #' @references Druet and Legarra (2020) Theoretical and empirical comparisons of
 #'   expected and realized relationships for the X-chromosome. Genetics
-#'   Selection Evolution, 52:50 \doi{/10.1186/s12711-020-00570-6}
+#'   Selection Evolution, 52:50 \doi{10.1186/s12711-020-00570-6}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -4807,23 +4826,23 @@ calcBeeAlleleFreq <- function(x, sex) {
 #' @references
 #' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
 #'   relatives for X-chromosomal loci. The Journal of Heredity,
-#'   \doi{/10.1093/oxfordjournals.jhered.a110812}
+#'   \doi{10.1093/oxfordjournals.jhered.a110812}
 #'
 #' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
 #'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
-#'   \doi{/10.1007/bf00305821}
+#'   \doi{10.1007/bf00305821}
 #'
 #' Fernando and Grossman (1990) Genetic evaluation with autosomal
 #'   and X-chromosomal inheritance. Theoretical and Applied Genetics,
-#'  \doi{/10.1007/bf00224018}
+#'  \doi{10.1007/bf00224018}
 #'
 #' Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
 #'   prediction of breeding values. Genetics,
-#'  \doi{/10.1093/genetics/137.1.319}
+#'  \doi{10.1093/genetics/137.1.319}
 #'
 #' Hill and Weir (2011) Variation in actual relationship as a consequence of
 #'   Mendelian sampling and linkage. Genetics Research,
-#'   \doi{/10.1017/s0016672310000480}
+#'   \doi{10.1017/s0016672310000480}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -4940,25 +4959,25 @@ calcBeeGRMIbd <- function(x) {
 #' @description Level 0 function that returns phenotype values of individuals in a
 #'   caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with phenotypes of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{pheno}} and
+#' @seealso \code{\link[AlphaSimR]{pheno}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return vector of genetic values when \code{x} is \code{\link{Colony-class}}
+#' @return vector of genetic values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5118,20 +5137,20 @@ getDronesPheno <- function(x, nInd = NULL, collapse = FALSE, simParamBee = NULL)
 #'
 #' @description Level 0 function that calculate value(s) of a colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param FUN function, that calculates colony value from values of
 #'   colony members
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{FUN}
 #'
-#' @seealso \code{\link{mapCasteToColonyValue}} as an example of \code{FUN},
-#'   \code{\link{selectColonies}} for example for to select colonies based
+#' @seealso \code{\link[SIMplyBee]{mapCasteToColonyValue}} as an example of \code{FUN},
+#'   \code{\link[SIMplyBee]{selectColonies}} for example for to select colonies based
 #'   on these values, and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return a matrix with one value or a row of values when \code{x} is
-#'   \code{\link{Colony-class}} and a row-named matrix when \code{x} is
-#'   \code{\link{MultiColony-class}}, where names are colony IDs
+#'   \code{\link[SIMplyBee]{Colony-class}} and a row-named matrix when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -5242,8 +5261,8 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   of drones from the queen or half the expected value of virgin queens from
 #'   the queen.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}} or
-#'   \code{\link{MultiColony-class}}
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}} or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param queenTrait numeric (column position) or character (column name), trait
 #'   that represents queen's effect on the colony value; if \code{NULL}
 #'   then this effect is 0
@@ -5253,19 +5272,19 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @return integer when \code{x} is
-#'   \code{\link{Colony-class}} and a named list when \code{x} is
-#'   \code{\link{MultiColony-class}}, where names are colony IDs
+#'   \code{\link[SIMplyBee]{Colony-class}} and a named list when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
-#' @seealso \code{\link{calcSelectionCriterion}} and
-#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#' @seealso \code{\link[SIMplyBee]{calcSelectionCriterion}} and
+#'   \code{\link[SIMplyBee]{calcPerformanceCriterion}} and  as well as
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{/10.1038/s41437-021-00411-2}
+#'   \doi{10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5357,7 +5376,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'   effect from her workers, as defined by Du et al. (2021). This can be seen
 #'   as the expected value of the colony.
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param queenTrait numeric (column position) or character (column name), trait
 #'   that represents queen's effect on the colony value; if \code{NULL}
 #'   then this effect is 0
@@ -5370,20 +5389,20 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value),"ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{calcSelectionCriterion}} and
-#'   \code{\link{calcInheritanceCriterion}} and  as well as
+#' @seealso \code{\link[SIMplyBee]{calcSelectionCriterion}} and
+#'   \code{\link[SIMplyBee]{calcInheritanceCriterion}} and  as well as
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
-#'   \code{\link{Colony-class}} and a named list when \code{x} is
-#'   \code{\link{MultiColony-class}}, where names are colony IDs
+#'   \code{\link[SIMplyBee]{Colony-class}} and a named list when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{/10.1038/s41437-021-00411-2}
+#'   \doi{10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5478,7 +5497,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'   of virgin queens from the queen (as well as workers, but we would not be
 #'   selecting workers).
 #'
-#' @param x \code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param queenTrait numeric (column position) or character (column name), trait
 #'   that represents queen's effect on the colony value; if \code{NULL} then this contribution is 0
 #' @param queenTraitFUN function, that will be applied to the queen effect
@@ -5492,20 +5511,20 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #' @param use character, the measure to use for the calculation, being
 #'   either "gv" (genetic value), "ebv" (estimated breeding value),
 #'   or "pheno" (phenotypic value)
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{calcInheritanceCriterion}} and
-#'   \code{\link{calcPerformanceCriterion}} and  as well as
+#' @seealso \code{\link[SIMplyBee]{calcInheritanceCriterion}} and
+#'   \code{\link[SIMplyBee]{calcPerformanceCriterion}} and  as well as
 #`   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return integer when \code{x} is
-#'   \code{\link{Colony-class}} and a named list when \code{x} is
-#'   \code{\link{MultiColony-class}}, where names are colony IDs
+#'   \code{\link[SIMplyBee]{Colony-class}} and a named list when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
 #' Du, M., et al. (2021) Short-term effects of controlled mating and selection
 #'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{/10.1038/s41437-021-00411-2}
+#'   \doi{10.1038/s41437-021-00411-2}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5604,25 +5623,25 @@ calcSelectionCriterion <- function(x, queenTrait = 1, queenTraitFUN = sum,
 #' @description Level 0 function that returns genetic values of individuals
 #'   in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with genetic values of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{gv}} and
+#' @seealso \code{\link[AlphaSimR]{gv}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return vector of phenotype values when \code{x} is \code{\link{Colony-class}}
+#' @return vector of phenotype values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of vectors of genetic values when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
@@ -5787,25 +5806,25 @@ calcColonyGv <- function(x, FUN = mapCasteToColonyGv, simParamBee = NULL, ...) {
 #' @description Level 0 function that returns breeding values of individuals in
 #'   a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with breeding valued of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{bv}} and
+#' @seealso \code{\link[AlphaSimR]{bv}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return vector of breeding values when \code{x} is \code{\link{Colony-class}}
+#' @return vector of breeding values when \code{x} is \code{\link[SIMplyBee]{Colony-class}}
 #'   and list of vectors of breeding values when \code{x} is
-#'   \code{\link{MultiColony-class}}, named by colony id when \code{x} is
-#'   \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x} is
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' # Not exporting this function, since the theory behind it is not fully developed
 getBv <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
@@ -5956,25 +5975,25 @@ calcColonyBv <- function(x, FUN = mapCasteToColonyBv, simParamBee = NULL, ...) {
 #' @description Level 0 function that returns dominance values of
 #'   individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with dominance values of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}} and
+#' @seealso \code{\link[AlphaSimR]{dd}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of dominance values when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of dominance values when
-#'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
-#'   is \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{Colony-class}} and list of vectors of dominance values when
+#'   \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x}
+#'   is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' # Not exporting this function, since the theory behind it is not fully developed
 getDd <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
@@ -6125,25 +6144,25 @@ calcColonyDd <- function(x, FUN = mapCasteToColonyDd, simParamBee = NULL, ...) {
 #' @description Level 0 function that returns epistasis values of
 #'   individuals in a caste.
 #'
-#' @param x \code{\link{Pop-class}}, \code{\link{Colony-class}}, or
-#'   \code{\link{MultiColony-class}}
-#' @param caste NULL or character, NULL when \code{x} is a \code{\link{Pop-class}},
-#'   and character when \code{x} is a \code{\link{Colony-class}} or
-#'    \code{\link{MultiColony-class}} with the possible values of "queen", "fathers",
+#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param caste NULL or character, NULL when \code{x} is a \code{\link[AlphaSimR]{Pop-class}},
+#'   and character when \code{x} is a \code{\link[SIMplyBee]{Colony-class}} or
+#'    \code{\link[SIMplyBee]{MultiColony-class}} with the possible values of "queen", "fathers",
 #'    "workers", "drones", "virginQueens", or "all"
 #' @param nInd numeric, number of individuals to access, if \code{NULL} all
 #'   individuals are accessed, otherwise a random sample
 #' @param collapse logical, if the return value should be a single matrix
 #'   with epistatic values of all the individuals
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
-#' @seealso \code{\link{dd}} and
+#' @seealso \code{\link[AlphaSimR]{dd}} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @return vector of epistasis values when \code{x} is
-#'   \code{\link{Colony-class}} and list of vectors of epistasis values when
-#'   \code{x} is \code{\link{MultiColony-class}}, named by colony id when \code{x}
-#'   is \code{\link{MultiColony-class}}
+#'   \code{\link[SIMplyBee]{Colony-class}} and list of vectors of epistasis values when
+#'   \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}, named by colony id when \code{x}
+#'   is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' # Not exporting this function, since the theory behind it is not fully developed
 getAa <- function(x, caste = NULL, nInd = NULL, collapse = FALSE, simParamBee = NULL) {
@@ -6296,7 +6315,7 @@ calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
 #'   recalculated to reflect the any changes due to editing, but other slots
 #'   remain the same.
 #'
-#' @param pop \code{\link{Pop-class}}
+#' @param pop \code{\link[AlphaSimR]{Pop-class}}
 #' @param alleles \code{NULL} or list;
 #'   If \code{NULL}, then the function samples a heterozygous csd genotype for
 #'   each virgin queen from all possible csd alleles.
@@ -6304,11 +6323,11 @@ calcColonyAa <- function(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...) {
 #'   node holding a matrix or a data.frame, each having two rows and n columns.
 #'   Each row must hold one csd haplotype (allele) that will be assigned to a
 #'   virgin queen. The n columns span the length of the csd locus as specified
-#'   in \code{\link{SimParamBee}}. The two csd alleles must be different to
+#'   in \code{\link[SIMplyBee]{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
 #' @param simParamBee global simulation parameters.
 #'
-#' @return Returns an object of \code{\link{Pop-class}}
+#' @return Returns an object of \code{\link[AlphaSimR]{Pop-class}}
 editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -6348,15 +6367,15 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'   virgin queens/colonies either at random (\code{spatial = FALSE})
 #'   or according to the distance between colonies (\code{spatial = TRUE}).
 #'
-#' @param x \code{\link{Pop-class}} or code{\link{Colony-class}} or \code{\link{MultiColony-class}},
+#' @param x \code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the object with the virgin queens that need to be crossed. When \code{spatial = TRUE},
-#'   the argument needs to be a code{\link{Colony-class}} or \code{\link{MultiColony-class}}
+#'   the argument needs to be a \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'   with the location set
-#' @param drones \code{\link{Pop-class}}, a population of drones (resembling a drone
+#' @param drones \code{\link[AlphaSimR]{Pop-class}}, a population of drones (resembling a drone
 #'   congregation area) available for mating. When \code{spatial = TRUE}, the user can not
 #'   provide drones, but needs to provide drone producing colonies instead
 #'   (see argument \code{droneColonies})
-#' @param droneColonies \code{\link{MultiColony-class}}, drone producing colonies
+#' @param droneColonies \code{\link[SIMplyBee]{MultiColony-class}}, drone producing colonies
 #'   available for mating. When \code{spatial = TRUE},
 #'   the object needs to have the location set
 #' @param nDrones, integer or function, number of drones to sample for each crossing. You need to provide
@@ -6366,7 +6385,7 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius from the virgin colony in which to sample mating partners,
 #'   only needed when \code{spatial = TRUE}
-#' @param simParamBee \code{\link{SimParamBee}}, global simulation parameters
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @return named list with names being virgin queens/colonies IDs with each
@@ -6527,4 +6546,129 @@ createCrossPlan <- function(x,
   }
   names(crossPlan) <- virginId
   return(crossPlan)
+}
+
+# Misc helpers
+# These functions replace the defunct functions of the same name in AlphaSimR
+
+#' @rdname setMisc
+#' @title Set miscellaneous information in a population
+#'
+#' @description Set miscellaneous information in a population
+#'
+#' @param x \code{\link[AlphaSimR]{Pop-class}}
+#' @param node character, name of the node to set within the \code{x@misc} slot
+#' @param value, value to be saved into \code{x@misc[[*]][[node]]}; length of
+#'   \code{value} should be equal to \code{nInd(x)}; if its length is 1, then
+#'   it is repeated using \code{rep} (see examples)
+#'
+#' @details A \code{NULL} in \code{value} is ignored
+#'
+#' @return \code{\link[AlphaSimR]{Pop-class}}
+#'
+#' @export
+setMisc <- function(x, node = NULL, value = NULL) {
+  if (isPop(x)) {
+    if (is.null(node)) {
+      stop("Argument node must be provided!")
+    }
+    if (is.null(value)) {
+      stop("Argument value must be provided!")
+    }
+    n <- nInd(x)
+    if (length(value) == 1 && n > 1) {
+      value <- rep(x = value, times = n)
+    }
+    if (length(value) != n) {
+      stop("Argument value must be of length 1 or nInd(x)!")
+    }
+
+    # Check current AlphaSimR version for new or legacy misc slot
+    if(packageVersion("AlphaSimR") > package_version("1.5.3")){
+      # New misc slot
+      x@misc[[node]] = value
+    }else{
+      # Legacy misc slot
+      names(value) = rep(x = node, times = n)
+      inode = match(names(x@misc[[1]]),node)
+      inode = inode[!is.na(inode)]
+      if(length(inode) == 0){
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])
+        },simplify = FALSE)
+      }else{
+        x@misc = sapply(seq_len(n),function(ind){
+          c(x@misc[[ind]],value[ind])[-inode]
+        },simplify = FALSE)
+      }
+    }
+
+  }
+
+  return(x)
+}
+
+#' @rdname getMisc
+#' @title Get miscellaneous information in a population
+#'
+#' @description Get miscellaneous information in a population
+#'
+#' @param x \code{\link[AlphaSimR]{Pop-class}}
+#' @param node character, name of the node to get from the \code{x@misc} slot;
+#'   if \code{NULL} the whole \code{x@misc} slot is returned
+#'
+#' @return The \code{x@misc} slot or its nodes \code{x@misc[[*]][[node]]}
+#'
+#' @export
+getMisc <- function(x, node = NULL) {
+  if (isPop(x)) {
+    if (is.null(node)) {
+      ret <- x@misc
+    } else {
+      # Check current AlphaSimR version for new or legacy misc slot
+      ret = x@misc[[node]]
+    }
+  } else {
+    stop("Argument x must be a Pop class object!")
+  }
+  return(ret)
+}
+
+
+#' @rdname mapLoci
+#' @title Finds loci on a genetic map and return a list of positions
+#'
+#' @description Finds loci on a genetic map and return a list of positions.
+#' This function is adopted from AlphaSimR (Gaynor et al., 2021)
+#'
+#' @param markers character, vector of marker positions as "chr_position"
+#' @param genMap list, genetic map
+#'
+#' @return A list with number of loci per chromosome and genetic positions of the markers
+mapLoci = function(markers, genMap){
+  # Check that the markers are present on the map
+  genMapMarkerNames = unlist(lapply(genMap, names))
+  stopifnot(all(markers%in%genMapMarkerNames))
+
+  # Create lociPerChr and lociLoc
+  lociPerChr = integer(length(genMap))
+  lociLoc = vector("list", length(genMap))
+
+  # Loop through chromosomes
+  for(i in 1:length(genMap)){
+
+    # Initialize lociLoc
+    lociLoc[[i]] = integer()
+
+    # Find matches if they exist
+    take = match(names(genMap[[i]]), markers)
+    lociPerChr[i] = length(na.omit(take))
+    if(lociPerChr[i]>0L){
+      lociLoc[[i]] = which(!is.na(take))
+    }
+  }
+  lociLoc = unlist(lociLoc)
+
+  return(list(lociPerChr=lociPerChr,
+              lociLoc=lociLoc))
 }

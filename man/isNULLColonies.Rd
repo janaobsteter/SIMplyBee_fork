@@ -7,7 +7,7 @@
 isNULLColonies(multicolony)
 }
 \arguments{
-\item{multicolony}{\code{\link{MultiColony-class}}}
+\item{multicolony}{\code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
 Named vector of boolean

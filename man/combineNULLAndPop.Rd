@@ -7,9 +7,9 @@
 \S4method{c}{NULLOrPop}(x, ...)
 }
 \arguments{
-\item{x}{NULL or \code{\link{Pop-class}}}
+\item{x}{NULL or \code{\link[AlphaSimR]{Pop-class}}}
 
-\item{...}{list of NULL or \code{\link{Pop-class}} objects}
+\item{...}{list of NULL or \code{\link[AlphaSimR]{Pop-class}} objects}
 }
 \description{
 This combine \code{c()} method is a hack to combine NULL and an
