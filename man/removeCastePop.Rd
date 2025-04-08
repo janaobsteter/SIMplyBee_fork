@@ -5,7 +5,7 @@
 \alias{removeQueen}
 \alias{removeWorkers}
 \alias{removeDrones}
-\alias{removeVirginQueens}
+\alias{removeVirginQueens_parallel}
 \title{Remove a proportion of caste individuals from a colony}
 \usage{
 removeCastePop(
@@ -24,14 +24,21 @@ removeQueen(
   addVirginQueens = FALSE,
   nVirginQueens = NULL,
   year = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  nThreads = NULL
 )
 
-removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
+removeWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
-removeDrones(x, p = 1, use = "rand", simParamBee = NULL)
+removeDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
-removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
+removeVirginQueens_parallel(
+  x,
+  p = 1,
+  use = "rand",
+  simParamBee = NULL,
+  nThreads = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -72,7 +79,7 @@ Level 2 function that removes a proportion of virgin queens of
 
 \item \code{removeDrones()}: Remove workers from a colony
 
-\item \code{removeVirginQueens()}: Remove virgin queens from a colony
+\item \code{removeVirginQueens_parallel()}: Remove virgin queens from a colony
 
 }}
 \examples{

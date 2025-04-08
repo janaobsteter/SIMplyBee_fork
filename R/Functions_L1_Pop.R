@@ -416,6 +416,10 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
   }
   if (is.function(nInd)) {
     nInd <- nInd(x, ...)
+  } else {
+    if (!is.null(nInd) && any(nInd < 0)) {
+      stop("nInd must be non-negative or NULL!")
+    }
   }
   # doing "if (is.function(nInd))" below
   if (isMapPop(x)) {
@@ -542,6 +546,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         editCsd = TRUE, csdAlleles = NULL,
         simParamBee = simParamBee, ...
       )
+
     }
     names(ret) <- getId(x)
   } else {
@@ -551,19 +556,298 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
   return(ret)
 }
 
+#' @export
+createCastePop_parallel <- function(x, caste = NULL, nInd = NULL,
+                                    year = NULL,
+                                    editCsd = TRUE, csdAlleles = NULL,
+                                    simParamBee = NULL,
+                                    returnSP = FALSE,
+                                    ids = NULL,
+                                    nThreads = NULL,
+                                    ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(nThreads)) {
+    nThreads = simParamBee$nThreads
+  }
+  if (is.null(nInd)) {
+    if (caste == "virginQueens") {
+      nInd <- simParamBee$nVirginQueens
+    } else if (caste == "workers") {
+      nInd <- simParamBee$nWorkers
+    } else if (caste == "drones") {
+      nInd <- simParamBee$nDrones
+    }
+  }
+  if (is.function(nInd)) {
+    nInd <- nInd(x, ...)
+  }
+  # doing "if (is.function(nInd))" below
+  if (isMapPop(x)) {
+    if (caste != "virginQueens") { # Creating virgin queens if input  is a MapPop
+      stop("MapPop-class can only be used to create virgin queens!")
+    }
+    ret <- newPop(x, simParam = simParamBee)
+    if (!is.null(simParamBee$csdChr)) {
+      if (editCsd) {
+        ret <- editCsdLocus(ret, alleles = csdAlleles, simParamBee = simParamBee)
+      }
+    }
+    ret@sex[] <- "F"
+    simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
+    if (!is.null(year)) {
+      ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
+    }
+  } else if (isPop(x)) {
+    if (caste != "drones") { # Creating drones if input is a Pop
+      stop("Pop-class can only be used to create drones!")
+    }
+    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
+      stop("Individuals in x must be virgin queens or queens!")
+    }
+    if (length(nInd) == 1) {
+      # Diploid version - a hack, but it works
+      ret <- makeDH(pop = x, nDH = nInd, keepParents = FALSE, simParam = simParamBee)
+    } else {
+      if (length(nInd) < nInd(x)) {
+        stop("Too few values in the nInd argument!")
+      }
+      if (length(nInd) > 1 && length(nInd) > nInd(x)) {
+        warning(paste0("Too many values in the nInd argument, taking only the first ", nInd(x), "values!"))
+        nInd <- nInd[1:nInd(x)]
+      }
+      ret <- list()
+      for (virginQueen in 1:nInd(x)) {
+        ret[[virginQueen]] <- makeDH(pop = x[virginQueen], nDH = nInd[virginQueen], keepParents = FALSE, simParam = simParamBee)
+      }
+      ret <- mergePops(ret)
+    }
+    ret@sex[] <- "M"
+    simParamBee$addToCaste(id = ret@id, caste = "drones")
+  } else if (isColony(x)) {
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
+      stop("Missing queen!")
+    }
+    if (length(nInd) > 1) {
+      warning("More than one value in the nInd argument, taking only the first value!")
+      nInd <- nInd[1]
+    }
+    if (nInd > 0) {
+      if (caste == "workers") {
+        if (!returnSP) {
+          ret <- vector(mode = "list", length = 2)
+          names(ret) <- c("workers", "nHomBrood")
+        } else   {
+          ret <- vector(mode = "list", length = 4)
+          names(ret) <- c("workers", "nHomBrood", "pedigree", "caste")
+        }
+        ret$workers <- combineBeeGametes(
+          queen = getQueen(x, simParamBee = simParamBee), drones = getFathers(x, simParamBee = simParamBee),
+          nProgeny = nInd, simParamBee = simParamBee
+        )
+
+        simParamBee$addToCaste(id = ret$workers@id, caste = "workers")
+        ret$workers@sex[] <- "F"
+
+        if (returnSP) {
+          ret$pedigree = simParamBee$pedigree[ret$workers@id, , drop = F]
+          ret$caste = simParamBee$caste[ret$workers@id, drop = F]
+        }
+
+        if (!is.null(ids)) {
+          if (nInd(ret$workers) < length(ids)) {
+            stop("Not enough IDs provided")
+          }
+          if (nInd(ret$workers) > length(ids)) {
+            stop("Too many IDs provided!")
+          }
+          ret$workers@id = ids
+          if (returnSP) {
+            rownames(ret$pedigree) = ids
+            names(ret$caste) = ids
+          }
+        }
+
+        # THIS DOES STILL NOT WORK!!!
+        # if (isCsdActive(simParamBee = simParamBee)) {
+        #   ret$nHomBrood <- sum(!isCsdHeterozygous(ret$workers)) / nInd(ret$workers)
+        # }
+
+      } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
+        ret <- createCastePop_parallel(x = x, caste = "workers",
+                                       nInd = nInd, exact = TRUE, simParamBee = simParamBee,
+                                       returnSP = returnSP, ids = ids, nThreads = 1, ...)
+        simParamBee$changeCaste(id = ret$workers@id, caste = "virginQueens")
+        if (!returnSP) {
+          ret <- ret$workers
+        }
+        if (!is.null(year)) {
+          ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
+        }
+      } else if (caste == "drones") { # Creating drones if input is a Colony
+        drones <- makeDH(
+          pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
+          simParam = simParamBee
+        )
+        drones@sex[] <- "M"
+        simParamBee$addToCaste(id = drones@id, caste = "drones")
+
+        if (returnSP) {
+          print("Adding")
+          ret <- vector(mode = "list", length = 3)
+          names(ret) <- c("drones", "pedigree", "caste")
+          ret$pedigree = simParamBee$pedigree[drones@id, , drop = F]
+          ret$caste = simParamBee$caste[drones@id, drop = F]
+        }
+
+        if (!is.null(ids)) {
+          if (nInd(drones) != length(ids)) {
+            stop("Not enough IDs provided")
+          }
+          drones@id = ids
+          if (returnSP) {
+            rownames(ret$pedigree) = ids
+            names(ret$caste) = ids
+          }
+        }
+
+        if (returnSP) {
+          ret$drones= drones
+        } else {
+          ret = drones
+        }
+      }
+    } else {
+      ret <- NULL
+    }
+  } else if (isMultiColony(x)) {
+    registerDoParallel(cores = nThreads)
+    if (is.null(nInd)) {
+      string = paste0("n", toupper(substr(caste, 1, 1)), substr(caste, 2, nchar(caste)))
+      nInd <- simParaBee[[string]]
+    }
+
+    nCol <- nColonies(x)
+    nNInd <- length(nInd)
+
+    if (nNInd > 1 && nNInd < nCol) {
+      stop("Too few values in the nInd argument!")
+    }
+    if (nNInd > 1 && nNInd > nCol) {
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
+      nInd <- nInd[1:nCol]
+    }
+
+    nNInd <- length(nInd)
+    totalNInd = ifelse(nNInd == 1, nInd * nCol, sum(nInd))
+    if (totalNInd == 0) {
+      stop("Nothing to create.")
+    }
+
+    lastId = simParamBee$lastId
+    ids = (lastId+1):(lastId+totalNInd)
+
+    combine_list <- function(a, b) {
+      if (!is.null(names(a))) {
+        c(list(a), list(b))
+      } else {
+        if ((is.null(a) | is.null(b)) & !(is.null(a) & is.null(b))) {
+          c(a, list(b))
+        } else if (is.null(a) & is.null(b)) {
+          c(list(a), list(b))
+        } else {
+          c(a, list(b))
+        }
+      }
+    }
+
+    ret <- foreach(colony = seq_len(nCol), .combine=combine_list) %dopar% {
+      nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      if (nIndColony > 0) {
+        if (nNInd == 1) {
+          colonyIds = ids[((colony-1)*nIndColony+1):(colony*nIndColony)]
+        } else {
+          colonyIds = base::split(ids, rep(seq_along(nInd), nInd))[[as.character(colony)]]
+        }
+        createCastePop_parallel(
+          x = x[[colony]], caste = caste,
+          nInd = nIndColony,
+          exact = exact,
+          year = year,
+          editCsd = TRUE, csdAlleles = NULL,
+          simParamBee = simParamBee,
+          returnSP = TRUE,
+          ids = as.character(colonyIds), ...
+        )
+      } else {
+        NULL
+      }
+    }
+    simParamBee$updateLastId(n = totalNInd)
+    names(ret) <- getId(x)
+
+    # Add to simParamBee: pedigree, caste, trackRecHis?
+    notNull = sapply(ret, FUN = function(x) !is.null(x))
+
+    Pedigree = do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
+    simParamBee$updatePedigree(pedigree = Pedigree)
+
+    # Update caste
+    Caste = do.call("c", lapply(ret[notNull], '[[', "caste"))
+    if (caste == "virginQueens") {
+      Caste = rep("virginQueens", length(Caste))
+    }
+    Names = do.call("c", lapply(ret[notNull], function(x) names(x$caste)))
+    names(Caste) = Names
+    simParamBee$updateCaste(caste = Caste)
+
+    if (!returnSP) {
+      if (caste %in% c("drones", "virginQueens")) {
+        ret = lapply(ret, FUN = function(x) {
+          if (is.null(x)) return(NULL)  # Return NULL if the element is NULL
+          x[!names(x) %in% c("pedigree", "caste")][[1]]
+        })
+      } else {
+        ret = lapply(ret, FUN = function(x) {
+          if (is.null(x)) return(NULL)  # Return NULL if the element is NULL
+          x[!names(x) %in% c("pedigree", "caste")]
+        })
+      }
+    }
+  } else {
+    stop("Argument x must be a Map-Pop (only for virgin queens),
+         Pop (only for drones), Colony, or MultiColony class object!")
+  }
+
+  return(ret)
+}
+
 #' @describeIn createCastePop Create workers from a colony
 #' @export
-createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...) {
+createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL,
+                          returnSP = FALSE,
+                          ids = NULL,
+                          nThreads = NULL, ...) {
   ret <- createCastePop(x, caste = "workers", nInd = nInd,
-                        exact = exact, simParamBee = simParamBee, ...)
+                        exact = exact, simParamBee = simParamBee,
+                        returnSP = FALSE,
+                        ids = NULL,
+                        nThreads = NULL, ...)
   return(ret)
 }
 
 #' @describeIn createCastePop Create drones from a colony
 #' @export
-createDrones <- function(x, nInd = NULL, simParamBee = NULL, ...) {
+createDrones <- function(x, nInd = NULL, simParamBee = NULL,
+                         returnSP = FALSE,
+                         ids = NULL,
+                         nThreads = NULL, ...) {
   ret <- createCastePop(x, caste = "drones", nInd = nInd,
-                        simParamBee = simParamBee, ...)
+                        simParamBee = simParamBee,
+                        returnSP = FALSE,
+                        ids = NULL,
+                        nThreads = NULL, ...)
   return(ret)
 }
 
@@ -573,10 +857,16 @@ createVirginQueens <- function(x, nInd = NULL,
                                year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL,
+                               returnSP = FALSE,
+                               ids = NULL,
+                               nThreads = NULL,
                                ...) {
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
-                        csdAlleles = csdAlleles, simParamBee = simParamBee, ...)
+                        csdAlleles = csdAlleles, simParamBee = simParamBee,
+                        returnSP = FALSE,
+                        ids = NULL,
+                        nThreads = NULL, ...)
   return(ret)
 }
 
@@ -1119,6 +1409,90 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
   return(ret)
 }
 
+#' @export
+pullCastePop_parallel <- function(x, caste, nInd = NULL, use = "rand",
+                                  removeFathers = TRUE, collapse = FALSE, simParamBee = NULL,
+                                  nThreads = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(nThreads)) {
+    nThreads = simParamBee$nThreads
+  }
+  if (length(caste) > 1) {
+    stop("Argument caste can be only of length 1!")
+  }
+  if (any(nInd < 0)) {
+    stop("nInd must be non-negative or NULL!")
+  }
+  if (isColony(x)) {
+    if (length(nInd) > 1) {
+      warning("More than one value in the nInd argument, taking only the first value!")
+      nInd <- nInd[1]
+    }
+    if (is.null(slot(x, caste))) {
+      ret <- list(pulled = NULL, remnant = x)
+    } else {
+      if (is.null(nInd)) {
+        nInd <- nInd(slot(x, caste))
+      }
+      tmp <- pullInd(pop = slot(x, caste), nInd = nInd, use = use, simParamBee = simParamBee)
+      if (caste == "queen") {
+        slot(x, caste) <- NULL
+      } else {
+        slot(x, caste) <- tmp$remnant
+      }
+      if (caste == "drones" && removeFathers) {
+        test <- isDrone(tmp$pulled, simParamBee = simParamBee)
+        if (any(!test)) {
+          tmp$pulled <- tmp$pulled[test]
+        }
+      }
+      ret <- list(pulled = tmp$pulled, remnant = x)
+    }
+  } else if (isMultiColony(x)) {
+    registerDoParallel(cores = nThreads)
+    nCol <- nColonies(x)
+    nNInd <- length(nInd)
+    if (nNInd > 1 && nNInd < nCol) {
+      stop("Too few values in the nInd argument!")
+    }
+    if (nNInd > 1 && nNInd > nCol) {
+      warning(paste0("Too many values in the nInd argument, taking only the first ", nCol, "values!"))
+      nInd <- nInd[1:nCol]
+    }
+    ret <- vector(mode = "list", length = 2)
+    names(ret) <- c("pulled", "remnant")
+    ret$pulled <- vector(mode = "list", length = nCol)
+    names(ret$pulled) <- getId(x)
+    ret$remnant <- x
+
+    tmp = foreach(colony = seq_len(nCol)) %dopar% {
+      if (is.null(nInd)) {
+        nIndColony <- NULL
+      } else {
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      }
+      pullCastePop(x = x[[colony]],
+                   caste = caste,
+                   nInd = nIndColony,
+                   use = use,
+                   removeFathers = removeFathers,
+                   collapse = collapse,
+                   simParamBee = simParamBee)
+    }
+    ret$pulled <- lapply(tmp, '[[', "pulled")
+    ret$remnant@colonies <- lapply(tmp, '[[', "remnant")
+
+    if (collapse) {
+      ret$pulled <- mergePops(ret$pulled)
+    }
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  return(ret)
+}
+
 #' @describeIn pullCastePop Pull queen from a colony
 #' @export
 pullQueen <- function(x, collapse = FALSE, simParamBee = NULL) {
@@ -1524,6 +1898,259 @@ cross <- function(x,
       }
     }
   }
+  validObject(ret)
+  return(ret)
+}
+
+cross_parallel <- function(x,
+                           crossPlan = NULL,
+                           drones = NULL,
+                           droneColonies = NULL,
+                           nDrones = NULL,
+                           spatial = FALSE,
+                           radius = NULL,
+                           checkCross = "error",
+                           simParamBee = NULL,
+                           nThreads = NULL,
+                           ...) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(nThreads)) {
+    nThreads = simParamBee$nThreads
+  }
+  registerDoParallel(cores = nThreads)
+
+  if (isPop(x)) {
+    type = "Pop"
+  } else if (isColony(x)) {
+    type = "Colony"
+  } else if (isMultiColony(x)) {
+    type = "MultiColony"
+  } else {
+    stop("Input x must be a Pop-class, Colony-class, or MultiColony-class!")
+  }
+
+  if (is.null(nDrones)) {
+    nDrones <- simParamBee$nFathers
+  }
+
+  IDs <- as.character(getId(x))
+  oneColony <- (isPop(drones)) && (length(IDs) == 1) && (is.null(crossPlan))
+  dronePackages <- is.list(drones)
+  crossPlan_given <- !dronePackages && is.list(crossPlan)
+  crossPlan_create <-  ifelse(!is.null(crossPlan) && !dronePackages, (crossPlan[1] == "create"), FALSE)
+  crossPlan_droneID <- (!is.null(crossPlan)) && !is.null(drones)
+  crossPlan_colonyID <- (!is.null(crossPlan)) && !is.null(droneColonies)
+
+
+  # Do all the tests here to simplify the function
+  if (crossPlan_droneID && !isPop(drones)) {
+    stop("When using a cross plan, drones must be supplied as a single Pop-class!")
+  }
+  if (crossPlan_colonyID && !isMultiColony(droneColonies)) {
+    stop("When using a cross plan, droneColonies must be supplied as a single MultiColony-class!")
+  }
+  if (!is.null(drones) && !is.null(droneColonies)) {
+    stop("You can provide either drones or droneColonies, but not both!")
+  }
+  if (is.null(drones) & is.null(droneColonies)) {
+    stop("You must provide either drones or droneColonies!")
+  }
+  if (!dronePackages & !isPop(drones) & is.null(droneColonies)) {
+    stop("The argument drones must be a Pop-class
+         or a list of drone Pop-class objects!")
+  }
+  if (crossPlan_given && !is.null(drones) && !all(unlist(crossPlan) %in% drones@id)) {
+    stop("Some drones from the crossPlan are missing in the drones population!")
+  }
+  if (dronePackages && length(IDs) != length(drones)) { #check for list of father pops
+    stop("Length of argument drones should match the number of virgin queens/colonies!")
+  }
+  if (!is.null(crossPlan) && all(is.null(drones), is.null(droneColonies))) {
+    stop("When providing a cross plan, you must also provide drones or droneColonies!")
+  }
+  if (crossPlan_given && !all(IDs %in% names(crossPlan))) { #Check for cross plan
+    stop("Cross plan must include all the virgin queens/colonies!")
+  }
+  if (isPop(x)) {
+    if (any(!isVirginQueen(x, simParamBee = simParamBee))) {
+      stop("Individuals in pop must be virgin queens!")
+    }
+  }
+  if (isColony(x) | isMultiColony(x)) {
+    if (any(isQueenPresent(x, simParamBee = simParamBee))) {
+      stop("Queen already present in the colony!")
+    }
+    if (any(!isVirginQueensPresent(x, simParamBee = simParamBee))) {
+      stop("No virgin queen(s) in the colony to cross!")
+    }
+  }
+
+  # Convert everything to a Pop
+  if (isColony(x) | isMultiColony(x)) {
+    inputId <- getId(x)
+    if (isColony(x)) {
+      colony <- x
+      x <- pullCastePop_parallel(x, caste = "virginQueens", nInd = 1)$pulled
+      ID_by_input <- data.frame(inputId = inputId,
+                                virginId = getId(x))
+    } else if (isMultiColony(x)) {
+      multicolony <- x
+      x <- pullCastePop_parallel(x, caste = "virginQueens", nInd = 1)$pulled
+      ID_by_input <- data.frame(inputId = inputId,
+                                virginId = unlist(sapply(x, FUN = function(y) getId(y))))
+      x <- mergePops(x)
+    }
+
+  }
+  IDs <- as.character(getId(x))
+  #Now x is always a Pop
+  ret <- list()
+  nVirgin = nInd(x)
+
+  if (is.function(nDrones)) {
+    nD = nDrones(n = nVirgin, ...)
+  } else {
+    nD = nDrones
+  }
+
+  if (crossPlan_create | crossPlan_given) {
+    if (crossPlan_create) {
+      crossPlan <- createCrossPlan(x = x,
+                                   drones = drones,
+                                   droneColonies = droneColonies,
+                                   nDrones = nDrones,
+                                   spatial = spatial,
+                                   radius = radius,
+                                   simParamBee = simParamBee)
+    }
+
+    if (crossPlan_given) {
+      names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
+    }
+
+    noMatches <- sapply(crossPlan, FUN = length)
+    if (0 %in% noMatches) {
+      msg <- "Crossing failed!"
+      if (checkCross == "warning") {
+        message(msg)
+        ret <- x
+      } else if (checkCross == "error") {
+        stop(msg)
+      }
+    }
+  }
+
+  combine_list <- function(a, b) {
+    if (isPop(a)) {
+      c(list(a), list(b))
+    } else {
+      c(a, list(b))
+    }
+  }
+
+  if (crossPlan_given | crossPlan_create) {
+    if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
+      crossPlanDF <- data.frame(virginID = rep(names(crossPlan), unlist(sapply(crossPlan, length))),
+                                DPC = unlist(crossPlan))
+
+      crossPlanDF_sample <- do.call("rbind", lapply(IDs, FUN = function(x) {
+        data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))})) %>%
+        arrange(DPC)
+      crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC)) %>% arrange(Var1)
+      colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
+
+      selectedDPC = droneColonies[as.character(crossPlanDF_DPCtable$DPC)]
+      dronesByDPC <- createCastePop_parallel(selectedDPC, caste = "drones",
+                                             nInd = as.integer(crossPlanDF_DPCtable$noDrones), simParamBee = simParamBee)
+      dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
+                                   droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x)))) %>%
+        arrange(as.numeric(DPC))
+      dronePop = mergePops(dronesByDPC)
+
+      if (any(!crossPlanDF_sample$DPC == dronesByDPC_DF$DPC)) {
+        stop("Something went wrong with cross plan - drone matching!")
+      }
+
+      dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF_sample[, c("virginID"), drop = F]) %>%
+        arrange(virginID)
+      dronesByVirgin_list <- lapply(IDs, FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
+      names(dronesByVirgin_list) <- IDs
+
+      dronesByVirgin <- foreach(virgin = IDs, .combine = combine_list) %dopar% {
+        dronePop[as.character(dronesByVirgin_list[[virgin]])]
+      }
+    } else if (crossPlan_droneID) {
+      dronesByVirgin <- foreach(virgin = IDs, .combine = combine_list) %dopar% {
+        drones[as.character(crossPlan[[virgin]])]
+      }
+    }
+  }
+
+  # At this point, x is a Pop and dronesByVirgin are a list (so are they if they come if via drone packages)
+  if (oneColony) {
+    dronesByVirgin <- list(drones)
+  }
+  if (dronePackages) {
+    dronesByVirgin <- drones
+  }
+
+  names(dronesByVirgin) <- IDs
+  nDronesByVirgin <- sapply(dronesByVirgin, FUN = function(x) nInd(x))
+
+
+  #if (all(nDronesByVirgin > 0)) { #There was a mistake here - if the message is warning, this still needs to happen
+  if (!all(sapply(dronesByVirgin,
+                  FUN = function(x) all(isDrone(x, simParamBee = simParamBee))))) {
+    stop("Individuals in drones must be drones!")
+  }
+
+  if (nInd(x) != length(dronesByVirgin)) {
+    stop("Number of virgin queens does not match the length of the assigned drones!")
+  }
+
+  for (id in IDs) {
+    simParamBee$changeCaste(id = id, caste = "queen")
+  }
+
+  for (id in as.vector(Reduce("c", sapply(dronesByVirgin, FUN = function(x) getId(x))))) {
+    simParamBee$changeCaste(id = id, caste = "fathers")
+  }
+
+  # All of the input has been transformed to a Pop
+  crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
+    virginQueen@misc$fathers[[1]] <- virginQueenDrones
+    virginQueen <- setMisc(x = virginQueen, node = "nWorkers", value = 0)
+    virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
+
+    virginQueen <- setMisc(x = virginQueen, node = "nHomBrood", value = 0)
+    # if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
+    #   val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
+    # } else {
+    #   val <- NA
+    # }
+    #
+    # virginQueen <- setMisc(x = virginQueen, node = "pHomBrood", value = val)
+    return(virginQueen)
+  }
+
+  # Add drones in the queens father slot
+  x <- foreach(ID = 1:length(IDs), .combine = combine_list) %dopar% {
+    crossVirginQueen(virginQueen = x[ID], virginQueenDrones = dronesByVirgin[[ID]], simParamBee = SP)
+  }
+
+
+  if (type == "Pop") {
+    ret <- mergePops(x)
+  } else if (type == "Colony") {
+    ret <- reQueen(x = colony, queen = x[1], simParamBee = simParamBee)
+    ret <- removeVirginQueens(ret, simParamBee = simParamBee)
+  } else if (type == "MultiColony") {
+    ret <- reQueen_parallel(x = multicolony, queen = mergePops(x), simParamBee = simParamBee)
+    ret <- removeCastePop_parallel(ret, caste = "virginQueens", simParamBee = simParamBee)
+  }
+
   validObject(ret)
   return(ret)
 }

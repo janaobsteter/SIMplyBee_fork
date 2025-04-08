@@ -341,6 +341,37 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
+
+calcQueensPHomBrood_parallel <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isPop(x)) {
+    ret <- rep(x = NA, times = nInd(x))
+    for (ind in seq_len(nInd(x))) {
+
+      queensCsd <- apply(
+        X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
+        FUN = function(x) paste0(x, collapse = "")
+      )
+      fathersCsd <- apply(
+        X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
+        FUN = function(x) paste0(x, collapse = "")
+      )
+      nComb <- length(queensCsd) * length(fathersCsd)
+      ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
+    }
+  } else if (isColony(x)) {
+    ret <- calcQueensPHomBrood(x = x@queen)
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
+  }
+  return(ret)
+}
+
 #' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
 #'   of a queen / colony
 #' @export
@@ -359,11 +390,11 @@ pHomBrood <- function(x, simParamBee = NULL) {
       }
     }
   } else if (isColony(x)) {
-      if (is.null(x@queen@misc$pHomBrood[[1]])) {
-        ret <- NA
-      } else {
-        ret <- x@queen@misc$pHomBrood[[1]]
-      }
+    if (is.null(x@queen@misc$pHomBrood[[1]])) {
+      ret <- NA
+    } else {
+      ret <- x@queen@misc$pHomBrood[[1]]
+    }
   } else if (isMultiColony(x)) {
     ret <- sapply(X = x@colonies, FUN = pHomBrood)
     names(ret) <- getId(x)
@@ -2545,7 +2576,7 @@ getCsdGeno <- function(x, caste = NULL, nInd = NULL, dronesHaploid = TRUE,
     } else {
       ret <- getCsdGeno(
         x = getCastePop(x, caste, simParamBee = simParamBee), nInd = nInd,
-          dronesHaploid = dronesHaploid, simParamBee = simParamBee
+        dronesHaploid = dronesHaploid, simParamBee = simParamBee
       )
     }
   } else if (isMultiColony(x)) {

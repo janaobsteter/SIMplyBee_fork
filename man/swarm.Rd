@@ -8,7 +8,6 @@ swarm(
   x,
   p = NULL,
   year = NULL,
-  nVirginQueens = NULL,
   sampleLocation = TRUE,
   radius = NULL,
   simParamBee = NULL,
@@ -25,11 +24,6 @@ the input could also be a vector of the same length as the number of colonies. I
 a single value is provided, the same value will be applied to all the colonies}
 
 \item{year}{numeric, year of birth for virgin queens}
-
-\item{nVirginQueens}{integer, the number of virgin queens to be created in the
-colony; of these one is randomly selected as the new virgin queen of the
-remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-is used}
 
 \item{sampleLocation}{logical, sample location of the swarm by taking
 the current colony location and adding deviates to each coordinate using

@@ -4,7 +4,7 @@
 \alias{createColony}
 \title{Create a new Colony}
 \usage{
-createColony(x = NULL, simParamBee = NULL)
+createColony(x = NULL, simParamBee = NULL, id = NULL)
 }
 \arguments{
 \item{x}{\code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)}

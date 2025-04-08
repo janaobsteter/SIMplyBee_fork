@@ -18,7 +18,7 @@ addCastePop(
   ...
 )
 
-addWorkers(x, nInd = NULL, new = FALSE, exact = FALSE, simParamBee = NULL, ...)
+addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
