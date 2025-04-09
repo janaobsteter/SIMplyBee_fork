@@ -425,13 +425,45 @@ SimParamBee <- R6Class(
       invisible(self)
     },
 
+    #' @description A function to update the pedigree.
+    #'   For internal use only.
+    #'
+    #' @param pedigree matrix, pedigree matrix to be added
+    updatePedigree = function(pedigree) {
+      private$.pedigree = rbind(private$.pedigree, pedigree)
+      invisible(self)
+    },
+
+    #' @description A function to update the caste
+    #'   For internal use only.
+    #'
+    #' @param caste vector, named vector of castes to be added
+    updateCaste = function(caste) {
+      private$.caste =  c(private$.caste, caste)
+      invisible(self)
+    },
+
+    #' @description A function to update the last
+    #'   ID everytime we create an individual
+    #'   For internal use only.
+    #'
+    #' @param lastId integer, last colony ID assigned
+    #' @param n integer, how many individuals to add
+    updateLastId = function(n = 1) {
+      n = as.integer(n)
+      private$.lastId = private$.lastId + n
+      invisible(self)
+    },
+
     #' @description A function to update the colony last
     #'   ID everytime we create a Colony-class with createColony.
     #'   For internal use only.
     #'
     #' @param lastColonyId integer, last colony ID assigned
-    updateLastColonyId = function() {
-      private$.lastColonyId = private$.lastColonyId + 1L
+    #' @param n integer, how many colonies to add
+    updateLastColonyId = function(n = 1) {
+      n = as.integer(n)
+      private$.lastColonyId = private$.lastColonyId + n
       invisible(self)
     }
   ),

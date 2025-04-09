@@ -4,7 +4,14 @@
 \alias{supersede}
 \title{Supersede}
 \usage{
-supersede(x, year = NULL, nVirginQueens = NULL, simParamBee = NULL, ...)
+supersede(
+  x,
+  year = NULL,
+  nVirginQueens = NULL,
+  simParamBee = NULL,
+  nThreads = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

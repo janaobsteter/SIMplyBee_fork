@@ -317,6 +317,9 @@ generate this object}
 \item \href{#method-SimParamBee-new}{\code{SimParamBee$new()}}
 \item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
 \item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
+\item \href{#method-SimParamBee-updatePedigree}{\code{SimParamBee$updatePedigree()}}
+\item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
+\item \href{#method-SimParamBee-updateLastId}{\code{SimParamBee$updateLastId()}}
 \item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
 \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
 }
@@ -356,7 +359,6 @@ generate this object}
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchGenMap'><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchMaleMap'><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchTrait'><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-updateLastId'><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -534,6 +536,63 @@ SP$caste
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updatePedigree"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updatePedigree}{}}}
+\subsection{Method \code{updatePedigree()}}{
+A function to update the pedigree.
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updatePedigree(pedigree)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pedigree}}{matrix, pedigree matrix to be added}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updateCaste"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateCaste}{}}}
+\subsection{Method \code{updateCaste()}}{
+A function to update the caste
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateCaste(caste)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{caste}}{vector, named vector of castes to be added}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updateLastId"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateLastId}{}}}
+\subsection{Method \code{updateLastId()}}{
+A function to update the last
+  ID everytime we create an individual
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastId(n = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{integer, how many individuals to add}
+
+\item{\code{lastId}}{integer, last colony ID assigned}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-updateLastColonyId"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-updateLastColonyId}{}}}
 \subsection{Method \code{updateLastColonyId()}}{
@@ -541,12 +600,14 @@ A function to update the colony last
   ID everytime we create a Colony-class with createColony.
   For internal use only.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId(n = 1)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{n}}{integer, how many colonies to add}
+
 \item{\code{lastColonyId}}{integer, last colony ID assigned}
 }
 \if{html}{\out{</div>}}

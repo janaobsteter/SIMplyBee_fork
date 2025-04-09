@@ -19,9 +19,26 @@ createCastePop(
   ...
 )
 
-createWorkers(x, nInd = NULL, exact = FALSE, simParamBee = NULL, ...)
+createWorkers(
+  x,
+  nInd = NULL,
+  exact = FALSE,
+  simParamBee = NULL,
+  returnSP = FALSE,
+  ids = NULL,
+  nThreads = NULL,
+  ...
+)
 
-createDrones(x, nInd = NULL, simParamBee = NULL, ...)
+createDrones(
+  x,
+  nInd = NULL,
+  simParamBee = NULL,
+  returnSP = FALSE,
+  ids = NULL,
+  nThreads = NULL,
+  ...
+)
 
 createVirginQueens(
   x,
@@ -30,6 +47,9 @@ createVirginQueens(
   editCsd = TRUE,
   csdAlleles = NULL,
   simParamBee = NULL,
+  returnSP = FALSE,
+  ids = NULL,
+  nThreads = NULL,
   ...
 )
 }

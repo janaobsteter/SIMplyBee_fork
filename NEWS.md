@@ -4,6 +4,17 @@ editor_options:
     wrap: 72
 ---
 
+# SIMplyBee version 0.4.1
+
+-   2024-09-19
+
+## Bug fixes
+
+-   locations of the colonies in the D_Crossing vignettes were previously
+sampled by random. This caused that on some runs some queens were left unmated,
+which caused an error. We now read in the locations from a csv file.
+
+
 # SIMplyBee version 0.4.0
 
 -   2024-08-23
