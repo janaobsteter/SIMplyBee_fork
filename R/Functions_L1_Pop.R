@@ -1902,6 +1902,7 @@ cross <- function(x,
   return(ret)
 }
 
+#' @export
 cross_parallel <- function(x,
                            crossPlan = NULL,
                            drones = NULL,
