@@ -188,7 +188,7 @@ reQueen_np <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) 
 }
 
 #' @export
-reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nThreads = NULL) {
+reQueen_p <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -427,7 +427,7 @@ addCastePop_np <- function(x, caste = NULL, nInd = NULL, new = FALSE,
 }
 
 #' @export
-addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
+addCastePop_p <- function(x, caste = NULL, nInd = NULL, new = FALSE,
                                  year = NULL, simParamBee = NULL,
                                  nThreads = NULL, ...) {
   if (is.null(simParamBee)) {
@@ -784,7 +784,7 @@ buildUp_np <- function(x, nWorkers = NULL, nDrones = NULL,
 }
 
 #' @export
-buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
+buildUp_p <- function(x, nWorkers = NULL, nDrones = NULL,
                              new = TRUE, resetEvents = FALSE,
                              simParamBee = NULL, nThreads = NULL, ...) {
   if (is.null(simParamBee)) {
@@ -1043,7 +1043,7 @@ downsize_np <- function(x, p = NULL, use = "rand", new = FALSE,
 }
 
 #' @export
-downsize <- function(x, p = NULL, use = "rand", new = FALSE,
+downsize_p <- function(x, p = NULL, use = "rand", new = FALSE,
                               simParamBee = NULL, nThreads = NULL,  ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1274,7 +1274,7 @@ replaceCastePop_np <- function(x, caste = NULL, p = 1, use = "rand", exact = TRU
 
 
 #' @export
-replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
+replaceCastePop_p <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
                             year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1499,7 +1499,7 @@ removeCastePop_np <- function(x, caste = NULL, p = 1, use = "rand",
 }
 
 #' @export
-removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
+removeCastePop_p <- function(x, caste = NULL, p = 1, use = "rand",
                                     year = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -1708,7 +1708,7 @@ resetEvents_np <- function(x, collapse = NULL) {
 }
 
 #' @export
-resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL) {
+resetEvents_p <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1809,7 +1809,7 @@ collapse_np <- function(x) {
 }
 
 #' @export
-collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
+collapse_p <- function(x, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2032,7 +2032,7 @@ swarm_np <- function(x, p = NULL, year = NULL,
 }
 
 #' @export
-swarm <- function(x, p = NULL, year = NULL,
+swarm_p <- function(x, p = NULL, year = NULL,
                            sampleLocation = TRUE, radius = NULL,
                            simParamBee = NULL, nThreads= NULL, ...) {
   if (is.null(simParamBee)) {
@@ -2282,7 +2282,7 @@ supersede_np <- function(x, year = NULL, nVirginQueens = NULL, simParamBee = NUL
 }
 
 #' @export
-supersede <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+supersede_p <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2515,7 +2515,7 @@ split_np <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
 }
 
 #' @export
-split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+split_p <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -2735,7 +2735,7 @@ combine_np <- function(strong, weak) {
 }
 
 #' @export
-combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
+combine_p <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
   if (isColony(strong) & isColony(weak)) {
     if (is.null(simParamBee)) {
       simParamBee <- get(x = "SP", envir = .GlobalEnv)
@@ -2881,7 +2881,7 @@ setLocation_np <- function(x, location = c(0, 0)) {
 }
 
 #' @export
-setLocation <- function(x, location = c(0, 0), simParamBee = NULL, nThreads = NULL) {
+setLocation_p <- function(x, location = c(0, 0), simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
