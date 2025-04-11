@@ -48,7 +48,7 @@
 #' apiary[[2]]
 #'
 #' @export
-createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL) {
+createMultiColony_np <- function(x = NULL, n = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -81,7 +81,7 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL) {
 }
 
 #' @export
-createMultiColony_parallel <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
+createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
