@@ -342,6 +342,35 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
 }
 
 
+calcQueensPHomBrood_parallel <- function(x, simParamBee = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (isPop(x)) {
+    ret <- rep(x = NA, times = nInd(x))
+    for (ind in seq_len(nInd(x))) {
+
+      queensCsd <- apply(
+        X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
+        FUN = function(x) paste0(x, collapse = "")
+      )
+      fathersCsd <- apply(
+        X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
+        FUN = function(x) paste0(x, collapse = "")
+      )
+      nComb <- length(queensCsd) * length(fathersCsd)
+      ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
+    }
+  } else if (isColony(x)) {
+    ret <- calcQueensPHomBrood(x = x@queen)
+  } else if (isMultiColony(x)) {
+    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
+    names(ret) <- getId(x)
+  } else {
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
+  }
+  return(ret)
+}
 
 #' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
 #'   of a queen / colony

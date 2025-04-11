@@ -81,7 +81,7 @@ createMultiColony_np <- function(x = NULL, n = NULL, simParamBee = NULL) {
 }
 
 #' @export
-createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
+createMultiColony_p <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
