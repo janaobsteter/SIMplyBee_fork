@@ -9,9 +9,9 @@ buildUp(
   nWorkers = NULL,
   nDrones = NULL,
   new = TRUE,
-  exact = FALSE,
   resetEvents = FALSE,
   simParamBee = NULL,
+  nThreads = NULL,
   ...
 )
 }
@@ -34,10 +34,6 @@ a single value is provided, the same value will be applied to all the colonies.}
 should we only top-up the existing number of workers and drones to
 \code{nWorkers} and \code{nDrones} (see details)}
 
-\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
-create the exact specified number of only viable workers (heterozygous on
-the csd locus)}
-
 \item{resetEvents}{logical, call \code{\link[SIMplyBee]{resetEvents}} as part of the
 build up}
 
@@ -45,6 +41,10 @@ build up}
 
 \item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
 when these arguments are a function}
+
+\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
+create the exact specified number of only viable workers (heterozygous on
+the csd locus)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers and

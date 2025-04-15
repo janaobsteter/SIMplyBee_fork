@@ -15,6 +15,7 @@ cross(
   radius = NULL,
   checkCross = "error",
   simParamBee = NULL,
+  nThreads = NULL,
   ...
 )
 }

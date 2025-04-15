@@ -4,7 +4,7 @@
 \alias{combine}
 \title{Combine two colony objects}
 \usage{
-combine(strong, weak)
+combine(strong, weak, simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{strong}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

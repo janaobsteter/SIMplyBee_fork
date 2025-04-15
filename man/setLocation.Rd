@@ -4,7 +4,7 @@
 \alias{setLocation}
 \title{Set colony location}
 \usage{
-setLocation(x, location = c(0, 0))
+setLocation(x, location = c(0, 0), simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

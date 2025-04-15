@@ -4,7 +4,7 @@
 \alias{collapse}
 \title{Collapse}
 \usage{
-collapse(x)
+collapse(x, simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

@@ -4,7 +4,7 @@
 \alias{resetEvents}
 \title{Reset colony events}
 \usage{
-resetEvents(x, collapse = NULL)
+resetEvents(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

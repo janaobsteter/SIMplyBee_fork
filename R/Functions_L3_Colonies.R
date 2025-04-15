@@ -48,40 +48,7 @@
 #' apiary[[2]]
 #'
 #' @export
-createMultiColony_np <- function(x = NULL, n = NULL, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(x)) {
-    if (is.null(n)) {
-      ret <- new(Class = "MultiColony")
-    } else {
-      ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
-    }
-  } else {
-    if (!isPop(x)) {
-      stop("Argument x must be a Pop class object!")
-    }
-    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
-      stop("Individuals in x must be virgin queens or queens!")
-    }
-    if (is.null(n)) {
-      n <- nInd(x)
-    }
-    if (nInd(x) < n) {
-      stop("Not enough individuals in the x to create n colonies!")
-    }
-    ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
-    for (colony in seq_len(n)) {
-      ret[[colony]] <- createColony(x = x[colony], simParamBee = simParamBee)
-    }
-  }
-  validObject(ret)
-  return(ret)
-}
-
-#' @export
-createMultiColony_p <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
+createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }

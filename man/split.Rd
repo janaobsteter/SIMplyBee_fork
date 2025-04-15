@@ -4,7 +4,7 @@
 \alias{split}
 \title{Split colony in two MultiColony}
 \usage{
-split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
+split(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
