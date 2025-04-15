@@ -11,11 +11,13 @@ createCastePop(
   x,
   caste = NULL,
   nInd = NULL,
-  exact = TRUE,
   year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
   simParamBee = NULL,
+  returnSP = FALSE,
+  ids = NULL,
+  nThreads = NULL,
   ...
 )
 
@@ -67,11 +69,6 @@ only used when \code{x} is \code{\link[SIMplyBee]{Colony-class}} or
 \code{\link[SIMplyBee]{MultiColony-class}}, when \code{x} is \code{link[AlphaSimR]{MapPop-class}}
 all individuals in \code{x} are converted into virgin queens}
 
-\item{exact}{logical, only relevant when creating workers,
-if the csd locus is active and exact is \code{TRUE},
-create the exactly specified number of viable workers (heterozygous on the
-csd locus)}
-
 \item{year}{numeric, year of birth for virgin queens}
 
 \item{editCsd}{logical (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}}),
@@ -91,6 +88,11 @@ ensure heterozygosity at the csd locus.}
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
+
+\item{exact}{logical, only relevant when creating workers,
+if the csd locus is active and exact is \code{TRUE},
+create the exactly specified number of viable workers (heterozygous on the
+csd locus)}
 }
 \value{
 when \code{x} is \code{\link[AlphaSimR]{MapPop-class}} returns

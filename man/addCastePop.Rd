@@ -12,15 +12,29 @@ addCastePop(
   caste = NULL,
   nInd = NULL,
   new = FALSE,
-  exact = FALSE,
   year = NULL,
   simParamBee = NULL,
+  nThreads = NULL,
   ...
 )
 
-addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
+addWorkers(
+  x,
+  nInd = NULL,
+  new = FALSE,
+  simParamBee = NULL,
+  nThreads = NULL,
+  ...
+)
 
-addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
+addDrones(
+  x,
+  nInd = NULL,
+  new = FALSE,
+  simParamBee = NULL,
+  nThreads = NULL,
+  ...
+)
 
 addVirginQueens(
   x,
@@ -28,6 +42,7 @@ addVirginQueens(
   new = FALSE,
   year = NULL,
   simParamBee = NULL,
+  nThreads = NULL,
   ...
 )
 }
@@ -45,15 +60,15 @@ a single value is provided, the same value will be used for all the colonies.}
 \item{new}{logical, should the number of individuals be added to the caste population
 anew or should we only top-up the existing number of individuals to \code{nInd}}
 
-\item{exact}{logical, only relevant when adding workers - if the csd locus is turned
-on and exact is \code{TRUE}, we add the exact specified number of viable workers
-(heterozygous at the csd locus)}
-
 \item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
+
+\item{exact}{logical, only relevant when adding workers - if the csd locus is turned
+on and exact is \code{TRUE}, we add the exact specified number of viable workers
+(heterozygous at the csd locus)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with

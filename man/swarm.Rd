@@ -11,6 +11,7 @@ swarm(
   sampleLocation = TRUE,
   radius = NULL,
   simParamBee = NULL,
+  nThreads = NULL,
   ...
 )
 }

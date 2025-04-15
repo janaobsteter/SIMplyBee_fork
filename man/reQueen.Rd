@@ -4,7 +4,13 @@
 \alias{reQueen}
 \title{Re-queen}
 \usage{
-reQueen(x, queen, removeVirginQueens = TRUE, simParamBee = NULL)
+reQueen(
+  x,
+  queen,
+  removeVirginQueens = TRUE,
+  simParamBee = NULL,
+  nThreads = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

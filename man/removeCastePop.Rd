@@ -5,7 +5,7 @@
 \alias{removeQueen}
 \alias{removeWorkers}
 \alias{removeDrones}
-\alias{removeVirginQueens_parallel}
+\alias{removeVirginQueens}
 \title{Remove a proportion of caste individuals from a colony}
 \usage{
 removeCastePop(
@@ -13,32 +13,18 @@ removeCastePop(
   caste = NULL,
   p = 1,
   use = "rand",
-  addVirginQueens = FALSE,
-  nVirginQueens = NULL,
-  year = NULL,
-  simParamBee = NULL
-)
-
-removeQueen(
-  x,
-  addVirginQueens = FALSE,
-  nVirginQueens = NULL,
   year = NULL,
   simParamBee = NULL,
   nThreads = NULL
 )
 
-removeWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+removeQueen(x, year = NULL, simParamBee = NULL)
 
-removeDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
-removeVirginQueens_parallel(
-  x,
-  p = 1,
-  use = "rand",
-  simParamBee = NULL,
-  nThreads = NULL
-)
+removeDrones(x, p = 1, use = "rand", simParamBee = NULL)
+
+removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -52,6 +38,10 @@ a single value is provided, the same value will be applied to all the colonies}
 \item{use}{character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 guides selection of virgins queens that will stay when \code{p < 1}}
 
+\item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
+
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
 \item{addVirginQueens}{logical, whether virgin queens should be added; only
 used when removing the queen from the colony}
 
@@ -59,10 +49,6 @@ used when removing the queen from the colony}
 colony; only used when removing the queen from the colony. If \code{0}, no virgin
 queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
 is used}
-
-\item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
-
-\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens
@@ -79,7 +65,7 @@ Level 2 function that removes a proportion of virgin queens of
 
 \item \code{removeDrones()}: Remove workers from a colony
 
-\item \code{removeVirginQueens_parallel()}: Remove virgin queens from a colony
+\item \code{removeVirginQueens()}: Remove virgin queens from a colony
 
 }}
 \examples{

@@ -4,7 +4,7 @@
 \alias{createMultiColony}
 \title{Create MultiColony object}
 \usage{
-createMultiColony(x = NULL, n = NULL, simParamBee = NULL)
+createMultiColony(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[AlphaSimR]{Pop-class}}, virgin queens or queens for the colonies
