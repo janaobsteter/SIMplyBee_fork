@@ -923,31 +923,34 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
 
 #' @describeIn replaceCastePop Replaces some workers in a colony
 #' @export
-replaceWorkers <- function(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL) {
+replaceWorkers <- function(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL, nThreads = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "workers", p = p,
     use = use, exact = exact,
-    simParamBee = simParamBee
+    simParamBee = simParamBee,
+    nThreads = nThreads
   )
   return(ret)
 }
 
 #' @describeIn replaceCastePop Replaces some drones in a colony
 #' @export
-replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "drones", p = p,
-    use = use, simParamBee = simParamBee
+    use = use, simParamBee = simParamBee,
+    nThreads = nThreads
   )
   return(ret)
 }
 
 #' @describeIn replaceCastePop Replaces some virgin queens in a colony
 #' @export
-replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "virginQueens", p = p,
-    use = use, simParamBee = simParamBee
+    use = use, simParamBee = simParamBee,
+    nThreads = nThreads
   )
   return(ret)
 }
@@ -1083,16 +1086,16 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
 #'
-removeQueen <- function(x, year = NULL, simParamBee = NULL) {
-  ret <- removeCastePop(x = x, caste = "queen", p = 1, year = year, simParamBee = simParamBee)
+removeQueen <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL) {
+  ret <- removeCastePop(x = x, caste = "queen", p = 1, year = year, simParamBee = simParamBee, nThreads = nThreads)
   return(ret)
 }
 
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
-removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
-  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use, simParamBee = simParamBee)
+removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
   return(ret)
 }
 
@@ -1100,8 +1103,8 @@ removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
-removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
-  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use, simParamBee = simParamBee)
+removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
   return(ret)
 }
 
@@ -1109,8 +1112,8 @@ removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 
 #' @describeIn removeCastePop Remove virgin queens from a colony
 #' @export
-removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
-  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use, simParamBee = simParamBee)
+removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
   return(ret)
 }
 
