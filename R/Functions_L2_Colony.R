@@ -168,7 +168,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nTh
         x <- removeVirginQueens(x, simParamBee = simParamBee)
       }
     } else {
-      x <- removeQueen(x, addVirginQueens = FALSE, simParamBee = simParamBee)
+      x <- removeQueen(x, simParamBee = simParamBee)
       x@virginQueens <- queen
     }
   } else if (isMultiColony(x)) {
@@ -861,9 +861,12 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' getCasteId(apiary, caste="workers")
 #' @export
 replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
-                            year = NULL, simParamBee = NULL) {
+                            year = NULL, simParamBee = NULL, nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(nThreads)) {
+    nThreads = simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
