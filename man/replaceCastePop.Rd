@@ -17,11 +17,24 @@ replaceCastePop(
   simParamBee = NULL
 )
 
-replaceWorkers(x, p = 1, use = "rand", exact = TRUE, simParamBee = NULL)
+replaceWorkers(
+  x,
+  p = 1,
+  use = "rand",
+  exact = TRUE,
+  simParamBee = NULL,
+  nThreads = NULL
+)
 
-replaceDrones(x, p = 1, use = "rand", simParamBee = NULL)
+replaceDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
-replaceVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
+replaceVirginQueens(
+  x,
+  p = 1,
+  use = "rand",
+  simParamBee = NULL,
+  nThreads = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}

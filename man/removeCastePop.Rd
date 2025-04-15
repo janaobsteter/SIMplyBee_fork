@@ -18,13 +18,13 @@ removeCastePop(
   nThreads = NULL
 )
 
-removeQueen(x, year = NULL, simParamBee = NULL)
+removeQueen(x, year = NULL, simParamBee = NULL, nThreads = NULL)
 
-removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
+removeWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
-removeDrones(x, p = 1, use = "rand", simParamBee = NULL)
+removeDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
-removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
+removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
