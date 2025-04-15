@@ -14,7 +14,8 @@ replaceCastePop(
   use = "rand",
   exact = TRUE,
   year = NULL,
-  simParamBee = NULL
+  simParamBee = NULL,
+  nThreads = NULL
 )
 
 replaceWorkers(
