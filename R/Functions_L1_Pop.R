@@ -571,7 +571,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
     simParamBee$nThreads = originalThreads
   } else if (isMultiColony(x)) {
-    print("Multicolony")
     registerDoParallel(cores = nThreads)
     if (is.null(nInd)) {
       string = paste0("n", toupper(substr(caste, 1, 1)), substr(caste, 2, nchar(caste)))
@@ -614,7 +613,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
 
     ret <- foreach(colony = seq_len(nCol), .combine=combine_list) %dopar% {
-      print("Foreach")
       nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       if (nIndColony > 0) {
         if (nNInd == 1) {
@@ -746,7 +744,6 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (nInd(queen) > 1) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
-  print("Starting randcross2")
   ret <- randCross2(
     females = queen, males = drones,
     nCrosses = nProgeny, nProgeny = 1, balance = FALSE,
