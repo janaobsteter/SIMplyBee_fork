@@ -459,20 +459,25 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
       ret <- list()
       for (virginQueen in 1:nInd(x)) {
-        ret[[virginQueen]] <- makeDH(pop = x[virginQueen], nDH = nInd[virginQueen], keepParents = FALSE, simParam = simParamBee)
+        ret[[virginQueen]] <- makeDH(pop = x[virginQueen], nDH = nInd[virginQueen],
+                                     keepParents = FALSE, simParam = simParamBee)
       }
       ret <- mergePops(ret)
     }
     ret@sex[] <- "M"
     simParamBee$addToCaste(id = ret@id, caste = "drones")
   } else if (isColony(x)) {
-    if (!isQueenPresent(x, simParamBee = simParamBee)) {
-      stop("Missing queen!")
-    }
+    originalThreads = simParamBee$nThreads
+    simParamBee$nThreads = 1
+
     if (length(nInd) > 1) {
       warning("More than one value in the nInd argument, taking only the first value!")
       nInd <- nInd[1]
     }
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
+      stop("Missing queen!")
+    }
+
     if (nInd > 0) {
       if (caste == "workers") {
         if (!returnSP) {
@@ -482,8 +487,10 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           ret <- vector(mode = "list", length = 4)
           names(ret) <- c("workers", "nHomBrood", "pedigree", "caste")
         }
+        simParamBee$nThreads = 1
         ret$workers <- combineBeeGametes(
-          queen = getQueen(x, simParamBee = simParamBee), drones = getFathers(x, simParamBee = simParamBee),
+          queen = getQueen(x, simParamBee = simParamBee),
+          drones = getFathers(x, simParamBee = simParamBee),
           nProgeny = nInd, simParamBee = simParamBee
         )
 
@@ -526,10 +533,12 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
         }
       } else if (caste == "drones") { # Creating drones if input is a Colony
+
         drones <- makeDH(
           pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
           simParam = simParamBee
         )
+
         drones@sex[] <- "M"
         simParamBee$addToCaste(id = drones@id, caste = "drones")
 
@@ -560,7 +569,9 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     } else {
       ret <- NULL
     }
+    simParamBee$nThreads = originalThreads
   } else if (isMultiColony(x)) {
+    print("Multicolony")
     registerDoParallel(cores = nThreads)
     if (is.null(nInd)) {
       string = paste0("n", toupper(substr(caste, 1, 1)), substr(caste, 2, nchar(caste)))
@@ -589,6 +600,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
     combine_list <- function(a, b) {
       if (!is.null(names(a))) {
+        "Combine first"
         c(list(a), list(b))
       } else {
         if ((is.null(a) | is.null(b)) & !(is.null(a) & is.null(b))) {
@@ -602,6 +614,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     }
 
     ret <- foreach(colony = seq_len(nCol), .combine=combine_list) %dopar% {
+      print("Foreach")
       nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       if (nIndColony > 0) {
         if (nNInd == 1) {
@@ -612,12 +625,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         createCastePop(
           x = x[[colony]], caste = caste,
           nInd = nIndColony,
-          exact = exact,
           year = year,
           editCsd = TRUE, csdAlleles = NULL,
           simParamBee = simParamBee,
           returnSP = TRUE,
-          ids = as.character(colonyIds), ...
+          ids = as.character(colonyIds)
         )
       } else {
         NULL
@@ -734,6 +746,7 @@ combineBeeGametes <- function(queen, drones, nProgeny = 1, simParamBee = NULL) {
   if (nInd(queen) > 1) {
     stop("At the moment we only cater for crosses with a single queen!")
   }
+  print("Starting randcross2")
   ret <- randCross2(
     females = queen, males = drones,
     nCrosses = nProgeny, nProgeny = 1, balance = FALSE,
