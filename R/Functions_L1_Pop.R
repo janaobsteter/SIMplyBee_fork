@@ -398,13 +398,13 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #       patrilines
 #       https://github.com/HighlanderLab/SIMplyBee/issues/78
 createCastePop <- function(x, caste = NULL, nInd = NULL,
-                                    year = NULL,
-                                    editCsd = TRUE, csdAlleles = NULL,
-                                    simParamBee = NULL,
-                                    returnSP = FALSE,
-                                    ids = NULL,
-                                    nThreads = NULL,
-                                    ...) {
+                           year = NULL,
+                           editCsd = TRUE, csdAlleles = NULL,
+                           simParamBee = NULL,
+                           returnSP = FALSE,
+                           ids = NULL,
+                           nThreads = NULL,
+                           ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -500,6 +500,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         if (returnSP) {
           ret$pedigree = simParamBee$pedigree[ret$workers@id, , drop = F]
           ret$caste = simParamBee$caste[ret$workers@id, drop = F]
+          #TODO: ret$recHist = simParamBee$recHist[ret$workers@id]
         }
 
         if (!is.null(ids)) {
@@ -523,8 +524,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
       } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
         ret <- createCastePop(x = x, caste = "workers",
-                                       nInd = nInd, exact = TRUE, simParamBee = simParamBee,
-                                       returnSP = returnSP, ids = ids, nThreads = 1, ...)
+                              nInd = nInd, exact = TRUE, simParamBee = simParamBee,
+                              returnSP = returnSP, ids = ids, nThreads = 1, ...)
         simParamBee$changeCaste(id = ret$workers@id, caste = "virginQueens")
         if (!returnSP) {
           ret <- ret$workers
@@ -1181,8 +1182,8 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' pullCastePop(apiary, caste = "virginQueens", collapse = TRUE)
 #' @export
 pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
-                                  removeFathers = TRUE, collapse = FALSE, simParamBee = NULL,
-                                  nThreads = NULL) {
+                         removeFathers = TRUE, collapse = FALSE, simParamBee = NULL,
+                         nThreads = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1479,16 +1480,16 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'
 #' @export
 cross <- function(x,
-                           crossPlan = NULL,
-                           drones = NULL,
-                           droneColonies = NULL,
-                           nDrones = NULL,
-                           spatial = FALSE,
-                           radius = NULL,
-                           checkCross = "error",
-                           simParamBee = NULL,
-                           nThreads = NULL,
-                           ...) {
+                  crossPlan = NULL,
+                  drones = NULL,
+                  droneColonies = NULL,
+                  nDrones = NULL,
+                  spatial = FALSE,
+                  radius = NULL,
+                  checkCross = "error",
+                  simParamBee = NULL,
+                  nThreads = NULL,
+                  ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1560,6 +1561,29 @@ cross <- function(x,
     }
     if (any(!isVirginQueensPresent(x, simParamBee = simParamBee))) {
       stop("No virgin queen(s) in the colony to cross!")
+    }
+  }
+
+  if (crossPlan_create | crossPlan_given) {
+    if (crossPlan_create) {
+      crossPlan <- createCrossPlan(x = x,
+                                   drones = drones,
+                                   droneColonies = droneColonies,
+                                   nDrones = nDrones,
+                                   spatial = spatial,
+                                   radius = radius,
+                                   simParamBee = simParamBee)
+    }
+
+    noMatches <- sapply(crossPlan, FUN = length)
+    if (0 %in% noMatches) {
+      msg <- "Crossing failed!"
+      if (checkCross == "warning") {
+        message(msg)
+        ret <- x
+      } else if (checkCross == "error") {
+        stop(msg)
+      }
     }
   }
 
