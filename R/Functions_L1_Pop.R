@@ -313,6 +313,10 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #'   in \code{\link[SIMplyBee]{SimParamBee}}. The two csd alleles must be different to
 #'   ensure heterozygosity at the csd locus.
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param returnSP logical, whether to return the pedigree, caste, and recHist information
+#'   for each created population (used internally for parallel computing)
+#' @param ids character, IDs of the individuals that are going to be created
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
 #' @return when \code{x} is \code{\link[AlphaSimR]{MapPop-class}} returns
@@ -595,7 +599,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     registerDoParallel(cores = nThreads)
     if (is.null(nInd)) {
       string = paste0("n", toupper(substr(caste, 1, 1)), substr(caste, 2, nchar(caste)))
-      nInd <- simParaBee[[string]]
+      nInd <- simParamBee[[string]]
     }
 
     nCol <- nColonies(x)
@@ -1158,6 +1162,7 @@ pullDroneGroupsFromDCA <- function(DCA, n, nDrones = NULL,
 #' @param collapse logical, whether to return a single merged population
 #'   for the pulled individuals (does not affect the remnant colonies)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @seealso \code{\link[SIMplyBee]{pullQueen}}, \code{\link[SIMplyBee]{pullVirginQueens}},
 #'   \code{\link[SIMplyBee]{pullWorkers}}, and \code{\link[SIMplyBee]{pullDrones}}
@@ -1371,6 +1376,7 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   only needed when \code{spatial = TRUE}
 #' @param checkCross character, throw a warning (when \code{checkCross = "warning"}),
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @details This function changes caste for the mated drones to fathers, and
