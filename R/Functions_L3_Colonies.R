@@ -53,7 +53,7 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads =
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   registerDoParallel(cores = nThreads)
   if (is.null(x)) {
@@ -76,7 +76,7 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads =
       stop("Not enough individuals in the x to create n colonies!")
     }
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
-    ids = (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
+    ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
     ret@colonies <- foreach(colony = seq_len(n)) %dopar% {
       createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
     }

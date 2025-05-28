@@ -362,16 +362,16 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
 
 
     if (caste == "workers") {
-      homInds = lapply(newInds, function(x) {
+      homInds <- lapply(newInds, function(x) {
         if (is.null(x)) return(NULL)
         x[['nHomBrood']]
       })
-      newInds = lapply(newInds, function(x) {
+      newInds <- lapply(newInds, function(x) {
         if (is.null(x)) return(NULL)
         x[["workers"]]
       })
     }
-    nInds = lapply(newInds, function(x) {
+    nInds <- lapply(newInds, function(x) {
       if (is.null(x)) return(NULL)
       nInd(x)
     })
@@ -635,7 +635,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     }
 
     if (sum(nWorkers) > 0) {
-      x = addWorkers(
+      x <- addWorkers(
         x = x, nInd = n, new = new,
         simParamBee = simParamBee, nThreads = nThreads)
       #   } else if (nWorkersColony < 0) {
@@ -644,7 +644,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
       # } THIS NEEDS TO GO INTO ADDCASTEPOP
     }
     if (sum(nDrones) > 0) {
-      x = addDrones(
+      x <- addDrones(
         x = x, nInd = n, new = new,
         simParamBee = simParamBee, nThreads = nThreads)
       # } else if (nDronesColony < 0) {
@@ -877,11 +877,11 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand", exact = TRUE,
     stop("p must not be less than 0!")
   }
   if (isColony(x) | isMultiColony(x)) {
-    nP = length(p)
+    nP <- length(p)
     if (isColony(x)) {
-      nCol = 1
+      nCol <- 1
     } else if (isMultiColony(x)) {
-      nCol = nColonies(x)
+      nCol <- nColonies(x)
     }
     if (any(hasCollapsed(x))) {
       stop(paste0("The colony or some of the colonies have collapsed, hence you can not replace individuals in it!"))
@@ -1383,10 +1383,10 @@ swarm <- function(x, p = NULL, year = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isMultiColony(x)) {
-    parallel = TRUE
+    parallel <- TRUE
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (is.null(p)) {
     p <- simParamBee$swarmP
@@ -1399,9 +1399,9 @@ swarm <- function(x, p = NULL, year = NULL,
   }
   if (isColony(x) | isMultiColony(x)) {
     if (isColony(x)) {
-      nCol = 1
+      nCol <- 1
     } else if (isMultiColony(x)) {
-      nCol = nColonies(x)
+      nCol <- nColonies(x)
     }
     nP <- length(p)
 
@@ -1585,9 +1585,9 @@ supersede <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL
     nThreads = simParamBee$nThreads
   }
   if (isColony(x)) {
-    parallel = FALSE
+    parallel <- FALSE
   } else if (isMultiColony(x)) {
-    parallel = TRUE
+    parallel <- TRUE
   }
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
@@ -1618,7 +1618,7 @@ supersede <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL
     if (nCol == 0) {
       x <- createMultiColony(simParamBee = simParamBee, nThreads = nThreads)
     } else {
-      virginQueens = createCastePop(x, caste = "virginQueens", nInd = 1, nThreads = nThreads)
+      virginQueens <- createCastePop(x, caste = "virginQueens", nInd = 1, nThreads = nThreads)
 
       combine_list <- function(a, b) {
         if (length(a) == 1) {
@@ -1717,19 +1717,19 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
     p <- simParamBee$splitP
   }
   if (isMultiColony(x)) {
-    parallel = TRUE
+    parallel <- TRUE
   }
 
   if (isColony(x) | isMultiColony(x)) {
     registerDoParallel(cores = nThreads)
     if (isColony(x)) {
-      nCol = 1
+      nCol <- 1
     } else if (isMultiColony(x)) {
-      nCol = nColonies(x)
+      nCol <- nColonies(x)
     }
     nP <- length(p)
 
-    location = getLocation(x)
+    location <- getLocation(x)
     if (any(hasCollapsed(x))) {
       stop(paste0("One of the collonies is collapsed, hence you can not split it!"))
     }

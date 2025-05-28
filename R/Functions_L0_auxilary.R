@@ -6369,7 +6369,7 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
     alleles <- expand.grid(as.data.frame(matrix(rep(0:1, length(csdSites)), nrow = 2, byrow = FALSE)))
     # Sample two different alleles (without replacement) for each individual
     nAlleles <- simParamBee$nCsdAlleles
-    alleles <- sapply(seq_len(pop@nInd), FUN = function(x) list(alleles[sample(nAlleles, size = 2, replace = F), ]))
+    alleles <- sapply(seq_len(pop@nInd), FUN = function(x) list(alleles[sample(nAlleles, size = 2, replace = FALSE), ]))
   }
 
   if (pop@nInd != length(alleles)) {
