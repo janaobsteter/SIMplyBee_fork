@@ -327,7 +327,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
-#' SP$setTrackRec(TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
 #'
 #' # Create virgin queens on a MapPop
@@ -484,8 +484,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           ret <- vector(mode = "list", length = 2)
           names(ret) <- c("workers", "nHomBrood")
         } else   {
-          ret <- vector(mode = "list", length = 4)
-          names(ret) <- c("workers", "nHomBrood", "pedigree", "caste")
+          ret <- vector(mode = "list", length = 5)
+          names(ret) <- c("workers", "nHomBrood", "pedigree", "caste", "recHist")
         }
         simParamBee$nThreads = 1
         ret$workers <- combineBeeGametes(
@@ -498,9 +498,13 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         ret$workers@sex[] <- "F"
 
         if (returnSP) {
-          ret$pedigree = simParamBee$pedigree[ret$workers@id, , drop = F]
           ret$caste = simParamBee$caste[ret$workers@id, drop = F]
-          #TODO: ret$recHist = simParamBee$recHist[ret$workers@id]
+          if (simParamBee$isTrackPed) {
+            ret$pedigree = simParamBee$pedigree[ret$workers@id, , drop = F]
+          }
+          if (simParamBee$isTrackRec) {
+            ret$recHist = simParamBee$recHist[ret$workers@iid]
+          }
         }
 
         if (!is.null(ids)) {
@@ -511,18 +515,23 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             stop("Too many IDs provided!")
           }
           ret$workers@id = ids
+          ret$workers@iid = as.integer(ids)
           if (returnSP) {
-            rownames(ret$pedigree) = ids
             names(ret$caste) = ids
+            if (simParamBee$isTrackPed) {
+              rownames(ret$pedigree) <- ids
+            }
+            if (simParamBee$isTrackRec) {
+              names(ret$recHist) <- ids
+            }
           }
         }
 
-        # THIS DOES STILL NOT WORK!!!
-        # if (isCsdActive(simParamBee = simParamBee)) {
-        #   ret$nHomBrood <- sum(!isCsdHeterozygous(ret$workers)) / nInd(ret$workers)
-        # }
+        if (isCsdActive(simParamBee = simParamBee)) {
+          ret$nHomBrood <- sum(!isCsdHeterozygous(ret$workers, simParamBee = simParamBee)) / nInd(ret$workers)
+        }
 
-      } else if (caste == "virginQueens") { # Creating virgin queens if input is a Colony
+      } else if (caste == "virginQueens") {
         ret <- createCastePop(x = x, caste = "workers",
                               nInd = nInd, exact = TRUE, simParamBee = simParamBee,
                               returnSP = returnSP, ids = ids, nThreads = 1, ...)
@@ -533,7 +542,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         if (!is.null(year)) {
           ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
         }
-      } else if (caste == "drones") { # Creating drones if input is a Colony
+      } else if (caste == "drones") {
 
         drones <- makeDH(
           pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
@@ -544,10 +553,15 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         simParamBee$addToCaste(id = drones@id, caste = "drones")
 
         if (returnSP) {
-          ret <- vector(mode = "list", length = 3)
-          names(ret) <- c("drones", "pedigree", "caste")
-          ret$pedigree = simParamBee$pedigree[drones@id, , drop = F]
+          ret <- vector(mode = "list", length = 4)
+          names(ret) <- c("drones", "pedigree", "caste", "recHist")
           ret$caste = simParamBee$caste[drones@id, drop = F]
+          if (simParamBee$isTrackPed) {
+            ret$pedigree = simParamBee$pedigree[drones@id, , drop = F]
+          }
+          if (simParamBee$isTrackRec) {
+            ret$recHist = simParamBee$recHist[drones@iid]
+          }
         }
 
         if (!is.null(ids)) {
@@ -555,9 +569,15 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             stop("Not enough IDs provided")
           }
           drones@id = ids
+          drones@iid = as.integer(ids)
           if (returnSP) {
-            rownames(ret$pedigree) = ids
             names(ret$caste) = ids
+            if (simParamBee$isTrackPed) {
+              rownames(ret$pedigree) = ids
+            }
+            if (simParamBee$isTrackRec) {
+              names(ret$recHist) = ids
+            }
           }
         }
 
@@ -637,13 +657,10 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     simParamBee$updateLastId(n = totalNInd)
     names(ret) <- getId(x)
 
-    # Add to simParamBee: pedigree, caste, trackRecHis?
+    # Add to simParamBee: pedigree, caste, trackRecHis
     notNull = sapply(ret, FUN = function(x) !is.null(x))
 
-    Pedigree = do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
-    simParamBee$updatePedigree(pedigree = Pedigree)
-
-    # Update caste
+    # Extend caste
     Caste = do.call("c", lapply(ret[notNull], '[[', "caste"))
     if (caste == "virginQueens") {
       Caste = rep("virginQueens", length(Caste))
@@ -652,16 +669,28 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     names(Caste) = Names
     simParamBee$updateCaste(caste = Caste)
 
+    # Extend pedigree
+    if (simParamBee$isTrackPed) {
+      Pedigree = do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
+      simParamBee$updatePedigree(pedigree = Pedigree)
+    }
+
+    # Extend recHist
+    if (simParamBee$isTrackRec) {
+      RecHist = do.call("c", lapply(ret[notNull], '[[', "recHist"))
+      simParamBee$updateRecHist(recHist = RecHist)
+    }
+
     if (!returnSP) {
       if (caste %in% c("drones", "virginQueens")) {
         ret = lapply(ret, FUN = function(x) {
           if (is.null(x)) return(NULL)  # Return NULL if the element is NULL
-          x[!names(x) %in% c("pedigree", "caste")][[1]]
+          x[!names(x) %in% c("pedigree", "caste", "recHist")][[1]]
         })
       } else {
         ret = lapply(ret, FUN = function(x) {
-          if (is.null(x)) return(NULL)  # Return NULL if the element is NULL
-          x[!names(x) %in% c("pedigree", "caste")]
+          if (is.null(x)) return(NULL)
+          x[!names(x) %in% c("pedigree", "caste", "recHist")]
         })
       }
     }
@@ -681,9 +710,9 @@ createWorkers <- function(x, nInd = NULL, exact = FALSE, simParamBee = NULL,
                           nThreads = NULL, ...) {
   ret <- createCastePop(x, caste = "workers", nInd = nInd,
                         exact = exact, simParamBee = simParamBee,
-                        returnSP = FALSE,
-                        ids = NULL,
-                        nThreads = NULL, ...)
+                        returnSP = returnSP,
+                        ids = ids,
+                        nThreads = nThreads, ...)
   return(ret)
 }
 
@@ -695,9 +724,9 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL,
                          nThreads = NULL, ...) {
   ret <- createCastePop(x, caste = "drones", nInd = nInd,
                         simParamBee = simParamBee,
-                        returnSP = FALSE,
-                        ids = NULL,
-                        nThreads = NULL, ...)
+                        returnSP = returnSP,
+                        ids = ids,
+                        nThreads = nThreads, ...)
   return(ret)
 }
 
@@ -714,9 +743,9 @@ createVirginQueens <- function(x, nInd = NULL,
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
                         year = year, editCsd = editCsd,
                         csdAlleles = csdAlleles, simParamBee = simParamBee,
-                        returnSP = FALSE,
-                        ids = NULL,
-                        nThreads = NULL, ...)
+                        returnSP = returnSP,
+                        ids = ids,
+                        nThreads = nThreads, ...)
   return(ret)
 }
 
@@ -1604,10 +1633,16 @@ cross <- function(x,
     }
 
   }
+
   IDs <- as.character(getId(x))
   #Now x is always a Pop
   ret <- list()
   nVirgin = nInd(x)
+
+  #Rename crossPlan
+  if (crossPlan_create | crossPlan_given) {
+    names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
+  }
 
   if (is.function(nDrones)) {
     nD = nDrones(n = nVirgin, ...)
@@ -1615,32 +1650,6 @@ cross <- function(x,
     nD = nDrones
   }
 
-  if (crossPlan_create | crossPlan_given) {
-    if (crossPlan_create) {
-      crossPlan <- createCrossPlan(x = x,
-                                   drones = drones,
-                                   droneColonies = droneColonies,
-                                   nDrones = nDrones,
-                                   spatial = spatial,
-                                   radius = radius,
-                                   simParamBee = simParamBee)
-    }
-
-    if (crossPlan_given) {
-      names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
-    }
-
-    noMatches <- sapply(crossPlan, FUN = length)
-    if (0 %in% noMatches) {
-      msg <- "Crossing failed!"
-      if (checkCross == "warning") {
-        message(msg)
-        ret <- x
-      } else if (checkCross == "error") {
-        stop(msg)
-      }
-    }
-  }
 
   combine_list <- function(a, b) {
     if (isPop(a)) {
@@ -1663,7 +1672,7 @@ cross <- function(x,
 
       selectedDPC = droneColonies[as.character(crossPlanDF_DPCtable$DPC)]
       dronesByDPC <- createCastePop(selectedDPC, caste = "drones",
-                                             nInd = as.integer(crossPlanDF_DPCtable$noDrones), simParamBee = simParamBee)
+                                    nInd = as.integer(crossPlanDF_DPCtable$noDrones), simParamBee = simParamBee)
       dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
                                    droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x)))) %>%
         arrange(as.numeric(DPC))
