@@ -434,6 +434,15 @@ SimParamBee <- R6Class(
       invisible(self)
     },
 
+    #' @description A function to update the recHist
+    #'   For internal use only.
+    #'
+    #' @param recHist matrix, recHist list to be added
+    updateRecHist = function(recHist) {
+      private$.recHist = c(private$.recHist, recHist)
+      invisible(self)
+    },
+
     #' @description A function to update the caste
     #'   For internal use only.
     #'
