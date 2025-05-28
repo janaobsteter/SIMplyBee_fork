@@ -13,6 +13,7 @@
 #'   given then \code{\link[SIMplyBee]{MultiColony-class}} is created with \code{n}
 #'   \code{NULL}) individual colony - this is mostly useful for programming)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @details When both \code{x} and \code{n} are \code{NULL}, then a
 #'   \code{\link[SIMplyBee]{MultiColony-class}} with 0 colonies is created.
@@ -80,7 +81,6 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads =
     ret@colonies <- foreach(colony = seq_len(n)) %dopar% {
       createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
     }
-    # WHY IS IT NOT UPDATING SP???
     simParamBee$updateLastColonyId(n = n)
   }
   validObject(ret)
