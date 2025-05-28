@@ -151,7 +151,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nTh
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
@@ -301,7 +301,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -334,7 +334,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
         homInds <- newInds$nHomBrood
         newInds <- newInds$workers
         x@queen@misc$nWorkers[[1]] <- x@queen@misc$nWorkers[[1]] + nInd(newInds)
-        #x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + homInds
+        x@queen@misc$nHomBrood[[1]] <- x@queen@misc$nHomBrood[[1]] + homInds
       }
       if (caste == "drones") {
         x@queen@misc$nDrones[[1]] <- x@queen@misc$nDrones[[1]] + nInd(newInds)
@@ -348,7 +348,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       warning("The number of individuals to add is less than 0, hence adding nothing.")
     }
   } else if (isMultiColony(x)) {
-    nCol = nColonies(x)
+    nCol <- nColonies(x)
 
     if (any(hasCollapsed(x))) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not add individuals (from the queen) to it!"))
@@ -530,7 +530,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   # Workers
   if (is.null(nWorkers)) {
@@ -715,7 +715,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     stop("Argument new must be logical!")
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (any(1 < p)) {
     stop("p must not be higher than 1!")
@@ -852,7 +852,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -1009,7 +1009,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -1193,7 +1193,7 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     x@swarm <- FALSE
@@ -1212,7 +1212,7 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
   } else if (isMultiColony(x)) {
     registerDoParallel(cores = nThreads)
     nCol <- nColonies(x)
-    x@colonies  = foreach(colony = seq_len(nCol)) %dopar% {
+    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
       resetEvents(
         x = x[[colony]],
         collapse = collapse,
@@ -1280,7 +1280,7 @@ collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     x@collapse <- TRUE
@@ -1288,7 +1288,7 @@ collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
   } else if (isMultiColony(x)) {
     registerDoParallel(cores = nThreads)
     nCol <- nColonies(x)
-    x@colonies  = foreach(colony = seq_len(nCol)) %dopar% {
+    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
       collapse(x = x[[colony]],
                simParamBee = simParamBee,
                nThreads = 1)
@@ -1482,14 +1482,14 @@ swarm <- function(x, p = NULL, year = NULL,
     } else if (isMultiColony(x)) {
       if (nCol == 0) {
         ret <- list(
-          swarm = createMultiColony(simParamBee = simParamBee),
-          remnant = createMultiColony(simParamBee = simParamBee)
+          swarm <- createMultiColony(simParamBee = simParamBee),
+          remnant <- createMultiColony(simParamBee = simParamBee)
         )
       } else {
         ret <- list(
-          swarm = createMultiColony(x = getQueen(x, collapse = T),
+          swarm <- createMultiColony(x = getQueen(x, collapse = TRUE),
                                              simParamBee = simParamBee, nThreads = nThreads),
-          remnant = remnantColony
+          remnant <- remnantColony
         )
 
         ret$swarm@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
@@ -1575,7 +1575,7 @@ supersede <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     parallel <- FALSE
@@ -1705,7 +1705,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (is.null(p)) {
     p <- simParamBee$splitP
@@ -1852,7 +1852,7 @@ setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     slot(x, slot) <- value
@@ -1929,7 +1929,7 @@ combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
       simParamBee <- get(x = "SP", envir = .GlobalEnv)
     }
     if (is.null(nThreads)) {
-      nThreads = simParamBee$nThreads
+      nThreads <- simParamBee$nThreads
     }
     if (hasCollapsed(strong)) {
       stop(paste0("The colony ", getId(strong), " (strong) has collapsed, hence you can not combine it!"))
@@ -2016,7 +2016,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL, nThreads = NU
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
+    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     if (is.list(location)) { # is.list() captures also is.data.frame()
