@@ -12,20 +12,12 @@ replaceCastePop(
   caste = NULL,
   p = 1,
   use = "rand",
-  exact = TRUE,
   year = NULL,
   simParamBee = NULL,
   nThreads = NULL
 )
 
-replaceWorkers(
-  x,
-  p = 1,
-  use = "rand",
-  exact = TRUE,
-  simParamBee = NULL,
-  nThreads = NULL
-)
+replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
 replaceDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
 
@@ -50,15 +42,12 @@ a single value is provided, the same value will be applied to all the colonies}
 \item{use}{character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 guides selection of caste individuals that stay when \code{p < 1}}
 
-\item{exact}{logical, only relevant when adding workers - if the csd locus is turned
-on and exact is \code{TRUE}, we replace the exact specified number of viable workers
-(heterozygous at the csd locus). You probably want this set to TRUE since you want to
-replace with the same number of workers.}
-
 \item{year}{numeric, only relevant when replacing virgin queens,
 year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or  or \code{\link[SIMplyBee]{MultiColony-class}} with

@@ -87,6 +87,13 @@ ensure heterozygosity at the csd locus.}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
+\item{returnSP}{logical, whether to return the pedigree, caste, and recHist information
+for each created population (used internally for parallel computing)}
+
+\item{ids}{character, IDs of the individuals that are going to be created}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 
 \item{exact}{logical, only relevant when creating workers,
@@ -122,7 +129,7 @@ Level 1 function that creates the specified number of caste
 founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 \dontshow{SP$nThreads = 1L}
-SP$setTrackRec(TRUE)
+SP$setTrackRec(isTrackRec = TRUE)
 SP$setTrackPed(isTrackPed = TRUE)
 
 # Create virgin queens on a MapPop

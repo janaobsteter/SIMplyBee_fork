@@ -318,6 +318,7 @@ generate this object}
 \item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
 \item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
 \item \href{#method-SimParamBee-updatePedigree}{\code{SimParamBee$updatePedigree()}}
+\item \href{#method-SimParamBee-updateRecHist}{\code{SimParamBee$updateRecHist()}}
 \item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
 \item \href{#method-SimParamBee-updateLastId}{\code{SimParamBee$updateLastId()}}
 \item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
@@ -549,6 +550,24 @@ A function to update the pedigree.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{pedigree}}{matrix, pedigree matrix to be added}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-updateRecHist"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateRecHist}{}}}
+\subsection{Method \code{updateRecHist()}}{
+A function to update the recHist
+  For internal use only.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateRecHist(recHist)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{recHist}}{matrix, recHist list to be added}
 }
 \if{html}{\out{</div>}}
 }

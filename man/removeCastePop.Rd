@@ -42,13 +42,7 @@ guides selection of virgins queens that will stay when \code{p < 1}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{addVirginQueens}{logical, whether virgin queens should be added; only
-used when removing the queen from the colony}
-
-\item{nVirginQueens}{integer, the number of virgin queens to be created in the
-colony; only used when removing the queen from the colony. If \code{0}, no virgin
-queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-is used}
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens

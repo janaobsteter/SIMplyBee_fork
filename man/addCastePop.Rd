@@ -64,11 +64,9 @@ anew or should we only top-up the existing number of individuals to \code{nInd}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{...}{additional arguments passed to \code{nInd} when this argument is a function}
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
-\item{exact}{logical, only relevant when adding workers - if the csd locus is turned
-on and exact is \code{TRUE}, we add the exact specified number of viable workers
-(heterozygous at the csd locus)}
+\item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with

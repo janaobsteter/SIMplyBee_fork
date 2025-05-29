@@ -13,6 +13,10 @@ resetEvents(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
 up a new colony, which the default of \code{NULL} caters for; otherwise, a
 collapsed colony should be left collapsed forever, unless you force
 resetting this event with \code{collapse = TRUE})}
+
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with

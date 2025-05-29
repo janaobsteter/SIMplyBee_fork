@@ -6437,10 +6437,6 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' virginColonies2 <- setLocation(virginColonies2,
 #'                                location = Map(c, runif(30, 0, 2*pi),
 #'                                                  runif(30, 0, 2*pi)))
-#' virginColonies3 <- createMultiColony(basePop[61:90])
-#' virginColonies3 <- setLocation(virginColonies3,
-#'                                location = Map(c, runif(30, 0, 2*pi),
-#'                                                  runif(30, 0, 2*pi)))
 #'
 #' # Create drone colonies
 #' droneColonies <- createMultiColony(basePop[121:200])
@@ -6460,58 +6456,23 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'                        nDrones = nFathersPoisson,
 #'                        crossPlan = randomCrossPlan)
 #'
-#' # Plot the colonies in space
-#' virginLocations <- as.data.frame(getLocation(c(virginColonies1, virginColonies2, virginColonies3),
-#'                                              collapse= TRUE))
-#' virginLocations$Type <- "Virgin"
-#' droneLocations <- as.data.frame(getLocation(droneColonies, collapse= TRUE))
-#' droneLocations$Type <- "Drone"
-#' locations <- rbind(virginLocations, droneLocations)
-#'
-#' plot(x = locations$V1, y = locations$V2,
-#'      col = c("red", "blue")[as.numeric(as.factor(locations$Type))])
-#'
-#' # Cross according to a spatial cross plan according to the colonies' locations
-#' crossPlanSpatial <- createCrossPlan(x = virginColonies1,
-#'                                    droneColonies = droneColonies,
-#'                                    nDrones = nFathersPoisson,
-#'                                    spatial = TRUE,
-#'                                    radius = 1.5)
-#'
-#' # Plot the crossing for the first colony in the crossPlan
-#' virginLocations1 <- as.data.frame(getLocation(virginColonies1, collapse= TRUE))
-#' virginLocations1$Type <- "Virgin"
-#' droneLocations <- as.data.frame(getLocation(droneColonies, collapse= TRUE))
-#' droneLocations$Type <- "Drone"
-#' locations1 <- rbind(virginLocations1, droneLocations)
-#'
-#' # Blue marks the target virgin colony and blue marks the drone colonies in the chosen radius
-#' plot(x = locations1$V1, y = locations1$V2, pch = c(1, 2)[as.numeric(as.factor(locations1$Type))],
-#'   col = ifelse(rownames(locations1) %in% crossPlanSpatial[[1]],
-#'                              "red",
-#'                              ifelse(rownames(locations1) == names(crossPlanSpatial)[[1]],
-#'                              "blue", "black")))
-#'
-#' colonies1 <- cross(x = virginColonies1,
-#'                    crossPlan = crossPlanSpatial,
-#'                    droneColonies = droneColonies,
-#'                    nDrones = nFathersPoisson)
-#' nFathers(colonies1)
-#'
 #' # Cross according to a cross plan that is created internally within the cross function
 #' # The cross plan is created at random, regardless the location of the colonies
-#' colonies2 <- cross(x = virginColonies2,
+#' colonies1 <- cross(x = virginColonies1,
 #'                    droneColonies = droneColonies,
 #'                    nDrones = nFathersPoisson,
 #'                    crossPlan = "create")
 #'
-#' # Mate spatially with cross plan created internally by the cross function
-#' colonies3 <- cross(x = virginColonies3,
-#'                    droneColonies = droneColonies,
+#'
+#' # Cross according to a spatial cross plan created internally according to the colonies' locations
+#' colonies2 <- cross(x = virginColonies2,
 #'                    crossPlan = "create",
-#'                    checkCross = "warning",
+#'                    droneColonies = droneColonies,
+#'                    nDrones = nFathersPoisson,
 #'                    spatial = TRUE,
-#'                    radius = 1)
+#'                    radius = 1.5)
+#' nFathers(colonies2)
+#'
 #'
 #' @export
 createCrossPlan <- function(x,

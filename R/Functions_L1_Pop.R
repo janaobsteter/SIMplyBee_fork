@@ -1375,7 +1375,8 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius around the virgin colony in which to sample mating partners,
 #'   only needed when \code{spatial = TRUE}
-#' @param checkCross character, throw a warning (when \code{checkCross = "warning"}),
+#' @param checkCross character, throw a warning (when \code{checkCross = "warning"}).
+#'   This will also remove the unmated queens and return only the mated ones.
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
@@ -1612,13 +1613,15 @@ cross <- function(x,
     }
 
     noMatches <- sapply(crossPlan, FUN = length)
+    if (all(noMatches == 0)) {
+      stop("All crossings failed!")
+    }
     if (0 %in% noMatches) {
-      msg <- "Crossing failed!"
       if (checkCross == "warning") {
-        message(msg)
+        message("Crossing failed, unmated virgin queens will be removed!")
         ret <- x
       } else if (checkCross == "error") {
-        stop(msg)
+        stop("Crossing failed!")
       }
     }
   }
@@ -1657,6 +1660,10 @@ cross <- function(x,
     nD <- nDrones
   }
 
+  if (length(IDs) > 0 & length(nD) == 1) {
+    nD = rep(nD, length(IDs))
+  }
+
 
   combine_list <- function(a, b) {
     if (isPop(a)) {
@@ -1666,23 +1673,41 @@ cross <- function(x,
     }
   }
 
+
   if (crossPlan_given | crossPlan_create) {
-    if (crossPlan_colonyID) { # TODO: WHAT IF ONE ELEMENT IS EMPTY
+    if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
+      # This is the crossPlan - for spatial, these are all DPCs found in a radius
       crossPlanDF <- data.frame(virginID = rep(names(crossPlan), unlist(sapply(crossPlan, length))),
                                 DPC = unlist(crossPlan))
-
-      crossPlanDF_sample <- do.call("rbind", lapply(IDs, FUN = function(x) {
-        data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))})) %>%
-        arrange(DPC)
-      crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC)) %>% arrange(Var1)
+      # If some of the crossing would fail, we only return the queens that mated successfully
+      IDs = IDs[IDs %in% crossPlanDF$virginID]
+      x = x[IDs]
+      if (type == "MultiColony") {
+          multicolony <- multicolony[getId(multicolony) %in% IDs]
+      }
+      # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
+      crossPlanDF_sample <- do.call("rbind", lapply(IDs,
+                                                    FUN = function(x) {
+        data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))
+        } )) %>%
+        arrange(as.integer(DPC))
+      # Here I gather how many drones each DPC needs to produce
+      crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC)) %>%
+        arrange(as.integer(as.character(Var1)))
       colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
-
-      selectedDPC = droneColonies[as.character(crossPlanDF_DPCtable$DPC)]
+      # Here I select only the DPCs that have been sampled to produce drones
+      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC))
+      # And here I create the drones
+      print(simParamBee$lastId)
+      print(sum(as.integer(crossPlanDF_DPCtable$noDrones)))
       dronesByDPC <- createCastePop(selectedDPC, caste = "drones",
-                                    nInd = as.integer(crossPlanDF_DPCtable$noDrones), simParamBee = simParamBee)
+                                    nInd = as.integer(crossPlanDF_DPCtable$noDrones),
+                                    simParamBee = simParamBee,
+                                    nThreads = nThreads)
+      # This is where I link the drone ID to the DPC ID
       dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
                                    droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x)))) %>%
-        arrange(as.numeric(DPC))
+        arrange(as.integer(DPC))
       dronePop = mergePops(dronesByDPC)
 
       if (any(!crossPlanDF_sample$DPC == dronesByDPC_DF$DPC)) {
@@ -1690,8 +1715,9 @@ cross <- function(x,
       }
 
       dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF_sample[, c("virginID"), drop = FALSE]) %>%
-        arrange(virginID)
-      dronesByVirgin_list <- lapply(IDs, FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
+        arrange(as.integer(virginID))
+      dronesByVirgin_list <- lapply(IDs,
+                                    FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
       names(dronesByVirgin_list) <- IDs
 
       dronesByVirgin <- foreach(virgin = IDs, .combine = combine_list) %dopar% {
