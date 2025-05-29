@@ -218,8 +218,8 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isPop(x)) { # DO WE WANT TO PUT THIS IN getCastePop???
-    ret = lapply(X = x@misc$fathers,
+  if (isPop(x)) { # TODO: DO WE WANT TO PUT THIS IN getCastePop???
+    ret <- lapply(X = x@misc$fathers,
                  FUN = function(z){
                    if(is.null(z)){
                      ret = NULL
@@ -315,7 +315,8 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param returnSP logical, whether to return the pedigree, caste, and recHist information
 #'   for each created population (used internally for parallel computing)
-#' @param ids character, IDs of the individuals that are going to be created
+#' @param ids character, IDs of the individuals that are going to be created (used internally
+#'   for parallel computing)
 #' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
@@ -687,12 +688,12 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
     if (!returnSP) {
       if (caste %in% c("drones", "virginQueens")) {
-        ret = lapply(ret, FUN = function(x) {
+        ret <- lapply(ret, FUN = function(x) {
           if (is.null(x)) return(NULL)  # Return NULL if the element is NULL
           x[!names(x) %in% c("pedigree", "caste", "recHist")][[1]]
         })
       } else {
-        ret = lapply(ret, FUN = function(x) {
+        ret <- lapply(ret, FUN = function(x) {
           if (is.null(x)) return(NULL)
           x[!names(x) %in% c("pedigree", "caste", "recHist")]
         })
@@ -1644,9 +1645,9 @@ cross <- function(x,
   }
 
   IDs <- as.character(getId(x))
-  #Now x is always a Pop
+  # Now x is always a Pop
   ret <- list()
-  nVirgin = nInd(x)
+  nVirgin <- nInd(x)
 
   # Rename crossPlan
   if (crossPlan_create | crossPlan_given) {
@@ -1654,9 +1655,9 @@ cross <- function(x,
   }
 
   if (is.function(nDrones)) {
-    nD = nDrones(n = nVirgin, ...)
+    nD <- nDrones(n = nVirgin, ...)
   } else {
-    nD = nDrones
+    nD <- nDrones
   }
 
   if (length(IDs) > 0 & length(nD) == 1) {
@@ -1674,8 +1675,12 @@ cross <- function(x,
 
 
   if (crossPlan_given | crossPlan_create) {
+<<<<<<< HEAD
     if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
       # This is the crossPlan - for spatial, these are all DPCs found in a radius
+=======
+    if (crossPlan_colonyID) { # TODO: WHAT IF ONE ELEMENT IS EMPTY
+>>>>>>> 691017b062e4ee563619486d9c22752691ab8ecf
       crossPlanDF <- data.frame(virginID = rep(names(crossPlan), unlist(sapply(crossPlan, length))),
                                 DPC = unlist(crossPlan))
       # If some of the crossing would fail, we only return the queens that mated successfully
@@ -1762,17 +1767,16 @@ cross <- function(x,
   # All of the input has been transformed to a Pop
   crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
     virginQueen@misc$fathers[[1]] <- virginQueenDrones
-    virginQueen <- setMisc(x = virginQueen, node = "nWorkers", value = 0)
-    virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
+    virginQueen@misc$nWorkers <- 0
+    virginQueen@misc$nDrones <- 0
+    virginQueen@misc$nHomBrood <- 0
 
-    virginQueen <- setMisc(x = virginQueen, node = "nHomBrood", value = 0)
-    # if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
-    #   val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
-    # } else {
-    #   val <- NA
-    # }
-    #
-    # virginQueen <- setMisc(x = virginQueen, node = "pHomBrood", value = val)
+    if (isCsdActive(simParamBee = simParamBee)) {
+      val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
+    } else {
+      val <- NA
+    }
+    virginQueen@misc$pHomBrood <- val
     return(virginQueen)
   }
 
