@@ -1675,12 +1675,8 @@ cross <- function(x,
 
 
   if (crossPlan_given | crossPlan_create) {
-<<<<<<< HEAD
     if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
       # This is the crossPlan - for spatial, these are all DPCs found in a radius
-=======
-    if (crossPlan_colonyID) { # TODO: WHAT IF ONE ELEMENT IS EMPTY
->>>>>>> 691017b062e4ee563619486d9c22752691ab8ecf
       crossPlanDF <- data.frame(virginID = rep(names(crossPlan), unlist(sapply(crossPlan, length))),
                                 DPC = unlist(crossPlan))
       # If some of the crossing would fail, we only return the queens that mated successfully
