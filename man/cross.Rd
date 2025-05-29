@@ -55,7 +55,8 @@ to their distance from the virgin colony (that is, in a radius)}
 \item{radius}{numeric, the radius around the virgin colony in which to sample mating partners,
 only needed when \code{spatial = TRUE}}
 
-\item{checkCross}{character, throw a warning (when \code{checkCross = "warning"}),}
+\item{checkCross}{character, throw a warning (when \code{checkCross = "warning"}).
+This will also remove the unmated queens and return only the mated ones.}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
