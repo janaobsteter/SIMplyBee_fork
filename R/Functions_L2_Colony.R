@@ -8,6 +8,7 @@
 #'
 #' @param x \code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param id character, ID of the colony that is going to be created (used internally for parallel computing)
 #'
 #' @return new \code{\link[SIMplyBee]{Colony-class}}
 #'
@@ -320,6 +321,20 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not add individuals (from the queen) to it!"))
     }
+    if (!isQueenPresent(x, simParamBee = simParamBee)) {
+      stop("Missing queen!")
+    }
+    if (length(nInd) > 1) {
+      warning("More than one value in the nInd argument, taking only the first value!")
+      p <- p[1]
+    }
+    if (is.function(nInd)) {
+      nInd <- nInd(x, ...)
+    } else {
+      if (!is.null(nInd) && nInd < 0) {
+        stop("nInd must be non-negative or NULL!")
+      }
+    }
     if (length(nInd) > 1) {
       warning("More than one value in the nInd argument, taking only the first value!")
       nInd <- nInd[1]
@@ -453,6 +468,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @param resetEvents logical, call \code{\link[SIMplyBee]{resetEvents}} as part of the
 #'   build up
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nWorkers} or \code{nDrones}
 #'   when these arguments are a function
 #'
@@ -672,6 +688,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{p} when this argument is a
 #'   function
 #'
@@ -958,12 +975,6 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThr
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
-#' @param addVirginQueens logical, whether virgin queens should be added; only
-#'   used when removing the queen from the colony
-#' @param nVirginQueens integer, the number of virgin queens to be created in the
-#'   colony; only used when removing the queen from the colony. If \code{0}, no virgin
-#'   queens are added; If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-#'   is used
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param nThreads integer, number of cores to use for parallel computing (over colonies)
@@ -1253,13 +1264,13 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(basePop[1], n = 1000)
+#' drones <- createDrones(basePop[1], nInd = 1000)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #'
 #' # Create Colony and MultiColony class
 #' colony <- createColony(x = basePop[1])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(x = basePop[2:10], n = 9)
+#' apiary <- createMultiColony(x = basePop[2:10])
 #' apiary <- cross(apiary, drones = droneGroups[2:10])
 #'
 #' # Collapse
@@ -1325,6 +1336,7 @@ collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
 #'   \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmRadius} is used (which uses
 #'   \code{0}, so by default swarm does not fly far away)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
+#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
 #'
@@ -1523,10 +1535,6 @@ swarm <- function(x, p = NULL, year = NULL,
 #'
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param year numeric, year of birth for virgin queens
-#' @param nVirginQueens integer, the number of virgin queens to be created in the
-#'   colony; of these one is randomly selected as the new virgin queen of the
-#'   remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-#'   is used
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nVirginQueens} when this
@@ -1570,7 +1578,7 @@ swarm <- function(x, p = NULL, year = NULL,
 #' # Swarm only the pulled colonies
 #' (supersede(tmp$pulled))
 #' @export
-supersede <- function(x, addVirginQueens = TRUE, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1888,8 +1896,9 @@ setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
 #' founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
+#' print(SP$nThreads)
 #' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(basePop[1], n = 1000)
+#' drones <- createDrones(basePop[1], nInd = 1000)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 #'
 #' # Create weak and strong Colony and MultiColony class
@@ -1918,28 +1927,30 @@ setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
 #'
 #' nWorkers(apiary1); nWorkers(apiary2)
 #' nDrones(apiary1); nDrones(apiary2)
-#' apiary1 <- combine(strong = apiary1, weak = apiary2)
+#' apiary1 <- combine(strong = apiary1, weak = apiary2, simParamBee = SP)
 #' nWorkers(apiary1); nWorkers(apiary2)
 #' nDrones(apiary1); nDrones(apiary2)
 #' rm(apiary2)
 #' @export
 combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
+  if (is.null(simParamBee)) {
+    simParamBee <- get(x = "SP", envir = .GlobalEnv)
+  }
+  if (is.null(nThreads)) {
+    nThreads = simParamBee$nThreads
+  }
+  if (any(hasCollapsed(strong))) {
+    stop(paste0("Some of the strong colonies have collapsed, hence you can not combine it!"))
+  }
+  if (any(hasCollapsed(weak))) {
+    stop(paste0("Some of the weak colonies have collapsed, hence you can not combine it!"))
+  }
   if (isColony(strong) & isColony(weak)) {
-    if (is.null(simParamBee)) {
-      simParamBee <- get(x = "SP", envir = .GlobalEnv)
-    }
-    if (is.null(nThreads)) {
-      nThreads = simParamBee$nThreads
-    }
-    if (hasCollapsed(strong)) {
-      stop(paste0("The colony ", getId(strong), " (strong) has collapsed, hence you can not combine it!"))
-    }
-    if (hasCollapsed(weak)) {
-      stop(paste0("The colony ", getId(weak), " (weak) has collapsed, hence you can not combine it!"))
-    }
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
   } else if (isMultiColony(strong) & isMultiColony(weak)) {
+    print("Function nThreads")
+    print(nThreads)
     registerDoParallel(cores = nThreads)
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)

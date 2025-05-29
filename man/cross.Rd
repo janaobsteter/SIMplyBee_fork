@@ -59,6 +59,8 @@ only needed when \code{spatial = TRUE}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+
 \item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{

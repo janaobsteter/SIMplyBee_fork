@@ -19,6 +19,8 @@ a single value is provided, the same value will be applied to all the colonies}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+
 \item{...}{additional arguments passed to \code{p} when this argument is a
 function}
 }

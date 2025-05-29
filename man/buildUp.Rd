@@ -39,12 +39,10 @@ build up}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+
 \item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
 when these arguments are a function}
-
-\item{exact}{logical, if the csd locus is turned on and exact is \code{TRUE},
-create the exact specified number of only viable workers (heterozygous on
-the csd locus)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with workers and

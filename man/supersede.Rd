@@ -4,14 +4,7 @@
 \alias{supersede}
 \title{Supersede}
 \usage{
-supersede(
-  x,
-  addVirginQueens = TRUE,
-  year = NULL,
-  simParamBee = NULL,
-  nThreads = NULL,
-  ...
-)
+supersede(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -20,13 +13,10 @@ supersede(
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+
 \item{...}{additional arguments passed to \code{nVirginQueens} when this
 argument is a function}
-
-\item{nVirginQueens}{integer, the number of virgin queens to be created in the
-colony; of these one is randomly selected as the new virgin queen of the
-remnant colony. If \code{NULL}, the value from \code{simParamBee$nVirginQueens}
-is used}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the

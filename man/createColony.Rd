@@ -10,6 +10,8 @@ createColony(x = NULL, simParamBee = NULL, id = NULL)
 \item{x}{\code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{id}{character, ID of the colony that is going to be created (used internally for parallel computing)}
 }
 \value{
 new \code{\link[SIMplyBee]{Colony-class}}

@@ -25,6 +25,8 @@ queen that will have to be mated later; test will be run if the individual
 to ensure the provided queen prevails (see details)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with new queen(s) (see details)

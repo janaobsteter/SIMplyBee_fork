@@ -10,6 +10,10 @@ combine(strong, weak, simParamBee = NULL, nThreads = NULL)
 \item{strong}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{weak}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
+
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 a combined \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
@@ -26,8 +30,9 @@ Level 2 function that combines two Colony or MultiColony objects
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 \dontshow{SP$nThreads = 1L}
+print(SP$nThreads)
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(basePop[1], n = 1000)
+drones <- createDrones(basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
 # Create weak and strong Colony and MultiColony class
@@ -56,7 +61,7 @@ rm(colony2)
 
 nWorkers(apiary1); nWorkers(apiary2)
 nDrones(apiary1); nDrones(apiary2)
-apiary1 <- combine(strong = apiary1, weak = apiary2)
+apiary1 <- combine(strong = apiary1, weak = apiary2, simParamBee = SP)
 nWorkers(apiary1); nWorkers(apiary2)
 nDrones(apiary1); nDrones(apiary2)
 rm(apiary2)

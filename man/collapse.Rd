@@ -8,6 +8,10 @@ collapse(x, simParamBee = NULL, nThreads = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
+
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
+
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the collapse
@@ -30,13 +34,13 @@ founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)
 SP <- SimParamBee$new(founderGenomes)
 \dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(basePop[1], n = 1000)
+drones <- createDrones(basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
 # Create Colony and MultiColony class
 colony <- createColony(x = basePop[1])
 colony <- cross(colony, drones = droneGroups[[1]])
-apiary <- createMultiColony(x = basePop[2:10], n = 9)
+apiary <- createMultiColony(x = basePop[2:10])
 apiary <- cross(apiary, drones = droneGroups[2:10])
 
 # Collapse
