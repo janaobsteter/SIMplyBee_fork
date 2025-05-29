@@ -13,6 +13,8 @@
 
 # Output files from R CMD build
 /*.tar.gz
+src/*.o
+src/*.so
 
 # Output files from R CMD check
 /*.Rcheck/
