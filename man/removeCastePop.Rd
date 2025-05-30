@@ -14,17 +14,16 @@ removeCastePop(
   p = 1,
   use = "rand",
   year = NULL,
-  simParamBee = NULL,
-  nThreads = NULL
+  simParamBee = NULL
 )
 
-removeQueen(x, year = NULL, simParamBee = NULL, nThreads = NULL)
+removeQueen(x, year = NULL, simParamBee = NULL)
 
-removeWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
-removeDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+removeDrones(x, p = 1, use = "rand", simParamBee = NULL)
 
-removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+removeVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -41,8 +40,6 @@ guides selection of virgins queens that will stay when \code{p < 1}}
 \item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens

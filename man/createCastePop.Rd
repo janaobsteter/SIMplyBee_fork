@@ -17,7 +17,6 @@ createCastePop(
   simParamBee = NULL,
   returnSP = FALSE,
   ids = NULL,
-  nThreads = NULL,
   ...
 )
 
@@ -28,7 +27,6 @@ createWorkers(
   simParamBee = NULL,
   returnSP = FALSE,
   ids = NULL,
-  nThreads = NULL,
   ...
 )
 
@@ -38,7 +36,6 @@ createDrones(
   simParamBee = NULL,
   returnSP = FALSE,
   ids = NULL,
-  nThreads = NULL,
   ...
 )
 
@@ -51,7 +48,6 @@ createVirginQueens(
   simParamBee = NULL,
   returnSP = FALSE,
   ids = NULL,
-  nThreads = NULL,
   ...
 )
 }
@@ -90,9 +86,8 @@ ensure heterozygosity at the csd locus.}
 \item{returnSP}{logical, whether to return the pedigree, caste, and recHist information
 for each created population (used internally for parallel computing)}
 
-\item{ids}{character, IDs of the individuals that are going to be created}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+\item{ids}{character, IDs of the individuals that are going to be created (used internally
+for parallel computing)}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 

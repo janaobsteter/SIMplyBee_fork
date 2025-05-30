@@ -7,8 +7,9 @@
 #' @importFrom stats rnorm rbeta runif rpois na.omit
 #' @importFrom extraDistr rtpois
 #' @importFrom utils packageVersion
-#' @importFrom foreach foreach
+#' @importFrom foreach foreach %dopar%
 #' @importFrom doParallel registerDoParallel
+#' @importFrom dplyr arrange %>%
 # see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
 #' @description

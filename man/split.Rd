@@ -4,7 +4,7 @@
 \alias{split}
 \title{Split colony in two MultiColony}
 \usage{
-split(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL, ...)
+split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -18,8 +18,6 @@ a single value is provided, the same value will be applied to all the colonies}
 \item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{p} when this argument is a
 function}

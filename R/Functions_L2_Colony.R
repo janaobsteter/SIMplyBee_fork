@@ -95,7 +95,6 @@ createColony <- function(x = NULL, simParamBee = NULL, id = NULL) {
 #'   \code{TRUE} since bee-keepers tend to remove any virgin queen cells
 #'   to ensure the provided queen prevails (see details)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @details If the provided queen is mated, then she is saved in the queen slot
 #'   of the colony. If she is not mated, then she is saved in the virgin queen
@@ -147,12 +146,9 @@ createColony <- function(x = NULL, simParamBee = NULL, id = NULL) {
 #' getCasteId(apiary, caste = "virginQueens")
 #'
 #' @export
-reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nThreads = NULL) {
+reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (!isPop(queen)) {
     stop("Argument queen must be a Pop class object!")
@@ -174,7 +170,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL, nTh
       x@virginQueens <- queen
     }
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nInd(queen) < nCol) {
       stop("Not enough queens provided!")
@@ -239,7 +235,6 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #'   anew or should we only top-up the existing number of individuals to \code{nInd}
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
 #' @details This function increases queen's \code{nWorkers} and \code{nHomBrood}
@@ -296,13 +291,9 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #'
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
-                                 year = NULL, simParamBee = NULL,
-                                 nThreads = NULL, ...) {
+                                 year = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -342,8 +333,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     if (0 < nInd) {
       newInds <- createCastePop(x, nInd,
                                          caste = caste,
-                                         year = year, simParamBee = simParamBee,
-                                         nThreads = nThreads
+                                         year = year, simParamBee = simParamBee
       )
       if (caste == "workers") {
         homInds <- newInds$nHomBrood
@@ -372,7 +362,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     newInds <- createCastePop(x, nInd,
                                        caste = caste,
                                        year = year, simParamBee = simParamBee,
-                                       nThreads = nThreads, returnSP = FALSE, ...)
+                                       returnSP = FALSE, ...)
 
 
     if (caste == "workers") {
@@ -413,10 +403,10 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
 #' @describeIn addCastePop Add workers to a colony
 #' @export
 addWorkers <- function(x, nInd = NULL, new = FALSE,
-                                simParamBee = NULL, nThreads = NULL, ...) {
+                                simParamBee = NULL,  ...) {
   ret <- addCastePop(
     x = x, caste = "workers", nInd = nInd, new = new,
-    simParamBee = simParamBee, nThreads = nThreads, ...
+    simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -424,11 +414,10 @@ addWorkers <- function(x, nInd = NULL, new = FALSE,
 #' @describeIn addCastePop Add drones to a colony
 #' @export
 addDrones <- function(x, nInd = NULL, new = FALSE,
-                               simParamBee = NULL, nThreads = NULL, ...) {
+                               simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "drones", nInd = nInd, new = new,
-    simParamBee = simParamBee,
-    nThreads = nThreads, ...
+    simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -436,10 +425,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE,
 #' @describeIn addCastePop Add virgin queens to a colony
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE,
-                                     year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+                                     year = NULL, simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "virginQueens", nInd = nInd, new = new,
-    year = year, simParamBee = simParamBee, nThreads = nThreads, ...
+    year = year, simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -468,7 +457,6 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @param resetEvents logical, call \code{\link[SIMplyBee]{resetEvents}} as part of the
 #'   build up
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nWorkers} or \code{nDrones}
 #'   when these arguments are a function
 #'
@@ -541,12 +529,9 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' @export
 buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
                              new = TRUE, resetEvents = FALSE,
-                             simParamBee = NULL, nThreads = NULL, ...) {
+                             simParamBee = NULL,  ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   # Workers
   if (is.null(nWorkers)) {
@@ -580,8 +565,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (0 < n) {
       x <- addWorkers(
         x = x, nInd = n, new = new,
-        simParamBee = simParamBee,
-        nThreads = nThreads)
+        simParamBee = simParamBee)
     } else if (n < 0) {
       x@workers <- getWorkers(x, nInd = nWorkers, simParamBee = simParamBee)
     }
@@ -600,8 +584,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (0 < n) {
       x <- addDrones(
         x = x, nInd = n, new = new,
-        simParamBee = simParamBee,
-        nThreads = nThreads
+        simParamBee = simParamBee
       )
     } else if (n < 0) {
       x@drones <- getDrones(x, nInd = nDrones, simParamBee = simParamBee)
@@ -613,7 +596,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     }
     x@production <- TRUE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
 
     if (any(hasCollapsed(x))) {
       stop(paste0("Some colonies are collapsed, hence you can not build it up!"))
@@ -649,12 +632,12 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     if (sum(nWorkers) > 0) {
       x <- addWorkers(
         x = x, nInd = n, new = new,
-        simParamBee = simParamBee, nThreads = nThreads)
+        simParamBee = simParamBee)
     }
     if (sum(nDrones) > 0) {
       x <- addDrones(
         x = x, nInd = n, new = new,
-        simParamBee = simParamBee, nThreads = nThreads)
+        simParamBee = simParamBee)
     }
     x <- setEvents(x, slot = "production", value = TRUE)
     if (resetEvents) {
@@ -688,7 +671,6 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' @param new logical, should we remove all current workers and add a targeted
 #'   proportion anew (say, create winter workers)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{p} when this argument is a
 #'   function
 #'
@@ -724,15 +706,12 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' @export
 #'
 downsize <- function(x, p = NULL, use = "rand", new = FALSE,
-                              simParamBee = NULL, nThreads = NULL,  ...) {
+                              simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.logical(new)) {
     stop("Argument new must be logical!")
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (any(1 < p)) {
     stop("p must not be higher than 1!")
@@ -763,7 +742,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     x <- removeVirginQueens(x = x, p = 1, simParamBee = simParamBee)
     x@production <- FALSE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     nP <- length(p)
 
@@ -786,14 +765,13 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     if (new == TRUE) {
       n <- round(nWorkers(x, simParamBee = simParamBee) * (1 - p))
       x <- addWorkers(x = x, nInd = n, new = TRUE,
-                               simParamBee = simParamBee,
-                               nThreads = nThreads)
+                               simParamBee = simParamBee)
     } else {
       x <- removeWorkers(x = x, p = p, use = use,
-                                  simParamBee = simParamBee, nThreads = nThreads)
+                                  simParamBee = simParamBee)
     }
-    x <- removeDrones(x = x, p = 1, simParamBee = simParamBee, nThreads = nThreads)
-    x <- removeVirginQueens(x = x, p = 1, simParamBee = simParamBee, nThreads = nThreads)
+    x <- removeDrones(x = x, p = 1, simParamBee = simParamBee)
+    x <- removeVirginQueens(x = x, p = 1, simParamBee = simParamBee)
     for (colony in 1:nCol) {
       x[[colony]]@production <- FALSE
     }
@@ -827,7 +805,6 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' @param year numeric, only relevant when replacing virgin queens,
 #'   year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or  or \code{\link[SIMplyBee]{MultiColony-class}} with
 #'   replaced virgin queens
@@ -864,12 +841,9 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' getCasteId(apiary, caste="workers")
 #' @export
 replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
-                            year = NULL, simParamBee = NULL, nThreads = NULL) {
+                            year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -929,34 +903,31 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 
 #' @describeIn replaceCastePop Replaces some workers in a colony
 #' @export
-replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+replaceWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "workers", p = p,
     use = use,
-    simParamBee = simParamBee,
-    nThreads = nThreads
+    simParamBee = simParamBee
   )
   return(ret)
 }
 
 #' @describeIn replaceCastePop Replaces some drones in a colony
 #' @export
-replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+replaceDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "drones", p = p,
-    use = use, simParamBee = simParamBee,
-    nThreads = nThreads
+    use = use, simParamBee = simParamBee
   )
   return(ret)
 }
 
 #' @describeIn replaceCastePop Replaces some virgin queens in a colony
 #' @export
-replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
+replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
   ret <- replaceCastePop(
     x = x, caste = "virginQueens", p = p,
-    use = use, simParamBee = simParamBee,
-    nThreads = nThreads
+    use = use, simParamBee = simParamBee
   )
   return(ret)
 }
@@ -977,7 +948,6 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThr
 #'   guides selection of virgins queens that will stay when \code{p < 1}
 #' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens
 #'
@@ -1015,12 +985,9 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThr
 #' nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
 #' @export
 removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
-                                    year = NULL, simParamBee = NULL, nThreads = NULL) {
+                                    year = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (length(caste) != 1) {
     stop("Argument caste must be of length 1!")
@@ -1054,7 +1021,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       }
     }
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     nP <- length(p)
     if (nP > 1 && nP < nCol) {
@@ -1087,16 +1054,16 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
 #'
-removeQueen <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL) {
-  ret <- removeCastePop(x = x, caste = "queen", p = 1, year = year, simParamBee = simParamBee, nThreads = nThreads)
+removeQueen <- function(x, year = NULL, simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "queen", p = 1, year = year, simParamBee = simParamBee)
   return(ret)
 }
 
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
-removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
-  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
+removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "workers", p = p, use = use, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1104,8 +1071,8 @@ removeWorkers <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads =
 
 #' @describeIn removeCastePop Remove workers from a colony
 #' @export
-removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
-  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
+removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "drones", p = p, use = use, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1113,8 +1080,8 @@ removeDrones <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = 
 
 #' @describeIn removeCastePop Remove virgin queens from a colony
 #' @export
-removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL) {
-  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use, simParamBee = simParamBee, nThreads = nThreads)
+removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "virginQueens", p = p, use = use, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1132,7 +1099,6 @@ removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThre
 #'   collapsed colony should be left collapsed forever, unless you force
 #'   resetting this event with \code{collapse = TRUE})
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
 #'   events reset
@@ -1199,12 +1165,9 @@ removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL, nThre
 #' hasSplit(remnants[[1]])
 #' resetEvents(remnants)[[1]]
 #' @export
-resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL) {
+resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     x@swarm <- FALSE
@@ -1221,14 +1184,13 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
     x@production <- FALSE
     validObject(x)
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
       resetEvents(
         x = x[[colony]],
         collapse = collapse,
-        simParamBee = simParamBee,
-        nThreads = 1
+        simParamBee = simParamBee
       )
     }
     validObject(x)
@@ -1250,7 +1212,6 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the collapse
 #'   event set to \code{TRUE}
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #'
 #' @details You should use this function in an edge-case when you
@@ -1286,23 +1247,19 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
 #' apiaryLeft <- tmp$remnant
 #' hasCollapsed(apiaryLeft)
 #' @export
-collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
+collapse <- function(x, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     x@collapse <- TRUE
     x@production <- FALSE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
       collapse(x = x[[colony]],
-               simParamBee = simParamBee,
-               nThreads = 1)
+               simParamBee = simParamBee)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1336,7 +1293,6 @@ collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
 #'   \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmRadius} is used (which uses
 #'   \code{0}, so by default swarm does not fly far away)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{p} or \code{nVirginQueens}
 #'   when these arguments are functions
 #'
@@ -1382,15 +1338,12 @@ collapse <- function(x, simParamBee = NULL, nThreads = NULL) {
 #' @export
 swarm <- function(x, p = NULL, year = NULL,
                            sampleLocation = TRUE, radius = NULL,
-                           simParamBee = NULL, nThreads= NULL, ...) {
+                           simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isMultiColony(x)) {
     parallel <- TRUE
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (is.null(p)) {
     p <- simParamBee$swarmP
@@ -1445,25 +1398,21 @@ swarm <- function(x, p = NULL, year = NULL,
       x = x, nInd = 1,
       year = year,
       caste = "virginQueens",
-      simParamBee = simParamBee,
-      nThreads = nThreads
+      simParamBee = simParamBee
     )
 
     tmp <- pullCastePop(x = x, caste = "workers",
-                                 nInd = nWorkersSwarm, simParamBee = simParamBee,
-                                 nThreads = nThreads)
+                                 nInd = nWorkersSwarm, simParamBee = simParamBee)
     remnantColony <- tmp$remnant
-    remnantColony <- removeQueen(remnantColony, nThreads = nThreads)
+    remnantColony <- removeQueen(remnantColony)
     if (isColony(x)) {
       remnantColony <- reQueen(remnantColony,
                                         queen = tmpVirginQueen,
-                                        simParamBee = simParamBee,
-                                        nThreads = nThreads)
+                                        simParamBee = simParamBee)
     } else {
       remnantColony <- reQueen(remnantColony,
                                         queen = mergePops(tmpVirginQueen),
-                                        simParamBee = simParamBee,
-                                        nThreads = nThreads)
+                                        simParamBee = simParamBee)
     }
     currentLocation <- getLocation(x)
 
@@ -1500,7 +1449,7 @@ swarm <- function(x, p = NULL, year = NULL,
       } else {
         ret <- list(
           swarm <- createMultiColony(x = getQueen(x, collapse = TRUE),
-                                             simParamBee = simParamBee, nThreads = nThreads),
+                                             simParamBee = simParamBee),
           remnant <- remnantColony
         )
 
@@ -1509,10 +1458,10 @@ swarm <- function(x, p = NULL, year = NULL,
                                pop = tmp$pulled[[colony]], caste = "workers")
         }
 
-        ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE, nThreads = nThreads)
-        ret$swarm <- setEvents(ret$swarm, slot = "swarm", value = TRUE, nThreads = nThreads)
-        ret$swarm <- setEvents(ret$swarm, slot = "production", value = FALSE, nThreads = nThreads)
-        ret$remnant <- setEvents(ret$remnant, slot = "production", value = FALSE, nThreads = nThreads)
+        ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE)
+        ret$swarm <- setEvents(ret$swarm, slot = "swarm", value = TRUE)
+        ret$swarm <- setEvents(ret$swarm, slot = "production", value = FALSE)
+        ret$remnant <- setEvents(ret$remnant, slot = "production", value = FALSE)
       }
     }
   } else {
@@ -1536,7 +1485,6 @@ swarm <- function(x, p = NULL, year = NULL,
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{nVirginQueens} when this
 #'   argument is a function
 #'
@@ -1578,12 +1526,9 @@ swarm <- function(x, p = NULL, year = NULL,
 #' # Swarm only the pulled colonies
 #' (supersede(tmp$pulled))
 #' @export
-supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+supersede <- function(x, year = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     parallel <- FALSE
@@ -1607,19 +1552,19 @@ supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) 
     if (!parallel) {
       x <- addVirginQueens(x, nInd = 1)
     }
-    x <- removeQueen(x, year = year, simParamBee = simParamBee, nThreads = nThreads)
+    x <- removeQueen(x, year = year, simParamBee = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most
     #       aggressive one), by creating many virgin queens and then picking the
     #       one with highest pheno for competition or some other criteria
     #       https://github.com/HighlanderLab/SIMplyBee/issues/239
     x@supersedure <- TRUE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
-      x <- createMultiColony(simParamBee = simParamBee, nThreads = nThreads)
+      x <- createMultiColony(simParamBee = simParamBee)
     } else {
-      virginQueens <- createCastePop(x, caste = "virginQueens", nInd = 1, nThreads = nThreads)
+      virginQueens <- createCastePop(x, caste = "virginQueens", nInd = 1)
 
       combine_list <- function(a, b) {
         if (length(a) == 1) {
@@ -1631,8 +1576,7 @@ supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) 
       x@colonies <- foreach(colony = seq_len(nCol), .combine = combine_list) %dopar% {
         supersede(x[[colony]],
                            year = year,
-                           simParamBee = simParamBee,
-                           nThreads = nThreads, ...
+                           simParamBee = simParamBee, ...
         )
       }
       x@colonies <- foreach(colony = seq_len(nColonies(x))) %dopar% {
@@ -1664,7 +1608,6 @@ supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) 
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param year numeric, year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param ... additional arguments passed to \code{p} when this argument is a
 #'   function
 #'
@@ -1708,12 +1651,9 @@ supersede <- function(x, year = NULL, simParamBee = NULL, nThreads = NULL, ...) 
 #' # Split only the pulled colonies
 #' (split(tmp$pulled, p = 0.5))
 #' @export
-split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL, ...) {
+split <- function(x, p = NULL, year = NULL, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (is.null(p)) {
     p <- simParamBee$splitP
@@ -1723,7 +1663,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
   }
 
   if (isColony(x) | isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     if (isColony(x)) {
       nCol <- 1
     } else if (isMultiColony(x)) {
@@ -1767,8 +1707,7 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
       x = x, nInd = 1,
       year = year,
       caste = "virginQueens",
-      simParamBee = simParamBee,
-      nThreads = nThreads
+      simParamBee = simParamBee
     )
 
     if (isColony(x)) {
@@ -1796,26 +1735,26 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
     } else if (isMultiColony(x)) {
       if (nCol == 0) {
         ret <- list(
-          split = createMultiColony(simParamBee = simParamBee, nThreads = nThreads),
-          remnant = createMultiColony(simParamBee = simParamBee, nThreads = nThreads)
+          split = createMultiColony(simParamBee = simParamBee),
+          remnant = createMultiColony(simParamBee = simParamBee)
         )
       } else {
         ret <- list(
           split = createMultiColony(x = mergePops(tmpVirginQueens), n = nCol,
-                                             simParamBee = simParamBee, nThreads = nThreads),
+                                             simParamBee = simParamBee),
           remnant = tmp$remnant
 
         )
-        ret$split <- setLocation(x = ret$split, location = location, nThreads = nThreads)
+        ret$split <- setLocation(x = ret$split, location = location)
 
         ret$split@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
           addCastePop_internal(colony = ret$split@colonies[[colony]],
                                pop = tmp$pulled[[colony]], caste = "workers")
         }
-        ret$split <- setEvents(ret$split, slot = "split", value = TRUE, nThreads = nThreads)
-        ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE, nThreads = nThreads)
-        ret$split <- setEvents(ret$split, slot = "production", value = FALSE, nThreads = nThreads)
-        ret$remnant <- setEvents(ret$remnant, slot = "production", value = TRUE, nThreads = nThreads)
+        ret$split <- setEvents(ret$split, slot = "split", value = TRUE)
+        ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE)
+        ret$split <- setEvents(ret$split, slot = "production", value = FALSE)
+        ret$remnant <- setEvents(ret$remnant, slot = "production", value = TRUE)
       }
     }
   } else {
@@ -1835,7 +1774,6 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param slot character, which event to set
 #' @param value logical, the value for the event
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
@@ -1855,18 +1793,15 @@ split <- function(x, p = NULL, year = NULL, simParamBee = NULL, nThreads = NULL,
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' apiary <- createMultiColony(basePop[4:5])
 #' SIMplyBee:::setEvents(apiary, slot = "swarm", value = c(TRUE, TRUE))
-setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
+setEvents <- function(x, slot, value, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     x@colonies <- foreach(colony = seq_len(nColonies(x))) %dopar% {
       setEvents(x[[colony]], slot, value)
     }
@@ -1888,7 +1823,6 @@ setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
 #' @param strong \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param weak \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @return a combined \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
@@ -1932,12 +1866,9 @@ setEvents <- function(x, slot, value, nThreads = NULL, simParamBee = NULL) {
 #' nDrones(apiary1); nDrones(apiary2)
 #' rm(apiary2)
 #' @export
-combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
+combine <- function(strong, weak, simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads = simParamBee$nThreads
   }
   if (any(hasCollapsed(strong))) {
     stop(paste0("Some of the strong colonies have collapsed, hence you can not combine it!"))
@@ -1949,16 +1880,13 @@ combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
   } else if (isMultiColony(strong) & isMultiColony(weak)) {
-    print("Function nThreads")
-    print(nThreads)
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
       strong@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
-                simParamBee = simParamBee,
-                nThreads = 1)
+                simParamBee = simParamBee)
       }
     } else {
       stop("Weak and strong MultiColony objects must be of the same length!")
@@ -1983,7 +1911,6 @@ combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
 #'  \code{list(c(x1, y1), c(x2, y2))}, or
 #'  \code{data.frame(x = c(x1, x2), y = c(y1, y2))}
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param nThreads integer, number of cores to use for parallel computing (over colonies)
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with set
 #'   location
@@ -2022,12 +1949,9 @@ combine <- function(strong, weak, simParamBee = NULL, nThreads = NULL) {
 #' apiary <- setLocation(apiary, location = locDF)
 #' getLocation(apiary)
 #' @export
-setLocation <- function(x, location = c(0, 0), simParamBee = NULL, nThreads = NULL) {
+setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (is.null(nThreads)) {
-    nThreads <- simParamBee$nThreads
   }
   if (isColony(x)) {
     if (is.list(location)) { # is.list() captures also is.data.frame()
@@ -2038,7 +1962,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL, nThreads = NU
     }
     x@location <- location
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = nThreads)
+    registerDoParallel(cores = simParamBee$nThreads)
     n <- nColonies(x)
     if (!is.null(location)) {
       if (is.numeric(location)) {

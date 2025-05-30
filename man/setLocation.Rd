@@ -4,7 +4,7 @@
 \alias{setLocation}
 \title{Set colony location}
 \usage{
-setLocation(x, location = c(0, 0), simParamBee = NULL, nThreads = NULL)
+setLocation(x, location = c(0, 0), simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -16,8 +16,6 @@ locations as
 \code{data.frame(x = c(x1, x2), y = c(y1, y2))}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with set

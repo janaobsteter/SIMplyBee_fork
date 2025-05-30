@@ -35,7 +35,7 @@ founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
 \dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
-drones <- createDrones(basePop[1], n = 1000)
+drones <- createDrones(basePop[1], nInd = 1000)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 
 # Create a colony and cross it

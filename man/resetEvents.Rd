@@ -4,7 +4,7 @@
 \alias{resetEvents}
 \title{Reset colony events}
 \usage{
-resetEvents(x, collapse = NULL, simParamBee = NULL, nThreads = NULL)
+resetEvents(x, collapse = NULL, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -15,8 +15,6 @@ collapsed colony should be left collapsed forever, unless you force
 resetting this event with \code{collapse = TRUE})}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with
