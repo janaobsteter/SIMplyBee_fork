@@ -88,6 +88,7 @@ for each created population (used internally for parallel computing)}
 
 \item{ids}{character, IDs of the individuals that are going to be created (used internally
 for parallel computing)}
+\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 
