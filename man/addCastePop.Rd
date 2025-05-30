@@ -14,27 +14,12 @@ addCastePop(
   new = FALSE,
   year = NULL,
   simParamBee = NULL,
-  nThreads = NULL,
   ...
 )
 
-addWorkers(
-  x,
-  nInd = NULL,
-  new = FALSE,
-  simParamBee = NULL,
-  nThreads = NULL,
-  ...
-)
+addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
-addDrones(
-  x,
-  nInd = NULL,
-  new = FALSE,
-  simParamBee = NULL,
-  nThreads = NULL,
-  ...
-)
+addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
 addVirginQueens(
   x,
@@ -42,7 +27,6 @@ addVirginQueens(
   new = FALSE,
   year = NULL,
   simParamBee = NULL,
-  nThreads = NULL,
   ...
 )
 }
@@ -63,8 +47,6 @@ anew or should we only top-up the existing number of individuals to \code{nInd}}
 \item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }

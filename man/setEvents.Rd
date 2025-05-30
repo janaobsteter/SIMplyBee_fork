@@ -4,7 +4,7 @@
 \alias{setEvents}
 \title{Set colony events}
 \usage{
-setEvents(x, slot, value, nThreads = NULL, simParamBee = NULL)
+setEvents(x, slot, value, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -12,8 +12,6 @@ setEvents(x, slot, value, nThreads = NULL, simParamBee = NULL)
 \item{slot}{character, which event to set}
 
 \item{value}{logical, the value for the event}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }

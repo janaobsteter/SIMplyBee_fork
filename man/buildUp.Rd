@@ -11,7 +11,6 @@ buildUp(
   new = TRUE,
   resetEvents = FALSE,
   simParamBee = NULL,
-  nThreads = NULL,
   ...
 )
 }
@@ -38,8 +37,6 @@ should we only top-up the existing number of workers and drones to
 build up}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{nWorkers} or \code{nDrones}
 when these arguments are a function}

@@ -15,7 +15,6 @@ cross(
   radius = NULL,
   checkCross = "error",
   simParamBee = NULL,
-  nThreads = NULL,
   ...
 )
 }
@@ -60,8 +59,6 @@ This will also remove the unmated queens and return only the mated ones.}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
-
 \item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{
@@ -99,7 +96,7 @@ This function changes caste for the mated drones to fathers, and
 \examples{
 founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-\dontshow{SP$nThreads = 1L}
+SP$nThreads = 1L
 basePop <- createVirginQueens(founderGenomes)
 
 drones <- createDrones(x = basePop[1], nInd = 1000)

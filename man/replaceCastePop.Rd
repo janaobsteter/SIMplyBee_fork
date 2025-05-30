@@ -13,21 +13,14 @@ replaceCastePop(
   p = 1,
   use = "rand",
   year = NULL,
-  simParamBee = NULL,
-  nThreads = NULL
+  simParamBee = NULL
 )
 
-replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
-replaceDrones(x, p = 1, use = "rand", simParamBee = NULL, nThreads = NULL)
+replaceDrones(x, p = 1, use = "rand", simParamBee = NULL)
 
-replaceVirginQueens(
-  x,
-  p = 1,
-  use = "rand",
-  simParamBee = NULL,
-  nThreads = NULL
-)
+replaceVirginQueens(x, p = 1, use = "rand", simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -46,8 +39,6 @@ guides selection of caste individuals that stay when \code{p < 1}}
 year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or  or \code{\link[SIMplyBee]{MultiColony-class}} with

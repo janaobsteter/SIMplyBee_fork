@@ -4,14 +4,12 @@
 \alias{collapse}
 \title{Collapse}
 \usage{
-collapse(x, simParamBee = NULL, nThreads = NULL)
+collapse(x, simParamBee = NULL)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} with the collapse

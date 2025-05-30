@@ -454,13 +454,12 @@ SimParamBee <- R6Class(
 
     #' @description A function to update the last
     #'   ID everytime we create an individual
-    #'   For internal use only.
+    #'   For internal use in SIMplyBee only.
     #'
     #' @param lastId integer, last colony ID assigned
     #' @param n integer, how many individuals to add
-    updateLastId = function(n = 1) {
-      n = as.integer(n)
-      private$.lastId = private$.lastId + n
+    updateLastBeeId = function(n = 1L) {
+      private$.lastId = private$.lastId + as.integer(n)
       invisible(self)
     },
 

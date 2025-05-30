@@ -11,7 +11,6 @@ swarm(
   sampleLocation = TRUE,
   radius = NULL,
   simParamBee = NULL,
-  nThreads = NULL,
   ...
 )
 }
@@ -35,8 +34,6 @@ the current colony location and adding deviates to each coordinate using
 \code{0}, so by default swarm does not fly far away)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{p} or \code{nVirginQueens}
 when these arguments are functions}

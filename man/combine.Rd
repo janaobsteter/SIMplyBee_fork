@@ -4,7 +4,7 @@
 \alias{combine}
 \title{Combine two colony objects}
 \usage{
-combine(strong, weak, simParamBee = NULL, nThreads = NULL)
+combine(strong, weak, simParamBee = NULL)
 }
 \arguments{
 \item{strong}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -12,8 +12,6 @@ combine(strong, weak, simParamBee = NULL, nThreads = NULL)
 \item{weak}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 a combined \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}

@@ -320,7 +320,7 @@ generate this object}
 \item \href{#method-SimParamBee-updatePedigree}{\code{SimParamBee$updatePedigree()}}
 \item \href{#method-SimParamBee-updateRecHist}{\code{SimParamBee$updateRecHist()}}
 \item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
-\item \href{#method-SimParamBee-updateLastId}{\code{SimParamBee$updateLastId()}}
+\item \href{#method-SimParamBee-updateLastBeeId}{\code{SimParamBee$updateLastBeeId()}}
 \item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
 \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
 }
@@ -360,6 +360,7 @@ generate this object}
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchGenMap'><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchMaleMap'><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchTrait'><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-updateLastId'><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -591,14 +592,14 @@ A function to update the caste
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimParamBee-updateLastId"></a>}}
-\if{latex}{\out{\hypertarget{method-SimParamBee-updateLastId}{}}}
-\subsection{Method \code{updateLastId()}}{
+\if{html}{\out{<a id="method-SimParamBee-updateLastBeeId"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-updateLastBeeId}{}}}
+\subsection{Method \code{updateLastBeeId()}}{
 A function to update the last
   ID everytime we create an individual
-  For internal use only.
+  For internal use in SIMplyBee only.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastId(n = 1)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastBeeId(n = 1L)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

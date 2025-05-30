@@ -5,15 +5,7 @@
 \title{Reduce number of workers and remove all drones and virgin queens from
   a Colony or MultiColony object}
 \usage{
-downsize(
-  x,
-  p = NULL,
-  use = "rand",
-  new = FALSE,
-  simParamBee = NULL,
-  nThreads = NULL,
-  ...
-)
+downsize(x, p = NULL, use = "rand", new = FALSE, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -31,8 +23,6 @@ it guides the selection of workers that will be removed}
 proportion anew (say, create winter workers)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{p} when this argument is a
 function}

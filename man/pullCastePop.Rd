@@ -15,8 +15,7 @@ pullCastePop(
   use = "rand",
   removeFathers = TRUE,
   collapse = FALSE,
-  simParamBee = NULL,
-  nThreads = NULL
+  simParamBee = NULL
 )
 
 pullQueen(x, collapse = FALSE, simParamBee = NULL)
@@ -60,8 +59,6 @@ virgin queens, say via insemination}
 for the pulled individuals (does not affect the remnant colonies)}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
-
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 }
 \value{
 list of \code{\link[AlphaSimR]{Pop-class}} and \code{\link[SIMplyBee]{Colony-class}}
