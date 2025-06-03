@@ -1800,7 +1800,7 @@ getEvents <- function(x) {
 #' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
 #' colony <- addVirginQueens(colony, nInd = 5)
 #'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4])
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
 #'
@@ -2912,10 +2912,10 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
-#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 50)
-#' SP <- SimParamBee$new(founderGenomes)
+#' founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 5)
+#' SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 4)
 #' \dontshow{SP$nThreads = 1L}
-#' SP$setTrackRec(TRUE)
+#' SP$setTrackRec(isTrackRec = TRUE)
 #' SP$setTrackPed(isTrackPed = TRUE)
 #' basePop <- createVirginQueens(founderGenomes)
 #'
@@ -2925,13 +2925,13 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' colony <- buildUp(x = colony, nWorkers = 6, nDrones = 3)
-#' colony <- addVirginQueens(x = colony, nInd = 5)
+#' colony <- buildUp(x = colony, nWorkers = 3, nDrones = 2)
+#' colony <- addVirginQueens(x = colony, nInd = 2)
 #'
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4])
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#' apiary <- buildUp(x = apiary, nWorkers = 6, nDrones = 3)
-#' apiary <- addVirginQueens(x = apiary, nInd = 5)
+#' apiary <- buildUp(x = apiary, nWorkers = 3, nDrones = 2)
+#' apiary <- addVirginQueens(x = apiary, nInd = 2)
 #'
 #' # Input is a population
 #' getIbdHaplo(x = getQueen(colony))
@@ -2943,6 +2943,8 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' getQueenIbdHaplo(colony)
 #'
 #' getIbdHaplo(colony, caste = "workers", nInd = 3)
+#' getIbdHaplo(colony, caste = "virginQueens")
+#' getIbdHaplo(colony, caste = "drones")
 #' getWorkersIbdHaplo(colony)
 #' # Same aliases exist for all castes!
 #'
@@ -2957,6 +2959,9 @@ nCsdAlleles <- function(x, collapse = FALSE, simParamBee = NULL) {
 #' # Or collapse all the haplotypes into a single matrix
 #' getQueenIbdHaplo(apiary, collapse = TRUE)
 #'
+#'
+#' getIbdHaplo(x = apiary, caste = "workers")
+#' getIbdHaplo(x = apiary, caste = "drones")
 #' # Get the haplotypes of all individuals either by colony or in a single matrix
 #' getIbdHaplo(apiary, caste = "all")
 #' getIbdHaplo(apiary, caste = "all", collapse = TRUE)
@@ -2988,6 +2993,7 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
+        print(caste)
         tmp <- getIbdHaplo(x = x, caste = caste, nInd = nInd, chr = chr,
                            snpChip = snpChip, dronesHaploid = dronesHaploid,
                            collapse = collapse, simParamBee = simParamBee)
