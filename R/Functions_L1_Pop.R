@@ -1553,6 +1553,10 @@ cross <- function(x,
 
 
   # Do all the tests here to simplify the function
+  if (is.null(crossPlan) & (length(IDs) > 1) & isPop(drones)) {
+    stop("When supplying drones as a single population for mating multiple virgin queens,
+         crossPlan argument must be set to 'create' to internally create a mating plan!")
+  }
   if (crossPlan_droneID && !isPop(drones)) {
     stop("When using a cross plan, drones must be supplied as a single Pop-class!")
   }
@@ -1638,7 +1642,10 @@ cross <- function(x,
                                 virginId = unlist(sapply(x, FUN = function(y) getId(y))))
       x <- mergePops(x)
     }
-
+    # Rename crossPlan
+    if (crossPlan_create | crossPlan_given) {
+      names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
+    }
   }
 
   IDs <- as.character(getId(x))
@@ -1646,10 +1653,7 @@ cross <- function(x,
   ret <- list()
   nVirgin = nInd(x)
 
-  # Rename crossPlan
-  if (crossPlan_create | crossPlan_given) {
-    names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
-  }
+
 
   if (is.function(nDrones)) {
     nD = nDrones(n = nVirgin, ...)
