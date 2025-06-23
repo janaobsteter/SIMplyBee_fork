@@ -1684,7 +1684,7 @@ cross <- function(x,
       IDs = IDs[IDs %in% crossPlanDF$virginID]
       x = x[IDs]
       if (type == "MultiColony") {
-        multicolony <- multicolony[getId(multicolony) %in% IDs]
+        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse=TRUE)) %in% IDs]
       }
       # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
       crossPlanDF_sample <- do.call("rbind", lapply(IDs,
