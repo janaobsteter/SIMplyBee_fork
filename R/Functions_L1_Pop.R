@@ -671,10 +671,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     } else if (simParamBee$isTrackPed) {
       Pedigree <- do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
       if (!simParamBee$isTrackRec) {
-      simParamBee$addToBeePed(nNewInd = totalNInd, id = rownames(Pedigree),
-                              mother = Pedigree[, 'mother'], father = Pedigree[, 'father'],
-                              isDH = Pedigree[, 'isDH'])
-      #simParamBee$updatePedigree(pedigree = Pedigree)
+        print(paste0("totalnInd is ", totalNInd, "; nrow Pedigree is ", nrow(Pedigree), "; length mother is ", length(Pedigree[, 'mother'])))
+        simParamBee$addToBeePed(nNewInd = totalNInd, id = rownames(Pedigree),
+                                mother = Pedigree[, 'mother'], father = Pedigree[, 'father'],
+                                isDH = Pedigree[, 'isDH'])
+        #simParamBee$updatePedigree(pedigree = Pedigree)
       } else {
         RecHist = do.call("c", lapply(ret[notNull], '[[', "recHist"))
         if (caste == "drones") {
