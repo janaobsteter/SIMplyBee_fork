@@ -2993,7 +2993,6 @@ getIbdHaplo <- function(x, caste = NULL, nInd = NULL, chr = NULL, snpChip = NULL
       ret <- vector(mode = "list", length = 5)
       names(ret) <- c("queen", "fathers", "workers", "drones", "virginQueens")
       for (caste in names(ret)) {
-        print(caste)
         tmp <- getIbdHaplo(x = x, caste = caste, nInd = nInd, chr = chr,
                            snpChip = snpChip, dronesHaploid = dronesHaploid,
                            collapse = collapse, simParamBee = simParamBee)

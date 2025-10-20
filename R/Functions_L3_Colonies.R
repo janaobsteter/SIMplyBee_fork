@@ -62,6 +62,11 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, nThreads =
       ret <- new(Class = "MultiColony")
     } else {
       ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
+      ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
+      ret@colonies <- foreach(colony = seq_len(n)) %dopar% {
+        createColony(simParamBee = simParamBee, id = ids[colony])
+      }
+      simParamBee$updateLastColonyId(n = n)
     }
   } else {
     if (!isPop(x)) {

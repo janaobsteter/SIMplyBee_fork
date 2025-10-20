@@ -439,9 +439,9 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     ret@sex[] <- "F"
     simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
 
-    if (!is.null(year)) {
-      ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
-    }
+    # if (!is.null(year)) {
+    #   ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
+    # }
   } else if (isPop(x)) {
     if (caste != "drones") { # Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
@@ -498,6 +498,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           simParamBee = simParamBee
         )
 
+
+
         simParamBee$addToCaste(id = ret$workers@id, caste = "workers")
         ret$workers@sex[] <- "F"
 
@@ -512,10 +514,10 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         }
 
         if (!is.null(ids)) {
-          if (nInd(ret$workers) < length(ids)) {
+          if (nInd(ret$workers) > length(ids)) {
             stop("Not enough IDs provided")
           }
-          if (nInd(ret$workers) > length(ids)) {
+          if (nInd(ret$workers) < length(ids)) {
             stop("Too many IDs provided!")
           }
           ret$workers@id <- as.character(ids)
@@ -532,7 +534,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         }
 
         if (isCsdActive(simParamBee = simParamBee)) {
-          ret$nHomBrood <- sum(!isCsdHeterozygous(ret$workers, simParamBee = simParamBee)) / nInd(ret$workers)
+          sel <- isCsdHeterozygous(pop = ret$workers, simParamBee = simParamBee)
+          ret$workers <- ret$workers[sel]
+          ret$nHomBrood <- nInd(ret$workers) - sum(sel)
+        } else {
+          ret$nHomBrood <- NA
         }
 
       } else if (caste == "virginQueens") {
@@ -545,9 +551,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         if (!returnSP) {
           ret <- ret$workers
         }
-        if (!is.null(year)) {
-          ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
-        }
+        # print(ret)
+        # if ((nInd(ret) > 0) & (!is.null(year))) {
+        #   print("Setting by")
+        #   ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
+        # }
       } else if (caste == "drones") {
         drones <- makeDH(
           pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
@@ -671,7 +679,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     } else if (simParamBee$isTrackPed) {
       Pedigree <- do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
       if (!simParamBee$isTrackRec) {
-        print(paste0("totalnInd is ", totalNInd, "; nrow Pedigree is ", nrow(Pedigree), "; length mother is ", length(Pedigree[, 'mother'])))
         simParamBee$addToBeePed(nNewInd = totalNInd, id = rownames(Pedigree),
                                 mother = Pedigree[, 'mother'], father = Pedigree[, 'father'],
                                 isDH = Pedigree[, 'isDH'])
