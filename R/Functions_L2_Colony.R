@@ -1450,7 +1450,7 @@ swarm <- function(x, p = NULL, year = NULL,
                                queen = selectInd(tmpVirginQueens, nInd = 1, use = "rand"),
                                simParamBee = simParamBee)
     } else {
-      tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, n= 1, use = "rand"))
+      tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand"))
       remnantColony <- reQueen(remnantColony,
                                queen = mergePops(tmpVirginQueens),
                                simParamBee = simParamBee)
@@ -1615,7 +1615,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
 
   if (isColony(x)) {
     if (!parallel) {
-      x <- addCastePop_internal(selectInd(tmpVirginQueens, n= 1, use = "rand"), colony = x, caste = "virginQueens")
+      x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand"), colony = x, caste = "virginQueens")
     }
     x <- removeQueen(x, simParamBee = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most
@@ -1629,7 +1629,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
     }
-    tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, n= 1, use = "rand"))
+    tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand"))
 
     combine_list <- function(a, b) {
       if (length(a) == 1) {
@@ -1796,7 +1796,8 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
 
       ret <- list(
         split = createMultiColony(n = nCol,
-                                  simParamBee = simParamBee),
+                                  simParamBee = simParamBee,
+                                  populateColonies = TRUE),
         remnant = tmp$remnant
 
       )
