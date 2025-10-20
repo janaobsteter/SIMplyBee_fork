@@ -1816,7 +1816,7 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
 
-  warning("Split colonies do not have a queen! You need to re-queen them manually.")
+  message("Split colonies do not have a queen! You need to re-queen them manually.")
   validObject(ret$split)
   validObject(ret$remnant)
   return(ret)
