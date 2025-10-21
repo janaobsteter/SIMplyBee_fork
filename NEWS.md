@@ -52,7 +52,7 @@ which caused an error. We now read in the locations from a csv file.
 
 -  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous() 
 
-- parallelised all the major functions (so they run on simParamBee$nThreads)
+- parallelised all the major functions (so they run on simParamBee$nThreads cores)
 
 - swarm/split/supersede do no longer store the name of the queen 
 
