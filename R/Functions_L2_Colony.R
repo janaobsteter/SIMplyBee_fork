@@ -233,7 +233,6 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #'   a single value is provided, the same value will be used for all the colonies.
 #' @param new logical, should the number of individuals be added to the caste population
 #'   anew or should we only top-up the existing number of individuals to \code{nInd}
-#' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... additional arguments passed to \code{nInd} when this argument is a function
 #'
@@ -291,7 +290,7 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #'
 #' @export
 addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
-                        year = NULL, simParamBee = NULL, ...) {
+                        simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -333,7 +332,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
     if (0 < nInd) {
       newInds <- createCastePop(x, nInd,
                                 caste = caste,
-                                year = year, simParamBee = simParamBee
+                                simParamBee = simParamBee
       )
       if (caste == "workers") {
         homInds <- newInds$nHomBrood
@@ -365,7 +364,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
 
     newInds <- createCastePop(x, nInd,
                               caste = caste,
-                              year = year, simParamBee = simParamBee,
+                              simParamBee = simParamBee,
                               returnSP = FALSE, ...)
 
 
@@ -429,10 +428,10 @@ addDrones <- function(x, nInd = NULL, new = FALSE,
 #' @describeIn addCastePop Add virgin queens to a colony
 #' @export
 addVirginQueens <- function(x, nInd = NULL, new = FALSE,
-                            year = NULL, simParamBee = NULL, ...) {
+                            simParamBee = NULL, ...) {
   ret <- addCastePop(
     x = x, caste = "virginQueens", nInd = nInd, new = new,
-    year = year, simParamBee = simParamBee, ...
+    simParamBee = simParamBee, ...
   )
   return(ret)
 }
@@ -812,8 +811,6 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 #'   guides selection of caste individuals that stay when \code{p < 1}
-#' @param year numeric, only relevant when replacing virgin queens,
-#'   year of birth for virgin queens
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or  or \code{\link[SIMplyBee]{MultiColony-class}} with
@@ -851,7 +848,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' getCasteId(apiary, caste="workers")
 #' @export
 replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
-                            year = NULL, simParamBee = NULL) {
+                            simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -898,12 +895,12 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
         x <- addCastePop(x,
                          caste = caste,
                          nInd = nIndAdd,
-                         year = year, simParamBee = simParamBee
+                         simParamBee = simParamBee
         )
       } else {
         x <- addCastePop(
           x = x, caste = caste, nInd = nIndReplaced, new = TRUE,
-          year = year, simParamBee = simParamBee
+          simParamBee = simParamBee
         )
       }
     }
@@ -959,7 +956,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #'   a single value is provided, the same value will be applied to all the colonies
 #' @param use character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 #'   guides selection of virgins queens that will stay when \code{p < 1}
-#' @param year numeric, only relevant when adding virgin queens - year of birth for virgin queens
+
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #'
 #' @return \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}} without virgin queens
@@ -998,7 +995,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' nWorkers(removeWorkers(apiary, p = c(0.1, 0.5)))
 #' @export
 removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
-                           year = NULL, simParamBee = NULL) {
+                           simParamBee = NULL) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -1070,8 +1067,8 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 #' @describeIn removeCastePop Remove queen from a colony
 #' @export
 #'
-removeQueen <- function(x, year = NULL, simParamBee = NULL) {
-  ret <- removeCastePop(x = x, caste = "queen", p = 1, year = year, simParamBee = simParamBee)
+removeQueen <- function(x, simParamBee = NULL) {
+  ret <- removeCastePop(x = x, caste = "queen", p = 1, simParamBee = simParamBee)
   return(ret)
 }
 
@@ -1307,7 +1304,6 @@ collapse <- function(x, simParamBee = NULL) {
 #'   If input is \code{\link[SIMplyBee]{MultiColony-class}},
 #'   the input could also be a vector of the same length as the number of colonies. If
 #'   a single value is provided, the same value will be applied to all the colonies
-#' @param year numeric, year of birth for virgin queens
 #' @param sampleLocation logical, sample location of the swarm by taking
 #'  the current colony location and adding deviates to each coordinate using
 #'  \code{\link[SIMplyBee]{rcircle}}
@@ -1360,7 +1356,7 @@ collapse <- function(x, simParamBee = NULL) {
 #' # Swarm only the pulled colonies
 #' (swarm(tmp$pulled, p = 0.6))
 #' @export
-swarm <- function(x, p = NULL, year = NULL,
+swarm <- function(x, p = NULL,
                   sampleLocation = TRUE, radius = NULL,
                   simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
@@ -1417,7 +1413,6 @@ swarm <- function(x, p = NULL, year = NULL,
 
     tmpVirginQueens <- createCastePop(
       x = x, nInd = max(10, simParamBee$nVirginQueens),
-      year = year,
       caste = "virginQueens",
       simParamBee = simParamBee
     )
@@ -1658,8 +1653,9 @@ supersede <- function(x, simParamBee = NULL, ...) {
 #'   into two new colonies to
 #'   prevent swarming (in managed situation). The remnant colony retains the
 #'   queen and a proportion of the workers and all drones. The split colony gets
-#'   the other part of the workers, which raise virgin queens, of which only one
-#'   prevails. Location of the split is the same as for the remnant.
+#'   the other part of the workers, but note that it is queenless, since the beekeepers
+#'   would normally requeen with a different queen.
+#'   Location of the split is the same as for the remnant.
 #'
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param p numeric, proportion of workers that will go to the split colony; if
@@ -1798,11 +1794,11 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
         split = createMultiColony(n = nCol,
                                   simParamBee = simParamBee,
                                   populateColonies = TRUE),
-        remnant = tmp$remnant
+        remnant = remnantColony
 
       )
       ret$split <- setLocation(x = ret$split, location = location)
-      tmp <- foreach(colony = seq_len(nCol)) %dopar% {
+      ret$split@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
         addCastePop_internal(colony = ret$split@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
       }
@@ -1817,7 +1813,6 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
 
-  message("Split colonies do not have a queen! You need to re-queen them manually.")
   validObject(ret$split)
   validObject(ret$remnant)
   return(ret)

@@ -54,7 +54,7 @@ which caused an error. We now read in the locations from a csv file.
 
 - parallelised all the major functions (so they run on simParamBee$nThreads)
 
-- swarm/split/supersede do no longer store the name of the queen 
+- swarm/split/supersede do no longer store the year of the queen 
 
 - colonies with high inbreeding that do not produce a viable virgin queens in 
 max(10, SP$nVirginQueens) attempts are

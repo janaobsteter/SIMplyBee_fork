@@ -297,7 +297,6 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #'   only used when \code{x} is \code{\link[SIMplyBee]{Colony-class}} or
 #'   \code{\link[SIMplyBee]{MultiColony-class}}, when \code{x} is \code{link[AlphaSimR]{MapPop-class}}
 #'   all individuals in \code{x} are converted into virgin queens
-#' @param year numeric, year of birth for virgin queens
 #' @param editCsd logical (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}}),
 #'   whether the csd locus should be edited to ensure heterozygosity at the csd
 #'   locus (to get viable virgin queens); see \code{csdAlleles}
@@ -400,7 +399,6 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #       patrilines
 #       https://github.com/HighlanderLab/SIMplyBee/issues/78
 createCastePop <- function(x, caste = NULL, nInd = NULL,
-                           year = NULL,
                            editCsd = TRUE, csdAlleles = NULL,
                            simParamBee = NULL,
                            returnSP = FALSE,
@@ -439,9 +437,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     ret@sex[] <- "F"
     simParamBee$changeCaste(id = ret@id, caste = "virginQueens")
 
-    # if (!is.null(year)) {
-    #   ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
-    # }
   } else if (isPop(x)) {
     if (caste != "drones") { # Creating drones if input is a Pop
       stop("Pop-class can only be used to create drones!")
@@ -535,8 +530,8 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
         if (isCsdActive(simParamBee = simParamBee)) {
           sel <- isCsdHeterozygous(pop = ret$workers, simParamBee = simParamBee)
-          ret$workers <- ret$workers[sel]
           ret$nHomBrood <- nInd(ret$workers) - sum(sel)
+          ret$workers <- ret$workers[sel]
         } else {
           ret$nHomBrood <- NA
         }
@@ -551,11 +546,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         if (!returnSP) {
           ret <- ret$workers
         }
-        # print(ret)
-        # if ((nInd(ret) > 0) & (!is.null(year))) {
-        #   print("Setting by")
-        #   ret <- setQueensYearOfBirth(x = ret, year = year, simParamBee = simParamBee)
-        # }
+
       } else if (caste == "drones") {
         drones <- makeDH(
           pop = getQueen(x, simParamBee = simParamBee), nDH = nInd, keepParents = FALSE,
@@ -657,7 +648,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         createCastePop(
           x = x[[colony]], caste = caste,
           nInd = nIndColony,
-          year = year,
           editCsd = TRUE, csdAlleles = NULL,
           simParamBee = simParamBee,
           returnSP = TRUE,
@@ -752,14 +742,13 @@ createDrones <- function(x, nInd = NULL, simParamBee = NULL,
 #' @describeIn createCastePop Create virgin queens from a colony
 #' @export
 createVirginQueens <- function(x, nInd = NULL,
-                               year = NULL,
                                editCsd = TRUE, csdAlleles = NULL,
                                simParamBee = NULL,
                                returnSP = FALSE,
                                ids = NULL,
                                ...) {
   ret <- createCastePop(x, caste = "virginQueens", nInd = nInd,
-                        year = year, editCsd = editCsd,
+                        editCsd = editCsd,
                         csdAlleles = csdAlleles, simParamBee = simParamBee,
                         returnSP = returnSP,
                         ids = ids,  ...)
@@ -1812,76 +1801,3 @@ cross <- function(x,
   return(ret)
 }
 
-
-#' @rdname setQueensYearOfBirth
-#' @title Set the queen's year of birth
-#'
-#' @description Level 1 function that sets the queen's year of birth.
-#'
-#' @param x \code{\link[AlphaSimR]{Pop-class}} (one or more than one queen),
-#'   \code{\link[SIMplyBee]{Colony-class}} (one colony), or
-#'   \code{\link[SIMplyBee]{MultiColony-class}} (more colonies)
-#' @param year integer, the year of the birth of the queen
-#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#'
-#' @return \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or
-#'   \code{\link[SIMplyBee]{MultiColony-class}} with queens having the year of birth set
-#'
-#' @examples
-#' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' \dontshow{SP$nThreads = 1L}
-#' basePop <- createVirginQueens(founderGenomes)
-#'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
-#'
-#' # Create a Colony and a MultiColony class
-#' colony <- createColony(x = basePop[2])
-#' colony <- cross(x = colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
-#' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
-#'
-#' # Example on Colony class
-#' getQueenYearOfBirth(colony)
-#' getQueenYearOfBirth(apiary)
-#'
-#' queen1 <- getQueen(colony)
-#' queen1 <- setQueensYearOfBirth(queen1, year = 2022)
-#' getQueenYearOfBirth(queen1)
-#'
-#' colony <- setQueensYearOfBirth(colony, year = 2022)
-#' getQueenYearOfBirth(colony)
-#'
-#' apiary <- setQueensYearOfBirth(apiary, year = 2022)
-#' getQueenYearOfBirth(apiary)
-#' @export
-setQueensYearOfBirth <- function(x, year, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isPop(x)) {
-    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
-      stop("Individuals in x must be virgin queens or queens!")
-    }
-    nInd <- nInd(x)
-    x <- setMisc(x = x, node = "yearOfBirth", value = year)
-  } else if (isColony(x)) {
-    if (isQueenPresent(x, simParamBee = simParamBee)) {
-      x@queen <- setMisc(x = x@queen, node = "yearOfBirth", value = year)
-    } else {
-      stop("Missing queen!")
-    }
-  } else if (isMultiColony(x)) {
-    nCol <- nColonies(x)
-    for (colony in seq_len(nCol)) {
-      x[[colony]]@queen <- setMisc(
-        x = x[[colony]]@queen, node = "yearOfBirth",
-        value = year
-      )
-    }
-  } else {
-    stop("Argument x must be a Pop, Colony or MultiColony class object!")
-  }
-  return(x)
-}
