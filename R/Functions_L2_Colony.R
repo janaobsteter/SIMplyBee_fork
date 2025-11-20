@@ -1425,7 +1425,7 @@ swarm <- function(x, p = NULL,
 
     if (sum(homCol) > 0) {
       if (isColony(x)) {
-        stop("Colony to inbred to produce any virgin queens!")
+        stop("Colony too inbred to produce any virgin queens!")
       } else if (isMultiColony(x)) {
         warning(paste0(sum(homCol), " colonies produced 0 virgin queens due to high colony homozygosity, removing these colonies!"))
         tmpVirginQueens <- tmpVirginQueens[!homCol]
