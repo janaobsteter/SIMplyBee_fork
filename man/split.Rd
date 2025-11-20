@@ -4,7 +4,7 @@
 \alias{split}
 \title{Split colony in two MultiColony}
 \usage{
-split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
+split(x, p = NULL, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -14,8 +14,6 @@ split(x, p = NULL, year = NULL, simParamBee = NULL, ...)
 If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies}
-
-\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
@@ -32,8 +30,9 @@ Level 2 function that splits a Colony or MultiColony object
   into two new colonies to
   prevent swarming (in managed situation). The remnant colony retains the
   queen and a proportion of the workers and all drones. The split colony gets
-  the other part of the workers, which raise virgin queens, of which only one
-  prevails. Location of the split is the same as for the remnant.
+  the other part of the workers, but note that it is queenless, since the beekeepers
+  would normally requeen with a different queen.
+  Location of the split is the same as for the remnant.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)

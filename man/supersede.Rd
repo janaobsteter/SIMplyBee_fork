@@ -4,12 +4,10 @@
 \alias{supersede}
 \title{Supersede}
 \usage{
-supersede(x, year = NULL, simParamBee = NULL, ...)
+supersede(x, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
-
-\item{year}{numeric, year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 

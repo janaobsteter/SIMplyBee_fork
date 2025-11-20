@@ -8,16 +8,9 @@
 \alias{removeVirginQueens}
 \title{Remove a proportion of caste individuals from a colony}
 \usage{
-removeCastePop(
-  x,
-  caste = NULL,
-  p = 1,
-  use = "rand",
-  year = NULL,
-  simParamBee = NULL
-)
+removeCastePop(x, caste = NULL, p = 1, use = "rand", simParamBee = NULL)
 
-removeQueen(x, year = NULL, simParamBee = NULL)
+removeQueen(x, simParamBee = NULL)
 
 removeWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
@@ -36,8 +29,6 @@ a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 guides selection of virgins queens that will stay when \code{p < 1}}
-
-\item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }

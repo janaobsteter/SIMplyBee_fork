@@ -7,28 +7,13 @@
 \alias{addVirginQueens}
 \title{Add caste individuals to the colony}
 \usage{
-addCastePop(
-  x,
-  caste = NULL,
-  nInd = NULL,
-  new = FALSE,
-  year = NULL,
-  simParamBee = NULL,
-  ...
-)
+addCastePop(x, caste = NULL, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
 addWorkers(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
 addDrones(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 
-addVirginQueens(
-  x,
-  nInd = NULL,
-  new = FALSE,
-  year = NULL,
-  simParamBee = NULL,
-  ...
-)
+addVirginQueens(x, nInd = NULL, new = FALSE, simParamBee = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -43,8 +28,6 @@ a single value is provided, the same value will be used for all the colonies.}
 
 \item{new}{logical, should the number of individuals be added to the caste population
 anew or should we only top-up the existing number of individuals to \code{nInd}}
-
-\item{year}{numeric, only relevant when adding virgin queens - year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 

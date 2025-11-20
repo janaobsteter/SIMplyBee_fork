@@ -46,7 +46,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 7, nDrones = nFathersPoisson)
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
-apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4])
 apiary <- cross(apiary, drones = droneGroups[2:3])
 
 # Check queen and virgin queens IDs

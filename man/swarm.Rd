@@ -7,7 +7,6 @@
 swarm(
   x,
   p = NULL,
-  year = NULL,
   sampleLocation = TRUE,
   radius = NULL,
   simParamBee = NULL,
@@ -22,8 +21,6 @@ if \code{NULL} then \code{\link[SIMplyBee]{SimParamBee}$swarmP} is used.
 If input is \code{\link[SIMplyBee]{MultiColony-class}},
 the input could also be a vector of the same length as the number of colonies. If
 a single value is provided, the same value will be applied to all the colonies}
-
-\item{year}{numeric, year of birth for virgin queens}
 
 \item{sampleLocation}{logical, sample location of the swarm by taking
 the current colony location and adding deviates to each coordinate using
@@ -66,7 +63,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 (colony <- buildUp(colony, nWorkers = 100))
-apiary <- createMultiColony(basePop[3:8], n = 6)
+apiary <- createMultiColony(basePop[3:8])
 apiary <- cross(apiary, drones = droneGroups[2:7])
 apiary <- buildUp(apiary, nWorkers = 100)
 

@@ -4,7 +4,12 @@
 \alias{createMultiColony}
 \title{Create MultiColony object}
 \usage{
-createMultiColony(x = NULL, n = NULL, simParamBee = NULL, nThreads = NULL)
+createMultiColony(
+  x = NULL,
+  n = NULL,
+  simParamBee = NULL,
+  populateColonies = FALSE
+)
 }
 \arguments{
 \item{x}{\code{\link[AlphaSimR]{Pop-class}}, virgin queens or queens for the colonies
@@ -17,7 +22,7 @@ given then \code{\link[SIMplyBee]{MultiColony-class}} is created with \code{n}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
+\item{populateColonies}{boolean, whether to create n empty Colony objects within with assigned ID}
 }
 \value{
 \code{\link[SIMplyBee]{MultiColony-class}}

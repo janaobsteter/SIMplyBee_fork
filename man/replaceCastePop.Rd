@@ -7,14 +7,7 @@
 \alias{replaceVirginQueens}
 \title{Replace a proportion of caste individuals with new ones}
 \usage{
-replaceCastePop(
-  x,
-  caste = NULL,
-  p = 1,
-  use = "rand",
-  year = NULL,
-  simParamBee = NULL
-)
+replaceCastePop(x, caste = NULL, p = 1, use = "rand", simParamBee = NULL)
 
 replaceWorkers(x, p = 1, use = "rand", simParamBee = NULL)
 
@@ -34,9 +27,6 @@ a single value is provided, the same value will be applied to all the colonies}
 
 \item{use}{character, all the options provided by \code{\link[AlphaSimR]{selectInd}} -
 guides selection of caste individuals that stay when \code{p < 1}}
-
-\item{year}{numeric, only relevant when replacing virgin queens,
-year of birth for virgin queens}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }

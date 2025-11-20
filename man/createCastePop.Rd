@@ -11,7 +11,6 @@ createCastePop(
   x,
   caste = NULL,
   nInd = NULL,
-  year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
   simParamBee = NULL,
@@ -41,7 +40,6 @@ createDrones(
 createVirginQueens(
   x,
   nInd = NULL,
-  year = NULL,
   editCsd = TRUE,
   csdAlleles = NULL,
   simParamBee = NULL,
@@ -64,8 +62,6 @@ only used when \code{x} is \code{\link[SIMplyBee]{Colony-class}} or
 \code{\link[SIMplyBee]{MultiColony-class}}, when \code{x} is \code{link[AlphaSimR]{MapPop-class}}
 all individuals in \code{x} are converted into virgin queens}
 
-\item{year}{numeric, year of birth for virgin queens}
-
 \item{editCsd}{logical (only active when \code{x} is \code{link[AlphaSimR]{MapPop-class}}),
 whether the csd locus should be edited to ensure heterozygosity at the csd
 locus (to get viable virgin queens); see \code{csdAlleles}}
@@ -87,7 +83,6 @@ for each created population (used internally for parallel computing)}
 
 \item{ids}{character, IDs of the individuals that are going to be created (used internally
 for parallel computing)}
-\item{nThreads}{integer, number of cores to use for parallel computing (over colonies)}
 
 \item{...}{additional arguments passed to \code{nInd} when this argument is a function}
 }
