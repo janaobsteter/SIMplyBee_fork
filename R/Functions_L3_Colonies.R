@@ -54,7 +54,6 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
 
-  registerDoParallel(cores = simParamBee$nThreads)
   if (is.null(x)) {
     if (is.null(n)) {
       ret <- new(Class = "MultiColony")
@@ -62,8 +61,21 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
       ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
       if (populateColonies) {
         ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
-        ret@colonies <- foreach(colony = seq_len(n)) %dopar% {
+
+        if (simParamBee$nThreads > 1) {
+          N <- as.numeric(simParamBee$nThreads)
+          cl <- makeCluster(N, type="PSOCK")
+          registerDoParallel(cl)
+
+          clusterExport(cl, c("SP"))
+        } else {
+          registerDoParallel(cores = 1)
+        }
+        ret@colonies <- foreach(colony = seq_len(n), .packages = c("SIMplyBee")) %dopar% {
           createColony(simParamBee = simParamBee, id = ids[colony])
+        }
+        if (simParamBee$nThreads > 1) {
+          stopCluster(cl)
         }
         simParamBee$updateLastColonyId(n = n)
       } else {
@@ -85,11 +97,25 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     }
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
-    ret@colonies <- foreach(colony = seq_len(n)) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    ret@colonies <- foreach(colony = seq_len(n), .packages = c("SIMplyBee")) %dopar% {
       createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
     simParamBee$updateLastColonyId(n = n)
   }
+
   validObject(ret)
   return(ret)
 }

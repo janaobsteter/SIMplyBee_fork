@@ -167,7 +167,6 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
       x@virginQueens <- queen
     }
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
@@ -175,12 +174,25 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
     if (nInd(queen) < nCol) {
       stop("Not enough queens provided!")
     }
-    x@colonies = foreach(colony = seq_len(nCol)) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       reQueen(
         x = x[[colony]],
         queen = queen[colony],
         simParamBee = simParamBee
       )
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -383,7 +395,16 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       nInd(x)
     })
 
-    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (!is.null(nInds[[colony]])) {
         if (caste == "workers") {
           x[[colony]]@queen@misc$nWorkers[[1]] <- x[[colony]]@queen@misc$nWorkers[[1]] + nInds[[colony]]
@@ -395,6 +416,9 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       } else {
         x[[colony]]
       }
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -599,7 +623,6 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     }
     x@production <- TRUE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
 
     if (any(hasCollapsed(x))) {
       stop(paste0("Some colonies are collapsed, hence you can not build it up!"))
@@ -748,7 +771,6 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     x <- removeVirginQueens(x = x, p = 1, simParamBee = simParamBee)
     x@production <- FALSE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     nP <- length(p)
     if (nCol == 0) {
@@ -1031,7 +1053,6 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       }
     }
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     nP <- length(p)
     if (nCol == 0) {
@@ -1044,7 +1065,17 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       warning(paste0("Too many values in the p argument, taking only the first ", nCol, "values!"))
       p <- p[1:nCol]
     }
-    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (is.null(p)) {
         pColony <- NULL
       } else {
@@ -1056,6 +1087,9 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
         use = use,
         simParamBee = simParamBee
       )
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1197,17 +1231,29 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
     x@production <- FALSE
     validObject(x)
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
     }
-    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       resetEvents(
         x = x[[colony]],
         collapse = collapse,
         simParamBee = simParamBee
       )
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
     validObject(x)
   } else {
@@ -1271,14 +1317,26 @@ collapse <- function(x, simParamBee = NULL) {
     x@collapse <- TRUE
     x@production <- FALSE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
     }
-    x@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       collapse(x = x[[colony]],
                simParamBee = simParamBee)
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1487,9 +1545,21 @@ swarm <- function(x, p = NULL,
         remnant = remnantColony
       )
 
-      ret$swarm@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+      if (simParamBee$nThreads > 1) {
+        N <- as.numeric(simParamBee$nThreads)
+        cl <- makeCluster(N, type="PSOCK")
+        registerDoParallel(cl)
+
+        clusterExport(cl, c("SP"))
+      } else {
+        registerDoParallel(cores = 1)
+      }
+      ret$swarm@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         addCastePop_internal(colony = ret$swarm@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
+      }
+      if (simParamBee$nThreads > 1) {
+        stopCluster(cl)
       }
 
       ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE)
@@ -1619,7 +1689,6 @@ supersede <- function(x, simParamBee = NULL, ...) {
     #       https://github.com/HighlanderLab/SIMplyBee/issues/239
     x@supersedure <- TRUE
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
@@ -1633,9 +1702,22 @@ supersede <- function(x, simParamBee = NULL, ...) {
         c(a, list(b))
       }
     }
-    x@colonies <- foreach(colony = seq_len(nColonies(x))) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
       addCastePop_internal(colony = removeQueen(x[[colony]], simParamBee = simParamBee),
                            pop = tmpVirginQueens[[colony]], caste = "virginQueens")
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
     x = setEvents(x, slot = "supersedure", value = TRUE)
   }
@@ -1719,7 +1801,6 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
   }
 
   if (isColony(x) | isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     if (isColony(x)) {
       nCol <- 1
     } else if (isMultiColony(x)) {
@@ -1798,9 +1879,22 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
 
       )
       ret$split <- setLocation(x = ret$split, location = location)
-      ret$split@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+
+      if (simParamBee$nThreads > 1) {
+        N <- as.numeric(simParamBee$nThreads)
+        cl <- makeCluster(N, type="PSOCK")
+        registerDoParallel(cl)
+
+        clusterExport(cl, c("SP"))
+      } else {
+        registerDoParallel(cores = 1)
+      }
+      ret$split@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         addCastePop_internal(colony = ret$split@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
+      }
+      if (simParamBee$nThreads > 1) {
+        stopCluster(cl)
       }
 
       ret$split <- setEvents(ret$split, slot = "split", value = TRUE)
@@ -1854,9 +1948,20 @@ setEvents <- function(x, slot, value, simParamBee = NULL) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
-    x@colonies <- foreach(colony = seq_len(nColonies(x))) %dopar% {
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
       setEvents(x[[colony]], slot, value)
+    }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
     }
   }
   return(x)
@@ -1933,13 +2038,26 @@ combine <- function(strong, weak, simParamBee = NULL) {
     strong@workers <- c(strong@workers, weak@workers)
     strong@drones <- c(strong@drones, weak@drones)
   } else if (isMultiColony(strong) & isMultiColony(weak)) {
-    registerDoParallel(cores = simParamBee$nThreads)
+
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
-      strong@colonies <- foreach(colony = seq_len(nCol)) %dopar% {
+
+      if (simParamBee$nThreads > 1) {
+        N <- as.numeric(simParamBee$nThreads)
+        cl <- makeCluster(N, type="PSOCK")
+        registerDoParallel(cl)
+
+        clusterExport(cl, c("SP"))
+      } else {
+        registerDoParallel(cores = 1)
+      }
+      strong@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
                 simParamBee = simParamBee)
+      }
+      if (simParamBee$nThreads > 1) {
+        stopCluster(cl)
       }
     } else {
       stop("Weak and strong MultiColony objects must be of the same length!")
@@ -2015,7 +2133,6 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
     }
     x@location <- location
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
@@ -2055,7 +2172,17 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
         c(a, list(b))
       }
     }
-    tmp <- foreach(colony = seq_len(nCol), .combine = combine_list) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    tmp <- foreach(colony = seq_len(nCol), .combine = combine_list, .packages = c("SIMplyBee")) %dopar% {
       if (is.data.frame(location)) {
         loc <- location[colony, ]
         loc <- c(loc$x, loc$y)
@@ -2071,6 +2198,10 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
 
       x[[colony]]
     }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
+    }
+
     if (nCol == 1) {
       x@colonies = list(tmp)
     } else {

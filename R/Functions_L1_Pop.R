@@ -1,6 +1,12 @@
 # ---- Level 1 Pop Functions  ----
 utils::globalVariables("colony")
 utils::globalVariables("i")
+utils::globalVariables("cl")
+
+# Protect from accidental multicore use
+options(mc.cores = 1)
+Sys.setenv(OMP_NUM_THREADS = 1)
+Sys.setenv(MKL_NUM_THREADS = 1)
 
 #' @rdname getCastePop
 #' @title Access individuals of a caste
@@ -618,8 +624,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       stop("Nothing to create.")
     }
 
-    registerDoParallel(cores = simParamBee$nThreads)
-
     lastId = simParamBee$lastId
     ids = (lastId+1):(lastId+totalNInd)
 
@@ -637,7 +641,18 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         }
       }
     }
-    ret <- foreach(colony = seq_len(nCol), .combine=combine_list) %dopar% {
+
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+
+    ret <- foreach(colony = seq_len(nCol), .combine=combine_list, .packages = c("SIMplyBee")) %dopar% {
       nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       if (nIndColony > 0) {
         if (nNInd == 1) {
@@ -657,6 +672,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
         NULL
       }
     }
+
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
+    }
+
     if (nCol == 1) {
       ret <- list(ret)
     }
@@ -1253,7 +1273,6 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
       ret <- list(pulled = tmp$pulled, remnant = x)
     }
   } else if (isMultiColony(x)) {
-    registerDoParallel(cores = simParamBee$nThreads)
     nCol <- nColonies(x)
     nNInd <- length(nInd)
     if (nNInd > 1 && nNInd < nCol) {
@@ -1269,7 +1288,16 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     names(ret$pulled) <- getId(x)
     ret$remnant <- x
 
-    tmp = foreach(colony = seq_len(nCol)) %dopar% {
+    if (simParamBee$nThreads > 1) {
+      N <- as.numeric(simParamBee$nThreads)
+      cl <- makeCluster(N, type="PSOCK")
+      registerDoParallel(cl)
+
+      clusterExport(cl, c("SP"))
+    } else {
+      registerDoParallel(cores = 1)
+    }
+    tmp = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (is.null(nInd)) {
         nIndColony <- NULL
       } else {
@@ -1283,6 +1311,10 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                    collapse = collapse,
                    simParamBee = simParamBee)
     }
+    if (simParamBee$nThreads > 1) {
+      stopCluster(cl)
+    }
+
     ret$pulled <- lapply(tmp, '[[', "pulled")
     ret$remnant@colonies <- lapply(tmp, '[[', "remnant")
 
@@ -1524,7 +1556,6 @@ cross <- function(x,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  registerDoParallel(cores = simParamBee$nThreads)
 
   if (isPop(x)) {
     type = "Pop"
@@ -1671,7 +1702,6 @@ cross <- function(x,
     }
   }
 
-
   if (crossPlan_given | crossPlan_create) {
     if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
       # This is the crossPlan - for spatial, these are all DPCs found in a radius
@@ -1715,16 +1745,17 @@ cross <- function(x,
                                     FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
       names(dronesByVirgin_list) <- IDs
 
-      dronesByVirgin <- foreach(i = IDs, .combine = combine_list) %dopar% {
+      dronesByVirgin <- foreach(i = IDs, .combine = combine_list,
+                                .packages = c("SIMplyBee")) %do% {
         dronePop[as.character(dronesByVirgin_list[[i]])]
       }
     } else if (crossPlan_droneID) {
-      dronesByVirgin <- foreach(i = IDs, .combine = combine_list) %dopar% {
+      dronesByVirgin <- foreach(i = IDs, .combine = combine_list,
+                                .packages = c("SIMplyBee")) %do% {
         drones[as.character(crossPlan[[i]])]
       }
     }
   }
-
   # At this point, x is a Pop and dronesByVirgin are a list (so are they if they come if via drone packages)
   if (oneColony) {
     dronesByVirgin <- list(drones)
@@ -1773,12 +1804,31 @@ cross <- function(x,
   }
 
   # Add drones in the queens father slot
-  x <- foreach(i = 1:length(IDs), .combine = combine_list) %dopar% {
-    crossVirginQueen(virginQueen = x[i],
-                     virginQueenDrones = dronesByVirgin[[i]],
-                     simParamBee = simParamBee)
-  }
+  if (simParamBee$nThreads > 1) {
+    foreach_op <- `%dopar%`
 
+    N <- as.numeric(simParamBee$nThreads)
+    cl <- makeCluster(N, type="PSOCK")
+    registerDoParallel(cl)
+
+    clusterExport(cl, c("SP"))
+  } else {
+    foreach_op <- `%do%`
+  }
+  x <- do.call(foreach_op, list(
+    foreach(i = 1:length(IDs), .combine = combine_list, .packages = "SIMplyBee"),
+    quote({
+      crossVirginQueen(
+        virginQueen = x[i],
+        virginQueenDrones = dronesByVirgin[[i]],
+        simParamBee = simParamBee
+      )
+    })
+  ))
+
+  if (simParamBee$nThreads > 1) {
+    stopCluster(cl)
+  }
 
   if (type == "Pop") {
     if (length(x) == 1) {
