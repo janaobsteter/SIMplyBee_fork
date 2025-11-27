@@ -23,9 +23,9 @@ isMultiColony(x)
 
 \S4method{c}{MultiColonyOrNULL}(x, ...)
 
-\S4method{[}{MultiColony,integerOrNumericOrLogical}(x, i, j, drop)
+\S4method{[}{MultiColony,integerOrNumericOrLogical,ANY,ANY}(x, i, j, drop)
 
-\S4method{[}{MultiColony,character}(x, i, j, drop)
+\S4method{[}{MultiColony,character,ANY,ANY}(x, i, j, drop)
 
 \S4method{[[}{MultiColony,integerOrNumericOrLogical}(x, i)
 

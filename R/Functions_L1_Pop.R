@@ -1821,6 +1821,7 @@ cross <- function(x,
                      simParamBee = simParamBee)
   }
 
+
   if (simParamBee$nThreads > 1) {
     stopCluster(cl)
   }
