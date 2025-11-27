@@ -1814,12 +1814,12 @@ cross <- function(x,
     registerDoParallel(cores = 1)
   }
 
-  sink("Cross_VQ.txt", append = T)
   x <- foreach(i = 1:length(IDs), .combine = combine_list, .packages = "SIMplyBee") %dopar% {
     crossVirginQueen(virginQueen = x[i],
                      virginQueenDrones = dronesByVirgin[[i]],
                      simParamBee = simParamBee)
   }
+
 
   if (simParamBee$nThreads > 1) {
     stopCluster(cl)
