@@ -4,6 +4,33 @@ editor_options:
     wrap: 72
 ---
 
+# SIMplyBee version 0.5.0
+
+-   2025-11-27
+
+## Major changes
+
+-   swarm/split/supersede do no longer store the year of the queen
+
+-   colonies with high inbreeding that do not produce a viable virgin
+    queens in max(10, SP\$nVirginQueens) attempts are removed in
+    swarm/supersede
+
+-   split no longer creates virgin queens in the split colonies but
+    returns colonies with workers and meta data, but no virgin queens
+
+-   createMultiColony() no longer creates an empty apiary, but it adds
+    empty colonies with IDs
+
+## New features
+
+-   parallelised all the major functions (so they run on
+    simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
+    takes additional time, we recommend using a single threads for a small number of colonies
+
+## Bug fixes
+
+
 # SIMplyBee version 0.4.1
 
 -   2024-09-19
@@ -52,26 +79,10 @@ which caused an error. We now read in the locations from a csv file.
 
 -  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous() 
 
-- parallelised all the major functions (so they run on simParamBee$nThreads cores)
-
-- swarm/split/supersede do no longer store the year of the queen 
-
-- colonies with high inbreeding that do not produce a viable virgin queens in 
-max(10, SP$nVirginQueens) attempts are
-removed in swarm/supersede
-
-- split no longer creates virgin queens in the split colonies but returns colonies with workers 
-and meta data, but no virgin
-queens
-
-- createMultiColony() no longer creates an empty apiary, but it adds empty colonies with IDs
-
 ## Bug fixes
 
 -   Bug fix - get\*Haplo() functions were returning diploid drones when
     input was a Pop-class
-
--   
 
 # SIMplyBee version 0.3.0
 

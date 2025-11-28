@@ -71,7 +71,7 @@ createColony <- function(x = NULL, simParamBee = NULL, id = NULL) {
       virginQueens = virginQueens
     )
   }
-  colony <- resetEvents(colony)
+  colony <- resetEvents(colony, simParamBee = simParamBee)
   validObject(colony)
   return(colony)
 }
@@ -175,24 +175,13 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
       stop("Not enough queens provided!")
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
 
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       reQueen(
         x = x[[colony]],
         queen = queen[colony],
         simParamBee = simParamBee
       )
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -395,15 +384,6 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       nInd(x)
     })
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (!is.null(nInds[[colony]])) {
         if (caste == "workers") {
@@ -417,9 +397,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
         x[[colony]]
       }
     }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
-    }
+
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -668,9 +646,9 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
         x = x, nInd = n, new = new,
         simParamBee = simParamBee)
     }
-    x <- setEvents(x, slot = "production", value = TRUE)
+    x <- setEvents(x, slot = "production", value = TRUE, simParamBee = simParamBee)
     if (resetEvents) {
-      x <- resetEvents(x)
+      x <- resetEvents(x, simParamBee = simParamBee)
     }
 
   } else {
@@ -912,7 +890,7 @@ replaceCastePop <- function(x, caste = NULL, p = 1, use = "rand",
 
         x <- removeCastePop(x,
                             caste = caste,
-                            p = p)
+                            p = p, simParamBee = simParamBee)
         nIndAdd <- nInd - nCaste(x, caste, simParamBee = simParamBee)
         x <- addCastePop(x,
                          caste = caste,
@@ -1066,15 +1044,6 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       p <- p[1:nCol]
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (is.null(p)) {
         pColony <- NULL
@@ -1088,9 +1057,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
         simParamBee = simParamBee
       )
     }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
-    }
+
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -1236,24 +1203,12 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       resetEvents(
         x = x[[colony]],
         collapse = collapse,
         simParamBee = simParamBee
       )
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
     validObject(x)
   } else {
@@ -1322,21 +1277,9 @@ collapse <- function(x, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       collapse(x = x[[colony]],
                simParamBee = simParamBee)
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1497,13 +1440,13 @@ swarm <- function(x, p = NULL,
     tmp <- pullCastePop(x = x, caste = "workers",
                         nInd = nWorkersSwarm, simParamBee = simParamBee)
     remnantColony <- tmp$remnant
-    remnantColony <- removeQueen(remnantColony)
+    remnantColony <- removeQueen(remnantColony, simParamBee = simParamBee)
     if (isColony(x)) {
       remnantColony <- reQueen(remnantColony,
-                               queen = selectInd(tmpVirginQueens, nInd = 1, use = "rand"),
+                               queen = selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
                                simParamBee = simParamBee)
     } else {
-      tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand"))
+      tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
       remnantColony <- reQueen(remnantColony,
                                queen = mergePops(tmpVirginQueens),
                                simParamBee = simParamBee)
@@ -1523,9 +1466,9 @@ swarm <- function(x, p = NULL,
       # It's not re-queening, but the function also sets the colony id
 
       swarmColony@workers <- tmp$pulled
-      swarmColony <- setLocation(x = swarmColony, location = newLocation[[1]])
+      swarmColony <- setLocation(x = swarmColony, location = newLocation[[1]], simParamBee = simParamBee)
 
-      remnantColony <- setLocation(x = remnantColony, location = currentLocation)
+      remnantColony <- setLocation(x = remnantColony, location = currentLocation, simParamBee = simParamBee)
 
       remnantColony@swarm <- TRUE
       swarmColony@swarm <- TRUE
@@ -1540,32 +1483,21 @@ swarm <- function(x, p = NULL,
       }
 
       ret <- list(
-        swarm = createMultiColony(x = getQueen(x, collapse = TRUE),
+        swarm = createMultiColony(x = getQueen(x, collapse = TRUE, simParamBee = simParamBee),
                                   simParamBee = simParamBee),
         remnant = remnantColony
       )
 
-      if (simParamBee$nThreads > 1) {
-        N <- as.numeric(simParamBee$nThreads)
-        cl <- makeCluster(N, type="PSOCK")
-        registerDoParallel(cl)
-
-        clusterExport(cl, c("SP"))
-      } else {
-        registerDoParallel(cores = 1)
-      }
       ret$swarm@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         addCastePop_internal(colony = ret$swarm@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
       }
-      if (simParamBee$nThreads > 1) {
-        stopCluster(cl)
-      }
 
-      ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE)
-      ret$swarm <- setEvents(ret$swarm, slot = "swarm", value = TRUE)
-      ret$swarm <- setEvents(ret$swarm, slot = "production", value = FALSE)
-      ret$remnant <- setEvents(ret$remnant, slot = "production", value = FALSE)
+
+      ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE, simParamBee = simParamBee)
+      ret$swarm <- setEvents(ret$swarm, slot = "swarm", value = TRUE, simParamBee = simParamBee)
+      ret$swarm <- setEvents(ret$swarm, slot = "production", value = FALSE, simParamBee = simParamBee)
+      ret$remnant <- setEvents(ret$remnant, slot = "production", value = FALSE, simParamBee = simParamBee)
     }
   }
   else {
@@ -1649,12 +1581,12 @@ supersede <- function(x, simParamBee = NULL, ...) {
     stop("No queen present in one of the colonies!")
   }
   if (is.function(nVirginQueens)) {
-    nVirginQueens <- nVirginQueens(x, ...)
+    nVirginQueens <- nVirginQueens(x, simParamBee = simParamBee, ...)
   }
 
   # Do this because some colonies might not produce a viable virgin queen
   tmpVirginQueens <- createCastePop(
-    x = x, nInd = max(10, SP$nVirginQueens),
+    x = x, nInd = max(10, simParamBee$nVirginQueens),
     caste = "virginQueens",
     simParamBee = simParamBee
   )
@@ -1680,7 +1612,8 @@ supersede <- function(x, simParamBee = NULL, ...) {
 
   if (isColony(x)) {
     if (!parallel) {
-      x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand"), colony = x, caste = "virginQueens")
+      x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
+                                colony = x, caste = "virginQueens")
     }
     x <- removeQueen(x, simParamBee = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most
@@ -1693,7 +1626,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
     }
-    tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand"))
+    tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
 
     combine_list <- function(a, b) {
       if (length(a) == 1) {
@@ -1703,23 +1636,11 @@ supersede <- function(x, simParamBee = NULL, ...) {
       }
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
       addCastePop_internal(colony = removeQueen(x[[colony]], simParamBee = simParamBee),
                            pop = tmpVirginQueens[[colony]], caste = "virginQueens")
     }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
-    }
-    x = setEvents(x, slot = "supersedure", value = TRUE)
+    x = setEvents(x, slot = "supersedure", value = TRUE, simParamBee = simParamBee)
   }
   else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1855,7 +1776,7 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
       #       https://github.com/HighlanderLab/SIMplyBee/issues/239
 
       splitColony <- createColony(simParamBee = simParamBee)
-      splitColony <- setLocation(x = splitColony, location = location)
+      splitColony <- setLocation(x = splitColony, location = location, simParamBee = simParamBee)
 
       splitColony@workers <- tmp$pulled
 
@@ -1878,29 +1799,16 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
         remnant = remnantColony
 
       )
-      ret$split <- setLocation(x = ret$split, location = location)
+      ret$split <- setLocation(x = ret$split, location = location, simParamBee = simParamBee)
 
-      if (simParamBee$nThreads > 1) {
-        N <- as.numeric(simParamBee$nThreads)
-        cl <- makeCluster(N, type="PSOCK")
-        registerDoParallel(cl)
-
-        clusterExport(cl, c("SP"))
-      } else {
-        registerDoParallel(cores = 1)
-      }
       ret$split@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         addCastePop_internal(colony = ret$split@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
       }
-      if (simParamBee$nThreads > 1) {
-        stopCluster(cl)
-      }
-
-      ret$split <- setEvents(ret$split, slot = "split", value = TRUE)
-      ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE)
-      ret$split <- setEvents(ret$split, slot = "production", value = FALSE)
-      ret$remnant <- setEvents(ret$remnant, slot = "production", value = TRUE)
+      ret$split <- setEvents(ret$split, slot = "split", value = TRUE, simParamBee = simParamBee)
+      ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE, simParamBee = simParamBee)
+      ret$split <- setEvents(ret$split, slot = "production", value = FALSE, simParamBee = simParamBee)
+      ret$remnant <- setEvents(ret$remnant, slot = "production", value = TRUE, simParamBee = simParamBee)
     }
   }
   else {
@@ -1948,20 +1856,8 @@ setEvents <- function(x, slot, value, simParamBee = NULL) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
-      setEvents(x[[colony]], slot, value)
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
+      setEvents(x[[colony]], slot, value, simParamBee = simParamBee)
     }
   }
   return(x)
@@ -2042,22 +1938,10 @@ combine <- function(strong, weak, simParamBee = NULL) {
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
 
-      if (simParamBee$nThreads > 1) {
-        N <- as.numeric(simParamBee$nThreads)
-        cl <- makeCluster(N, type="PSOCK")
-        registerDoParallel(cl)
-
-        clusterExport(cl, c("SP"))
-      } else {
-        registerDoParallel(cores = 1)
-      }
       strong@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
                 simParamBee = simParamBee)
-      }
-      if (simParamBee$nThreads > 1) {
-        stopCluster(cl)
       }
     } else {
       stop("Weak and strong MultiColony objects must be of the same length!")
@@ -2173,15 +2057,6 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
       }
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     tmp <- foreach(colony = seq_len(nCol), .combine = combine_list, .packages = c("SIMplyBee")) %dopar% {
       if (is.data.frame(location)) {
         loc <- location[colony, ]
@@ -2197,9 +2072,6 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
       }
 
       x[[colony]]
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
 
     if (nCol == 1) {

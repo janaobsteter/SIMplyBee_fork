@@ -642,16 +642,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       }
     }
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
-
     ret <- foreach(colony = seq_len(nCol), .combine=combine_list, .packages = c("SIMplyBee")) %dopar% {
       nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
       if (nIndColony > 0) {
@@ -671,10 +661,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
       } else {
         NULL
       }
-    }
-
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
 
     if (nCol == 1) {
@@ -1288,15 +1274,6 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     names(ret$pulled) <- getId(x)
     ret$remnant <- x
 
-    if (simParamBee$nThreads > 1) {
-      N <- as.numeric(simParamBee$nThreads)
-      cl <- makeCluster(N, type="PSOCK")
-      registerDoParallel(cl)
-
-      clusterExport(cl, c("SP"))
-    } else {
-      registerDoParallel(cores = 1)
-    }
     tmp = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
       if (is.null(nInd)) {
         nIndColony <- NULL
@@ -1310,9 +1287,6 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
                    removeFathers = removeFathers,
                    collapse = collapse,
                    simParamBee = simParamBee)
-    }
-    if (simParamBee$nThreads > 1) {
-      stopCluster(cl)
     }
 
     ret$pulled <- lapply(tmp, '[[', "pulled")
@@ -1660,12 +1634,12 @@ cross <- function(x,
     inputId <- getId(x)
     if (isColony(x)) {
       colony <- x
-      x <- pullCastePop(x, caste = "virginQueens", nInd = 1)$pulled
+      x <- pullCastePop(x, caste = "virginQueens", nInd = 1, simParamBee = simParamBee)$pulled
       ID_by_input <- data.frame(inputId = inputId,
                                 virginId = getId(x))
     } else if (isMultiColony(x)) {
       multicolony <- x
-      x <- pullCastePop(x, caste = "virginQueens", nInd = 1)$pulled
+      x <- pullCastePop(x, caste = "virginQueens", nInd = 1, simParamBee = simParamBee)$pulled
       ID_by_input <- data.frame(inputId = inputId,
                                 virginId = unlist(sapply(x, FUN = function(y) getId(y))))
       x <- mergePops(x)
@@ -1804,25 +1778,11 @@ cross <- function(x,
   }
 
   # Add drones in the queens father slot
-  if (simParamBee$nThreads > 1) {
-    N <- as.numeric(simParamBee$nThreads)
-    cl <- makeCluster(N, type="PSOCK")
-    registerDoParallel(cl)
-
-    clusterExport(cl, c("SP"))
-  } else {
-    registerDoParallel(cores = 1)
-  }
 
   x <- foreach(i = 1:length(IDs), .combine = combine_list, .packages = "SIMplyBee") %dopar% {
     crossVirginQueen(virginQueen = x[i],
                      virginQueenDrones = dronesByVirgin[[i]],
                      simParamBee = simParamBee)
-  }
-
-
-  if (simParamBee$nThreads > 1) {
-    stopCluster(cl)
   }
 
   if (type == "Pop") {

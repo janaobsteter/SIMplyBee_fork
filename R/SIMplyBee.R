@@ -8,8 +8,6 @@
 #' @importFrom extraDistr rtpois
 #' @importFrom utils packageVersion
 #' @importFrom foreach foreach "%dopar%" "%do%"
-#' @importFrom doParallel registerDoParallel
-#' @importFrom parallel makeCluster stopCluster clusterExport clusterApply
 # see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
 #' @description

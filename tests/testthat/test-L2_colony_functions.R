@@ -4,6 +4,7 @@ test_that("createColony", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
+
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
    drones <- createDrones(x = basePop[1], nInd = 15, simParamBee = SP)
    matedQueen <- cross(basePop[2], drones = drones, simParamBee = SP)
@@ -24,6 +25,7 @@ test_that("reQueen", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(x = basePop[1], nInd = 30, simParamBee = SP)
   virginQueen <- basePop[2]
@@ -67,6 +69,7 @@ test_that("Add functions", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
+
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
    drones <- createDrones(x = basePop[1], nInd = 100, simParamBee = SP)
@@ -122,6 +125,7 @@ test_that("BuildUpDownsize", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
    SP$nThreads = 1L
+
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
    drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
@@ -178,6 +182,7 @@ test_that("replaceFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
   drones <- createDrones(x = basePop[1], nInd = 100, simParamBee = SP)
@@ -233,6 +238,7 @@ test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
   drones <- createDrones(x = basePop[1], nInd = 100, simParamBee = SP)
@@ -279,6 +285,7 @@ test_that("setLocation", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   droneGroups <- pullDroneGroupsFromDCA(drones, n = 4, nDrones = 10, simParamBee = SP)
@@ -288,28 +295,28 @@ test_that("setLocation", {
   apiary <- cross(apiary, drones = droneGroups[2:4], simParamBee = SP)
 
   loc <- c(1, 1)
-  expect_equal(getLocation(setLocation(colony, location = loc)), loc)
+  expect_equal(getLocation(setLocation(colony, location = loc, simParamBee = SP)), loc)
 
-  expect_equal(getLocation(setLocation(apiary, location = loc)),
+  expect_equal(getLocation(setLocation(apiary, location = loc, simParamBee = SP)),
                list("2" = loc, "3" = loc, "4" = loc))
 
   locList <- list("2" = c(0, 0), "3" = c(1, 1), "4" = c(2, 2))
-  expect_equal(getLocation(setLocation(apiary, location = locList)), locList)
+  expect_equal(getLocation(setLocation(apiary, location = locList, simParamBee = SP)), locList)
 
   locDF <- data.frame(x = c(0, 1, 2), y = c(0, 1, 2))
-  expect_equal(getLocation(setLocation(apiary, location = locDF)), locList)
+  expect_equal(getLocation(setLocation(apiary, location = locDF, simParamBee = SP)), locList)
 
   emptyColony <- createColony(simParamBee = SP)
-  expect_s4_class(setLocation(emptyColony, location = c(1,1)), "Colony")
-  expect_equal(setLocation(emptyColony, location = c(1,1))@location, c(1,1))
+  expect_s4_class(setLocation(emptyColony, location = c(1,1), simParamBee = SP), "Colony")
+  expect_equal(setLocation(emptyColony, location = c(1,1), simParamBee = SP)@location, c(1,1))
 
   emptyApiary <- createMultiColony(n = 3, simParamBee = SP)
   apiary <- createMultiColony(basePop[1:3], simParamBee = SP)
 
-  expect_error(setLocation(emptyApiary, location = c(1,2)))
-  expect_error(setLocation(emptyApiary, location = list(1,2))) # Lengths do not match
-  expect_s4_class(setLocation(apiary, location = c(1,2)), "MultiColony")
-  expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5)), "MultiColony")
+  expect_error(setLocation(emptyApiary, location = c(1,2), simParamBee = SP))
+  expect_error(setLocation(emptyApiary, location = list(1,2), simParamBee = SP)) # Lengths do not match
+  expect_s4_class(setLocation(apiary, location = c(1,2), simParamBee = SP), "MultiColony")
+  expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5), simParamBee = SP), "MultiColony")
 })
 
 # ---- Supersede ----
@@ -318,6 +325,7 @@ test_that("supersede", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -354,6 +362,7 @@ test_that("split", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -395,6 +404,7 @@ test_that("resetEvents", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
   drones <- createDrones(x = basePop[1], nInd = 100, simParamBee = SP)
@@ -418,8 +428,8 @@ test_that("resetEvents", {
   expect_true(hasSuperseded(colony))
   expect_true(all(hasSuperseded(apiary)))
 
-  colony <- resetEvents(colony)
-  apiary <- resetEvents(apiary)
+  colony <- resetEvents(colony, simParamBee = SP)
+  apiary <- resetEvents(apiary, simParamBee = SP)
 
   expect_false(isProductive(colony))
   expect_false(all(isProductive(apiary)))
@@ -433,6 +443,7 @@ test_that("Combine", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -453,14 +464,14 @@ test_that("Combine", {
   apiary1 <- buildUp(x = apiary1, nWorkers = 100, nDrones = 20, simParamBee = SP)
   apiary2 <- buildUp(x = apiary2, nWorkers = 20, nDrones = 5, simParamBee = SP)
 
-  colony3 <- combine(strong = colony1, weak = colony2)
-  apiary3 <- combine(strong = apiary1, weak = apiary2)
+  colony3 <- combine(strong = colony1, weak = colony2, simParamBee = SP)
+  apiary3 <- combine(strong = apiary1, weak = apiary2, simParamBee = SP)
   expect_equal(nWorkers(colony3, simParamBee = SP),sum(nWorkers(colony1, simParamBee = SP), nWorkers(colony2, simParamBee = SP)))
   expect_equal(colony1@queen@id, colony3@queen@id)
   expect_equal(nWorkers(apiary3[[2]], simParamBee = SP),sum(nWorkers(apiary1[[2]], simParamBee = SP), nWorkers(apiary2[[2]], simParamBee = SP)))
   colony1 <- NULL
   colony2 <- NULL
-  expect_error(combine(strong = colony1, weak = colony2)) # discus the output
+  expect_error(combine(strong = colony1, weak = colony2, simParamBee = SP)) # discus the output
 })
 
 # ---- Swarm ----
@@ -469,6 +480,7 @@ test_that("swarm", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -511,6 +523,7 @@ test_that("collapse", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
+
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
   drones <- createDrones(basePop[1], n = 1000, simParamBee = SP)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
@@ -523,12 +536,12 @@ test_that("collapse", {
 
   # Collapse
   expect_false(hasCollapsed(colony))
-  colony <- collapse(colony)
+  colony <- collapse(colony, simParamBee = SP)
   expect_true(hasCollapsed(colony))
 
   expect_false(all(hasCollapsed(apiary)))
   tmp <- pullColonies(apiary, n = 2, simParamBee = SP)
-  apiaryLost <- collapse(tmp$pulled)
+  apiaryLost <- collapse(tmp$pulled, simParamBee = SP)
   expect_true(all(hasCollapsed(apiaryLost)))
   apiaryLeft <- tmp$remnant
   expect_false(all(hasCollapsed(apiaryLeft)))
