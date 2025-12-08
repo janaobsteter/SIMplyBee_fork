@@ -255,7 +255,7 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5])
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
 #'
 #' #Here we show an example for workers, but same holds for drones and virgin queens!
@@ -282,7 +282,7 @@ addCastePop_internal <- function(pop, colony, caste, new = FALSE) {
 #' # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 #'
 #' # Queen's counters
-#' getMisc(getQueen(addWorkers(colony)))
+#' getQueen(addWorkers(colony))@misc
 #'
 #' # Add individuals to a MultiColony object
 #' apiary <- addWorkers(apiary)
@@ -498,7 +498,7 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' isProductive(colony)
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4])
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' isProductive(apiary)
 #'
@@ -530,7 +530,8 @@ addVirginQueens <- function(x, nInd = NULL, new = FALSE,
 #' nDrones(apiary)
 #'
 #' # Queen's counters
-#' getMisc(getQueen(buildUp(colony)))
+#' getQueen(buildUp(colony))@misc
+#'
 #' @export
 buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
                     new = TRUE, resetEvents = FALSE,
@@ -696,7 +697,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' colony <- buildUp(colony)
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4])
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #' apiary <- buildUp(apiary)
 #'
@@ -828,7 +829,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5])
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
 #'
 #' # Add individuals
@@ -974,7 +975,7 @@ replaceVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
 #' colony <- buildUp(colony)
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5])
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
 #' apiary <- buildUp(apiary)
 #'
@@ -1129,7 +1130,7 @@ removeVirginQueens <- function(x, p = 1, use = "rand", simParamBee = NULL) {
 #' # Create and cross Colony and MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[4:5], n = 2)
+#' apiary <- createMultiColony(basePop[4:5])
 #' apiary <- cross(apiary, drones = droneGroups[3:4])
 #'
 #' # Build-up - this sets Productive to TRUE
@@ -1295,7 +1296,11 @@ collapse <- function(x, simParamBee = NULL) {
 #'   an event where the queen
 #'   leaves with a proportion of workers to create a new colony (the swarm). The
 #'   remnant colony retains the other proportion of workers and all drones, and
-#'   the workers raise virgin queens, of which only one prevails. Location of
+#'   the workers raise virgin queens, of which only one prevails. The function
+#'   will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
+#'   whichever is higher, and select one at random. In case of high inbreeding,
+#'   it could be that none of the virgin queens are viable. In that case, you might
+#'   want to increase \code{SimParamBee$nVirginQueens} or discard the colony. Location of
 #'   the swarm is the same as for the remnant or sampled as deviation from the
 #'   remnant.
 #'
@@ -1516,7 +1521,11 @@ swarm <- function(x, p = NULL,
 #' @description Level 2 function that supersedes a Colony or MultiColony object -
 #'   an event where the
 #'   queen dies. The workers and drones stay unchanged, but workers raise virgin
-#'   queens, of which only one prevails.
+#'   queens, of which only one prevails. The function
+#'   will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
+#'   whichever is higher, and select one at random In case of high inbreeding,
+#'   it could be that none of the virgin queens are viable.In that case, you might
+#'   want to increase \code{SimParamBee$nVirginQueens} or discard the colony.
 #'
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters

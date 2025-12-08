@@ -17,7 +17,8 @@ logical
 \description{
 Level 0 function that returns if individuals of a population are
   heterozygous at the csd locus. See \code{\link[SIMplyBee]{SimParamBee}} for more
-  information about the csd locus.
+  information about the csd locus. The function also return \code{TRUE} for drones to
+  mark their viability, although they are haploid.
 }
 \details{
 We could expand \code{isCsdHeterozygous} to work also with

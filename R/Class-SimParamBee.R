@@ -1249,17 +1249,20 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #' @param value character, one of \code{pheno} or \code{gv}
 #' @param queenTrait numeric (column position) or character (column name),
 #'   trait(s) that represents queen's contribution to colony value(s); if
-#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   \code{NULL} or there is no queen present, then this contribution is 0;
+#'   you can pass more than one trait
 #'   here, but make sure that \code{combineFUN} works with these trait dimensions
-#' @param queenFUN function, function that will be applied to queen's value
+#' @param queenFUN function, function that will be applied to queen's value.
 #' @param workersTrait numeric (column position) or character (column name),
 #'   trait(s) that represents workers' contribution to colony value(s); if
-#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   \code{NULL} or there are no workers present, then this contribution is 0;
+#'   you can pass more than one trait
 #'   here, but make sure that \code{combineFUN} works with these trait dimensions
 #' @param workersFUN function, function that will be applied to workers values
 #' @param dronesTrait numeric (column position) or character (column name),
 #'   trait(s) that represents drones' contribution to colony value(s); if
-#'   \code{NULL} then this contribution is 0; you can pass more than one trait
+#'   \code{NULL} or there are no drones present then this contribution is 0;
+#'   you can pass more than one trait
 #'   here, but make sure that \code{combineFUN} works with these trait dimensions
 #' @param dronesFUN function, function that will be applied to drone values
 #' @param traitName, the name of the colony trait(s), say, honeyYield; you can pass
@@ -1369,32 +1372,44 @@ mapCasteToColonyValue <- function(colony,
   if (is.null(queenTrait)) {
     queenEff <- 0
   } else {
-    if (value %in% c("pheno", "gv")) {
-      tmp <- valueFUN(colony@queen)[, queenTrait, drop = FALSE]
-    } else { # bv, dd, and aa: leaving this in for future use!
-      tmp <- valueFUN(colony@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
+    if (isQueenPresent(colony)) {
+      if (value %in% c("pheno", "gv")) {
+        tmp <- valueFUN(colony@queen)[, queenTrait, drop = FALSE]
+      } else { # bv, dd, and aa: leaving this in for future use!
+        tmp <- valueFUN(colony@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
+      }
+      queenEff <- queenFUN(tmp)
+    } else {
+      queenEff <- 0
     }
-    queenEff <- queenFUN(tmp)
   }
   if (is.null(workersTrait)) {
     workersEff <- 0
   } else {
-    if (value %in% c("pheno", "gv")) {
-      tmp <- valueFUN(colony@workers)[, workersTrait, drop = FALSE]
-    } else { # bv, dd, and aa
-      tmp <- valueFUN(colony@workers, simParam = simParamBee)[, workersTrait, drop = FALSE]
+    if (nWorkers(colony) != 0) {
+      if (value %in% c("pheno", "gv")) {
+        tmp <- valueFUN(colony@workers)[, workersTrait, drop = FALSE]
+      } else { # bv, dd, and aa
+        tmp <- valueFUN(colony@workers, simParam = simParamBee)[, workersTrait, drop = FALSE]
+      }
+      workersEff <- workersFUN(tmp)
+    } else {
+      workersEff <- 0
     }
-    workersEff <- workersFUN(tmp)
   }
   if (is.null(dronesTrait)) {
     dronesEff <- 0
   } else {
-    if (value %in% c("pheno", "gv")) {
-      tmp <- valueFUN(colony@drones)[, dronesTrait, drop = FALSE]
-    } else { # bv, dd, and aa
-      tmp <- valueFUN(colony@drones, simParam = simParamBee)[, dronesTrait, drop = FALSE]
+    if (nDrones(colony) != 0) {
+      if (value %in% c("pheno", "gv")) {
+        tmp <- valueFUN(colony@drones)[, dronesTrait, drop = FALSE]
+      } else { # bv, dd, and aa
+        tmp <- valueFUN(colony@drones, simParam = simParamBee)[, dronesTrait, drop = FALSE]
+      }
+      dronesEff <- dronesFUN(tmp)
+    } else {
+      dronesEff <- 0
     }
-    dronesEff <- dronesFUN(tmp)
   }
   colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
   nColTrt <- length(colonyValue)

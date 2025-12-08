@@ -42,21 +42,24 @@ mapCasteToColonyAa(colony, simParamBee = NULL, ...)
 
 \item{queenTrait}{numeric (column position) or character (column name),
 trait(s) that represents queen's contribution to colony value(s); if
-\code{NULL} then this contribution is 0; you can pass more than one trait
+\code{NULL} or there is no queen present, then this contribution is 0;
+you can pass more than one trait
 here, but make sure that \code{combineFUN} works with these trait dimensions}
 
-\item{queenFUN}{function, function that will be applied to queen's value}
+\item{queenFUN}{function, function that will be applied to queen's value.}
 
 \item{workersTrait}{numeric (column position) or character (column name),
 trait(s) that represents workers' contribution to colony value(s); if
-\code{NULL} then this contribution is 0; you can pass more than one trait
+\code{NULL} or there are no workers present, then this contribution is 0;
+you can pass more than one trait
 here, but make sure that \code{combineFUN} works with these trait dimensions}
 
 \item{workersFUN}{function, function that will be applied to workers values}
 
 \item{dronesTrait}{numeric (column position) or character (column name),
 trait(s) that represents drones' contribution to colony value(s); if
-\code{NULL} then this contribution is 0; you can pass more than one trait
+\code{NULL} or there are no drones present then this contribution is 0;
+you can pass more than one trait
 here, but make sure that \code{combineFUN} works with these trait dimensions}
 
 \item{dronesFUN}{function, function that will be applied to drone values}

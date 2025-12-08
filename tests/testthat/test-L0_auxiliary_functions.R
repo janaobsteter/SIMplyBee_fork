@@ -148,7 +148,7 @@ test_that("calcQueensPHomBrood", {
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create a Colony class object
-  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- createColony(x = basePop[1], simParamBee = SP)
   colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
   colony <- buildUp(x = colony, nWorkers = 120, nDrones = 20, simParamBee = SP)
   colony <- addVirginQueens(x = colony, nInd = 1, simParamBee = SP)
@@ -156,6 +156,7 @@ test_that("calcQueensPHomBrood", {
   expect_error(calcQueensPHomBrood(colony@drones, simParamBee = SP))
   expect_error(calcQueensPHomBrood(colony@workers, simParamBee = SP))
   expect_true(is.numeric(calcQueensPHomBrood(colony@queen, simParamBee = SP)))
+  expect_true(calcQueensPHomBrood(colony@queen, simParamBee = SP) > 0)
 
   colony@queen <- NULL
   expect_error(calcQueensPHomBrood(colony@queen, simParamBee = SP))
@@ -165,6 +166,8 @@ test_that("calcQueensPHomBrood", {
   colony@virginQueens <- NULL
   expect_error(calcQueensPHomBrood(colony, simParamBee = SP))
   expect_equal((length(calcQueensPHomBrood(apiary, simParamBee = SP))), 0)
+
+
 })
 
 # ---- pHomBrood ----
@@ -188,7 +191,7 @@ test_that("pHomBrood", {
   expect_error(pHomBrood(colony@workers, simParamBee = SP))
   expect_error(pHomBrood(colony@virginQueens, simParamBee = SP))
   expect_error(pHomBrood(colony@drones, simParamBee = SP))
-  #expect_true(is.numeric(pHomBrood(colony@queen, simParamBee = SP)))
+  expect_true(is.numeric(pHomBrood(colony@queen, simParamBee = SP)))
 
   colony@queen <- NULL
   expect_error(pHomBrood(colony@queen, simParamBee = SP))
@@ -223,13 +226,12 @@ test_that("nHomBrood", {
   expect_error(nHomBrood(colony@drones, simParamBee = SP))
   expect_true(is.numeric(nHomBrood(colony@queen, simParamBee = SP)))
 
-  colony@queen <- NULL
-  expect_error(nHomBrood(colony@queen, simParamBee = SP))
+
   apiary <- createMultiColony(simParamBee = SP)
   colony@workers <- NULL
   colony@drones <- NULL
   colony@virginQueens <- NULL
-  expect_error(nHomBrood(colony, simParamBee = SP))
+  expect_error(nHomBrood(removeQueen(colony), simParamBee = SP))
   expect_equal(length(nHomBrood(apiary, simParamBee = SP)), 0)
 })
 
@@ -385,8 +387,12 @@ test_that("getCsdAlleles", {
   SP$nThreads = 1L
 
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  baseAlleles <- getCsdAlleles(basePop, simParamBee = SP)
+  expect_equal(nrow(baseAlleles), 8 * 2)
 
   drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
+  dronesAlleles <- getCsdAlleles(drones, simParamBee = SP)
+  expect_equal(nrow(dronesAlleles), 1000)
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create a Colony class
@@ -483,13 +489,15 @@ test_that("getCsdGeno", {
 # ---- isCsdHeterozygous ----
 
 test_that("isCsdHeterozygous", {
-  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+  founderGenomes <- quickHaplo(nInd = 50, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 5)
   SP$nThreads = 1L
 
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  expect_true(all(isCsdHeterozygous(basePop, simParamBee = SP)))
 
   drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
+  expect_true(all(isCsdHeterozygous(drones, simParamBee = SP)))
   fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
 
   # Create a Colony class
@@ -507,17 +515,8 @@ test_that("isCsdHeterozygous", {
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
   SP$nThreads = 1L
 
-  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
-
-  drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
-  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
-
-  # Create a Colony class
-  colony <- createColony(x = basePop[2], simParamBee = SP)
-  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
-  colony <- buildUp(x = colony, simParamBee = SP)
-
-  expect_error(isCsdHeterozygous(colony@queen, simParamBee = SP))
+  basePop <- createVirginQueens(founderGenomes[10:15], simParamBee = SP)
+  expect_error(isCsdHeterozygous(basePop, simParamBee = SP))
 })
 
 # ---- nCsdAlleles ----
@@ -778,7 +777,15 @@ test_that("isGenoHeterozygous", {
 
    basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
+   #Test on a Pop
+   (tmp <- getCsdGeno(basePop, simParamBee = SP))
+   expect_true(all(SIMplyBee:::isGenoHeterozygous(tmp)))
+
    drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
+   # Test on drones
+   (tmp <- getCsdGeno(drones, simParamBee = SP))
+   expect_true(all(SIMplyBee:::isGenoHeterozygous(tmp)))
+
    droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson, simParamBee = SP)
 
    # Create a Colony and a MultiColony class
@@ -1066,5 +1073,31 @@ test_that("getCaste", {
 
 
 
+test_that("getIbdHaplo", {
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 5)
+  SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 4)
+  SP$nThreads = 1L
+  SP$setTrackRec(isTrackRec = TRUE)
+  SP$setTrackPed(isTrackPed = TRUE)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  baseHaplo = getIbdHaplo(basePop, simParamBee = SP)
+  expect_equal(nrow(baseHaplo), 2*4)
+  expect_equal(ncol(baseHaplo), 5)
 
+  drones <- createDrones(x = basePop[1], nInd = 200, simParamBee = SP)
+  expect_equal(nrow(getIbdHaplo(drones, simParamBee = SP)), 200*1)
+  droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson, simParamBee = SP)
 
+  # Create a Colony and a MultiColony class
+  colony <- createColony(x = basePop[2], simParamBee = SP)
+  colony <- cross(colony, drones = droneGroups[[1]], simParamBee = SP)
+  colony <- buildUp(x = colony, nWorkers = 3, nDrones = 2, simParamBee = SP)
+  colony <- addVirginQueens(x = colony, nInd = 2, simParamBee = SP)
+  expect_length(getIbdHaplo(colony, simParamBee = SP), 5)
+
+  apiary <- createMultiColony(basePop[3:4], simParamBee = SP)
+  apiary <- cross(apiary, drones = droneGroups[c(2, 3)], simParamBee = SP)
+  apiary <- buildUp(x = apiary, nWorkers = 3, nDrones = 2, simParamBee = SP)
+  apiary <- addVirginQueens(x = apiary, nInd = 2, simParamBee = SP)
+  expect_length(getIbdHaplo(apiary, simParamBee = SP), 2)
+  })

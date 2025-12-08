@@ -352,7 +352,7 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
 #' # Create a Colony and a MultiColony class
 #' colony <- createColony(x = basePop[2])
 #' colony <- cross(colony, drones = droneGroups[[1]])
-#' apiary <- createMultiColony(basePop[3:4], n = 2)
+#' apiary <- createMultiColony(basePop[3:4])
 #' apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 #'
 #' # Using default nInd in SP
@@ -498,8 +498,6 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           nProgeny = nInd,
           simParamBee = simParamBee
         )
-
-
 
         simParamBee$addToCaste(id = ret$workers@id, caste = "workers")
         ret$workers@sex[] <- "F"
@@ -1763,17 +1761,17 @@ cross <- function(x,
   # All of the input has been transformed to a Pop
   crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
     virginQueen@misc$fathers[[1]] <- virginQueenDrones
-    virginQueen <- setMisc(x = virginQueen, node = "nWorkers", value = 0)
-    virginQueen <- setMisc(x = virginQueen, node = "nDrones", value = 0)
+    virginQueen@misc[["nWorkers"]]  <- 0
+    virginQueen@misc[["nDrones"]]  <- 0
+    virginQueen@misc[["nHomBrood"]]  <- 0
 
-    virginQueen <- setMisc(x = virginQueen, node = "nHomBrood", value = 0)
-    # if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
-    #   val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
-    # } else {
-    #   val <- NA
-    # }
-    #
-    # virginQueen <- setMisc(x = virginQueen, node = "pHomBrood", value = val)
+    if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
+      val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
+    } else {
+      val <- NA
+    }
+
+    virginQueen@misc[["pHomBrood"]]  <- val
     return(virginQueen)
   }
 

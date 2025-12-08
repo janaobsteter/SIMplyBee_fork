@@ -81,7 +81,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 isProductive(colony)
-apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4])
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 isProductive(apiary)
 
@@ -113,5 +113,6 @@ nWorkers(apiary)
 nDrones(apiary)
 
 # Queen's counters
-getMisc(getQueen(buildUp(colony)))
+getQueen(buildUp(colony))@misc
+
 }

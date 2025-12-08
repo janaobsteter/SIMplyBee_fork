@@ -63,7 +63,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
 colony <- buildUp(colony)
-apiary <- createMultiColony(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5])
 apiary <- cross(apiary, drones = droneGroups[3:4])
 apiary <- buildUp(apiary)
 

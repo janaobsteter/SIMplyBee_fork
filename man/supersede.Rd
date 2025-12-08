@@ -22,7 +22,11 @@ supersede event set to \code{TRUE}
 Level 2 function that supersedes a Colony or MultiColony object -
   an event where the
   queen dies. The workers and drones stay unchanged, but workers raise virgin
-  queens, of which only one prevails.
+  queens, of which only one prevails. The function
+  will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
+  whichever is higher, and select one at random In case of high inbreeding,
+  it could be that none of the virgin queens are viable.In that case, you might
+  want to increase \code{SimParamBee$nVirginQueens} or discard the colony.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 50)

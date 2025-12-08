@@ -132,7 +132,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 3, nDrones = nFathersPoisson)
 # Create a Colony and a MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
-apiary <- createMultiColony(basePop[3:4], n = 2)
+apiary <- createMultiColony(basePop[3:4])
 apiary <- cross(apiary, drones = droneGroups[c(2, 3)])
 
 # Using default nInd in SP

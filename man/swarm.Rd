@@ -45,7 +45,11 @@ Level 2 function that swarms a Colony or MultiColony object -
   an event where the queen
   leaves with a proportion of workers to create a new colony (the swarm). The
   remnant colony retains the other proportion of workers and all drones, and
-  the workers raise virgin queens, of which only one prevails. Location of
+  the workers raise virgin queens, of which only one prevails. The function
+  will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
+  whichever is higher, and select one at random. In case of high inbreeding,
+  it could be that none of the virgin queens are viable. In that case, you might
+  want to increase \code{SimParamBee$nVirginQueens} or discard the colony. Location of
   the swarm is the same as for the remnant or sampled as deviation from the
   remnant.
 }

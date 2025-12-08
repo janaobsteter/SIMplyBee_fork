@@ -68,7 +68,7 @@ droneGroups <- pullDroneGroupsFromDCA(drones, n = 5, nDrones = nFathersPoisson)
 # Create and cross Colony and MultiColony class
 colony <- createColony(x = basePop[2])
 colony <- cross(colony, drones = droneGroups[[1]])
-apiary <- createMultiColony(basePop[4:5], n = 2)
+apiary <- createMultiColony(basePop[4:5])
 apiary <- cross(apiary, drones = droneGroups[3:4])
 
 #Here we show an example for workers, but same holds for drones and virgin queens!
@@ -95,7 +95,7 @@ SP$nWorkers <- nWorkersPoisson
 # nVirginQueens/nWorkers/nDrones will vary between function calls when a function is used
 
 # Queen's counters
-getMisc(getQueen(addWorkers(colony)))
+getQueen(addWorkers(colony))@misc
 
 # Add individuals to a MultiColony object
 apiary <- addWorkers(apiary)
