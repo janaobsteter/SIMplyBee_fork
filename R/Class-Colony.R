@@ -94,7 +94,8 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
-  if ((ifelse(test = !is.null(slot(object, name = "queen")), yes = nInd(slot(object, name = "queen")), no = 0)) > 1) { #Don't use nQueen because of the SP problem
+  test <- !is.null(slot(object, name = "queen"))
+  if ((ifelse(test, yes = nInd(slot(object, name = "queen")), no = 0)) > 1) { #Don't use nQueen because of the SP problem
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {

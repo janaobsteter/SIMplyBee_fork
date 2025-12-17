@@ -1101,3 +1101,31 @@ test_that("getIbdHaplo", {
   apiary <- addVirginQueens(x = apiary, nInd = 2, simParamBee = SP)
   expect_length(getIbdHaplo(apiary, simParamBee = SP), 2)
   })
+
+
+test_that("trackingHomozygotes", {
+  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes)
+  SP$nThreads = 1L
+  SP$setTrackPed(T)
+  SP$setTrackRec(T)
+  expect_equal(nrow(SP$pedigree), 0)
+  expect_equal(length(SP$caste), 0)
+  expect_equal(length(SP$recHist), 0)
+
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  expect_equal(nrow(SP$pedigree), length(SP$caste))
+  expect_equal(nrow(SP$pedigree), length(SP$recHist))
+
+  drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
+  expect_equal(nrow(SP$pedigree), length(SP$caste))
+  expect_equal(nrow(SP$pedigree), length(SP$recHist))
+
+  fatherGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = 10, simParamBee = SP)
+  colony <- createColony(x = basePop[1], simParamBee = SP)
+  colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
+  colony <- buildUp(x = colony, nWorkers = 200, nDrones = 50, simParamBee = SP)
+
+  expect_equal(nrow(SP$pedigree), length(SP$caste))
+  expect_equal(nrow(SP$pedigree), length(SP$recHist))
+})

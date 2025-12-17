@@ -670,16 +670,15 @@ isSimParamBee <- function(x) {
 
 # nFunctions ----
 
-#' @rdname nWorkersFun
-#' @title Sample a number of workers
+#' @rdname nCasteFun
+#' @title Sample a number of caste members (workers, drones, virgin queens)
 #'
-#' @description Sample a number of workers - used when \code{nInd = NULL}
-#'   (see \code{\link[SIMplyBee]{SimParamBee}$nWorkers}).
+#' @description Sample a number of caste member - used when \code{nInd = NULL}
 #'
 #'   This is just an example. You can provide your own functions that satisfy
 #'   your needs!
 #'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param n integer, number of samples
 #' @param average numeric, average number of workers
 #' @param lowerLimit numeric, returned numbers will be above this value
@@ -695,35 +694,35 @@ isSimParamBee <- function(x) {
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
 #' @param ... other arguments of \code{\link[SIMplyBee]{mapCasteToColonyPheno}}
 #'
-#' @details \code{nWorkersPoisson} samples from a Poisson distribution with a
-#'   given average, which can return a value 0. \code{nDronesTruncPoisson}
+#' @details \code{nCastePoisson} samples from a Poisson distribution with a
+#'   given average, which can return a value 0. \code{nCasteTruncPoisson}
 #'   samples from a zero truncated Poisson distribution.
 #'
-#'   \code{nWorkersColonyPhenotype} returns a number (above \code{lowerLimit})
+#'   \code{nCasteColonyPhenotype} returns a number (above \code{lowerLimit})
 #'   as a function of colony phenotype, say queen's fecundity. Colony phenotype
 #'   is provided by \code{\link[SIMplyBee]{mapCasteToColonyPheno}}. You need to set up
 #'   traits influencing the colony phenotype and their parameters (mean and
 #'   variances) via \code{\link[SIMplyBee]{SimParamBee}} (see examples).
 #'
-#' @seealso \code{\link[SIMplyBee]{SimParamBee}} field \code{nWorkers} and
+#' @seealso \code{\link[SIMplyBee]{SimParamBee}} field \code{nWorkers}, \code{nDrones} and
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
-#' @return numeric, number of workers
+#' @return numeric, number of caste members
 #'
 #' @examples
-#' nWorkersPoisson()
-#' nWorkersPoisson()
-#' n <- nWorkersPoisson(n = 1000)
+#' nCastePoisson()
+#' nCastePoisson()
+#' n <- nCastePoisson(n = 1000)
 #' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 #' table(n)
 #'
-#' nWorkersTruncPoisson()
-#' nWorkersTruncPoisson()
-#' n <- nWorkersTruncPoisson(n = 1000)
+#' nCasteTruncPoisson()
+#' nCasteTruncPoisson()
+#' n <- nCasteTruncPoisson(n = 1000)
 #' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
 #' table(n)
 #'
-#' # Example for nWorkersColonyPhenotype()
+#' # Example for nCasteColonyPhenotype()
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
 #' \dontshow{SP$nThreads = 1L}
@@ -740,327 +739,129 @@ isSimParamBee <- function(x) {
 #' colony2 <- cross(colony2, drones = droneGroups[[2]])
 #' colony1@queen@pheno
 #' colony2@queen@pheno
-#' createWorkers(colony1, nInd = nWorkersColonyPhenotype)
-#' createWorkers(colony2, nInd = nWorkersColonyPhenotype)
+#' createWorkers(colony1, nInd = nCasteColonyPhenotype)
+#' createWorkers(colony2, nInd = nCasteColonyPhenotype)
 #' @export
-nWorkersPoisson <- function(colony, n = 1, average = 100) {
+nCastePoisson <- function(x, n = 1, average = 100) {
+  # We keep the x because for nCasteColonyPhenotype we need colony/multicolony access
+  # These are used inside other functions when these n functions are called
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nWorkersFun Sample a non-zero number of workers
+#' @describeIn nCastePoisson
 #' @export
-nWorkersTruncPoisson <- function(colony, n = 1, average = 100, lowerLimit = 0) {
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
+nVirginQueensPoisson <- function(x, n = 1, average = 10) {
+  nCastePoisson(x = x, n = n, average = average)
 }
-
-#' @describeIn nWorkersFun Sample a non-zero number of workers based on
-#'   colony phenotype, say queen's fecundity
+#' @describeIn nCastePoisson
 #' @export
-nWorkersColonyPhenotype <- function(colony, queenTrait = 1, workersTrait = NULL,
-                                    checkProduction = FALSE, lowerLimit = 0,
-                                    simParamBee = NULL,
-                                    ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  ret <- round(mapCasteToColonyPheno(
-    colony = colony,
-    queenTrait = queenTrait,
-    workersTrait = workersTrait,
-    checkProduction = checkProduction,
-    simParamBee = simParamBee,
-    ...
-  ))
-  if (ret < (lowerLimit + 1)) {
-    ret <- lowerLimit + 1
-  }
-  return(ret)
+nFathersPoisson <- function(x, n = 1, average = 15) {
+  nCastePoisson(x = x, n = n, average = average)
 }
-
-#' @rdname nDronesFun
-#' @title Sample a number of drones
-#'
-#' @description Sample a number of drones - used when \code{nDrones = NULL}
-#'   (see \code{\link[SIMplyBee]{SimParamBee}$nDrones}).
-#'
-#'   This is just an example. You can provide your own functions that satisfy
-#'   your needs!
-#'
-#' @param x \code{\link[AlphaSimR]{Pop-class}} or \code{\link[SIMplyBee]{Colony-class}}
-#' @param n integer, number of samples
-#' @param average numeric, average number of drones
-#' @param lowerLimit numeric, returned numbers will be above this value
-#' @param queenTrait numeric (column position) or character (column name), trait
-#'   that represents queen's effect on the colony phenotype (defined in
-#'   \code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{0} then this effect is 0
-#' @param workersTrait numeric (column position) or character (column name), trait
-#'   that represents workers's effect on the colony phenotype (defined in
-#'   \code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{0} then this effect is 0
-#' @param checkProduction logical, does the phenotype depend on the production
-#'   status of colony; if yes and production is not \code{TRUE}, the result is
-#'   above \code{lowerLimit}
-#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param ... other arguments of \code{\link[SIMplyBee]{mapCasteToColonyPheno}}
-#'
-#' @details \code{nDronesPoisson} samples from a Poisson distribution with a
-#'   given average, which can return a value 0.
-#'
-#'   \code{nDronesTruncPoisson} samples from a zero truncated Poisson
-#'   distribution.
-#'
-#'   \code{nDronesColonyPhenotype} returns a number (above \code{lowerLimit}) as
-#'   a function of colony phenotype, say queen's fecundity. Colony phenotype is
-#'   provided by \code{\link[SIMplyBee]{mapCasteToColonyPheno}}. You need to set up
-#'   traits influencing the colony phenotype and their parameters (mean and
-#'   variances) via \code{\link[SIMplyBee]{SimParamBee}} (see examples).
-#'
-#'   When \code{x} is \code{\link[AlphaSimR]{Pop-class}}, only \code{workersTrait} is not
-#'   used, that is, only \code{queenTrait} is used.
-#'
-#' @seealso \code{\link[SIMplyBee]{SimParamBee}} field \code{nDrones} and
-#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
-#'
-#' @return numeric, number of drones
-#'
-#' @examples
-#' nDronesPoisson()
-#' nDronesPoisson()
-#' n <- nDronesPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
-#' table(n)
-#'
-#' nDronesTruncPoisson()
-#' nDronesTruncPoisson()
-#' n <- nDronesTruncPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 200))
-#' table(n)
-#'
-#' # Example for nDronesColonyPhenotype()
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' \dontshow{SP$nThreads = 1L}
-#' average <- 100
-#' h2 <- 0.1
-#' SP$addTraitA(nQtlPerChr = 100, mean = average, var = average * h2)
-#' SP$setVarE(varE = average * (1 - h2))
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 50)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
-#' colony1 <- createColony(x = basePop[2])
-#' colony2 <- createColony(x = basePop[3])
-#' colony1 <- cross(colony1, drones = droneGroups[[1]])
-#' colony2 <- cross(colony2, drones = droneGroups[[2]])
-#' colony1@queen@pheno
-#' colony2@queen@pheno
-#' createDrones(colony1, nInd = nDronesColonyPhenotype)
-#' createDrones(colony2, nInd = nDronesColonyPhenotype)
+#' @describeIn nCastePoisson
+#' @export
+nWorkersPoisson <- function(x, n = 1, average = 100) {
+  nCastePoisson(x = x, n = n, average = average)
+}
+#' @describeIn nCastePoisson
 #' @export
 nDronesPoisson <- function(x, n = 1, average = 100) {
-  return(rpois(n = n, lambda = average))
+  nCastePoisson(x = x, n = n, average = average)
 }
 
-#' @describeIn nDronesFun Sample a non-zero number of drones
+#' @describeIn nCasteFun Sample a non-zero number of caste individuals
 #' @export
-nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+nCasteTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
-#' @describeIn nDronesFun Sample a non-zero number of drones based on
+#' @describeIn nCasteTruncPoisson
+#' @export
+nVirginQueensTruncPoisson <- function(x, n = 1, average = 10, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+#' @describeIn nCasteTruncPoisson
+#' @export
+nFathersTruncPoisson <- function(x, n = 1, average = 15, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+#' @describeIn nCasteTruncPoisson
+#' @export
+nWorkersTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+#' @describeIn nCasteTruncPoisson
+#' @export
+nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+
+#' @describeIn nCasteFun Sample a non-zero number of caste individuals based on
 #'   colony phenotype, say queen's fecundity
 #' @export
-nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
-                                   checkProduction = FALSE, lowerLimit = 0,
-                                   simParamBee = NULL,
-                                   ...) {
+nCasteColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
+                                  checkProduction = FALSE, lowerLimit = 0,
+                                  simParamBee = NULL,
+                                  ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  # This one is special because we cater drone production from base population
-  #   virgin queens and colonies
   if (isPop(x)) {
     ret <- round(x@pheno[, queenTrait])
   } else {
-    ret <- round(mapCasteToColonyPheno(
-      colony = x,
+    ret <- mapCasteToColonyPheno(
+      x = x,
       queenTrait = queenTrait,
       workersTrait = workersTrait,
       checkProduction = checkProduction,
       simParamBee = simParamBee,
       ...
-    ))
-  }
-  if (ret < (lowerLimit + 1)) {
-    ret <- lowerLimit + 1
-  }
-  return(ret)
-}
-
-#' @rdname nVirginQueensFun
-#' @title Sample a number of virgin queens
-#'
-#' @description Sample a number of virgin queens - used when
-#'   \code{nFathers = NULL} (see \code{\link[SIMplyBee]{SimParamBee}$nVirginQueens}).
-#'
-#'   This is just an example. You can provide your own functions that satisfy
-#'   your needs!
-#'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
-#' @param n integer, number of samples
-#' @param average numeric, average number of virgin queens
-#' @param lowerLimit numeric, returned numbers will be above this value
-#' @param queenTrait numeric (column position) or character (column name), trait
-#'   that represents queen's effect on the colony phenotype (defined in
-#'   \code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{NULL} then this effect is 0
-#' @param workersTrait numeric (column position) or character (column name), trait
-#'   that represents workers's effect on the colony phenotype (defined in
-#'   \code{\link[SIMplyBee]{SimParamBee}} - see examples); if \code{NULL} then this effect is 0
-#' @param checkProduction logical, does the phenotype depend on the production
-#'   status of colony; if yes and production is not \code{TRUE}, the result is
-#'   above \code{lowerLimit}
-#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param ... other arguments of \code{\link[SIMplyBee]{mapCasteToColonyPheno}}
-#'
-#' @details \code{nVirginQueensPoisson} samples from a Poisson distribution,
-#'   which can return a value 0 (that would mean a colony will fail to raise a
-#'   single virgin queen after the queen swarms or dies).
-#'
-#'   \code{nVirginQueensTruncPoisson} samples from a truncated Poisson
-#'   distribution (truncated at zero) to avoid failure.
-#'
-#'   \code{nVirginQueensColonyPhenotype} returns a number (above
-#'   \code{lowerLimit}) as a function of colony phenotype, say swarming
-#'   tendency. Colony phenotype is provided by
-#'   \code{\link[SIMplyBee]{mapCasteToColonyPheno}}. You need to set up traits
-#'   influencing the colony phenotype and their parameters (mean and variances)
-#'   via \code{\link[SIMplyBee]{SimParamBee}} (see examples).
-#'
-#' @seealso \code{\link[SIMplyBee]{SimParamBee}} field \code{nVirginQueens} and
-#'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
-#'
-#' @return numeric, number of virgin queens
-#'
-#' @examples
-#' nVirginQueensPoisson()
-#' nVirginQueensPoisson()
-#' n <- nVirginQueensPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
-#' table(n)
-#'
-#' nVirginQueensTruncPoisson()
-#' nVirginQueensTruncPoisson()
-#' n <- nVirginQueensTruncPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 30))
-#' table(n)
-#'
-#' # Example for nVirginQueensColonyPhenotype()
-#' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
-#' SP <- SimParamBee$new(founderGenomes)
-#' \dontshow{SP$nThreads = 1L}
-#' # Setting trait scale such that mean is 10 split into queen and workers effects
-#' meanP <- c(5, 5 / SP$nWorkers)
-#' # setup variances such that the total phenotype variance will match the mean
-#' varA <- c(3 / 2, 3 / 2 / SP$nWorkers)
-#' corA <- matrix(data = c(
-#'   1.0, -0.5,
-#'   -0.5, 1.0
-#' ), nrow = 2, byrow = TRUE)
-#' varE <- c(7 / 2, 7 / 2 / SP$nWorkers)
-#' varA / (varA + varE)
-#' varP <- varA + varE
-#' varP[1] + varP[2] * SP$nWorkers
-#' SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA)
-#' SP$setVarE(varE = varE)
-#' basePop <- createVirginQueens(founderGenomes)
-#' drones <- createDrones(x = basePop[1], nInd = 50)
-#' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
-#' colony1 <- createColony(x = basePop[2])
-#' colony2 <- createColony(x = basePop[3])
-#' colony1 <- cross(colony1, drones = droneGroups[[1]])
-#' colony2 <- cross(colony2, drones = droneGroups[[2]])
-#' colony1 <- buildUp(colony1)
-#' colony2 <- buildUp(colony2)
-#' nVirginQueensColonyPhenotype(colony1)
-#' nVirginQueensColonyPhenotype(colony2)
-#' @export
-nVirginQueensPoisson <- function(colony, n = 1, average = 10) {
-  return(rpois(n = n, lambda = average))
-}
-
-#' @describeIn nVirginQueensFun Sample a non-zero number of virgin queens
-#' @export
-nVirginQueensTruncPoisson <- function(colony, n = 1, average = 10, lowerLimit = 0) {
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
-}
-
-#' @describeIn nVirginQueensFun Sample a non-zero number of virgin queens
-#'   based on colony's phenotype, say, swarming tendency
-#' @export
-nVirginQueensColonyPhenotype <- function(colony, queenTrait = 1,
-                                         workersTrait = 2,
-                                         checkProduction = FALSE,
-                                         lowerLimit = 0,
-                                         simParamBee = NULL,
-                                         ...) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  ret <- round(mapCasteToColonyPheno(
-    colony = colony,
-    queenTrait = queenTrait,
-    workersTrait = workersTrait,
-    simParamBee = simParamBee,
-    ...
-  ))
-  if (ret < (lowerLimit + 1)) {
-    ret <- lowerLimit + 1
+    )
+    ret <- sapply(ret, FUN = function(x) round(x))
+    test <- ret < (lowerLimit + 1)
+    if (any(test)) {
+      ret[test] <- lowerLimit + 1
+    }
   }
   return(ret)
 }
 
-#' @rdname nFathersFun
-#' @title Sample a number of fathers
-#'
-#' @description Sample a number of fathers - use when \code{nFathers = NULL}
-#'   (see \code{\link[SIMplyBee]{SimParamBee}$nFathers}).
-#'
-#'   This is just an example. You can provide your own functions that satisfy
-#'   your needs!
-#'
-#' @param n integer, number of samples
-#' @param average numeric, average number of fathers
-#' @param lowerLimit numeric, returned numbers will be above this value
-#'
-#' @details \code{nFathersPoisson} samples from a Poisson distribution, which
-#'   can return a value 0 (that would mean a failed queen mating).
-#'
-#'   \code{nFathersTruncPoisson} samples from a truncated Poisson distribution
-#'   (truncated at zero) to avoid failed matings.
-#'
-#' @seealso \code{\link[SIMplyBee]{SimParamBee}} field \code{nFathers}
-#'
-#' @return numeric, number of fathers
-#'
-#' @examples
-#' nFathersPoisson()
-#' nFathersPoisson()
-#' n <- nFathersPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 40))
-#' table(n)
-#'
-#' nFathersTruncPoisson()
-#' nFathersTruncPoisson()
-#' n <- nFathersTruncPoisson(n = 1000)
-#' hist(n, breaks = seq(from = min(n), to = max(n)), xlim = c(0, 40))
-#' table(n)
+#' @describeIn nCasteColonyPhenotype
 #' @export
-nFathersPoisson <- function(n = 1, average = 15) {
-  return(rpois(n = n, lambda = average))
+nVirginQueensColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
+                                    checkProduction = FALSE, lowerLimit = 0,
+                                    simParamBee = NULL,
+                                    ...) {
+  nCasteColonyPhenotype(x = x, queenTrait = queenTrait, workersTrait = workersTrait,
+                        checkProduction = checkProduction, lowerLimit = lowerLimit,
+                        simParamBee = simParamBee,
+                        ...)
 }
-
-#' @describeIn nFathersFun Sample a non-zero number of fathers
+#' @describeIn nCasteColonyPhenotype
 #' @export
-nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
-  return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
+nWorkersColonyPhenotype <- function(x, n = 1, average = 100, lowerLimit = 0) {
+  nCasteColonyPhenotype(x = x, queenTrait = queenTrait, workersTrait = workersTrait,
+                        checkProduction = checkProduction, lowerLimit = lowerLimit,
+                        simParamBee = simParamBee,
+                        ...)
+}
+#' @describeIn nCasteColonyPhenotype
+#' @export
+nDronesColonyPhenotype <- function(x, n = 1, average = 100, lowerLimit = 0) {
+  nCasteColonyPhenotype(x = x, queenTrait = queenTrait, workersTrait = workersTrait,
+                        checkProduction = checkProduction, lowerLimit = lowerLimit,
+                        simParamBee = simParamBee,
+                        ...)
 }
 
 # pFunctions ----
@@ -1074,7 +875,7 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #'   This is just an example. You can provide your own functions that satisfy
 #'   your needs!
 #'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param n integer, number of samples
 #' @param min numeric, lower limit for \code{swarmPUnif}
 #' @param max numeric, upper limit for \code{swarmPUnif}
@@ -1097,7 +898,12 @@ nFathersTruncPoisson <- function(n = 1, average = 15, lowerLimit = 0) {
 #' p <- swarmPUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #' @export
-swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
+swarmPUnif <- function(x, n = 1, min = 0.4, max = 0.6) {
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   return(runif(n = n, min = min, max = max))
 }
 
@@ -1112,7 +918,7 @@ swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
 #'   This is just an example. You can provide your own functions that satisfy
 #'   your needs!
 #'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param n integer, number of samples
 #' @param min numeric, lower limit for \code{splitPUnif}
 #' @param max numeric, upper limit for \code{splitPUnif}
@@ -1178,14 +984,24 @@ swarmPUnif <- function(colony, n = 1, min = 0.4, max = 0.6) {
 #' plot(pKeep ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
 #' @export
-splitPUnif <- function(colony, n = 1, min = 0.2, max = 0.4) {
+splitPUnif <- function(x, n = 1, min = 0.2, max = 0.4) {
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   return(runif(n = n, min = min, max = max))
 }
 
 #' @describeIn splitPFun Sample the split proportion - the proportion of
 #'   removed workers in a managed split based on the colony strength
 #' @export
-splitPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
+splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1) {
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   nW <- nWorkers(colony)
   pKeep <- rbeta(
     n = n,
@@ -1206,7 +1022,7 @@ splitPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #'   This is just an example. You can provide your own functions that satisfy
 #'   your needs!
 #'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}}  or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param n integer, number of samples
 #' @param min numeric, lower limit for \code{downsizePUnif}
 #' @param max numeric, upper limit for \code{downsizePUnif}
@@ -1221,7 +1037,12 @@ splitPColonyStrength <- function(colony, n = 1, nWorkersFull = 100, scale = 1) {
 #' p <- downsizePUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #' @export
-downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
+downsizePUnif <- function(x, n = 1, min = 0.8, max = 0.9) {
+  if (isColony(x)) {
+    n <- 1
+  } else if (isMultiColony(x)) {
+    n <- nColonies(x)
+  }
   return(runif(n = n, min = min, max = max))
 }
 
@@ -1245,7 +1066,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'   Note though that you can achieve this impact also via multiple correlated
 #'   traits, such as a queen and a workers trait.
 #'
-#' @param colony \code{\link[SIMplyBee]{Colony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param value character, one of \code{pheno} or \code{gv}
 #' @param queenTrait numeric (column position) or character (column name),
 #'   trait(s) that represents queen's contribution to colony value(s); if
@@ -1293,7 +1114,8 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #'   \code{\link[SIMplyBee]{calcColonyValue}}. It only works on a single colony - use
 #'   \code{\link[SIMplyBee]{calcColonyValue}} to get Colony or MultiColony values.
 #'
-#' @return numeric matrix with one value or a row of values
+#' @return numeric matrix with one value or a row of values when input is \code{\link[SIMplyBee]{Colony-class}}
+#' or list of numeric matrices when input is \code{\link[SIMplyBee]{MultiColony-class}}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -1347,7 +1169,7 @@ downsizePUnif <- function(colony, n = 1, min = 0.8, max = 0.9) {
 #       https://github.com/HighlanderLab/SIMplyBee/issues/353
 # TODO: Develop theory for colony genetic values under non-linearity/non-additivity #403
 #       https://github.com/HighlanderLab/SIMplyBee/issues/403
-mapCasteToColonyValue <- function(colony,
+mapCasteToColonyValue <- function(x,
                                   value = "pheno",
                                   queenTrait = 1, queenFUN = function(x) x,
                                   workersTrait = 2, workersFUN = colSums,
@@ -1369,107 +1191,129 @@ mapCasteToColonyValue <- function(colony,
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (is.null(queenTrait)) {
-    queenEff <- 0
-  } else {
-    if (isQueenPresent(colony)) {
-      if (value %in% c("pheno", "gv")) {
-        tmp <- valueFUN(colony@queen)[, queenTrait, drop = FALSE]
-      } else { # bv, dd, and aa: leaving this in for future use!
-        tmp <- valueFUN(colony@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
-      }
-      queenEff <- queenFUN(tmp)
-    } else {
+
+  if (isColony(x)) {
+    if (is.null(queenTrait)) {
       queenEff <- 0
-    }
-  }
-  if (is.null(workersTrait)) {
-    workersEff <- 0
-  } else {
-    if (nWorkers(colony) != 0) {
-      if (value %in% c("pheno", "gv")) {
-        tmp <- valueFUN(colony@workers)[, workersTrait, drop = FALSE]
-      } else { # bv, dd, and aa
-        tmp <- valueFUN(colony@workers, simParam = simParamBee)[, workersTrait, drop = FALSE]
-      }
-      workersEff <- workersFUN(tmp)
     } else {
+      if (isQueenPresent(x)) {
+        if (value %in% c("pheno", "gv")) {
+          tmp <- valueFUN(x@queen)[, queenTrait, drop = FALSE]
+        } else { # bv, dd, and aa: leaving this in for future use!
+          tmp <- valueFUN(x@queen, simParam = simParamBee)[, queenTrait, drop = FALSE]
+        }
+        queenEff <- queenFUN(tmp)
+      } else {
+        queenEff <- 0
+      }
+    }
+    if (is.null(workersTrait)) {
       workersEff <- 0
-    }
-  }
-  if (is.null(dronesTrait)) {
-    dronesEff <- 0
-  } else {
-    if (nDrones(colony) != 0) {
-      if (value %in% c("pheno", "gv")) {
-        tmp <- valueFUN(colony@drones)[, dronesTrait, drop = FALSE]
-      } else { # bv, dd, and aa
-        tmp <- valueFUN(colony@drones, simParam = simParamBee)[, dronesTrait, drop = FALSE]
-      }
-      dronesEff <- dronesFUN(tmp)
     } else {
+      if (nWorkers(x) != 0) {
+        if (value %in% c("pheno", "gv")) {
+          tmp <- valueFUN(x@workers)[, workersTrait, drop = FALSE]
+        } else { # bv, dd, and aa
+          tmp <- valueFUN(x@workers, simParam = simParamBee)[, workersTrait, drop = FALSE]
+        }
+        workersEff <- workersFUN(tmp)
+      } else {
+        workersEff <- 0
+      }
+    }
+    if (is.null(dronesTrait)) {
       dronesEff <- 0
+    } else {
+      if (nDrones(x) != 0) {
+        if (value %in% c("pheno", "gv")) {
+          tmp <- valueFUN(x@drones)[, dronesTrait, drop = FALSE]
+        } else { # bv, dd, and aa
+          tmp <- valueFUN(x@drones, simParam = simParamBee)[, dronesTrait, drop = FALSE]
+        }
+        dronesEff <- dronesFUN(tmp)
+      } else {
+        dronesEff <- 0
+      }
     }
-  }
-  colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
-  nColTrt <- length(colonyValue)
-  colnames(colonyValue) <- traitName
-  if (any(checkProduction) && !isProductive(colony)) {
-    if (length(checkProduction) == 1 && nColTrt != 1) {
-      checkProduction <- rep(checkProduction, times = nColTrt)
+    colonyValue <- combineFUN(q = queenEff, w = workersEff, d = dronesEff)
+    nColTrt <- length(colonyValue)
+    colnames(colonyValue) <- traitName
+    if (any(checkProduction) && !isProductive(x)) {
+      if (length(checkProduction) == 1 && nColTrt != 1) {
+        checkProduction <- rep(checkProduction, times = nColTrt)
+      }
+      if (length(notProductiveValue) == 1 && nColTrt != 1) {
+        notProductiveValue <- rep(notProductiveValue, times = nColTrt)
+      }
+      if (length(checkProduction) != nColTrt) {
+        stop("Dimension of checkProduction does not match the number of traits from combineFUN()!")
+      }
+      if (length(checkProduction) != length(notProductiveValue)) {
+        stop("Dimensions of checkProduction and notProductiveValue must match!")
+      }
+      colonyValue[checkProduction] <- notProductiveValue[checkProduction]
     }
-    if (length(notProductiveValue) == 1 && nColTrt != 1) {
-      notProductiveValue <- rep(notProductiveValue, times = nColTrt)
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    if (nCol == 0) {
+      stop("The Multicolony contains 0 colonies!")
     }
-    if (length(checkProduction) != nColTrt) {
-      stop("Dimension of checkProduction does not match the number of traits from combineFUN()!")
+    colonyValue <- vector(mode = "list", length = nCol)
+    names(colonyValue) <- getId(x)
+    for (colony in 1:nCol) {
+      colonyValue[[colony]] <- mapCasteToColonyValue(x[[colony]],
+                                                     value = value,
+                                                     queenTrait = queenTrait, queenFUN = queenFUN,
+                                                     workersTrait = workersTrait, workersFUN = workersFUN,
+                                                     dronesTrait = dronesTrait, dronesFUN = dronesFUN,
+                                                     traitName = traitName,
+                                                     combineFUN = combineFUN,
+                                                     checkProduction = checkProduction,
+                                                     notProductiveValue = notProductiveValue,
+                                                     simParamBee = simParamBee)
     }
-    if (length(checkProduction) != length(notProductiveValue)) {
-      stop("Dimensions of checkProduction and notProductiveValue must match!")
-    }
-    colonyValue[checkProduction] <- notProductiveValue[checkProduction]
   }
   return(colonyValue)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) phenotype values to a colony phenotype value
 #' @export
-mapCasteToColonyPheno <- function(colony, simParamBee = NULL, ...) {
+mapCasteToColonyPheno <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "pheno", simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(x, value = "pheno", simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) genetic values to a colony genetic value
 #' @export
-mapCasteToColonyGv <- function(colony, simParamBee = NULL, ...) {
+mapCasteToColonyGv <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "gv", checkProduction = FALSE, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(x, value = "gv", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) breeding values to a colony breeding value
-mapCasteToColonyBv <- function(colony, simParamBee = NULL, ...) {
+mapCasteToColonyBv <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "bv", checkProduction = FALSE, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(x, value = "bv", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) dominance values to a colony dominance value
-mapCasteToColonyDd <- function(colony, simParamBee = NULL, ...) {
+mapCasteToColonyDd <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "dd", checkProduction = FALSE, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(x, value = "dd", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }
 
 #' @describeIn mapCasteToColonyValue Map caste member (individual) epistasis values to a colony epistasis value
-mapCasteToColonyAa <- function(colony, simParamBee = NULL, ...) {
+mapCasteToColonyAa <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  mapCasteToColonyValue(colony, value = "aa", checkProduction = FALSE, simParamBee = simParamBee, ...)
+  mapCasteToColonyValue(x, value = "aa", checkProduction = FALSE, simParamBee = simParamBee, ...)
 }

@@ -3,10 +3,6 @@ utils::globalVariables("colony")
 utils::globalVariables("i")
 utils::globalVariables("cl")
 
-# Protect from accidental multicore use
-options(mc.cores = 1)
-Sys.setenv(OMP_NUM_THREADS = 1)
-Sys.setenv(MKL_NUM_THREADS = 1)
 
 #' @rdname getCastePop
 #' @title Access individuals of a caste

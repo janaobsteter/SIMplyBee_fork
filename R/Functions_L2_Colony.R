@@ -553,7 +553,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 
   if (isColony(x)) {
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x,...)
+      nWorkers <- nWorkers(x = x,...)
     }
     if (hasCollapsed(x)) {
       stop(paste0("The colony ", getId(x), " collapsed, hence you can not build it up!"))
@@ -628,7 +628,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
     }
 
     if (is.function(nWorkers)) {
-      nWorkers <- nWorkers(colony = x,...)
+      nWorkers <- nWorkers(x = x,...)
     }
 
     if (new) {
@@ -757,7 +757,7 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     }
 
     if (any(hasCollapsed(x))) {
-      stop("Some of hte colonies have collapsed, hence you can not downsize them!")
+      stop("Some of the colonies have collapsed, hence you can not downsize them!")
     }
     if (is.null(p)) {
       p <- simParamBee$downsizeP

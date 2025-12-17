@@ -341,37 +341,6 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-
-calcQueensPHomBrood_parallel <- function(x, simParamBee = NULL) {
-  if (is.null(simParamBee)) {
-    simParamBee <- get(x = "SP", envir = .GlobalEnv)
-  }
-  if (isPop(x)) {
-    ret <- rep(x = NA, times = nInd(x))
-    for (ind in seq_len(nInd(x))) {
-
-      queensCsd <- apply(
-        X = getCsdAlleles(x[ind], simParamBee = simParamBee), MARGIN = 1,
-        FUN = function(x) paste0(x, collapse = "")
-      )
-      fathersCsd <- apply(
-        X = getCsdAlleles(x@misc$fathers[[ind]], simParamBee = simParamBee), MARGIN = 1,
-        FUN = function(x) paste0(x, collapse = "")
-      )
-      nComb <- length(queensCsd) * length(fathersCsd)
-      ret[ind] <- sum(fathersCsd %in% queensCsd) / nComb
-    }
-  } else if (isColony(x)) {
-    ret <- calcQueensPHomBrood(x = x@queen)
-  } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
-    names(ret) <- getId(x)
-  } else {
-    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
-  }
-  return(ret)
-}
-
 #' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
 #'   of a queen / colony
 #' @export
@@ -5149,14 +5118,14 @@ calcColonyValue <- function(x, FUN = NULL, simParamBee = NULL, ...) {
     stop("You must provide FUN or set it in the SimParamBee object!")
   }
   if (isColony(x)) {
-    ret <- FUN(colony = x, ...)
+    ret <- FUN(x = x, ...)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     # We could create a matrix output container here, BUT we don't know the output
     # dimension of FUN() so we create list and row bind the list nodes later
     ret <- vector(mode = "list", length = nCol)
     for (colony in seq_len(nCol)) {
-      ret[[colony]] <- FUN(colony = x[[colony]], ...)
+      ret[[colony]] <- FUN(x = x[[colony]], ...)
     }
     ret <- do.call("rbind", ret)
     rownames(ret) <- getId(x)
