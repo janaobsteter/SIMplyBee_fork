@@ -176,13 +176,14 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
     }
 
 
-    x@colonies = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies = future_lapply(X = seq_len(nCol),
+                                             FUN = function(colony) {
       reQueen(
         x = x[[colony]],
         queen = queen[colony],
         simParamBee = simParamBee
       )
-    }
+    })
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -384,7 +385,8 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       nInd(x)
     })
 
-    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nCol),
+                                              FUN = function(colony) {
       if (!is.null(nInds[[colony]])) {
         if (caste == "workers") {
           x[[colony]]@queen@misc$nWorkers[[1]] <- x[[colony]]@queen@misc$nWorkers[[1]] + nInds[[colony]]
@@ -396,7 +398,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       } else {
         x[[colony]]
       }
-    }
+    })
 
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1045,7 +1047,9 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       p <- p[1:nCol]
     }
 
-    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nCol),
+                                              future.seed = TRUE,
+                                              FUN = function(colony) {
       if (is.null(p)) {
         pColony <- NULL
       } else {
@@ -1058,6 +1062,7 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
         simParamBee = simParamBee
       )
     }
+    )
 
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1204,13 +1209,15 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nCol),
+                                              FUN = function(colony) {
       resetEvents(
         x = x[[colony]],
         collapse = collapse,
         simParamBee = simParamBee
       )
-    }
+                                              }
+    )
     validObject(x)
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1278,10 +1285,12 @@ collapse <- function(x, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nCol),
+                                              FUN = function(colony) {
       collapse(x = x[[colony]],
                simParamBee = simParamBee)
-    }
+                                              }
+    )
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }
@@ -1493,10 +1502,10 @@ swarm <- function(x, p = NULL,
         remnant = remnantColony
       )
 
-      ret$swarm@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+      ret$swarm@colonies <- future_lapply(X = seq_len(nCol), FUN = function(colony) {
         addCastePop_internal(colony = ret$swarm@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
-      }
+      })
 
 
       ret$remnant <- setEvents(ret$remnant, slot = "swarm", value = TRUE, simParamBee = simParamBee)
@@ -1637,18 +1646,10 @@ supersede <- function(x, simParamBee = NULL, ...) {
     }
     tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
 
-    combine_list <- function(a, b) {
-      if (length(a) == 1) {
-        c(list(a), list(b))
-      } else {
-        c(a, list(b))
-      }
-    }
-
-    x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nColonies(x)), FUN = function(colony) {
       addCastePop_internal(colony = removeQueen(x[[colony]], simParamBee = simParamBee),
                            pop = tmpVirginQueens[[colony]], caste = "virginQueens")
-    }
+    })
     x = setEvents(x, slot = "supersedure", value = TRUE, simParamBee = simParamBee)
   }
   else {
@@ -1810,10 +1811,11 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
       )
       ret$split <- setLocation(x = ret$split, location = location, simParamBee = simParamBee)
 
-      ret$split@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+      ret$split@colonies <- future_lapply(X = seq_len(nCol),
+                                                        FUN = function(colony) {
         addCastePop_internal(colony = ret$split@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
-      }
+      })
       ret$split <- setEvents(ret$split, slot = "split", value = TRUE, simParamBee = simParamBee)
       ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE, simParamBee = simParamBee)
       ret$split <- setEvents(ret$split, slot = "production", value = FALSE, simParamBee = simParamBee)
@@ -1865,9 +1867,10 @@ setEvents <- function(x, slot, value, simParamBee = NULL) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    x@colonies <- foreach(colony = seq_len(nColonies(x)), .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nColonies(x)),
+                                              FUN = function(colony) {
       setEvents(x[[colony]], slot, value, simParamBee = simParamBee)
-    }
+    })
   }
   return(x)
 }
@@ -1947,11 +1950,12 @@ combine <- function(strong, weak, simParamBee = NULL) {
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
 
-      strong@colonies <- foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
+      strong@colonies <- future_lapply(X = seq_len(nCol),
+                                                     FUN = function(colony) {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
                 simParamBee = simParamBee)
-      }
+      })
     } else {
       stop("Weak and strong MultiColony objects must be of the same length!")
     }
@@ -2027,7 +2031,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
     x@location <- location
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
-    if (nCol == 0) {
+    if (nCol == 0 | all(isNULLColonies(x))) {
       stop("The Multicolony contains 0 colonies!")
     }
     if (!is.null(location)) {
@@ -2058,15 +2062,8 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
         stop("Argument location must be numeric, list, or data.frame!")
       }
     }
-    combine_list <- function(a, b) {
-      if (length(a) == 1) {
-        c(list(a), list(b))
-      } else {
-        c(a, list(b))
-      }
-    }
-
-    tmp <- foreach(colony = seq_len(nCol), .combine = combine_list, .packages = c("SIMplyBee")) %dopar% {
+    x@colonies <- future_lapply(X = seq_len(nCol),
+                   FUN = function(colony) {
       if (is.data.frame(location)) {
         loc <- location[colony, ]
         loc <- c(loc$x, loc$y)
@@ -2081,13 +2078,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
       }
 
       x[[colony]]
-    }
-
-    if (nCol == 1) {
-      x@colonies = list(tmp)
-    } else {
-      x@colonies = tmp
-    }
+    })
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
   }

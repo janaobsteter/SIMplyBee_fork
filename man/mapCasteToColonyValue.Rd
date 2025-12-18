@@ -10,7 +10,7 @@
 \title{Map caste member (individual) values to a colony value}
 \usage{
 mapCasteToColonyValue(
-  colony,
+  x,
   value = "pheno",
   queenTrait = 1,
   queenFUN = function(x) x,
@@ -25,18 +25,18 @@ mapCasteToColonyValue(
   simParamBee = NULL
 )
 
-mapCasteToColonyPheno(colony, simParamBee = NULL, ...)
+mapCasteToColonyPheno(x, simParamBee = NULL, ...)
 
-mapCasteToColonyGv(colony, simParamBee = NULL, ...)
+mapCasteToColonyGv(x, simParamBee = NULL, ...)
 
-mapCasteToColonyBv(colony, simParamBee = NULL, ...)
+mapCasteToColonyBv(x, simParamBee = NULL, ...)
 
-mapCasteToColonyDd(colony, simParamBee = NULL, ...)
+mapCasteToColonyDd(x, simParamBee = NULL, ...)
 
-mapCasteToColonyAa(colony, simParamBee = NULL, ...)
+mapCasteToColonyAa(x, simParamBee = NULL, ...)
 }
 \arguments{
-\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{value}{character, one of \code{pheno} or \code{gv}}
 
@@ -88,7 +88,8 @@ you can pass more than one logical value here (one per trait coming out of
 \item{...}{other arguments of \code{mapCasteToColonyValue} (for its aliases)}
 }
 \value{
-numeric matrix with one value or a row of values
+numeric matrix with one value or a row of values when input is \code{\link[SIMplyBee]{Colony-class}}
+or list of numeric matrices when input is \code{\link[SIMplyBee]{MultiColony-class}}
 }
 \description{
 Maps caste member (individual) values to a colony value - for

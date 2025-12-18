@@ -4,10 +4,10 @@
 \alias{swarmPUnif}
 \title{Sample the swarm proportion - the proportion of workers that swarm}
 \usage{
-swarmPUnif(colony, n = 1, min = 0.4, max = 0.6)
+swarmPUnif(x = NULL, n = 1, min = 0.4, max = 0.6)
 }
 \arguments{
-\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{n}{integer, number of samples}
 

@@ -67,7 +67,7 @@ test_that("createVirginQueens", {
 
   # Error when testing on empty MultiColony
   apiary1 <- createMultiColony(n = 2, simParamBee = SP)
-  expect_error(createVirginQueens(apiary1, nInd = 5, simParamBee = SP))
+  expect_error(suppressWarnings(createVirginQueens(apiary1, nInd = 5, simParamBee = SP)))
 
   #check that output is virginqueens ?
   expect_false(all(isVirginQueen(drones, simParamBee = SP)))
@@ -195,7 +195,7 @@ test_that("pullCastePop", {
   apiary2 <- createMultiColony(n = 2, simParamBee = SP)
   # test on empty apiary
   expect_type(pullCastePop(apiary1, caste = "queen", nInd = 1, simParamBee = SP)$pulled, "list")
-  expect_error(pullCastePop(apiary2, caste = "queen", nInd = 1, simParamBee = SP))
+  expect_error(suppressWarnings(pullCastePop(apiary2, caste = "queen", nInd = 1, simParamBee = SP)))
   # Warning- if pulling drones, pulls drones that are not yet mated
   expect_warning(pullCastePop(colony, caste = "drones", nInd = 150, simParamBee = SP))
   suppressWarnings(expect_s4_class(pullCastePop(colony, caste = "drones", simParamBee = SP)$pulled, "Pop"))

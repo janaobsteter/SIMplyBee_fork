@@ -1,0 +1,190 @@
+---
+  title: "Variance calculations between individual and colony level values"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+%\VignetteIndexEntry{VarianceCalculations}
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteEncoding{UTF-8}
+editor_options:
+  markdown:
+  wrap: 80
+canonical: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include = TRUE
+)
+```
+
+
+Let's again run the example from the quantitative genetic vignette.
+
+```{r FirstExampleFromQuanGenVignette}
+# Run the example from the quantitative genetic vignette
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+SP <- SimParamBee$new(founderGenomes)
+nQtlPerChr <- 100
+mean <- c(10, 10 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers)
+corA <- matrix(data = c( 1.0, -0.5,
+                         -0.5,  1.0), nrow = 2, byrow = TRUE)
+SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
+             name = c("queenTrait", "workersTrait"))
+varE <- c(3, 3 / SP$nWorkers)
+corE <- matrix(data = c(1.0, 0.3,
+                        0.3, 1.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
+basePop <- createVirginQueens(founderGenomes, n = 20)
+head(basePop@gv)
+head(basePop@pheno)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
+colony <- createColony(x = basePop[6])
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
+colony <- addWorkers(x = colony, nInd = 50)
+colony <- buildUp(colony)
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:5], nInd = 100)
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
+apiary <- buildUp(apiary)
+colonyGv <- calcColonyGv(apiary)
+colonyPheno <- calcColonyPheno(apiary)
+
+```
+
+How the expected and realised variances look like
+```{r}
+print("Expected genetic and phenotypic variance")
+covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2] # variance can not be negative!
+covP[1, 1] + nW * covP[2, 2] + 2 * k * covP[1, 2]
+
+print("Realised genetic and phenotypic variance")
+var(colonyGv)
+var(colonyPheno)
+```
+
+Now, in theory, how we go from the individual to colony level variances?
+The queen trait variance remains the same, since there is only one queen. The worker
+individual variance needs to be adjusted due to covariances between workers.
+
+```{r}
+a_ii = 0.40
+varA_colony <- c(varA[1], varA[2] * a_ii)
+corA = cov2cor(covA)
+covA_colony = cor2cov(corA, var = varA_colony)
+
+covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2]
+covA_colony[1, 1] + covA_colony[2, 2] + 2 * k * covA_colony[1, 2]
+
+var(colonyGv)
+var(colonyPheno)
+```
+
+We need to add the covariance due to different types of workers in the colony
+```{r}
+# Get the real number of fathers and DPQs
+nFathers(apiary)
+median(sapply(getFathers(apiary), FUN = function(x) length(unique(x@father))))
+
+# Genetic values
+nW = SP$nWorkers #100 #BB assumes mean - so calculate as if this is 1
+nF = SP$nFathers
+nDPQ = 5
+
+varA_q <- 1
+varA_w = 1 / SP$nWorkers
+corA_qw = corA[1,2]
+
+# Covariance due to super-sisters
+covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA_w
+# Covariance due to half-sisters
+covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA_w
+# Covariance due to full-sisters
+
+
+
+mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum") {
+  if (workersFUN == "mean") {
+    nW = 1
+  }
+  
+  # Determine how many pairs of each you have
+  n_SS = nW * nW / nF
+  n_FS = (nW * nW / nDPQ) -  (nW * nW / nF)
+  n_HS = (nW * nW / nDPQ) * (nDPQ - 1)
+  A <- varA_q
+  B1 <- nW * varA_w
+  B2_ss <- n_SS * 0.75 * varA_w
+  B2_fs <- n_FS * 0.50 * varA_w
+  B2_hs <- n_HS * 0.25 * varA_w
+  
+  covA_qw = corA_qw * sqrt(varA_q) * sqrt(varA_w)
+  C <- nW * covA_qw
+  
+  if (workersFUN == "sum") {
+    varC <- A + B1 + B2_ss + B2_fs + B2_hs + C
+  } else if (workersFUN == "mean") {
+    varC <- varA_q + (B2_ss + B2_fs + B2_hs) # This is equal as varA_w * average relatedness within a colony
+  }
+  return(varC)
+}
+
+#This is the same as above, just simplified
+mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum") {
+
+  # Determina how many pairs of each you have
+  p_SS = 1 / nF
+  p_FS = (1 / nDPQ) -  (1 / nF)
+  p_HS = (1 / nDPQ) * (nDPQ - 1)
+  A <- varA_q
+  B1 <- nW * varA_w
+  B2_ss <- p_SS * 0.75
+  B2_fs <- p_FS * 0.50
+  B2_hs <- p_HS * 0.25
+  
+  covA_qw = corA_qw * sqrt(varA_q) * sqrt(varA_w)
+  C <- nW * covA_qw
+  
+  if (workersFUN == "sum") {
+    varC <- A + B1 + (B2_ss + B2_fs + B2_hs)*nW^2*varA_w + C
+  } else if (workersFUN == "mean") {
+    varC <- varA_q + (B2_ss + B2_fs + B2_hs)*varA_w + covA_qw# This is equal as varA_w * average relatedness within a colony
+  }
+  return(varC)
+}
+
+```
+
+```{r}
+# When the function to summarise worker effects is SUM
+mapIndToColonyVar(varA_q = varA_q, 
+                  varA_w= varA_w,
+                  corA_qw = corA_qw,
+                  nW = nW, nF = nF,
+                  workersFUN = "sum")
+colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colSums)
+var(colonyGv)
+```
+
+```{r}
+# When the function to summarise worker effects is MEAN
+mapIndToColonyVar(varA_q = varA_q, 
+                  varA_w = varA_w * SP$nWorkers,
+                  corA_qw = corA_qw,
+                  nW = nW, nF = nF,
+                  workersFUN = "mean")
+colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colMeans)
+var(colonyGv)
+```
+```
+
+```{r}
+# Try to frame something for the other way around
+# At best, we would have varA_q (colony), varA_w (colony),
+
+```
+
+

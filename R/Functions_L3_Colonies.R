@@ -33,14 +33,14 @@
 #' apiary[[2]]
 #'
 #' # Create 3 virgin colonies
-#' apiary <- createMultiColony(x = basePop, n = 3) # specify n
+#' apiary <- createMultiColony(x = basePop) # specify n
 #' apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 #' apiary
 #' apiary[[1]]
 #' apiary[[2]]
 #'
 #' # Create mated colonies by crossing
-#' apiary <- createMultiColony(x = basePop[1:2], n = 2)
+#' apiary <- createMultiColony(x = basePop[1:2])
 #' drones <- createDrones(x = basePop[3], nInd = 30)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 #' apiary <- cross(apiary, drones = droneGroups)
@@ -62,9 +62,10 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
       if (populateColonies) {
         ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
 
-        ret@colonies <- foreach(colony = seq_len(n), .packages = c("SIMplyBee")) %dopar% {
+        ret@colonies <- future_lapply(X = seq_len(n),
+                                                    FUN = function(colony) {
           createColony(simParamBee = simParamBee, id = ids[colony])
-        }
+        })
         simParamBee$updateLastColonyId(n = n)
       } else {
 
@@ -86,9 +87,10 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     ids <- (simParamBee$lastColonyId+1):(simParamBee$lastColonyId + n)
 
-    ret@colonies <- foreach(colony = seq_len(n), .packages = c("SIMplyBee")) %dopar% {
-      createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
-    }
+    ret@colonies <- future_lapply(X = seq_len(n),
+                                                FUN = function(colony) {
+          createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+    })
     simParamBee$updateLastColonyId(n = n)
   }
 

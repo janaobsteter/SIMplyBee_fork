@@ -48,14 +48,14 @@ apiary[[1]]
 apiary[[2]]
 
 # Create 3 virgin colonies
-apiary <- createMultiColony(x = basePop, n = 3) # specify n
+apiary <- createMultiColony(x = basePop) # specify n
 apiary <- createMultiColony(x = basePop[1:3]) # take all provided
 apiary
 apiary[[1]]
 apiary[[2]]
 
 # Create mated colonies by crossing
-apiary <- createMultiColony(x = basePop[1:2], n = 2)
+apiary <- createMultiColony(x = basePop[1:2])
 drones <- createDrones(x = basePop[3], nInd = 30)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 2, nDrones = 15)
 apiary <- cross(apiary, drones = droneGroups)

@@ -45,8 +45,7 @@ colony <- addWorkers(x = colony, nInd = 50)
 colony <- buildUp(colony)
 apiary <- createMultiColony(basePop[7:20])
 drones <- createDrones(basePop[1:5], nInd = 100)
-droneGroups <- pullDroneGroupsFromDCA(drones, n = nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
 colonyGv <- calcColonyGv(apiary)
 colonyPheno <- calcColonyPheno(apiary)
@@ -75,7 +74,7 @@ observe such variances, but only on a colony level.
 For example, in the vignette we assumed that phenotypic variance on the
 individual level is about 1/4 due to genetic variation and about 3/4 due to
 environmental variation, but looking at colony genetic and phenotypic variances
-the ratio was aobut 1/2!
+the ratio was about 1/2!
 
 TODO: What do we do about this? It feels like we need a full paper on all of
 this;) :(
@@ -116,23 +115,34 @@ We will follow the example from Brascamp and Bijma (2019) they have:
 
 $\sigma_{g_q}^2=0.5$ - this is their $\sigma_{A_q}^2=0.5$
 
-$\sigma_{g_w}^2=1.0$ - this is their $\sigma_{A_w}^2=1.0$ among unrelated
-honeybees
+$\sigma_{g_w}^2=1.0$ - this is their $\sigma_{A_w}^2=1.0$ among nominally
+unrelated groups of workers
 
-$\sigma_{g_w}^2=0.32$ - this is their $\sigma_{\bar{A}_w}^2=0.32$ among averages
-of groups of honeybees?
+$\sigma_{\bar{g}_w}^2=0.32$ - this is their $\sigma_{\bar{A}_w}^2=0.32$ among
+base related groups of workers
+
+Where the relationship between the two is
+$\sigma_{\bar{g}_w}^2 = a_{ii} * \sigma_{g_w}^2$ where $a_{ii}$ is average
+additive genetic relationship between workers in a colony as can be defined (in
+a non-inbred population) as
+$a_{ii} = 1/4 + 1/2p_1 + 1/4(p_2 - p_1) + 1/4(1 - p_2)a_{ss}$; where $p_1$ is
+the probability that two workers descend from the same drone, $p_2$ is the
+probability that they descend from the same DPQ, and $a_{ss}$ is the relatedness
+between two DPQs. We are ignore the $a_{ss}$ part (TODO?).
 
 $\sigma_{{g_q},{g_w}}=-0.35$
 
+$\sigma_{P}^2 = \sigma_{\bar{g}_w^w}^2 + \sigma_{g_q^q}^2 + 2*\sigma_{\bar{g}_w^w g_q^q} + \sigma_{E}^2$
+
 $\sigma_e^2=2.0$
 
-$h^2=(a_base\sigma_{g,w}^2 + \sigma_{{g,w},{g,q}} \sigma_{g,q}^2)/\sigma_{p,c}^2=???$
+$h^2=(a_{base}\sigma_{g,w}^2 + \sigma_{{g,w},{g,q}} + \sigma_{g,q}^2)/\sigma_{p,c}^2=???$
 
-$h_w^2=a_base\sigma_{g,w}^2/\sigma_{p,c}^2=0.13$
+$h_w^2=a_{base}\sigma_{g,w}^2/\sigma_{p,c}^2=0.13$
 
 $h_q^2=\sigma_{g,q}^2/\sigma_{p,c}^2=0.20$
 
-$T^2=(sigma_{g,w}^2 + 2\sigma_{{g,w},{g,q}} \sigma_{g,q}^2)/\sigma_{p,c}^2=0.32$
+$T^2=(\sigma_{g,w}^2 + 2\sigma_{{g,w},{g,q}} \sigma_{g,q}^2)/\sigma_{p,c}^2=0.32$
 
 $T_w^2=\sigma_{g,w}^2/\sigma_{p,c}^2=0.41$
 
@@ -143,12 +153,13 @@ $r_g = cor(g_w, g_q) = -0.50$
 TODO: equation 3 in Brascamp and Bijma (2019) is highly relevant to our work
 here - that equation shows connection between the variance of the sum (or
 average) of worker genetic values for worker effect AND variance of worker
-genetic values for worker effect - THIS IS WHAT WE WORK WITH HERE SO WHAT IS
-NOVEL IN OUR WORK? I think its about providing a tool and demonstrate it
-clearly. Also, they work with average, while we work with the sum?
+genetic values for worker effect - THIS IS NOT TRUE they always work with the
+worker group effect, never individuals!
 
 TODO: show sensitivity to the number of workers - the larger the number of
 workers, the smaller the variance between workers
+
+covA[1, 1] + nW \* covA[2, 2] + 2 \* k \* covA[1, 2]
 
 ```{r quan_gen_param_revision}
 # Trait means
@@ -244,9 +255,12 @@ C)  covariance between the two $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w}))$.
 
 ```{r check_queen_variances}
 varA[1]
-var(getQueenGv(apiary, collapse = TRUE)[, "queenTrait"])
+x = getQueenGv(apiary, collapse = TRUE)[, "queenTrait"]
+var(x)
 # ... note that R's var() divides by n-1, which matters with small n
-sum((getQueenGv(apiary, collapse = TRUE)[, "queenTrait"] - mean[1])^2) / nColonies(apiary)
+popVar(x)
+sum((x - mean[1])^2) / nColonies(apiary)
+
 ```
 
 Anyway, quite close!
@@ -282,6 +296,7 @@ g <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 
 var(g)
 # ... note that R's var() divides by n-1, which matters with small n
 sum((g - nW * mean[2])^2) / nColonies(apiary)
+popVar(g)
 ```
 
 So, a huge discrepancy between the variance of a sum of genetic values for the
@@ -323,6 +338,7 @@ g <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 
 var(g) # B
 # ... note that R's var() divides by n-1, which matters with small n
 sum((g - nW * mean[2])^2) / nColonies(apiary) # B
+popVar(g)
 ```
 
 If we would only have super-sisters we would have \~1 for B1, \~49.5 for B2, and
@@ -381,7 +397,7 @@ Let's test this:
 
 ```{r check_workers_variances3}
 (varSumWorkers <- nW * varA[2]) # B1
-(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters
+(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters ERROR: SHOULD BE 0.75
 (covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
 varSumWorkers + covSumWorkersSuperSisters + covSumWorkersHalfSisters # B
 
@@ -439,40 +455,58 @@ $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = 2 n_w \frac{1}{2}Cov(g_{q,q}, g_{q
 $2Cov(g_{q,q}, \Sigma_{i=1}^{n_w}(g_{i,w})) = n_w \sigma_{g_{q},g_{w}}$
 
 ```{r check_workers_variances4}
+
+print("Genetic variances")
+print("Part A")
 (varQueen <- varA[1]) # A
 
+print("Part B1")
 (varSumWorkers <- nW * varA[2]) # B1
-(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters
+print("Part B2 in super-sisters")
+(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.75 * varA[2]) # B2 in super-sisters
+print("Part B2 in half-sisters")
 (covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
+print("Part B combined")
 (varSumWorkers <- varSumWorkers + covSumWorkersSuperSisters + covSumWorkersHalfSisters) # B
-
+print("Part C")
 (covQueenSumWorkers <- nW * covA[1, 2]) # C
 
+print("Part A + B + C")
 varQueen + varSumWorkers + covQueenSumWorkers
 
+print("ColonyGv variance")
 g <- colonyGv
 var(g)
+popVar(g)
 sum((g - 20)^2) / nColonies(apiary)
 
 
-(varQueen <- varP[1]) # A
+```
 
+Bingo for genetic variance.
+
+```{r}
+
+print("Phenotypic variance")
+print("Part A")
+(varQueen <- varP[1]) # A
+print("Part B1")
 (varSumWorkers <- nW * varP[2]) # B1
-(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters - only genetic cov here, I think TODO!?
-(covSumWorkersSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in sisters - only genetic cov here, I think TODO!?
+(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.75 * varA[2]) # B2 in super-sisters - only genetic cov here
+(covSumWorkersSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in sisters - only genetic cov here
 (varSumWorkers <- varSumWorkers + covSumWorkersSuperSisters + covSumWorkersSisters) # B
 
-(covQueenSumWorkers <- nW * covP[1, 2]) # C - pheno or genetic only here - TODO!?
+(covQueenSumWorkers <- nW * covP[1, 2]) # C - both genetic and env cove here? TODO 
 
 varQueen + varSumWorkers + covQueenSumWorkers
 
 p <- colonyPheno
 var(p)
+popVar(p)
 sum((p - 20)^2) / nColonies(apiary)
 ```
 
-Bingo for genetic variance and very close for phenotypic too, but we need to
-check some part above!
+And very close for phenotypic too, but we need to check some part above!
 
 # What now?
 
@@ -549,3 +583,15 @@ we can change these individual-level parameters and study how that will change
 colony-level parameters and then how we could go the other way around based on
 literature and solving the above systems of equations. We could host such a
 Shiny app on SIMplyBee.info!? Can we?
+
+NEXT STEPS:
+
+1)  read the above, check derivations, missing bits, etc.
+
+2)  write a function that takes individual variances, nw, nf, etc. and returns
+    colony variances and h2, t2, T2, ...
+
+3)  develop a system of equations (using A, Bs, and C) linking individual and
+    colony values for two types of colony values (for different models beepeople
+    run!) - then find a way to optimize/solve for individual values (output)
+    with colony values as input

@@ -621,45 +621,31 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     lastId = simParamBee$lastId
     ids = (lastId+1):(lastId+totalNInd)
 
-    combine_list <- function(a, b) {
-      if (!is.null(names(a))) {
-        "Combine first"
-        c(list(a), list(b))
-      } else {
-        if ((is.null(a) | is.null(b)) & !(is.null(a) & is.null(b))) {
-          c(a, list(b))
-        } else if (is.null(a) & is.null(b)) {
-          c(list(a), list(b))
-        } else {
-          c(a, list(b))
-        }
-      }
-    }
+    ret <- future_lapply(X = seq_len(nCol),
+                                       future.seed = TRUE,
+                                       FUN = function(colony) {
+                                         nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+                                         if (nIndColony > 0) {
+                                           if (nNInd == 1) {
+                                             colonyIds = ids[((colony-1)*nIndColony+1):(colony*nIndColony)]
+                                           } else {
+                                             colonyIds = base::split(ids, rep(seq_along(nInd), nInd))[[as.character(colony)]]
+                                           }
 
-    ret <- foreach(colony = seq_len(nCol), .combine=combine_list, .packages = c("SIMplyBee")) %dopar% {
-      nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-      if (nIndColony > 0) {
-        if (nNInd == 1) {
-          colonyIds = ids[((colony-1)*nIndColony+1):(colony*nIndColony)]
-        } else {
-          colonyIds = base::split(ids, rep(seq_along(nInd), nInd))[[as.character(colony)]]
-        }
-        createCastePop(
-          x = x[[colony]], caste = caste,
-          nInd = nIndColony,
-          editCsd = TRUE, csdAlleles = NULL,
-          simParamBee = simParamBee,
-          returnSP = TRUE,
-          ids = as.character(colonyIds)
-        )
-      } else {
-        NULL
-      }
-    }
+                                           createCastePop(
+                                             x = x[[colony]], caste = caste,
+                                             nInd = nIndColony,
+                                             editCsd = TRUE, csdAlleles = NULL,
+                                             simParamBee = simParamBee,
+                                             returnSP = TRUE,
+                                             ids = as.character(colonyIds)
+                                           )
+                                         } else {
+                                           NULL
+                                         }
+                                       }
+    )
 
-    if (nCol == 1) {
-      ret <- list(ret)
-    }
     names(ret) <- getId(x)
     # Add to simParamBee: pedigree, caste, recHist
     notNull = sapply(ret, FUN = function(x) !is.null(x))
@@ -1268,20 +1254,23 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     names(ret$pulled) <- getId(x)
     ret$remnant <- x
 
-    tmp = foreach(colony = seq_len(nCol), .packages = c("SIMplyBee")) %dopar% {
-      if (is.null(nInd)) {
-        nIndColony <- NULL
-      } else {
-        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-      }
-      pullCastePop(x = x[[colony]],
-                   caste = caste,
-                   nInd = nIndColony,
-                   use = use,
-                   removeFathers = removeFathers,
-                   collapse = collapse,
-                   simParamBee = simParamBee)
-    }
+    tmp = future_lapply(X = seq_len(nCol),
+                                      future.seed = TRUE,
+                                      FUN = function(colony) {
+                                        if (is.null(nInd)) {
+                                          nIndColony <- NULL
+                                        } else {
+                                          nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+                                        }
+                                        pullCastePop(x = x[[colony]],
+                                                     caste = caste,
+                                                     nInd = nIndColony,
+                                                     use = use,
+                                                     removeFathers = removeFathers,
+                                                     collapse = collapse,
+                                                     simParamBee = simParamBee)
+                                      }
+    )
 
     ret$pulled <- lapply(tmp, '[[', "pulled")
     ret$remnant@colonies <- lapply(tmp, '[[', "remnant")
@@ -1661,15 +1650,6 @@ cross <- function(x,
     nD = rep(nD, length(IDs))
   }
 
-
-  combine_list <- function(a, b) {
-    if (isPop(a)) {
-      c(list(a), list(b))
-    } else {
-      c(a, list(b))
-    }
-  }
-
   if (crossPlan_given | crossPlan_create) {
     if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
       # This is the crossPlan - for spatial, these are all DPCs found in a radius
@@ -1713,15 +1693,15 @@ cross <- function(x,
                                     FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
       names(dronesByVirgin_list) <- IDs
 
-      dronesByVirgin <- foreach(i = IDs, .combine = combine_list,
-                                .packages = c("SIMplyBee")) %do% {
-                                  dronePop[as.character(dronesByVirgin_list[[i]])]
-                                }
+      dronesByVirgin <- lapply(IDs, function(i) {
+          dronePop[as.character(dronesByVirgin_list[[i]])]
+        }
+      )
     } else if (crossPlan_droneID) {
-      dronesByVirgin <- foreach(i = IDs, .combine = combine_list,
-                                .packages = c("SIMplyBee")) %do% {
-                                  drones[as.character(crossPlan[[i]])]
-                                }
+      dronesByVirgin <- lapply(IDs, function(i) {
+          drones[as.character(crossPlan[[i]])]
+        }
+      )
     }
   }
   # At this point, x is a Pop and dronesByVirgin are a list (so are they if they come if via drone packages)
@@ -1773,25 +1753,25 @@ cross <- function(x,
 
   # Add drones in the queens father slot
 
-  x <- foreach(i = 1:length(IDs), .combine = combine_list, .packages = "SIMplyBee") %dopar% {
+  x <- future_lapply(X = 1:length(IDs),
+                                  future.seed = TRUE,
+                                  FUN = function(i) {
     crossVirginQueen(virginQueen = x[i],
                      virginQueenDrones = dronesByVirgin[[i]],
                      simParamBee = simParamBee)
-  }
+  })
 
   if (type == "Pop") {
     if (length(x) == 1) {
-      ret <- x
+      ret <- x[[1]]
     } else {
       ret <- mergePops(x)
     }
   } else if (type == "Colony") {
-    ret <- reQueen(x = colony, queen = x[1], simParamBee = simParamBee)
+    ret <- reQueen(x = colony, queen = x[[1]], simParamBee = simParamBee)
     ret <- removeVirginQueens(ret, simParamBee = simParamBee)
   } else if (type == "MultiColony") {
-    if (length(IDs) > 1) {
-      x <- mergePops(x)
-    }
+    x <- mergePops(x)
     ret <- reQueen(x = multicolony, queen = x, simParamBee = simParamBee)
     ret <- removeCastePop(ret, caste = "virginQueens", simParamBee = simParamBee)
   }

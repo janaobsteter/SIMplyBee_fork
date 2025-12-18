@@ -333,7 +333,7 @@ mating with the queen, which follows the believe that drones aggregate in a DCA.
 crossPlan2 <- createCrossPlan(x = beekeeper3,
                               droneColonies = c(beekeeper1, beekeeper2),
                               spatial = TRUE,
-                              radius = 3,
+                              radius = 5,
                               nDrones = 13)
 # Inspect the cross plan
 crossPlan2
@@ -406,7 +406,7 @@ beekeeper5 <- cross(x = beekeeper5,
                     droneColonies = c(beekeeper1, beekeeper2, beekeeper3),
                     crossPlan = "create",
                     spatial = TRUE,
-                    radius = 3,
+                    radius = 8,
                     nDrones = 12,
                     checkCross = "warning")
 nFathers(beekeeper5)

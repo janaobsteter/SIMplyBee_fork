@@ -7,7 +7,7 @@
 #' @importFrom stats rnorm rbeta runif rpois na.omit
 #' @importFrom extraDistr rtpois
 #' @importFrom utils packageVersion
-#' @importFrom foreach foreach "%dopar%" "%do%"
+#' @importFrom future.apply future_lapply
 # see https://r-pkgs.org/namespace.html on description what to import/depend/...
 
 #' @description

@@ -5,10 +5,10 @@
 \title{Sample the downsize proportion - proportion of removed workers in
   downsizing}
 \usage{
-downsizePUnif(colony, n = 1, min = 0.8, max = 0.9)
+downsizePUnif(x = NULL, n = 1, min = 0.8, max = 0.9)
 }
 \arguments{
-\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}}  or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{n}{integer, number of samples}
 

@@ -742,41 +742,51 @@ isSimParamBee <- function(x) {
 #' createWorkers(colony1, nInd = nCasteColonyPhenotype)
 #' createWorkers(colony2, nInd = nCasteColonyPhenotype)
 #' @export
-nCastePoisson <- function(x, n = 1, average = 100) {
+nCastePoisson <- function(x = NULL, n = 1, average = 100) {
   # We keep the x because for nCasteColonyPhenotype we need colony/multicolony access
   # These are used inside other functions when these n functions are called
   if (isColony(x)) {
-    n <- 1
+   n <- 1
   } else if (isMultiColony(x)) {
-    n <- nColonies(x)
+   n <- nColonies(x)
   }
   return(rpois(n = n, lambda = average))
 }
 
-#' @describeIn nCastePoisson
+#' @title nVirginQueensPoisson
+#' @describeIn nCasteFun Sample the number of virgin queens
+#' from a Poisson distribution
 #' @export
-nVirginQueensPoisson <- function(x, n = 1, average = 10) {
+nVirginQueensPoisson <- function(x = NULL, n = 1, average = 10) {
   nCastePoisson(x = x, n = n, average = average)
 }
-#' @describeIn nCastePoisson
+#' @title nFathersPoisson
+#' @describeIn nCasteFun Sample the number of fathers
+#' from a Poisson distribution
 #' @export
-nFathersPoisson <- function(x, n = 1, average = 15) {
+nFathersPoisson <- function(x = NULL, n = 1, average = 15) {
   nCastePoisson(x = x, n = n, average = average)
 }
-#' @describeIn nCastePoisson
+#' @title nWorkersPoisson
+#' @describeIn nCasteFun Sample the number of workers
+#' from a Poisson distribution
 #' @export
-nWorkersPoisson <- function(x, n = 1, average = 100) {
+nWorkersPoisson <- function(x = NULL, n = 1, average = 100) {
   nCastePoisson(x = x, n = n, average = average)
 }
-#' @describeIn nCastePoisson
+#' @title nDronesPoisson
+#' @describeIn nCasteFun Sample the number of drones
+#' from a Poisson distribution
 #' @export
-nDronesPoisson <- function(x, n = 1, average = 100) {
+nDronesPoisson <- function(x = NULL, n = 1, average = 100) {
   nCastePoisson(x = x, n = n, average = average)
 }
 
-#' @describeIn nCasteFun Sample a non-zero number of caste individuals
+#' @title nCasteTruncPoisson
+#' @describeIn nCasteFun Sample a non-zero number of caste individuals from a Poisson
+#' distribution
 #' @export
-nCasteTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+nCasteTruncPoisson <- function(x = NULL, n = 1, average = 100, lowerLimit = 0) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {
@@ -785,27 +795,37 @@ nCasteTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
   return(extraDistr::rtpois(n = n, lambda = average, a = lowerLimit))
 }
 
-#' @describeIn nCasteTruncPoisson
+#' @title nVirginQueensTruncPoisson
+#' @describeIn nCasteFun Sample a non-zero number of virgin queens
+#'  from a Poisson distribution
 #' @export
-nVirginQueensTruncPoisson <- function(x, n = 1, average = 10, lowerLimit = 0) {
-  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
-}
-#' @describeIn nCasteTruncPoisson
-#' @export
-nFathersTruncPoisson <- function(x, n = 1, average = 15, lowerLimit = 0) {
-  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
-}
-#' @describeIn nCasteTruncPoisson
-#' @export
-nWorkersTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
-  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
-}
-#' @describeIn nCasteTruncPoisson
-#' @export
-nDronesTruncPoisson <- function(x, n = 1, average = 100, lowerLimit = 0) {
+nVirginQueensTruncPoisson <- function(x = NULL, n = 1, average = 10, lowerLimit = 0) {
   nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
 }
 
+#' @title nFathersTruncPoisson
+#' @describeIn nCasteFun Sample a non-zero number of fathers
+#'  from a Poisson distribution
+#' @export
+nFathersTruncPoisson <- function(x = NULL, n = 1, average = 15, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+#' @title nWorkersTruncPoisson
+#' @describeIn nCasteFun Sample a non-zero number of workers
+#'  from a Poisson distribution
+#' @export
+nWorkersTruncPoisson <- function(x = NULL, n = 1, average = 100, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+#' @title nDronesTruncPoisson
+#' @describeIn nCasteFun Sample a non-zero number of drones
+#'  from a Poisson distribution
+#' @export
+nDronesTruncPoisson <- function(x = NULL, n = 1, average = 100, lowerLimit = 0) {
+  nCasteTruncPoisson(x = x, n = n, average = average, lowerLimit = lowerLimit)
+}
+
+#' @title nCasteColonyPhenotype
 #' @describeIn nCasteFun Sample a non-zero number of caste individuals based on
 #'   colony phenotype, say queen's fecundity
 #' @export
@@ -835,8 +855,9 @@ nCasteColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
   }
   return(ret)
 }
-
-#' @describeIn nCasteColonyPhenotype
+#' @title nVirginQueensColonyPhenotype
+#' @describeIn nCasteFun Sample a non-zero number of virgin queens based on
+#'   colony phenotype, say queen's fecundity
 #' @export
 nVirginQueensColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
                                     checkProduction = FALSE, lowerLimit = 0,
@@ -847,17 +868,27 @@ nVirginQueensColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
                         simParamBee = simParamBee,
                         ...)
 }
-#' @describeIn nCasteColonyPhenotype
+#' @title nWorkersColonyPhenotype
+#' @describeIn nCasteFun Sample a non-zero number of workers based on
+#'   colony phenotype, say queen's fecundity
 #' @export
-nWorkersColonyPhenotype <- function(x, n = 1, average = 100, lowerLimit = 0) {
+nWorkersColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
+                                    checkProduction = FALSE, lowerLimit = 0,
+                                    simParamBee = NULL,
+                                    ...) {
   nCasteColonyPhenotype(x = x, queenTrait = queenTrait, workersTrait = workersTrait,
                         checkProduction = checkProduction, lowerLimit = lowerLimit,
                         simParamBee = simParamBee,
                         ...)
 }
-#' @describeIn nCasteColonyPhenotype
+#' @title nDronesColonyPhenotype
+#' @describeIn nCasteFun Sample a non-zero number of drones based on
+#'   colony phenotype, say queen's fecundity
 #' @export
-nDronesColonyPhenotype <- function(x, n = 1, average = 100, lowerLimit = 0) {
+nDronesColonyPhenotype <- function(x, queenTrait = 1, workersTrait = NULL,
+                                   checkProduction = FALSE, lowerLimit = 0,
+                                   simParamBee = NULL,
+                                   ...) {
   nCasteColonyPhenotype(x = x, queenTrait = queenTrait, workersTrait = workersTrait,
                         checkProduction = checkProduction, lowerLimit = lowerLimit,
                         simParamBee = simParamBee,
@@ -898,7 +929,7 @@ nDronesColonyPhenotype <- function(x, n = 1, average = 100, lowerLimit = 0) {
 #' p <- swarmPUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #' @export
-swarmPUnif <- function(x, n = 1, min = 0.4, max = 0.6) {
+swarmPUnif <- function(x = NULL, n = 1, min = 0.4, max = 0.6) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {
@@ -984,7 +1015,7 @@ swarmPUnif <- function(x, n = 1, min = 0.4, max = 0.6) {
 #' plot(pKeep ~ nWorkers, ylim = c(0, 1))
 #' abline(v = nWorkersFull)
 #' @export
-splitPUnif <- function(x, n = 1, min = 0.2, max = 0.4) {
+splitPUnif <- function(x = NULL, n = 1, min = 0.2, max = 0.4) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {
@@ -1037,7 +1068,7 @@ splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1) {
 #' p <- downsizePUnif(n = 1000)
 #' hist(p, breaks = seq(from = 0, to = 1, by = 0.01), xlim = c(0, 1))
 #' @export
-downsizePUnif <- function(x, n = 1, min = 0.8, max = 0.9) {
+downsizePUnif <- function(x = NULL, n = 1, min = 0.8, max = 0.9) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {

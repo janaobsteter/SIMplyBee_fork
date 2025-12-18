@@ -504,12 +504,12 @@ test_that("isCsdHeterozygous", {
   colony <- createColony(x = basePop[2], simParamBee = SP)
   colony <- cross(colony, drones = fatherGroups[[1]], simParamBee = SP)
   colony <- buildUp(x = colony, simParamBee = SP)
-  colony@virginQueens <- createVirginQueens(colony, nInd = 1, simParamBee = SP)
+  colony@virginQueens <- createVirginQueens(colony, nInd = 10, simParamBee = SP)
 
   expect_true(isCsdHeterozygous(colony@queen, simParamBee = SP))
   expect_true(is.vector(isCsdHeterozygous(colony@workers, simParamBee = SP)))
   expect_true(all(isCsdHeterozygous(colony@drones, simParamBee = SP)))
-  expect_true(isCsdHeterozygous(colony@virginQueens, simParamBee = SP))
+  expect_true(all(isCsdHeterozygous(colony@virginQueens, simParamBee = SP)))
 
   # set CSD to NULL
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)

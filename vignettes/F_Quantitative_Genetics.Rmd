@@ -173,7 +173,7 @@ values for them! Is this wrong? No! Virgin queens carry DNA with genes that are
 differentially expressed in different castes, which would be only showed in
 their phenotype. Hence, virgin queens have genetic values for the queen and
 worker effects, but they might never actually express these effects. In this
-simulation virgin queens also obtained phenotypic values for both of the
+simulation, virgin queens also obtained phenotypic values for both of the
 effects. This is technically incorrect because virgin queens don't express genes
 for the worker effect at all, and they also do not express the queen effect, not
 until they become the queen of a colony. We can treat these phenotypic values
@@ -278,7 +278,7 @@ print(p)
 ```
 
 In SIMplyBee, we know genetic values of all individuals, including drones that
-the queen mated with (=fathers in a colony)!
+the queen mated with (= fathers in a colony)!
 
 ```{r fathers_values}
 # Variation in patriline genetic values
@@ -459,8 +459,7 @@ apiary with 10 full-sized colonies.
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 100)
 apiary <- createMultiColony(basePop[6:20])
-droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
 apiary
 ```
@@ -496,13 +495,13 @@ the above is shown below just to demonstrate use of your own function, but we
 are simply just reusing `mapCasteToColonyPheno()` twice;)
 
 ```{r colony_pheno_2b}
-myMapCasteToColonyPheno <- function(colony) {
-  yield <- mapCasteToColonyPheno(colony,
+myMapCasteToColonyPheno <- function(x) {
+  yield <- mapCasteToColonyPheno(x,
                                  queenTrait = "yieldQueenTrait",
                                  workersTrait = "yieldWorkersTrait",
                                  traitName = "yield",
                                  checkProduction = TRUE)
-  calmness <- mapCasteToColonyPheno(colony,
+  calmness <- mapCasteToColonyPheno(x,
                                     queenTrait = "calmQueenTrait",
                                     workersTrait = "calmWorkersTrait",
                                     traitName = "calmness",
@@ -587,8 +586,7 @@ We continue by creating an apiary with 10 colonies.
 basePop <- createVirginQueens(founderGenomes)
 drones <- createDrones(x = basePop[1:5], nInd = 100)
 apiary <- createMultiColony(basePop[6:20])
-droneGroups <- pullDroneGroupsFromDCA(drones, nColonies(apiary), nDrones = 15)
-apiary <- cross(x = apiary, drones = droneGroups, checkCross = "warning")
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 ```
 
 Let's explore queen's genetic and phenotypic values for fecundity and honey
@@ -615,9 +613,9 @@ case `fecundityQueenTrait` in queens. Correspondingly, each colony will have a
 different number of workers. Read more about this function in it's help page.
 
 ```{r colony_strength}
-apiary <- buildUp(apiary, nWorkers = nWorkersColonyPhenotype,
+apiary <- buildUp(apiary, nWorkers = nCasteColonyPhenotype,
                   queenTrait = "fecundityQueenTrait")
-cbind(nWorkers = nWorkers(apiary), queenPheno)
+cbind(nWorkers = nWorkers(x = apiary), queenPheno)
 help(nWorkersColonyPhenotype)
 ```
 
@@ -631,7 +629,7 @@ the sum.
 colonyValuesPheno <- calcColonyPheno(apiary,
                                      queenTrait = "yieldQueenTrait",
                                      workersTrait = "yieldWorkersTrait")
-pheno <- cbind(nWorkers = nWorkers(apiary), queenPheno, yield = colonyValuesPheno)
+pheno <- cbind(nWorkers = nWorkers(x = apiary), queenPheno, yield = colonyValuesPheno)
 cor(pheno)
 plot(pheno)
 ```

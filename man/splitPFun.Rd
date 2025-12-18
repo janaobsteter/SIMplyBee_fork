@@ -6,12 +6,12 @@
 \title{Sample the split proportion - proportion of removed workers in a
   managed split}
 \usage{
-splitPUnif(colony, n = 1, min = 0.2, max = 0.4)
+splitPUnif(x = NULL, n = 1, min = 0.2, max = 0.4)
 
-splitPColonyStrength(colony, n = 1, nWorkersFull = 100, scale = 1)
+splitPColonyStrength(x, n = 1, nWorkersFull = 100, scale = 1)
 }
 \arguments{
-\item{colony}{\code{\link[SIMplyBee]{Colony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{n}{integer, number of samples}
 
