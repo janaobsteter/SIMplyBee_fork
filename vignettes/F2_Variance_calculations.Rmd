@@ -387,6 +387,7 @@ nW * nW
 (a <- nW * nW / nF)
 (b <- (nF - 1) * nW * nW / nF)
 a+b 
+#TODO define nDPQ
 ```
 
 Looks like!
@@ -397,7 +398,7 @@ Let's test this:
 
 ```{r check_workers_variances3}
 (varSumWorkers <- nW * varA[2]) # B1
-(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA[2]) # B2 in super-sisters ERROR: SHOULD BE 0.75
+(covSumWorkersSuperSisters <- (nW * nW / nF) * 0.75 * varA[2]) # B2 in super-sisters ERROR: SHOULD BE 0.75
 (covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
 varSumWorkers + covSumWorkersSuperSisters + covSumWorkersHalfSisters # B
 
@@ -464,6 +465,8 @@ print("Part B1")
 (varSumWorkers <- nW * varA[2]) # B1
 print("Part B2 in super-sisters")
 (covSumWorkersSuperSisters <- (nW * nW / nF) * 0.75 * varA[2]) # B2 in super-sisters
+print("Part B2 in full-sisters")
+(covSumWorkersFullSisters <- ((nW * nW / nDPQ) -  (nW * nW / nF)) * 0.50 * varA[2]) # B2 in full-sisters
 print("Part B2 in half-sisters")
 (covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA[2]) # B2 in half-sisters
 print("Part B combined")

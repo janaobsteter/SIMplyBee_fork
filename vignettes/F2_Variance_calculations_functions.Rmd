@@ -20,6 +20,21 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r cor2cov, include = FALSE}
+cor2cov <- function(corr, var) {
+  # Ensure inputs are matrices/vectors
+  corr <- as.matrix(corr)
+  var  <- as.numeric(var)
+
+  # Standard deviations
+  sd <- sqrt(var)
+
+  # Covariance matrix
+  cov <- corr * (sd %o% sd)
+
+  return(cov)
+}
+```
 
 Let's again run the example from the quantitative genetic vignette.
 
@@ -57,6 +72,7 @@ colonyPheno <- calcColonyPheno(apiary)
 
 How the expected and realised variances look like
 ```{r}
+k <- 1
 print("Expected genetic and phenotypic variance")
 covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2] # variance can not be negative!
 covP[1, 1] + nW * covP[2, 2] + 2 * k * covP[1, 2]
@@ -99,14 +115,16 @@ varA_w = 1 / SP$nWorkers
 corA_qw = corA[1,2]
 
 # Covariance due to super-sisters
-covSumWorkersSuperSisters <- (nW * nW / nF) * 0.50 * varA_w
+covSumWorkersSuperSisters <- (nW * nW / nF) * 0.75 * varA_w
+# Covariance due to full-sisters
+covSumWorkersFullSisters <- ((nW * nW / nDPQ) -  (nW * nW / nF)) * 0.50 * varA_w
 # Covariance due to half-sisters
 covSumWorkersHalfSisters <- ((nF - 1) * nW * nW / nF) * 0.25 * varA_w
-# Covariance due to full-sisters
 
 
 
-mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum") {
+
+mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, nDPQ, workersFUN = "sum") {
   if (workersFUN == "mean") {
     nW = 1
   }
@@ -127,13 +145,14 @@ mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum
   if (workersFUN == "sum") {
     varC <- A + B1 + B2_ss + B2_fs + B2_hs + C
   } else if (workersFUN == "mean") {
-    varC <- varA_q + (B2_ss + B2_fs + B2_hs) # This is equal as varA_w * average relatedness within a colony
+    stop("TODO: derive this equation properly")
+    #varC <- varA_q + varA_w + (B2_ss + B2_fs + B2_hs) + covA_qw # This is equal as varA_w * average relatedness within a colony
   }
   return(varC)
 }
 
 #This is the same as above, just simplified
-mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum") {
+mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, nDPQ, workersFUN = "sum") {
 
   # Determina how many pairs of each you have
   p_SS = 1 / nF
@@ -151,7 +170,7 @@ mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, nW, nF, workersFUN = "sum
   if (workersFUN == "sum") {
     varC <- A + B1 + (B2_ss + B2_fs + B2_hs)*nW^2*varA_w + C
   } else if (workersFUN == "mean") {
-    varC <- varA_q + (B2_ss + B2_fs + B2_hs)*varA_w + covA_qw# This is equal as varA_w * average relatedness within a colony
+    varC <- A + varA_w + (B2_ss + B2_fs + B2_hs)*varA_w + covA_qw# This is equal as varA_w * average relatedness within a colony
   }
   return(varC)
 }
@@ -164,6 +183,7 @@ mapIndToColonyVar(varA_q = varA_q,
                   varA_w= varA_w,
                   corA_qw = corA_qw,
                   nW = nW, nF = nF,
+                  nDPQ = nDPQ,
                   workersFUN = "sum")
 colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colSums)
 var(colonyGv)
@@ -175,6 +195,7 @@ mapIndToColonyVar(varA_q = varA_q,
                   varA_w = varA_w * SP$nWorkers,
                   corA_qw = corA_qw,
                   nW = nW, nF = nF,
+                  nDPQ = nDPQ,
                   workersFUN = "mean")
 colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colMeans)
 var(colonyGv)
