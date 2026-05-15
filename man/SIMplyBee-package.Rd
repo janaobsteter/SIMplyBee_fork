@@ -33,6 +33,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Jana Obšteter \email{obsteter.jana@gmail.com} (\href{https://orcid.org/0000-0003-1511-3916}{ORCID})
   \item Laura Strachan (\href{https://orcid.org/0000-0002-2569-0250}{ORCID})
   \item Jernej Bubnič (\href{https://orcid.org/0000-0003-1362-3736}{ORCID})
   \item Gregor Gorjanc (\href{https://orcid.org/0000-0001-8008-2787}{ORCID})

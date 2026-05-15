@@ -29,7 +29,6 @@ LazyData: true
 Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1), RANN, Rcpp (>= 0.12.7), future.apply
 Depends: R (>= 3.3.0), AlphaSimR (>= 2.0.0)
 LinkingTo: Rcpp, RcppArmadillo (>= 0.7.500.0.0), BH
-RoxygenNote: 7.3.2
 Suggests: 
     rmarkdown,
     knitr,
@@ -39,3 +38,4 @@ Suggests:
 Config/testthat/edition: 3
 Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
