@@ -23,27 +23,28 @@ knitr::opts_chunk$set(
 # Quick set-up instructions
 
 Here, we show how you should set-up the parallel back-end on different
-environments. We do recommend reading the remaining of this vignette. We
-recommend running these lines straight after setting the `SimParamBee`.
+environments. We recommend running these lines at the beginning of the
+simulation. We do recommend reading the remaining of this vignette.
 
 ```{r quick_setup, eval=F, echo=T}
 library(SIMplyBee)
-library(parallel)
-library(doParallel)
+library(future)
 
-founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$nThreads <- NCORES #Where NCORES is a specified number or all available cores (detectCores(), see below)
+NCORES = <desired_number_of_cores> # e.g., 8
+  
+# Use function plan to set up parallel environment
+# There are three options
+# First one is no parallelisation, the default
+plan(sequential)
+# Second one is forking - it's quick but only works on Linux/MACOS on local machines (not HPCs!)
+plan(multicore, workers = NCORES)
+# Third one is PSOCK - works on all systems, including HPCs
+plan(multisession, workers = NCORES)
+# Fourth one is clust that runs separate R processes on multiple machines
+plan(cluster, workers = c("machine1", "machine2", ...))
 
-# If using Linux/MACOS
-registerDoParallel(cores = SP$nThreads)
-
-# If using Windows machine / running the simulation on HPC
-cl <- makeCluster(SP$nThreads, type="PSOCK")
-registerDoParallel(cl)
-#Do the simulation 
-# At the end of everything you run
-stopImplicitCluster()
+# At the end of everything you run to stop parallelisation back-end
+plan(sequential)
 ```
 
 # Introduction
@@ -52,23 +53,27 @@ Honeybee simulations consist of simulating individuals as `Pop` classes, and
 then on top of this also `Colony` and `MultiColony` classes, all of them with
 their meta-data. This makes the simulation computationally demanding and slow.
 With the aim to speed up the simulation, we parallelised the major functions
-with `foreach` and `doParallel` R packages. Nothing changed in terms of running
-the functions, but do functions now have the ability to run on multiple cores at
-the same time. They would all search for the number of available cores in the
-`SimParamBee` object, under `nThreads`. You can set that to a desired number or
-make the simulation use all available cores.
+with `future` and `future.apply` R packages. Nothing changed in terms of running
+the functions, but to parallelise your simulation, you need to set up a parallel
+back-end with the function `plan` from the package `future` before starting the
+simulation. You can set that to a desired number or make the simulation use all
+available cores. As metioned in the quick set-up, there are three different
+options to the `plan` function: no parallelisation (`sequential`), forking
+(`multicore`), PSOCK (`multisession`), and running R processes on multiple
+machines (`cluster`). You can read more about these options in the `future`
+documentation (<https://cran.r-project.org/web/packages/future/index.html>).
 
 ```{r nThread_setup}
 library(package = "SIMplyBee")
-library(package = "parallel")
+library(package = "future")
+
+# Set to the desired number of cores
+plan(multisession, workers = 8) 
+# Or use all available cores
+plan(multisession, workers = availableCores())
 
 founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-
-# Set the number of cores to use
-SP$nThreads <- 8
-# Or use all available cores
-SP$nThreads <- detectCores()
 ```
 
 In R, there are two possible options for parallelisation, `FORK` and `PSOCK`.
@@ -101,28 +106,22 @@ create_bee_colonies <- function() {
 ```
 
 We set up different parallelisation back-ends with the following code, where
-`ncores` was either 1 or 8.
+`ncores` was either 1, 8, or 16. All options were tested on an HPC cluster.
 
 ```{r parallelisation_options, eval=F, echo=T}
 
-# First one - ???
-SP$nThreads = ncores
-registerDoParallel(cores = SP$nThreads)
+# First one - sequential
+plan(sequential)
 create_bee_colonies()
 
-# Second one - create a FORK cluster
-SP$nThreads = ncores
-cl <- makeCluster(SP$nThreads, type="FORK")
-registerDoParallel(cl)
+# Second one - use forking
+plan(multicore, workers = nCores)
 create_bee_colonies()
-stopImplicitCluster()
 
-# Third one - create a PSOCK cluster
-SP$nThreads = ncores
-cl <- makeCluster(SP$nThreads, type="PSOCK")
-registerDoParallel(cl)
+
+# Third one - use PSOCK parallelisation
+plan(multisession, workers = nCores)
 create_bee_colonies()
-stopImplicitCluster()
 ```
 
 Here are the results of running these different options. You can see that the
@@ -159,4 +158,3 @@ replicates.
 ```{r functions_time, echo=FALSE, out.width='100%'}
 knitr::include_graphics("Profiling_parallelised_functions_Unix.png")
 ```
-

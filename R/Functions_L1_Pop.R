@@ -1734,7 +1734,6 @@ cross <- function(x,
     simParamBee$changeCaste(id = id, caste = "fathers")
   }
 
-  # All of the input has been transformed to a Pop
   crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
     virginQueen@misc$fathers[[1]] <- virginQueenDrones
     virginQueen@misc[["nWorkers"]]  <- 0
@@ -1780,3 +1779,30 @@ cross <- function(x,
   return(ret)
 }
 
+
+
+#' @rdname crossVirginQueen
+#' @title Internal function to cross a virgin queen
+#'
+#' @description Internal function to cross a virgin queen
+#'
+#' @param virginQueen \code{\link[AlphaSimR]{Pop-class}}
+#' @param virginQueenDrones, list with drones
+#' @param simParamBee, SimParamBee object
+#'
+#' @export
+crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
+  virginQueen@misc$fathers[[1]] <- virginQueenDrones
+  virginQueen@misc[["nWorkers"]]  <- 0
+  virginQueen@misc[["nDrones"]]  <- 0
+  virginQueen@misc[["nHomBrood"]]  <- 0
+
+  if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
+    val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
+  } else {
+    val <- NA
+  }
+
+  virginQueen@misc[["pHomBrood"]]  <- val
+  return(virginQueen)
+}
