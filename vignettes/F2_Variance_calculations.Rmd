@@ -19,99 +19,33 @@ knitr::opts_chunk$set(
   include = TRUE
 )
 ```
+# Introduction of the problem
+As seen in the quantitative genetics vignette, in SIMplyBee, traits are defined
+and simulated at the individual (queen, worker, drone) level and mapped to
+colony-level values. This requires specification of individual-level variances
+and covariances for the queen and workers effects. However, in practice and
+literature, we can obtain only colony-level values, and we would like to be able
+to use these to inform the individual-level trait definitions. This requires
+understanding how colony-level variances and covariances translate to
+individual-level variances and covariances, as well as vice-versa.
 
-```{r FirstExampleFromQuanGenVignette}
-library(package = "SIMplyBee")
-founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
-SP <- SimParamBee$new(founderGenomes)
-nQtlPerChr <- 100
-mean <- c(10, 10 / SP$nWorkers)
-varA <- c(1, 1 / SP$nWorkers)
-corA <- matrix(data = c( 1.0, -0.5, 
-                        -0.5,  1.0), nrow = 2, byrow = TRUE)
-SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
-             name = c("queenTrait", "workersTrait"))
-varE <- c(3, 3 / SP$nWorkers)
-corE <- matrix(data = c(1.0, 0.3, 
-                        0.3, 1.0), nrow = 2, byrow = TRUE)
-SP$setVarE(varE = varE, corE = corE)
-basePop <- createVirginQueens(founderGenomes, n = 20)
-head(basePop@gv)
-head(basePop@pheno)
-drones <- createDrones(x = basePop[1:5], nInd = 3)
-colony <- createColony(x = basePop[6])
-colony <- cross(x = colony, drones = drones, checkCross = "warning")
-colony <- addWorkers(x = colony, nInd = 50)
-colony <- buildUp(colony)
-apiary <- createMultiColony(basePop[7:20])
-drones <- createDrones(basePop[1:5], nInd = 100)
-apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
-apiary <- buildUp(apiary)
-colonyGv <- calcColonyGv(apiary)
-colonyPheno <- calcColonyPheno(apiary)
-```
+This vignettes presents:
+- the theory behind the relationship between individual-level and colony-level variances and covariances,
+- the implementation of this theory in SIMplyBee, and
+- examples of implementation for when the workers's values are combined as a mean or a sum.
 
-The idea of this work is:
+# Theory: colony-level variance components
+As seen in the quantitative genetics vignette, in SIMplyBee, traits are defined
+and simulated at the individual (queen, worker, drone) level and mapped to
+colony-level values. This requires specification of individual-level variances
+and covariances for the queen and workers effects. However, in practice and
+literature, we can obtain only colony-level values, and we would like to be able
+to use these to inform the individual-level trait definitions. This requires
+understanding how colony-level variances and covariances translate to
+individual-level variances and covariances, as well as vice-versa.
 
-1)  We want to do honey bee simulations with individual queens, drones, and
-    workers
 
-2)  To do the above, we require individual variances and covariances
-
-3)  Literature reports only variances and covariances at the colony level
-
-4)  The aim of this paper is to show how to use variances and covariances at the
-    colony level to do simulations at the individual level.
-
-# Introduction WORK IN PROGRESS
-
-This document develops theory for the variance of genetic and phenotypic values
-between colonies with the aim to understand how to fine tune a SIMplyBee
-simulation where we need variance components for queen and workers effects at an
-individual honeybee level. The challenge here is that in reality we do not
-observe such variances, but only on a colony level.
-
-For example, in the vignette we assumed that phenotypic variance on the
-individual level is about 1/4 due to genetic variation and about 3/4 due to
-environmental variation, but looking at colony genetic and phenotypic variances
-the ratio was about 1/2!
-
-TODO: What do we do about this? It feels like we need a full paper on all of
-this;) :(
-
-INTRODUCTION
-
-TODO: Topic 1
-
-TODO: cite this paper that does honeybee simulations, but without actually doing
-honeybee colony stuff etc. Heritability in honeybees paper:
-<https://agritrop.cirad.fr/599190/1/ece3.7389.pdf>
-
-TOOD: cite some classic papers on variances in honeybees
-
-TODO: cite recent papers from German and Dutch colleagues on variances in
-honeybees
-
-Brascamp and Bijma (2014): Methods to estimate breeding values in honey bees
-<https://gsejournal.biomedcentral.com/articles/10.1186/s12711-014-0053-9>
-
-Brascamp and Bijma (2019): A note on genetic parameters and accuracy of
-estimated breeding values in honey bees
-<https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0510-6>
-
-Andonov et al.: Modeling honey yield, defensive and swarming behaviors of
-Italian honey bees (Apis mellifera ligustica) using linear-threshold approaches
-<https://doi.org/10.1186/s12863-019-0776-2>
-
-To make use of the material in this document you should run the quantitative
-genetics vignette - the first example. Then you can continue here!
-
-Having multiple colonies and their values, we can now return to the "about"
-point mentioned at the start of this section, when we defined quantitative
-genetic parameters. Recall that our starting quantitative genetic parameters for
-the queen and workers effects were:
-
-We will follow the example from Brascamp and Bijma (2019) they have:
+We will follow the example from Brascamp and Bijma (2019):
 
 $\sigma_{g_q}^2=0.5$ - this is their $\sigma_{A_q}^2=0.5$
 
@@ -128,7 +62,7 @@ a non-inbred population) as
 $a_{ii} = 1/4 + 1/2p_1 + 1/4(p_2 - p_1) + 1/4(1 - p_2)a_{ss}$; where $p_1$ is
 the probability that two workers descend from the same drone, $p_2$ is the
 probability that they descend from the same DPQ, and $a_{ss}$ is the relatedness
-between two DPQs. We are ignore the $a_{ss}$ part (TODO?).
+between two DPQs. We are ignore the $a_{ss}$ part.
 
 $\sigma_{{g_q},{g_w}}=-0.35$
 
@@ -150,57 +84,84 @@ $T_q^2=\sigma_{g,q}^2/\sigma_{p,c}^2=0.20$
 
 $r_g = cor(g_w, g_q) = -0.50$
 
-TODO: equation 3 in Brascamp and Bijma (2019) is highly relevant to our work
-here - that equation shows connection between the variance of the sum (or
-average) of worker genetic values for worker effect AND variance of worker
-genetic values for worker effect - THIS IS NOT TRUE they always work with the
-worker group effect, never individuals!
-
 TODO: show sensitivity to the number of workers - the larger the number of
 workers, the smaller the variance between workers
 
-covA[1, 1] + nW \* covA[2, 2] + 2 \* k \* covA[1, 2]
+$covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2]$
 
-```{r quan_gen_param_revision}
-# Trait means
-mean
+Let's run again the example from the quantitative genetics vignette to have some
+data to work with. In this example, we assumed that the contribution of workers
+was summed up to obtain the combined colony-level worker contribution.
+Accordingly, the variance for the worker trait was naively scaled by
+$1/nWorkers$, which assumed that workers' contributions were independent. What
+does this give us?
 
-# Trait genetic variation - on a per honeybee level
-varA
-corA
+```{r load_variance_scripts, include = FALSE}
+# load shared variance helper functions for this vignette
+library("SIMplyBee")
+library("dplyr")
+library("ggplot2")
+```
+
+```{r FirstExampleFromQuanGenVignette}
+library(package = "SIMplyBee")
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+SP <- SimParamBee$new(founderGenomes)
+nQtlPerChr <- 100
+mean <- c(10, 10 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers)
+corA <- matrix(data = c( 1.0, -0.5, 
+                        -0.5,  1.0), nrow = 2, byrow = TRUE)
+SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
+             name = c("queenTrait", "workersTrait"))
+varE <- c(3, 3 / SP$nWorkers)
+corE <- matrix(data = c(3.0, 0.3, 
+                        0.3, 3.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
+basePop <- createVirginQueens(founderGenomes, n = 20)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
+colony <- createColony(x = basePop[6])
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
+colony <- addWorkers(x = colony, nInd = 50)
+colony <- buildUp(colony)
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:5], nInd = 100)
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
+apiary <- buildUp(apiary)
+colonyGv <- calcColonyGv(apiary)
+colonyPheno <- calcColonyPheno(apiary)
+
+(popVar(colonyGv))
+(popVar(colonyPheno))
+```
+
+In this example, we assumed that phenotypic variance on the individual level is
+about 1/4 due to genetic variation and about 3/4 due to environmental variation,
+but looking at colony genetic and phenotypic variances the ratio was about 1/2!
+
+Also, if we naively compute the expected colony-level variances based on our assumptions of worker-independence when
+setting individual-level variances, we get: 
+```{r variance_expectation}
 (covA <- corA * outer(X = sqrt(varA), Y = sqrt(varA), FUN = "*"))
 
 # Trait environmental variation - on a per honeybee level
-varE
-corE
 (covE <- corE * outer(X = sqrt(varE), Y = sqrt(varE), FUN = "*"))
 
 # Trait phenotypic variation - on a per honeybee level
 (covP <- covA + covE)
-(corP <- cov2cor(covP))
-(varP <- diag(covP))
 
-# Expected phenotypic variation - on a per colony level
-# TODO: there is in fact more stuff happening here - see below! 
-nW <- SP$nWorkers # TODO: this is not correct - we have queen-workers pairs and workers-workers (see below!)
-# Var(z)=Var(x+y)=Var(x)+Var(sum(y))=Var(x)+Var(y_1)+Var(y_2)+...
-# this is all wrong likely ...
-
-k <- 1 # just adding this so vignette can run, but I don't know what this k should be
-
-covA[1, 1] + nW * covA[2, 2] + 2 * k * covA[1, 2] # variance can not be negative!
-covP[1, 1] + nW * covP[2, 2] + 2 * k * covP[1, 2]
-
-# Observed variation - on a per colony level
-var(colonyGv)
-var(colonyPheno)
-var(colonyGv) / var(colonyPheno)
+(covA[1, 1] + SP$nWorkers * covA[2, 2] + 2 * covA[1, 2])
+(covP[1, 1] + SP$nWorkers * covP[2, 2] + 2 * covP[1, 2])
 ```
+Here, we see an even larger discrepancy between the assumed and realised colony-level genetic variance,
+where the realised values greatly exceed the assumed values.
 
-Hmm, we have much higher genetic and phenotypic variances in simulation than
-based simply looking at queen and n\*workers variances, as well as much higher
-ratio between the two than the initial value of \~1/4! Why? Let's see. For
-genetic value of a colony $g_c$ we add up the queen's genetic value for the
+So, let's have a look at how we can improve the simulation to get the desired
+colony-level variances and covariances.
+
+# Theory: Breaking down colony-level variance components
+
+For genetic value of a colony $g_c$ we add up the queen's genetic value for the
 queen effect $g_{q,q}$ and workers' genetic values for the workers effect
 $\Sigma_{i=1}^{n_w}(g_{i,w})$:
 
@@ -514,116 +475,37 @@ sum((p - (mean(p)))^2) / nColonies(apiary)
 
 And very close for phenotypic too, but we need to check some part above!
 
-# What now?
+# SIMplyBee implementation
 
-Alright, what can we now do with this? We now have a system of expected genetic
-and phenotypic variances for colony values as a function of number of workers,
-fathers, and genetic and phenotypic covariances between the queen and worker
-effects. So, it should be possible, in principle, to solve for what kind of
-covariance values for the queen and workers effects should we use, to get the
-desired colony genetic and phenotypic variances!
+We have developed a set of functions that use the theory explained above to:
+(i) calculate expected colony-level variances
+and covariances based on the provided individual-level variances and covariances: `mapIndToColonyVar()`
+(ii) calculate the required individual-level variances and covariances to achieve the desired 
+colony-level variances and covariances: `mapColonyToIndVar()`
 
-TODO: develop such estimating equations!
+# Example: summarising worker effects as a sum
 
-So, we have genetic part:
+Let's see how these work in practice. We will use the same example as above, so let's just recall what values we've set.
+Note again, that we are summarising the workers' effects as a sum, so we naively set the individual-level variance for the worker effect 
+to be $1/nWorkers$ of the desired colony-level variance for the worker effect. 
 
-$A_g = \sigma^2_{g_q}$
+Let's start off with a fresh simulation.
 
-$B1_g = n_w \sigma^2_{g_w}$
-
-$B2ss_g = (\frac{n^2_w}{n_f} - {n_w})  \frac{1}{2} \sigma^2_{g_w}$
-
-$B2fs = (\frac{n^2_w}{n_{DPQ}} -  \frac{n^2_w}{n_f})  \frac{1}{4} \sigma^2_{g_w}$
-
-$B2hs_g = \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$
-
-$C_g = n_w \sigma^2_{{g_q},{g_w}}$
-
-here are 3 unknowns: $\sigma^2_{g_q}$, $\sigma^2_{g_w}$, and
-$\sigma^2_{{g_q},{g_w}}$
-
-we can add phenotypic part:
-
-$A_p = \sigma^2_{p_q}$
-
-$B1_p = n_w \sigma^2_{p_w}$
-
-$B2_p = \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}$ TODO: check if its only
-genetic
-
-$B3_p = \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$ TODO: check if
-its only genetic
-
-$C_p = n_w \sigma^2_{{p_q},{p_w}}$
-
-here are additional 3 unknowns: $\sigma^2_{p_q}$, $\sigma^2_{p_w}$, and
-$\sigma^2_{{p_q},{p_w}}$
-
-while we could provide as guidance 2, maybe 3, inputs: $\sigma^2_{g_c}$,
-$\sigma^2_{p_c}$, and $\frac{\sigma^2_{g_c}}{\sigma^2_{p_c}}$.
-
-TODO: are there any additional inputs that we could get from literature? How do
-we connect all this with variance estimates for the queen and the workers effect
-in the honeybee genetics and breeding literature? I think that those estimates
-are essentially this:
-$\sigma^2_{g_c} = \sigma^2_{g_{c,q}} + \sigma^2_{g_{c,w}} + 2\sigma_{g_{c,q},g_{c,w}}$
-where $\sigma^2_{g_{c,q}}$ is the queen part of $\sigma^2_{g_c}$, but not
-necessarily the same as $\sigma^2_{g_w}$, or is it? Maybe that is the same, and
-$\sigma^2_{g_{c,w}}$ is a counterpart to
-$n_w \sigma^2_{g_w} + \frac{n^2_w}{n_f} \frac{1}{2} \sigma^2_{g_w}, \frac{(n_f - 1) n^2_w}{n_f} \frac{1}{4} \sigma^2_{g_w}$
-(TODO: should we add full-sisters?), while $\sigma_{g_{c,q},g_{c,w}}$ is a
-counterpart to $n_w \sigma_{{g_q},{g_w}}$. If this is so, then it fells that we
-should have 3 more inputs for genetic part, so 4 inputs to estimate 3 unknowns
-of which some are very simple transformations!!!
-
-Additional input could be $\sigma^2_{p_c}$. For sure we don't get estimates of
-$\sigma^2_{p_c} = \sigma^2_{p_{c,q}} + \sigma^2_{p_{c,w}} + 2\sigma_{p_{c,q},p_{c,w}}$,
-but, having sorted the genetic part and if $B2_p$ and $B3_p$ depend only on
-genetic covariance, then maybe, we have some maneuvering space to estimate also
-$\sigma^2_{p_q}$, $\sigma^2_{p_w}$, and $\sigma^2_{{p_q},{p_w}}$?!
-
-Furthermore, we have some constraints, so this is not just any system of
-equations. For example, we know that variances must be positive. Futhermore, we
-might know that come covariances are either positive or negative.
-
-TODO: Develop and polish all this further and create a Shiny application where
-we can change these individual-level parameters and study how that will change
-colony-level parameters and then how we could go the other way around based on
-literature and solving the above systems of equations. We could host such a
-Shiny app on SIMplyBee.info!? Can we?
-
-NEXT STEPS:
-
-1)  read the above, check derivations, missing bits, etc.
-
-2)  write a function that takes individual variances, nw, nf, etc. and returns
-    colony variances and h2, t2, T2, ...
-
-3)  develop a system of equations (using A, Bs, and C) linking individual and
-    colony values for two types of colony values (for different models beepeople
-    run!) - then find a way to optimize/solve for individual values (output)
-    with colony values as input
-
-
-NOW - do the same, but for when the aggregate of the workers is a mean
-```{r FirstExampleFromQuanGenVignette}
-library(package = "SIMplyBee")
+```{r}
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 SP <- SimParamBee$new(founderGenomes)
 nQtlPerChr <- 100
-mean <- c(10, 10)
-varA <- c(1, 1)
+mean <- c(10, 10 / SP$nWorkers)
+varA <- c(1, 1 / SP$nWorkers)
 corA <- matrix(data = c( 1.0, -0.5, 
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
              name = c("queenTrait", "workersTrait"))
-varE <- c(3, 3)
-corE <- matrix(data = c(1.0, 0.3, 
-                        0.3, 1.0), nrow = 2, byrow = TRUE)
+varE <- c(3, 3 / SP$nWorkers)
+corE <- matrix(data = c(3.0, 0.3, 
+                        0.3, 3.0), nrow = 2, byrow = TRUE)
 SP$setVarE(varE = varE, corE = corE)
 basePop <- createVirginQueens(founderGenomes, n = 20)
-head(basePop@gv)
-head(basePop@pheno)
 drones <- createDrones(x = basePop[1:5], nInd = 3)
 colony <- createColony(x = basePop[6])
 colony <- cross(x = colony, drones = drones, checkCross = "warning")
@@ -633,171 +515,255 @@ apiary <- createMultiColony(basePop[7:20])
 drones <- createDrones(basePop[1:5], nInd = 100)
 apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
-colonyGv <- unlist(mapCasteToColonyGv(x = apiary, queenTrait = 1, workersTrait = 2, workersFUN = colMeans))
-colonyPheno <- unlist(mapCasteToColonyPheno(x = apiary, queenTrait = 1, workersTrait = 2, workersFUN = colMeans))
 ```
 
+Now, let's compute the corresponding colony-level variances and covariances using the `mapIndToColonyVar()` function.
+```{r mapIndToColonyVar_sum}
+# When the function to summarise worker effects is SUM
+calcColonyValues <- mapIndToColonyVar(varA_q = varA[1], 
+                  varA_w= varA[2],
+                  corA_qw = corA[1, 2],
+                  varE_q = varE[1],
+                  varE_w = varE[2],
+                  corE_qw = corE[1, 2],
+                  nW = nW, nF = nF,
+                  nDPQ = nDPQ,
+                  workersFUN = "sum")
 
-```{r quan_gen_param_revision}
-# Trait means
-mean
-
-# Trait genetic variation - on a per honeybee level
-varA
-corA
-(covA <- corA * outer(X = sqrt(varA), Y = sqrt(varA), FUN = "*"))
-
-# Trait environmental variation - on a per honeybee level
-varE
-corE
-(covE <- corE * outer(X = sqrt(varE), Y = sqrt(varE), FUN = "*"))
-
-# Trait phenotypic variation - on a per honeybee level
-(covP <- covA + covE)
-(corP <- cov2cor(covP))
-(varP <- diag(covP))
-
-# Expected phenotypic variation - on a per colony level
-# TODO: there is in fact more stuff happening here - see below! 
-nW <- SP$nWorkers # TODO: this is not correct - we have queen-workers pairs and workers-workers (see below!)
-# Var(z)=Var(x+y)=Var(x)+Var(sum(y))=Var(x)+Var(y_1)+Var(y_2)+...
-# this is all wrong likely ...
-
-k <- 1 # just adding this so vignette can run, but I don't know what this k should be
-
-
-# Observed variation - on a per colony level
+calcColonyValues$varA_c
+colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colSums)
 var(colonyGv)
-var(colonyPheno)
-var(colonyGv) / var(colonyPheno)
+```
+We see that the realised and calculated colony-level variances match quite closely. 
+
+Now, let's do it the other way around. This is a more realistic scenario since you would normally obtain 
+the colony-level variances and covariances from the literature and would want to recreate them using simulation.
+Here, we assume, you obtain a separate estimate for the queen and for the worker trait.
+Let's say we want to achieve the following colony-level variances and covariances:
+```{r mapColonyToIndVar_sum}
+varA_q <- 1
+varA_wbar <- 1
+corA_qwbar <- -0.5
+
+varE_q <- 3
+varE_wbar <- 3
+corE_qwbar <- 0.3
+
+nW <- 100
+nF <- 15
+nDPQ <- 5
+
+calcIndValues <- mapColonyToIndVar(varA_q = varA_q, varA_wbar = varA_wbar, corA_qwbar = corA_qwbar, 
+                                varE_q = varE_q, varE_wbar = varE_wbar, corE_qwbar = corE_qwbar, 
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum")
+```
+Now, let's use these calculated individual-level variances and covariances to simulate a new population and check if we achieve the desired colony-level variances and covariances.
+
+
+```{r example_sum}
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+SP <- SimParamBee$new(founderGenomes)
+SP$nWorkers = nW
+SP$nFathers = nF
+nQtlPerChr <- 100
+mean <- c(0, 0)
+varA <- c(calcIndValues$varA_q, calcIndValues$varA_w)
+corA <- matrix(data = c( 1.0, calcIndValues$corA_qw,
+                        calcIndValues$corA_qw,  1.0), nrow = 2, byrow = TRUE)
+SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
+            name = c("queenTrait", "workersTrait"))
+varE <- c(calcIndValues$varE_q, calcIndValues$varE_w)
+corE <- matrix(data = c(1.0, calcIndValues$corE_qw,
+                        calcIndValues$corE_qw, 1.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
+basePop <- createVirginQueens(founderGenomes, n = 20)
+
+drones <- createDrones(x = basePop[1:nDPQ], nInd = 3)
+colony <- createColony(x = basePop[nDPQ+1])
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
+colony <- addWorkers(x = colony, nInd = 50)
+colony <- buildUp(colony)
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:nDPQ], nInd = 100)
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
+apiary <- buildUp(apiary)
+
+# Get the realised numbers
+real_A_q <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_varA_q <- popVar(real_A_q)
+real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
+real_varA_wbar <- popVar(real_A_wbar)
+real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_varA_c <- popVar(real_A_c)
+
+real_P_q <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_E_q <- real_P_q - real_A_q
+real_varE_q <- popVar(real_E_q)
+real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
+real_E_wbar <- real_P_wbar - real_A_wbar
+real_varE_wbar <- popVar(real_E_wbar)
+real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_E_c <- real_P_c - real_A_c
+real_varE_c <- popVar(real_E_c)
+
+variances <- data.frame(set_varA_q = varA_q, real_varA_q = real_varA_q[1,1],
+                        set_varA_wbar = varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                        real_varA_c = real_varA_c[1,1], 
+                        set_varE_q = varE_q, real_varE_q = real_varE_q[1,1],
+                        set_varE_wbar = varE_wbar, real_varE_wbar = real_varE_wbar[1,1],
+                        real_varE_c = real_varE_c[1,1],
+                        fun = "sum")
+
+# Plot the results
+variancesLong <- variances %>%
+  tidyr::pivot_longer(cols = -c(fun), names_to = "VarType", values_to = "Var")
+variancesLong$RealCalc <- sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 1)
+# Extract the second and third elements and paste them together to get the variance type for plotting
+variancesLong$VarTypePlot <- paste0(sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 2), "_", sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 3))
+
+variancesLong$VarTypePlot <- factor(variancesLong$VarTypePlot, levels = c("varA_q", "varA_wbar", "varA_c",
+                                                                        "varE_q", "varE_wbar", "varE_c"))
+
+variancesLong |>   filter(VarTypePlot %in% c("varA_q", "varA_wbar", "varE_q", "varE_wbar")) |>
+  ggplot(aes(x = VarTypePlot, y = Var, fill = RealCalc)) +
+  geom_col(position = "dodge") +
+  facet_wrap(. ~fun, scales = "free") +
+  theme_bw(base_size = 20) + 
+  scale_fill_manual(values = c("#D55E00", "#084159"))  # one color per RealCalc level (set/real)
 ```
 
+As we see, we are pretty much on point with matching the desired values! There is of course the element of stochasticity and
+the limited samples size. 
 
 
-# A) Variance of the queen effect in queens $\sigma^2_{g_{q}}$ - in our case this is:
+# Example: summarising worker effects as a mean
+Let's repeat all of the above using a mean to summarise workers' values.
+For this, we set the individual-level variance for the worker effect the same as the desired colony-level variance.
+For this, we need to resimulate our apiary.
 
-```{r check_queen_variances}
-varA[1]
-x = getQueenGv(apiary, collapse = TRUE)[, "queenTrait"]
-var(x)
-# ... note that R's var() divides by n-1, which matters with small n
-popVar(x)
-sum((x - mean[1])^2) / nColonies(apiary)
-
+```{r simulation_mean}
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+SP <- SimParamBee$new(founderGenomes)
+nQtlPerChr <- 100
+mean <- c(10, 10)
+varA <- c(1, 1)
+corA <- matrix(data = c( 1.0, -0.5, 
+                        -0.5,  1.0), nrow = 2, byrow = TRUE)
+SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
+             name = c("queenTrait", "workersTrait"))
+varE <- c(3, 3 / SP$nWorkers)
+corE <- matrix(data = c(3.0, 0.3, 
+                        0.3, 3.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
+basePop <- createVirginQueens(founderGenomes, n = 20)
+drones <- createDrones(x = basePop[1:5], nInd = 3)
+colony <- createColony(x = basePop[6])
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
+colony <- addWorkers(x = colony, nInd = 50)
+colony <- buildUp(colony)
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:5], nInd = 100)
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
+apiary <- buildUp(apiary)
 ```
 
-Anyway, quite close!
+Let's again compute the corresponding colony-level variances and covariances using the `mapIndToColonyVar()` function.
+```{r mapIndToColonyVar_mean}
+# When the function to summarise worker effects is MEAN
+calcColonyValues <- mapIndToColonyVar(varA_q = varA[1], 
+                  varA_w= varA[2],
+                  corA_qw = corA[1, 2],
+                  varE_q = varE[1],
+                  varE_w = varE[2],
+                  corE_qw = corE[1, 2],
+                  nW = nW, nF = nF,
+                  nDPQ = nDPQ,
+                  workersFUN = "mean")
 
-# B) Variance of a sum of workers effect in workers $Var(\Sigma_{i=1}^{n_w}(g_{i,w}))$
+calcColonyValues$varA_c
+colonyGv <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colMeans)
+var(colonyGv)
+```
+We again see that the realised and calculated colony-level variances match very closely. 
 
-Given that this is a sum, we need to look at:
+And for the other way around:
+```{r mapColonyToIndVar_mean}
+calcIndValues <- mapColonyToIndVar(varA_q = varA_q, varA_wbar = varA_wbar, corA_qwbar = corA_qwbar, 
+                                varE_q = varE_q, varE_wbar = varE_wbar, corE_qwbar = corE_qwbar, 
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum")
+```
+Now, let's use these calculated individual-level variances and covariances to simulate a new population and check if we achieve the desired colony-level variances and covariances.
 
-B1) variance of each of worker genetic values $Var(g_{i,w})$ and
 
-B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$.
+```{r example_mean}
+founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
+SP <- SimParamBee$new(founderGenomes)
+SP$nWorkers = nW
+SP$nFathers = nF
+nQtlPerChr <- 100
+mean <- c(0, 0)
+varA <- c(calcIndValues$varA_q, calcIndValues$varA_w)
+corA <- matrix(data = c( 1.0, calcIndValues$corA_qw,
+                        calcIndValues$corA_qw,  1.0), nrow = 2, byrow = TRUE)
+SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
+            name = c("queenTrait", "workersTrait"))
+varE <- c(calcIndValues$varE_q, calcIndValues$varE_w)
+corE <- matrix(data = c(1.0, calcIndValues$corE_qw,
+                        calcIndValues$corE_qw, 1.0), nrow = 2, byrow = TRUE)
+SP$setVarE(varE = varE, corE = corE)
+basePop <- createVirginQueens(founderGenomes, n = 20)
 
-This means, that family structure will start to matter because it induces
-covariance between family members (workers). The simplest case is when all
-workers come from the same father. Then we have:
+drones <- createDrones(x = basePop[1:nDPQ], nInd = 3)
+colony <- createColony(x = basePop[nDPQ+1])
+colony <- cross(x = colony, drones = drones, checkCross = "warning")
+colony <- addWorkers(x = colony, nInd = 50)
+colony <- buildUp(colony)
+apiary <- createMultiColony(basePop[7:20])
+drones <- createDrones(basePop[1:nDPQ], nInd = 100)
+apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
+apiary <- buildUp(apiary)
 
-$g_{1,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{1,w}$
+# Get the realised numbers
+real_A_q <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_varA_q <- popVar(real_A_q)
+real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
+real_varA_wbar <- popVar(real_A_wbar)
+real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_varA_c <- popVar(real_A_c)
 
-$g_{2,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{2,w}$
+real_P_q <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_E_q <- real_P_q - real_A_q
+real_varE_q <- popVar(real_E_q)
+real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
+real_E_wbar <- real_P_wbar - real_A_wbar
+real_varE_wbar <- popVar(real_E_wbar)
+real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_E_c <- real_P_c - real_A_c
+real_varE_c <- popVar(real_E_c)
 
-...
+variances <- data.frame(set_varA_q = varA_q, real_varA_q = real_A_q[1,1],
+                        set_varA_wbar = varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                        real_varA_c = real_varA_c[1,1], 
+                        set_varE_q = varE_q, real_varE_q = real_varE_q[1,1],
+                        set_varE_wbar = varE_wbar, real_varE_wbar = real_varE_wbar[1,1],
+                        real_varE_c = real_varE_c[1,1],
+                        fun = "sum")
 
-$g_{n_w,w} = \frac{1}{2}g_{q,w} + g_{f,w} + r_{n_w,w}$
+# Plot the results
+variancesLong <- variances %>%
+  tidyr::pivot_longer(cols = -c(fun), names_to = "VarType", values_to = "Var")
+variancesLong$RealCalc <- sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 1)
+# Extract the second and third elements and paste them together to get the variance type for plotting
+variancesLong$VarTypePlot <- paste0(sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 2), "_", sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 3))
 
-## B1) variance of each of worker genetic values $Var(g_{i,w})$
+variancesLong$VarTypePlot <- factor(variancesLong$VarTypePlot, levels = c("varA_q", "varA_wbar", "varA_c",
+                                                                        "varE_q", "varE_wbar", "varE_c"))
 
-As stated initially, we have $Var(g_{i,w}) = \sigma^2_{g_{w}}$ and we have $n_w$
-such terms, $n_w \sigma^2_{g_{w}}$. In our case this would be:
-
-```{r check_workers_variances}
-nW * varA[2]
-g <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = "workersTrait", workersFUN = colMeans)
-var(g)
-# ... note that R's var() divides by n-1, which matters with small n
-#sum((g - 1/nW^2 * mean[2])^2) / nColonies(apiary) ?
-popVar(g)
+variancesLong |>   filter(VarTypePlot %in% c("varA_q", "varA_wbar", "varE_q", "varE_wbar")) |>
+  ggplot(aes(x = VarTypePlot, y = Var, fill = RealCalc)) +
+  geom_col(position = "dodge") +
+  facet_wrap(. ~fun, scales = "free") +
+  theme_bw(base_size = 20) + 
+  scale_fill_manual(values = c("#D55E00", "#084159"))  # one color per RealCalc level (set/real)
 ```
 
-So, a huge discrepancy between the variance of a sum of genetic values for the
-workers effect `nW * varA[2]` (assuming independence) and a realised sum of
-genetic values for the workers effect. As we have seen above, this is due to
-family structure and associated B2) covariance between each pair of the values
-$Cov(g_{i,w}, g_{j,w})$.
-
-## B2) covariance between each pair of the values $Cov(g_{i,w}, g_{j,w})$
-
-```{r pairs_of_workers}
-(nF <- round(mean(nFathers(apiary)), 0))
-(nDPQ <- round(mean(sapply(getFathers(apiary), function(x) length(unique(x@mother)))), 0))
-nW * nW
-(a <- nW * nW / nF)
-(b <- (nF - 1) * nW * nW / nF)
-a+b 
-```
-
-Looks like!
-
-So, super-sister pairs add $\frac{n^2_w}{n_f} \frac{1}{2}\sigma^2_{g_w}$ and
-half-sister pairs add $\frac{ (n_f - 1) n^2_w}{n_f} \frac{1}{4}\sigma^2_{g_w}$.
-Let's test this:
-
-
-```{r check_workers_variances4}
-n_SS = (nW * nW / nF) - nW
-n_FS = (nW * nW / nDPQ) -  (nW * nW / nF)
-n_HS = (nW * nW / nDPQ) * (nDPQ - 1)
-
-(n_SS + n_FS + n_HS + nW) == nW * nW
-
-print("Genetic variances")
-print("Part A")
-(varQueen_A <- varA[1]) # A
-
-print("Part B1")
-(varSumWorkers_A <- (1 / nW^2) * varA[2]) # B1
-print("Part B2 in super-sisters")
-(covSumWorkersSuperSisters_A <- n_SS * 0.75 * varA[2]) # B2 in super-sisters
-print("Part B2 in full-sisters")
-(covSumWorkersFullSisters_A <- n_FS * 0.50 * varA[2]) # B2 in full-sisters
-print("Part B2 in half-sisters")
-(covSumWorkersHalfSisters_A <- n_HS * 0.25 * varA[2]) # B2 in half-sisters
-print("Part B combined")
-(varCovSumWorkers_A <- (1 / nW^2) * (varSumWorkers_A + covSumWorkersSuperSisters_A + covSumWorkersFullSisters_A + covSumWorkersHalfSisters_A)) #B
-print("Part C")
-(covQueenSumWorkers_A <- (1 / nW^2) * covA[1, 2]) # C
-
-print("Part A + B + C")
-varQueen_A + varCovSumWorkers_A + covQueenSumWorkers_A
-
-print("ColonyGv variance")
-g <- colonyGv
-var(g)
-popVar(g)
-sum((g - (mean(g)))^2) / nColonies(apiary)
-```
-
-Bingo for genetic variance.
-
-```{r}
-print("Environmental variance")
-print("Part A")
-(varQueen_E <- varE[1]) # A
-print("Part B1")
-(varSumWorkers_E <- (1 / nW^2) * varE[2]) # B1, there is not environmental covariance between workers, so no B2
-print("Part C")
-(covQueenSumWorkers_E <- (1 / nW^2) * covE[1, 2]) # C - both genetic and env cove here? TODO
-
-print("Part A + B + C f")
-varQueen_A + varCovSumWorkers_A + covQueenSumWorkers_A + varQueen_E + varSumWorkers_E + covQueenSumWorkers_E
-
-p <- colonyPheno
-var(p)
-popVar(p)
-sum((p - (mean(p)))^2) / nColonies(apiary)
-```
-
-And very close for phenotypic too, but we need to check some part above!
