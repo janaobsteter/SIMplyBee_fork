@@ -70,17 +70,17 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{c(MultiColonyOrNULL)}: Combine multiple Colony and MultiColony objects
 
-\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
+\item \code{x = MultiColony[i = integerOrNumericOrLogical]}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
+\item \code{x = MultiColony[i = character]}: Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
+\item \code{x = MultiColony[[i = integerOrNumericOrLogical]]}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
 
-\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
+\item \code{x = MultiColony[[i = character]]}: Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
 
-\item \code{`[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into MultiColony
+\item \code{x = MultiColony[i = integerOrNumericOrLogicalOrCharacter, j = ANY] <- value}: Assign colonies into MultiColony
 
-\item \code{`[[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign Colony into MultiColony
+\item \code{x = MultiColony[[i = integerOrNumericOrLogicalOrCharacter, j = ANY]] <- value}: Assign Colony into MultiColony
 
 }}
 \section{Slots}{
