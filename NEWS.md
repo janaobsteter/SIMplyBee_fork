@@ -6,7 +6,7 @@ editor_options:
 
 # SIMplyBee version 0.5.0
 
--   2025-11-27
+-   2026-29-09
 
 ## Major changes
 
@@ -22,12 +22,14 @@ editor_options:
 -   createMultiColony() no longer creates an empty apiary, but it adds
     empty colonies with IDs
 
--   we no longer support creating an exact number of workers with the csd functionality turned on. Due to inbreeding at the csd locus, some workers are not viable. Previous funcionality re-ran the creation of workers until a required number was available. We no longer support this, so we number of returned workers
+-   we no longer support creating an exact number of workers with the csd functionality turned on. Due to inbreeding at the csd locus, some workers are not viable. Previous funcionality re-ran the creation of workers until a required number was available. We no longer support this, so the number of returned workers
 is the number of viable workers.
 
--   the 'cross' function now removed unsuccessfully mated queens. This can primarily happen when creating a spatial cross plan. If there are no drone producing colonies in the specified radius, the mating fails and the queens/colonies are removed from the object. This is to ensure all further functionality works well.
+-   the 'cross' function now removes unsuccessfully mated queens. This can primarily happen when creating a spatial cross plan. If there are no drone producing colonies in the specified radius, the mating fails and the queens/colonies are removed from the object. This is to ensure all further functionality works well.
 
 ## New features
+- added functionality to map individual-level variance to colony-level variance and vice-versa
+  with functions 'mapIndToColonyVar' and 'mapColonyToIndVar'
 
 -   parallelised all the major functions (so they run on
     simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
@@ -58,7 +60,7 @@ which caused an error. We now read in the locations from a csv file.
     now c(0, 0) PR#500
 
 
-## New features ##
+## New features
 -   In setLocation(MultiColony) we can set one location (numeric) or
     multiple (list or data.frame) PR#500
 -   getLocation(MultiColony) got the collapse argument
