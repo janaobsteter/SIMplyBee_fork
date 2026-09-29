@@ -114,5 +114,3 @@ nDrones(apiary)
 
 # Queen's counters
 getQueen(buildUp(colony))@misc
-
-}

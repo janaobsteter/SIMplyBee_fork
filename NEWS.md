@@ -6,7 +6,7 @@ editor_options:
 
 # SIMplyBee version 0.5.0
 
--   2025-11-27
+-   2026-29-09
 
 ## Major changes
 
@@ -23,6 +23,8 @@ editor_options:
     empty colonies with IDs
 
 ## New features
+- added functionality to map individual-level variance to colony-level variance and vice-versa
+  with functions 'mapIndToColonyVar' and 'mapColonyToIndVar'
 
 -   parallelised all the major functions (so they run on
     simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
@@ -53,7 +55,7 @@ which caused an error. We now read in the locations from a csv file.
     now c(0, 0) PR#500
 
 
-## New features ##
+## New features
 -   In setLocation(MultiColony) we can set one location (numeric) or
     multiple (list or data.frame) PR#500
 -   getLocation(MultiColony) got the collapse argument
