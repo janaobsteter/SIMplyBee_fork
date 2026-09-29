@@ -63,7 +63,7 @@ following the questions:
     queen/colony.
 -   cross **according to a cross plan**. This option is the recommended option
     when mating a larger number of virgin queens/colonies. Continue to question
-    3.  
+    3.
 
 3.  When mating **according to a cross plan**, you can either:
 
@@ -131,8 +131,8 @@ beekeeper2 <- createMultiColony(basePop[12:16])
 beekeeper3 <- createMultiColony(basePop[17:21])
 beekeeper4 <- createMultiColony(basePop[22:31])
 beekeeper5 <- createMultiColony(basePop[32:40])
-beekeeper6 <- createMultiColony(basePop[41:50]) 
-beekeeper7 <- createMultiColony(basePop[51:60]) 
+beekeeper6 <- createMultiColony(basePop[41:50])
+beekeeper7 <- createMultiColony(basePop[51:60])
 ```
 
 We will now create a groups of drones from the remaining queens with 1,000
@@ -294,18 +294,18 @@ pairs (with the `Map` function). We could also set locations randomly.
 
 ```{r}
 # Read locations from a file
-locations = read.csv("Colony_locations.csv")
+locations = read.csv("colony_locations.csv")
 # Set location to apiaries
 beekeeper1_locations <- locations[locations$ColonyID %in% getId(beekeeper1),]
-beekeeper1 <-  setLocation(beekeeper1, 
+beekeeper1 <-  setLocation(beekeeper1,
                            location = Map(c, beekeeper1_locations$X, beekeeper1_locations$Y))
 
 beekeeper2_locations <- locations[locations$ColonyID %in% getId(beekeeper2),]
-beekeeper2 <-  setLocation(beekeeper2, 
+beekeeper2 <-  setLocation(beekeeper2,
                            location = Map(c, beekeeper2_locations$X, beekeeper2_locations$Y))
 
 beekeeper3_locations <- locations[locations$ColonyID %in% getId(beekeeper3),]
-beekeeper3 <-  setLocation(beekeeper3, 
+beekeeper3 <-  setLocation(beekeeper3,
                            location = Map(c, beekeeper3_locations$X, beekeeper3_locations$Y))
 
 ```
@@ -320,7 +320,7 @@ locationsDF <- data.frame(Location = getLocation(c(beekeeper1, beekeeper2, beeke
                                         rep("Beekeeper2", nColonies(beekeeper2)),
                                         rep("Beekeeper3", nColonies(beekeeper3))))
 
-ggplot(data = locationsDF, aes(x = Location.1, y = Location.2, colour = Beekeeper)) + 
+ggplot(data = locationsDF, aes(x = Location.1, y = Location.2, colour = Beekeeper)) +
   geom_point()
 ```
 
@@ -347,7 +347,7 @@ radius, if you think that is sensible, or some virgin queens will remain
 unmated. Once we have the spatial cross plan, we can mate our colonies.
 
 ```{r}
-beekeeper3 <- cross(x = beekeeper3, 
+beekeeper3 <- cross(x = beekeeper3,
                     crossPlan = crossPlan2,
                     droneColonies = c(beekeeper1, beekeeper2),
                     nDrones = 13,
@@ -380,11 +380,11 @@ the beekeepers 4 and 5 colonies.
 
 ```{r}
 beekeeper4_locations <- locations[locations$ColonyID %in% getId(beekeeper4),]
-beekeeper4 <-  setLocation(beekeeper4, 
+beekeeper4 <-  setLocation(beekeeper4,
                            location = Map(c, beekeeper4_locations$X, beekeeper4_locations$Y))
 
 beekeeper5_locations <- locations[locations$ColonyID %in% getId(beekeeper5),]
-beekeeper5 <-  setLocation(beekeeper5, 
+beekeeper5 <-  setLocation(beekeeper5,
                            location = Map(c, beekeeper5_locations$X, beekeeper5_locations$Y))
 ```
 
@@ -469,22 +469,22 @@ into one. Let's mate the multicolony of beekeeper 4 in such a manner.
 ```{r}
 # Create a single drone for single drone insemination
 singleDrone = createDrones(beekeeper1[[1]], nInd = 1)
-# Create a cross plan for crossing some of the colonies in an open DCA, 
+# Create a cross plan for crossing some of the colonies in an open DCA,
 # some with single drone, and some on a mating station
 crossPlanBeekeeper7 <- c(
-  createCrossPlan(x = beekeeper7[1], 
-                  drones = singleDrone, 
+  createCrossPlan(x = beekeeper7[1],
+                  drones = singleDrone,
                   nDrones = 1),
-  createCrossPlan(x = beekeeper7[2:6], 
-                  drones = DCA, 
+  createCrossPlan(x = beekeeper7[2:6],
+                  drones = DCA,
                   nDrones = nFathersTruncPoisson),
-  createCrossPlan(x = beekeeper7[7:10], 
-                  drones = matingStationDCA, 
+  createCrossPlan(x = beekeeper7[7:10],
+                  drones = matingStationDCA,
                   nDrones = nFathersTruncPoisson)
   )
 
-beekeeper7 <- cross(x = beekeeper7, 
-                    crossPlan = crossPlanBeekeeper7, 
+beekeeper7 <- cross(x = beekeeper7,
+                    crossPlan = crossPlanBeekeeper7,
                     drones = c(singleDrone, DCA, matingStationDCA),
                     checkCross = "warning")
 nFathers(beekeeper7)
