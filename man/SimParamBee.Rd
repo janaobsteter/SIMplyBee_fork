@@ -25,7 +25,7 @@ See also \code{vignette(package = "SIMplyBee")} for descriptions of how
 \examples{
 
 ## ------------------------------------------------
-## Method `SimParamBee$new`
+## Method `SimParamBee$new()`
 ## ------------------------------------------------
 
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -45,7 +45,7 @@ SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
 \dontshow{SP$nThreads = 1L}
 
 ## ------------------------------------------------
-## Method `SimParamBee$addToCaste`
+## Method `SimParamBee$addToCaste()`
 ## ------------------------------------------------
 
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -65,7 +65,7 @@ SP$pedigree
 SP$caste
 
 ## ------------------------------------------------
-## Method `SimParamBee$changeCaste`
+## Method `SimParamBee$changeCaste()`
 ## ------------------------------------------------
 
 founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
@@ -105,9 +105,9 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 \code{\link[AlphaSimR:SimParam]{AlphaSimR::SimParam}} -> \code{SimParamBee}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{nWorkers}}{numeric or function, a number of workers generated in a
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{nWorkers}}{numeric or function, a number of workers generated in a
   colony - used in \code{\link[SIMplyBee]{createWorkers}}, \code{\link[SIMplyBee]{addWorkers}},
   \code{\link[SIMplyBee]{buildUp}}.
 
@@ -129,7 +129,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{nDrones}}{numeric or function, a number of drones generated in a
+    \item{\code{nDrones}}{numeric or function, a number of drones generated in a
   colony - used in \code{\link[SIMplyBee]{createDrones}}, \code{\link[SIMplyBee]{addDrones}},
   \code{\link[SIMplyBee]{buildUp}}.
 
@@ -151,7 +151,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{nVirginQueens}}{numeric or function, a number of virgin queens
+    \item{\code{nVirginQueens}}{numeric or function, a number of virgin queens
   generated when a queen dies or other situations - used in
   \code{\link[SIMplyBee]{createVirginQueens}} and \code{\link[SIMplyBee]{addVirginQueens}}.
 
@@ -173,7 +173,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{nFathers}}{numeric or function, a number of drones a queen mates
+    \item{\code{nFathers}}{numeric or function, a number of drones a queen mates
   with  - used in \code{\link[SIMplyBee]{pullDroneGroupsFromDCA}},
   \code{\link[SIMplyBee]{cross}}.
 
@@ -195,7 +195,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{swarmP}}{numeric or a function, the swarm proportion - the proportion
+    \item{\code{swarmP}}{numeric or a function, the swarm proportion - the proportion
   of workers that leave with the old queen when the colony swarms - used
   in \code{\link[SIMplyBee]{swarm}}.
 
@@ -216,7 +216,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{swarmRadius}}{numeric, radius within which to sample a location of
+    \item{\code{swarmRadius}}{numeric, radius within which to sample a location of
   of the swarm - used in \code{\link[SIMplyBee]{swarm}} - see its \code{radius}
   argument.
 
@@ -225,7 +225,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can change this setting to your needs!}
 
-\item{\code{splitP}}{numeric or a function, the split proportion - the
+    \item{\code{splitP}}{numeric or a function, the split proportion - the
   proportion of workers removed in a managed split - used in
   \code{\link[SIMplyBee]{split}}.
 
@@ -246,7 +246,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{downsizeP}}{numeric or a function, the downsize proportion - the
+    \item{\code{downsizeP}}{numeric or a function, the downsize proportion - the
   proportion of workers removed from the colony when downsizing, usually
   in autumn - used in \code{\link[SIMplyBee]{downsize}}.
 
@@ -267,7 +267,7 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
 
   You can provide your own functions that satisfy your needs!}
 
-\item{\code{colonyValueFUN}}{function, to calculate colony values - used
+    \item{\code{colonyValueFUN}}{function, to calculate colony values - used
   in \code{\link[SIMplyBee]{calcColonyValue}} - see also \code{\link[SIMplyBee]{calcColonyPheno}}
   and \code{\link[SIMplyBee]{calcColonyGv}}.
 
@@ -279,100 +279,99 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   See \code{\link[SIMplyBee]{mapCasteToColonyValue}} for an example.
 
   You can provide your own functions that satisfy your needs!}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{caste}}{character, caste information for every individual ever
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{caste}}{character, caste information for every individual ever
 created}
 
-\item{\code{lastColonyId}}{integer, ID of the last Colony object
+    \item{\code{lastColonyId}}{integer, ID of the last Colony object
 created with \code{\link[SIMplyBee]{createColony}}}
 
-\item{\code{csdChr}}{integer, chromosome of the csd locus}
+    \item{\code{csdChr}}{integer, chromosome of the csd locus}
 
-\item{\code{csdPos}}{numeric, starting position of the csd locus on the
+    \item{\code{csdPos}}{numeric, starting position of the csd locus on the
 \code{csdChr} chromosome (relative at the moment, but could be in base
 pairs in the future)}
 
-\item{\code{nCsdAlleles}}{integer, number of possible csd alleles}
+    \item{\code{nCsdAlleles}}{integer, number of possible csd alleles}
 
-\item{\code{nCsdSites}}{integer, number of segregating sites representing the
+    \item{\code{nCsdSites}}{integer, number of segregating sites representing the
 csd locus}
 
-\item{\code{csdPosStart}}{integer, starting position of the csd locus}
+    \item{\code{csdPosStart}}{integer, starting position of the csd locus}
 
-\item{\code{csdPosStop}}{integer, ending position of the csd locus}
+    \item{\code{csdPosStop}}{integer, ending position of the csd locus}
 
-\item{\code{version}}{list, versions of AlphaSimR and SIMplyBee packages used to
+    \item{\code{version}}{list, versions of AlphaSimR and SIMplyBee packages used to
 generate this object}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SimParamBee-new}{\code{SimParamBee$new()}}
-\item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
-\item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
-\item \href{#method-SimParamBee-addToBeePed}{\code{SimParamBee$addToBeePed()}}
-\item \href{#method-SimParamBee-addToBeeRec}{\code{SimParamBee$addToBeeRec()}}
-\item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
-\item \href{#method-SimParamBee-updateLastBeeId}{\code{SimParamBee$updateLastBeeId()}}
-\item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
-\item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
+  \itemize{
+    \item \href{#method-SimParamBee-initialize}{\code{SimParamBee$new()}}
+    \item \href{#method-SimParamBee-addToCaste}{\code{SimParamBee$addToCaste()}}
+    \item \href{#method-SimParamBee-changeCaste}{\code{SimParamBee$changeCaste()}}
+    \item \href{#method-SimParamBee-addToBeePed}{\code{SimParamBee$addToBeePed()}}
+    \item \href{#method-SimParamBee-addToBeeRec}{\code{SimParamBee$addToBeeRec()}}
+    \item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
+    \item \href{#method-SimParamBee-updateLastBeeId}{\code{SimParamBee$updateLastBeeId()}}
+    \item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
+    \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChip'><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChipByName'><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addStructuredSnpChip'><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToPed'><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToRec'><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitA'><code>AlphaSimR::SimParam$addTraitA()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAD'><code>AlphaSimR::SimParam$addTraitAD()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADE'><code>AlphaSimR::SimParam$addTraitADE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADEG'><code>AlphaSimR::SimParam$addTraitADEG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADG'><code>AlphaSimR::SimParam$addTraitADG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAE'><code>AlphaSimR::SimParam$addTraitAE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAEG'><code>AlphaSimR::SimParam$addTraitAEG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAG'><code>AlphaSimR::SimParam$addTraitAG()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="altAddTraitAD"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-altAddTraitAD'><code>AlphaSimR::SimParam$altAddTraitAD()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-ibdHaplo'><code>AlphaSimR::SimParam$ibdHaplo()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="importTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-importTrait'><code>AlphaSimR::SimParam$importTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-manAddTrait'><code>AlphaSimR::SimParam$manAddTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-removeTrait'><code>AlphaSimR::SimParam$removeTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-rescaleTraits'><code>AlphaSimR::SimParam$rescaleTraits()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-resetPed'><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-restrSegSites'><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setCorE'><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setFounderHap'><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setRecombRatio'><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setSexes'><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackPed'><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackRec'><code>AlphaSimR::SimParam$setTrackRec()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setVarE'><code>AlphaSimR::SimParam$setVarE()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchFemaleMap'><code>AlphaSimR::SimParam$switchFemaleMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchGenMap'><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchMaleMap'><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchTrait'><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-updateLastId'><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChip'><code>AlphaSimR::SimParam$addSnpChip()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addSnpChipByName"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addSnpChipByName'><code>AlphaSimR::SimParam$addSnpChipByName()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addStructuredSnpChip"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addStructuredSnpChip'><code>AlphaSimR::SimParam$addStructuredSnpChip()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToPed'><code>AlphaSimR::SimParam$addToPed()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addToRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addToRec'><code>AlphaSimR::SimParam$addToRec()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitA"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitA'><code>AlphaSimR::SimParam$addTraitA()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAD"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAD'><code>AlphaSimR::SimParam$addTraitAD()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADE'><code>AlphaSimR::SimParam$addTraitADE()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADEG'><code>AlphaSimR::SimParam$addTraitADEG()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitADG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitADG'><code>AlphaSimR::SimParam$addTraitADG()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAE'><code>AlphaSimR::SimParam$addTraitAE()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAEG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAEG'><code>AlphaSimR::SimParam$addTraitAEG()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="addTraitAG"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-addTraitAG'><code>AlphaSimR::SimParam$addTraitAG()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="altAddTraitAD"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-altAddTraitAD'><code>AlphaSimR::SimParam$altAddTraitAD()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="ibdHaplo"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-ibdHaplo'><code>AlphaSimR::SimParam$ibdHaplo()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="importTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-importTrait'><code>AlphaSimR::SimParam$importTrait()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="manAddTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-manAddTrait'><code>AlphaSimR::SimParam$manAddTrait()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="removeTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-removeTrait'><code>AlphaSimR::SimParam$removeTrait()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="rescaleTraits"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-rescaleTraits'><code>AlphaSimR::SimParam$rescaleTraits()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="resetPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-resetPed'><code>AlphaSimR::SimParam$resetPed()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="restrSegSites"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-restrSegSites'><code>AlphaSimR::SimParam$restrSegSites()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setCorE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setCorE'><code>AlphaSimR::SimParam$setCorE()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setFounderHap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setFounderHap'><code>AlphaSimR::SimParam$setFounderHap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setRecombRatio"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setRecombRatio'><code>AlphaSimR::SimParam$setRecombRatio()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setSexes"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setSexes'><code>AlphaSimR::SimParam$setSexes()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackPed"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackPed'><code>AlphaSimR::SimParam$setTrackPed()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setTrackRec"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setTrackRec'><code>AlphaSimR::SimParam$setTrackRec()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="setVarE"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-setVarE'><code>AlphaSimR::SimParam$setVarE()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchFemaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchFemaleMap'><code>AlphaSimR::SimParam$switchFemaleMap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchGenMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchGenMap'><code>AlphaSimR::SimParam$switchGenMap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchMaleMap"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchMaleMap'><code>AlphaSimR::SimParam$switchMaleMap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="switchTrait"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-switchTrait'><code>AlphaSimR::SimParam$switchTrait()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="AlphaSimR" data-topic="SimParam" data-id="updateLastId"><a href='../../AlphaSimR/html/SimParam.html#method-SimParam-updateLastId'><code>AlphaSimR::SimParam$updateLastId()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SimParamBee-new"></a>}}
-\if{latex}{\out{\hypertarget{method-SimParamBee-new}{}}}
-\subsection{Method \code{new()}}{
-Starts the process of building a new simulation by creating
+\if{html}{\out{<a id="method-SimParamBee-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-initialize}{}}}
+\subsection{\code{SimParamBee$new()}}{
+  Starts the process of building a new simulation by creating
   a new SimParamBee object and assigning a founder population of genomes
   to the this object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$new(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$new(
   founderPop,
   nWorkers = 100,
   nDrones = 100,
@@ -386,99 +385,81 @@ Starts the process of building a new simulation by creating
   csdPos = 0.865,
   nCsdAlleles = 128,
   colonyValueFUN = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{founderPop}}{\code{\link[AlphaSimR]{MapPop-class}}, founder population of
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{founderPop}}{\code{\link[AlphaSimR]{MapPop-class}}, founder population of
 genomes}
-
-\item{\code{nWorkers}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nWorkers}}
-
-\item{\code{nDrones}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nDrones}}
-
-\item{\code{nVirginQueens}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nVirginQueens}}
-
-\item{\code{nFathers}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nFathers}}
-
-\item{\code{swarmP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{swarmP}}
-
-\item{\code{swarmRadius}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{swarmRadius}}
-
-\item{\code{splitP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{splitP}}
-
-\item{\code{downsizeP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{downsizeP}}
-
-\item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
+      \item{\code{nWorkers}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nWorkers}}
+      \item{\code{nDrones}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nDrones}}
+      \item{\code{nVirginQueens}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nVirginQueens}}
+      \item{\code{nFathers}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{nFathers}}
+      \item{\code{swarmP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{swarmP}}
+      \item{\code{swarmRadius}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{swarmRadius}}
+      \item{\code{splitP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{splitP}}
+      \item{\code{downsizeP}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{downsizeP}}
+      \item{\code{csdChr}}{integer, chromosome that will carry the csd locus, by
 default 3, but if there are less chromosomes (for a simplified
 simulation), the locus is put on the last available chromosome (1 or
 2); if \code{NULL} then csd locus is ignored in the simulation}
-
-\item{\code{csdPos}}{numeric, starting position of the csd locus on the
+      \item{\code{csdPos}}{numeric, starting position of the csd locus on the
 \code{csdChr} chromosome (relative at the moment, but could be in base
 pairs in future)}
-
-\item{\code{nCsdAlleles}}{integer, number of possible csd alleles (this
+      \item{\code{nCsdAlleles}}{integer, number of possible csd alleles (this
 determines how many segregating sites will be needed to represent the
 csd locus from the underlying bi-allelic SNP; the minimum number of
 bi-allelic SNP needed is \code{log2(nCsdAlleles)}); if set to \code{0}
 then \code{csdChr=NULL} is triggered. By default we set \code{nCsdAlleles}
 to 128, which is at the upper end of the reported number of csd alleles
 (Lechner et al., 2014; Zareba et al., 2017; Bovo et al., 2021).}
-
-\item{\code{colonyValueFUN}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{colonyValueFUN}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
+      \item{\code{colonyValueFUN}}{see \code{\link[SIMplyBee]{SimParamBee}} field \code{colonyValueFUN}}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 2)
-\dontshow{SP$nThreads = 1L}
 
 # We need enough segregating sites
 try(SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100))
-\dontshow{SP$nThreads = 1L}
 founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
-\dontshow{SP$nThreads = 1L}
 
 # We can save the csd locus on chromosome 1 or 2, too, for quick simulations
 founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes, nCsdAlleles = 100)
-\dontshow{SP$nThreads = 1L}
 }
-\if{html}{\out{</div>}}
+    \if{html}{\out{</div>}}
+  }
+}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-addToCaste"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-addToCaste}{}}}
-\subsection{Method \code{addToCaste()}}{
-Store caste information (for internal use only!)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$addToCaste(id, caste)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{id}}{character, individuals whose caste will be stored}
-
-\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+\subsection{\code{SimParamBee$addToCaste()}}{
+  Store caste information (for internal use only!)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$addToCaste(id, caste)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{id}}{character, individuals whose caste will be stored}
+      \item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
 drones, "V" for virgin queens, and "F" for fathers}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 
@@ -492,35 +473,33 @@ colony <- addVirginQueens(colony, nInd = 2)
 SP$pedigree
 SP$caste
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-changeCaste"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-changeCaste}{}}}
-\subsection{Method \code{changeCaste()}}{
-Change caste information (for internal use only!)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$changeCaste(id, caste)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{id}}{character, individuals whose caste will be changed}
-
-\item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
+\subsection{\code{SimParamBee$changeCaste()}}{
+  Change caste information (for internal use only!)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$changeCaste(id, caste)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{id}}{character, individuals whose caste will be changed}
+      \item{\code{caste}}{character, single "Q" for queens, "W" for workers, "D" for
 drones, "V" for virgin queens, and "F" for fathers}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{founderGenomes <- quickHaplo(nInd = 2, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-\dontshow{SP$nThreads = 1L}
 SP$setTrackPed(isTrackPed = TRUE)
 basePop <- createVirginQueens(founderGenomes)
 SP$pedigree
@@ -532,140 +511,139 @@ colony <- cross(colony, drones = drones)
 SP$pedigree
 SP$caste
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-addToBeePed"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-addToBeePed}{}}}
-\subsection{Method \code{addToBeePed()}}{
-For internal use only.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$addToBeePed(nNewInd, id, mother, father, isDH)}\if{html}{\out{</div>}}
+\subsection{\code{SimParamBee$addToBeePed()}}{
+  For internal use only.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$addToBeePed(nNewInd, id, mother, father, isDH)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nNewInd}}{Number of newly created individuals}
+      \item{\code{id}}{the name of each individual}
+      \item{\code{mother}}{vector of mother iids}
+      \item{\code{father}}{vector of father iids}
+      \item{\code{isDH}}{indicator for DH lines}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nNewInd}}{Number of newly created individuals}
-
-\item{\code{id}}{the name of each individual}
-
-\item{\code{mother}}{vector of mother iids}
-
-\item{\code{father}}{vector of father iids}
-
-\item{\code{isDH}}{indicator for DH lines}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-addToBeeRec"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-addToBeeRec}{}}}
-\subsection{Method \code{addToBeeRec()}}{
-For internal use only.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$addToBeeRec(nNewInd, id, mother, father, isDH, hist, ploidy)}\if{html}{\out{</div>}}
+\subsection{\code{SimParamBee$addToBeeRec()}}{
+  For internal use only.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$addToBeeRec(nNewInd, id, mother, father, isDH, hist, ploidy)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{nNewInd}}{Number of newly created individuals}
+      \item{\code{id}}{the name of each individual}
+      \item{\code{mother}}{vector of mother iids}
+      \item{\code{father}}{vector of father iids}
+      \item{\code{isDH}}{indicator for DH lines}
+      \item{\code{hist}}{new recombination history}
+      \item{\code{ploidy}}{ploidy level}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nNewInd}}{Number of newly created individuals}
-
-\item{\code{id}}{the name of each individual}
-
-\item{\code{mother}}{vector of mother iids}
-
-\item{\code{father}}{vector of father iids}
-
-\item{\code{isDH}}{indicator for DH lines}
-
-\item{\code{hist}}{new recombination history}
-
-\item{\code{ploidy}}{ploidy level}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-updateCaste"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-updateCaste}{}}}
-\subsection{Method \code{updateCaste()}}{
-A function to update the caste
+\subsection{\code{SimParamBee$updateCaste()}}{
+  A function to update the caste
   For internal use only.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateCaste(caste)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$updateCaste(caste)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{caste}}{vector, named vector of castes to be added}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{caste}}{vector, named vector of castes to be added}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-updateLastBeeId"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-updateLastBeeId}{}}}
-\subsection{Method \code{updateLastBeeId()}}{
-A function to update the last
+\subsection{\code{SimParamBee$updateLastBeeId()}}{
+  A function to update the last
   ID everytime we create an individual
   For internal use in SIMplyBee only.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastBeeId(n = 1L)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$updateLastBeeId(n = 1L)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n}}{integer, how many individuals to add}
+      \item{\code{lastId}}{integer, last colony ID assigned}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n}}{integer, how many individuals to add}
-
-\item{\code{lastId}}{integer, last colony ID assigned}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-updateLastColonyId"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-updateLastColonyId}{}}}
-\subsection{Method \code{updateLastColonyId()}}{
-A function to update the colony last
+\subsection{\code{SimParamBee$updateLastColonyId()}}{
+  A function to update the colony last
   ID everytime we create a Colony-class with createColony.
   For internal use only.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$updateLastColonyId(n = 1)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$updateLastColonyId(n = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n}}{integer, how many colonies to add}
+      \item{\code{lastColonyId}}{integer, last colony ID assigned}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n}}{integer, how many colonies to add}
-
-\item{\code{lastColonyId}}{integer, last colony ID assigned}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SimParamBee-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SimParamBee-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SimParamBee$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SimParamBee$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

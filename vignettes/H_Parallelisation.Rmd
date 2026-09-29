@@ -130,16 +130,16 @@ time can be significantly improved when running on multiple cores. When running
 on a single core, setting up the parallelisation cluster via `FORK` or `PSOCK`
 actually adds some overhead time.
 
-```{r mean_time_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("Time_mean.png")
+```{r meanTime_figure, echo=FALSE, out.width='100%'}
+knitr::include_graphics("parallelisation_time_mean.png")
 ```
 
 ```{r meanPCPU_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("PCPU_mean.png")
+knitr::include_graphics("parallelisation_cpu_mean.png")
 ```
 
 ```{r meanRSS_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("RSS_mean.png")
+knitr::include_graphics("parallelisation_memory_mean.png")
 ```
 
 The functions that are currently explicitily parallelised:
@@ -157,5 +157,5 @@ with 16 cores. The figure shows the mean and the standard deviation across 10
 replicates.
 
 ```{r functions_time, echo=FALSE, out.width='100%'}
-knitr::include_graphics("Profiling_parallelised_functions_Unix.png")
+knitr::include_graphics("parallelisation_function_timings_unix.png")
 ```
