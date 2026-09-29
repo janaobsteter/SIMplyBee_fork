@@ -3,7 +3,7 @@ title: "Parallelisation and high-performing cluster setup"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Multiple colonies}
+  %\VignetteIndexEntry{Parallelisation and high-performing cluster setup}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -30,7 +30,7 @@ simulation. We do recommend reading the remaining of this vignette.
 library(SIMplyBee)
 library(future)
 
-NCORES = <desired_number_of_cores> # e.g., 8
+NCORES = 8 #<desired_number_of_cores>
   
 # Use function plan to set up parallel environment
 # There are three options
@@ -41,7 +41,7 @@ plan(multicore, workers = NCORES)
 # Third one is PSOCK - works on all systems, including HPCs
 plan(multisession, workers = NCORES)
 # Fourth one is clust that runs separate R processes on multiple machines
-plan(cluster, workers = c("machine1", "machine2", ...))
+#plan(cluster, workers = c("machine1", "machine2", ...))
 
 # At the end of everything you run to stop parallelisation back-end
 plan(sequential)
@@ -92,13 +92,13 @@ We profiled the following piece of code using different parallelisation options.
 
 ```{r defining_testing_function}
 create_bee_colonies <- function() {
-  founderGenomes <- quickHaplo(nInd = 200, nChr = 1, segSites = 50)
+  founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 50)
   SP <- SimParamBee$new(founderGenomes)
   
   basePop <- createVirginQueens(founderGenomes)
   drones = createDrones(basePop, nInd = 100)
   baseColonies <- createMultiColony(cross(basePop, drones = drones, crossPlan = "create"))
-  baseColonies <- buildUp(baseColonies, nWorkers = 1000, nDrones = 1000)
+  baseColonies <- buildUp(baseColonies, nWorkers = 10, nDrones = 10)
   baseColonies <- supersede(baseColonies)
   baseColonies <- cross(baseColonies, drones = drones, crossPlan = "create")
   tmp = split(baseColonies)
@@ -115,6 +115,7 @@ plan(sequential)
 create_bee_colonies()
 
 # Second one - use forking
+nCores = 1
 plan(multicore, workers = nCores)
 create_bee_colonies()
 
@@ -129,7 +130,7 @@ time can be significantly improved when running on multiple cores. When running
 on a single core, setting up the parallelisation cluster via `FORK` or `PSOCK`
 actually adds some overhead time.
 
-```{r meanTime_figure, echo=FALSE, out.width='100%'}
+```{r mean_time_figure, echo=FALSE, out.width='100%'}
 knitr::include_graphics("Time_mean.png")
 ```
 

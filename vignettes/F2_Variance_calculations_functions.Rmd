@@ -21,21 +21,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r cor2cov, include = FALSE}
-library(package = "SIMplyBee")
-cor2cov <- function(corr, var) {
-  # Ensure inputs are matrices/vectors
-  corr <- as.matrix(corr)
-  var  <- as.numeric(var)
-
-  # Standard deviations
-  sd <- sqrt(var)
-
-  # Covariance matrix
-  cov <- corr * (sd %o% sd)
-
-  return(cov)
-}
+```{r load_variance_scripts, include = FALSE}
+# load shared variance helper functions
+source("vignettes/scripts/variance_functions.R")
+library("SIMplyBee")
+library("dplyr")
+library("ggplot2")
 ```
 
 Let's again run the example from the quantitative genetic vignette.
@@ -213,32 +204,54 @@ nF = round(mean(nFathers(apiary)), 0)
 nDPQ <- round(mean(sapply(getFathers(apiary), function(x) length(unique(x@mother)))), 0)
 
 
+# When the function to summarise worker effects is a MEAN
 # When the function to summarise worker effects is SUM
 calcVar <- mapIndToColonyVar(varA_q = varA[1], 
                   varA_w= varA[2],
                   corA_qw = corA[1,2],
-                  varE_q = varE[1], 
-                  varE_w = varE[2], 
+                  varE_q = varE[1],
+                  varE_w = varE[2],
                   corE_qw = corE[1,2],
                   nW = nW, nF = nF,
                   nDPQ = nDPQ,
                   workersFUN = "mean")
 
+# Let's obtain realised values
 real_gv_q <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_pheno_q <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_e_q <- real_pheno_q - real_gv_q
 real_gv_wbar <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colMeans)
-real_covA_qwbar <- cov(real_gv_q, real_gv_wbar)
-real_corA_qwbar <- cor(real_gv_q, real_gv_wbar)
+real_pheno_wbar <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colMeans)
+real_e_wbar <- real_pheno_wbar - real_gv_wbar
+real_gv_c <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colMeans)
+real_pheno_c <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colMeans)
+real_e_c <- real_pheno_c - real_gv_c
+
+
+# Now let's compute the realised variances and covariances
 real_varA_q <- var(real_gv_q)
 real_varA_wbar <- var(real_gv_wbar)
-real_varA_c <- var(calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colMeans))
-real_varP_c <- var(calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, workersFUN = colMeans))
+real_varA_c <- var(real_gv_c)
 
-variances0 <- rbind(variances0, data.frame(rep = rep, 
-                                            calc_varA_q = calcVar$varA_q, calc_varA_wbar = calcVar$varA_wbar, calc_varA_c = calcVar$varA_c, calc_varE_c = calcVar$varE_c,
-                                            real_varA_q = real_varA_q[1,1], real_varA_wbar = real_varA_wbar[1,1], real_varA_c = real_varA_c[1,1],
-                                            real_covA_qwbar = real_covA_qwbar[1,1], real_corA_qwbar = real_corA_qwbar[1,1],
-                                            real_varP_c = real_varP_c[1,1],
-                                            fun = "mean"))
+real_varE_q <- var(real_e_q)
+real_varE_wbar <- var(real_e_wbar)
+real_varE_c <- var(real_e_c)
+
+real_varP_q <- var(real_pheno_q)
+real_varP_wbar <- var(real_pheno_wbar)
+real_varP_c <- var(real_pheno_c)
+
+real_covA_qwbar <- cov(real_gv_q, real_gv_wbar)
+real_corA_qwbar <- cor(real_gv_q, real_gv_wbar)
+
+variances0 <- data.frame(calc_varA_q = calcVar$varA_q, real_varA_q = real_varA_q[1,1],
+                        calc_varA_wbar = calcVar$varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                        calc_varA_c = calcVar$varA_c, real_varA_c = real_varA_c[1,1],
+                        calc_varE_c = calcVar$varE_c, real_varE_c = real_varE_c[1,1],
+                        fun = "mean")
+
+
+
 
 print("Workers aggregate is a sum")
 # Run the example from the quantitative genetic vignette
@@ -270,8 +283,7 @@ apiary <- createMultiColony(basePop[7:20])
 drones <- createDrones(basePop[1:5], nInd = 100)
 apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
-colonyGv <- calcColonyGv(apiary)
-colonyPheno <- calcColonyPheno(apiary)  
+
 
 nW = round(mean(nWorkers(apiary)), 0)
 nF = round(mean(nFathers(apiary)), 0)
@@ -289,22 +301,68 @@ calcVar <- mapIndToColonyVar(varA_q = varA[1],
                   nDPQ = nDPQ,
                   workersFUN = "sum")
 
+# Let's obtain realised values
 real_gv_q <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_pheno_q <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_e_q <- real_pheno_q - real_gv_q
 real_gv_wbar <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
-real_covA_qwbar <- cov(real_gv_q, real_gv_wbar)
-real_corA_qwbar <- cor(real_gv_q, real_gv_wbar)
+real_pheno_wbar <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
+real_e_wbar <- real_pheno_wbar - real_gv_wbar
+real_gv_c <- calcColonyGv(apiary, FUN = mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_pheno_c <- calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
+real_e_c <- real_pheno_c - real_gv_c
+
+
+# Now let's compute the realised variances and covariances
 real_varA_q <- var(real_gv_q)
 real_varA_wbar <- var(real_gv_wbar)
-real_varA_c <- var(calcColonyGv(apiary, FUN = mapCasteToColonyGv, workersFUN = colSums))
-real_varP_c <- var(calcColonyPheno(apiary, FUN = mapCasteToColonyPheno, workersFUN = colMeans))
+real_varA_c <- var(real_gv_c)
 
+real_varE_q <- var(real_e_q)
+real_varE_wbar <- var(real_e_wbar)
+real_varE_c <- var(real_e_c)
 
-variances0 <- rbind(variances0, data.frame(rep = rep, 
-                                            calc_varA_q = calcVar$varA_q, calc_varA_wbar = calcVar$varA_wbar, calc_varA_c = calcVar$varA_c, calc_varE_c = calcVar$varE_c,
-                                            real_varA_q = real_varA_q[1,1], real_varA_wbar = real_varA_wbar[1,1], real_varA_c = real_varA_c[1,1],
-                                            real_covA_qwbar = real_covA_qwbar[1,1], real_corA_qwbar = real_corA_qwbar[1,1],
-                                            real_varP_c = real_varP_c[1,1],
+real_varP_q <- var(real_pheno_q)
+real_varP_wbar <- var(real_pheno_wbar)
+real_varP_c <- var(real_pheno_c)
+
+real_covA_qwbar <- cov(real_gv_q, real_gv_wbar)
+real_corA_qwbar <- cor(real_gv_q, real_gv_wbar)
+
+variances0 <- rbind(variances0, data.frame(calc_varA_q = calcVar$varA_q, real_varA_q = real_varA_q[1,1],
+                                            calc_varA_wbar = calcVar$varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                                            calc_varA_c = calcVar$varA_c, real_varA_c = real_varA_c[1,1],
+                                            calc_varE_c = calcVar$varE_c, real_varE_c = real_varE_c[1,1],
                                             fun = "sum"))
+
+# Plot the variances0 from the two different ways of aggregating worker effects
+variances0Long <- variances0 %>%
+  tidyr::pivot_longer(cols = -c(fun), names_to = "VarType", values_to = "Var")
+variances0Long$Component <- sapply(strsplit(as.character(variances0Long$VarType), "_"), "[", 2)
+variances0Long$RealCalc <- sapply(strsplit(as.character(variances0Long$VarType), "_"), "[", 1)
+# Now extract the second and the third element and paste them together to get the type of variance for plotting
+variances0Long$VarTypePlot <- paste0(sapply(strsplit(as.character(variances0Long$VarType), "_"), "[", 2), "_", sapply(strsplit(as.character(variances0Long$VarType), "_"), "[", 3))
+variances0Long$Measure <- sapply(strsplit(as.character(variances0Long$VarTypePlot), "_"), "[", 1)
+
+variances0Long$VarTypePlot <- factor(variances0Long$VarTypePlot, levels = c("varA_q", "varA_wbar", "varA_c",
+                                                                        "varE_c", "varP_c"))
+
+
+variances0Long |>   
+  ggplot(aes(x = VarTypePlot, y = Var, fill = VarTypePlot, alpha = RealCalc)) +
+  geom_col(position = "dodge") +
+  facet_wrap(. ~fun, scales = "free") +
+   theme_bw(base_size = 20) + 
+   scale_fill_manual(values = c(
+ "#D55E00",  # vermillion
+ "#084159",  # blue
+ "#32c237",
+   "#b560b4",
+   "#a80805",   # reddish purple
+   "grey",  # bluish green
+   "black", "black", "black"
+   ), guide = "none") + 
+  scale_alpha_manual(values = c(0.5, 1), labels = c("Calculated", "Realised")) 
 ```
 
 Now the other way around. Let's say you have a colony-level estimate of variance components - this is what you would get out of a paper.
@@ -372,6 +430,7 @@ mapColonyToIndVar <- function(varA_q,
               varE_q = varE_q, varE_wbar = varE_wbar, varE_w = varE_w,
               covE_qwbar = covE_qwbar, covE_qw = covE_qw, corE_qw = corE_qw))
 }
+
 ```
 
 ```{r testMapColonyToIndFunction}
@@ -390,11 +449,10 @@ nDPQ <- 5
 print("Workers aggregate is a mean")
 indVarComp <- mapColonyToIndVar(varA_q = varA_q, varA_wbar = varA_wbar, corA_qwbar = corA_qwbar, 
                                 varE_q = varE_q, varE_wbar = varE_wbar, corE_qwbar = corE_qwbar, 
-                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = fun)
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "mean")
 calc_var_c <- mapIndToColonyVar(varA_q = indVarComp$varA_q, varA_w = indVarComp$varA_w, corA_qw = indVarComp$corA_qw, 
                                 varE_q = indVarComp$varE_q, varE_w = indVarComp$varE_w, corE_qw = indVarComp$corE_qw,
-                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = fun)
-
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "mean")
 
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 SP <- SimParamBee$new(founderGenomes)
@@ -423,33 +481,41 @@ drones <- createDrones(basePop[1:nDPQ], nInd = 100)
 apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
 
-if (fun == "sum") {
-  workersFUN <- colSums
-} else if (fun == "mean") {
-  workersFUN <- colMeans
-}
 
 # Get the real number of fathers and DPQs
-real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = workersFUN)
+real_A_q <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_varA_q <- popVar(real_A_q)
+real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colMeans)
 real_varA_wbar <- popVar(real_A_wbar)
-real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = workersFUN)
+real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colMeans)
 real_varA_c <- popVar(real_A_c)
-real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = workersFUN)
+
+real_P_q <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_E_q <- real_P_q - real_A_q
+real_varE_q <- popVar(real_E_q)
+real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colMeans)
 real_E_wbar <- real_P_wbar - real_A_wbar
 real_varE_wbar <- popVar(real_E_wbar)
-real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = workersFUN)
+real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colMeans)
 real_E_c <- real_P_c - real_A_c
 real_varE_c <- popVar(real_E_c)
+
+variances <- data.frame(set_varA_q = varA_q, calc_varA_q = calc_var_c$varA_q, real_varA_q = varA_q,
+                                          set_varA_wbar = varA_wbar, calc_varA_wbar = calc_var_c$varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                                          calc_varA_c = calc_var_c$varA_c, real_varA_c = real_varA_c, 
+                                          set_varE_q = varE_q, calc_varE_q = calc_var_c$varE_q, real_varE_q = real_varE_q[1,1],
+                                          set_varE_wbar = varE_wbar, calc_varE_wbar = calc_var_c$varE_wbar, real_varE_wbar = real_varE_wbar[1,1],
+                                          calc_varE_c = calc_var_c$varE_c, real_varE_c = real_varE_c,
+                                          fun = "mean")
 
 
 print("Workers aggregate is a sum")
-fun = "sum"
 indVarComp <- mapColonyToIndVar(varA_q = varA_q, varA_wbar = varA_wbar, corA_qwbar = corA_qwbar, 
                                 varE_q = varE_q, varE_wbar = varE_wbar, corE_qwbar = corE_qwbar, 
-                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = fun)
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum")
 calc_var_c <- mapIndToColonyVar(varA_q = indVarComp$varA_q, varA_w = indVarComp$varA_w, corA_qw = indVarComp$corA_qw, 
                                 varE_q = indVarComp$varE_q, varE_w = indVarComp$varE_w, corE_qw = indVarComp$corE_qw,
-                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = fun)
+                                nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum")
 
 founderGenomes <- quickHaplo(nInd = 20, nChr = 16, segSites = 1000)
 SP <- SimParamBee$new(founderGenomes)
@@ -478,21 +544,62 @@ drones <- createDrones(basePop[1:nDPQ], nInd = 100)
 apiary <- cross(x = apiary, drones = drones, crossPlan = "create", checkCross = "warning")
 apiary <- buildUp(apiary)
 
-if (fun == "sum") {
-  workersFUN <- colSums
-} else if (fun == "mean") {
-  workersFUN <- colMeans
-}
-
 # Get the real number of fathers and DPQs
-real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = workersFUN)
+real_A_q <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = NULL)
+real_varA_q <- popVar(real_A_q)
+real_A_wbar <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
 real_varA_wbar <- popVar(real_A_wbar)
-real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = workersFUN)
+real_A_c <- calcColonyGv(apiary, mapCasteToColonyGv, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
 real_varA_c <- popVar(real_A_c)
-real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = workersFUN)
+
+real_P_q <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = NULL)
+real_E_q <- real_P_q - real_A_q
+real_varE_q <- popVar(real_E_q)
+real_P_wbar <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = NULL, workersTrait = 2, workersFUN = colSums)
 real_E_wbar <- real_P_wbar - real_A_wbar
 real_varE_wbar <- popVar(real_E_wbar)
-real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = workersFUN)
+real_P_c <- calcColonyPheno(apiary, mapCasteToColonyPheno, queenTrait = 1, workersTrait = 2, workersFUN = colSums)
 real_E_c <- real_P_c - real_A_c
 real_varE_c <- popVar(real_E_c)
+
+variances <- rbind(variances, data.frame(set_varA_q = varA_q, calc_varA_q = calc_var_c$varA_q, real_varA_q = varA_q,
+                                          set_varA_wbar = varA_wbar, calc_varA_wbar = calc_var_c$varA_wbar, real_varA_wbar = real_varA_wbar[1,1],
+                                          calc_varA_c = calc_var_c$varA_c, real_varA_c = real_varA_c, 
+                                          set_varE_q = varE_q, calc_varE_q = calc_var_c$varE_q, real_varE_q = real_varE_q[1,1],
+                                          set_varE_wbar = varE_wbar, calc_varE_wbar = calc_var_c$varE_wbar, real_varE_wbar = real_varE_wbar[1,1],
+                                          calc_varE_c = calc_var_c$varE_c, real_varE_c = real_varE_c,
+                                          fun = "sum"))
+```
+
+Now plot.
+
+```{r plotMapColonyToIndFunction}
+# Plot the variances from the two different ways of aggregating worker effects
+variancesLong <- variances %>%
+  tidyr::pivot_longer(cols = -c(fun), names_to = "VarType", values_to = "Var")
+variancesLong$Component <- sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 2)
+variancesLong$RealCalc <- sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 1)
+# Now extract the second and the third element and paste them together to get the type of variance for plotting
+variancesLong$VarTypePlot <- paste0(sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 2), "_", sapply(strsplit(as.character(variancesLong$VarType), "_"), "[", 3))
+variancesLong$Measure <- sapply(strsplit(as.character(variancesLong$VarTypePlot), "_"), "[", 1)
+
+variancesLong$VarTypePlot <- factor(variancesLong$VarTypePlot, levels = c("varA_q", "varA_wbar", "varA_c",
+                                                                        "varE_q", "varE_wbar", "varE_c"))
+
+
+variancesLong |>   
+  ggplot(aes(x = VarTypePlot, y = Var, fill = RealCalc)) +
+  geom_col(position = "dodge") +
+  facet_wrap(. ~fun, scales = "free") +
+   theme_bw(base_size = 20) + 
+   scale_fill_manual(values = c(
+ "#D55E00",  # vermillion
+ "#084159",  # blue
+ "#32c237",
+   "#b560b4",
+   "#a80805",   # reddish purple
+   "grey",  # bluish green
+   "black", "black", "black"
+   )) + 
+  scale_alpha_manual(values = c(0.5, 1, 0.75), labels = c("Calculated", "Realised", "Set")) 
 ```

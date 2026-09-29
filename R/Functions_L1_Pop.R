@@ -620,6 +620,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
     lastId = simParamBee$lastId
     ids = (lastId+1):(lastId+totalNInd)
+    end_lastId <- lastId+totalNInd
 
     ret <- future_lapply(X = seq_len(nCol),
                                        future.seed = TRUE,
@@ -650,9 +651,11 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     # Add to simParamBee: pedigree, caste, recHist
     notNull = sapply(ret, FUN = function(x) !is.null(x))
 
-    if (!simParamBee$isTrackPed) {
+    updatedIdBoolean <- simParamBee$lastId == end_lastId
+
+    if (!simParamBee$isTrackPed & !updatedIdBoolean) {
       simParamBee$updateLastBeeId(n = totalNInd)
-    } else if (simParamBee$isTrackPed) {
+    } else if (simParamBee$isTrackPed & !updatedIdBoolean) {
       Pedigree <- do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
       if (!simParamBee$isTrackRec) {
         simParamBee$addToBeePed(nNewInd = totalNInd, id = rownames(Pedigree),
@@ -1251,7 +1254,6 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     ret <- vector(mode = "list", length = 2)
     names(ret) <- c("pulled", "remnant")
     ret$pulled <- vector(mode = "list", length = nCol)
-    names(ret$pulled) <- getId(x)
     ret$remnant <- x
 
     tmp = future_lapply(X = seq_len(nCol),
@@ -1273,6 +1275,7 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     )
 
     ret$pulled <- lapply(tmp, '[[', "pulled")
+    names(ret$pulled) <- getId(x)
     ret$remnant@colonies <- lapply(tmp, '[[', "remnant")
 
     if (collapse) {

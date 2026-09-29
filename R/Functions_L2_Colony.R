@@ -644,11 +644,18 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
         x = x, nInd = n, new = new,
         simParamBee = simParamBee)
     }
+
+    if (new) {
+      n <- nDrones
+    } else {
+      n <- nDrones - nDrones(x, simParamBee = simParamBee)
+    }
     if (sum(nDrones) > 0) {
       x <- addDrones(
         x = x, nInd = n, new = new,
         simParamBee = simParamBee)
     }
+    
     x <- setEvents(x, slot = "production", value = TRUE, simParamBee = simParamBee)
     if (resetEvents) {
       x <- resetEvents(x, simParamBee = simParamBee)
@@ -1591,6 +1598,11 @@ supersede <- function(x, simParamBee = NULL, ...) {
   if (is.null(nVirginQueens)) {
     nVirginQueens <- simParamBee$nVirginQueens
   }
+  if (is.function(simParamBee$nVirginQueens)) {
+    nVirginQueens <- nVirginQueens(x, ...)
+  } else {
+    nVirginQueens <- simParamBee$nVirginQueens
+  }
 
   if (any(hasCollapsed(x))) {
     stop(paste0("One of the collonies is collapsed, hence you can not split it!"))
@@ -1604,7 +1616,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
 
   # Do this because some colonies might not produce a viable virgin queen
   tmpVirginQueens <- createCastePop(
-    x = x, nInd = max(10, simParamBee$nVirginQueens),
+    x = x, nInd = max(10, nVirginQueens),
     caste = "virginQueens",
     simParamBee = simParamBee
   )
