@@ -22,6 +22,11 @@ editor_options:
 -   createMultiColony() no longer creates an empty apiary, but it adds
     empty colonies with IDs
 
+-   we no longer support creating an exact number of workers with the csd functionality turned on. Due to inbreeding at the csd locus, some workers are not viable. Previous funcionality re-ran the creation of workers until a required number was available. We no longer support this, so we number of returned workers
+is the number of viable workers.
+
+-   the 'cross' function now removed unsuccessfully mated queens. This can primarily happen when creating a spatial cross plan. If there are no drone producing colonies in the specified radius, the mating fails and the queens/colonies are removed from the object. This is to ensure all further functionality works well.
+
 ## New features
 
 -   parallelised all the major functions (so they run on
