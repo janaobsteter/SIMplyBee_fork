@@ -340,7 +340,7 @@ offspring that are expected to be homozygous based on queen's and father's *CSD*
 alleles. You can obtain `pHomBrood` and `nHomBrood` values with the
 corresponding `pHomBrood()` and `nHombrood()` functions that can be applied
 either on the queen (`Pop` class) or colony (`Colony` class) directly. You can
-obtain the entire `misc` slot with the `getMisc()` function.
+obtain the entire `misc` slot using:
 
 ```{r misc}
 getQueen(colony)@misc
