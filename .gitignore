@@ -44,5 +44,5 @@ vignettes/*.pdf
 .DS_Store
 /doc/
 /Meta/
-src/*.o
-src/*.so
+
+literature/*.pdf

@@ -13,7 +13,7 @@ http://simplybee.info
 
 ## Download
 
-SIMplyBee is available on CRAN. You can install it with 
+SIMplyBee is available on CRAN. You can install it with
 
     install.packages(pkg = "SIMplyBee")
 

@@ -2,6 +2,7 @@
 title: "Honeybee biology"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: '`r normalizePath(if (file.exists("../inst/REFERENCES.bib")) "../inst/REFERENCES.bib" else system.file("REFERENCES.bib", package = "SIMplyBee", mustWork = TRUE), mustWork = TRUE)`'
 vignette: >
   %\VignetteIndexEntry{Honeybee biology}
   %\VignetteEngine{knitr::rmarkdown}
@@ -57,10 +58,8 @@ approach only for demonstrations and testing.
 
 Alternatively, you can more accurately simulate honeybee genomes with
 SIMplyBee's `simulateHoneyBeeGenomes()`. This function simulates the honeybee
-genome using coalescent simulation of whole chromosomes using MaCS (Chen et al.,
-2009) for three subspecies: *A. m. ligustica*, *A. m. carnica*, and *A. m.
-mellifera* according to the demographic model described by Wallberg et al.
-(2014).
+genome using coalescent simulation of whole chromosomes using MaCS [@chen2009Fast] for three subspecies: *A. m. ligustica*, *A. m. carnica*, and *A. m.
+mellifera* according to the demographic model described by @wallberg2014Worldwide.
 
 As a demonstration, we will use `quickHaplo()` and simulate genomes of two
 founding individuals. In this example, the genomes will be represented by only
@@ -416,12 +415,3 @@ getQueen(inbredColony)@misc
 ```
 
 # References
-
-Chen G.K., Marjoram P., Wall J.D. (2009) Fast and flexible simulation of DNA
-sequence data. Genome Research, 19(1):136--142.
-<https://doi.org/10.1101/gr.083634.108>
-
-Wallberg, A., Han, F., Wellhagen, G. et al. (2014) A worldwide survey of genome
-sequence variation provides insight into the evolutionary history of the
-honeybee Apis mellifera. Nature Genetics, 46:1081--1088.
-<https://doi.org/10.1038/ng.3077>

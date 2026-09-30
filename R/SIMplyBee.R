@@ -1,5 +1,6 @@
 #' @useDynLib SIMplyBee, .registration = TRUE
 #' @import Rcpp
+#' @importFrom Rdpack reprompt
 #' @import AlphaSimR
 #' @importFrom methods classLabel is new setClass setClassUnion setValidity
 #' @importFrom methods setMethod show slot slot<- validObject
@@ -25,6 +26,10 @@
 #'
 #' See the introductory vignette on using this package by running:
 #' \code{vignette("Honeybee_biology", package="SIMplyBee")}
+#'
+#' @references
+#' \insertRef{obsteter2023SIMplyBee}{SIMplyBee}
+#' \insertRef{gaynor2021AlphaSimR}{SIMplyBee}
 #'
 #' @keywords internal
 "_PACKAGE"

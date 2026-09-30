@@ -21,6 +21,10 @@ extended for honeybees, including haplo-diploidy, csd locus, colony events
 See the introductory vignette on using this package by running:
 \code{vignette("Honeybee_biology", package="SIMplyBee")}
 }
+\references{
+\insertRef{obsteter2023SIMplyBee}{SIMplyBee}
+\insertRef{gaynor2021AlphaSimR}{SIMplyBee}
+}
 \seealso{
 Useful links:
 \itemize{
@@ -33,7 +37,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Jana Obšteter \email{obsteter.jana@gmail.com} (\href{https://orcid.org/0000-0003-1511-3916}{ORCID})
   \item Laura Strachan (\href{https://orcid.org/0000-0002-2569-0250}{ORCID})
   \item Jernej Bubnič (\href{https://orcid.org/0000-0003-1362-3736}{ORCID})
   \item Gregor Gorjanc (\href{https://orcid.org/0000-0001-8008-2787}{ORCID})

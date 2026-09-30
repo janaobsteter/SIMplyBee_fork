@@ -2,45 +2,217 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{mapIndToColonyVar}
 \alias{mapIndToColonyVar}
-\title{Map individual-level variance components to colony-level variance components}
+\alias{mapColonyToIndVar}
+\title{Map variance components between individuals and colonies}
 \usage{
 mapIndToColonyVar(
-  varA_q,
-  varA_w,
-  corA_qw,
-  varE_q,
-  varE_w,
-  corE_qw,
+  varAQueen,
+  varAWorker,
+  corAQueenWorker,
+  varEQueen,
+  varEWorker,
+  corEQueenWorker,
   nW,
   nF,
   nDPQ,
-  workersFUN = "sum"
+  workersFUN = "sum",
+  workerAllocation = "random"
+)
+
+mapColonyToIndVar(
+  varAQueen,
+  varAWorkerGroup,
+  corAQueenWorkerGroup,
+  varEQueen,
+  varEWorkerGroup,
+  corEQueenWorkerGroup,
+  nW,
+  nF,
+  nDPQ,
+  workersFUN = "sum",
+  workerAllocation = "random"
 )
 }
 \arguments{
-\item{varA_q}{numeric, additive genetic variance of the queen}
+\item{varAQueen}{Numeric scalar, additive genetic variance of
+the queen-effect trait among individual diploid bees in a base population.}
 
-\item{varA_w}{numeric, additive genetic variance of the workers}
+\item{varAWorker}{Numeric scalar, additive genetic variance of
+the worker-effect trait among individual diploid bees in a base population.}
 
-\item{corA_qw}{numeric, correlation between queen and workers}
+\item{corAQueenWorker}{Numeric scalar, additive genetic correlation between
+the queen-effect trait and the worker-effect trait
+among individual diploid bees in a base population.
+This is the within-individual cross-trait correlation among individuals.}
 
-\item{varE_q}{numeric, environmental variance of the queen}
+\item{varEQueen}{Numeric scalar, environmental variance of
+the queen-effect trait among individual bees in a base population.}
 
-\item{varE_w}{numeric, environmental variance of the workers}
+\item{varEWorker}{Numeric scalar, environmental variance of
+the worker-effect trait among individual bees in a base population.}
 
-\item{corE_qw}{numeric, correlation between queen and workers}
+\item{corEQueenWorker}{Numeric scalar, environmental correlation between
+the queen-effect trait and the worker-effect trait
+among individual diploid bees in a base population.
+This is the within-individual cross-trait correlation among individuals.}
 
 \item{nW}{numeric, number of workers in the colony}
 
 \item{nF}{numeric, number of fathers of the workers}
 
-\item{nDPQ}{numeric, number of drone producing queens in the colony}
+\item{nDPQ}{numeric, number of drone producing queens (DPQs)
+represented among the mating fathers}
 
-\item{workersFUN}{character, either "sum" or "mean", indicating whether the workers' contributions are summed or averaged}
+\item{workersFUN}{character, either "sum" or "mean",
+indicating whether the workers' contributions are summed or averaged
+when forming the aggregated worker-effect contribution to colony value.}
+
+\item{workerAllocation}{character, either "random" (default) or "balanced".}
+
+\item{varAWorkerGroup}{Numeric scalar, additive genetic variance of
+the aggregated worker-effect trait among colonies in a base population.}
+
+\item{corAQueenWorkerGroup}{Numeric scalar, additive genetic correlation between
+the queen's queen-effect trait and
+the aggregated workers' worker-effect trait
+among colonies in a base population.
+This is the cross-caste and cross-trait correlation among colonies.}
+
+\item{varEWorkerGroup}{Numeric scalar, environmental variance of
+the aggregated worker-effect trait among colonies in a base population.}
+
+\item{corEQueenWorkerGroup}{Numeric scalar, environmental correlation between
+the queen's queen-effect trait and
+the aggregated workers' worker-effect trait
+among colonies in a base population.
+This is the cross-caste and cross-trait correlation among colonies.}
 }
 \value{
-list with colony-level variance components
+Both functions return a flat list with the same named components.
+
+  \strong{Components already described as inputs}
+  All components listed below are returned by both functions; the function
+  labels indicate which inputs they correspond to.
+  \itemize{
+  \item Both functions: \code{varAQueen}, \code{varEQueen}, \code{nW},
+    \code{nF}, \code{nDPQ}, \code{workersFUN}, and \code{workerAllocation}.
+  \item \code{mapIndToColonyVar}: \code{varAWorker}, \code{varEWorker},
+    \code{corAQueenWorker}, and \code{corEQueenWorker}.
+  \item \code{mapColonyToIndVar}: \code{varAWorkerGroup},
+    \code{varEWorkerGroup}, \code{corAQueenWorkerGroup}, and
+    \code{corEQueenWorkerGroup}. The returned group correlations are
+    \code{NA} if either corresponding variance is zero, even if zero
+    was supplied as the correlation.
+  }
+
+  \strong{Additional components}
+  \itemize{
+  \item \code{covAQueenWorker}: additive genetic covariance between
+    the queen-effect trait and the worker-effect trait
+    among individual diploid bees in a base population.
+  \item \code{covAQueenWorkerGroup}: additive genetic covariance between
+    the queen's queen-effect trait and
+    the aggregated workers' worker-effect trait
+    among colonies in a base population.
+  \item \code{covEQueenWorker}: environmental covariance between
+    the queen-effect trait and the worker-effect trait
+    among individual diploid bees in a base population.
+  \item \code{covEQueenWorkerGroup}: environmental covariance between
+    the queen's queen-effect trait and
+    the aggregated workers' worker-effect trait
+    among colonies in a base population.
+    Zero under the assumption of independent environmental deviations between bees.
+  \item \code{varAColony} and \code{varEColony}: additive genetic
+    and environmental variance of colony values.
+    Each is the sum of the queen and worker-group variances plus twice their covariance.
+  }
+
+  Covariances are not multiplied by two.
+  Calculated correlations are \code{NA} if either corresponding variance is zero.
+  In \code{mapColonyToIndVar}, \code{covEQueenWorker} and \code{corEQueenWorker}
+  are both returned as \code{NA},
+  because colony components do not identify
+  within-individual environmental covariance or correlation.
 }
 \description{
-Map individual-level variance components to colony-level variance components
+Map individual queen-effect and worker-effect variance components
+  to colony variance components, or recover individual variance components from
+  separate queen and worker-group colony variance components.
+}
+\details{
+These mappings describe marginal variances under an additive model
+  with non-inbred, mutually unrelated colony queens and drone-producing
+  queens (DPQs), distinct fathers, and equal numbers of fathers per DPQ.
+  They do not predict sample variance across colonies sharing relatives.
+  Each diploid bee has genetic values for both the queen-effect and
+  worker-effect traits. A colony value combines the queen's value for the
+  queen-effect trait with the aggregated workers' values for the
+  worker-effect trait. Thus Queen and Worker identify trait roles as well as
+  their expressing castes; WorkerGroup always denotes an aggregate.
+
+  With random worker allocation,
+  each worker independently samples a father uniformly.
+  With balanced allocation,
+  each father has exactly \code{nW/nF} workers,
+  which requires \code{nW} to be divisible by \code{nF}.
+  Both require \code{nF} divisible by \code{nDPQ}.
+  The distinct-worker relationship is 3/4 for a shared father,
+  1/2 for distinct fathers from the same DPQ, and 1/4 otherwise.
+  Queen-offspring relationship is 1/2.
+  Environmental deviations are independent between bees.
+  Calculated correlations are \code{NA} when either variance is zero;
+  individual correlations supplied to the forward mapping are retained.
+
+  The inverse divides worker-group variances and queen-worker-group
+  covariance by the corresponding design coefficients.
+  Both directions must use the same colony design and aggregation.
+  A nonzero \code{corEQueenWorkerGroup} raises an error,
+  as do colony components implying an individual genetic correlation outside [-1, 1].
+  If either genetic component variance is zero,
+  the inverse accepts \code{NA} or zero for \code{corAQueenWorkerGroup}.
+  Similarly, \code{NA} or zero can be supplied for \code{corEQueenWorkerGroup}
+  when either environmental component variance is zero.
+  The zero-correlation restriction between bees does not apply to \code{corEQueenWorker},
+  which describes environmental association between traits within the same bee.
+
+  Both results are flat lists. To pass a result to either mapping function,
+  select the entries named in \code{names(formals(fun))} before using
+  \code{do.call(fun, ...)}; the full result contains extra components.
+  Before mapping an inverse result forward, supply an explicit
+  \code{corEQueenWorker}, which the inverse cannot identify.
+}
+\section{Functions}{
+\itemize{
+\item \code{mapColonyToIndVar()}: Recover individual variance components from
+separate queen and worker-group colony components.
+
+}}
+\examples{
+nW <- 100
+nF <- 15
+nDPQ <- 5
+
+# Mapping individual vars to colony with worker group mean
+(colonyVars <- mapIndToColonyVar(
+  varAQueen = 1, varAWorker = 1, corAQueenWorker = -0.5,
+  varEQueen = 1, varEWorker = 1, corEQueenWorker = 0,
+  nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "mean"))
+# ... and inverse
+(indVars <- do.call(mapColonyToIndVar,
+  colonyVars[names(formals(mapColonyToIndVar))]))
+
+# Mapping colony vars with worker group sum to individual vars
+(indVars <- mapColonyToIndVar(
+  varAQueen = 1, varAWorkerGroup = 1, corAQueenWorkerGroup = -0.5,
+  varEQueen = 1, varEWorkerGroup = 1, corEQueenWorkerGroup = 0,
+  nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum"))
+# ... and back to colony components, assuming zero within-bee
+# environmental correlation (not identified by the inverse mapping).
+indArgs <- indVars[names(formals(mapIndToColonyVar))]
+indArgs$corEQueenWorker <- 0
+(colonyVars <- do.call(mapIndToColonyVar, indArgs))
+}
+\references{
+\insertRef{brascamp2014Methods}{SIMplyBee}
+\insertRef{brascamp2019Note}{SIMplyBee}
 }

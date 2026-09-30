@@ -1,6 +1,6 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -9,6 +9,9 @@ editor_options:
 -   2026-29-09
 
 ## Major changes
+
+-   Added mapIndToColonyVar() and mapColonyToIndVar() to map variance
+    components between individuals and colony in both ways.
 
 -   swarm/split/supersede do no longer store the year of the queen
 
@@ -34,6 +37,11 @@ is the number of viable workers.
 -   parallelised all the major functions (so they run on
     simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
     takes additional time, we recommend using a single threads for a small number of colonies
+
+## Other
+
+-   Added a shared `inst/REFERENCES.bib` bibliography for package help and
+    vignettes.
 
 ## Bug fixes
 
@@ -81,10 +89,10 @@ which caused an error. We now read in the locations from a csv file.
     the colonies' locations, and in the cross() function, that crosses
     bees according to their location. This did not break the old
     functionality of the cross function.
-    
+
 -  Unified setMisc and getMisc behaviour to comply with the new AlphaSimR behaviour
 
--  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous() 
+-  Added new C++ function isHeterozygous() to speed up the SIMplyBee function isCsdHeterozygous()
 
 ## Bug fixes
 

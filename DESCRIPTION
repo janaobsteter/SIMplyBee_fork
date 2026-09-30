@@ -5,11 +5,11 @@ Version: 0.5.0
 Authors@R: c(
   person("Jana", "Obšteter", email = "obsteter.jana@gmail.com",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1511-3916")),
-  person("Laura", "Strachan", role = "aut", 
+  person("Laura", "Strachan", role = "aut",
   comment = c(ORCID = "0000-0002-2569-0250")),
-  person("Jernej", "Bubnič", role = "aut", 
+  person("Jernej", "Bubnič", role = "aut",
   comment = c(ORCID = "0000-0003-1362-3736")),
-  person("Gregor", "Gorjanc", role = c("aut"), 
+  person("Gregor", "Gorjanc", role = c("aut"),
   comment = c(ORCID = "0000-0001-8008-2787")))
 Description: An extension of the 'AlphaSimR' package
   (<https://cran.r-project.org/package=AlphaSimR>) for stochastic simulations of
@@ -26,10 +26,10 @@ URL: https://github.com/HighlanderLab/SIMplyBee
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1), RANN, Rcpp (>= 0.12.7), future, future.apply
+Imports: methods, R6, stats, utils, extraDistr (>= 1.9.1), RANN, Rcpp (>= 0.12.7), Rdpack, future, future.apply
 Depends: R (>= 3.3.0), AlphaSimR (>= 2.0.0)
 LinkingTo: Rcpp, RcppArmadillo (>= 0.7.500.0.0), BH
-Suggests: 
+Suggests:
     rmarkdown,
     knitr,
     ggplot2,
@@ -39,3 +39,5 @@ Config/testthat/edition: 3
 Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.1.0
+RdMacros: Rdpack
+RoxygenNote: 7.3.3

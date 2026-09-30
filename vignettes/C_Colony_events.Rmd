@@ -2,6 +2,7 @@
 title: "Colony events"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: '`r normalizePath(if (file.exists("../inst/REFERENCES.bib")) "../inst/REFERENCES.bib" else system.file("REFERENCES.bib", package = "SIMplyBee", mustWork = TRUE), mustWork = TRUE)`'
 vignette: >
   %\VignetteIndexEntry{Colony events}
   %\VignetteEngine{knitr::rmarkdown}
@@ -59,7 +60,7 @@ When a honeybee colony outgrows its hive, becomes too congested, or too
 populated for the queen's pheromones to spread among workers, then the swarming
 begins. The workers start building swarm cells for new virgin queens. When the
 queen is ready, she leaves the hive and is followed by about 70% of the workers
-in a massive cloud of flying bees, the swarm (Rangel and Seeley, 2012). The
+in a massive cloud of flying bees, the swarm [@rangel2012Colony]. The
 swarm will cluster on a nearby tree or bush and remain there until they find a
 suitable new home.
 
@@ -69,7 +70,7 @@ swarm. After few days, the new virgin queens begin to emerge. Typically, the
 first queen to emerge will kill the rest of virgin queens to assume the role as
 the new queen for the colony. She will then go on a mating flight to find drones
 to mate with to begin laying eggs and rebuilding the workforce in the colony
-(Clemson Cooperative Extension, 2021; Rangel and Seeley, 2012).
+[@clemson2020Frequently; @rangel2012Colony].
 
 In SIMplyBee, function `swarm()` simulates swarming (Figure 1). The function
 takes a `Colony` class object and a percentage `p` of workers that leave with
@@ -287,7 +288,7 @@ Supersedure is a replacement of the queen by one of her daughters without
 interference of the beekeeper. Supersedure is a natural way of re-queening a
 colony without swarming. There are many reasons for supersedure: poor physical
 condition of a queen, old age, diseases, depleted spermatheca, poorly bread
-queen, reduced pheromone output and many others (Hamdan, 2010).
+queen, reduced pheromone output and many others [@hamdan2010Natural].
 
 Function `supersede()` removes the old queen and triggers the creation of new
 virgin queens from the brood (Figure 3). The function returns a single `Colony`
@@ -362,15 +363,3 @@ apiary
 ```
 
 # References
-
-Clemson Cooperative Extension (2021) Frequently asked questions about honey bee
-swarms.
-<https://hgic.clemson.edu/factsheet/frequently-asked-questions-about-honey-bee-swarms/>
-(accessed on 2022-11-11)
-
-Hamdan K. (2010) Natural Supersedure of Queens in Honey Bee Colonies. Bee World,
-87(3):52-54. <https://doi.org/10.1080/0005772X.2010.11417360>
-
-Rangel J., Seeley T. D. (2012) Colony fissioning in honey bees: size and
-significance of the swarm fraction. Insectes sociaux, 59(4):453-462.
-<https://doi.org/10.1007/s00040-012-0239-5>

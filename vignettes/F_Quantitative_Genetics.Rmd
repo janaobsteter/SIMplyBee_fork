@@ -2,6 +2,7 @@
 title: "Quantitative genetics"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: '`r normalizePath(if (file.exists("../inst/REFERENCES.bib")) "../inst/REFERENCES.bib" else system.file("REFERENCES.bib", package = "SIMplyBee", mustWork = TRUE), mustWork = TRUE)`'
 vignette: >
   %\VignetteIndexEntry{Quantitative genetics}
   %\VignetteEngine{knitr::rmarkdown}
@@ -124,7 +125,7 @@ all the other trait simulation options in AlphaSimR via:
 `vignette(topic = "traits", package="AlphaSimR")`.
 
 ```{r SimParamBee_corA_and_addTrait}
-corA <- matrix(data = c( 1.0, -0.5, 
+corA <- matrix(data = c( 1.0, -0.5,
                         -0.5,  1.0), nrow = 2, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = nQtlPerChr, mean = mean, var = varA, corA = corA,
              name = c("queenTrait", "workersTrait"))
@@ -139,7 +140,7 @@ simulation scenarios of interest.
 
 ```{r SimParamBee_varE_and_corR}
 varE <- c(3, 3 / SP$nWorkers)
-corE <- matrix(data = c(1.0, 0.3, 
+corE <- matrix(data = c(1.0, 0.3,
                         0.3, 1.0), nrow = 2, byrow = TRUE)
 SP$setVarE(varE = varE, corE = corE)
 ```
@@ -436,9 +437,9 @@ nQtlPerChr <- 100
 # Quantitative genetic parameters - for two traits, each with the queen and workers effects
 meanP <- c(10, 10 / SP$nWorkers, 0, 0)
 varA <- c(1, 1 / SP$nWorkers, 1, 1 / SP$nWorkers)
-corA <- matrix(data = c( 1.0, -0.5,  0.0,  0.0, 
+corA <- matrix(data = c( 1.0, -0.5,  0.0,  0.0,
                         -0.5,  1.0,  0.0,  0.0,
-                         0.0,  0.0,  1.0, -0.4, 
+                         0.0,  0.0,  1.0, -0.4,
                          0.0,  0.0, -0.4,  1.0), nrow = 4, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = meanP, var = varA, corA = corA,
              name = c("yieldQueenTrait", "yieldWorkersTrait",
@@ -568,7 +569,7 @@ nWorkers <- 100
 mean <- c(nWorkers, 10, 10 / nWorkers)
 varA <- c(25, 1, 1 / nWorkers)
 corA <- matrix(data = c(1.0,  0.0,  0.0,
-                        0.0,  1.0, -0.5, 
+                        0.0,  1.0, -0.5,
                         0.0, -0.5,  1.0), nrow = 3, byrow = TRUE)
 SP$addTraitA(nQtlPerChr = 100, mean = mean, var = varA, corA = corA,
              name = c("fecundityQueenTrait", "yieldQueenTrait", "yieldWorkersTrait"))
