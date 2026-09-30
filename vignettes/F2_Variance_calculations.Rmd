@@ -2,7 +2,7 @@
 title: "Variance calculations between individual and colony level values"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: '`r normalizePath(if (file.exists("../inst/REFERENCES.bib")) "../inst/REFERENCES.bib" else system.file("REFERENCES.bib", package = "SIMplyBee", mustWork = TRUE), mustWork = TRUE)`'
+bibliography: '`r normalizePath(if (file.exists("../inst/REFERENCES.bib")) "../inst/REFERENCES.bib" else system.file("REFERENCES.bib", package = "SIMplyBee", mustWork = TRUE), winslash = "/", mustWork = TRUE)`'
 vignette: >
   %\VignetteIndexEntry{VarianceCalculations}
   %\VignetteEngine{knitr::rmarkdown}

@@ -81,7 +81,9 @@ nEmptyColonies <- function(multicolony) {
 #'
 #' @description Returns the number of individuals of a caste in a colony
 #'
-#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}.
+#'   For \code{nFathers()}, also a \code{\link[AlphaSimR]{Pop-class}}
+#'   containing queens.
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
@@ -94,7 +96,8 @@ nEmptyColonies <- function(multicolony) {
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
 #'   by caste; when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is named
 #'   integer for \code{caste != "all"} or named list of lists for
-#'   \code{caste == "all"}
+#'   \code{caste == "all"}. For \code{nFathers()} with a queen population,
+#'   returns a numeric vector with one father count per queen.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -214,8 +217,10 @@ nFathers <- function(x, simParamBee = NULL) {
         ret[ind] <- nInd(x@misc$fathers[[ind]])
       }
     }
-  } else {
+  } else if (isColony(x) || isMultiColony(x)) {
     ret <- nCaste(x, caste = "fathers", simParamBee = simParamBee)
+  } else {
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -262,9 +267,13 @@ nVirginQueens <- function(x, simParamBee = NULL) {
 #' @seealso Demo in the introductory vignette
 #'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
-#' @return numeric, expected csd homozygosity named by colony id when \code{x}
-#'   is \code{\link[SIMplyBee]{MultiColony-class}}
-#'
+#' @return Numeric brood proportions for \code{calcQueensPHomBrood()} and
+#'   \code{pHomBrood()}, or counts for \code{nHomBrood()}, named by colony ID
+#'   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}. An empty
+#'   \code{\link[AlphaSimR]{Pop-class}} returns \code{numeric(0)}. Missing
+#'   brood proportions and counts are represented by \code{NA_real_}.
+#'   All three functions warn and return \code{NA_real_} for a colony without
+#'   a queen.
 #'
 #' @examples
 #' # This is a bit long example - the key is at the end!
@@ -313,7 +322,7 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!(all(isQueen(x, simParamBee = simParamBee)))) {
         stop("calcQueensPHomBrood can only be used with queens!")
@@ -331,9 +340,14 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
       }
     }
   } else if (isColony(x)) {
-    ret <- calcQueensPHomBrood(x = x@queen)
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
+    } else {
+      ret <- calcQueensPHomBrood(x = x@queen, simParamBee = simParamBee)
+    }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
+    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -341,7 +355,7 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
+#' @describeIn calcQueensPHomBrood Expected proportion of csd homozygous brood
 #'   of a queen / colony
 #' @export
 pHomBrood <- function(x, simParamBee = NULL) {
@@ -352,23 +366,29 @@ pHomBrood <- function(x, simParamBee = NULL) {
     if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!is.null(x@misc$pHomBrood[[ind]])) {
         ret[ind] <- x@misc$pHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc$pHomBrood[[1]])) {
-      ret <- NA
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
     } else {
-      ret <- x@queen@misc$pHomBrood[[1]]
+      if (is.null(x@queen@misc$pHomBrood[[1]])) {
+        ret <- NA_real_
+      } else {
+        ret <- x@queen@misc$pHomBrood[[1]]
+      }
     }
+
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = pHomBrood)
+    ret <- sapply(X = x@colonies, FUN = pHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -384,23 +404,26 @@ nHomBrood <- function(x, simParamBee = NULL) {
     if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!is.null(x@misc$nHomBrood[[ind]])) {
         ret[ind] <- x@misc$nHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc$nHomBrood[[1]])) {
-      ret <- NA
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
+    } else if (is.null(x@queen@misc$nHomBrood[[1]])) {
+      ret <- NA_real_
     } else {
       ret <- x@queen@misc$nHomBrood[[1]]
     }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = nHomBrood)
+    ret <- sapply(X = x@colonies, FUN = nHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -953,14 +976,19 @@ isNULLColonies <- function(multicolony) {
 # get (general) ----
 
 #' @rdname getId
-#' @title Get the colony ID
+#' @title Get the population/queen or colony IDs
 #'
-#' @description Level 0 function that returns the colony ID. This is by
-#'   definition the ID of the queen.
+#' @description Level 0 function that returns individual IDs from a population
+#'   or colony IDs from colonies.
 #'
-#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param x \code{NULL}, \code{\link[AlphaSimR]{Pop-class}},
+#'   \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return character, \code{NA} when queen not present
+#' @return Character individual IDs for a \code{Pop}, or integer colony IDs
+#'   for a \code{Colony} or nonempty \code{MultiColony}. An empty \code{Pop}
+#'   returns \code{character(0)}; \code{NULL} input returns
+#'   \code{NA_character_}. An empty \code{MultiColony} returns an empty list.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -986,11 +1014,11 @@ isNULLColonies <- function(multicolony) {
 #' @export
 getId <- function(x) {
   if (is.null(x)) {
-    id <- NA
+    id <- NA_character_
   } else if (isPop(x)) {
     id <- x@id
   } else if (isColony(x)) {
-    id <- ifelse(is.null(x@id), NA, x@id)
+    id <- ifelse(is.null(x@id), NA_character_, x@id)
   } else if (isMultiColony(x)) {
     id <- sapply(x@colonies, FUN = getId)
   } else {
@@ -5230,10 +5258,10 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     if(!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen in the Colony!")
     }
-    ret <- calcInheritanceCriterion(getQueen(colony, simParamBee = simParamBee),
+    ret <- calcInheritanceCriterion(getQueen(x, simParamBee = simParamBee),
                                     queenTrait = queenTrait,
                                     workersTrait = workersTrait,
-                                    use = use)
+                                    use = use, simParamBee = simParamBee)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -5242,7 +5270,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
         ret[[colony]] <- calcInheritanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
                                                   workersTrait = workersTrait,
-                                                  use = use)
+                                                  use = use, simParamBee = simParamBee)
       } else {
         ret[colony] <- list(NULL)
       }

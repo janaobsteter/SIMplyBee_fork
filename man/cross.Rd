@@ -62,10 +62,13 @@ This will also remove the unmated queens and return only the mated ones.}
 \item{...}{other arguments for \code{nDrones}, when \code{nDrones} is a function}
 }
 \value{
-\code{\link[AlphaSimR]{Pop-class}} with mated queen(s). The misc slot of the
-  queens contains additional information about the number of workers, drones,
-  and homozygous brood produced, and the expected percentage of csd homozygous
-  brood.
+A \code{\link[AlphaSimR]{Pop-class}},
+  \code{\link[SIMplyBee]{Colony-class}}, or
+  \code{\link[SIMplyBee]{MultiColony-class}} with mated queen(s), matching
+  the input type. The queens' \code{misc} slots contain worker, drone, and
+  homozygous brood counts, initially zero, and the expected proportion of
+  csd homozygous brood (\code{pHomBrood}). When csd is inactive,
+  \code{pHomBrood} is \code{NA_real_}.
 }
 \description{
 Level 1 function that crosses (mates) a virgin queen to a group

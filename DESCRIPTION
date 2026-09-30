@@ -40,3 +40,4 @@ Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.1.0
 RdMacros: Rdpack
+RoxygenNote: 7.3.3

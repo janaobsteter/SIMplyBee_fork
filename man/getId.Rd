@@ -2,19 +2,24 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getId}
 \alias{getId}
-\title{Get the colony ID}
+\title{Get the population/queen or colony IDs}
 \usage{
 getId(x)
 }
 \arguments{
-\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}}
+\item{x}{\code{NULL}, \code{\link[AlphaSimR]{Pop-class}},
+\code{\link[SIMplyBee]{Colony-class}}, or
+\code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-character, \code{NA} when queen not present
+Character individual IDs for a \code{Pop}, or integer colony IDs
+  for a \code{Colony} or nonempty \code{MultiColony}. An empty \code{Pop}
+  returns \code{character(0)}; \code{NULL} input returns
+  \code{NA_character_}. An empty \code{MultiColony} returns an empty list.
 }
 \description{
-Level 0 function that returns the colony ID. This is by
-  definition the ID of the queen.
+Level 0 function that returns individual IDs from a population
+  or colony IDs from colonies.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

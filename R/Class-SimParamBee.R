@@ -943,6 +943,8 @@ swarmPUnif <- function(x = NULL, n = 1, min = 0.4, max = 0.6) {
 #' @param nWorkersFull numeric, average number of workers in a full/strong
 #'   colony for \code{splitPColonyStrength} (actual number can go beyond this
 #'   value)
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, simulation parameters
+#'   for \code{splitPColonyStrength}
 #' @param scale numeric, scaling of numbers in \code{splitPColonyStrength}
 #'   to avoid to narrow range when colonies have a large number of bees (in that
 #'   case change \code{nWorkersFull} too!)
@@ -1014,13 +1016,14 @@ splitPUnif <- function(x = NULL, n = 1, min = 0.2, max = 0.4) {
 #' @describeIn splitPFun Sample the split proportion - the proportion of
 #'   removed workers in a managed split based on the colony strength
 #' @export
-splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1) {
+splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1,
+                                 simParamBee = NULL) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {
     n <- nColonies(x)
   }
-  nW <- nWorkers(colony)
+  nW <- nWorkers(x, simParamBee = simParamBee)
   pKeep <- rbeta(
     n = n,
     shape1 = (nW + nWorkersFull) / scale,
@@ -1214,7 +1217,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(queenTrait)) {
       queenEff <- 0
     } else {
-      if (isQueenPresent(x)) {
+      if (isQueenPresent(x, simParamBee = simParamBee)) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@queen)[, queenTrait, drop = FALSE]
         } else { # bv, dd, and aa: leaving this in for future use!
@@ -1228,7 +1231,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(workersTrait)) {
       workersEff <- 0
     } else {
-      if (nWorkers(x) != 0) {
+      if (nWorkers(x, simParamBee = simParamBee) != 0) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@workers)[, workersTrait, drop = FALSE]
         } else { # bv, dd, and aa
@@ -1242,7 +1245,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(dronesTrait)) {
       dronesEff <- 0
     } else {
-      if (nDrones(x) != 0) {
+      if (nDrones(x, simParamBee = simParamBee) != 0) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@drones)[, dronesTrait, drop = FALSE]
         } else { # bv, dd, and aa

@@ -600,7 +600,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 
     # Events
     if (resetEvents) {
-      x <- resetEvents(x)
+      x <- resetEvents(x, simParamBee = simParamBee)
     }
     x@production <- TRUE
   } else if (isMultiColony(x)) {
