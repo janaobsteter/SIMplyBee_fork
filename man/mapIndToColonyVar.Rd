@@ -125,13 +125,13 @@ Both functions return a flat list with the same named components.
   \item \code{varAColony} and \code{varEColony}: additive genetic
     and environmental variance of colony values.
     Each is the sum of the queen and worker-group variances plus twice their covariance.
-  \item \code{h2queen}: \code{varAQueen / (varAQueen + varEQueen)},
+  \item \code{h2Queen}: \code{varAQueen / (varAQueen + varEQueen)},
     heritability of the queen-effect trait among individual bees.
-  \item \code{h2worker}: \code{varAWorker / (varAWorker + varEWorker)},
+  \item \code{h2Worker}: \code{varAWorker / (varAWorker + varEWorker)},
     heritability of the worker-effect trait among individual bees.
-  \item \code{h2workerGroup}: \code{varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup)},
+  \item \code{h2WorkerGroup}: \code{varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup)},
     heritability of the aggregated worker-effect trait among colonies.
-  \item \code{h2colony}: \code{varAColony / (varAColony + varEColony)},
+  \item \code{h2Colony}: \code{varAColony / (varAColony + varEColony)},
     heritability of colony values, including genetic covariance between
     queen's queen trait and worker-group's worker trait in \code{varAColony}.
     All four heritabilities are \code{NA} when their denominator is zero.
