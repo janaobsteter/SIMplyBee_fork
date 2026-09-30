@@ -214,7 +214,7 @@ nDPQ <- 5
 # Mapping colony vars with worker group sum to individual vars
 (indVars <- mapColonyToIndVar(
   varAQueen = 2, varAWorkerGroup = 0.01, corAQueenWorkerGroup = -0.5,
-  varEQueen = 3, varEWorkerGroup = 0.02, corEQueenWorkerGroup = 0,
+  varEQueen = 3, varEWorkerGroup = 0.02, corEQueenWorkerGroup = 0.0,
   nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum"))
 # ... and back to colony components, assuming zero within-bee
 # environmental correlation (not identified by the inverse mapping).
