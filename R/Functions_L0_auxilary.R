@@ -6686,6 +6686,16 @@ covVar2Cor <- function(covariance, variance1, variance2) {
 #'   \item \code{varAColony} and \code{varEColony}: additive genetic
 #'     and environmental variance of colony values.
 #'     Each is the sum of the queen and worker-group variances plus twice their covariance.
+#'   \item \code{h2Queen}: \code{varAQueen / (varAQueen + varEQueen)},
+#'     heritability of the queen-effect trait among individual bees.
+#'   \item \code{h2Worker}: \code{varAWorker / (varAWorker + varEWorker)},
+#'     heritability of the worker-effect trait among individual bees.
+#'   \item \code{h2WorkerGroup}: \code{varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup)},
+#'     heritability of the aggregated worker-effect trait among colonies.
+#'   \item \code{h2Colony}: \code{varAColony / (varAColony + varEColony)},
+#'     heritability of colony values, including genetic covariance between
+#'     queen's queen trait and worker-group's worker trait in \code{varAColony}.
+#'     All four heritabilities are \code{NA} when their denominator is zero.
 #'   }
 #'
 #'   Covariances are not multiplied by two.
@@ -6747,8 +6757,8 @@ covVar2Cor <- function(covariance, variance1, variance2) {
 #'
 #' # Mapping individual vars to colony with worker group mean
 #' (colonyVars <- mapIndToColonyVar(
-#'   varAQueen = 1, varAWorker = 1, corAQueenWorker = -0.5,
-#'   varEQueen = 1, varEWorker = 1, corEQueenWorker = 0,
+#'   varAQueen = 2, varAWorker = 0.01, corAQueenWorker = -0.5,
+#'   varEQueen = 3, varEWorker = 0.02, corEQueenWorker = 0.3,
 #'   nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "mean"))
 #' # ... and inverse
 #' (indVars <- do.call(mapColonyToIndVar,
@@ -6756,8 +6766,8 @@ covVar2Cor <- function(covariance, variance1, variance2) {
 #'
 #' # Mapping colony vars with worker group sum to individual vars
 #' (indVars <- mapColonyToIndVar(
-#'   varAQueen = 1, varAWorkerGroup = 1, corAQueenWorkerGroup = -0.5,
-#'   varEQueen = 1, varEWorkerGroup = 1, corEQueenWorkerGroup = 0,
+#'   varAQueen = 2, varAWorkerGroup = 0.01, corAQueenWorkerGroup = -0.5,
+#'   varEQueen = 3, varEWorkerGroup = 0.02, corEQueenWorkerGroup = 0.0,
 #'   nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum"))
 #' # ... and back to colony components, assuming zero within-bee
 #' # environmental correlation (not identified by the inverse mapping).
@@ -6801,6 +6811,10 @@ mapIndToColonyVar <- function(varAQueen, varAWorker, corAQueenWorker,
     covEQueenWorkerGroup = covEQueenWorkerGroup,
     corEQueenWorkerGroup = corEQueenWorkerGroup,
     varEColony = varEColony,
+    h2Queen = if (varAQueen + varEQueen == 0) NA_real_ else varAQueen / (varAQueen + varEQueen),
+    h2Worker = if (varAWorker + varEWorker == 0) NA_real_ else varAWorker / (varAWorker + varEWorker),
+    h2WorkerGroup = if (varAWorkerGroup + varEWorkerGroup == 0) NA_real_ else varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup),
+    h2Colony = if (varAColony + varEColony == 0) NA_real_ else varAColony / (varAColony + varEColony),
     nW = nW,
     nF = nF,
     nDPQ = nDPQ,
@@ -6862,6 +6876,10 @@ mapColonyToIndVar <- function(varAQueen, varAWorkerGroup, corAQueenWorkerGroup,
     covEQueenWorkerGroup = covEQueenWorkerGroup,
     corEQueenWorkerGroup = corEQueenWorkerGroup,
     varEColony = varEColony,
+    h2Queen = if (varAQueen + varEQueen == 0) NA_real_ else varAQueen / (varAQueen + varEQueen),
+    h2Worker = if (varAWorker + varEWorker == 0) NA_real_ else varAWorker / (varAWorker + varEWorker),
+    h2WorkerGroup = if (varAWorkerGroup + varEWorkerGroup == 0) NA_real_ else varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup),
+    h2Colony = if (varAColony + varEColony == 0) NA_real_ else varAColony / (varAColony + varEColony),
     nW = nW,
     nF = nF,
     nDPQ = nDPQ,

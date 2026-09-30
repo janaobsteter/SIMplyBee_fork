@@ -102,3 +102,66 @@ test_that("colony-to-individual round trip recovers the supplied colony componen
     }
   }
 })
+
+
+test_that("mapping heritabilities distinguish worker groups and include colony covariance", {
+  colonyVars <- mapIndToColonyVar(
+    varAQueen = 1,
+    varAWorker = 1,
+    corAQueenWorker = -0.5,
+    varEQueen = 1,
+    varEWorker = 1,
+    corEQueenWorker = 0,
+    nW = 100,
+    nF = 15,
+    nDPQ = 5,
+    workersFUN = "mean"
+  )
+  indVars <- do.call(
+    mapColonyToIndVar,
+    colonyVars[names(formals(mapColonyToIndVar))]
+  )
+  for (result in list(colonyVars, indVars)) {
+    expect_equal(result$h2Queen, 0.5)
+    expect_equal(result$h2Worker, 0.5)
+    # Worker-group VarA = 0.3235 and VarE = 0.01; individual heritability is 0.5.
+    expect_equal(result$h2WorkerGroup, 0.3235 / (0.3235 + 0.01))
+    # Colony VarA = 1 + 0.3235 - 0.5 = 0.8235 and VarE = 1.01.
+    expect_equal(result$h2Colony, 0.8235 / (0.8235 + 1.01))
+  }
+})
+
+test_that("mapping heritabilities handle zero genetic and environmental variances", {
+  for (varA in c(0, 1)) {
+    for (varE in c(0, 1)) {
+      colonyVars <- mapIndToColonyVar(
+        varAQueen = varA,
+        varAWorker = varA,
+        corAQueenWorker = 0,
+        varEQueen = varE,
+        varEWorker = varE,
+        corEQueenWorker = 0,
+        nW = 1,
+        nF = 1,
+        nDPQ = 1
+      )
+      indVars <- do.call(
+        mapColonyToIndVar,
+        colonyVars[names(formals(mapColonyToIndVar))]
+      )
+      expected <- if (varA == 0 && varE == 0) {
+        NA_real_
+      } else if (varA == varE) {
+        0.5
+      } else {
+        varA
+      }
+      for (result in list(colonyVars, indVars)) {
+        expect_identical(result$h2Queen, expected)
+        expect_identical(result$h2Worker, expected)
+        expect_identical(result$h2WorkerGroup, expected)
+        expect_identical(result$h2Colony, expected)
+      }
+    }
+  }
+})
