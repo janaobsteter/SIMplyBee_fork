@@ -222,11 +222,18 @@ test_that("isCaste", {
 
 test_that("calcQueensPHomBrood", {
   set.seed(1)
-  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
   SP$nThreads <- 1L
 
-  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  # Queen 1 is AB; queens 2 and 3 are CD, so their fathers cannot match.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  basePop <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, CD, CD),
+    simParamBee = SP
+  )
   expect_error(
     calcQueensPHomBrood(basePop, simParamBee = SP),
     "calcQueensPHomBrood can only be used with queens!",
@@ -293,34 +300,65 @@ test_that("calcQueensPHomBrood", {
   tmp <- calcQueensPHomBrood(apiary, simParamBee = SP)
   expect_equal(length(tmp), 2)
   expect_equal(tmp, c(`2` = 0, `3` = 0))
+})
 
-  drones <- createDrones(x = basePop[4:5], nInd = 100, simParamBee = SP)
-  fatherGroups <- pullDroneGroupsFromDCA(
-    drones,
-    n = 2,
-    nDrones = 10,
+test_that("calcQueensPHomBrood reflects controlled father proportions", {
+  set.seed(1)
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
+  SP$nThreads <- 1L
+
+  # Four distinct csd alleles, each encoded by two SNPs.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  queens <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, AB, AB, CD),
     simParamBee = SP
   )
-  colony2 <- createColony(x = basePop[4], simParamBee = SP)
-  colony2 <- cross(colony2, drones = fatherGroups[[1]], simParamBee = SP)
-  colony3 <- createColony(x = basePop[5], simParamBee = SP)
-  colony3 <- cross(colony3, drones = fatherGroups[[2]], simParamBee = SP)
 
-  apiary <- c(colony2, colony3)
-  tmp <- calcQueensPHomBrood(apiary, simParamBee = SP)
-  expect_equal(length(tmp), 2)
-  expect_equal(tmp, c(`6` = 0.35, `7` = 0.10))
+  # Both recipient queens are AB. Every drone from queen 3 matches;
+  # none from queen 4 matches, regardless of random segregation.
+  matching <- createDrones(queens[3], nInd = 9, simParamBee = SP)
+  nonmatching <- createDrones(queens[4], nInd = 11, simParamBee = SP)
+  fatherGroups <- list(
+    c(matching[1:7], nonmatching[1:3]),
+    c(matching[8:9], nonmatching[4:11])
+  )
+  apiary <- createMultiColony(queens[1:2], simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups, simParamBee = SP)
+
+  # Matching fathers contribute homozygous brood with probability 1/2.
+  expected <- setNames(c(0.35, 0.10), getId(apiary))
+  expect_equal(calcQueensPHomBrood(apiary, simParamBee = SP), expected)
+  for (i in seq_len(2)) {
+    expect_equal(
+      calcQueensPHomBrood(apiary[[i]], simParamBee = SP),
+      unname(expected[i])
+    )
+    expect_equal(
+      calcQueensPHomBrood(apiary[[i]]@queen, simParamBee = SP),
+      unname(expected[i])
+    )
+  }
 })
 
 # ---- pHomBrood ----
 
 test_that("pHomBrood", {
   set.seed(1)
-  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
   SP$nThreads <- 1L
 
-  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  # Queen 1 is AB; queens 2 and 3 are CD, so their fathers cannot match.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  basePop <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, CD, CD),
+    simParamBee = SP
+  )
   expect_error(
     pHomBrood(basePop, simParamBee = SP),
     "Individuals in x must be queens!",
@@ -351,13 +389,11 @@ test_that("pHomBrood", {
     pHomBrood(colony@workers, simParamBee = SP),
     "Individuals in x must be queens!"
   )
-  # This does not work because colony@virginQueens is empty pop so we get out zero length output
-  # expect_error(
-  #   pHomBrood(colony@virginQueens, simParamBee = SP),
-  #   "Individuals in x must be queens!"
-  # )
-  # ... so let's do this instead
-  expect_length(pHomBrood(colony@virginQueens, simParamBee = SP), 0L)
+  # Explicitly empty populations return numeric(0), regardless of caste.
+  expect_identical(
+    pHomBrood(colony@virginQueens[integer(0)], simParamBee = SP),
+    numeric(0)
+  )
   expect_error(
     pHomBrood(colony@drones, simParamBee = SP),
     "Individuals in x must be queens!"
@@ -366,7 +402,6 @@ test_that("pHomBrood", {
   expect_true(pHomBrood(colony@queen, simParamBee = SP) > 0)
   expect_true(pHomBrood(colony@queen, simParamBee = SP) == 0.5)
 
-  colonyCopy <- colony
   colony@queen <- NULL
   expect_error(
     pHomBrood(colony@queen, simParamBee = SP),
@@ -387,34 +422,62 @@ test_that("pHomBrood", {
   tmp <- pHomBrood(apiary, simParamBee = SP)
   expect_equal(length(tmp), 2)
   expect_equal(tmp, c(`2` = 0, `3` = 0))
+})
 
-  drones <- createDrones(x = basePop[4:5], nInd = 100, simParamBee = SP)
-  fatherGroups <- pullDroneGroupsFromDCA(
-    drones,
-    n = 2,
-    nDrones = 10,
+test_that("pHomBrood reflects controlled father proportions", {
+  set.seed(1)
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
+  SP$nThreads <- 1L
+
+  # Four distinct csd alleles, each encoded by two SNPs.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  queens <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, AB, AB, CD),
     simParamBee = SP
   )
-  colony2 <- createColony(x = basePop[4], simParamBee = SP)
-  colony2 <- cross(colony2, drones = fatherGroups[[1]], simParamBee = SP)
-  colony3 <- createColony(x = basePop[5], simParamBee = SP)
-  colony3 <- cross(colony3, drones = fatherGroups[[2]], simParamBee = SP)
 
-  apiary <- c(colony2, colony3)
-  tmp <- pHomBrood(apiary, simParamBee = SP)
-  expect_equal(length(tmp), 2)
-  expect_equal(tmp, c(`6` = 0.35, `7` = 0.10))
+  # Both recipient queens are AB. Every drone from queen 3 matches;
+  # none from queen 4 matches, regardless of random segregation.
+  matching <- createDrones(queens[3], nInd = 9, simParamBee = SP)
+  nonmatching <- createDrones(queens[4], nInd = 11, simParamBee = SP)
+  fatherGroups <- list(
+    c(matching[1:7], nonmatching[1:3]),
+    c(matching[8:9], nonmatching[4:11])
+  )
+  apiary <- createMultiColony(queens[1:2], simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups, simParamBee = SP)
+
+  # Matching fathers contribute homozygous brood with probability 1/2.
+  expected <- setNames(c(0.35, 0.10), getId(apiary))
+  expect_equal(pHomBrood(apiary, simParamBee = SP), expected)
+  for (i in seq_len(2)) {
+    expect_equal(pHomBrood(apiary[[i]], simParamBee = SP), unname(expected[i]))
+    expect_equal(
+      pHomBrood(apiary[[i]]@queen, simParamBee = SP),
+      unname(expected[i])
+    )
+  }
 })
 
 #---- nHomBrood -----
 
 test_that("nHomBrood", {
   set.seed(1)
-  founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
-  SP <- SimParamBee$new(founderGenomes)
+  founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
   SP$nThreads <- 1L
 
-  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  # Queen 1 is AB; queens 2 and 3 are CD, so their fathers cannot match.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  basePop <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, CD, CD),
+    simParamBee = SP
+  )
   expect_error(
     nHomBrood(basePop, simParamBee = SP),
     "Individuals in x must be queens!",
@@ -455,7 +518,6 @@ test_that("nHomBrood", {
     "Individuals in x must be queens!"
   )
   expect_true(is.numeric(nHomBrood(colony@queen, simParamBee = SP)))
-  expect_true(nHomBrood(colony@queen, simParamBee = SP) > 0)
   # Of the 120 worker offspring requested, csd homozygotes did not survive.
   expect_equal(
     nHomBrood(colony@queen, simParamBee = SP),
@@ -482,29 +544,52 @@ test_that("nHomBrood", {
   tmp <- nHomBrood(apiary, simParamBee = SP)
   expect_equal(length(tmp), 2)
   expect_equal(tmp, c(`2` = 0, `3` = 0))
+})
 
-  drones <- createDrones(x = basePop[4:5], nInd = 100, simParamBee = SP)
-  fatherGroups <- pullDroneGroupsFromDCA(
-    drones,
-    n = 2,
-    nDrones = 10,
+test_that("nHomBrood tracks realised brood with controlled fathers", {
+  set.seed(1)
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 4)
+  SP$nThreads <- 1L
+
+  # Four distinct csd alleles, each encoded by two SNPs.
+  AB <- rbind(c(0, 0), c(0, 1))
+  CD <- rbind(c(1, 0), c(1, 1))
+  queens <- createVirginQueens(
+    founderGenomes,
+    csdAlleles = list(AB, AB, AB, CD),
     simParamBee = SP
   )
-  colony2 <- createColony(x = basePop[4], simParamBee = SP)
-  colony2 <- cross(colony2, drones = fatherGroups[[1]], simParamBee = SP)
-  colony3 <- createColony(x = basePop[5], simParamBee = SP)
-  colony3 <- cross(colony3, drones = fatherGroups[[2]], simParamBee = SP)
 
-  apiary <- c(colony2, colony3)
-  tmp <- nHomBrood(apiary, simParamBee = SP)
-  expect_equal(length(tmp), 2)
-  expect_equal(tmp, c(`6` = 0, `7` = 0))
+  # Both recipient queens are AB. Every drone from queen 3 matches;
+  # none from queen 4 matches, regardless of random segregation.
+  matching <- createDrones(queens[3], nInd = 9, simParamBee = SP)
+  nonmatching <- createDrones(queens[4], nInd = 11, simParamBee = SP)
+  fatherGroups <- list(
+    c(matching[1:7], nonmatching[1:3]),
+    c(matching[8:9], nonmatching[4:11])
+  )
+  apiary <- createMultiColony(queens[1:2], simParamBee = SP)
+  apiary <- cross(apiary, drones = fatherGroups, simParamBee = SP)
+
+  expected <- setNames(c(0, 0), getId(apiary))
+  expect_equal(nHomBrood(apiary, simParamBee = SP), expected)
+  for (i in seq_len(2)) {
+    expect_equal(nHomBrood(apiary[[i]], simParamBee = SP), 0)
+    expect_equal(nHomBrood(apiary[[i]]@queen, simParamBee = SP), 0)
+  }
 
   apiary <- buildUp(apiary, nWorkers = 40, nDrones = 0, simParamBee = SP)
-  expect_equal(
-    nHomBrood(apiary, simParamBee = SP),
-    40 - nWorkers(apiary, simParamBee = SP)
-  )
+  # Realised counts vary, but every missing worker is csd homozygous.
+  expected <- 40 - nWorkers(apiary, simParamBee = SP)
+  expect_equal(nHomBrood(apiary, simParamBee = SP), expected)
+  for (i in seq_len(2)) {
+    expect_equal(nHomBrood(apiary[[i]], simParamBee = SP), unname(expected[i]))
+    expect_equal(
+      nHomBrood(apiary[[i]]@queen, simParamBee = SP),
+      unname(expected[i])
+    )
+  }
 })
 
 # ---- isQueenPresent ----
