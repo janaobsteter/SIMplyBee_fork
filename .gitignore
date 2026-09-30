@@ -7,6 +7,7 @@
 
 # User-specific files
 .Ruserdata
+Rplots.pdf
 
 # Example code in package build process
 *-Ex.R
@@ -19,12 +20,35 @@ src/*.so
 # Output files from R CMD check
 /*.Rcheck/
 
-# RStudio files
+# Local IDE state
 .Rproj.user/
+.idea/
+.vscode/
+
+# Compiled code and coverage output
+/src/**/*.o
+/src/**/*.so
+/src/**/*.dll
+/src/**/*.dylib
+/src/**/*.gcda
+/src/**/*.gcno
+/covr/
+
+# Binary package builds
+/SIMplyBee_*.tgz
+/SIMplyBee_*.zip
+
+# Installed documentation and rendered development documents
+/inst/doc/
+/README.html
+/README_files/
+/cran-comments.html
+/cran-comments_files/
 
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+vignettes/*_files/
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
@@ -32,6 +56,7 @@ vignettes/*.pdf
 # knitr and R markdown default cache directories
 *_cache/
 /cache/
+.quarto/
 
 # Temporary files created by R markdown
 *.utf8.md
