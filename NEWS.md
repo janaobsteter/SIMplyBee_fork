@@ -31,6 +31,10 @@ is the number of viable workers.
 -   the 'cross' function now removes unsuccessfully mated queens. This can primarily happen when creating a spatial cross plan. If there are no drone producing colonies in the specified radius, the mating fails and the queens/colonies are removed from the object. This is to ensure all further functionality works well.
 
 ## New features
+
+-   Both variance mappings now return `h2Queen`, `h2Worker`,
+    `h2WorkerGroup`, and `h2Colony`, with `NA` for zero total variance.
+
 - added functionality to map individual-level variance to colony-level variance and vice-versa
   with functions 'mapIndToColonyVar' and 'mapColonyToIndVar'
 
