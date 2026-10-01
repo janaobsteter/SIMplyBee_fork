@@ -1,3 +1,4 @@
+
 # ---- Class SimParamBee ----
 
 setClassUnion("numericOrFunction", c("numeric", "function"))

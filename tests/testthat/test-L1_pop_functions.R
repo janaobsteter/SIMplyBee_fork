@@ -1,3 +1,4 @@
+
 # ---- getCastePop ----
 
 test_that("getCastePop", {
@@ -228,6 +229,7 @@ test_that("pullCastePop", {
 })
 
 # ---- cross ----
+
 test_that("cross", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -292,8 +294,8 @@ test_that("cross", {
   #expect_message(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), checkCross = "warning", simParamBee = SP))
 })
 
-
 # ---- createDCA ----
+
 test_that("createDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -330,6 +332,7 @@ test_that("createDCA", {
 })
 
 # ---- pullDroneGroupsFromDCA ----
+
 test_that("pullDroneGroupsFromDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)

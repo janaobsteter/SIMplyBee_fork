@@ -1,4 +1,6 @@
+
 # ---- Level 1 Pop Functions  ----
+
 utils::globalVariables("colony")
 utils::globalVariables("i")
 utils::globalVariables("cl")

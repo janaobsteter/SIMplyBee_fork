@@ -156,6 +156,60 @@ test_that("isGenoHeterozygous", {
   expect_equal(isGenoHeterozygous(geno), c(TRUE, FALSE, FALSE))
 })
 
+test_that("isHeterozygous detects differences between chromosome copies", {
+  # Two rows per bee, one column per locus; entries are ordinary 0/1 alleles
+  haplotypes <- matrix(0, nrow = 6, ncol = 16)
+  haplotypes[2, 9] <- 1 # Bee 1: its two copies differ at locus 9
+  haplotypes[3:4, ] <- 1 # Bee 2: both copies are identical (all 1s)
+  haplotypes[6, 8] <- 1 # Bee 3: its two copies differ at locus 8
+  founders <- newMapPop(
+    genMap = list(seq(0, 1, length.out = 16)),
+    haplotypes = list(haplotypes)
+  )
+
+  # Loci 8 and 9 straddle an internal storage boundary
+  # Four threads for three bees also tests the automatic thread limit
+  for (nThreads in c(1L, 4L)) {
+    observed <- isHeterozygous(
+      geno = founders@geno,
+      lociPerChr = 4L,
+      lociLoc = c(1L, 8L, 9L, 16L),
+      nThreads = nThreads
+    )
+    expect_equal(as.vector(observed), c(1, 0, 1))
+  }
+})
+
+test_that("isHeterozygous ignores chromosomes and loci that were not selected", {
+  # Two bees, each with two chromosome copies (rows 1:2 and 3:4)
+  chr1 <- chr2 <- chr3 <- matrix(0, nrow = 4, ncol = 16)
+  chr1[2, 1] <- 1 # Bee 1 differs at chromosome 1, locus 1
+  chr2[c(2, 4), ] <- 1 # Both bees differ throughout chromosome 2
+  chr3[4, 9] <- 1 # Bee 2 differs at chromosome 3, locus 9
+  founders <- newMapPop(
+    genMap = rep(list(seq(0, 1, length.out = 16)), 3),
+    haplotypes = list(chr1, chr2, chr3)
+  )
+
+  # Select chromosome 1 locus 8 and chromosome 3 locus 9: only bee 2 differs
+  observed <- isHeterozygous(
+    geno = founders@geno,
+    lociPerChr = c(1L, 0L, 1L),
+    lociLoc = c(8L, 9L),
+    nThreads = 1L
+  )
+  expect_equal(as.vector(observed), c(0, 1))
+
+  # Select only chromosome 1 locus 1: only bee 1 differs
+  observed <- isHeterozygous(
+    geno = founders@geno,
+    lociPerChr = c(1L, 0L, 0L),
+    lociLoc = 1L,
+    nThreads = 1L
+  )
+  expect_equal(as.vector(observed), c(1, 0))
+})
+
 # ---- isCaste ----
 
 test_that("isCaste", {
@@ -701,6 +755,7 @@ test_that("isProductive", {
   apiary <- createMultiColony(simParamBee = SP)
   expect_true(is.list(isProductive(apiary)))
 })
+
 # ---- reduceDroneHaplo ----
 
 test_that("reduceDroneHaplo", {
@@ -1124,6 +1179,7 @@ test_that("editCsdLocus", {
 })
 
 # ---- emptyNULL ----
+
 test_that("emptyNULL", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -1266,20 +1322,21 @@ test_that("isWorkersPresent", {
 # ---- isGenoHeterozygous ----
 
 test_that("isGenoHeterozygous", {
+  set.seed(123)
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
   SP$nThreads <- 1L
 
   basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
 
-  #Test on a Pop
-  (tmp <- getCsdGeno(basePop, simParamBee = SP))
+  # Test on a Pop
+  tmp <- getCsdGeno(basePop, simParamBee = SP)
   expect_true(all(isGenoHeterozygous(tmp)))
 
   drones <- createDrones(x = basePop[1], nInd = 1000, simParamBee = SP)
-  # Test on drones
-  (tmp <- getCsdGeno(drones, simParamBee = SP))
-  expect_true(all(isGenoHeterozygous(tmp)))
+  tmp <- getCsdGeno(drones, dronesHaploid = FALSE, simParamBee = SP)
+  expect_false(any(isGenoHeterozygous(tmp)))
+  expect_true(all(isCsdHeterozygous(drones, simParamBee = SP)))
 
   droneGroups <- pullDroneGroupsFromDCA(
     drones,
@@ -1309,6 +1366,7 @@ test_that("isGenoHeterozygous", {
 })
 
 # ---- getBV ----
+
 test_that("getBV", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -1363,6 +1421,7 @@ test_that("getBV", {
 })
 
 # ---- getDd ----
+
 test_that("getDd", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -1416,6 +1475,7 @@ test_that("getDd", {
 })
 
 # ---- getAa ----
+
 test_that("getAa", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -1469,6 +1529,7 @@ test_that("getAa", {
 })
 
 # ---- editCsdLocus ----
+
 test_that("editCsdLocus", {
   founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -1488,6 +1549,7 @@ test_that("editCsdLocus", {
 })
 
 # ---- getLocation ----
+
 test_that("getLocation", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -1529,6 +1591,7 @@ test_that("getLocation", {
 })
 
 # ---- createCrossPlan ----
+
 test_that("createCrossPlan", {
   founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -1606,8 +1669,8 @@ test_that("createCrossPlan", {
   ))
 })
 
-
 # ---- Get Caste ----
+
 test_that("getCaste", {
   founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)

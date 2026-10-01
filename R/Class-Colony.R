@@ -1,3 +1,4 @@
+
 # ---- Class Colony ----
 
 setClassUnion("characterOrNULL", c("character", "NULL"))

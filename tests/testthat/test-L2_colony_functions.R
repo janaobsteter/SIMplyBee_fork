@@ -1,3 +1,4 @@
+
 # ---- Create Colony ----
 
 test_that("createColony", {
@@ -281,6 +282,7 @@ test_that("removeFunctions", {
 })
 
 # ---- SetLocation ----
+
 test_that("setLocation", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -515,7 +517,6 @@ test_that("swarm", {
   expect_true(isQueenPresent(tmp$swarm[[4]], simParamBee = SP))
   expect_true(areVirginQueensPresent(tmp$remnant[[4]], simParamBee = SP))
 })
-
 
 # ---- Collapse -----
 
