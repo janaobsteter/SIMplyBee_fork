@@ -23,7 +23,9 @@ nDrones(x, simParamBee = NULL)
 nVirginQueens(x, simParamBee = NULL)
 }
 \arguments{
-\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
+\item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}.
+For \code{nFathers()}, also a \code{\link[AlphaSimR]{Pop-class}}
+containing queens.}
 
 \item{caste}{character, "queen", "fathers", "workers", "drones",
 "virginQueens", or "all"}
@@ -35,7 +37,8 @@ when \code{x} is \code{\link[SIMplyBee]{Colony-class}} return is integer for
   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
   by caste; when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is named
   integer for \code{caste != "all"} or named list of lists for
-  \code{caste == "all"}
+  \code{caste == "all"}. For \code{nFathers()} with a queen population,
+  returns a numeric vector with one father count per queen.
 }
 \description{
 Returns the number of individuals of a caste in a colony

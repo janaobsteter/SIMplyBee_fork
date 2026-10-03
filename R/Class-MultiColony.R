@@ -1,14 +1,20 @@
+
 # ---- Class MultiColony ----
 
 setClassUnion("integerOrNumeric", c("integer", "numeric"))
 setClassUnion("integerOrNumericOrLogical", c("integer", "numeric", "logical"))
-setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
+setClassUnion(
+  "integerOrNumericOrLogicalOrCharacter",
+  c("integer", "numeric", "logical", "character")
+)
 
 #' @rdname MultiColony-class
 #' @title Honeybee multicolony object
 #'
 #' @description An object holding a collection of honeybee colonies. It behaves
-#'   like a list.
+#'   like a list. Numeric indices select positions; character indices select
+#'   colony by their IDs/names. Single bracket indexing returns a MultiColony,
+#'   while double brackets return one Colony (or NULL for an unpopulated entry).
 #'
 #' @slot colonies list, a collection of \code{\link[SIMplyBee]{Colony-class}} objects
 #'
@@ -33,7 +39,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
-#' drones <- createDrones(x = basePop[1], nInd = 1000)
+#' drones <- createDrones(x = basePop[1], nInd = 200)
 #' droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 #' apiary <- createMultiColony(basePop[1:6], n = 6)
 #' apiary <- cross(apiary, drones = droneGroups[1:6])
@@ -43,27 +49,23 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #' isMultiColony(apiary)
 #'
 #' getId(apiary)
-#' apiary[1]
 #' getId(apiary[1])
 #' getId(apiary["2"])
 #' getId(apiary[2])
 #' getId(apiary[-1])
 #' getId(apiary[5])
 #'
-#' getId(apiary)
 #' getId(apiary[c(1, 3)])
 #' getId(apiary[c("2", "4")])
 #' getId(apiary[c(TRUE, FALSE, TRUE, FALSE)])
 #' getId(apiary[c(TRUE, FALSE)]) # beware of recycling!
-#' getId(apiary[c(5, 6)])
+#' getId(apiary[c(6, 7)])
 #' getId(apiary[c("6", "7")])
 #'
+#' apiary[1]
 #' apiary[[1]]
 #' apiary[["2"]]
-#' apiary[[3]]
-#' apiary[["4"]]
-#' try(apiary[[6]])
-#' apiary[["7"]]
+#' try(apiary[[7]])
 #'
 #' getId(c(apiary[c(1, 3)], apiary[2]))
 #' getId(c(apiary[2], apiary[c(1, 3)]))
@@ -209,7 +211,12 @@ setMethod(
 #' @describeIn MultiColony-class Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
 setMethod(
   f = "[",
-  signature(x = "MultiColony", i = "integerOrNumericOrLogical", j = "ANY", drop = "ANY"),
+  signature(
+    x = "MultiColony",
+    i = "integerOrNumericOrLogical",
+    j = "ANY",
+    drop = "ANY"
+  ),
   definition = function(x, i, j, drop) {
     x@colonies <- x@colonies[i]
     validObject(x)
@@ -237,7 +244,11 @@ setMethod(
   definition = function(x, i) {
     n <- length(i)
     if (n > 1) {
-      warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+      warning(paste(
+        "Selecting only the first colony out of ",
+        n,
+        " requested\n"
+      ))
     }
     # ...@colonies[[i[1L]]] is to get just one colony
     ret <- x@colonies[[i[1L]]]
@@ -253,7 +264,11 @@ setMethod(
   definition = function(x, i) {
     n <- length(i)
     if (n > 1) {
-      warning(paste("Selecting only the first colony out of ", n, " requested\n"))
+      warning(paste(
+        "Selecting only the first colony out of ",
+        n,
+        " requested\n"
+      ))
     }
     # x[i[1L]] calls x[character]
     # ...@colonies[[1L]] is to get just one colony
@@ -269,25 +284,33 @@ setMethod(
 setReplaceMethod(
   f = "[",
   signature(
-    x = "MultiColony", i = "integerOrNumericOrLogicalOrCharacter",
-    j = "ANY", value = "MultiColony"
+    x = "MultiColony",
+    i = "integerOrNumericOrLogicalOrCharacter",
+    j = "ANY",
+    value = "MultiColony"
   ),
   definition = function(x, i, j, value) {
     nCol <- nColonies(value)
     if (is.numeric(i)) {
       if (length(i) != nCol) {
-        stop("Length of i (position index) does not match the number of assigned colonies!")
+        stop(
+          "Length of i (position index) does not match the number of assigned colonies!"
+        )
       }
       x@colonies[i] <- value@colonies
     } else if (is.logical(i)) {
       if (sum(i) != nCol) {
-        stop("Number of TRUE values in i (position index) does not match the number of assigned colonies!")
+        stop(
+          "Number of TRUE values in i (position index) does not match the number of assigned colonies!"
+        )
       }
       x@colonies[i] <- value@colonies
     } else if (is.character(i)) {
       matches <- getId(x) %in% i
       if (sum(matches) != nCol) {
-        stop("Number of matched colony names in x from i (name index) does not match the number of assigned colonies!")
+        stop(
+          "Number of matched colony names in x from i (name index) does not match the number of assigned colonies!"
+        )
       }
       x@colonies[matches] <- value@colonies
     }
@@ -301,27 +324,37 @@ setReplaceMethod(
 setReplaceMethod(
   f = "[[",
   signature(
-    x = "MultiColony", i = "integerOrNumericOrLogicalOrCharacter",
-    j = "ANY", value = "Colony"
+    x = "MultiColony",
+    i = "integerOrNumericOrLogicalOrCharacter",
+    j = "ANY",
+    value = "Colony"
   ),
   definition = function(x, i, j, value) {
     if (is.numeric(i)) {
       if (length(i) > 1) {
-        stop("Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!")
+        stop(
+          "Length of numeric i (position index) must be 1 when value (assignment) is a Colony class object!"
+        )
       }
       x@colonies[[i]] <- value
     } else if (is.logical(i)) {
       if (sum(i) != 1) {
-        stop("Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!")
+        stop(
+          "Number of TRUE values in i (position index) must be equal to 1 when value (assignment) is a Colony class object!"
+        )
       }
       x@colonies[i][[1L]] <- value
     } else if (is.character(i)) {
       if (length(i) > 1) {
-        stop("Length of character i (name index) must be 1 when value (assignment) is a Colony class object!")
+        stop(
+          "Length of character i (name index) must be 1 when value (assignment) is a Colony class object!"
+        )
       }
       match <- getId(x) %in% i
       if (sum(match) != 1) {
-        stop("Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!")
+        stop(
+          "Number of matched colony names in x from i (name index) must be equal to 1 when value (assignment) is a Colony class object!"
+        )
       }
       x@colonies[match][[1L]] <- value
     }

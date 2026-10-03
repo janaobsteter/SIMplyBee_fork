@@ -1,3 +1,4 @@
+
 # ---- Class SimParamBee ----
 
 setClassUnion("numericOrFunction", c("numeric", "function"))
@@ -254,23 +255,10 @@ SimParamBee <- R6Class(
     #' @param colonyValueFUN see \code{\link[SIMplyBee]{SimParamBee}} field \code{colonyValueFUN}
     #'
     #' @references
-    #' Bovo et al. (2021) Application of Next Generation Semiconductor-Based
-    #'   Sequencing for the Identification of Apis mellifera Complementary Sex
-    #'   Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-    #'   \doi{10.3390/insects12100868}
-    #'
-    #' Lechner et al. (2014) Nucleotide variability at its limit? Insights into
-    #'  the number and evolutionary dynamics of the sex-determining specificities
-    #'  of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
-    #'  272-287. \doi{10.1093/molbev/mst207}
-    #'
-    #' Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-    #'   Bee in the Wild. Princeton: Princeton University Press.
-    #'   \doi{10.1515/9780691189383}
-    #'
-    #' Zareba et al. (2017) Uneven distribution of complementary sex determiner
-    #'   (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-    #'   \doi{10.1038/s41598-017-02629-9}
+    #' \insertRef{bovo2021Application}{SIMplyBee}
+    #' \insertRef{lechner2014Nucleotide}{SIMplyBee}
+    #' \insertRef{seeley2019Lives}{SIMplyBee}
+    #' \insertRef{zareba2017Uneven}{SIMplyBee}
     #'
     #' @examples
     #' founderGenomes <- quickHaplo(nInd = 10, nChr = 3, segSites = 10)
@@ -956,6 +944,8 @@ swarmPUnif <- function(x = NULL, n = 1, min = 0.4, max = 0.6) {
 #' @param nWorkersFull numeric, average number of workers in a full/strong
 #'   colony for \code{splitPColonyStrength} (actual number can go beyond this
 #'   value)
+#' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, simulation parameters
+#'   for \code{splitPColonyStrength}
 #' @param scale numeric, scaling of numbers in \code{splitPColonyStrength}
 #'   to avoid to narrow range when colonies have a large number of bees (in that
 #'   case change \code{nWorkersFull} too!)
@@ -1027,13 +1017,14 @@ splitPUnif <- function(x = NULL, n = 1, min = 0.2, max = 0.4) {
 #' @describeIn splitPFun Sample the split proportion - the proportion of
 #'   removed workers in a managed split based on the colony strength
 #' @export
-splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1) {
+splitPColonyStrength <- function(x, n = 1, nWorkersFull = 100, scale = 1,
+                                 simParamBee = NULL) {
   if (isColony(x)) {
     n <- 1
   } else if (isMultiColony(x)) {
     n <- nColonies(x)
   }
-  nW <- nWorkers(colony)
+  nW <- nWorkers(x, simParamBee = simParamBee)
   pKeep <- rbeta(
     n = n,
     shape1 = (nW + nWorkersFull) / scale,
@@ -1227,7 +1218,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(queenTrait)) {
       queenEff <- 0
     } else {
-      if (isQueenPresent(x)) {
+      if (isQueenPresent(x, simParamBee = simParamBee)) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@queen)[, queenTrait, drop = FALSE]
         } else { # bv, dd, and aa: leaving this in for future use!
@@ -1241,7 +1232,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(workersTrait)) {
       workersEff <- 0
     } else {
-      if (nWorkers(x) != 0) {
+      if (nWorkers(x, simParamBee = simParamBee) != 0) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@workers)[, workersTrait, drop = FALSE]
         } else { # bv, dd, and aa
@@ -1255,7 +1246,7 @@ mapCasteToColonyValue <- function(x,
     if (is.null(dronesTrait)) {
       dronesEff <- 0
     } else {
-      if (nDrones(x) != 0) {
+      if (nDrones(x, simParamBee = simParamBee) != 0) {
         if (value %in% c("pheno", "gv")) {
           tmp <- valueFUN(x@drones)[, dronesTrait, drop = FALSE]
         } else { # bv, dd, and aa

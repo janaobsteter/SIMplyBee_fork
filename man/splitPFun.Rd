@@ -8,7 +8,13 @@
 \usage{
 splitPUnif(x = NULL, n = 1, min = 0.2, max = 0.4)
 
-splitPColonyStrength(x, n = 1, nWorkersFull = 100, scale = 1)
+splitPColonyStrength(
+  x,
+  n = 1,
+  nWorkersFull = 100,
+  scale = 1,
+  simParamBee = NULL
+)
 }
 \arguments{
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
@@ -26,6 +32,9 @@ value)}
 \item{scale}{numeric, scaling of numbers in \code{splitPColonyStrength}
 to avoid to narrow range when colonies have a large number of bees (in that
 case change \code{nWorkersFull} too!)}
+
+\item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, simulation parameters
+for \code{splitPColonyStrength}}
 }
 \value{
 numeric, split proportion

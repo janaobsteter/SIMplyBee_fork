@@ -1,4 +1,6 @@
+
 # ---- Level 1 Pop Functions  ----
+
 utils::globalVariables("colony")
 utils::globalVariables("i")
 utils::globalVariables("cl")
@@ -280,7 +282,6 @@ getVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simP
   return(ret)
 }
 
-
 #' @rdname createCastePop
 #' @title Creates caste population individuals from the colony
 #'
@@ -531,7 +532,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           ret$nHomBrood <- nInd(ret$workers) - sum(sel)
           ret$workers <- ret$workers[sel]
         } else {
-          ret$nHomBrood <- NA
+          ret$nHomBrood <- NA_real_
         }
 
       } else if (caste == "virginQueens") {
@@ -1383,10 +1384,13 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   queen.  For more examples for mating with either externally or internally created cross plan,
 #'  please see \code{\link[SIMplyBee]{createCrossPlan}}
 #'
-#' @return \code{\link[AlphaSimR]{Pop-class}} with mated queen(s). The misc slot of the
-#'   queens contains additional information about the number of workers, drones,
-#'   and homozygous brood produced, and the expected percentage of csd homozygous
-#'   brood.
+#' @return A \code{\link[AlphaSimR]{Pop-class}},
+#'   \code{\link[SIMplyBee]{Colony-class}}, or
+#'   \code{\link[SIMplyBee]{MultiColony-class}} with mated queen(s), matching
+#'   the input type. The queens' \code{misc} slots contain worker, drone, and
+#'   homozygous brood counts, initially zero, and the expected proportion of
+#'   csd homozygous brood (\code{pHomBrood}). When csd is inactive,
+#'   \code{pHomBrood} is \code{NA_real_}.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
@@ -1581,7 +1585,7 @@ cross <- function(x,
   }
   if (isColony(x) | isMultiColony(x)) {
     if (any(isQueenPresent(x, simParamBee = simParamBee))) {
-      stop("Queen already present in the colony!")
+      stop("Queen already present in a colony!")
     }
     if (any(!isVirginQueensPresent(x, simParamBee = simParamBee))) {
       stop("No virgin queen(s) in the colony to cross!")
@@ -1630,7 +1634,7 @@ cross <- function(x,
     }
     # Rename crossPlan
     if (crossPlan_create | crossPlan_given) {
-      names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
+      names(crossPlan) <- ID_by_input$virginId[match(names(crossPlan), ID_by_input$inputId)]
     }
   }
 
@@ -1660,20 +1664,20 @@ cross <- function(x,
       IDs = IDs[IDs %in% crossPlanDF$virginID]
       x = x[IDs]
       if (type == "MultiColony") {
-        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse=TRUE)) %in% IDs]
+        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse = TRUE, simParamBee = simParamBee)) %in% IDs]
       }
       # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
       crossPlanDF_sample <- do.call("rbind", lapply(IDs,
                                                     FUN = function(x) {
                                                       data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))
                                                     } ))
-      crossPlanDF_sample <- crossPlanDF_sample[order(as.integer(crossPlanDF_sample$DPC)),]
+      crossPlanDF_sample <- crossPlanDF_sample[order(as.character(crossPlanDF_sample$DPC)),]
       # Here I gather how many drones each DPC needs to produce
       crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC))
-      crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.integer(as.character(crossPlanDF_DPCtable$Var1))),]
+      crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.character(crossPlanDF_DPCtable$Var1)),]
       colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
       # Here I select only the DPCs that have been sampled to produce drones
-      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC))
+      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC), simParamBee = simParamBee)
       # And here I create the drones
       dronesByDPC <- createCastePop(selectedDPC, caste = "drones",
                                     nInd = as.integer(crossPlanDF_DPCtable$noDrones),
@@ -1681,7 +1685,7 @@ cross <- function(x,
       # This is where I link the drone ID to the DPC ID
       dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
                                    droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x))))
-      dronesByDPC_DF <- dronesByDPC_DF[order(as.integer(dronesByDPC_DF$DPC)),]
+      dronesByDPC_DF <- dronesByDPC_DF[order(as.character(dronesByDPC_DF$DPC)),]
       dronePop = mergePops(dronesByDPC)
 
       if (any(!crossPlanDF_sample$DPC == dronesByDPC_DF$DPC)) {
@@ -1689,7 +1693,7 @@ cross <- function(x,
       }
 
       dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF_sample[, c("virginID"), drop = FALSE])
-      dronesByVirgin_DF <- dronesByVirgin_DF[order(as.integer(dronesByVirgin_DF$virginID)),]
+      dronesByVirgin_DF <- dronesByVirgin_DF[order(match(dronesByVirgin_DF$virginID, IDs)),]
       dronesByVirgin_list <- lapply(IDs,
                                     FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
       names(dronesByVirgin_list) <- IDs
@@ -1744,7 +1748,7 @@ cross <- function(x,
     if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
       val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
     } else {
-      val <- NA
+      val <- NA_real_
     }
 
     virginQueen@misc[["pHomBrood"]]  <- val
@@ -1780,8 +1784,6 @@ cross <- function(x,
   return(ret)
 }
 
-
-
 #' @rdname crossVirginQueen
 #' @title Internal function to cross a virgin queen
 #'
@@ -1790,6 +1792,11 @@ cross <- function(x,
 #' @param virginQueen \code{\link[AlphaSimR]{Pop-class}}
 #' @param virginQueenDrones, list with drones
 #' @param simParamBee, SimParamBee object
+#'
+#' @return The supplied queen \code{\link[AlphaSimR]{Pop-class}} with fathers
+#'   stored in \code{misc}, worker, drone, and homozygous brood counts set to
+#'   zero, and \code{pHomBrood} set to the expected proportion of csd homozygous
+#'   brood, or \code{NA_real_} when csd is inactive.
 #'
 #' @export
 crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL) {
@@ -1801,7 +1808,7 @@ crossVirginQueen <- function(virginQueen, virginQueenDrones, simParamBee = NULL)
   if (isCsdActive(simParamBee = simParamBee)) { #This does still not work it the CSD is turned on
     val <- calcQueensPHomBrood(x = virginQueen, simParamBee = simParamBee)
   } else {
-    val <- NA
+    val <- NA_real_
   }
 
   virginQueen@misc[["pHomBrood"]]  <- val

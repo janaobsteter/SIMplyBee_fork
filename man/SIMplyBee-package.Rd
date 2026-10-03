@@ -21,6 +21,10 @@ extended for honeybees, including haplo-diploidy, csd locus, colony events
 See the introductory vignette on using this package by running:
 \code{vignette("Honeybee_biology", package="SIMplyBee")}
 }
+\references{
+\insertRef{obsteter2023SIMplyBee}{SIMplyBee}
+\insertRef{gaynor2021AlphaSimR}{SIMplyBee}
+}
 \seealso{
 Useful links:
 \itemize{
