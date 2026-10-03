@@ -10,8 +10,8 @@ test_that("nColonies", {
   expect_equal(nColonies(createMultiColony(n = 10, simParamBee = SP)), 10)
 })
 
-
 # ---- nCaste ----
+
 test_that("nCaste", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -59,6 +59,7 @@ test_that("nQueens", {
 })
 
 # ---- nDrones ----
+
 test_that("nDrones", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -85,7 +86,6 @@ test_that("nDrones", {
 
 # ---- isGenoHeterozygous ----
 
-####----- isGenoHeterozygous ---- ####
 test_that("isGenoHeterozygous", {
   geno <- matrix(
     data = c(
@@ -203,7 +203,7 @@ test_that("pHomBrood", {
   expect_equal(length(pHomBrood(apiary, simParamBee = SP)), 0)
 })
 
-#---- nHomBrood -----
+# ---- nHomBrood ----
 
 test_that("nHomBrood", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -330,6 +330,7 @@ test_that("isProductive", {
   apiary <- createMultiColony(simParamBee = SP)
   expect_true(is.list(isProductive(apiary)))
 })
+
 # ---- reduceDroneHaplo ----
 
 test_that("reduceDroneHaplo", {
@@ -635,7 +636,6 @@ test_that("calcBeeGRMIbs", {
 
 # ---- editCsdLocus ----
 
-
 test_that("editCsdLocus", {
   founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -652,6 +652,7 @@ test_that("editCsdLocus", {
 })
 
 # ---- emptyNULL ----
+
 test_that("emptyNULL", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -770,6 +771,7 @@ test_that("isWorkersPresent", {
 })
 
 # ---- isGenoHeterozygous ----
+
 test_that("isGenoHeterozygous", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -810,6 +812,7 @@ test_that("isGenoHeterozygous", {
 })
 
 # ---- getBV ----
+
 test_that("getBV", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -841,6 +844,7 @@ test_that("getBV", {
 })
 
 # ---- getDd ----
+
 test_that("getDd", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -871,6 +875,7 @@ test_that("getDd", {
 })
 
 # ---- getAa ----
+
 test_that("getAa", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -901,6 +906,7 @@ test_that("getAa", {
 })
 
 # ---- editCsdLocus ----
+
 test_that("editCsdLocus", {
    founderGenomes <- quickHaplo(nInd = 100, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
@@ -916,6 +922,7 @@ test_that("editCsdLocus", {
 })
 
 # ---- getLocation ----
+
 test_that("getLocation", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes)
@@ -942,6 +949,7 @@ test_that("getLocation", {
 })
 
 # ---- createCrossPlan ----
+
 test_that("createCrossPlan", {
   founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -1002,8 +1010,8 @@ test_that("createCrossPlan", {
   expect_error(createCrossPlan(x = droneColonies, droneColonies = virginColonies1, simParamBee = SP))
 })
 
+# ---- getCaste ----
 
-# ---- Get Caste ----
 test_that("getCaste", {
   founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes)
@@ -1071,7 +1079,7 @@ test_that("getCaste", {
 
 })
 
-
+# ---- getIbdHaplo ----
 
 test_that("getIbdHaplo", {
   founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 5)
@@ -1100,8 +1108,9 @@ test_that("getIbdHaplo", {
   apiary <- buildUp(x = apiary, nWorkers = 3, nDrones = 2, simParamBee = SP)
   apiary <- addVirginQueens(x = apiary, nInd = 2, simParamBee = SP)
   expect_length(getIbdHaplo(apiary, simParamBee = SP), 2)
-  })
+})
 
+# ---- trackingHomozygotes ----
 
 test_that("trackingHomozygotes", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -1128,4 +1137,40 @@ test_that("trackingHomozygotes", {
 
   expect_equal(nrow(SP$pedigree), length(SP$caste))
   expect_equal(nrow(SP$pedigree), length(SP$recHist))
+})
+
+# ---- getId ----
+
+test_that("getId returns character IDs independently of queen IDs", {
+  set.seed(123)
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads = 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  colony <- createColony(basePop[2], simParamBee = SP)
+  expect_identical(colony@id, "1")
+  expect_identical(getId(basePop), c("1", "2", "3", "4"))
+  expect_identical(getId(colony), "1")
+  expect_identical(getId(NULL), NA_character_)
+  expect_identical(getId(new("Colony")), NA_character_)
+  expect_identical(getId(basePop[0]), character(0))
+  expect_identical(getId(createMultiColony(simParamBee = SP)), character(0))
+  expect_identical(getId(createMultiColony(n = 2, simParamBee = SP)), rep(NA_character_, 2))
+  populated <- createMultiColony(n = 2, populateColonies = TRUE, simParamBee = SP)
+  expect_type(getId(populated), "character")
+  expect_false(anyNA(getId(populated)))
+  emptyColony <- createColony(simParamBee = SP)
+  expect_identical(getId(emptyColony), as.character(SP$lastColonyId))
+  mixed <- new("MultiColony", colonies = list(colony, NULL, emptyColony))
+  expect_identical(getId(mixed), c("1", NA_character_, getId(emptyColony)))
+  expect_identical(getId(createColony(id = 20L, simParamBee = SP)), "20")
+  expect_identical(getId(createColony(id = "hive-A", simParamBee = SP)), "hive-A")
+  drones <- createDrones(basePop[1], nInd = 10, simParamBee = SP)
+  colony <- cross(colony, drones = drones, simParamBee = SP)
+  expect_identical(getId(colony), "1")
+  expect_identical(getId(getQueen(colony, simParamBee = SP)), "2")
+  expect_identical(getId(removeQueen(colony, simParamBee = SP)), "1")
+  colony <- reQueen(colony, queen = basePop[3], simParamBee = SP)
+  expect_identical(getId(colony), "1")
+  expect_identical(getId(getVirginQueens(colony, simParamBee = SP)), "3")
 })

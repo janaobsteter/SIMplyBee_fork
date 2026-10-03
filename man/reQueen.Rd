@@ -26,7 +26,7 @@ to ensure the provided queen prevails (see details)}
 \description{
 Level 2 function that re-queens a Colony or
   MultiColony object by adding a mated or a virgin queen, removing the
-  previous queen, and changing the colony id to the new mated queen.
+  previous queen, while preserving the colony ID.
 }
 \details{
 If the provided queen is mated, then she is saved in the queen slot

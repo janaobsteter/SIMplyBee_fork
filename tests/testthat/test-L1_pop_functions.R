@@ -228,6 +228,7 @@ test_that("pullCastePop", {
 })
 
 # ---- cross ----
+
 test_that("cross", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -292,8 +293,8 @@ test_that("cross", {
   #expect_message(cross(virginQueen2, drones= selectInd(colony@drones,nInd = 0, use = "rand", simParam = SP), checkCross = "warning", simParamBee = SP))
 })
 
-
 # ---- createDCA ----
+
 test_that("createDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -330,6 +331,7 @@ test_that("createDCA", {
 })
 
 # ---- pullDroneGroupsFromDCA ----
+
 test_that("pullDroneGroupsFromDCA", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -361,6 +363,8 @@ test_that("pullDroneGroupsFromDCA", {
   expect_error(pullDroneGroupsFromDCA(DCA2, n =10, nDrones = 20, simParamBee = SP))
 })
 
+# ---- combineBeeGametes ----
+
 test_that("combineBeeGametes", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -378,6 +382,8 @@ test_that("combineBeeGametes", {
 
 })
 
+# ---- combineBeeGametesHaploidDiploid ----
+
 test_that("combineBeeGametesHaploidDiploid", {
    founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
    SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -394,3 +400,27 @@ test_that("combineBeeGametesHaploidDiploid", {
   expect_equal(drones@ploidy, 1)
 })
 
+# ---- cross plans with character IDs ----
+
+test_that("cross plans match character colony IDs independently of queen IDs", {
+  set.seed(123)
+  founderGenomes <- quickHaplo(nInd = 7, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads = 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  donors <- c(createColony(basePop[1], id = "donor-B", simParamBee = SP),
+              createColony(basePop[2], id = "donor-A", simParamBee = SP))
+  drones <- createDrones(basePop[7], nInd = 4, simParamBee = SP)
+  donors <- cross(donors, drones = list(drones[1:2], drones[3:4]), simParamBee = SP)
+  apiary <- c(createColony(basePop[3], id = "hive-C", simParamBee = SP),
+              createColony(basePop[4], id = "hive-A", simParamBee = SP),
+              createColony(basePop[5], id = "hive-B", simParamBee = SP))
+  plan <- list("hive-B" = "donor-B", "hive-C" = "donor-A", "hive-A" = "donor-B")
+  mated <- expect_no_warning(cross(apiary, droneColonies = donors,
+                                  crossPlan = plan, nDrones = 2, simParamBee = SP))
+  expect_identical(getId(mated), c("hive-C", "hive-A", "hive-B"))
+  expect_identical(unname(getId(getQueen(mated, collapse = TRUE, simParamBee = SP))), c("3", "4", "5"))
+  expect_equal(unname(getFathers(mated[[1]], simParamBee = SP)@mother), rep("2", 2))
+  expect_equal(unname(getFathers(mated[[2]], simParamBee = SP)@mother), rep("1", 2))
+  expect_equal(unname(getFathers(mated[[3]], simParamBee = SP)@mother), rep("1", 2))
+})

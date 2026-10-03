@@ -58,7 +58,9 @@ assign into \code{x} based on colony index or name \code{i}}
 }
 \description{
 An object holding a collection of honeybee colonies. It behaves
-  like a list.
+  like a list. Numeric indices select positions; character indices select
+  colony IDs. Single brackets return a MultiColony, while double brackets
+  return one Colony (or NULL for an unpopulated entry).
 }
 \section{Functions}{
 \itemize{
@@ -70,17 +72,17 @@ An object holding a collection of honeybee colonies. It behaves
 
 \item \code{c(MultiColonyOrNULL)}: Combine multiple Colony and MultiColony objects
 
-\item \code{x = MultiColony[i = integerOrNumericOrLogical]}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x = MultiColony[i = character]}: Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
+\item \code{x[i}: Extract a colony (one or more!) with a character ID (name) (return \code{\link[SIMplyBee]{MultiColony-class}})
 
-\item \code{x = MultiColony[[i = integerOrNumericOrLogical]]}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with an integer/numeric/logical index (position) (return \code{\link[SIMplyBee]{Colony-class}})
 
-\item \code{x = MultiColony[[i = character]]}: Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
+\item \code{x[[i}: Extract a colony (just one!) with a character ID (name) (return \code{\link[SIMplyBee]{Colony-class}})
 
-\item \code{x = MultiColony[i = integerOrNumericOrLogicalOrCharacter, j = ANY] <- value}: Assign colonies into MultiColony
+\item \code{`[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign colonies into MultiColony
 
-\item \code{x = MultiColony[[i = integerOrNumericOrLogicalOrCharacter, j = ANY]] <- value}: Assign Colony into MultiColony
+\item \code{`[[`(x = MultiColony, i = integerOrNumericOrLogicalOrCharacter, j = ANY) <- value}: Assign Colony into MultiColony
 
 }}
 \section{Slots}{
@@ -105,6 +107,7 @@ is(apiary)
 isMultiColony(apiary)
 
 getId(apiary)
+apiary[getId(apiary)[c(3, 1)]] # select by ID, preserving requested order
 apiary[1]
 getId(apiary[1])
 getId(apiary["2"])

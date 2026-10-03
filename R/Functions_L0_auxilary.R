@@ -953,14 +953,23 @@ isNULLColonies <- function(multicolony) {
 # get (general) ----
 
 #' @rdname getId
-#' @title Get the colony ID
+#' @title Get individual or colony IDs
 #'
-#' @description Level 0 function that returns the colony ID. This is by
-#'   definition the ID of the queen.
+#' @description Level 0 function that returns individual IDs for a Pop or
+#'   colony IDs for a Colony or MultiColony. Colony IDs are independent of
+#'   queen IDs and are retained when a queen is removed or replaced.
 #'
-#' @param x \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param x \code{NULL}, \code{\link[AlphaSimR]{Pop-class}},
+#'   \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}
 #'
-#' @return character, \code{NA} when queen not present
+#' @return character, \code{NA_character_} for NULL entries or a Colony without
+#'   an assigned ID, and \code{character(0)} for an empty Pop or MultiColony.
+#'
+#' @details A NULL entry represents a missing colony or individual,
+#'   so it contributes one missing ID and preserves alignment with the MultiColony's entries.
+#'   An empty Pop or MultiColony contains no individuals or entries to identify.
+#'   An empty colony created with \code{createColony()} still has an assigned ID;
+#'   an uninitialised \code{new("Colony")} has no assigned ID.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -986,13 +995,13 @@ isNULLColonies <- function(multicolony) {
 #' @export
 getId <- function(x) {
   if (is.null(x)) {
-    id <- NA
+    id <- NA_character_
   } else if (isPop(x)) {
     id <- x@id
   } else if (isColony(x)) {
-    id <- ifelse(is.null(x@id), NA, x@id)
+    id <- if (length(x@id) == 0L) NA_character_ else x@id
   } else if (isMultiColony(x)) {
-    id <- sapply(x@colonies, FUN = getId)
+    id <- vapply(x@colonies, FUN = getId, FUN.VALUE = character(1))
   } else {
     stop("Argument x must be a NULL, Pop, Colony, or MultiColony class object!")
   }

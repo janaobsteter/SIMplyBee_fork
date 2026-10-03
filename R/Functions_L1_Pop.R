@@ -1630,7 +1630,7 @@ cross <- function(x,
     }
     # Rename crossPlan
     if (crossPlan_create | crossPlan_given) {
-      names(crossPlan) <- ID_by_input$virginId[match(ID_by_input$inputId, names(crossPlan))]
+      names(crossPlan) <- ID_by_input$virginId[match(names(crossPlan), ID_by_input$inputId)]
     }
   }
 
@@ -1660,20 +1660,20 @@ cross <- function(x,
       IDs = IDs[IDs %in% crossPlanDF$virginID]
       x = x[IDs]
       if (type == "MultiColony") {
-        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse=TRUE)) %in% IDs]
+        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse=TRUE, simParamBee = simParamBee)) %in% IDs]
       }
       # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
       crossPlanDF_sample <- do.call("rbind", lapply(IDs,
                                                     FUN = function(x) {
                                                       data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))
                                                     } ))
-      crossPlanDF_sample <- crossPlanDF_sample[order(as.integer(crossPlanDF_sample$DPC)),]
+      crossPlanDF_sample <- crossPlanDF_sample[order(as.character(crossPlanDF_sample$DPC)),]
       # Here I gather how many drones each DPC needs to produce
       crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC))
-      crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.integer(as.character(crossPlanDF_DPCtable$Var1))),]
+      crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.character(crossPlanDF_DPCtable$Var1)),]
       colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
       # Here I select only the DPCs that have been sampled to produce drones
-      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC))
+      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC), simParamBee = simParamBee)
       # And here I create the drones
       dronesByDPC <- createCastePop(selectedDPC, caste = "drones",
                                     nInd = as.integer(crossPlanDF_DPCtable$noDrones),
@@ -1681,7 +1681,7 @@ cross <- function(x,
       # This is where I link the drone ID to the DPC ID
       dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
                                    droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x))))
-      dronesByDPC_DF <- dronesByDPC_DF[order(as.integer(dronesByDPC_DF$DPC)),]
+      dronesByDPC_DF <- dronesByDPC_DF[order(as.character(dronesByDPC_DF$DPC)),]
       dronePop = mergePops(dronesByDPC)
 
       if (any(!crossPlanDF_sample$DPC == dronesByDPC_DF$DPC)) {
@@ -1689,7 +1689,7 @@ cross <- function(x,
       }
 
       dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF_sample[, c("virginID"), drop = FALSE])
-      dronesByVirgin_DF <- dronesByVirgin_DF[order(as.integer(dronesByVirgin_DF$virginID)),]
+      dronesByVirgin_DF <- dronesByVirgin_DF[order(match(dronesByVirgin_DF$virginID, IDs)),]
       dronesByVirgin_list <- lapply(IDs,
                                     FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
       names(dronesByVirgin_list) <- IDs

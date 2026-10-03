@@ -14,7 +14,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 #'
 #' @description An object holding honeybee colony
 #'
-#' @slot id integer, unique ID of the colony
+#' @slot id character, unique ID of the colony, independent of its queen ID
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link[AlphaSimR]{Pop-class}}, the queen of the colony (we use
 #'   its misc slot for queen's age and drones (fathers) she mated with)
@@ -68,7 +68,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 setClass(
   Class = "Colony",
   slots = c(
-    id = "integer",
+    id = "character",
     location = "numeric",
     queen = "PopOrNULL",
     workers = "PopOrNULL",

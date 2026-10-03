@@ -1,4 +1,4 @@
-# ---- Create Colony ----
+# ---- createColony ----
 
 test_that("createColony", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -19,7 +19,7 @@ test_that("createColony", {
    expect_error(createColony(x = drones[1], simParamBee = SP))
 })
 
-# ----  ReQueen ----
+# ---- reQueen ----
 
 test_that("reQueen", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -63,7 +63,7 @@ test_that("reQueen", {
   expect_true(isQueenPresent(reQueen(matedColony, queen = matedQueen1, simParamBee = SP), simParamBee = SP))
 })
 
-# ----  Add Functions ----
+# ---- add functions ----
 
 test_that("Add functions", {
    founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -119,7 +119,7 @@ test_that("Add functions", {
    expect_s4_class(addDrones(apiary, nInd = 5, simParamBee = SP), "MultiColony")
 })
 
-# ---- BuildUp downSize ----
+# ---- buildUp and downsize ----
 
 test_that("BuildUpDownsize", {
    founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -176,7 +176,7 @@ test_that("BuildUpDownsize", {
    downsize(apiary, simParamBee = SP)
 })
 
-# ---- Replace Functions  ----
+# ---- replace functions ----
 
 test_that("replaceFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -232,7 +232,7 @@ test_that("replaceFunctions", {
   expect_error(nColonies(replaceDrones(apiary, p = 0, simParamBee = SP)))
 })
 
-# ---- Remove functions  ----
+# ---- remove functions ----
 
 test_that("removeFunctions", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -280,7 +280,8 @@ test_that("removeFunctions", {
   expect_equal(nColonies(removeDrones(apiary, p = 0, simParamBee = SP)), nColonies(apiary))
 })
 
-# ---- SetLocation ----
+# ---- setLocation ----
+
 test_that("setLocation", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 50)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
@@ -319,7 +320,7 @@ test_that("setLocation", {
   expect_s4_class(setLocation(apiary, location = list(1:2, 3:4, 4:5), simParamBee = SP), "MultiColony")
 })
 
-# ---- Supersede ----
+# ---- supersede ----
 
 test_that("supersede", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -356,7 +357,7 @@ test_that("supersede", {
   expect_error(supersede(colony, simParamBee = SP))
 })
 
-# ---- Split ----
+# ---- split ----
 
 test_that("split", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -398,7 +399,7 @@ test_that("split", {
 
 })
 
-# ---- ResetEvents ----
+# ---- resetEvents ----
 
 test_that("resetEvents", {
   founderGenomes <- quickHaplo(nInd = 5, nChr = 1, segSites = 100)
@@ -437,7 +438,7 @@ test_that("resetEvents", {
   expect_false(all(hasSuperseded(apiary)))
 })
 
-# ---- Combine ----
+# ---- combine colonies ----
 
 test_that("Combine", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -474,7 +475,7 @@ test_that("Combine", {
   expect_error(combine(strong = colony1, weak = colony2, simParamBee = SP)) # discus the output
 })
 
-# ---- Swarm ----
+# ---- swarm ----
 
 test_that("swarm", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
@@ -516,8 +517,7 @@ test_that("swarm", {
   expect_true(areVirginQueensPresent(tmp$remnant[[4]], simParamBee = SP))
 })
 
-
-# ---- Collapse -----
+# ---- collapse ----
 
 test_that("collapse", {
   founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)

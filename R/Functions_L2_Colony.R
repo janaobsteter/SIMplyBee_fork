@@ -8,7 +8,8 @@
 #'
 #' @param x \code{\link[AlphaSimR]{Pop-class}}, one queen or virgin queen(s)
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
-#' @param id character, ID of the colony that is going to be created (used internally for parallel computing)
+#' @param id character, ID of the colony that is going to be created (used internally for parallel computing).
+#'   Numeric IDs are converted to character.
 #'
 #' @return new \code{\link[SIMplyBee]{Colony-class}}
 #'
@@ -40,6 +41,8 @@ createColony <- function(x = NULL, simParamBee = NULL, id = NULL) {
   if (is.null(id)) {
     id <- simParamBee$lastColonyId
   }
+
+  id <- as.character(id)
 
   if (is.null(x)) {
     colony <- new(
@@ -81,7 +84,7 @@ createColony <- function(x = NULL, simParamBee = NULL, id = NULL) {
 #'
 #' @description Level 2 function that re-queens a Colony or
 #'   MultiColony object by adding a mated or a virgin queen, removing the
-#'   previous queen, and changing the colony id to the new mated queen.
+#'   previous queen, while preserving the colony ID.
 #'
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
 #' @param queen \code{\link[AlphaSimR]{Pop-class}} with one individual that will be the
@@ -1484,7 +1487,7 @@ swarm <- function(x, p = NULL,
 
     if (isColony(x)) {
       swarmColony <- createColony(x = x@queen, simParamBee = simParamBee)
-      # It's not re-queening, but the function also sets the colony id
+      # The swarm receives a new colony ID, independent of its queen ID
 
       swarmColony@workers <- tmp$pulled
       swarmColony <- setLocation(x = swarmColony, location = newLocation[[1]], simParamBee = simParamBee)

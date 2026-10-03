@@ -11,7 +11,7 @@ createColony(x = NULL, simParamBee = NULL, id = NULL)
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
-\item{id}{character, ID of the colony that is going to be created (used internally for parallel computing)}
+\item{id}{character, ID of the colony that is going to be created (used internally for parallel computing). Numeric IDs are converted to character.}
 }
 \value{
 new \code{\link[SIMplyBee]{Colony-class}}

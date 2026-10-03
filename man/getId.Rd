@@ -2,19 +2,28 @@
 % Please edit documentation in R/Functions_L0_auxilary.R
 \name{getId}
 \alias{getId}
-\title{Get the colony ID}
+\title{Get individual or colony IDs}
 \usage{
 getId(x)
 }
 \arguments{
-\item{x}{\code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}}
+\item{x}{\code{NULL}, \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
-character, \code{NA} when queen not present
+character, \code{NA_character_} for NULL entries or a Colony without
+  an assigned ID, and \code{character(0)} for an empty Pop or MultiColony.
 }
 \description{
-Level 0 function that returns the colony ID. This is by
-  definition the ID of the queen.
+Level 0 function that returns individual IDs for a Pop or
+  colony IDs for a Colony or MultiColony. Colony IDs are independent of
+  queen IDs and are retained when a queen is removed or replaced.
+}
+\details{
+A NULL entry represents one missing colony, so it contributes one
+  missing ID and preserves alignment with the MultiColony's entries.
+  An empty Pop or MultiColony contains no individuals or entries to identify.
+  An empty colony created with \code{createColony()} still has an assigned ID;
+  an uninitialised \code{new("Colony")} has no assigned ID.
 }
 \examples{
 founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
