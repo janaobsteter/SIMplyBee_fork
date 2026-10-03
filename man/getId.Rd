@@ -7,7 +7,8 @@
 getId(x)
 }
 \arguments{
-\item{x}{\code{NULL}, \code{\link[AlphaSimR]{Pop-class}}, \code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}}
+\item{x}{\code{NULL}, \code{\link[AlphaSimR]{Pop-class}},
+\code{\link[SIMplyBee]{Colony-class}}, or \code{\link[SIMplyBee]{MultiColony-class}}}
 }
 \value{
 character, \code{NA_character_} for NULL entries or a Colony without
@@ -19,8 +20,8 @@ Level 0 function that returns individual IDs for a Pop or
   queen IDs and are retained when a queen is removed or replaced.
 }
 \details{
-A NULL entry represents one missing colony, so it contributes one
-  missing ID and preserves alignment with the MultiColony's entries.
+A NULL entry represents a missing colony or individual,
+  so it contributes one missing ID and preserves alignment with the MultiColony's entries.
   An empty Pop or MultiColony contains no individuals or entries to identify.
   An empty colony created with \code{createColony()} still has an assigned ID;
   an uninitialised \code{new("Colony")} has no assigned ID.

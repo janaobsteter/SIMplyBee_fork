@@ -29,12 +29,22 @@ editor_options:
 - createMultiColony() no longer creates an empty apiary, but it adds
     empty colonies with IDs
 
-- we no longer support creating an exact number of workers with the csd functionality turned on. Due to inbreeding at the csd locus, some workers are not viable. Previous funcionality re-ran the creation of workers until a required number was available. We no longer support this, so the number of returned workers
-is the number of viable workers.
+- we no longer support creating an exact number of workers with the csd
+    functionality turned on. Due to inbreeding at the csd locus, some workers
+    are not viable. Previous funcionality re-ran the creation of workers until
+    a required number was available. We no longer support this, so the number of
+    returned workers is the number of viable workers.
 
-- the 'cross' function now removes unsuccessfully mated queens. This can primarily happen when creating a spatial cross plan. If there are no drone producing colonies in the specified radius, the mating fails and the queens/colonies are removed from the object. This is to ensure all further functionality works well.
+- the 'cross' function now removes unsuccessfully mated queens.
+    This can primarily happen when creating a spatial cross plan.
+    If there are no drone producing colonies in the specified radius,
+    the mating fails and the queens/colonies are removed from the object.
+    This is to ensure all further functionality works well.
 
 ## New features
+
+- Both variance mappings now return `h2Queen`, `h2Worker`,
+    `h2WorkerGroup`, and `h2Colony`, with `NA` for zero total variance.
 
 - added functionality to map individual-level variance to colony-level variance and vice-versa
   with functions 'mapIndToColonyVar' and 'mapColonyToIndVar'
@@ -43,7 +53,29 @@ is the number of viable workers.
     simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
     takes additional time, we recommend using a single threads for a small number of colonies
 
+## Other
+
+- Added a shared `inst/REFERENCES.bib` bibliography for package help and
+    vignettes.
+
 ## Bug fixes
+
+- Moved `future` to Suggests because it is used by the parallelisation vignette;
+  package functions use `future.apply`. This removes the unused-import NOTE.
+
+- `calcQueensPHomBrood()`, `pHomBrood()`, and `nHomBrood()` now warn and
+    return `NA_real_` for queenless colonies, allowing `MultiColony` summaries
+    to continue.
+
+- `nFathers()` now lists all supported classes, including `Pop`, in its
+    invalid-input error message and documents queen population input.
+
+- Brood summaries now use numeric missing values and return `numeric(0)`
+    for empty populations. Inactive csd metadata also uses numeric missing
+    values. `getId(NULL)` now returns `NA_character_`.
+
+- Spotted a couple of cases where `SimParamBee` was not passed to the
+    calling functions.
 
 # SIMplyBee version 0.4.1
 

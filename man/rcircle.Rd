@@ -34,9 +34,6 @@ lim <- range(x)
 plot(x, xlim = lim, ylim = lim, main = "Gaussian")
 }
 \references{
-nubDotDev (2021) The BEST Way to Find a Random Point in a Circle
-https://youtu.be/4y_nmpv-9lI
-
-Wolfram MathWorld (2023) Disk Point Picking
-https://mathworld.wolfram.com/DiskPointPicking.html
+\insertRef{nubdotdev2021Best}{SIMplyBee}
+\insertRef{wolfram2023Disk}{SIMplyBee}
 }

@@ -1,3 +1,4 @@
+
 # ---- Level 0 Auxiliary Functions ----
 
 # n* ----
@@ -81,7 +82,9 @@ nEmptyColonies <- function(multicolony) {
 #'
 #' @description Returns the number of individuals of a caste in a colony
 #'
-#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
+#' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}.
+#'   For \code{nFathers()}, also a \code{\link[AlphaSimR]{Pop-class}}
+#'   containing queens.
 #' @param caste character, "queen", "fathers", "workers", "drones",
 #'   "virginQueens", or "all"
 #' @param simParamBee \code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters
@@ -94,7 +97,8 @@ nEmptyColonies <- function(multicolony) {
 #'   \code{caste != "all"} or list for \code{caste == "all"} with nodes named
 #'   by caste; when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}} return is named
 #'   integer for \code{caste != "all"} or named list of lists for
-#'   \code{caste == "all"}
+#'   \code{caste == "all"}. For \code{nFathers()} with a queen population,
+#'   returns a numeric vector with one father count per queen.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -214,8 +218,10 @@ nFathers <- function(x, simParamBee = NULL) {
         ret[ind] <- nInd(x@misc$fathers[[ind]])
       }
     }
-  } else {
+  } else if (isColony(x) || isMultiColony(x)) {
     ret <- nCaste(x, caste = "fathers", simParamBee = simParamBee)
+  } else {
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -262,9 +268,13 @@ nVirginQueens <- function(x, simParamBee = NULL) {
 #' @seealso Demo in the introductory vignette
 #'   \code{vignette("Honeybee_biology", package="SIMplyBee")}
 #'
-#' @return numeric, expected csd homozygosity named by colony id when \code{x}
-#'   is \code{\link[SIMplyBee]{MultiColony-class}}
-#'
+#' @return Numeric brood proportions for \code{calcQueensPHomBrood()} and
+#'   \code{pHomBrood()}, or counts for \code{nHomBrood()}, named by colony ID
+#'   when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}. An empty
+#'   \code{\link[AlphaSimR]{Pop-class}} returns \code{numeric(0)}. Missing
+#'   brood proportions and counts are represented by \code{NA_real_}.
+#'   All three functions warn and return \code{NA_real_} for a colony without
+#'   a queen.
 #'
 #' @examples
 #' # This is a bit long example - the key is at the end!
@@ -313,7 +323,7 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (isPop(x)) {
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!(all(isQueen(x, simParamBee = simParamBee)))) {
         stop("calcQueensPHomBrood can only be used with queens!")
@@ -331,9 +341,14 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
       }
     }
   } else if (isColony(x)) {
-    ret <- calcQueensPHomBrood(x = x@queen)
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
+    } else {
+      ret <- calcQueensPHomBrood(x = x@queen, simParamBee = simParamBee)
+    }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood)
+    ret <- sapply(X = x@colonies, FUN = calcQueensPHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
@@ -341,7 +356,7 @@ calcQueensPHomBrood <- function(x, simParamBee = NULL) {
   return(ret)
 }
 
-#' @describeIn calcQueensPHomBrood Expected percentage of csd homozygous brood
+#' @describeIn calcQueensPHomBrood Expected proportion of csd homozygous brood
 #'   of a queen / colony
 #' @export
 pHomBrood <- function(x, simParamBee = NULL) {
@@ -352,23 +367,29 @@ pHomBrood <- function(x, simParamBee = NULL) {
     if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!is.null(x@misc$pHomBrood[[ind]])) {
         ret[ind] <- x@misc$pHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc$pHomBrood[[1]])) {
-      ret <- NA
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
     } else {
-      ret <- x@queen@misc$pHomBrood[[1]]
+      if (is.null(x@queen@misc$pHomBrood[[1]])) {
+        ret <- NA_real_
+      } else {
+        ret <- x@queen@misc$pHomBrood[[1]]
+      }
     }
+
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = pHomBrood)
+    ret <- sapply(X = x@colonies, FUN = pHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -384,23 +405,26 @@ nHomBrood <- function(x, simParamBee = NULL) {
     if (any(!isQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in x must be queens!")
     }
-    ret <- rep(x = NA, times = nInd(x))
+    ret <- rep(x = NA_real_, times = nInd(x))
     for (ind in seq_len(nInd(x))) {
       if (!is.null(x@misc$nHomBrood[[ind]])) {
         ret[ind] <- x@misc$nHomBrood[[ind]]
       }
     }
   } else if (isColony(x)) {
-    if (is.null(x@queen@misc$nHomBrood[[1]])) {
-      ret <- NA
+    if (is.null(x@queen) || nInd(x@queen) == 0L) {
+      warning("Colony has no queen - returning NA!")
+      ret <- NA_real_
+    } else if (is.null(x@queen@misc$nHomBrood[[1]])) {
+      ret <- NA_real_
     } else {
       ret <- x@queen@misc$nHomBrood[[1]]
     }
   } else if (isMultiColony(x)) {
-    ret <- sapply(X = x@colonies, FUN = nHomBrood)
+    ret <- sapply(X = x@colonies, FUN = nHomBrood, simParamBee = simParamBee)
     names(ret) <- getId(x)
   } else {
-    stop("Argument x must be a Colony or MultiColony class object!")
+    stop("Argument x must be a Pop, Colony, or MultiColony class object!")
   }
   return(ret)
 }
@@ -1458,11 +1482,8 @@ getLocation <- function(x, collapse = FALSE) {
 #' @return matrix with two columns for the x and y coordinates of the points.
 #'
 #' @references
-#' nubDotDev (2021) The BEST Way to Find a Random Point in a Circle
-#' https://youtu.be/4y_nmpv-9lI
-#'
-#' Wolfram MathWorld (2023) Disk Point Picking
-#' https://mathworld.wolfram.com/DiskPointPicking.html
+#' \insertRef{nubdotdev2021Best}{SIMplyBee}
+#' \insertRef{wolfram2023Disk}{SIMplyBee}
 #'
 #' @examples
 #' x <- rcircle(n = 500)
@@ -1830,23 +1851,10 @@ isProductive <- function(x) {
 #' @return \code{\link[AlphaSimR]{MapPop-class}}
 #'
 #' @references
-#' Wallberg, A., Bunikis, I., Pettersson, O.V. et al.
-#'   A hybrid de novo genome assembly of the honeybee, Apis mellifera,
-#'   with chromosome-length scaffolds. 2019, BMC Genomics 20:275.
-#'   \doi{10.1186/s12864-019-5642-0}
-#'
-#' Beye M, Gattermeier I, Hasselmann M, et al. Exceptionally high levels
-#'   of recombination across the honey bee genome.
-#'   2006, Genome Res 16(11):1339-1344. \doi{10.1101/gr.5680406}
-#'
-#' Wallberg, A., Han, F., Wellhagen, G. et al. A worldwide survey of
-#'   genome sequence variation provides insight into the evolutionary
-#'   history of the honeybee Apis mellifera.
-#'   2014, Nat Genet 46:1081–1088. \doi{10.1038/ng.3077}
-#'
-#' Yang S, Wang L, Huang J, Zhang X, Yuan Y, Chen JQ, Hurst LD, Tian D.
-#'   Parent-progeny sequencing indicates higher mutation rates in heterozygotes.
-#'   2015, Nature 523(7561):463-7. \doi{10.1038/nature14649}.
+#' \insertRef{beye2006Exceptionally}{SIMplyBee}
+#' \insertRef{yang2015Parent}{SIMplyBee}
+#' \insertRef{wallberg2014Worldwide}{SIMplyBee}
+#' \insertRef{wallberg2019Hybrid}{SIMplyBee}
 #'
 #' @seealso Due to the computational time and resources required to run this function,
 #'   we do not include an example here, but we demonstrate
@@ -4602,9 +4610,8 @@ getPooledGeno <- function(x, type = "mean", sex = NULL) {
 #'   scaling factor used to scale the crossproduct of centred genotype matrix
 #'   to get the GRM.
 #'
-#' @references Druet and Legarra (2020) Theoretical and empirical comparisons of
-#'   expected and realized relationships for the X-chromosome. Genetics
-#'   Selection Evolution, 52:50 \doi{10.1186/s12711-020-00570-6}
+#' @references
+#' \insertRef{druet2020Theoretical}{SIMplyBee}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -4751,25 +4758,11 @@ calcBeeAlleleFreq <- function(x, sex) {
 #'   a matrix of individual relatedness coefficients (indiv)
 #'
 #' @references
-#' Grossman and Eisen (1989) Inbreeding, coancestry, and covariance between
-#'   relatives for X-chromosomal loci. The Journal of Heredity,
-#'   \doi{10.1093/oxfordjournals.jhered.a110812}
-#'
-#' Fernando and Grossman (1989) Covariance between relatives for X-chromosomal
-#'   loci in a population in disequilibrium. Theoretical and Applied Genetics,
-#'   \doi{10.1007/bf00305821}
-#'
-#' Fernando and Grossman (1990) Genetic evaluation with autosomal
-#'   and X-chromosomal inheritance. Theoretical and Applied Genetics,
-#'  \doi{10.1007/bf00224018}
-#'
-#' Van Arendonk, Tier, and Kinghorn (1994) Use of multiple genetic markers in
-#'   prediction of breeding values. Genetics,
-#'  \doi{10.1093/genetics/137.1.319}
-#'
-#' Hill and Weir (2011) Variation in actual relationship as a consequence of
-#'   Mendelian sampling and linkage. Genetics Research,
-#'   \doi{10.1017/s0016672310000480}
+#' \insertRef{fernando1989Covariance}{SIMplyBee}
+#' \insertRef{fernando1990Genetic}{SIMplyBee}
+#' \insertRef{grossman1989Inbreeding}{SIMplyBee}
+#' \insertRef{hill2011Variation}{SIMplyBee}
+#' \insertRef{vanarendonk1994Use}{SIMplyBee}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 3, nChr = 1, segSites = 100)
@@ -5209,9 +5202,7 @@ calcColonyPheno <- function(x, FUN = mapCasteToColonyPheno, simParamBee = NULL, 
 #'   \code{vignette(topic = "QuantitativeGenetics", package = "SIMplyBee")}
 #'
 #' @references
-#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
-#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{10.1038/s41437-021-00411-2}
+#' \insertRef{du2021Short}{SIMplyBee}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5272,10 +5263,10 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
     if(!isQueenPresent(x, simParamBee = simParamBee)) {
       stop("No queen in the Colony!")
     }
-    ret <- calcInheritanceCriterion(getQueen(colony, simParamBee = simParamBee),
+    ret <- calcInheritanceCriterion(getQueen(x, simParamBee = simParamBee),
                                     queenTrait = queenTrait,
                                     workersTrait = workersTrait,
-                                    use = use)
+                                    use = use, simParamBee = simParamBee)
   } else if (isMultiColony(x)) {
     nCol <- nColonies(x)
     ret <- vector(mode = "list", length = nCol)
@@ -5284,7 +5275,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
         ret[[colony]] <- calcInheritanceCriterion(x[[colony]],
                                                   queenTrait = queenTrait,
                                                   workersTrait = workersTrait,
-                                                  use = use)
+                                                  use = use, simParamBee = simParamBee)
       } else {
         ret[colony] <- list(NULL)
       }
@@ -5327,9 +5318,7 @@ calcInheritanceCriterion <- function(x, queenTrait = 1, workersTrait = 2, use = 
 #'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
-#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{10.1038/s41437-021-00411-2}
+#' \insertRef{du2021Short}{SIMplyBee}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -5449,9 +5438,7 @@ calcPerformanceCriterion <- function(x, queenTrait = 1, workersTrait = 2,
 #'   \code{\link[SIMplyBee]{MultiColony-class}}, where names are colony IDs
 #'
 #' @references
-#' Du, M., et al. (2021) Short-term effects of controlled mating and selection
-#'   on the genetic variance of honeybee populations. Heredity 126, 733–747.
-#'   \doi{10.1038/s41437-021-00411-2}
+#' \insertRef{du2021Short}{SIMplyBee}
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)
@@ -6454,7 +6441,9 @@ createCrossPlan <- function(x,
 #' @title Finds loci on a genetic map and return a list of positions
 #'
 #' @description Finds loci on a genetic map and return a list of positions.
-#' This function is adopted from AlphaSimR (Gaynor et al., 2021)
+#' This function is adopted from AlphaSimR (Gaynor et al., 2021).
+#' @references
+#' \insertRef{gaynor2021AlphaSimR}{SIMplyBee}
 #'
 #' @param markers character, vector of marker positions as "chr_position"
 #' @param genMap list, genetic map
@@ -6493,7 +6482,9 @@ mapLoci = function(markers, genMap){
 #' @title Convert correlation matrix to covariance matrix
 #'
 #' @description Convert correlation matrix to covariance matrix
-#' This function is adopted from AlphaSimR (Gaynor et al., 2021)
+#' This function is adopted from AlphaSimR (Gaynor et al., 2021).
+#' @references
+#' \insertRef{gaynor2021AlphaSimR}{SIMplyBee}
 #'
 #' @param corr correlation matrix
 #' @param var vector of variances
@@ -6506,163 +6497,426 @@ cor2cov <- function(corr, var) {
   return(cov)
 }
 
-#' @rdname mapIndToColonyVar
-#' @title Map individual-level variance components to colony-level variance components
+#' Calculate coefficients to map across individual and colony variances
 #'
-#' @description Map individual-level variance components to colony-level variance components
+#' Calculate the coefficients used to map variances in a fixed colony design.
+#' Forward mappings in \code{mapIndToColonyVar} multiply individual components.
+#' Inverse mappings in \code{mapColonyToIndVar} divide aggregate components.
 #'
-#' @param varA_q numeric, additive genetic variance of the queen
-#' @param varA_w numeric, additive genetic variance of the workers
-#' @param corA_qw numeric, correlation between queen and workers
-#' @param varE_q numeric, environmental variance of the queen
-#' @param varE_w numeric, environmental variance of the workers 
-#' @param corE_qw numeric, correlation between queen and workers
-#' @param nW numeric, number of workers in the colony
-#' @param nF numeric, number of fathers of the workers
-#' @param nDPQ numeric, number of drone producing queens in the colony
-#' @param workersFUN character, either "sum" or "mean", indicating whether the workers' contributions are summed or averaged
-#' 
-#' @return list with colony-level variance components
-#' 
-#' @export
-mapIndToColonyVar <- function(varA_q, varA_w, corA_qw, 
-                              varE_q, varE_w, corE_qw,
-                              nW, nF, nDPQ, workersFUN = "sum") {
-  
-  if (!workersFUN %in% c("sum", "mean")) {
-    stop("Invalid value for workersFUN. We currently only support either 'sum' or 'mean'.")
+#' @param nW Positive integer scalar, number of workers in the colony.
+#' @param nF Positive integer scalar, number of distinct mating fathers available
+#'   to sire workers. With random allocation, some fathers may sire no workers.
+#' @param nDPQ Positive integer scalar, number of distinct drone-producing queens
+#'   (DPQs) represented among the mating fathers. Equal numbers of fathers per
+#'   DPQ are assumed; nF must be divisible by nDPQ.
+#' @param workersFUN Character scalar, "sum" or "mean", specifying aggregation
+#'   of the workers' worker-effect trait values.
+#' @param workerAllocation Character scalar, "random" for independent uniform
+#'   sampling of a father for each worker, or "balanced" for exactly nW/nF
+#'   workers per father. Balanced allocation requires nW divisible by nF.
+#'
+#' @return A list of three coefficients:
+#'   \itemize{
+#'   \item \code{worker}: multiplier converting individual worker-effect additive
+#'     genetic variance to variance of the worker-group sum or mean.
+#'   \item \code{queenWorker}: multiplier converting within-individual genetic
+#'     covariance between queen-effect and worker-effect traits to covariance
+#'     between the colony queen's queen-effect contribution and the worker-group
+#'     worker-effect contribution. This coefficient does not include the factor
+#'     of two used when calculating total colony variance.
+#'   \item \code{environment}: multiplier converting individual worker-effect
+#'     environmental variance to variance of the worker-group sum or mean,
+#'     assuming environmental deviations are independent between workers.
+#'   }
+#'
+#' @details The model assumes non-inbred colony queens and DPQs, mutually
+#'   unrelated across those parents. Distinct fathers from the same DPQ may be
+#'   brothers. The queen-effect variance multiplier is one and is not returned.
+#'
+#'   Let w be 1 for sums or 1/nW for means.
+#'   Ordered distinct-worker pairs are partitioned into
+#'   same father giving super-sisters with additive relationship of 3/4,
+#'   distinct fathers from the same DPQ giving full-sisters with additive relationship of 1/2, and
+#'   different DPQs giving half-sisters with additive relationship of 1/4.
+#'   The worker coefficient is w^2 * (nW + relationship-weighted pair counts).
+#'   Random allocation uses expected pair counts;
+#'   balanced allocation uses exact pair counts.
+#'   The queenWorker coefficient is nW*w/2, and
+#'   the environment coefficient is nW*w^2.
+#'
+#'   Divisibility checks establish that the assumed equal allocation is possible;
+#'   totals alone cannot verify actual family composition.
+#'   These coefficients describe marginal colony components,
+#'   not sample variances across colonies sharing relatives.
+#'   Unequal contributions, general ancestry, and random colony sizes
+#'   require a more general model.
+#' @seealso \code{\link{mapIndToColonyVar}}, \code{\link{mapColonyToIndVar}}
+#' @keywords internal
+calcColonyAndIndCoefficients <- function(nW, nF, nDPQ, workersFUN,
+                                         workerAllocation) {
+  for (name in c("nW", "nF", "nDPQ")) {
+    value <- get(name)
+    if (!is.numeric(value) || length(value) != 1L || !is.finite(value) ||
+        value < 1 || value != floor(value)) {
+      stop(name, " must be a positive integer scalar.")
+    }
   }
-
-  # Pair counts
-  n_SS <- (nW * nW / nF) - nW
-  n_FS <- (nW * nW / nDPQ) -  (nW * nW / nF)
-  n_HS <- (nW * nW / nDPQ) * (nDPQ - 1)
-
-  if (workersFUN == "mean") {
-    B1 = 1 / nW * varA_w
-  } else if (workersFUN == "sum") {
-    B1 = nW * varA_w
+  if (length(workersFUN) != 1L || is.na(workersFUN) ||
+      !workersFUN %in% c("sum", "mean")) {
+    stop("workersFUN must be 'sum' or 'mean'.")
   }
-
-  B2_ss <- n_SS * 0.75 * varA_w
-  B2_fs <- n_FS * 0.50 * varA_w
-  B2_hs <- n_HS * 0.25 * varA_w
-
-  if (workersFUN == "mean") {
-    varA_wbar = B1 + 1/nW^2 * (B2_ss + B2_fs + B2_hs)
-  } else if (workersFUN == "sum") {
-    varA_wbar = B1 + B2_ss + B2_fs + B2_hs
+  if (length(workerAllocation) != 1L || is.na(workerAllocation) ||
+      !workerAllocation %in% c("random", "balanced")) {
+    stop("workerAllocation must be 'random' or 'balanced'.")
   }
-
-  covA_qw = corA_qw * sqrt(varA_q) * sqrt(varA_w)
-
-  if (workersFUN == "mean") {
-    covA_qwbar <- covA_qw
-  } else if (workersFUN == "sum") {
-    covA_qwbar <- nW * covA_qw
+  # Equal father counts per DPQ are assumed.
+  # Check that the supplied totals permit that allocation.
+  if (nF %% nDPQ != 0) {
+    stop("Equal fathers per DPQ requires nF divisible by nDPQ.")
   }
-  corA_qwbar <- covA_qwbar / (sqrt(varA_q) * sqrt(varA_wbar))
-
-  varA_c <- varA_q + varA_wbar + 2*covA_qwbar
-
-  # Environmental part
-  if (workersFUN == "mean") {
-    varE_wbar = 1 / nW * varE_w
-  } else if (workersFUN == "sum") {
-    varE_wbar = nW * varE_w
+  if (workerAllocation == "balanced") {
+    if (nW %% nF != 0) {
+      stop("Balanced worker allocation requires nW divisible by nF.")
+    }
+    sameFather <- nW^2 / nF - nW
+    sameDPQ <- nW^2 / nDPQ - nW^2 / nF
+    differentDPQ <- nW^2 * (1 - 1 / nDPQ)
+  } else {
+    sameFather <- nW * (nW - 1) / nF
+    sameDPQ <- nW * (nW - 1) * (1 / nDPQ - 1 / nF)
+    differentDPQ <- nW * (nW - 1) * (1 - 1 / nDPQ)
   }
-
-  covE_qw = corE_qw * sqrt(varE_q) * sqrt(varE_w)
-
-  if (workersFUN == "mean") {
-    covE_qwbar <- covE_qw
-  } else if (workersFUN == "sum") {
-    covE_qwbar <- nW * covE_qw
-  }
-  corE_qwbar <- covE_qwbar / (sqrt(varE_q) * sqrt(varE_wbar))
-
-  varE_c <- varE_q + varE_wbar + 2*covE_qwbar
-
-  return(list(varA_q = varA_q, varA_wbar = varA_wbar, covA_qwbar = covA_qwbar, corA_qwbar = corA_qwbar, varA_c = varA_c,
-              varE_q = varE_q, varE_wbar = varE_wbar, covE_qwbar = covE_qwbar, corE_qwbar = corE_qwbar, varE_c = varE_c))
+  weight <- if (workersFUN == "mean") 1 / nW else 1
+  list(worker = weight^2 * (nW + 0.75 * sameFather +
+                             0.5 * sameDPQ + 0.25 * differentDPQ),
+       queenWorker = nW * weight / 2,
+       environment = nW * weight^2)
 }
 
-#' @rdname mapColonyToIndVar
-#' @title Map colony-level variance components to individual-level variance components
+#' Validate variance and correlation inputs
 #'
-#' @description Map colony-level variance components to individual-level variance components
+#' Check named collections of scalar variance and correlation parameters used
+#' by the individual/colony variance mappings. Invalid inputs raise an error.
 #'
-#' @param varA_q numeric, additive genetic variance of the queen
-#' @param varA_wbar numeric, additive genetic variance of the average worker
-#' @param corA_qwbar numeric, correlation between queen and average worker
-#' @param varE_q numeric, environmental variance of the queen
-#' @param varE_wbar numeric, environmental variance of the average worker
-#' @param corE_qwbar numeric, correlation between queen and average worker
+#' @param variances Named list of numeric, finite, nonnegative variance scalars.
+#' @param correlations Named list of numeric, finite correlation scalars in
+#'   the interval [-1, 1].
+#' @return Invisibly returns \code{NULL} when all checked inputs are valid;
+#'   otherwise stops with an error.
+#' @keywords internal
+validateVarsAndCors <- function(variances, correlations) {
+  for (name in names(variances)) {
+    value <- variances[[name]]
+    if (!is.numeric(value) || length(value) != 1L || !is.finite(value) || value < 0) {
+      stop(name, " must be a finite nonnegative scalar.")
+    }
+  }
+  for (name in names(correlations)) {
+    value <- correlations[[name]]
+    if (!is.numeric(value) || length(value) != 1L || !is.finite(value) ||
+        abs(value) > 1) {
+      stop(name, " must be a finite correlation in [-1, 1].")
+    }
+  }
+}
+
+#' Stable conversion of a covariance and two variances to a correlation
+#'
+#' Divide a covariance by the product of the corresponding standard deviations,
+#' but return \code{NA} when either variance (standard deviation) are zero.
+#'
+#' @param covariance Numeric scalar covariance between the two variables.
+#' @param variance1 Numeric scalar variance of the first variable.
+#' @param variance2 Numeric scalar variance of the second variable.
+#' @return Numeric scalar correlation, or \code{NA_real_}
+#'   if either variance is zero and the correlation is therefore undefined.
+#' @keywords internal
+covVar2Cor <- function(covariance, variance1, variance2) {
+  if (variance1 == 0 || variance2 == 0) return(NA_real_)
+  covariance / (sqrt(variance1) * sqrt(variance2))
+}
+
+#' @rdname mapIndToColonyVar
+#' @title Map variance components between individuals and colonies
+#'
+#' @description Map individual queen-effect and worker-effect variance components
+#'   to colony variance components, or recover individual variance components from
+#'   separate queen and worker-group colony variance components.
+#'
+#' @param varAQueen Numeric scalar, additive genetic variance of
+#'   the queen-effect trait among individual diploid bees in a base population.
+#' @param varAWorker Numeric scalar, additive genetic variance of
+#'   the worker-effect trait among individual diploid bees in a base population.
+#' @param corAQueenWorker Numeric scalar, additive genetic correlation between
+#'   the queen-effect trait and the worker-effect trait
+#'   among individual diploid bees in a base population.
+#'   This is the within-individual cross-trait correlation among individuals.
+#' @param varEQueen Numeric scalar, environmental variance of
+#'   the queen-effect trait among individual bees in a base population.
+#' @param varEWorker Numeric scalar, environmental variance of
+#'   the worker-effect trait among individual bees in a base population.
+#' @param corEQueenWorker Numeric scalar, environmental correlation between
+#'   the queen-effect trait and the worker-effect trait
+#'   among individual diploid bees in a base population.
+#'   This is the within-individual cross-trait correlation among individuals.
+#' @param varAWorkerGroup Numeric scalar, additive genetic variance of
+#'   the aggregated worker-effect trait among colonies in a base population.
+#' @param corAQueenWorkerGroup Numeric scalar, additive genetic correlation between
+#'   the queen's queen-effect trait and
+#'   the aggregated workers' worker-effect trait
+#'   among colonies in a base population.
+#'   This is the cross-caste and cross-trait correlation among colonies.
+#' @param varEWorkerGroup Numeric scalar, environmental variance of
+#'   the aggregated worker-effect trait among colonies in a base population.
+#' @param corEQueenWorkerGroup Numeric scalar, environmental correlation between
+#'   the queen's queen-effect trait and
+#'   the aggregated workers' worker-effect trait
+#'   among colonies in a base population.
+#'   This is the cross-caste and cross-trait correlation among colonies.
 #' @param nW numeric, number of workers in the colony
 #' @param nF numeric, number of fathers of the workers
-#' @param nDPQ numeric, number of drone producing queens in the colony
-#' @param workersFUN character, either "sum" or "mean", indicating whether the workers' contributions are summed or averaged
+#' @param nDPQ numeric, number of drone producing queens (DPQs)
+#'   represented among the mating fathers
+#' @param workersFUN character, either "sum" or "mean",
+#'   indicating whether the workers' contributions are summed or averaged
+#'   when forming the aggregated worker-effect contribution to colony value.
+#' @param workerAllocation character, either "random" (default) or "balanced".
 #'
-#' @return list with individual-level variance components
+#' @return Both functions return a flat list with the same named components.
 #'
+#'   \strong{Components already described as inputs}
+#'   All components listed below are returned by both functions; the function
+#'   labels indicate which inputs they correspond to.
+#'   \itemize{
+#'   \item Both functions: \code{varAQueen}, \code{varEQueen}, \code{nW},
+#'     \code{nF}, \code{nDPQ}, \code{workersFUN}, and \code{workerAllocation}.
+#'   \item \code{mapIndToColonyVar}: \code{varAWorker}, \code{varEWorker},
+#'     \code{corAQueenWorker}, and \code{corEQueenWorker}.
+#'   \item \code{mapColonyToIndVar}: \code{varAWorkerGroup},
+#'     \code{varEWorkerGroup}, \code{corAQueenWorkerGroup}, and
+#'     \code{corEQueenWorkerGroup}. The returned group correlations are
+#'     \code{NA} if either corresponding variance is zero, even if zero
+#'     was supplied as the correlation.
+#'   }
+#'
+#'   \strong{Additional components}
+#'   \itemize{
+#'   \item \code{covAQueenWorker}: additive genetic covariance between
+#'     the queen-effect trait and the worker-effect trait
+#'     among individual diploid bees in a base population.
+#'   \item \code{covAQueenWorkerGroup}: additive genetic covariance between
+#'     the queen's queen-effect trait and
+#'     the aggregated workers' worker-effect trait
+#'     among colonies in a base population.
+#'   \item \code{covEQueenWorker}: environmental covariance between
+#'     the queen-effect trait and the worker-effect trait
+#'     among individual diploid bees in a base population.
+#'   \item \code{covEQueenWorkerGroup}: environmental covariance between
+#'     the queen's queen-effect trait and
+#'     the aggregated workers' worker-effect trait
+#'     among colonies in a base population.
+#'     Zero under the assumption of independent environmental deviations between bees.
+#'   \item \code{varAColony} and \code{varEColony}: additive genetic
+#'     and environmental variance of colony values.
+#'     Each is the sum of the queen and worker-group variances plus twice their covariance.
+#'   \item \code{h2Queen}: \code{varAQueen / (varAQueen + varEQueen)},
+#'     heritability of the queen-effect trait among individual bees.
+#'   \item \code{h2Worker}: \code{varAWorker / (varAWorker + varEWorker)},
+#'     heritability of the worker-effect trait among individual bees.
+#'   \item \code{h2WorkerGroup}: \code{varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup)},
+#'     heritability of the aggregated worker-effect trait among colonies.
+#'   \item \code{h2Colony}: \code{varAColony / (varAColony + varEColony)},
+#'     heritability of colony values, including genetic covariance between
+#'     queen's queen trait and worker-group's worker trait in \code{varAColony}.
+#'     All four heritabilities are \code{NA} when their denominator is zero.
+#'   }
+#'
+#'   Covariances are not multiplied by two.
+#'   Calculated correlations are \code{NA} if either corresponding variance is zero.
+#'   In \code{mapColonyToIndVar}, \code{covEQueenWorker} and \code{corEQueenWorker}
+#'   are both returned as \code{NA},
+#'   because colony components do not identify
+#'   within-individual environmental covariance or correlation.
+#'
+#' @details These mappings describe marginal variances under an additive model
+#'   with non-inbred, mutually unrelated colony queens and drone-producing
+#'   queens (DPQs), distinct fathers, and equal numbers of fathers per DPQ.
+#'   They do not predict sample variance across colonies sharing relatives.
+#'   Each diploid bee has genetic values for both the queen-effect and
+#'   worker-effect traits. A colony value combines the queen's value for the
+#'   queen-effect trait with the aggregated workers' values for the
+#'   worker-effect trait. Thus Queen and Worker identify trait roles as well as
+#'   their expressing castes; WorkerGroup always denotes an aggregate.
+#'
+#'   With random worker allocation,
+#'   each worker independently samples a father uniformly.
+#'   With balanced allocation,
+#'   each father has exactly \code{nW/nF} workers,
+#'   which requires \code{nW} to be divisible by \code{nF}.
+#'   Both require \code{nF} divisible by \code{nDPQ}.
+#'   The distinct-worker relationship is 3/4 for a shared father,
+#'   1/2 for distinct fathers from the same DPQ, and 1/4 otherwise.
+#'   Queen-offspring relationship is 1/2.
+#'   Environmental deviations are independent between bees.
+#'   Calculated correlations are \code{NA} when either variance is zero;
+#'   individual correlations supplied to the forward mapping are retained.
+#'
+#'   The inverse divides worker-group variances and queen-worker-group
+#'   covariance by the corresponding design coefficients.
+#'   Both directions must use the same colony design and aggregation.
+#'   A nonzero \code{corEQueenWorkerGroup} raises an error,
+#'   as do colony components implying an individual genetic correlation outside [-1, 1].
+#'   If either genetic component variance is zero,
+#'   the inverse accepts \code{NA} or zero for \code{corAQueenWorkerGroup}.
+#'   Similarly, \code{NA} or zero can be supplied for \code{corEQueenWorkerGroup}
+#'   when either environmental component variance is zero.
+#'   The zero-correlation restriction between bees does not apply to \code{corEQueenWorker},
+#'   which describes environmental association between traits within the same bee.
+#'
+#'   Both results are flat lists. To pass a result to either mapping function,
+#'   select the entries named in \code{names(formals(fun))} before using
+#'   \code{do.call(fun, ...)}; the full result contains extra components.
+#'   Before mapping an inverse result forward, supply an explicit
+#'   \code{corEQueenWorker}, which the inverse cannot identify.
+#'
+#' @references
+#' \insertRef{brascamp2014Methods}{SIMplyBee}
+#' \insertRef{brascamp2019Note}{SIMplyBee}
+#'
+#' @examples
+#' nW <- 100
+#' nF <- 15
+#' nDPQ <- 5
+#'
+#' # Mapping individual vars to colony with worker group mean
+#' (colonyVars <- mapIndToColonyVar(
+#'   varAQueen = 2, varAWorker = 0.01, corAQueenWorker = -0.5,
+#'   varEQueen = 3, varEWorker = 0.02, corEQueenWorker = 0.3,
+#'   nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "mean"))
+#' # ... and inverse
+#' (indVars <- do.call(mapColonyToIndVar,
+#'   colonyVars[names(formals(mapColonyToIndVar))]))
+#'
+#' # Mapping colony vars with worker group sum to individual vars
+#' (indVars <- mapColonyToIndVar(
+#'   varAQueen = 2, varAWorkerGroup = 0.01, corAQueenWorkerGroup = -0.5,
+#'   varEQueen = 3, varEWorkerGroup = 0.02, corEQueenWorkerGroup = 0.0,
+#'   nW = nW, nF = nF, nDPQ = nDPQ, workersFUN = "sum"))
+#' # ... and back to colony components, assuming zero within-bee
+#' # environmental correlation (not identified by the inverse mapping).
+#' indArgs <- indVars[names(formals(mapIndToColonyVar))]
+#' indArgs$corEQueenWorker <- 0
+#' (colonyVars <- do.call(mapIndToColonyVar, indArgs))
 #' @export
-mapColonyToIndVar <- function(varA_q,
-                              varA_wbar,
-                              corA_qwbar,
-                              varE_q,
-                              varE_wbar,
-                              corE_qwbar,
-                              nW,
-                              nF,
-                              nDPQ,
-                              workersFUN = "sum") {
-  
-  if (!workersFUN %in% c("sum", "mean")) {
-    stop("Invalid value for workersFUN. We currently only support either 'sum' or 'mean'.")
+mapIndToColonyVar <- function(varAQueen, varAWorker, corAQueenWorker,
+                              varEQueen, varEWorker, corEQueenWorker,
+                              nW, nF, nDPQ, workersFUN = "sum",
+                              workerAllocation = "random") {
+  validateVarsAndCors(list(varAQueen = varAQueen, varAWorker = varAWorker,
+                           varEQueen = varEQueen, varEWorker = varEWorker),
+                       list(corAQueenWorker = corAQueenWorker, corEQueenWorker = corEQueenWorker))
+  k <- calcColonyAndIndCoefficients(nW, nF, nDPQ, workersFUN, workerAllocation)
+  varAWorkerGroup <- k$worker * varAWorker
+  covAQueenWorkerGroup <- k$queenWorker * corAQueenWorker * sqrt(varAQueen) * sqrt(varAWorker)
+  corAQueenWorkerGroup <- covVar2Cor(covAQueenWorkerGroup, varAQueen, varAWorkerGroup)
+  varAColony <- varAQueen + varAWorkerGroup + 2 * covAQueenWorkerGroup
+  varEWorkerGroup <- k$environment * varEWorker
+  covEQueenWorkerGroup <- 0
+  # Correlation is zero unless either variance is zero, when it is undefined.
+  corEQueenWorkerGroup <- covVar2Cor(covEQueenWorkerGroup, varEQueen, varEWorkerGroup)
+  varEColony <- varEQueen + varEWorkerGroup
+  covAQueenWorker <- corAQueenWorker * sqrt(varAQueen) * sqrt(varAWorker)
+  covEQueenWorker <- corEQueenWorker * sqrt(varEQueen) * sqrt(varEWorker)
+  list(
+    varAQueen = varAQueen,
+    varAWorker = varAWorker,
+    covAQueenWorker = covAQueenWorker,
+    corAQueenWorker = corAQueenWorker,
+    varAWorkerGroup = varAWorkerGroup,
+    covAQueenWorkerGroup = covAQueenWorkerGroup,
+    corAQueenWorkerGroup = corAQueenWorkerGroup,
+    varAColony = varAColony,
+    varEQueen = varEQueen,
+    varEWorker = varEWorker,
+    covEQueenWorker = covEQueenWorker,
+    corEQueenWorker = corEQueenWorker,
+    varEWorkerGroup = varEWorkerGroup,
+    covEQueenWorkerGroup = covEQueenWorkerGroup,
+    corEQueenWorkerGroup = corEQueenWorkerGroup,
+    varEColony = varEColony,
+    h2Queen = if (varAQueen + varEQueen == 0) NA_real_ else varAQueen / (varAQueen + varEQueen),
+    h2Worker = if (varAWorker + varEWorker == 0) NA_real_ else varAWorker / (varAWorker + varEWorker),
+    h2WorkerGroup = if (varAWorkerGroup + varEWorkerGroup == 0) NA_real_ else varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup),
+    h2Colony = if (varAColony + varEColony == 0) NA_real_ else varAColony / (varAColony + varEColony),
+    nW = nW,
+    nF = nF,
+    nDPQ = nDPQ,
+    workersFUN = workersFUN,
+    workerAllocation = workerAllocation
+  )
+}
+
+#' @describeIn mapIndToColonyVar Recover individual variance components from
+#'   separate queen and worker-group colony components.
+#' @export
+mapColonyToIndVar <- function(varAQueen, varAWorkerGroup, corAQueenWorkerGroup,
+                              varEQueen, varEWorkerGroup, corEQueenWorkerGroup,
+                              nW, nF, nDPQ, workersFUN = "sum",
+                              workerAllocation = "random") {
+  # A correlation is undefined if either component has zero variance
+  if (length(corAQueenWorkerGroup) == 1L && is.na(corAQueenWorkerGroup) &&
+      (isTRUE(varAQueen == 0) || isTRUE(varAWorkerGroup == 0))) corAQueenWorkerGroup <- 0
+  if (length(corEQueenWorkerGroup) == 1L && is.na(corEQueenWorkerGroup) &&
+      (isTRUE(varEQueen == 0) || isTRUE(varEWorkerGroup == 0))) corEQueenWorkerGroup <- 0
+  validateVarsAndCors(list(varAQueen = varAQueen, varAWorkerGroup = varAWorkerGroup,
+                           varEQueen = varEQueen, varEWorkerGroup = varEWorkerGroup),
+                       list(corAQueenWorkerGroup = corAQueenWorkerGroup, corEQueenWorkerGroup = corEQueenWorkerGroup))
+  if (corEQueenWorkerGroup != 0) {
+    stop("Nonzero corEQueenWorkerGroup requires a shared environment model; environments are assumed independent between bees.")
   }
-  
-  covA_qwbar <- corA_qwbar * sqrt(varA_q) * sqrt(varA_wbar)
-
-  if (workersFUN == "sum") {
-    covA_qw <- covA_qwbar / nW 
-  } else if (workersFUN == "mean") {
-    covA_qw <- covA_qwbar
+  k <- calcColonyAndIndCoefficients(nW, nF, nDPQ, workersFUN, workerAllocation)
+  varAWorker <- varAWorkerGroup / k$worker
+  covAQueenWorkerGroup <- corAQueenWorkerGroup * sqrt(varAQueen) * sqrt(varAWorkerGroup)
+  covAQueenWorker <- covAQueenWorkerGroup / k$queenWorker
+  corAQueenWorker <- covVar2Cor(covAQueenWorker, varAQueen, varAWorker)
+  if (!is.na(corAQueenWorker) && abs(corAQueenWorker) > 1 + 1e-10) {
+    stop("Colony genetic components imply an infeasible individual correlation outside [-1, 1].")
   }
-
-  n_SS <- (nW * nW / nF) - nW
-  n_FS <- (nW * nW / nDPQ) - (nW * nW / nF)
-  n_HS <- (nW * nW / nDPQ) * (nDPQ - 1)
-
-  if (workersFUN == "sum") {
-    K <- nW +
-         n_SS * 0.75 +
-         n_FS * 0.50 +
-         n_HS * 0.25
-  } else if (workersFUN == "mean") {
-    K <- 1 / nW + ((n_SS * 0.75 + 
-                    n_FS * 0.50 + 
-                    n_HS * 0.25) / nW^2)
-  }
-
-  varA_w <- varA_wbar / K
-
-  corA_qw <- covA_qw / (sqrt(varA_q) * sqrt(varA_w))
-
-  # Environmental part
-  covE_qwbar <- corE_qwbar * sqrt(varE_q) * sqrt(varE_wbar)
-
-  if (workersFUN == "sum") {
-    varE_w <- varE_wbar / nW
-    covE_qw <- covE_qwbar / nW
-  } else if (workersFUN == "mean") {
-    varE_w <- varE_wbar * nW
-    covE_qw <- covE_qwbar
-  }
-
-  corE_qw <- covE_qw / (sqrt(varE_q) * sqrt(varE_w))
-
-  return(list(varA_q = varA_q, varA_wbar = varA_wbar, varA_w = varA_w, 
-              covA_qwbar = covA_qwbar, covA_qw = covA_qw, corA_qw = corA_qw,
-              varE_q = varE_q, varE_wbar = varE_wbar, varE_w = varE_w,
-              covE_qwbar = covE_qwbar, covE_qw = covE_qw, corE_qw = corE_qw))
+  if (!is.na(corAQueenWorker)) corAQueenWorker <- max(-1, min(1, corAQueenWorker))
+  varEWorker <- varEWorkerGroup / k$environment
+  corAQueenWorkerGroup <- covVar2Cor(covAQueenWorkerGroup, varAQueen, varAWorkerGroup)
+  covEQueenWorkerGroup <- 0
+  # Correlation is zero unless either variance is zero, when it is undefined.
+  corEQueenWorkerGroup <- covVar2Cor(covEQueenWorkerGroup, varEQueen, varEWorkerGroup)
+  varAColony <- varAQueen + varAWorkerGroup + 2 * covAQueenWorkerGroup
+  varEColony <- varEQueen + varEWorkerGroup
+  covEQueenWorker <- NA_real_
+  corEQueenWorker <- NA_real_
+  list(
+    varAQueen = varAQueen,
+    varAWorker = varAWorker,
+    covAQueenWorker = covAQueenWorker,
+    corAQueenWorker = corAQueenWorker,
+    varAWorkerGroup = varAWorkerGroup,
+    covAQueenWorkerGroup = covAQueenWorkerGroup,
+    corAQueenWorkerGroup = corAQueenWorkerGroup,
+    varAColony = varAColony,
+    varEQueen = varEQueen,
+    varEWorker = varEWorker,
+    covEQueenWorker = covEQueenWorker,
+    corEQueenWorker = corEQueenWorker,
+    varEWorkerGroup = varEWorkerGroup,
+    covEQueenWorkerGroup = covEQueenWorkerGroup,
+    corEQueenWorkerGroup = corEQueenWorkerGroup,
+    varEColony = varEColony,
+    h2Queen = if (varAQueen + varEQueen == 0) NA_real_ else varAQueen / (varAQueen + varEQueen),
+    h2Worker = if (varAWorker + varEWorker == 0) NA_real_ else varAWorker / (varAWorker + varEWorker),
+    h2WorkerGroup = if (varAWorkerGroup + varEWorkerGroup == 0) NA_real_ else varAWorkerGroup / (varAWorkerGroup + varEWorkerGroup),
+    h2Colony = if (varAColony + varEColony == 0) NA_real_ else varAColony / (varAColony + varEColony),
+    nW = nW,
+    nF = nF,
+    nDPQ = nDPQ,
+    workersFUN = workersFUN,
+    workerAllocation = workerAllocation
+  )
 }

@@ -59,8 +59,8 @@ assign into \code{x} based on colony index or name \code{i}}
 \description{
 An object holding a collection of honeybee colonies. It behaves
   like a list. Numeric indices select positions; character indices select
-  colony IDs. Single brackets return a MultiColony, while double brackets
-  return one Colony (or NULL for an unpopulated entry).
+  colony by their IDs/names. Single bracket indexing returns a MultiColony,
+  while double brackets return one Colony (or NULL for an unpopulated entry).
 }
 \section{Functions}{
 \itemize{
@@ -97,7 +97,7 @@ SP <- SimParamBee$new(founderGenomes)
 \dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
-drones <- createDrones(x = basePop[1], nInd = 1000)
+drones <- createDrones(x = basePop[1], nInd = 200)
 droneGroups <- pullDroneGroupsFromDCA(drones, n = 10, nDrones = nFathersPoisson)
 apiary <- createMultiColony(basePop[1:6], n = 6)
 apiary <- cross(apiary, drones = droneGroups[1:6])
@@ -107,28 +107,23 @@ is(apiary)
 isMultiColony(apiary)
 
 getId(apiary)
-apiary[getId(apiary)[c(3, 1)]] # select by ID, preserving requested order
-apiary[1]
 getId(apiary[1])
 getId(apiary["2"])
 getId(apiary[2])
 getId(apiary[-1])
 getId(apiary[5])
 
-getId(apiary)
 getId(apiary[c(1, 3)])
 getId(apiary[c("2", "4")])
 getId(apiary[c(TRUE, FALSE, TRUE, FALSE)])
 getId(apiary[c(TRUE, FALSE)]) # beware of recycling!
-getId(apiary[c(5, 6)])
+getId(apiary[c(6, 7)])
 getId(apiary[c("6", "7")])
 
+apiary[1]
 apiary[[1]]
 apiary[["2"]]
-apiary[[3]]
-apiary[["4"]]
-try(apiary[[6]])
-apiary[["7"]]
+try(apiary[[7]])
 
 getId(c(apiary[c(1, 3)], apiary[2]))
 getId(c(apiary[2], apiary[c(1, 3)]))

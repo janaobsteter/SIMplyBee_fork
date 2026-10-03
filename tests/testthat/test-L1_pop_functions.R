@@ -1,3 +1,4 @@
+
 # ---- getCastePop ----
 
 test_that("getCastePop", {
@@ -374,7 +375,7 @@ test_that("combineBeeGametes", {
 
    queen <- basePop[1]
    drones <- createDrones(x = basePop[2], nInd = 5, simParamBee = SP)
-   workers <- SIMplyBee:::combineBeeGametes(queen, drones, nProgeny = 4, simParamBee = SP)
+   workers <- combineBeeGametes(queen, drones, nProgeny = 4, simParamBee = SP)
 
    expect_equal(drones@ploidy, 2)
    expect_equal(nInd(drones), 5)

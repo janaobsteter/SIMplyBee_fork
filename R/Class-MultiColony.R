@@ -1,3 +1,4 @@
+
 # ---- Class MultiColony ----
 
 setClassUnion("integerOrNumeric", c("integer", "numeric"))

@@ -19,8 +19,13 @@ nHomBrood(x, simParamBee = NULL)
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 }
 \value{
-numeric, expected csd homozygosity named by colony id when \code{x}
-  is \code{\link[SIMplyBee]{MultiColony-class}}
+Numeric brood proportions for \code{calcQueensPHomBrood()} and
+  \code{pHomBrood()}, or counts for \code{nHomBrood()}, named by colony ID
+  when \code{x} is \code{\link[SIMplyBee]{MultiColony-class}}. An empty
+  \code{\link[AlphaSimR]{Pop-class}} returns \code{numeric(0)}. Missing
+  brood proportions and counts are represented by \code{NA_real_}.
+  All three functions warn and return \code{NA_real_} for a colony without
+  a queen.
 }
 \description{
 Level 0 functions that calculate or report the proportion of csd
@@ -34,7 +39,7 @@ Level 0 functions that calculate or report the proportion of csd
 }
 \section{Functions}{
 \itemize{
-\item \code{pHomBrood()}: Expected percentage of csd homozygous brood
+\item \code{pHomBrood()}: Expected proportion of csd homozygous brood
 of a queen / colony
 
 \item \code{nHomBrood()}: Realised number of csd homozygous brood
