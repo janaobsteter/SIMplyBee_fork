@@ -3,7 +3,62 @@
 ## Scope
 
 These notes apply to how we manage this git repository of the `SIMplyBee` package.
-SIMplyBee aims to provide an easy to use simulation platform to simulate honeybee breeding programmes by building upon the AlphaSimR packages. So, we prioritise aligning the SIMplyBee R API with the underlying AlphaSimR R API where this is appropriate, and deviate or level-up where we need a honeybee specific approach.
+SIMplyBee aims to provide an easy to use simulation platform
+to simulate honeybee breeding programmes by building upon the AlphaSimR packages.
+So, we prioritise aligning the SIMplyBee R API with the underlying AlphaSimR R API
+where this is appropriate, and deviate or level-up where we need a honeybee specific approach.
+
+## Package map
+
+* `R/Class-SimParamBee.R`: R6 simulation parameters extending AlphaSimR's
+  `SimParam`; holds shared simulation settings and bookkeeping.
+* `R/Class-Colony.R`: S4 colony holding the queen, virgin queens, workers,
+  drones, colony state, and metadata.
+* `R/Class-MultiColony.R`: list-like collection of colonies, including
+  subsetting and replacement methods.
+* `R/Functions_L0_auxilary.R`: auxiliary functions (the filename spelling is
+  intentional here); `Functions_L1_Pop.R`, `Functions_L2_Colony.R`, and
+  `Functions_L3_Colonies.R` respectively provide population, colony, and
+  multicolony operations.
+* `src/`: compiled helpers to speed up operations.
+* `tests/testthat/` unit tests.
+* `vignettes`: longer form documentation.
+* `docs`: pkgdown output.
+
+## Scientific invariants and shared state
+
+* Seeded results are part of observable behavior. Reordering random operations,
+  batching crosses, or changing parallel execution can change results even when
+  their distributions remain correct. Assess these effects explicitly and record
+  intentional user-visible changes in `NEWS.md`.
+* Running the same seed twice in a modified implementation checks repeatability,
+  not compatibility with the previous implementation. For changes that should
+  preserve seeded results, compare against the previous implementation under
+  the same R and dependency versions using a small representative regression case.
+* Test thread-count independence where the supported implementation promises it.
+  Review RNG handling when changing `future.apply` paths, including `future.seed`;
+  do not assume worker-count, scheduling, and sequential/parallel equivalence
+  without checking the relevant path.
+* `SimParamBee` has R6 reference semantics: changing a field affects the caller.
+  Do not silently overwrite user settings. When temporarily changing settings
+  such as `nThreads`, register restoration with `on.exit(..., add = TRUE)` before
+  doing work that can fail. Preserve intentional updates to simulation counters
+  and records.
+* Create new individuals through supported SIMplyBee/AlphaSimR constructors and
+  crossing functions. Direct S4 construction or manual ID changes can bypass
+  ID, pedigree, and recombination bookkeeping. Check these invariants explicitly
+  when changing population creation, especially across parallel workers.
+* Treat population and colony metadata as biological state. Queens' `misc`
+  includes fathers and brood counts. When subsetting, merging, or rebuilding
+  populations, verify metadata, individual order, IDs, and class preservation;
+  inspect the supported AlphaSimR/SIMplyBee methods
+  rather than assuming all slots survive.
+* Preserve the package's representation of haploid drones and diploid females,
+  caste-specific inheritance, and complementary sex determination. For relevant
+  changes, test maternal-only inheritance in drones, parental allele inheritance
+  in female offspring, and homozygous-brood handling with csd enabled, as well as
+  the supported csd-disabled path. Respect the existing genotype representation
+  rather than inferring ploidy solely from storage dimensions.
 
 ## The way of working
 
@@ -14,6 +69,8 @@ SIMplyBee aims to provide an easy to use simulation platform to simulate honeybe
 * We add or update tests for every behavior change.
 * We run R CMD check for every code change.
 * We keep local quality gates green before handoff.
+* Package checks should have no new errors or warnings. Report existing failures
+  and explain any accepted NOTEs; do not assume every NOTE is harmless.
 * We update `NEWS.md` for user-visible behavior or API changes.
 
 ## Permissions and authorization
@@ -53,14 +110,16 @@ curl -I -sS --max-time 15 <url>
 
 ## Definition of done
 
+Run the R commands below from the package directory of the active worktree.
+
 A task is done when all applicable items below are completed:
 
 * Added/updated user-facing examples and tests for new functionality.
-* `pre-commit run --all-files` to pass basic code checks.
-* `Rscript -e "setwd('SIMplyBee'); devtools::test()"`
-  for interactive "mode" testing.
-* `Rscript -e "setwd('SIMplyBee'); devtools::check()"`
-  for non-interactive "mode" testing and full package checks.
+* Run applicable formatting/lint checks described below and `git diff --check`.
+* `Rscript -e "devtools::test()"`
+  for package tests.
+* `Rscript -e "devtools::check()"`
+  for full package checks.
 * Updated `NEWS.md` for user-visible changes.
 
 ### Task-class quality gates
@@ -70,7 +129,7 @@ A task is done when all applicable items below are completed:
   `devtools::check()` are not required unless package behavior is affected.
 * For behavior-changing R/C++ work, run focused tests first (for example
   `devtools::test(filter = '...')`), then run full package checks before
-  handoff (`pre-commit`, `devtools::test()`, and `devtools::check()`).
+  handoff (`devtools::test()` and `devtools::check()`, plus applicable lint checks).
 * If full checks are intentionally skipped, explicitly report what was skipped,
   why, and which focused checks were run.
 
@@ -80,8 +139,12 @@ Default for non-trivial code tasks is to use a dedicated git worktree:
 
 ```sh
 git fetch origin --prune
-git worktree add ../SIMplyBee_wt_<task> -b <branch-name> origin/main
+git worktree add ../SIMplyBee_wt_<task> -b <branch-name> origin/<base-branch>
 ```
+
+Choose `<base-branch>` from the task or PR target. The README distinguishes
+`main` (pre-CRAN stable work) from `devel` (development); do not assume `main`
+is always the correct base. Reuse an existing task worktree when appropriate.
 
 Within this workflow, follow these rules:
 
@@ -96,17 +159,19 @@ Within this workflow, follow these rules:
 
 ```sh
 git fetch origin --prune
-git rebase origin/main
+git rebase origin/<base-branch>
 ```
 
-* If there are local uncommitted edits, use `--autostash` or an explicit stash.
+* Inspect staged and unstaged changes first. Preserve existing work; do not
+  stash, rebase, or change branches in a shared dirty checkout as routine setup.
 * If conflicts occur, preserve local edits, resolve conflicts carefully, and
   report conflicted files plus the chosen resolution.
 * By default, edit files freely but do not run `git add`, `git commit`,
   or `git push` unless explicitly requested.
 * If a command leaves files staged unintentionally, report that in handoff.
 
-Worktree cleanup after merge/finish:
+Remove a task worktree only once its work is preserved and it is clean; never
+force removal to discard uncommitted work. After merge/finish:
 
 ```sh
 git worktree remove ../SIMplyBee_wt_<task>
@@ -125,63 +190,22 @@ For issue exploration, closure recommendations, or "what is left to do?" tasks:
 
 ## Quality toolchain
 
-These checks mirror `README.md` guidance and enforce package quality.
+The checkout has `air.toml` and `jarl.toml`.
 
-### Pre-commit hooks
-
-Install once per clone:
+Use Air and Jarl when installed, scoped to changed R files, for example:
 
 ```sh
-pre-commit install
+air format R/Functions_L0_auxilary.R
+jarl check R/Functions_L0_auxilary.R
+git diff --check
 ```
 
-Run before committing:
-
-```sh
-pre-commit run --all-files
-```
-
-Hook responsibilities:
-
-* `air format .`: format R, Rmd, and qmd files.
-* `jarl check .`: lint R, Rmd, and qmd files.
-* `clang-format -i --style=file`: format C/C++ sources and headers.
-* `python tools/clang_tidy.py`: run clang-tidy checks for C/C++.
-* Standard pre-commit hygiene hooks:
-  whitespace, line endings, YAML checks,
-  merge-conflict markers, and large-file checks.
-
-If a required tool is not found system-wide on `PATH`,
-also check user-local bin directories
-before assuming it is missing:
+Avoid repository-wide formatting churn. Check tool help before using unfamiliar
+flags. Report unavailable checks rather than silently installing or upgrading
+tools. If a tool is missing from `PATH`, also check user-local bin directories:
 
 ```sh
 which <tool> || PATH="$HOME/.local/bin:$HOME/bin:$PATH" which <tool>
-```
-
-Useful `clang-tidy` invocations:
-
-```sh
-# Full hook set
-pre-commit run --all-files
-
-# clang-tidy only
-pre-commit run clang-tidy --all-files
-
-# clang-tidy for one file
-pre-commit run clang-tidy --files src/SIMplyBee.cpp
-```
-
-If `clang-tidy` is not on `PATH` (for example Homebrew LLVM on macOS), set:
-
-```sh
-export CLANG_TIDY="$(brew --prefix llvm)/bin/clang-tidy"
-```
-
-Then you can run the wrapper script directly:
-
-```sh
-python tools/clang_tidy.py src/SIMplyBee.cpp
 ```
 
 ### Coverage with covr
@@ -189,7 +213,7 @@ python tools/clang_tidy.py src/SIMplyBee.cpp
 Use `covr` for test-coverage checks on behavior-changing work:
 
 ```sh
-Rscript -e "setwd('SIMplyBee'); cov <- covr::package_coverage(clean = TRUE); print(cov); covr::report(cov)"
+Rscript -e "cov <- covr::package_coverage(clean = TRUE); print(cov)"
 ```
 
 ### GitHub Actions (CI)
@@ -198,8 +222,30 @@ CI runs on push and pull request and acts as the remote quality gate:
 
 * `.github/workflows/R-CMD-check.yaml`: multi-platform R CMD check matrix.
 * `.github/workflows/test-coverage.yaml`: `covr` coverage run and Codecov upload.
+* `.github/workflows/document.yaml`: regenerates roxygen documentation on R-source
+  pushes and can commit the generated changes back to the branch.
+* `.github/workflows/pkgdown.yaml`: builds the website and deploys on non-PR runs.
+
+Check each workflow's triggers before assuming it runs for a particular branch.
+Regenerate documentation locally when needed and inspect its diff before handoff.
 
 Local work should pass local checks before relying on CI feedback.
+
+## Dependencies and package data
+
+* Keep dependencies minimal and justify additions. Required runtime packages
+  belong in `Imports`; optional features, examples, and tests use `Suggests`.
+  Preserve the intentional `Depends: AlphaSimR` relationship.
+* Prefer `pkg::fun()` for new external calls, while respecting established
+  namespace imports. Do not call `library()` or `require()` inside package
+  functions. Guard optional features with `requireNamespace(..., quietly = TRUE)`
+  and a useful message, and skip tests when optional dependencies are unavailable.
+  Do not create unconditional namespace imports from suggested packages.
+* When adding package datasets, keep preparation scripts in `data-raw/`, use
+  `usethis::use_data()` where appropriate, and document datasets with roxygen
+  `@format` and `@source`. Dataset documentation does not need `@export`.
+* Exclude development-only top-level files and directories from package builds
+  in `.Rbuildignore`, including agent instructions and data-preparation scripts.
 
 ## Generated files and source-of-truth rules
 
@@ -209,13 +255,34 @@ Do not edit generated files by hand:
 * `src/RcppExports.cpp`
 * `NAMESPACE`
 * Files in `man/` generated from roxygen comments
+* Generated website output in `docs/`; edit its sources in `R/`, `vignettes/`,
+  `README.md`, and `_pkgdown.yml` instead
 
 Regenerate as needed:
 
 ```sh
-Rscript -e "setwd('SIMplyBee'); Rcpp::compileAttributes()"
-Rscript -e "setwd('SIMplyBee'); devtools::document()"
+Rscript -e "Rcpp::compileAttributes()"
+Rscript -e "devtools::document()"
 ```
+
+Additional source-of-truth rules:
+
+* This checkout maintains `README.md` directly; there is no `README.Rmd`.
+  If a generated README workflow is introduced, edit its source and regenerate
+  the output (for an R Markdown source, use `devtools::build_readme()`).
+* `.github/workflows/document.yaml` runs on pushes touching `R/**` and commits
+  generated `man/`, `NAMESPACE`, and `DESCRIPTION` changes back to the branch.
+  Account for these automated commits when synchronising work.
+* For local documentation generation, use the roxygen2 version recorded in
+  `DESCRIPTION` when available. Report a version mismatch and inspect generated
+  diffs for unrelated churn; CI currently installs roxygen2 without that pin.
+* Changes to Rcpp-exported signatures require `Rcpp::compileAttributes()` and
+  rebuilding the package; the documentation workflow does not regenerate Rcpp
+  exports.
+* Leave release version/date changes to release work explicitly requested by the
+  maintainer. A development NEWS heading differing from `DESCRIPTION` is not,
+  on its own, a reason to bump the package version.
+
 ## R CMD Check
 
 ### Preferred way to R CMD Check
@@ -223,67 +290,87 @@ Rscript -e "setwd('SIMplyBee'); devtools::document()"
 Run faster package checks from the package directory:
 
 ```sh
-Rscript -e "setwd('SIMplyBee'); devtools::check(vignette = FALSE)"
+Rscript -e "devtools::check(vignette = FALSE)"
 ```
+
 Run this for every code change so changes are evaluated
 in the same package context (build, docs, and tests).
 
 Run slower package checks from the package directory:
 
 ```sh
-Rscript -e "setwd('SIMplyBee'); devtools::check()"
+Rscript -e "devtools::check()"
 ```
 
-### Codex runner caveat: build-tools detection
+### Check environment and reporting
 
-In the sandboxed agent runner, `devtools::check()` may fail early with:
+A fast check with `vignette = FALSE` is an intermediate check, not a replacement
+for the full check when vignettes or package behavior change. Vignettes use
+knitr/rmarkdown; CI sets up Pandoc. Check R, compiler, Pandoc, and LaTeX
+availability as relevant to the actual failure. Do not assume Quarto is required
+or hard-code an IDE installation path.
 
-- `Could not find tools necessary to compile a package`
+If compiler detection fails inside the sandbox, inspect the error first; it
+may be a sandbox restriction rather than a missing compiler. Request escalated
+execution when needed under the standing authorization above.
 
-even when compilers are installed. This is caused by sandbox
-restrictions around `callr`/`processx` compiler probing,
-not by a missing local toolchain.
-
-Use unsandboxed/escalated execution for full package checks.
-
-### Quarto caveat (why it can work interactively but fail in agent runs)
-
-`which quarto` can return `quarto not found`,
-yet `devtools::check()` may still work
-in interactive Positron/R sessions.
-
-On a Mac, Positron bundles Quarto at:
-
-`/Applications/Positron.app/Contents/Resources/app/quarto/bin/quarto`
-
-Interactive IDE sessions may discover this automatically;
-non-IDE agent runs usually do not.
-For reliable agent checks, prepend this directory to `PATH`:
-
-```sh
-Rscript -e "Sys.setenv(PATH=paste('/Applications/Positron.app/Contents/Resources/app/quarto/bin', Sys.getenv('PATH'), sep=':')); setwd('SIMplyBee'); devtools::check()"
-```
-
-### Current expected check outcome
-
-`devtools::check()` completes in this environment.
+At handoff, record commands run, errors/warnings/notes, and any skipped checks
+with reasons. Compare failures with the unchanged base when needed to distinguish
+existing problems from regressions. Never claim a check passes based on an older
+run or assume a fixed expected result for this machine.
 
 ## Testing
 
 We strive for very good testing with `testthat`.
 
-- Add or update `testthat` tests for every behavior change.
-- Prefer focused regression tests for bug fixes.
-- Keep tests runnable via package tests and checks.
-- Guard environment-dependent tests with explicit skips
-  (for example Python availability, network availability, and CRAN restrictions).
+* Add or update `testthat` tests for every behavior change.
+* Prefer focused regression tests for bug fixes.
+* Use the configured testthat edition (currently edition 3); do not change it
+  incidentally when adding tests.
+* For stochastic tests, prefer biological invariants over arbitrary sampled
+  values. Use controlled seeds and justified tolerances when random outcomes are
+  part of the assertion; keep fixtures small and avoid flaky Monte Carlo checks.
+* Keep ordinary simulation tests and examples single threaded with
+  `SP$nThreads = 1L` (use `\dontshow{SP$nThreads = 1L}` in roxygen examples).
+  Dedicated parallel/thread tests should set their own configuration and skip
+  explicitly when the required execution capability is unavailable.
+* Keep tests runnable via package tests and checks.
+* Keep stochastic tests reproducible with explicit seeds and small populations.
+  Set `SP$nThreads <- 1L` where appropriate; pass `simParamBee = SP` explicitly
+  to avoid dependence on global state. Restore any global options or parallel
+  plans changed by a test.
+* Prefer independently derived expectations, biological invariants, and small
+  enumerated cases over tests that repeat the implementation. For simulation
+  estimates, use tolerances justified by sampling error.
+* Cover relevant haplodiploid, caste, empty-colony, and single/multiple-colony
+  cases when changing population or colony operations.
+* Guard genuinely optional external dependencies with explicit skips; do not
+  hide failures in required package dependencies such as AlphaSimR.
 
 For testing use:
-- `Rscript -e "setwd('SIMplyBee'); devtools::test()"`
-  for interactive "mode" testing, or variants of this one, such as
-  `Rscript -e "setwd('SIMplyBee'); devtools::test(filter = 'TableCollection')`.
+
+* `Rscript -e "devtools::test()"`
+  for package tests, or a focused run such as
+  `Rscript -e "devtools::test(filter = 'L2_colony_functions')"`.
 
 Tests are also run as part of R CMD check.
+
+## Research, examples, and references
+
+* Keep development plans and exploratory or standalone validation scripts in
+  `dev/`; consult `dev/README.md` and the relevant topic plan when present
+  before continuing existing research. Update that plan when completing planned work.
+* Put automated regression tests in `tests/testthat/` and user tutorials in
+  `vignettes/`. Keep expensive simulation experiments out of routine tests.
+* Check `.Rbuildignore` before assuming a vignette or development script runs
+  in package checks; validate excluded material explicitly when changing it.
+* Keep scientific assumptions explicit, especially individual versus colony
+  quantities, sum versus mean worker effects, mating/worker allocation,
+  relatedness, and covariance conventions. Keep equations, code, and examples
+  consistent and cite sources for model changes.
+* Where present, use `inst/REFERENCES.bib` for package citations and
+  `literature/README.md` for the local literature archive. Verify references
+  rather than inventing them.
 
 ## Proofreading
 

@@ -6,6 +6,7 @@
 ^\.gitignore
 ^[.]?air[.]toml$
 ^[.]?jarl[.]toml$
+^AGENTS\.md$
 ^_pkgdown\.yml
 ^cran-comments\.html$
 ^cran-comments\.md$
@@ -25,3 +26,6 @@
 ^Meta$
 ^SIMplyBee\.Rproj
 
+^literature$
+^dev$
+^TestingVarianceComponents\.R$

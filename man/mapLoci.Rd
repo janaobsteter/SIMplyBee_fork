@@ -16,5 +16,8 @@ A list with number of loci per chromosome and genetic positions of the markers
 }
 \description{
 Finds loci on a genetic map and return a list of positions.
-This function is adopted from AlphaSimR (Gaynor et al., 2021)
+This function is adopted from AlphaSimR (Gaynor et al., 2021).
+}
+\references{
+\insertRef{gaynor2021AlphaSimR}{SIMplyBee}
 }
