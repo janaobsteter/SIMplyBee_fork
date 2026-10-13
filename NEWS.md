@@ -35,7 +35,33 @@ is the number of viable workers.
     simParamBee\$nThreads cores) with PSOCK system. Since the parallelisation setup within functions
     takes additional time, we recommend using a single threads for a small number of colonies
 
+-   MultiColony operations parallelised with `future` now send each worker
+    only its own chunk of colonies, instead of the whole MultiColony and the
+    calling function's environment (including, for example, all drones in
+    `cross()`). This reduces memory use on parallel workers, which could
+    previously be killed (e.g., by HPC memory limits) with errors such as
+    `FutureInterruptError` or `FutureLaunchError` ("error writing to
+    connection"). Only `createCastePop()`, `pullCastePop()`, and
+    `removeCastePop()` on MultiColony objects now run in parallel; cheap
+    bookkeeping steps (e.g., adding the fathers in `cross()`, `reQueen()`,
+    `setLocation()`, `setEvents()`, `combine()`) run sequentially. Seeded
+    results with parallel futures (e.g., `plan(multisession)`) are unchanged,
+    but seeded results after `cross()` differ from previous development
+    versions, since `cross()` no longer consumes random numbers for setting up
+    parallel streams.
+
 ## Bug fixes
+
+-   with `plan(sequential)`, `createCastePop()` on a MultiColony no longer
+    duplicates caste records in `SimParamBee` and `createMultiColony()` no
+    longer advances the colony ID counter twice; sequential and parallel
+    futures now give the same seeded results
+
+-   `supersede()` on a MultiColony no longer generates random numbers in
+    parallel workers without a declared parallel-safe seed
+
+-   `cross()` and `buildUp()` now pass `simParamBee` to all internal calls
+    instead of relying on a global `SP` object
 
 
 # SIMplyBee version 0.4.1

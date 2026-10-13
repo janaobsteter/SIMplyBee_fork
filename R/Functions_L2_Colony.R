@@ -162,7 +162,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
       if (removeVirginQueens) {
         x <- removeVirginQueens(x, simParamBee = simParamBee)
       }
-    } else {
+    } else { # If it's a virgin queen
       x <- removeQueen(x, simParamBee = simParamBee)
       x@virginQueens <- queen
     }
@@ -176,7 +176,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
     }
 
 
-    x@colonies = future_lapply(X = seq_len(nCol),
+    x@colonies = lapply(X = seq_len(nCol),
                                              FUN = function(colony) {
       reQueen(
         x = x[[colony]],
@@ -385,7 +385,7 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       nInd(x)
     })
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
       if (!is.null(nInds[[colony]])) {
         if (caste == "workers") {
@@ -600,7 +600,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 
     # Events
     if (resetEvents) {
-      x <- resetEvents(x)
+      x <- resetEvents(x, simParamBee = simParamBee)
     }
     x@production <- TRUE
   } else if (isMultiColony(x)) {
@@ -1054,22 +1054,34 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       p <- p[1:nCol]
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
-                                              future.seed = TRUE,
-                                              FUN = function(colony) {
+    # Pass each colony with its own p as an element of X, so that each
+    # worker receives only its chunk of colonies
+    tasks <- lapply(seq_len(nCol), FUN = function(colony) {
       if (is.null(p)) {
         pColony <- NULL
       } else {
         pColony <- ifelse(nP == 1, p, p[colony])
       }
+      list(colony = x[[colony]], p = pColony)
+    })
+    workerFUN <- function(task, caste, use, simParamBee) {
       removeCastePop(
-        x = x[[colony]], caste = caste,
-        p = pColony,
+        x = task$colony, caste = caste,
+        p = task$p,
         use = use,
         simParamBee = simParamBee
       )
     }
-    )
+    # Detach from this frame, otherwise future serialises the whole frame
+    # (including x and tasks) together with the function to every worker.
+    # workerFUN gets everything via its arguments, so we also skip scanning
+    # the colonies in X for globals (future.globals = list()), which is slow
+    environment(workerFUN) <- new.env(parent = topenv())
+    x@colonies <- future_lapply(X = tasks, FUN = workerFUN,
+                                caste = caste, use = use,
+                                simParamBee = simParamBee,
+                                future.globals = list(), future.seed = TRUE)
+    rm(tasks)
 
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1216,7 +1228,7 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
       resetEvents(
         x = x[[colony]],
@@ -1292,7 +1304,7 @@ collapse <- function(x, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
       collapse(x = x[[colony]],
                simParamBee = simParamBee)
@@ -1509,7 +1521,7 @@ swarm <- function(x, p = NULL,
         remnant = remnantColony
       )
 
-      ret$swarm@colonies <- future_lapply(X = seq_len(nCol), FUN = function(colony) {
+      ret$swarm@colonies <- lapply(X = seq_len(nCol), FUN = function(colony) {
         addCastePop_internal(colony = ret$swarm@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
       })
@@ -1658,7 +1670,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
     }
     tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
 
-    x@colonies <- future_lapply(X = seq_len(nColonies(x)), FUN = function(colony) {
+    x@colonies <- lapply(X = seq_len(nColonies(x)), FUN = function(colony) {
       addCastePop_internal(colony = removeQueen(x[[colony]], simParamBee = simParamBee),
                            pop = tmpVirginQueens[[colony]], caste = "virginQueens")
     })
@@ -1823,7 +1835,7 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
       )
       ret$split <- setLocation(x = ret$split, location = location, simParamBee = simParamBee)
 
-      ret$split@colonies <- future_lapply(X = seq_len(nCol),
+      ret$split@colonies <- lapply(X = seq_len(nCol),
                                                         FUN = function(colony) {
         addCastePop_internal(colony = ret$split@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
@@ -1879,7 +1891,7 @@ setEvents <- function(x, slot, value, simParamBee = NULL) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    x@colonies <- future_lapply(X = seq_len(nColonies(x)),
+    x@colonies <- lapply(X = seq_len(nColonies(x)),
                                               FUN = function(colony) {
       setEvents(x[[colony]], slot, value, simParamBee = simParamBee)
     })
@@ -1962,7 +1974,7 @@ combine <- function(strong, weak, simParamBee = NULL) {
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
 
-      strong@colonies <- future_lapply(X = seq_len(nCol),
+      strong@colonies <- lapply(X = seq_len(nCol),
                                                      FUN = function(colony) {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
@@ -2074,7 +2086,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
         stop("Argument location must be numeric, list, or data.frame!")
       }
     }
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                    FUN = function(colony) {
       if (is.data.frame(location)) {
         loc <- location[colony, ]

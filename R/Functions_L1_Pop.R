@@ -570,7 +570,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           if (nInd(drones) != length(ids)) {
             stop("Not enough IDs provided")
           }
-          drones@id = ids
+          drones@id = as.character(ids)
           drones@iid = as.integer(ids)
           if (returnSP) {
             names(ret$caste) <- ids
@@ -620,30 +620,39 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     ids = (lastId+1):(lastId+totalNInd)
     end_lastId <- lastId+totalNInd
 
-    ret <- future_lapply(X = seq_len(nCol),
-                                       future.seed = TRUE,
-                                       FUN = function(colony) {
-                                         nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-                                         if (nIndColony > 0) {
-                                           if (nNInd == 1) {
-                                             colonyIds = ids[((colony-1)*nIndColony+1):(colony*nIndColony)]
-                                           } else {
-                                             colonyIds = base::split(ids, rep(seq_along(nInd), nInd))[[as.character(colony)]]
-                                           }
-
-                                           createCastePop(
-                                             x = x[[colony]], caste = caste,
-                                             nInd = nIndColony,
-                                             editCsd = TRUE, csdAlleles = NULL,
-                                             simParamBee = simParamBee,
-                                             returnSP = TRUE,
-                                             ids = as.character(colonyIds)
-                                           )
-                                         } else {
-                                           NULL
-                                         }
-                                       }
-    )
+    # Pass each colony with its own nInd and IDs as an element of X, so that
+    # future.apply ships to each worker only its chunk of colonies rather than
+    # the whole MultiColony
+    nIndByColony <- if (nNInd == 1) rep(nInd, nCol) else nInd
+    idsByColony <- base::split(ids, factor(rep(seq_len(nCol), nIndByColony),
+                                           levels = seq_len(nCol)))
+    tasks <- lapply(seq_len(nCol), FUN = function(colony) {
+      list(colony = x[[colony]], nInd = nIndByColony[colony],
+           ids = idsByColony[[colony]])
+    })
+    workerFUN <- function(task, caste, simParamBee) {
+      if (task$nInd > 0) {
+        createCastePop(
+          x = task$colony, caste = caste,
+          nInd = task$nInd,
+          editCsd = TRUE, csdAlleles = NULL,
+          simParamBee = simParamBee,
+          returnSP = TRUE,
+          ids = as.character(task$ids)
+        )
+      } else {
+        NULL
+      }
+    }
+    # Detach from this frame, otherwise future serialises the whole frame
+    # (including x and tasks) together with the function to every worker.
+    # workerFUN gets everything via its arguments, so we also skip scanning
+    # the colonies in X for globals (future.globals = list()), which is slow
+    environment(workerFUN) <- new.env(parent = topenv())
+    ret <- future_lapply(X = tasks, FUN = workerFUN,
+                         caste = caste, simParamBee = simParamBee,
+                         future.globals = list(), future.seed = TRUE)
+    rm(tasks)
 
     names(ret) <- getId(x)
     # Add to simParamBee: pedigree, caste, recHist
@@ -673,11 +682,14 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
                                 hist = RecHist, ploidy = ploidy)
       }
     }
-    # Extend caste
-    Caste <- do.call("c", lapply(ret[notNull], '[[', "caste"))
-    Names <- do.call("c", lapply(ret[notNull], function(x) names(x$caste)))
-    names(Caste) <- Names
-    simParamBee$updateCaste(caste = Caste)
+    # Extend caste (unless the workers already updated simParamBee in place,
+    # as with plan(sequential), which would duplicate the caste records)
+    if (!updatedIdBoolean) {
+      Caste <- do.call("c", lapply(ret[notNull], '[[', "caste"))
+      Names <- do.call("c", lapply(ret[notNull], function(x) names(x$caste)))
+      names(Caste) <- Names
+      simParamBee$updateCaste(caste = Caste)
+    }
 
 
     if (!returnSP) {
@@ -1254,23 +1266,36 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     ret$pulled <- vector(mode = "list", length = nCol)
     ret$remnant <- x
 
-    tmp = future_lapply(X = seq_len(nCol),
-                                      future.seed = TRUE,
-                                      FUN = function(colony) {
-                                        if (is.null(nInd)) {
-                                          nIndColony <- NULL
-                                        } else {
-                                          nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-                                        }
-                                        pullCastePop(x = x[[colony]],
-                                                     caste = caste,
-                                                     nInd = nIndColony,
-                                                     use = use,
-                                                     removeFathers = removeFathers,
-                                                     collapse = collapse,
-                                                     simParamBee = simParamBee)
-                                      }
-    )
+    # Pass each colony with its own nInd as an element of X, so that each
+    # worker receives only its chunk of colonies
+    tasks <- lapply(seq_len(nCol), FUN = function(colony) {
+      if (is.null(nInd)) {
+        nIndColony <- NULL
+      } else {
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      }
+      list(colony = x[[colony]], nInd = nIndColony)
+    })
+    workerFUN <- function(task, caste, use, removeFathers, collapse, simParamBee) {
+      pullCastePop(x = task$colony,
+                   caste = caste,
+                   nInd = task$nInd,
+                   use = use,
+                   removeFathers = removeFathers,
+                   collapse = collapse,
+                   simParamBee = simParamBee)
+    }
+    # Detach from this frame, otherwise future serialises the whole frame
+    # (including x and tasks) together with the function to every worker.
+    # workerFUN gets everything via its arguments, so we also skip scanning
+    # the colonies in X for globals (future.globals = list()), which is slow
+    environment(workerFUN) <- new.env(parent = topenv())
+    tmp = future_lapply(X = tasks, FUN = workerFUN,
+                        caste = caste, use = use,
+                        removeFathers = removeFathers, collapse = collapse,
+                        simParamBee = simParamBee,
+                        future.globals = list(), future.seed = TRUE)
+    rm(tasks)
 
     ret$pulled <- lapply(tmp, '[[', "pulled")
     names(ret$pulled) <- getId(x)
@@ -1660,7 +1685,7 @@ cross <- function(x,
       IDs = IDs[IDs %in% crossPlanDF$virginID]
       x = x[IDs]
       if (type == "MultiColony") {
-        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse=TRUE)) %in% IDs]
+        multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse = TRUE, simParamBee = simParamBee)) %in% IDs]
       }
       # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
       crossPlanDF_sample <- do.call("rbind", lapply(IDs,
@@ -1673,7 +1698,7 @@ cross <- function(x,
       crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.integer(as.character(crossPlanDF_DPCtable$Var1))),]
       colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
       # Here I select only the DPCs that have been sampled to produce drones
-      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC))
+      selectedDPC = selectColonies(droneColonies, ID = as.character(crossPlanDF_DPCtable$DPC), simParamBee = simParamBee)
       # And here I create the drones
       dronesByDPC <- createCastePop(selectedDPC, caste = "drones",
                                     nInd = as.integer(crossPlanDF_DPCtable$noDrones),
@@ -1752,10 +1777,12 @@ cross <- function(x,
   }
 
   # Add drones in the queens father slot
+  # This is cheap metadata work without random numbers, so we run it
+  # sequentially - parallel workers would cost more to ship x and drones to
+  # than the work itself
 
-  x <- future_lapply(X = 1:length(IDs),
-                                  future.seed = TRUE,
-                                  FUN = function(i) {
+  x <- lapply(X = seq_along(IDs),
+              FUN = function(i) {
     crossVirginQueen(virginQueen = x[i],
                      virginQueenDrones = dronesByVirgin[[i]],
                      simParamBee = simParamBee)
