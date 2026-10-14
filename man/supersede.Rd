@@ -24,8 +24,9 @@ Level 2 function that supersedes a Colony or MultiColony object -
   queen dies. The workers and drones stay unchanged, but workers raise virgin
   queens, of which only one prevails. The function
   will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
-  whichever is higher, and select one at random In case of high inbreeding,
-  it could be that none of the virgin queens are viable.In that case, you might
+  whichever is higher, and select one at random. If there are any virgin queens already
+  present in the colony, those will not be considered as candidates. In case of high inbreeding,
+  it could be that none of the virgin queens are viable. In that case, you might
   want to increase \code{SimParamBee$nVirginQueens} or discard the colony.
 }
 \examples{
