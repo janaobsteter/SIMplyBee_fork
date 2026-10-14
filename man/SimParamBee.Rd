@@ -322,6 +322,7 @@ generate this object}
     \item \href{#method-SimParamBee-updateCaste}{\code{SimParamBee$updateCaste()}}
     \item \href{#method-SimParamBee-updateLastBeeId}{\code{SimParamBee$updateLastBeeId()}}
     \item \href{#method-SimParamBee-updateLastColonyId}{\code{SimParamBee$updateLastColonyId()}}
+    \item \href{#method-SimParamBee-slimClone}{\code{SimParamBee$slimClone()}}
     \item \href{#method-SimParamBee-clone}{\code{SimParamBee$clone()}}
   }
 }
@@ -622,6 +623,30 @@ SP$caste
     \describe{
       \item{\code{n}}{integer, how many colonies to add}
       \item{\code{lastColonyId}}{integer, last colony ID assigned}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SimParamBee-slimClone"></a>}}
+\if{latex}{\out{\hypertarget{method-SimParamBee-slimClone}{}}}
+\subsection{\code{SimParamBee$slimClone()}}{
+  A copy of the simulation parameters for parallel workers,
+  without the records of all individuals created so far (pedigree,
+  recombination history, and caste), which can be large. Workers use
+  it to create new individuals and return their records, which are then
+  added to the original object. For internal use in SIMplyBee only.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SimParamBee$slimClone(casteIds = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{casteIds}}{character, IDs of individuals whose caste records to
+keep}
     }
     \if{html}{\out{</div>}}
   }

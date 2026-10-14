@@ -162,7 +162,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
       if (removeVirginQueens) {
         x <- removeVirginQueens(x, simParamBee = simParamBee)
       }
-    } else {
+    } else { # If it's a virgin queen
       x <- removeQueen(x, simParamBee = simParamBee)
       x@virginQueens <- queen
     }
@@ -176,13 +176,29 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
     }
 
 
-    x@colonies = future_lapply(X = seq_len(nCol),
+    # Look up castes in simParamBee once for all queens and then do the
+    # Colony-level reQueen for each colony without further look-ups
+    isMatedQueen <- isQueen(queen, simParamBee = simParamBee)
+    x@colonies = lapply(X = seq_len(nCol),
                                              FUN = function(colony) {
-      reQueen(
-        x = x[[colony]],
-        queen = queen[colony],
-        simParamBee = simParamBee
-      )
+      col <- x@colonies[[colony]]
+      if (!isColony(col)) {
+        stop("Argument x must be a Colony or MultiColony class object!")
+      }
+      # As in the Colony case, where removeQueen()/removeVirginQueens() stop
+      if (hasCollapsed(col) && (!isMatedQueen[colony] || removeVirginQueens)) {
+        stop(paste0("The colony ", getId(col), " collapsed, hence can not remove individuals from it!"))
+      }
+      if (isMatedQueen[colony]) {
+        col@queen <- queen[colony]
+        if (removeVirginQueens) {
+          col@virginQueens <- NULL
+        }
+      } else { # If it's a virgin queen
+        col@queen <- NULL
+        col@virginQueens <- queen[colony]
+      }
+      col
     })
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -385,18 +401,21 @@ addCastePop <- function(x, caste = NULL, nInd = NULL, new = FALSE,
       nInd(x)
     })
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    # Modify each colony on its own (and not via x[[colony]]<-, which
+    # validates the whole MultiColony for every colony)
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
+      col <- x@colonies[[colony]]
       if (!is.null(nInds[[colony]])) {
         if (caste == "workers") {
-          x[[colony]]@queen@misc$nWorkers[[1]] <- x[[colony]]@queen@misc$nWorkers[[1]] + nInds[[colony]]
-          x[[colony]]@queen@misc$nHomBrood[[1]] <- x[[colony]]@queen@misc$nHomBrood[[1]] + ifelse(is.null(homInds[[colony]]), 0, homInds[[colony]])
+          col@queen@misc$nWorkers[[1]] <- col@queen@misc$nWorkers[[1]] + nInds[[colony]]
+          col@queen@misc$nHomBrood[[1]] <- col@queen@misc$nHomBrood[[1]] + ifelse(is.null(homInds[[colony]]), 0, homInds[[colony]])
         } else if (caste == "drones") {
-          x[[colony]]@queen@misc$nDrones[[1]] <- x[[colony]]@queen@misc$nDrones[[1]] + nInds[[colony]]
+          col@queen@misc$nDrones[[1]] <- col@queen@misc$nDrones[[1]] + nInds[[colony]]
         }
-        addCastePop_internal(colony = x[[colony]], pop = newInds[[colony]], caste = caste, new = new)
+        addCastePop_internal(colony = col, pop = newInds[[colony]], caste = caste, new = new)
       } else {
-        x[[colony]]
+        col
       }
     })
 
@@ -600,7 +619,7 @@ buildUp <- function(x, nWorkers = NULL, nDrones = NULL,
 
     # Events
     if (resetEvents) {
-      x <- resetEvents(x)
+      x <- resetEvents(x, simParamBee = simParamBee)
     }
     x@production <- TRUE
   } else if (isMultiColony(x)) {
@@ -791,9 +810,12 @@ downsize <- function(x, p = NULL, use = "rand", new = FALSE,
     }
     x <- removeDrones(x = x, p = 1, simParamBee = simParamBee)
     x <- removeVirginQueens(x = x, p = 1, simParamBee = simParamBee)
-    for (colony in 1:nCol) {
-      x[[colony]]@production <- FALSE
-    }
+    x@colonies <- lapply(X = x@colonies, FUN = function(col) {
+      if (!is.null(col)) {
+        col@production <- FALSE
+      }
+      col
+    })
 
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1054,22 +1076,43 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       p <- p[1:nCol]
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
-                                              future.seed = TRUE,
-                                              FUN = function(colony) {
-      if (is.null(p)) {
-        pColony <- NULL
-      } else {
-        pColony <- ifelse(nP == 1, p, p[colony])
+    if (!is.null(p) && all(p == 1)) {
+      # Removing all individuals of a caste does not need random numbers,
+      # so we do it in place rather than shipping colonies to workers
+      x@colonies <- lapply(X = x@colonies, FUN = function(col) {
+        removeCastePop(x = col, caste = caste, p = 1,
+                       simParamBee = simParamBee)
+      })
+    } else {
+      # Pass each colony with its own p as an element of X, so that each
+      # worker receives only its chunk of colonies
+      tasks <- lapply(seq_len(nCol), FUN = function(colony) {
+        if (is.null(p)) {
+          pColony <- NULL
+        } else {
+          pColony <- ifelse(nP == 1, p, p[colony])
+        }
+        list(colony = x[[colony]], p = pColony)
+      })
+      workerFUN <- function(task, caste, use, simParamBee) {
+        removeCastePop(
+          x = task$colony, caste = caste,
+          p = task$p,
+          use = use,
+          simParamBee = simParamBee
+        )
       }
-      removeCastePop(
-        x = x[[colony]], caste = caste,
-        p = pColony,
-        use = use,
-        simParamBee = simParamBee
-      )
+      # Detach from this frame, otherwise future serialises the whole frame
+      # (including x and tasks) together with the function to every worker.
+      # workerFUN gets everything via its arguments, so we also skip scanning
+      # the colonies in X for globals (future.globals = list()), which is slow
+      environment(workerFUN) <- new.env(parent = topenv())
+      x@colonies <- future_lapply(X = tasks, FUN = workerFUN,
+                                  caste = caste, use = use,
+                                  simParamBee = simParamBee,
+                                  future.globals = list(), future.seed = TRUE)
+      rm(tasks)
     }
-    )
 
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
@@ -1216,7 +1259,7 @@ resetEvents <- function(x, collapse = NULL, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
       resetEvents(
         x = x[[colony]],
@@ -1292,7 +1335,7 @@ collapse <- function(x, simParamBee = NULL) {
       stop("The Multicolony contains 0 colonies!")
     }
 
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                                               FUN = function(colony) {
       collapse(x = x[[colony]],
                simParamBee = simParamBee)
@@ -1427,22 +1470,32 @@ swarm <- function(x, p = NULL,
         stop("Too few values in the p argument!")
       }
     }
+    if (is.function(simParamBee$nVirginQueens)) {
+      nVirginQueens <- simParamBee$nVirginQueens(x, ...)
+    } else {
+      nVirginQueens <- simParamBee$nVirginQueens
+    }
     nWorkers <- nWorkers(x, simParamBee = simParamBee)
     nWorkersSwarm <- round(nWorkers * p)
 
     # TODO: Add use="something" to select pWorkers that swarm
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
 
-    tmpVirginQueens <- createCastePop(
-      x = x, nInd = max(10, simParamBee$nVirginQueens),
-      caste = "virginQueens",
-      simParamBee = simParamBee
-    )
-
     if (isColony(x)) {
+      tmpVirginQueens <- createCastePop(
+        x = x, nInd = pmax(10, nVirginQueens),
+        caste = "virginQueens",
+        simParamBee = simParamBee
+      )
       homCol = nInd(tmpVirginQueens) == 0
     } else if (isMultiColony(x)) {
-      homCol = lapply(tmpVirginQueens, nInd) == 0
+      # Parallel workers create the virgin queens and return only the one that
+      # prevails in each colony (NULL if all were csd homozygous)
+      tmpVirginQueens <- createPrevailingVirginQueens_internal(
+        x = x, nInd = pmax(10, nVirginQueens),
+        simParamBee = simParamBee
+      )
+      homCol = sapply(tmpVirginQueens, FUN = is.null)
     }
 
     if (sum(homCol) > 0) {
@@ -1452,14 +1505,19 @@ swarm <- function(x, p = NULL,
         warning(paste0(sum(homCol), " colonies produced 0 virgin queens due to high colony homozygosity, removing these colonies!"))
         tmpVirginQueens <- tmpVirginQueens[!homCol]
         x = x[!homCol]
-        location = location[!homCol]
         nWorkersSwarm = nWorkersSwarm[!homCol]
         nCol = nColonies(x)
       }
     }
 
-    tmp <- pullCastePop(x = x, caste = "workers",
-                        nInd = nWorkersSwarm, simParamBee = simParamBee)
+    if (isColony(x)) {
+      tmp <- pullCastePop(x = x, caste = "workers",
+                          nInd = nWorkersSwarm, simParamBee = simParamBee)
+    } else {
+      tmp <- pullCastePopByColony_internal(x = x, caste = "workers",
+                                           nInd = nWorkersSwarm,
+                                           simParamBee = simParamBee)
+    }
     remnantColony <- tmp$remnant
     remnantColony <- removeQueen(remnantColony, simParamBee = simParamBee)
     if (isColony(x)) {
@@ -1467,16 +1525,20 @@ swarm <- function(x, p = NULL,
                                queen = selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
                                simParamBee = simParamBee)
     } else {
-      tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
       remnantColony <- reQueen(remnantColony,
                                queen = mergePops(tmpVirginQueens),
                                simParamBee = simParamBee)
     }
     currentLocation <- getLocation(x)
+    if (isColony(x)) {
+      # A list as for MultiColony, so that currentLocation[[1]] is c(x, y)
+      currentLocation <- list(currentLocation)
+    }
 
     if (sampleLocation) {
-      newLocation <- lapply(1:nCol, function(x) currentLocation[[x]] + rcircle(n = nCol, radius = radius)[x,])
-      # c() to convert row-matrix to a numeric vector
+      # Sample all deviations at once (not nCol samples for each colony)
+      deviation <- rcircle(n = nCol, radius = radius)
+      newLocation <- lapply(1:nCol, function(x) currentLocation[[x]] + deviation[x, ])
     } else {
       newLocation <- currentLocation
     }
@@ -1489,7 +1551,7 @@ swarm <- function(x, p = NULL,
       swarmColony@workers <- tmp$pulled
       swarmColony <- setLocation(x = swarmColony, location = newLocation[[1]], simParamBee = simParamBee)
 
-      remnantColony <- setLocation(x = remnantColony, location = currentLocation, simParamBee = simParamBee)
+      remnantColony <- setLocation(x = remnantColony, location = currentLocation[[1]], simParamBee = simParamBee)
 
       remnantColony@swarm <- TRUE
       swarmColony@swarm <- TRUE
@@ -1508,8 +1570,9 @@ swarm <- function(x, p = NULL,
                                   simParamBee = simParamBee),
         remnant = remnantColony
       )
+      ret$swarm <- setLocation(x = ret$swarm, location = newLocation, simParamBee = simParamBee)
 
-      ret$swarm@colonies <- future_lapply(X = seq_len(nCol), FUN = function(colony) {
+      ret$swarm@colonies <- lapply(X = seq_len(nCol), FUN = function(colony) {
         addCastePop_internal(colony = ret$swarm@colonies[[colony]],
                              pop = tmp$pulled[[colony]], caste = "workers")
       })
@@ -1539,8 +1602,9 @@ swarm <- function(x, p = NULL,
 #'   queen dies. The workers and drones stay unchanged, but workers raise virgin
 #'   queens, of which only one prevails. The function
 #'   will create either 10 or \code{SimParamBee$nVirginQueens} virgin queens,
-#'   whichever is higher, and select one at random In case of high inbreeding,
-#'   it could be that none of the virgin queens are viable.In that case, you might
+#'   whichever is higher, and select one at random. If there are any virgin queens already
+#'   present in the colony, those will not be considered as candidates. In case of high inbreeding,
+#'   it could be that none of the virgin queens are viable. In that case, you might
 #'   want to increase \code{SimParamBee$nVirginQueens} or discard the colony.
 #'
 #' @param x \code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}
@@ -1590,19 +1654,6 @@ supersede <- function(x, simParamBee = NULL, ...) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
-  if (isColony(x)) {
-    parallel <- FALSE
-  } else if (isMultiColony(x)) {
-    parallel <- TRUE
-  }
-  if (is.null(nVirginQueens)) {
-    nVirginQueens <- simParamBee$nVirginQueens
-  }
-  if (is.function(simParamBee$nVirginQueens)) {
-    nVirginQueens <- nVirginQueens(x, ...)
-  } else {
-    nVirginQueens <- simParamBee$nVirginQueens
-  }
 
   if (any(hasCollapsed(x))) {
     stop(paste0("One of the collonies is collapsed, hence you can not split it!"))
@@ -1610,28 +1661,36 @@ supersede <- function(x, simParamBee = NULL, ...) {
   if (any(!isQueenPresent(x, simParamBee = simParamBee))) {
     stop("No queen present in one of the colonies!")
   }
-  if (is.function(nVirginQueens)) {
-    nVirginQueens <- nVirginQueens(x, simParamBee = simParamBee, ...)
+  
+  if (is.function(simParamBee$nVirginQueens)) {
+    nVirginQueens <- simParamBee$nVirginQueens(x, ...)
+  } else {
+    nVirginQueens <- simParamBee$nVirginQueens
   }
 
-  # Do this because some colonies might not produce a viable virgin queen
-  tmpVirginQueens <- createCastePop(
-    x = x, nInd = max(10, nVirginQueens),
-    caste = "virginQueens",
-    simParamBee = simParamBee
-  )
 
+  # Do this because some colonies might not produce a viable virgin queen
   if (isColony(x)) {
+    tmpVirginQueens <- createCastePop(
+      x = x, nInd = pmax(10, nVirginQueens),
+      caste = "virginQueens",
+      simParamBee = simParamBee
+    )
     homCol = nInd(tmpVirginQueens) == 0
   } else if (isMultiColony(x)) {
-    homCol = sapply(tmpVirginQueens, nInd) == 0
+    # Parallel workers create the virgin queens and return only the one that
+    # prevails in each colony (NULL if all were csd homozygous)
+    # This is done so that the full colonies are not sent to workers - only the queen
+    tmpVirginQueens <- createPrevailingVirginQueens_internal(
+      x = x, nInd = pmax(10, nVirginQueens),
+      simParamBee = simParamBee
+    )
+    homCol = sapply(tmpVirginQueens, FUN = is.null)
   }
 
   if (sum(homCol) > 0) {
     if (isColony(x)) {
-      print("X is colony")
-      print(class(x))
-      stop("Colony to inbred to produce any virgin queens!")
+      stop("Colony too inbred to produce any virgin queens!")
     } else if (isMultiColony(x)) {
       warning(paste0(sum(homCol), " colonies produced 0 virgin queens due to high colony homozygosity, removing these colonies!"))
       tmpVirginQueens <- tmpVirginQueens[!homCol]
@@ -1641,10 +1700,10 @@ supersede <- function(x, simParamBee = NULL, ...) {
   }
 
   if (isColony(x)) {
-    if (!parallel) {
-      x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
-                                colony = x, caste = "virginQueens")
-    }
+
+    x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
+                              colony = x, caste = "virginQueens")
+
     x <- removeQueen(x, simParamBee = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most
     #       aggressive one), by creating many virgin queens and then picking the
@@ -1656,10 +1715,8 @@ supersede <- function(x, simParamBee = NULL, ...) {
     if (nCol == 0) {
       stop("The Multicolony contains 0 colonies!")
     }
-    tmpVirginQueens <- lapply(tmpVirginQueens, FUN = function(x) selectInd(x, nInd = 1, use = "rand", simParam = simParamBee))
-
-    x@colonies <- future_lapply(X = seq_len(nColonies(x)), FUN = function(colony) {
-      addCastePop_internal(colony = removeQueen(x[[colony]], simParamBee = simParamBee),
+    x@colonies <- lapply(X = seq_len(nColonies(x)), FUN = function(colony) {
+      addCastePop_internal(colony = removeQueen(x@colonies[[colony]], simParamBee = simParamBee),
                            pop = tmpVirginQueens[[colony]], caste = "virginQueens")
     })
     x = setEvents(x, slot = "supersedure", value = TRUE, simParamBee = simParamBee)
@@ -1784,7 +1841,13 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
     # TODO: Split colony at random by default, but we could make it as a
     #       function of some parameters
     #       https://github.com/HighlanderLab/SIMplyBee/issues/179
-    tmp <- pullCastePop(x = x, caste = "workers", nInd = nWorkersSplit, simParamBee = simParamBee)
+    if (isColony(x)) {
+      tmp <- pullCastePop(x = x, caste = "workers", nInd = nWorkersSplit, simParamBee = simParamBee)
+    } else {
+      tmp <- pullCastePopByColony_internal(x = x, caste = "workers",
+                                           nInd = nWorkersSplit,
+                                           simParamBee = simParamBee)
+    }
     remnantColony <- tmp$remnant
 
     if (isColony(x)) {
@@ -1823,15 +1886,21 @@ split <- function(x, p = NULL, simParamBee = NULL, ...) {
       )
       ret$split <- setLocation(x = ret$split, location = location, simParamBee = simParamBee)
 
-      ret$split@colonies <- future_lapply(X = seq_len(nCol),
+      # Add workers and set events in one pass over the colonies (and not via
+      # setEvents(), which goes through all colonies for every event)
+      ret$split@colonies <- lapply(X = seq_len(nCol),
                                                         FUN = function(colony) {
-        addCastePop_internal(colony = ret$split@colonies[[colony]],
-                             pop = tmp$pulled[[colony]], caste = "workers")
+        col <- addCastePop_internal(colony = ret$split@colonies[[colony]],
+                                    pop = tmp$pulled[[colony]], caste = "workers")
+        col@split <- TRUE
+        col@production <- FALSE
+        col
       })
-      ret$split <- setEvents(ret$split, slot = "split", value = TRUE, simParamBee = simParamBee)
-      ret$remnant <- setEvents(ret$remnant, slot = "split", value = TRUE, simParamBee = simParamBee)
-      ret$split <- setEvents(ret$split, slot = "production", value = FALSE, simParamBee = simParamBee)
-      ret$remnant <- setEvents(ret$remnant, slot = "production", value = TRUE, simParamBee = simParamBee)
+      ret$remnant@colonies <- lapply(X = ret$remnant@colonies, FUN = function(col) {
+        col@split <- TRUE
+        col@production <- TRUE
+        col
+      })
     }
   }
   else {
@@ -1879,7 +1948,7 @@ setEvents <- function(x, slot, value, simParamBee = NULL) {
     slot(x, slot) <- value
   }
   if (isMultiColony(x)) {
-    x@colonies <- future_lapply(X = seq_len(nColonies(x)),
+    x@colonies <- lapply(X = seq_len(nColonies(x)),
                                               FUN = function(colony) {
       setEvents(x[[colony]], slot, value, simParamBee = simParamBee)
     })
@@ -1962,7 +2031,7 @@ combine <- function(strong, weak, simParamBee = NULL) {
     if (nColonies(weak) == nColonies(strong)) {
       nCol <- nColonies(weak)
 
-      strong@colonies <- future_lapply(X = seq_len(nCol),
+      strong@colonies <- lapply(X = seq_len(nCol),
                                                      FUN = function(colony) {
         combine(strong = strong[[colony]],
                 weak = weak[[colony]],
@@ -2074,7 +2143,7 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
         stop("Argument location must be numeric, list, or data.frame!")
       }
     }
-    x@colonies <- future_lapply(X = seq_len(nCol),
+    x@colonies <- lapply(X = seq_len(nCol),
                    FUN = function(colony) {
       if (is.data.frame(location)) {
         loc <- location[colony, ]
@@ -2085,11 +2154,14 @@ setLocation <- function(x, location = c(0, 0), simParamBee = NULL) {
         loc <- location
       }
 
-      if (!is.null(x[[colony]])) {
-        x[[colony]]@location <- loc
+      # Modify the colony on its own (and not via x[[colony]]<-, which
+      # validates the whole MultiColony for every colony)
+      col <- x@colonies[[colony]]
+      if (!is.null(col)) {
+        col@location <- loc
       }
 
-      x[[colony]]
+      col
     })
   } else {
     stop("Argument x must be a Colony or MultiColony class object!")
