@@ -41,14 +41,51 @@ is the number of viable workers.
     `cross()`). This reduces memory use on parallel workers, which could
     previously be killed (e.g., by HPC memory limits) with errors such as
     `FutureInterruptError` or `FutureLaunchError` ("error writing to
-    connection"). Only `createCastePop()`, `pullCastePop()`, and
+    connection"). Only creating individuals (`createCastePop()` and the
+    virgin queens in `swarm()` and `supersede()`), `pullCastePop()`, and
     `removeCastePop()` on MultiColony objects now run in parallel; cheap
     bookkeeping steps (e.g., adding the fathers in `cross()`, `reQueen()`,
-    `setLocation()`, `setEvents()`, `combine()`) run sequentially. Seeded
-    results with parallel futures (e.g., `plan(multisession)`) are unchanged,
-    but seeded results after `cross()` differ from previous development
-    versions, since `cross()` no longer consumes random numbers for setting up
-    parallel streams.
+    `setLocation()`, `setEvents()`, `combine()`, and pulling workers in
+    `swarm()` and `split()`) run sequentially. Seeded results after
+    `cross()` differ from previous development versions, since `cross()` no
+    longer consumes random numbers for setting up parallel streams.
+
+-   MultiColony functions now send parallel workers much less data, which
+    reduces run time and memory use, especially with `plan(multisession)`:
+
+    -   `createCastePop()` (and hence `addWorkers()`, `addDrones()`,
+        `addVirginQueens()`, and `buildUp()`) sends each worker only the
+        colonies' queens (with their fathers) and a slimmed copy of
+        `SimParamBee` without the pedigree, recombination, and caste
+        records; the records of the new individuals are added to
+        `SimParamBee` in the main R session
+    -   `swarm()` and `supersede()` create the virgin queens on the
+        workers and return only the one that prevails in each colony
+    -   `swarm()` and `split()` pull the workers in the main R session and
+        no longer send colonies to workers
+
+    Run times with 1000 colonies (16 chromosomes, 100 workers per colony),
+    sequential / `plan(multisession, workers = 4)`, in seconds:
+
+    | function                    | before      | now        |
+    |-----------------------------|-------------|------------|
+    | `buildUp()`                 | 68.7 / 31.8 | 29.5 / 17.6 |
+    | `addVirginQueens(nInd = 10)`| 57.0 / 23.9 | 9.7 / 6.9  |
+    | `swarm()`                   | 36.0 / 35.3 | 9.5 / 11.9 |
+    | `split()`                   | 16.3 / 21.7 | 3.4 / 3.4  |
+    | `supersede()`               | 27.3 / 14.8 | 5.6 / 7.8  |
+
+    Parallel futures pay off when there is a lot of work per colony (e.g.,
+    many workers or virgin queens per colony), but not for every function
+    or simulation size, so we recommend timing a few steps of your
+    simulation with `plan(sequential)` and `plan(multisession)`.
+
+-   seeded results of `swarm()`, `split()`, and `supersede()` on a
+    MultiColony differ from previous versions, because random numbers are
+    now drawn in a different order (virgin queens are created and selected
+    on the parallel workers, and workers are pulled in the main R session);
+    `removeCastePop(p = 1)` on a MultiColony no longer consumes random
+    numbers. Sequential and parallel futures still give the same results.
 
 ## Bug fixes
 
@@ -62,6 +99,29 @@ is the number of viable workers.
 
 -   `cross()` and `buildUp()` now pass `simParamBee` to all internal calls
     instead of relying on a global `SP` object
+
+-   `swarm()` and `supersede()` now use `SP$nVirginQueens` when it is a
+    function (e.g., `nVirginQueensPoisson()`), with one value per colony
+    for a MultiColony; previously `swarm()` failed and `supersede()` used
+    the number of virgin queens already in the colony instead
+
+-   `swarm()` now samples the swarm location within `radius` of the parent
+    colony; previously, for a Colony, the location was sampled around the
+    parent's x coordinate only, and for a MultiColony the sampled locations
+    were not set on the swarms
+
+-   `createCrossPlan()` with a single drone producing colony now samples
+    only that colony; previously it sampled from colony IDs 1 to that
+    colony's ID
+
+-   `createCastePop()` on a MultiColony now records all created virgin
+    queens, including csd homozygous ones that are removed, as virgin
+    queens in `SimParamBee` with `plan(sequential)` too (previously they
+    were recorded as workers)
+
+-   recombination records (`SP$recHist`) of individuals created on a
+    MultiColony with parallel futures are now named by their IDs
+    (previously, e.g., `"1.341"` instead of `"341"`)
 
 
 # SIMplyBee version 0.4.1

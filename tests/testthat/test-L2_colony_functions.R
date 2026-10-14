@@ -548,3 +548,72 @@ test_that("collapse", {
 })
 
 
+
+# ---- swarm locations ----
+
+test_that("swarm samples swarm locations around the parent colony", {
+  founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  SP$nWorkers <- 20
+  SP$nDrones <- 5
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[2:5], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+  locations <- list(c(100, -500), c(-300, 200), c(1000, 1000), c(0, 50))
+  radius <- 1
+
+  colony <- buildUp(createColony(queens[1], simParamBee = SP), simParamBee = SP)
+  colony <- setLocation(colony, location = locations[[1]], simParamBee = SP)
+  tmp <- swarm(colony, radius = radius, simParamBee = SP)
+  expect_equal(getLocation(tmp$remnant), locations[[1]])
+  expect_true(sqrt(sum((getLocation(tmp$swarm) - locations[[1]])^2)) <= radius)
+
+  apiary <- buildUp(createMultiColony(queens, simParamBee = SP), simParamBee = SP)
+  apiary <- setLocation(apiary, location = locations, simParamBee = SP)
+  tmp <- swarm(apiary, radius = radius, simParamBee = SP)
+  expect_equal(unname(getLocation(tmp$remnant)), locations)
+  swarmLocations <- getLocation(tmp$swarm)
+  for (colony in seq_along(locations)) {
+    expect_true(sqrt(sum((swarmLocations[[colony]] - locations[[colony]])^2)) <= radius)
+  }
+
+  tmp <- swarm(apiary, sampleLocation = FALSE, simParamBee = SP)
+  expect_equal(unname(getLocation(tmp$swarm)), locations)
+})
+
+# ---- split MultiColony ----
+
+test_that("split moves workers from each colony to its split", {
+  founderGenomes <- quickHaplo(nInd = 10, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  SP$nDrones <- 5
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[2:5], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+  locations <- list(c(100, -500), c(-300, 200), c(1000, 1000), c(0, 50))
+  apiary <- createMultiColony(queens, simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 20, simParamBee = SP)
+  apiary <- setLocation(apiary, location = locations, simParamBee = SP)
+  p <- c(0.1, 0.25, 0.5, 1)
+
+  tmp <- split(apiary, p = p, simParamBee = SP)
+  expect_equal(unname(nWorkers(tmp$split, simParamBee = SP)), 20 * p)
+  expect_equal(unname(nWorkers(tmp$remnant, simParamBee = SP)), 20 * (1 - p))
+  for (colony in seq_len(nColonies(apiary))) {
+    splitIds <- getId(getWorkers(tmp$split[[colony]], simParamBee = SP))
+    remnantIds <- getId(getWorkers(tmp$remnant[[colony]], simParamBee = SP))
+    expect_length(intersect(splitIds, remnantIds), 0)
+    expect_setequal(c(splitIds, remnantIds),
+                    getId(getWorkers(apiary[[colony]], simParamBee = SP)))
+  }
+  expect_equal(getId(tmp$remnant), getId(apiary))
+  expect_true(all(!isQueenPresent(tmp$split, simParamBee = SP)))
+  expect_equal(unname(getLocation(tmp$split)), locations)
+  expect_equal(unname(getLocation(tmp$remnant)), locations)
+  expect_true(all(hasSplit(tmp$split)) && all(hasSplit(tmp$remnant)))
+  expect_true(all(!isProductive(tmp$split)) && all(isProductive(tmp$remnant)))
+})
