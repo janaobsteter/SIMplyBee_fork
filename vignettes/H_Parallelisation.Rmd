@@ -30,20 +30,15 @@ simulation. We do recommend reading the remaining of this vignette.
 library(SIMplyBee)
 library(future)
 
-NCORES = 8 #<desired_number_of_cores>
-  
-# Use function plan to set up parallel environment
-# There are three options
-# First one is no parallelisation, the default
-plan(sequential)
-# Second one is forking - it's quick but only works on Linux/MACOS on local machines (not HPCs!)
-plan(multicore, workers = NCORES)
-# Third one is PSOCK - works on all systems, including HPCs
-plan(multisession, workers = NCORES)
-# Fourth one is clust that runs separate R processes on multiple machines
-#plan(cluster, workers = c("machine1", "machine2", ...))
+NWORKERS <- 8 # Choose a worker count within your allocated resources
 
-# At the end of everything you run to stop parallelisation back-end
+# Choose ONE backend (each plan() call replaces the previous plan)
+plan(sequential) # Default: no parallel workers
+# plan(multicore, workers = NWORKERS) # Forking, where supported
+# plan(multisession, workers = NWORKERS) # Separate local R processes (PSOCK)
+# plan(cluster, workers = c("machine1", "machine2")) # Remote R processes
+
+# Run your simulation here, then stop the parallel backend
 plan(sequential)
 ```
 
@@ -57,30 +52,46 @@ with `future` and `future.apply` R packages. Nothing changed in terms of running
 the functions, but to parallelise your simulation, you need to set up a parallel
 back-end with the function `plan` from the package `future` before starting the
 simulation. You can set that to a desired number or make the simulation use all
-available cores. As metioned in the quick set-up, there are three different
+available cores. As mentioned in the quick set-up, there are four different
 options to the `plan` function: no parallelisation (`sequential`), forking
 (`multicore`), PSOCK (`multisession`), and running R processes on multiple
 machines (`cluster`). You can read more about these options in the `future`
 documentation (<https://cran.r-project.org/web/packages/future/index.html>).
 
-```{r nThread_setup}
+The two parallelisation controls have different roles:
+
+- `future::plan()` selects the backend and worker count for colony operations
+  implemented with `future_lapply()`.
+- `SP$nThreads` controls native threads in supported SIMplyBee and AlphaSimR
+  routines. Setting it does not create or configure future workers.
+
+When using multiple workers, `SP$nThreads <- 1L` is a useful starting point to
+avoid requesting multiple native threads inside each worker. Choose worker and
+thread counts together to fit the resources allocated to your simulation.
+The following setup is shown without execution during vignette rendering.
+
+```{r nThread_setup, eval=FALSE}
 library(package = "SIMplyBee")
 library(package = "future")
 
-# Set to the desired number of cores
-plan(multisession, workers = 8) 
-# Or use all available cores
-plan(multisession, workers = availableCores())
+# Set the desired number of workers within your allocated resources
+plan(multisession, workers = 8)
+# Alternatively, replace the preceding line with:
+# plan(multisession, workers = availableCores())
 
 founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
+SP$nThreads <- 1L # Native threads, independently of the future worker count
+
+# Run your simulation here, then release the workers
+plan(sequential)
 ```
 
-In R, there are two possible options for parallelisation, `FORK` and `PSOCK`.
+Two mechanisms used by these backends are `FORK` and `PSOCK`.
 The forking (`FORK`) creates subprocesses that share memory and objects with the
 parent process, which means it's very efficient! However, such parallelisation
-is not supported on Windows machines and is not allowed on most high-performing
-clusters!
+is not supported on Windows. On an HPC cluster, follow the site's policy and
+scheduler allocation when choosing a backend and worker count.
 
 The alternative, PSOCK, can be used on all system, but it works by creating a
 separate R process for each subprocess (that communicate through sockets),

@@ -16,5 +16,8 @@ covariance matrix
 }
 \description{
 Convert correlation matrix to covariance matrix
-This function is adopted from AlphaSimR (Gaynor et al., 2021)
+This function is adopted from AlphaSimR (Gaynor et al., 2021).
+}
+\references{
+\insertRef{gaynor2021AlphaSimR}{SIMplyBee}
 }

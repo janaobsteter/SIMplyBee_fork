@@ -83,23 +83,10 @@ SP$pedigree
 SP$caste
 }
 \references{
-Bovo et al. (2021) Application of Next Generation Semiconductor-Based
-  Sequencing for the Identification of Apis mellifera Complementary Sex
-  Determiner (csd) Alleles from Honey DNA. Insects, 12(10), 868.
-  \doi{10.3390/insects12100868}
-
-Lechner et al. (2014) Nucleotide variability at its limit? Insights into
- the number and evolutionary dynamics of the sex-determining specificities
- of the honey bee Apis mellifera Molecular Biology and Evolution, 31,
- 272-287. \doi{10.1093/molbev/mst207}
-
-Seeley (2019) The Lives of Bees: The Untold Story of the Honey
-  Bee in the Wild. Princeton: Princeton University Press.
-  \doi{10.1515/9780691189383}
-
-Zareba et al. (2017) Uneven distribution of complementary sex determiner
-  (csd) alleles in Apis mellifera population. Scientific Reports, 7, 2317.
-  \doi{10.1038/s41598-017-02629-9}
+\insertRef{bovo2021Application}{SIMplyBee}
+\insertRef{lechner2014Nucleotide}{SIMplyBee}
+\insertRef{seeley2019Lives}{SIMplyBee}
+\insertRef{zareba2017Uneven}{SIMplyBee}
 }
 \section{Super class}{
 \code{\link[AlphaSimR:SimParam]{AlphaSimR::SimParam}} -> \code{SimParamBee}
@@ -271,11 +258,13 @@ Zareba et al. (2017) Uneven distribution of complementary sex determiner
   in \code{\link[SIMplyBee]{calcColonyValue}} - see also \code{\link[SIMplyBee]{calcColonyPheno}}
   and \code{\link[SIMplyBee]{calcColonyGv}}.
 
-  This function should work with internals of others functions -
-  therefore the function MUST be defined like \code{function(colony, arg
-  = default) someCode }, that is, the first argument MUST be
-  \code{colony} and any following arguments MUST have a default value.
-  For flexibility you can add ... argument to pass on any other argument.
+  The first argument receives a single \code{\link[SIMplyBee]{Colony-class}},
+  passed by position; its name is unrestricted.
+  For example, use \code{function(colony, arg = default) someCode }.
+  For MultiColony input, \code{calcColonyValue} calls this function once
+  per colony and combines the results by row.
+  Additional arguments can have defaults or be supplied through
+  \code{...} in \code{calcColonyValue}.
   See \code{\link[SIMplyBee]{mapCasteToColonyValue}} for an example.
 
   You can provide your own functions that satisfy your needs!}
