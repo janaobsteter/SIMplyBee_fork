@@ -111,7 +111,5 @@ calcBeeGRMIbs(x = rbind(queenGeno, pooledGenoW), sex = c("F","F"),
               returnComponents = TRUE)
 }
 \references{
-Druet and Legarra (2020) Theoretical and empirical comparisons of
-  expected and realized relationships for the X-chromosome. Genetics
-  Selection Evolution, 52:50 \doi{10.1186/s12711-020-00570-6}
+\insertRef{druet2020Theoretical}{SIMplyBee}
 }

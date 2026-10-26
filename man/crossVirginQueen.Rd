@@ -13,6 +13,12 @@ crossVirginQueen(virginQueen, virginQueenDrones, simParamBee = NULL)
 
 \item{simParamBee, }{SimParamBee object}
 }
+\value{
+The supplied queen \code{\link[AlphaSimR]{Pop-class}} with fathers
+  stored in \code{misc}, worker, drone, and homozygous brood counts set to
+  zero, and \code{pHomBrood} set to the expected proportion of csd homozygous
+  brood, or \code{NA_real_} when csd is inactive.
+}
 \description{
 Internal function to cross a virgin queen
 }

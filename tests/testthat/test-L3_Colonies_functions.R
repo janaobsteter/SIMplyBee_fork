@@ -1,4 +1,5 @@
 # Level 3 MultiColony Functions
+
 # ---- createMultiColony ----
 
 test_that("createMultiColony", {
@@ -37,7 +38,74 @@ test_that("createMultiColony", {
   expect_s4_class(createMultiColony(x = basePop[4:5], n = 2, simParamBee = SP), "MultiColony")
 })
 
-# ---- selectColonies ---
+# ---- MultiColony indexing ----
+
+test_that("MultiColony indexing", {
+  set.seed(123)
+  founderGenomes <- quickHaplo(nInd = 4, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads = 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  apiary <- createMultiColony(basePop, n = 4, simParamBee = SP)
+  # IDs deliberately differ from positions and include a nonnumeric name
+  apiary@colonies[[1]]@id <- "20"
+  apiary@colonies[[2]]@id <- "10"
+  apiary@colonies[[3]]@id <- "hive-A"
+  apiary@colonies[[4]]@id <- "30"
+  ids <- getId(apiary)
+  expect_identical(ids, c("20", "10", "hive-A", "30"))
+  expect_identical(apiary[getId(apiary)], apiary)
+  expect_identical(apiary[["10"]], apiary[[2]])
+  expect_identical(getId(selectColonies(apiary, ID = 10, simParamBee = SP)), "10")
+  expect_identical(getId(removeColonies(apiary, ID = 10, simParamBee = SP)), ids[-2])
+  pulled <- pullColonies(apiary, ID = 10, simParamBee = SP)
+  expect_identical(getId(pulled$pulled), "10")
+  expect_identical(getId(pulled$remnant), ids[-2])
+  replacement <- createColony(simParamBee = SP, id = "replacement")
+  replaced <- apiary
+  replaced[["10"]] <- replacement
+  expect_identical(replaced[[2]], replacement)
+  replaced <- apiary
+  replaced["10"] <- c(replacement)
+  expect_identical(replaced[[2]], replacement)
+
+  # Single brackets preserve MultiColony, including single and empty subsets
+  expect_s4_class(apiary[1], "MultiColony")
+  expect_equal(nColonies(apiary[1]), 1)
+  expect_identical(getId(apiary[c(3L, 1L)]), ids[c(3L, 1L)])
+  expect_identical(getId(apiary[c(3, 1)]), ids[c(3, 1)])
+  expect_identical(getId(apiary[-2]), ids[-2])
+  expect_identical(getId(apiary[c(TRUE, FALSE)]), ids[c(1, 3)])
+  expect_identical(getId(apiary[as.character(ids[c(3, 1)])]), ids[c(3, 1)])
+  expect_s4_class(apiary[0], "MultiColony")
+  expect_equal(nColonies(apiary[0]), 0)
+  expect_equal(nColonies(apiary[integer(0)]), 0)
+  expect_equal(nColonies(apiary[FALSE]), 0)
+
+  # Double brackets return the selected Colony, by position or character ID
+  expect_s4_class(apiary[[2]], "Colony")
+  expect_identical(apiary[[2]], apiary@colonies[[2]])
+  expect_identical(apiary[[2L]], apiary@colonies[[2]])
+  expect_identical(apiary[[as.character(ids[2])]], apiary@colonies[[2]])
+  expect_identical(apiary[2][[1]], apiary[[2]])
+  expect_identical(apiary[[TRUE]], apiary[[1]])
+  expect_warning(selected <- apiary[[c(2, 3)]], "Selecting only the first colony")
+  expect_identical(selected, apiary[[2]])
+  expect_warning(selected <- apiary[[as.character(ids[c(2, 3)])]], "Selecting only the first colony")
+  expect_identical(selected, apiary[[2]])
+  expect_error(apiary[[5]], "subscript out of bounds")
+  expect_error(apiary[c(1, 1)], "Some colonies are duplicated")
+
+  # Unmatched IDs and unpopulated slots retain the existing NULL behavior
+  expect_null(apiary[["missing"]])
+  expect_null(apiary[5][[1]])
+  emptyApiary <- createMultiColony(n = 2, simParamBee = SP)
+  expect_s4_class(emptyApiary[1], "MultiColony")
+  expect_null(emptyApiary[[1]])
+  expect_identical(getId(apiary), ids)
+})
+
+# ---- selectColonies ----
 
 test_that("selectColonies", {
   founderGenomes <- quickHaplo(nInd = 8, nChr = 1, segSites = 100)

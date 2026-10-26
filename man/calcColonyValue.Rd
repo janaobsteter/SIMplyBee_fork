@@ -25,7 +25,10 @@ calcColonyAa(x, FUN = mapCasteToColonyAa, simParamBee = NULL, ...)
 \item{x}{\code{\link[SIMplyBee]{Colony-class}} or \code{\link[SIMplyBee]{MultiColony-class}}}
 
 \item{FUN}{function, that calculates colony value from values of
-colony members}
+colony members. Its first argument receives a single \code{\link[SIMplyBee]{Colony-class}},
+passed by position, and can have any name (for example, \code{colony} or \code{x}).
+For \code{\link[SIMplyBee]{MultiColony-class}} input,
+the function is called separately for each colony and the results are combined by row.}
 
 \item{simParamBee}{\code{\link[SIMplyBee]{SimParamBee}}, global simulation parameters}
 
@@ -110,6 +113,13 @@ SP$colonyValueFUN <- mapCasteToColonyPheno
 calcColonyValue(colony)
 calcColonyValue(apiary)
 
+# Colony value - using a simple custom function
+countWorkers <- function(colony) {
+  matrix(nInd(colony@workers), nrow = 1,
+         dimnames = list(NULL, "nWorkers"))
+}
+calcColonyValue(colony, FUN = countWorkers)
+calcColonyValue(apiary, FUN = countWorkers)
 }
 \seealso{
 \code{\link[SIMplyBee]{mapCasteToColonyValue}} as an example of \code{FUN},

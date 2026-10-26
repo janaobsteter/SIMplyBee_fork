@@ -1,3 +1,4 @@
+
 # ---- Class Colony ----
 
 setClassUnion("characterOrNULL", c("character", "NULL"))
@@ -7,14 +8,17 @@ setClassUnion("logicalOrNULL", c("logical", "NULL"))
 setClassUnion("listOrNULL", c("list", "NULL"))
 setClassUnion("PopOrNULL", c("Pop", "NULL"))
 setClassUnion("NULLOrPop", c("NULL", "Pop"))
-setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "logical", "character"))
+setClassUnion(
+  "integerOrNumericOrLogicalOrCharacter",
+  c("integer", "numeric", "logical", "character")
+)
 
 #' @rdname Colony-class
 #' @title Honeybee colony
 #'
 #' @description An object holding honeybee colony
 #'
-#' @slot id integer, unique ID of the colony
+#' @slot id character, unique ID of the colony, independent of its queen ID
 #' @slot location numeric, location of the colony (x, y)
 #' @slot queen \code{\link[AlphaSimR]{Pop-class}}, the queen of the colony (we use
 #'   its misc slot for queen's age and drones (fathers) she mated with)
@@ -68,7 +72,7 @@ setClassUnion("integerOrNumericOrLogicalOrCharacter", c("integer", "numeric", "l
 setClass(
   Class = "Colony",
   slots = c(
-    id = "integer",
+    id = "character",
     location = "numeric",
     queen = "PopOrNULL",
     workers = "PopOrNULL",
@@ -95,7 +99,8 @@ setClassUnion("ColonyOrNULL", c("Colony", "NULL"))
 setValidity(Class = "Colony", method = function(object) {
   errors <- character()
   test <- !is.null(slot(object, name = "queen"))
-  if ((ifelse(test, yes = nInd(slot(object, name = "queen")), no = 0)) > 1) { #Don't use nQueen because of the SP problem
+  if ((ifelse(test, yes = nInd(slot(object, name = "queen")), no = 0)) > 1) {
+    #Don't use nQueen because of the SP problem
     errors <- c(errors, "There can be only one queen per colony!")
   }
   if (length(errors) == 0) {
@@ -169,7 +174,7 @@ setMethod(
   signature(x = "NULLOrPop"),
   definition = function(x, ...) {
     if (is.null(x)) {
-      nList = length(list(...))
+      nList <- length(list(...))
       pop <- list(...)[[1]]
       if (nList > 1) {
         for (y in list(...)[[2:nList]]) {
