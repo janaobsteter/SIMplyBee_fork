@@ -540,7 +540,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
                               returnSP = returnSP, ids = ids, ...)
         ret$caste = rep("virginQueens", length(ret$caste))
         names(ret$caste) = ids
-        simParamBee$changeCaste(id = ret$workers@id, caste = "virginQueens")
+        #simParamBee$changeCaste(id = ret$workers@id, caste = "virginQueens")
         if (!returnSP) {
           ret <- ret$workers
         }
@@ -570,7 +570,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
           if (nInd(drones) != length(ids)) {
             stop("Not enough IDs provided")
           }
-          drones@id = ids
+          drones@id = as.character(ids)
           drones@iid = as.integer(ids)
           if (returnSP) {
             names(ret$caste) <- ids

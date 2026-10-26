@@ -3,7 +3,7 @@ title: "Variance calculations between individual and colony level values - funct
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{VarianceCalculations}
+  %\VignetteIndexEntry{VarianceCalculations_functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:

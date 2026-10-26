@@ -24,4 +24,7 @@
 ^vignettes/SIMplyBee\_logo\_small\.png
 ^Meta$
 ^SIMplyBee\.Rproj
+^Testing*.R
+AGENTS.md
 
+^doc$

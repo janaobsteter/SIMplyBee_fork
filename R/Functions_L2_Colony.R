@@ -162,7 +162,7 @@ reQueen <- function(x, queen, removeVirginQueens = TRUE, simParamBee = NULL) {
       if (removeVirginQueens) {
         x <- removeVirginQueens(x, simParamBee = simParamBee)
       }
-    } else {
+    } else { # If it's a virgin queen
       x <- removeQueen(x, simParamBee = simParamBee)
       x@virginQueens <- queen
     }
