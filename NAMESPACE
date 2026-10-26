@@ -208,6 +208,7 @@ exportClasses(MultiColony)
 import(AlphaSimR)
 import(Rcpp)
 importFrom(R6,R6Class)
+importFrom(Rdpack,reprompt)
 importFrom(extraDistr,rtpois)
 importFrom(future.apply,future_lapply)
 importFrom(methods,

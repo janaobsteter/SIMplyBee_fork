@@ -1,3 +1,4 @@
+
 # ---- Level 3 MultiColony Functions ----
 
 #' @rdname createMultiColony
@@ -49,7 +50,12 @@
 #' apiary[[2]]
 #'
 #' @export
-createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateColonies = FALSE) {
+createMultiColony <- function(
+  x = NULL,
+  n = NULL,
+  simParamBee = NULL,
+  populateColonies = FALSE
+) {
   if (is.null(simParamBee)) {
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
@@ -58,17 +64,17 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     if (is.null(n)) {
       ret <- new(Class = "MultiColony")
     } else {
-      ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
+      ret <- new(
+        Class = "MultiColony",
+        colonies = vector(mode = "list", length = n)
+      )
       if (populateColonies) {
         end_lastColonyId <- simParamBee$lastColonyId + n
         ids <- (simParamBee$lastColonyId+1):end_lastColonyId
-        
 
-        ret@colonies <- future_lapply(X = seq_len(n),
-                                                    FUN = function(colony) {
+        ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
           createColony(simParamBee = simParamBee, id = ids[colony])
         })
-
         updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId
         if (!updatedColonyIdBoolean) {
           simParamBee$updateLastColonyId(n = n)
@@ -81,7 +87,12 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     if (!isPop(x)) {
       stop("Argument x must be a Pop class object!")
     }
-    if (any(!(isVirginQueen(x, simParamBee = simParamBee) | isQueen(x, simParamBee = simParamBee)))) {
+    if (
+      any(
+        !(isVirginQueen(x, simParamBee = simParamBee) |
+          isQueen(x, simParamBee = simParamBee))
+      )
+    ) {
       stop("Individuals in x must be virgin queens or queens!")
     }
     if (is.null(n)) {
@@ -94,9 +105,8 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
     end_lastColonyId <- simParamBee$lastColonyId + n
     ids <- (simParamBee$lastColonyId+1):end_lastColonyId
 
-    ret@colonies <- future_lapply(X = seq_len(n),
-                                                FUN = function(colony) {
-          createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+    ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
+      createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
     })
 
     updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId
@@ -192,8 +202,15 @@ createMultiColony <- function(x = NULL, n = NULL, simParamBee = NULL, populateCo
 #' selectColonies(apiary, n = 1, by = queenGv)
 #'
 #' @export
-selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
-                           by = NULL, selectTop = TRUE, simParamBee = NULL) {
+selectColonies <- function(
+  multicolony,
+  ID = NULL,
+  n = NULL,
+  p = NULL,
+  by = NULL,
+  selectTop = TRUE,
+  simParamBee = NULL
+) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -322,8 +339,15 @@ selectColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' colonyGv <- calcColonyGv(apiary)
 #' pullColonies(apiary, n = 1, by = colonyGv)
 #' @export
-pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
-                         by = NULL, pullTop = TRUE, simParamBee = NULL) {
+pullColonies <- function(
+  multicolony,
+  ID = NULL,
+  n = NULL,
+  p = NULL,
+  by = NULL,
+  pullTop = TRUE,
+  simParamBee = NULL
+) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -331,13 +355,15 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(ID)) {
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
     trueID <- ID %in% getId(multicolony)
     if (!all(trueID)) {
       ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
-    pulled <- selectColonies(multicolony, ID,
-                             simParamBee = simParamBee) # selectColonies does the checking of the IDs
+    pulled <- selectColonies(multicolony, ID, simParamBee = simParamBee) # selectColonies does the checking of the IDs
     remnant <- removeColonies(multicolony, ID, simParamBee = simParamBee)
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
@@ -435,8 +461,15 @@ pullColonies <- function(multicolony, ID = NULL, n = NULL, p = NULL,
 #' removeColonies(apiary, n = 1, by = colonyPheno)
 #'
 #' @export
-removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL,
-                           by = NULL, removeTop = FALSE, simParamBee = NULL) {
+removeColonies <- function(
+  multicolony,
+  ID = NULL,
+  n = NULL,
+  p = NULL,
+  by = NULL,
+  removeTop = FALSE,
+  simParamBee = NULL
+) {
   if (!isMultiColony(multicolony)) {
     stop("Argument multicolony must be a MultiColony class object!")
   }
@@ -444,14 +477,19 @@ removeColonies <- function(multicolony,  ID = NULL, n = NULL, p = NULL,
     simParamBee <- get(x = "SP", envir = .GlobalEnv)
   }
   if (!is.null(ID)) {
+    if (!(is.character(ID) | is.numeric(ID))) {
+      stop("ID must be character or numeric!")
+    }
     trueID <- ID %in% getId(multicolony)
     if (!all(trueID)) {
       ID <- ID[trueID]
       warning("ID parameter contains come invalid IDs!")
     }
-    ret <- selectColonies(multicolony,
-                          ID = getId(multicolony)[!getId(multicolony) %in% ID],
-                          simParamBee = simParamBee)
+    ret <- selectColonies(
+      multicolony,
+      ID = getId(multicolony)[!getId(multicolony) %in% ID],
+      simParamBee = simParamBee
+    )
   } else if (!is.null(n) | !is.null(p)) {
     nCol <- nColonies(multicolony)
     if (!is.null(p)) {
