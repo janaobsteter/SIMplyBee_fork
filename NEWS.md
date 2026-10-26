@@ -61,6 +61,7 @@ is the number of viable workers.
         `SimParamBee` in the main R session
     -   `swarm()` and `supersede()` create the virgin queens on the
         workers and return only the one that prevails in each colony
+        (a Colony uses the same code, without parallel workers)
     -   `swarm()` and `split()` pull the workers in the main R session and
         no longer send colonies to workers
 
@@ -86,6 +87,9 @@ is the number of viable workers.
     on the parallel workers, and workers are pulled in the main R session);
     `removeCastePop(p = 1)` on a MultiColony no longer consumes random
     numbers. Sequential and parallel futures still give the same results.
+    Seeded results of `swarm()` and `supersede()` on a Colony also differ,
+    since the virgin queens are created from the queen's fathers in a random
+    order (as for a MultiColony).
 
 ## Bug fixes
 
@@ -114,10 +118,11 @@ is the number of viable workers.
     only that colony; previously it sampled from colony IDs 1 to that
     colony's ID
 
--   `createCastePop()` on a MultiColony now records all created virgin
-    queens, including csd homozygous ones that are removed, as virgin
-    queens in `SimParamBee` with `plan(sequential)` too (previously they
-    were recorded as workers)
+-   `createCastePop()` on a MultiColony, and `swarm()` and `supersede()`
+    on a Colony or MultiColony, now record all created virgin queens,
+    including csd homozygous ones that are removed, as virgin queens in
+    `SimParamBee` (previously they were recorded as workers with
+    `plan(sequential)` or on a Colony)
 
 -   recombination records (`SP$recHist`) of individuals created on a
     MultiColony with parallel futures are now named by their IDs

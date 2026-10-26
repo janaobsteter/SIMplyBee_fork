@@ -769,16 +769,60 @@ addBeeRecords_internal <- function(simParamBee, ids, caste, pedigree = NULL,
   invisible(simParamBee)
 }
 
-# For each colony in a MultiColony, create nInd virgin queens from the queen
-# and her fathers, remove csd homozygous ones, and select one at random that
-# prevails (as in swarm and supersede). Each parallel worker receives only the
-# queens of its colonies and a slimmed copy of simParamBee, and returns only the
-# prevailing virgin queen with the records of all created virgin queens. These
-# records are then added to simParamBee here. Returns a list with a virgin
-# queen (Pop) or NULL (all virgin queens csd homozygous) for each colony.
-# nInd is a single value or one value per colony.
+# Create task$nInd virgin queens from task$queen and her fathers, give them
+# the IDs task$ids, remove csd homozygous ones, and select one at random that
+# prevails. simParamBee must be a SimParamBee$slimClone(), since it is
+# updated here; the records of all created virgin queens are returned instead.
+# Returns a list with the virgin queen (Pop, or NULL if all were csd
+# homozygous) and the pedigree and recHist records.
+createPrevailingVirginQueen_internal <- function(task, simParamBee) {
+  queen <- task$queen
+  virginQueens <- combineBeeGametes(
+    queen = queen,
+    drones = getFathers(queen, simParamBee = simParamBee),
+    nProgeny = task$nInd,
+    simParamBee = simParamBee
+  )
+  ret <- list(virginQueen = NULL, pedigree = NULL, recHist = NULL)
+  tmpIds <- virginQueens@id
+  if (simParamBee$isTrackPed) {
+    ret$pedigree <- simParamBee$pedigree[tmpIds, , drop = FALSE]
+    rownames(ret$pedigree) <- task$ids
+  }
+  if (simParamBee$isTrackRec) {
+    ret$recHist <- simParamBee$recHist[tmpIds]
+    names(ret$recHist) <- task$ids
+  }
+  virginQueens@id <- as.character(task$ids)
+  virginQueens@iid <- as.integer(task$ids)
+  virginQueens@sex[] <- "F"
+  if (isCsdActive(simParamBee = simParamBee)) {
+    virginQueens <- virginQueens[isCsdHeterozygous(pop = virginQueens, simParamBee = simParamBee)]
+  }
+  if (nInd(virginQueens) > 0) {
+    ret$virginQueen <- selectInd(virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
+  }
+  ret
+}
+
+# For a Colony or each colony in a MultiColony, create nInd virgin queens
+# from the queen and her fathers, remove csd homozygous ones, and select one at
+# random that prevails (as in swarm and supersede). For a MultiColony, each
+# parallel worker receives only the queens of its colonies and a slimmed copy
+# of simParamBee, and returns only the prevailing virgin queen with the records
+# of all created virgin queens; a Colony is done here, without futures. The
+# records are then added to simParamBee here. Returns a virgin queen (Pop) or
+# NULL (all virgin queens csd homozygous) for a Colony, and a list of these for
+# a MultiColony. nInd is a single value or one value per colony.
 createPrevailingVirginQueens_internal <- function(x, nInd, simParamBee) {
-  nCol <- nColonies(x)
+  if (isColony(x)) {
+    colonies <- list(x)
+  } else if (isMultiColony(x)) {
+    colonies <- x@colonies
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+  nCol <- length(colonies)
   if (nCol == 0) {
     stop("The Multicolony contains 0 colonies!")
   }
@@ -793,44 +837,18 @@ createPrevailingVirginQueens_internal <- function(x, nInd, simParamBee) {
   ids <- (lastId + 1L):(lastId + sum(nInd))
   idsByColony <- base::split(ids, rep(seq_len(nCol), times = nInd))
   tasks <- lapply(seq_len(nCol), FUN = function(colony) {
-    list(queen = x@colonies[[colony]]@queen, nInd = nInd[colony],
+    list(queen = colonies[[colony]]@queen, nInd = nInd[colony],
          ids = idsByColony[[colony]])
   })
-  workerFUN <- function(task, simParamBee) {
-    queen <- task$queen
-    virginQueens <- combineBeeGametes(
-      queen = queen,
-      drones = getFathers(queen, simParamBee = simParamBee),
-      nProgeny = task$nInd,
-      simParamBee = simParamBee
-    )
-    ret <- list(virginQueen = NULL, pedigree = NULL, recHist = NULL)
-    tmpIds <- virginQueens@id
-    if (simParamBee$isTrackPed) {
-      ret$pedigree <- simParamBee$pedigree[tmpIds, , drop = FALSE]
-      rownames(ret$pedigree) <- task$ids
-    }
-    if (simParamBee$isTrackRec) {
-      ret$recHist <- simParamBee$recHist[tmpIds]
-      names(ret$recHist) <- task$ids
-    }
-    virginQueens@id <- as.character(task$ids)
-    virginQueens@iid <- as.integer(task$ids)
-    virginQueens@sex[] <- "F"
-    if (isCsdActive(simParamBee = simParamBee)) {
-      virginQueens <- virginQueens[isCsdHeterozygous(pop = virginQueens, simParamBee = simParamBee)]
-    }
-    if (nInd(virginQueens) > 0) {
-      ret$virginQueen <- selectInd(virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
-    }
-    ret
+  rm(colonies)
+  if (isColony(x)) {
+    res <- lapply(X = tasks, FUN = createPrevailingVirginQueen_internal,
+                  simParamBee = simParamBee$slimClone())
+  } else {
+    res <- future_lapply(X = tasks, FUN = createPrevailingVirginQueen_internal,
+                         simParamBee = simParamBee$slimClone(),
+                         future.globals = list(), future.seed = TRUE)
   }
-  # Detach from this frame, otherwise future serialises the whole frame
-  # (including x and tasks) together with the function to every worker
-  environment(workerFUN) <- new.env(parent = topenv())
-  res <- future_lapply(X = tasks, FUN = workerFUN,
-                       simParamBee = simParamBee$slimClone(),
-                       future.globals = list(), future.seed = TRUE)
   rm(tasks)
   addBeeRecords_internal(
     simParamBee = simParamBee, ids = ids, caste = "virginQueens",
@@ -839,6 +857,9 @@ createPrevailingVirginQueens_internal <- function(x, nInd, simParamBee) {
     ploidy = 2L
   )
   ret <- lapply(res, FUN = "[[", "virginQueen")
+  if (isColony(x)) {
+    return(ret[[1]])
+  }
   names(ret) <- getId(x)
   return(ret)
 }

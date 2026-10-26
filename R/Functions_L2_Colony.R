@@ -1481,20 +1481,16 @@ swarm <- function(x, p = NULL,
     # TODO: Add use="something" to select pWorkers that swarm
     #       https://github.com/HighlanderLab/SIMplyBee/issues/160
 
+    # Create the virgin queens and keep only the one that prevails in each
+    # colony (NULL if all were csd homozygous); for a MultiColony this is done
+    # by parallel workers, which receive only the queens
+    tmpVirginQueens <- createPrevailingVirginQueens_internal(
+      x = x, nInd = pmax(10, nVirginQueens),
+      simParamBee = simParamBee
+    )
     if (isColony(x)) {
-      tmpVirginQueens <- createCastePop(
-        x = x, nInd = pmax(10, nVirginQueens),
-        caste = "virginQueens",
-        simParamBee = simParamBee
-      )
-      homCol = nInd(tmpVirginQueens) == 0
+      homCol = is.null(tmpVirginQueens)
     } else if (isMultiColony(x)) {
-      # Parallel workers create the virgin queens and return only the one that
-      # prevails in each colony (NULL if all were csd homozygous)
-      tmpVirginQueens <- createPrevailingVirginQueens_internal(
-        x = x, nInd = pmax(10, nVirginQueens),
-        simParamBee = simParamBee
-      )
       homCol = sapply(tmpVirginQueens, FUN = is.null)
     }
 
@@ -1522,7 +1518,7 @@ swarm <- function(x, p = NULL,
     remnantColony <- removeQueen(remnantColony, simParamBee = simParamBee)
     if (isColony(x)) {
       remnantColony <- reQueen(remnantColony,
-                               queen = selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
+                               queen = tmpVirginQueens,
                                simParamBee = simParamBee)
     } else {
       remnantColony <- reQueen(remnantColony,
@@ -1670,21 +1666,16 @@ supersede <- function(x, simParamBee = NULL, ...) {
 
 
   # Do this because some colonies might not produce a viable virgin queen
+  # Create the virgin queens and keep only the one that prevails in each
+  # colony (NULL if all were csd homozygous); for a MultiColony this is done
+  # by parallel workers, which receive only the queens (not the full colonies)
+  tmpVirginQueens <- createPrevailingVirginQueens_internal(
+    x = x, nInd = pmax(10, nVirginQueens),
+    simParamBee = simParamBee
+  )
   if (isColony(x)) {
-    tmpVirginQueens <- createCastePop(
-      x = x, nInd = pmax(10, nVirginQueens),
-      caste = "virginQueens",
-      simParamBee = simParamBee
-    )
-    homCol = nInd(tmpVirginQueens) == 0
+    homCol = is.null(tmpVirginQueens)
   } else if (isMultiColony(x)) {
-    # Parallel workers create the virgin queens and return only the one that
-    # prevails in each colony (NULL if all were csd homozygous)
-    # This is done so that the full colonies are not sent to workers - only the queen
-    tmpVirginQueens <- createPrevailingVirginQueens_internal(
-      x = x, nInd = pmax(10, nVirginQueens),
-      simParamBee = simParamBee
-    )
     homCol = sapply(tmpVirginQueens, FUN = is.null)
   }
 
@@ -1701,8 +1692,7 @@ supersede <- function(x, simParamBee = NULL, ...) {
 
   if (isColony(x)) {
 
-    x <- addCastePop_internal(selectInd(tmpVirginQueens, nInd = 1, use = "rand", simParam = simParamBee),
-                              colony = x, caste = "virginQueens")
+    x <- addCastePop_internal(tmpVirginQueens, colony = x, caste = "virginQueens")
 
     x <- removeQueen(x, simParamBee = simParamBee)
     # TODO: We could consider that a non-random virgin queen prevails (say the most

@@ -617,3 +617,50 @@ test_that("split moves workers from each colony to its split", {
   expect_true(all(hasSplit(tmp$split)) && all(hasSplit(tmp$remnant)))
   expect_true(all(!isProductive(tmp$split)) && all(isProductive(tmp$remnant)))
 })
+
+# ---- swarm and supersede on a Colony ----
+
+test_that("swarm and supersede on a Colony record all created virgin queens", {
+  founderGenomes <- quickHaplo(nInd = 10, nChr = 2, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+  SP$nThreads <- 1L
+  SP$setTrackPed(TRUE)
+  SP$setTrackRec(TRUE)
+  SP$nWorkers <- 20
+  SP$nDrones <- 5
+  SP$nVirginQueens <- 12
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[2:3], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+
+  for (fun in c("swarm", "supersede")) {
+    colony <- buildUp(createColony(queens[ifelse(fun == "swarm", 1, 2)], simParamBee = SP),
+                      simParamBee = SP)
+    queenId <- getCasteId(colony, caste = "queen", simParamBee = SP)
+    lastId <- SP$lastId
+    ret <- do.call(fun, list(x = colony, simParamBee = SP))
+    newIds <- as.character((lastId + 1):(lastId + 12))
+    expect_equal(SP$lastId, lastId + 12)
+    expect_true(all(SP$caste[newIds] == "virginQueens"))
+    expect_equal(rownames(SP$pedigree), as.character(seq_len(SP$lastId)))
+    expect_true(all(SP$pedigree[newIds, "mother"] == as.integer(queenId)))
+    expect_false(any(sapply(SP$recHist[newIds], is.null)))
+    if (fun == "swarm") {
+      # The remnant is requeened with one of the new virgin queens
+      newQueen <- getCasteId(ret$remnant, caste = "virginQueens", simParamBee = SP)
+      expect_true(is.null(ret$remnant@queen))
+      expect_length(newQueen, 1)
+      expect_true(newQueen %in% newIds)
+    } else {
+      newQueen <- getCasteId(ret, caste = "virginQueens", simParamBee = SP)
+      expect_true(is.null(ret@queen))
+      expect_length(newQueen, 1)
+      expect_true(newQueen %in% newIds)
+      expect_true(hasSuperseded(ret))
+    }
+    expect_true(isCsdHeterozygous(getVirginQueens(if (fun == "swarm") ret$remnant else ret,
+                                                  simParamBee = SP),
+                                  simParamBee = SP))
+  }
+})
