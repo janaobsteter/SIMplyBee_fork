@@ -659,8 +659,9 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
     # Workers get a slimmed copy of simParamBee (without pedigree, recHist,
     # and caste records) and do not update simParamBee - they return the
     # records of the new individuals, which we add to simParamBee below
-    ret <- future_lapply(X = tasks, FUN = workerFUN,
-                         caste = caste, simParamBee = simParamBee$slimClone(),
+    ret <- future_mapply(FUN = workerFUN, task = tasks,
+                         MoreArgs = list(caste = caste, simParamBee = simParamBee$slimClone()),
+                         SIMPLIFY = FALSE, USE.NAMES = FALSE,
                          future.globals = list(), future.seed = TRUE)
     rm(tasks)
 
@@ -1420,10 +1421,11 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     # workerFUN gets everything via its arguments, so we also skip scanning
     # the colonies in X for globals (future.globals = list()), which is slow
     environment(workerFUN) <- new.env(parent = topenv())
-    tmp = future_lapply(X = tasks, FUN = workerFUN,
-                        caste = caste, use = use,
-                        removeFathers = removeFathers, collapse = collapse,
-                        simParamBee = simParamBee,
+    tmp = future_mapply(FUN = workerFUN, task = tasks,
+                        MoreArgs = list(caste = caste, use = use,
+                                        removeFathers = removeFathers, collapse = collapse,
+                                        simParamBee = simParamBee),
+                        SIMPLIFY = FALSE, USE.NAMES = FALSE,
                         future.globals = list(), future.seed = TRUE)
     rm(tasks)
 

@@ -1107,9 +1107,10 @@ removeCastePop <- function(x, caste = NULL, p = 1, use = "rand",
       # workerFUN gets everything via its arguments, so we also skip scanning
       # the colonies in X for globals (future.globals = list()), which is slow
       environment(workerFUN) <- new.env(parent = topenv())
-      x@colonies <- future_lapply(X = tasks, FUN = workerFUN,
-                                  caste = caste, use = use,
-                                  simParamBee = simParamBee,
+      x@colonies <- future_mapply(FUN = workerFUN, task = tasks,
+                                  MoreArgs = list(caste = caste, use = use,
+                                                  simParamBee = simParamBee),
+                                  SIMPLIFY = FALSE, USE.NAMES = FALSE,
                                   future.globals = list(), future.seed = TRUE)
       rm(tasks)
     }

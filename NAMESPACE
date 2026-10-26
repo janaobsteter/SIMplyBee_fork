@@ -209,10 +209,7 @@ import(AlphaSimR)
 import(Rcpp)
 importFrom(R6,R6Class)
 importFrom(extraDistr,rtpois)
-importFrom(future.apply,
-  future_lapply,
-  future_mapply
-)
+importFrom(future.apply,future_mapply)
 importFrom(methods,
   "slot<-",
   classLabel,

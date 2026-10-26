@@ -68,18 +68,27 @@ is the number of viable workers.
     Run times with 1000 colonies (16 chromosomes, 100 workers per colony),
     sequential / `plan(multisession, workers = 4)`, in seconds:
 
-    | function                    | before      | now        |
-    |-----------------------------|-------------|------------|
-    | `buildUp()`                 | 68.7 / 31.8 | 29.5 / 17.6 |
-    | `addVirginQueens(nInd = 10)`| 57.0 / 23.9 | 9.7 / 6.9  |
-    | `swarm()`                   | 36.0 / 35.3 | 9.5 / 11.9 |
-    | `split()`                   | 16.3 / 21.7 | 3.4 / 3.4  |
-    | `supersede()`               | 27.3 / 14.8 | 5.6 / 7.8  |
+    | function                     | before      | now        |
+    |------------------------------|-------------|------------|
+    | `buildUp()`                  | 68.7 / 31.8 | 22.6 / 7.0 |
+    | `addVirginQueens(nInd = 10)` | 57.0 / 23.9 | 7.1 / 2.2  |
+    | `swarm()`                    | 36.0 / 35.3 | 11.3 / 6.7 |
+    | `split()`                    | 16.3 / 21.7 | 2.5 / 2.4  |
+    | `supersede()`                | 27.3 / 14.8 | 7.3 / 2.8  |
+    | `removeWorkers(p = 0.3)`     |             | 1.5 / 2.2  |
 
     Parallel futures pay off when there is a lot of work per colony (e.g.,
-    many workers or virgin queens per colony), but not for every function
-    or simulation size, so we recommend timing a few steps of your
+    creating many workers or virgin queens per colony), but not for every
+    function or simulation size (e.g., removing or pulling individuals is
+    faster sequentially), so we recommend timing a few steps of your
     simulation with `plan(sequential)` and `plan(multisession)`.
+
+-   MultiColony functions now use `future.apply::future_mapply()` instead of
+    `future_lapply()` to send colonies to parallel workers, which halved the
+    time of `buildUp()`, `swarm()`, and `supersede()` with
+    `plan(multisession)` and reduced the time of `removeCastePop()` and
+    `pullCastePop()` from about 10 to 2 seconds for 1000 colonies. Seeded
+    results are unchanged.
 
 -   seeded results of `swarm()`, `split()`, and `supersede()` on a
     MultiColony differ from previous versions, because random numbers are
