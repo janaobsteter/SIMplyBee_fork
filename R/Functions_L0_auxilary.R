@@ -6320,6 +6320,12 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' @param nDrones, integer or function, number of drones to sample for each crossing. You need to provide
 #'   this to provide this argument even when sampling drone producing colonies (otherwise, the default value
 #'   will be used)
+#' @param nDPC, integer, number of drone producing colonies to use to create drones. This is only used when supplying
+#'   drone colonies. If there number of available DPCs is less than nDPCs, all are retained. If \code{NULL} and
+#'   \code{DPCAllocation} is 'random', all DPCs are retained.
+#'   all DPCs in the radius are included in the cross plan.
+#' @param DPCAllocation, character, "random" (default) or "nearest", whether to retain nearest nDPC or random nDPC in
+#'   the radius. Only applicable to when creating spatial cross plans.
 #' @param spatial logical, whether the drone producing colonies should be sampled according
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius from the virgin colony in which to sample mating partners,
@@ -6328,12 +6334,14 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #' @param ... other arguments for \code{nDrones}, when \code{nDrones} is a function
 #'
 #' @return named list with names being virgin queens/colonies IDs with each
-#'   list element holding the IDs of selected drones or drone producing colonies
+#'   list element holding the IDs of selected drones or drone producing colonies.
+#'   There is one ID per drone, so for drone producing colonies, a colony ID can
+#'   repeat (the colony then provides several drones). Virgin queens without a
+#'   drone producing colony in the radius get an empty element.
 #'
 #' @examples
 #' founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
 #' SP <- SimParamBee$new(founderGenomes)
-#' \dontshow{SP$nThreads = 1L}
 #' basePop <- createVirginQueens(founderGenomes)
 #'
 #' # Create three virgin MultiColony objects with locations
@@ -6387,6 +6395,8 @@ createCrossPlan <- function(x,
                             drones = NULL,
                             droneColonies = NULL,
                             nDrones = NULL,
+                            nDPC = NULL,
+                            DPCAllocation = "random",
                             spatial = FALSE,
                             radius,
                             simParamBee = NULL,
@@ -6413,35 +6423,77 @@ createCrossPlan <- function(x,
     stop("When creating a spatial cross plan, the x argument must be a Colony
          or MultiColony class with location set!")
   }
+  if (!is.null(nDPC) & !is.null(drones)) {
+    warning("Parameter nDPCs is ignored since you are providing drones, not drone (producing) colonies.")
+    nDPC <- NULL
+  }
+  if (!DPCAllocation %in% c("random", "nearest")) {
+    stop("DPCAllocation must be either 'random' or 'nearest'!")
+  }
+  if (DPCAllocation == "nearest" & is.null(nDPC)) {
+    stop("You can not samples nearest DPCs without specifying nDPC parameter!")
+  }
+
   drones <- drones[isDrone(x = drones, simParamBee = simParamBee)]
   virginId <- getId(x)
 
+  if (is.null(nDrones)) {
+    nDrones <- simParamBee$nFathers
+  }
   if (is.function(nDrones)) {
     nDrones <- nDrones(n = length(virginId), ...)
   } else {
-    nDrones <- rep(nDrones, length(virginId))
+    nDrones <- rep_len(nDrones, length(virginId))
+  }
+  if (anyNA(nDrones) || any(nDrones < 0) || any(nDrones != round(nDrones))) {
+    stop("nDrones must be non-negative whole numbers!")
+  }
+  nDrones <- as.integer(nDrones)
+
+  # One drone producing colony ID per drone (with replacement), so that
+  # cross() can use the cross plan as given
+  sampleDPCPerDrone <- function(dpc, n) {
+    if (length(dpc) == 0) {
+      return(dpc)
+    }
+    dpc[sample.int(length(dpc), size = n, replace = TRUE)]
   }
 
   if (spatial) {
     virginLocations <- getLocation(x, collapse = TRUE)
     droneLocations <- getLocation(droneColonies, collapse = TRUE)
 
-    spatialMatch <- RANN::nn2(droneLocations, virginLocations, searchtype = "radius", radius = radius)
+    nAll <- nrow(droneLocations)
+    k <- if (DPCAllocation == "nearest" && !is.null(nDPC)) min(nDPC, nAll) else nAll
+    spatialMatch <- RANN::nn2(droneLocations, virginLocations, searchtype = "radius",
+                              radius = radius, k = k)
+
     spatialMatch <- spatialMatch$nn.idx
-    crossPlan <- lapply(1:nrow(spatialMatch),
-                        FUN = function(x) rownames(droneLocations)[spatialMatch[x,]])
-  } else  {
-    if (is.null(nDrones)) {
-      nDrones <- simParamBee$nFathers
+    # Drone producing colonies in the radius (nn2 pads missing matches with 0)
+    queenDPC <- lapply(1:nrow(spatialMatch),
+                       FUN = function(i) rownames(droneLocations)[spatialMatch[i, ]])
+    if ((DPCAllocation == "random") & !is.null(nDPC)) {
+      queenDPC <- lapply(queenDPC, function(dpc) if (length(dpc) > nDPC) dpc[sample.int(length(dpc), nDPC)] else dpc)
     }
+    crossPlan <- lapply(seq_along(virginId), FUN = function(i) {
+      sampleDPCPerDrone(queenDPC[[i]], nDrones[i])
+    })
+  } else  {
     if (!is.null(drones)) {
       fathersMatch <- rep.int(virginId, times = nDrones)
       fatherIDs <- sample(drones@id, size = length(fathersMatch), replace = FALSE)
-      crossPlan <- base::split(fatherIDs, fathersMatch)
+      crossPlan <- base::split(fatherIDs, factor(fathersMatch, levels = unique(virginId)))
     } else {
-      print("Cross plan, drone colonies")
-      ids <- getId(droneColonies)
-      crossPlan <- lapply(1:length(virginId), FUN = function(x) unique(ids[sample.int(length(ids), size = nDrones[x], replace = TRUE)]))
+      ids <- as.character(getId(droneColonies))
+      crossPlan <- lapply(seq_along(virginId), FUN = function(i) {
+        if (is.null(nDPC)) {
+          queenDPC <- ids
+        } else {
+          # This queen's nDPC colonies, at random from all available
+          queenDPC <- ids[sample.int(length(ids), size = min(nDPC, length(ids)))]
+        }
+        sampleDPCPerDrone(queenDPC, nDrones[i])
+      })
     }
   }
   names(crossPlan) <- virginId

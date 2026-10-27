@@ -434,10 +434,12 @@ test_that("cross samples drones only from the drone producing colonies in the cr
                                                                    simParamBee = SP)),
                                       simParamBee = SP)
   dpcs <- apiary[5:6]
-  crossPlan <- as.list(rep(getId(dpcs)[2], nColonies(virginColonies)))
+  # (10 drones each, one colony ID per drone)
+  crossPlan <- rep(list(rep(getId(dpcs)[2], 10)), nColonies(virginColonies))
   names(crossPlan) <- getId(virginColonies)
-  mated <- cross(virginColonies, droneColonies = dpcs, nDrones = 10,
+  mated <- cross(virginColonies, droneColonies = dpcs,
                  crossPlan = crossPlan, simParamBee = SP)
+  expect_true(all(nFathers(mated, simParamBee = SP) == 10))
   fatherIds <- getCasteId(mated, caste = "fathers", collapse = TRUE, simParamBee = SP)
   expect_true(all(SP$pedigree[fatherIds, "mother"] == as.integer(dpcQueenId)))
 })
@@ -480,6 +482,8 @@ test_that("createCastePop on a MultiColony records all new individuals in SimPar
       expect_true(all(SP$pedigree[added, "mother"] == as.integer(queenIds[colony])))
     }
   }
+})
+
 # ---- cross plans with character IDs ----
 
 test_that("cross plans match character colony IDs independently of queen IDs", {
@@ -495,7 +499,9 @@ test_that("cross plans match character colony IDs independently of queen IDs", {
   apiary <- c(createColony(basePop[3], id = "hive-C", simParamBee = SP),
               createColony(basePop[4], id = "hive-A", simParamBee = SP),
               createColony(basePop[5], id = "hive-B", simParamBee = SP))
-  plan <- list("hive-B" = "donor-B", "hive-C" = "donor-A", "hive-A" = "donor-B")
+  # One drone producing colony ID per drone (the plan is used as given)
+  plan <- list("hive-B" = c("donor-B", "donor-B"), "hive-C" = c("donor-A", "donor-A"),
+               "hive-A" = c("donor-B", "donor-B"))
   mated <- expect_no_warning(cross(apiary, droneColonies = donors,
                                   crossPlan = plan, nDrones = 2, simParamBee = SP))
   expect_identical(getId(mated), c("hive-C", "hive-A", "hive-B"))

@@ -45,7 +45,25 @@ editor_options:
     the mating fails and the queens/colonies are removed from the object.
     This is to ensure all further functionality works well.
 
+- cross plans with drone producing colonies now hold one colony ID per drone
+    (a colony ID can repeat), and `cross()` uses them as given: each entry is
+    one drone (father). `createCrossPlan()` returns `nDrones` colony IDs per
+    virgin queen; hand-made plans must list a colony once per drone (for
+    example, `c("5", "5")` for two drones from colony 5). Previously, a plan
+    listed the available colonies and `cross()` sampled `nDrones` from them.
+    Seeded results of crossing with drone producing colonies change.
+    `cross()` no longer evaluates `nDrones` itself (when `nDrones` is a
+    function, it was called a second time, so the number of drones in the
+    created cross plan and the number used for mating could differ);
+    `nDrones` is used only when creating the cross plan.
+
 ## New features
+
+- `createCrossPlan()` and `cross()` gain `nDPC` and `DPCAllocation` to limit
+    the number of drone producing colonies available to each virgin queen,
+    either a random or the nearest `nDPC` colonies (in the radius, for spatial
+    cross plans). Spatial cross plans now include all drone producing colonies
+    in the radius (previously at most 10, the default of `RANN::nn2()`).
 
 - Both variance mappings now return `h2Queen`, `h2Worker`,
     `h2WorkerGroup`, and `h2Colony`, with `NA` for zero total variance.
@@ -128,6 +146,15 @@ editor_options:
 
 ## Bug fixes
 
+- `cross()` with drone producing colonies no longer mates queens with 0
+    drones when all sampled drone producing colonies produce the same number
+    of drones.
+
+- `createCrossPlan()` with `drones` now assigns drones to the right virgin
+    queens when IDs are not in sorted order, and uses `SimParamBee$nFathers`
+    when `nDrones` is `NULL`.
+
+- `getFathers()` with `collapse = TRUE` on a MultiColony no longer fails.
 
 -   with `plan(sequential)`, `createCastePop()` on a MultiColony no longer
     duplicates caste records in `SimParamBee` and `createMultiColony()` no

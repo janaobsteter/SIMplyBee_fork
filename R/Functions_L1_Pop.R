@@ -241,16 +241,10 @@ getFathers <- function(x, nInd = NULL, use = "rand", collapse = FALSE, simParamB
       ret <- ret[[1]]
     }
   } else if (isColony(x) | isMultiColony(x)) {
+    # getCastePop() already collapses or names the result for a MultiColony
     ret <- getCastePop(x, caste = "fathers", nInd = nInd, use = use, collapse = collapse, simParamBee = simParamBee)
   } else {
     stop("Argument x must be a Pop, Colony, or MultiColony class object!")
-  }
-  if (isMultiColony(x)) {
-    if (collapse) {
-      ret <- mergePops(ret)
-    } else {
-      names(ret) <- getId(x)
-    }
   }
   return(ret)
 }
@@ -1495,7 +1489,8 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   one or more virgin queens / colonies to be mated;
 #' @param crossPlan, named list with names being virgin queen or colony IDs with
 #'   each list element holding the IDs of either selected drones or selected
-#'   drone producing colonies, OR a string "create" if you want the cross plan to be created
+#'   drone producing colonies (one ID per drone, so a colony ID repeated n times
+#'   gives n drones from that colony), OR a string "create" if you want the cross plan to be created
 #'   internally. The function can create a random (\code{spatial = FALSE})
 #'   or spatial (\code{spatial = TRUE}) cross plan internally. Also see
 #'   \code{\link[SIMplyBee]{createCrossPlan}}.
@@ -1515,6 +1510,12 @@ pullVirginQueens <- function(x, nInd = NULL, use = "rand", collapse = FALSE, sim
 #'   internally (when \code{crossPlan} is "create")
 #' @param nDrones numeric of function, the number of drones to sample to mate with each
 #'   virgin queen when using a cross plan
+#' @param nDPC integer, number of drone producing colonies available to each virgin
+#'   queen when creating a cross plan with \code{droneColonies}; if \code{NULL}, all
+#'   (in the radius, when \code{spatial = TRUE}). See
+#'   \code{\link[SIMplyBee]{createCrossPlan}}
+#' @param DPCAllocation character, "random" or "nearest", see
+#'   \code{\link[SIMplyBee]{createCrossPlan}}
 #' @param spatial logical, whether the drone producing colonies should be sampled according
 #'   to their distance from the virgin colony (that is, in a radius)
 #' @param radius numeric, the radius around the virgin colony in which to sample mating partners,
@@ -1667,6 +1668,8 @@ cross <- function(x,
                   drones = NULL,
                   droneColonies = NULL,
                   nDrones = NULL,
+                  nDPC = NULL,
+                  DPCAllocation = "random",
                   spatial = FALSE,
                   radius = NULL,
                   checkCross = "error",
@@ -1735,6 +1738,9 @@ cross <- function(x,
   if (crossPlan_given && !all(IDs %in% names(crossPlan))) { #Check for cross plan
     stop("Cross plan must include all the virgin queens/colonies!")
   }
+  if (!is.null(droneColonies) & is.null(crossPlan)) {
+    stop("When providing drone colonies, cross plan needs to be set to 'create'")
+  }
   if (isPop(x)) {
     if (any(!isVirginQueen(x, simParamBee = simParamBee))) {
       stop("Individuals in pop must be virgin queens!")
@@ -1755,9 +1761,11 @@ cross <- function(x,
                                    drones = drones,
                                    droneColonies = droneColonies,
                                    nDrones = nDrones,
+                                   nDPC = nDPC,
+                                   DPCAllocation = DPCAllocation,
                                    spatial = spatial,
                                    radius = radius,
-                                   simParamBee = simParamBee)
+                                   simParamBee = simParamBee, ...)
     }
 
     noMatches <- sapply(crossPlan, FUN = length)
@@ -1802,16 +1810,6 @@ cross <- function(x,
 
 
 
-  if (is.function(nDrones)) {
-    nD = nDrones(n = nVirgin, ...)
-  } else {
-    nD = nDrones
-  }
-
-  if (length(IDs) > 0 & length(nD) == 1) {
-    nD = rep(nD, length(IDs))
-  }
-
   if (crossPlan_given | crossPlan_create) {
     if (crossPlan_colonyID) { # WHAT IF ONE ELEMENT IS EMPTY
       # This is the crossPlan - for spatial, these are all DPCs found in a radius
@@ -1823,12 +1821,10 @@ cross <- function(x,
       if (type == "MultiColony") {
         multicolony <- multicolony[getId(getVirginQueens(multicolony, collapse = TRUE, simParamBee = simParamBee)) %in% IDs]
       }
-      # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
-      crossPlanDF_sample <- do.call("rbind", lapply(IDs,
-                                                    FUN = function(x) {
-                                                      data.frame(virginID = x, DPC = crossPlan[[x]][sample.int(length(crossPlan[[x]]), size = nD[which(x == IDs)], replace = TRUE)])
-                                                    } ))
-      crossPlanDF_sample <- crossPlanDF_sample[order(as.character(crossPlanDF_sample$DPC)),]
+      # The cross plan holds one drone producing colony ID per drone, so we use
+      # it as given: each entry is one drone (father) for that virgin queen
+      crossPlanDF <- crossPlanDF[crossPlanDF$virginID %in% IDs, ]
+      crossPlanDF <- crossPlanDF[order(crossPlanDF$DPC), ]
       # Here I gather how many drones each DPC needs to produce
       crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC))
       crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.character(crossPlanDF_DPCtable$Var1)),]
@@ -1841,7 +1837,7 @@ cross <- function(x,
                                     simParamBee = simParamBee)
       # This is where I link the drone ID to the DPC ID
       dronesByDPC_DF <- data.frame(DPC = rep(names(dronesByDPC), as.vector(crossPlanDF_DPCtable$noDrones)),
-                                   droneID = unlist(sapply(dronesByDPC, FUN = function(x) getId(x))))
+                                   droneID = unlist(lapply(dronesByDPC, FUN = function(x) as.character(getId(x))), use.names = FALSE))
       dronesByDPC_DF <- dronesByDPC_DF[order(as.character(dronesByDPC_DF$DPC)),]
       dronePop = mergePops(dronesByDPC)
 

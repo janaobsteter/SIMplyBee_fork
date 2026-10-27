@@ -1662,11 +1662,14 @@ test_that("createCrossPlan", {
   )
 
   expect_length(crossPlanSpatial, 2)
-  expect_error(createCrossPlan(
+  # Without nDrones, SP$nFathers is used
+  crossPlanDefault <- createCrossPlan(
     x = droneColonies,
     droneColonies = virginColonies1,
     simParamBee = SP
-  ))
+  )
+  expect_length(crossPlanDefault, nColonies(droneColonies))
+  expect_true(all(lengths(crossPlanDefault) > 0))
 })
 
 # ---- getCaste ----
@@ -1932,4 +1935,138 @@ test_that("colony value callbacks receive individual colonies positionally", {
       )
     }
   }
+})
+
+# ---- createCrossPlan: nDPC and DPCAllocation ----
+
+test_that("createCrossPlan limits drone producing colonies with nDPC and DPCAllocation", {
+  founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+
+  # One virgin colony at (0, 0) and 12 drone producing colonies on a line at
+  # distances 1, 2, ..., 12; a second virgin colony far away from all of them
+  virginColonies <- createMultiColony(basePop[1:2], simParamBee = SP)
+  virginColonies <- setLocation(virginColonies, location = list(c(0, 0), c(1000, 1000)),
+                                simParamBee = SP)
+  droneColonies <- createMultiColony(basePop[3:14], simParamBee = SP)
+  droneColonies <- setLocation(droneColonies, location = lapply(1:12, function(d) c(d, 0)),
+                               simParamBee = SP)
+  dpcIds <- as.character(getId(droneColonies))
+  virginIds <- as.character(getId(virginColonies))
+  # Many drones, so that every available colony is sampled at least once
+  # (missing one of 12 colonies in 200 draws has probability < 1e-6)
+  nDrones <- 200
+  createPlan <- function(...) {
+    createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = nDrones,
+                    spatial = TRUE, simParamBee = SP, ...)
+  }
+
+  # One colony ID per drone
+  set.seed(1)
+  plan <- createPlan(radius = 20)
+  expect_identical(names(plan), virginIds)
+  expect_length(plan[[1]], nDrones)
+  expect_length(plan[[2]], 0)
+  # No nDPC: all colonies in the radius (more than nn2's default of 10)
+  expect_setequal(unique(plan[[1]]), dpcIds)
+  plan <- createPlan(radius = 5.5)
+  expect_setequal(unique(plan[[1]]), dpcIds[1:5])
+
+  # Random nDPC: nDPC colonies at random from all in the radius
+  plans <- lapply(1:30, function(i) createPlan(radius = 20, nDPC = 3, DPCAllocation = "random"))
+  expect_true(all(sapply(plans, function(p) length(p[[1]]) == nDrones && length(unique(p[[1]])) == 3)))
+  expect_true(all(unlist(lapply(plans, `[[`, 1)) %in% dpcIds))
+  # Not always the nearest ones, and colonies beyond the 10th nearest are used
+  expect_true(any(sapply(plans, function(p) !setequal(unique(p[[1]]), dpcIds[1:3]))))
+  expect_true(any(unlist(lapply(plans, `[[`, 1)) %in% dpcIds[11:12]))
+  # Only colonies in the radius
+  plan <- createPlan(radius = 5.5, nDPC = 3, DPCAllocation = "random")
+  expect_true(all(plan[[1]] %in% dpcIds[1:5]))
+  # nDPC larger than the colonies in the radius keeps all of them
+  plan <- createPlan(radius = 2.5, nDPC = 5, DPCAllocation = "random")
+  expect_setequal(unique(plan[[1]]), dpcIds[1:2])
+
+  # Nearest nDPC: the nDPC nearest colonies in the radius
+  plan <- createPlan(radius = 20, nDPC = 3, DPCAllocation = "nearest")
+  expect_length(plan[[1]], nDrones)
+  expect_setequal(unique(plan[[1]]), dpcIds[1:3])
+  expect_length(plan[[2]], 0)
+  plan <- createPlan(radius = 2.5, nDPC = 5, DPCAllocation = "nearest")
+  expect_setequal(unique(plan[[1]]), dpcIds[1:2])
+  # nDPC larger than all drone producing colonies
+  plan <- createPlan(radius = 20, nDPC = 50, DPCAllocation = "nearest")
+  expect_setequal(unique(plan[[1]]), dpcIds)
+
+  # Input checks
+  expect_error(createPlan(radius = 20, DPCAllocation = "nearest"))
+  expect_error(createPlan(radius = 20, nDPC = 3, DPCAllocation = "closest"))
+  expect_error(createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = 2.5,
+                               simParamBee = SP))
+
+  # Non-spatial: nDPC colonies per queen at random from all available
+  plan <- createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = nDrones,
+                          nDPC = 3, spatial = FALSE, simParamBee = SP)
+  expect_identical(names(plan), virginIds)
+  for (p in plan) {
+    expect_length(p, nDrones)
+    expect_length(unique(p), 3)
+    expect_true(all(p %in% dpcIds))
+  }
+  plan <- createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = nDrones,
+                          spatial = FALSE, simParamBee = SP)
+  for (p in plan) {
+    expect_length(p, nDrones)
+    expect_setequal(unique(p), dpcIds)
+  }
+  # nDrones per virgin queen
+  plan <- createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = function(n) c(4, 7),
+                          spatial = FALSE, simParamBee = SP)
+  expect_identical(unname(lengths(plan)), c(4L, 7L))
+})
+
+test_that("cross uses a drone producing colony cross plan as given", {
+  founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  SP$setTrackPed(TRUE)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1:2], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[3:5], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+  droneColonies <- createMultiColony(queens, simParamBee = SP)
+  dpcIds <- as.character(getId(droneColonies))
+  dpcQueens <- getCasteId(droneColonies, caste = "queen", collapse = TRUE, simParamBee = SP)
+  names(dpcQueens) <- dpcIds
+  virginColonies <- createMultiColony(basePop[6:7], simParamBee = SP)
+  virginIds <- as.character(getId(virginColonies))
+
+  # 3 drones from the first and 1 from the third colony; 2 from the second
+  crossPlan <- list(c(dpcIds[1], dpcIds[1], dpcIds[3], dpcIds[1]),
+                    c(dpcIds[2], dpcIds[2]))
+  names(crossPlan) <- virginIds
+  mated <- cross(virginColonies, droneColonies = droneColonies, crossPlan = crossPlan,
+                 simParamBee = SP)
+  expect_identical(unname(nFathers(mated, simParamBee = SP)), c(4L, 2L))
+  for (colony in 1:2) {
+    fathers <- getFathers(mated[[colony]], simParamBee = SP)
+    fatherMothers <- as.character(SP$pedigree[fathers@id, "mother"])
+    expect_identical(sort(fatherMothers),
+                     sort(unname(as.character(dpcQueens[crossPlan[[colony]]]))))
+  }
+
+  # A created spatial plan: each queen mates with nDrones drones
+  virginColonies <- createMultiColony(basePop[8:9], simParamBee = SP)
+  virginColonies <- setLocation(virginColonies, location = list(c(0, 0), c(0, 1)), simParamBee = SP)
+  droneColonies <- setLocation(droneColonies, location = list(c(1, 0), c(2, 0), c(3, 0)),
+                               simParamBee = SP)
+  mated <- cross(virginColonies, droneColonies = droneColonies, crossPlan = "create",
+                 nDrones = 6, nDPC = 1, DPCAllocation = "nearest", spatial = TRUE, radius = 10,
+                 simParamBee = SP)
+  expect_identical(unname(nFathers(mated, simParamBee = SP)), c(6L, 6L))
+  # All fathers come from the nearest colony
+  fathers <- getCasteId(mated, caste = "fathers", collapse = TRUE, simParamBee = SP)
+  expect_length(fathers, 12)
+  expect_true(all(as.character(SP$pedigree[fathers, "mother"]) == dpcQueens[dpcIds[1]]))
 })

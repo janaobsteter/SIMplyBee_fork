@@ -337,11 +337,18 @@ crossPlan2 <- createCrossPlan(x = beekeeper3,
                               nDrones = 13)
 # Inspect the cross plan
 crossPlan2
+# Number of drones (one drone producing colony ID per drone)
 sapply(crossPlan2, length)
+# Number of different drone producing colonies
+sapply(crossPlan2, function(x) length(unique(x)))
 ```
 
-We see that there is a different number of drone producing queen for each virgin
-queen in the specified radius . It could also happen, there are no drone
+The cross plan holds one drone producing colony ID per drone, sampled from the
+drone producing colonies in the specified radius, so a colony ID can repeat.
+We see that there is a different number of drone producing colonies for each
+virgin queen in the specified radius. You can limit the number of drone
+producing colonies per virgin queen with the `nDPC` argument, taking either a
+random or the nearest `nDPC` colonies (`DPCAllocation`). It could also happen, there are no drone
 producing colonies in that radius. In that case, you can either increase the
 radius, if you think that is sensible, or some virgin queens will remain
 unmated. Once we have the spatial cross plan, we can mate our colonies.

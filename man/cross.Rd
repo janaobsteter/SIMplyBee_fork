@@ -11,6 +11,8 @@ cross(
   drones = NULL,
   droneColonies = NULL,
   nDrones = NULL,
+  nDPC = NULL,
+  DPCAllocation = "random",
   spatial = FALSE,
   radius = NULL,
   checkCross = "error",
@@ -24,7 +26,8 @@ one or more virgin queens / colonies to be mated;}
 
 \item{crossPlan, }{named list with names being virgin queen or colony IDs with
 each list element holding the IDs of either selected drones or selected
-drone producing colonies, OR a string "create" if you want the cross plan to be created
+drone producing colonies (one ID per drone, so a colony ID repeated n times
+gives n drones from that colony), OR a string "create" if you want the cross plan to be created
 internally. The function can create a random (\code{spatial = FALSE})
 or spatial (\code{spatial = TRUE}) cross plan internally. Also see
 \code{\link[SIMplyBee]{createCrossPlan}}.}
@@ -47,6 +50,14 @@ internally (when \code{crossPlan} is "create")}
 
 \item{nDrones}{numeric of function, the number of drones to sample to mate with each
 virgin queen when using a cross plan}
+
+\item{nDPC}{integer, number of drone producing colonies available to each virgin
+queen when creating a cross plan with \code{droneColonies}; if \code{NULL}, all
+(in the radius, when \code{spatial = TRUE}). See
+\code{\link[SIMplyBee]{createCrossPlan}}}
+
+\item{DPCAllocation}{character, "random" or "nearest", see
+\code{\link[SIMplyBee]{createCrossPlan}}}
 
 \item{spatial}{logical, whether the drone producing colonies should be sampled according
 to their distance from the virgin colony (that is, in a radius)}

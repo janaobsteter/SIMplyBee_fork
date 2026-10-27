@@ -9,6 +9,8 @@ createCrossPlan(
   drones = NULL,
   droneColonies = NULL,
   nDrones = NULL,
+  nDPC = NULL,
+  DPCAllocation = "random",
   spatial = FALSE,
   radius,
   simParamBee = NULL,
@@ -34,6 +36,14 @@ the object needs to have the location set}
 this to provide this argument even when sampling drone producing colonies (otherwise, the default value
 will be used)}
 
+\item{nDPC, }{integer, number of drone producing colonies to use to create drones. This is only used when supplying
+drone colonies. If there number of available DPCs is less than nDPCs, all are retained. If \code{NULL} and
+\code{DPCAllocation} is 'random', all DPCs are retained.
+all DPCs in the radius are included in the cross plan.}
+
+\item{DPCAllocation, }{character, "random" (default) or "nearest", whether to retain nearest nDPC or random nDPC in
+the radius. Only applicable to when creating spatial cross plans.}
+
 \item{spatial}{logical, whether the drone producing colonies should be sampled according
 to their distance from the virgin colony (that is, in a radius)}
 
@@ -46,7 +56,10 @@ only needed when \code{spatial = TRUE}}
 }
 \value{
 named list with names being virgin queens/colonies IDs with each
-  list element holding the IDs of selected drones or drone producing colonies
+  list element holding the IDs of selected drones or drone producing colonies.
+  There is one ID per drone, so for drone producing colonies, a colony ID can
+  repeat (the colony then provides several drones). Virgin queens without a
+  drone producing colony in the radius get an empty element.
 }
 \description{
 Level 0 function that creates a plan for crossing virgin queens or
@@ -57,7 +70,6 @@ Level 0 function that creates a plan for crossing virgin queens or
 \examples{
 founderGenomes <- quickHaplo(nInd = 1000, nChr = 1, segSites = 100)
 SP <- SimParamBee$new(founderGenomes)
-\dontshow{SP$nThreads = 1L}
 basePop <- createVirginQueens(founderGenomes)
 
 # Create three virgin MultiColony objects with locations

@@ -76,7 +76,7 @@ test_that("createCastePop on MultiColony keeps simParamBee bookkeeping consisten
   apiary <- createMultiColony(queens, simParamBee = SP)
   # Each colony gets exactly one new ID
   expect_equal(SP$lastColonyId, lastColonyId + 4)
-  expect_equal(getId(apiary), lastColonyId + 1:4)
+  expect_identical(getId(apiary), as.character(as.integer(lastColonyId) + 1:4))
 
   apiary <- addWorkers(apiary, nInd = c(3, 1, 5, 2), simParamBee = SP)
   apiary <- addVirginQueens(apiary, nInd = 2, simParamBee = SP)
