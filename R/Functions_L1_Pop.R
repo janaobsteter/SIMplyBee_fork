@@ -503,7 +503,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             ret$pedigree <- simParamBee$pedigree[ret$workers@id, , drop = FALSE]
           }
           if (simParamBee$isTrackRec) {
-            ret$recHist <- simParamBee$recHist[ret$workers@iid]
+            ret$recHist <- simParamBee$recHist[ret$workers@id]
           }
         }
 
@@ -563,7 +563,7 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
             ret$pedigree <- simParamBee$pedigree[drones@id, , drop = FALSE]
           }
           if (simParamBee$isTrackRec) {
-            ret$recHist <- simParamBee$recHist[drones@iid]
+            ret$recHist <- simParamBee$recHist[drones@id]
           }
         }
 
@@ -619,66 +619,61 @@ createCastePop <- function(x, caste = NULL, nInd = NULL,
 
     lastId = simParamBee$lastId
     ids = (lastId+1):(lastId+totalNInd)
-    end_lastId <- lastId+totalNInd
 
-    ret <- future_lapply(X = seq_len(nCol),
-                                       future.seed = TRUE,
-                                       FUN = function(colony) {
-                                         nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-                                         if (nIndColony > 0) {
-                                           if (nNInd == 1) {
-                                             colonyIds = ids[((colony-1)*nIndColony+1):(colony*nIndColony)]
-                                           } else {
-                                             colonyIds = base::split(ids, rep(seq_along(nInd), nInd))[[as.character(colony)]]
-                                           }
-
-                                           createCastePop(
-                                             x = x[[colony]], caste = caste,
-                                             nInd = nIndColony,
-                                             editCsd = TRUE, csdAlleles = NULL,
-                                             simParamBee = simParamBee,
-                                             returnSP = TRUE,
-                                             ids = as.character(colonyIds)
-                                           )
-                                         } else {
-                                           NULL
-                                         }
-                                       }
-    )
-
-    names(ret) <- getId(x)
-    # Add to simParamBee: pedigree, caste, recHist
-    notNull = sapply(ret, FUN = function(x) !is.null(x))
-
-    updatedIdBoolean <- simParamBee$lastId == end_lastId
-
-    if (!simParamBee$isTrackPed & !updatedIdBoolean) {
-      simParamBee$updateLastBeeId(n = totalNInd)
-    } else if (simParamBee$isTrackPed & !updatedIdBoolean) {
-      Pedigree <- do.call("rbind", lapply(ret[notNull], '[[', "pedigree"))
-      if (!simParamBee$isTrackRec) {
-        simParamBee$addToBeePed(nNewInd = totalNInd, id = rownames(Pedigree),
-                                mother = Pedigree[, 'mother'], father = Pedigree[, 'father'],
-                                isDH = Pedigree[, 'isDH'])
-        #simParamBee$updatePedigree(pedigree = Pedigree)
+    # Pass each colony with its own nInd and IDs as an element of X, so that
+    # future.apply ships to each worker only its chunk of colonies rather than
+    # the whole MultiColony. New individuals are created only from the queen
+    # (and her fathers), so we pass colonies without workers, drones, and
+    # virgin queens.
+    nIndByColony <- if (nNInd == 1) rep(nInd, nCol) else nInd
+    idsByColony <- base::split(ids, factor(rep(seq_len(nCol), nIndByColony),
+                                           levels = seq_len(nCol)))
+    tasks <- lapply(seq_len(nCol), FUN = function(colony) {
+      col <- x@colonies[[colony]]
+      if (!is.null(col)) {
+        col@workers <- NULL
+        col@drones <- NULL
+        col@virginQueens <- NULL
+      }
+      list(colony = col, nInd = nIndByColony[colony],
+           ids = idsByColony[[colony]])
+    })
+    workerFUN <- function(task, caste, simParamBee) {
+      if (task$nInd > 0) {
+        createCastePop(
+          x = task$colony, caste = caste,
+          nInd = task$nInd,
+          editCsd = TRUE, csdAlleles = NULL,
+          simParamBee = simParamBee,
+          returnSP = TRUE,
+          ids = as.character(task$ids)
+        )
       } else {
-        RecHist = do.call("c", lapply(ret[notNull], '[[', "recHist"))
-        if (caste == "drones") {
-          ploidy = rep(1, totalNInd)
-        } else {
-          ploidy = rep(2, totalNInd)
-        }
-        simParamBee$addToBeeRec(nNewInd = totalNInd, id = rownames(Pedigree),
-                                mother = Pedigree[, 'mother'], father = Pedigree[, 'father'],
-                                isDH = Pedigree[, 'isDH'],
-                                hist = RecHist, ploidy = ploidy)
+        NULL
       }
     }
-    # Extend caste
-    Caste <- do.call("c", lapply(ret[notNull], '[[', "caste"))
-    Names <- do.call("c", lapply(ret[notNull], function(x) names(x$caste)))
-    names(Caste) <- Names
-    simParamBee$updateCaste(caste = Caste)
+    # Detach from this frame, otherwise future serialises the whole frame
+    # (including x and tasks) together with the function to every worker.
+    # workerFUN gets everything via its arguments, so we also skip scanning
+    # the colonies in X for globals (future.globals = list()), which is slow
+    environment(workerFUN) <- new.env(parent = topenv())
+    # Workers get a slimmed copy of simParamBee (without pedigree, recHist,
+    # and caste records) and do not update simParamBee - they return the
+    # records of the new individuals, which we add to simParamBee below
+    ret <- future_mapply(FUN = workerFUN, task = tasks,
+                         MoreArgs = list(caste = caste, simParamBee = simParamBee$slimClone()),
+                         SIMPLIFY = FALSE, USE.NAMES = FALSE,
+                         future.globals = list(), future.seed = TRUE)
+    rm(tasks)
+
+    names(ret) <- getId(x)
+    notNull = sapply(ret, FUN = function(x) !is.null(x))
+    addBeeRecords_internal(
+      simParamBee = simParamBee, ids = ids, caste = caste,
+      pedigree = do.call("rbind", lapply(ret[notNull], FUN = "[[", "pedigree")),
+      recHist = do.call("c", unname(lapply(ret[notNull], FUN = "[[", "recHist"))),
+      ploidy = ifelse(caste == "drones", 1L, 2L)
+    )
 
 
     if (!returnSP) {
@@ -740,6 +735,154 @@ createVirginQueens <- function(x, nInd = NULL,
                         csdAlleles = csdAlleles, simParamBee = simParamBee,
                         returnSP = returnSP,
                         ids = ids,  ...)
+  return(ret)
+}
+
+# Add the records of individuals created on parallel workers (with a
+# SimParamBee$slimClone()) to simParamBee, in one step and in ID order.
+# pedigree is a matrix with rows named by ids, recHist a list named by ids.
+addBeeRecords_internal <- function(simParamBee, ids, caste, pedigree = NULL,
+                                   recHist = NULL, ploidy = 2L) {
+  ids <- as.character(ids)
+  nNewInd <- length(ids)
+  if (nNewInd == 0) {
+    return(invisible(simParamBee))
+  }
+  if (simParamBee$isTrackPed) {
+    if (!identical(rownames(pedigree), ids)) {
+      stop("Pedigree records do not match the new IDs!")
+    }
+    if (simParamBee$isTrackRec) {
+      simParamBee$addToBeeRec(nNewInd = nNewInd, id = ids,
+                              mother = pedigree[, "mother"], father = pedigree[, "father"],
+                              isDH = pedigree[, "isDH"],
+                              hist = recHist[ids], ploidy = rep(ploidy, nNewInd))
+    } else {
+      simParamBee$addToBeePed(nNewInd = nNewInd, id = ids,
+                              mother = pedigree[, "mother"], father = pedigree[, "father"],
+                              isDH = pedigree[, "isDH"])
+    }
+  } else {
+    simParamBee$updateLastBeeId(n = nNewInd)
+  }
+  casteRecords <- rep(caste, nNewInd)
+  names(casteRecords) <- ids
+  simParamBee$updateCaste(caste = casteRecords)
+  invisible(simParamBee)
+}
+
+# For a Colony or each colony in a MultiColony, create nInd virgin queens
+# from the queen and her fathers, remove csd homozygous ones, and select one at
+# random that prevails (as in swarm and supersede). Returns a virgin queen (Pop)
+# or NULL (all virgin queens csd homozygous) for a Colony, and a list of these
+# for a MultiColony. nInd is a single value or one value per colony.
+# The virgin queens are created with a slimmed copy of simParamBee and their
+# records are added to simParamBee in one step. For a MultiColony, each
+# parallel worker runs this function on its colonies (with only the queen) and
+# the slimmed copy of simParamBee, and given ids, so that it returns the
+# prevailing virgin queen with the records of all created virgin queens.
+createPrevailingVirginQueens_internal <- function(x, nInd, simParamBee, ids = NULL) {
+  if (isColony(x)) {
+    if (length(nInd) != 1 || is.na(nInd) || nInd < 1) {
+      stop("nInd must be a single value of at least 1 for a Colony!")
+    }
+    returnRecords <- !is.null(ids)
+    if (!returnRecords) {
+      ids <- simParamBee$lastId + seq_len(nInd)
+      fullSimParamBee <- simParamBee
+      simParamBee <- simParamBee$slimClone()
+    }
+    queen <- x@queen
+    virginQueens <- combineBeeGametes(
+      queen = queen,
+      drones = getFathers(queen, simParamBee = simParamBee),
+      nProgeny = nInd,
+      simParamBee = simParamBee
+    )
+    pedigree <- NULL
+    recHist <- NULL
+    tmpIds <- virginQueens@id
+    if (simParamBee$isTrackPed) {
+      pedigree <- simParamBee$pedigree[tmpIds, , drop = FALSE]
+      rownames(pedigree) <- ids
+    }
+    if (simParamBee$isTrackRec) {
+      recHist <- simParamBee$recHist[tmpIds]
+      names(recHist) <- ids
+    }
+    virginQueens@id <- as.character(ids)
+    virginQueens@iid <- as.integer(ids)
+    virginQueens@sex[] <- "F"
+    if (isCsdActive(simParamBee = simParamBee)) {
+      virginQueens <- virginQueens[isCsdHeterozygous(pop = virginQueens, simParamBee = simParamBee)]
+    }
+    ret <- NULL
+    if (nInd(virginQueens) > 0) {
+      ret <- selectInd(virginQueens, nInd = 1, use = "rand", simParam = simParamBee)
+    }
+    if (returnRecords) {
+      return(list(virginQueen = ret, pedigree = pedigree, recHist = recHist))
+    }
+    addBeeRecords_internal(simParamBee = fullSimParamBee, ids = ids,
+                           caste = "virginQueens", pedigree = pedigree,
+                           recHist = recHist, ploidy = 2L)
+    return(ret)
+  } else if (isMultiColony(x)) {
+    nCol <- nColonies(x)
+    if (nCol == 0) {
+      stop("The Multicolony contains 0 colonies!")
+    }
+    if (!(length(nInd) == 1 || length(nInd) == nCol)) {
+      stop("nInd must be a single value or one value per colony!")
+    }
+    nInd <- rep_len(as.integer(nInd), nCol)
+    if (any(is.na(nInd) | nInd < 1)) {
+      stop("nInd must be at least 1 for every colony!")
+    }
+    lastId <- simParamBee$lastId
+    ids <- (lastId + 1L):(lastId + sum(nInd))
+    idsByColony <- base::split(ids, rep(seq_len(nCol), times = nInd))
+    # Virgin queens are created only from the queen (and her fathers), so we
+    # pass colonies without workers, drones, and virgin queens
+    colonies <- lapply(x@colonies, FUN = function(colony) {
+      colony@workers <- NULL
+      colony@drones <- NULL
+      colony@virginQueens <- NULL
+      colony
+    })
+    res <- future_mapply(FUN = createPrevailingVirginQueens_internal,
+                         x = colonies, nInd = nInd, ids = idsByColony,
+                         MoreArgs = list(simParamBee = simParamBee$slimClone()),
+                         SIMPLIFY = FALSE, USE.NAMES = FALSE,
+                         future.globals = list(), future.seed = TRUE)
+    rm(colonies)
+    addBeeRecords_internal(
+      simParamBee = simParamBee, ids = ids, caste = "virginQueens",
+      pedigree = do.call("rbind", lapply(res, FUN = "[[", "pedigree")),
+      recHist = do.call("c", lapply(res, FUN = "[[", "recHist")),
+      ploidy = 2L
+    )
+    ret <- lapply(res, FUN = "[[", "virginQueen")
+    names(ret) <- getId(x)
+    return(ret)
+  } else {
+    stop("Argument x must be a Colony or MultiColony class object!")
+  }
+}
+
+# Pull individuals of a caste from each colony in a MultiColony (as in swarm
+# and split). Pulling is only sampling, so we do it here, colony by colony,
+# rather than shipping colonies to parallel workers as pullCastePop() does.
+# nInd is one value per colony. Returns the same list as pullCastePop().
+pullCastePopByColony_internal <- function(x, caste, nInd, simParamBee) {
+  nCol <- nColonies(x)
+  tmp <- lapply(seq_len(nCol), FUN = function(colony) {
+    pullCastePop(x = x@colonies[[colony]], caste = caste,
+                 nInd = nInd[colony], simParamBee = simParamBee)
+  })
+  ret <- list(pulled = lapply(tmp, FUN = "[[", "pulled"), remnant = x)
+  names(ret$pulled) <- getId(x)
+  ret$remnant@colonies <- lapply(tmp, FUN = "[[", "remnant")
   return(ret)
 }
 
@@ -1255,23 +1398,37 @@ pullCastePop <- function(x, caste, nInd = NULL, use = "rand",
     ret$pulled <- vector(mode = "list", length = nCol)
     ret$remnant <- x
 
-    tmp = future_lapply(X = seq_len(nCol),
-                                      future.seed = TRUE,
-                                      FUN = function(colony) {
-                                        if (is.null(nInd)) {
-                                          nIndColony <- NULL
-                                        } else {
-                                          nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
-                                        }
-                                        pullCastePop(x = x[[colony]],
-                                                     caste = caste,
-                                                     nInd = nIndColony,
-                                                     use = use,
-                                                     removeFathers = removeFathers,
-                                                     collapse = collapse,
-                                                     simParamBee = simParamBee)
-                                      }
-    )
+    # Pass each colony with its own nInd as an element of X, so that each
+    # worker receives only its chunk of colonies
+    tasks <- lapply(seq_len(nCol), FUN = function(colony) {
+      if (is.null(nInd)) {
+        nIndColony <- NULL
+      } else {
+        nIndColony <- ifelse(nNInd == 1, nInd, nInd[colony])
+      }
+      list(colony = x[[colony]], nInd = nIndColony)
+    })
+    workerFUN <- function(task, caste, use, removeFathers, collapse, simParamBee) {
+      pullCastePop(x = task$colony,
+                   caste = caste,
+                   nInd = task$nInd,
+                   use = use,
+                   removeFathers = removeFathers,
+                   collapse = collapse,
+                   simParamBee = simParamBee)
+    }
+    # Detach from this frame, otherwise future serialises the whole frame
+    # (including x and tasks) together with the function to every worker.
+    # workerFUN gets everything via its arguments, so we also skip scanning
+    # the colonies in X for globals (future.globals = list()), which is slow
+    environment(workerFUN) <- new.env(parent = topenv())
+    tmp = future_mapply(FUN = workerFUN, task = tasks,
+                        MoreArgs = list(caste = caste, use = use,
+                                        removeFathers = removeFathers, collapse = collapse,
+                                        simParamBee = simParamBee),
+                        SIMPLIFY = FALSE, USE.NAMES = FALSE,
+                        future.globals = list(), future.seed = TRUE)
+    rm(tasks)
 
     ret$pulled <- lapply(tmp, '[[', "pulled")
     names(ret$pulled) <- getId(x)
@@ -1669,7 +1826,7 @@ cross <- function(x,
       # Here we sample from the DPC in the cross plan to get the needed number of drones (nD)
       crossPlanDF_sample <- do.call("rbind", lapply(IDs,
                                                     FUN = function(x) {
-                                                      data.frame(virginID = x, DPC = sample(crossPlan[[x]], size = nD[which(x == IDs)], replace = TRUE))
+                                                      data.frame(virginID = x, DPC = crossPlan[[x]][sample.int(length(crossPlan[[x]]), size = nD[which(x == IDs)], replace = TRUE)])
                                                     } ))
       crossPlanDF_sample <- crossPlanDF_sample[order(as.character(crossPlanDF_sample$DPC)),]
       # Here I gather how many drones each DPC needs to produce
@@ -1756,10 +1913,12 @@ cross <- function(x,
   }
 
   # Add drones in the queens father slot
+  # This is cheap metadata work without random numbers, so we run it
+  # sequentially - parallel workers would cost more to ship x and drones to
+  # than the work itself
 
-  x <- future_lapply(X = 1:length(IDs),
-                                  future.seed = TRUE,
-                                  FUN = function(i) {
+  x <- lapply(X = seq_along(IDs),
+              FUN = function(i) {
     crossVirginQueen(virginQueen = x[i],
                      virginQueenDrones = dronesByVirgin[[i]],
                      simParamBee = simParamBee)

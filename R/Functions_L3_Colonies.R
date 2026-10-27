@@ -72,9 +72,12 @@ createMultiColony <- function(
         end_lastColonyId <- simParamBee$lastColonyId + n
         ids <- (simParamBee$lastColonyId+1):end_lastColonyId
 
-        ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
+
+        ret@colonies <- lapply(X = seq_len(n),
+                                                    FUN = function(colony) {
           createColony(simParamBee = simParamBee, id = ids[colony])
         })
+
         updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId
         if (!updatedColonyIdBoolean) {
           simParamBee$updateLastColonyId(n = n)
@@ -101,12 +104,15 @@ createMultiColony <- function(
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")
     }
+
     ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
     end_lastColonyId <- simParamBee$lastColonyId + n
     ids <- (simParamBee$lastColonyId+1):end_lastColonyId
 
-    ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
-      createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+    ret@colonies <- lapply(X = seq_len(n),
+                                                FUN = function(colony) {
+          createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+
     })
 
     updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId

@@ -522,6 +522,44 @@ SimParamBee <- R6Class(
       n = as.integer(n)
       private$.lastColonyId = private$.lastColonyId + n
       invisible(self)
+    },
+
+    #' @description A copy of the simulation parameters for parallel workers,
+    #'   without the records of all individuals created so far (pedigree,
+    #'   recombination history, and caste), which can be large. Workers use
+    #'   it to create new individuals and return their records, which are then
+    #'   added to the original object. For internal use in SIMplyBee only.
+    #'
+    #' @param casteIds character, IDs of individuals whose caste records to
+    #'   keep
+    slimClone = function(casteIds = NULL) {
+      ret = self$clone(deep = FALSE)
+      retPrivate = ret$.__enclos_env__$private
+      if (!is.null(private$.pedigree)) {
+        retPrivate$.pedigree = private$.pedigree[0, , drop = FALSE]
+      }
+      retPrivate$.recHist = list()
+      retPrivate$.hasHap = logical(0)
+      retPrivate$.isFounder = logical(0)
+      if (is.null(casteIds)) {
+        retPrivate$.caste = private$.caste[0]
+      } else {
+        retPrivate$.caste = private$.caste[as.character(casteIds)]
+      }
+      # Founder genomes are not needed to create new individuals
+      ret$founderPop = NULL
+      # AlphaSimR creates the default finalizePop() inside initialize(), so it
+      # encloses (and would serialise) the original object - re-home it
+      finalizeEnv = environment(ret$finalizePop)
+      if (!is.null(finalizeEnv) &&
+          exists("self", envir = finalizeEnv, inherits = FALSE) &&
+          identical(get("self", envir = finalizeEnv), self)) {
+        finalizePop = ret$finalizePop
+        environment(finalizePop) = new.env(parent = baseenv())
+        ret$finalizePop = finalizePop
+      }
+      ret$nThreads = 1L
+      invisible(ret)
     }
   ),
 
