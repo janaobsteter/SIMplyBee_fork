@@ -401,6 +401,85 @@ test_that("combineBeeGametesHaploidDiploid", {
   expect_equal(drones@ploidy, 1)
 })
 
+
+# ---- cross with a single drone producing colony ----
+
+test_that("cross samples drones only from the drone producing colonies in the cross plan", {
+  founderGenomes <- quickHaplo(nInd = 12, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  SP$setTrackPed(TRUE)
+  SP$nWorkers <- 10
+  SP$nDrones <- 10
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1:2], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[3:8], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+  apiary <- buildUp(createMultiColony(queens, simParamBee = SP), simParamBee = SP)
+  virginColonies <- createMultiColony(basePop[9:12], simParamBee = SP)
+
+  # A single drone producing colony with an ID > 1, so that sample(ID) would
+  # sample from 1:ID
+  dpc <- apiary[6]
+  dpcQueenId <- getCasteId(dpc, caste = "queen", collapse = TRUE, simParamBee = SP)
+  set.seed(1)
+  mated <- cross(virginColonies, droneColonies = dpc, nDrones = 10,
+                 crossPlan = "create", simParamBee = SP)
+  expect_equal(nColonies(mated), 4)
+  fatherIds <- getCasteId(mated, caste = "fathers", collapse = TRUE, simParamBee = SP)
+  expect_true(all(SP$pedigree[fatherIds, "mother"] == as.integer(dpcQueenId)))
+
+  # A given cross plan with one drone producing colony per virgin queen
+  virginColonies <- createMultiColony(mergePops(createVirginQueens(apiary[1:4], nInd = 1,
+                                                                   simParamBee = SP)),
+                                      simParamBee = SP)
+  dpcs <- apiary[5:6]
+  crossPlan <- as.list(rep(getId(dpcs)[2], nColonies(virginColonies)))
+  names(crossPlan) <- getId(virginColonies)
+  mated <- cross(virginColonies, droneColonies = dpcs, nDrones = 10,
+                 crossPlan = crossPlan, simParamBee = SP)
+  fatherIds <- getCasteId(mated, caste = "fathers", collapse = TRUE, simParamBee = SP)
+  expect_true(all(SP$pedigree[fatherIds, "mother"] == as.integer(dpcQueenId)))
+})
+
+# ---- createCastePop records for MultiColony ----
+
+test_that("createCastePop on a MultiColony records all new individuals in SimParamBee", {
+  founderGenomes <- quickHaplo(nInd = 12, nChr = 2, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = 1, nCsdAlleles = 8)
+  SP$nThreads <- 1L
+  SP$setTrackPed(TRUE)
+  SP$setTrackRec(TRUE)
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+  drones <- createDrones(basePop[1:2], nInd = 50, simParamBee = SP)
+  queens <- cross(basePop[3:6], drones = drones, crossPlan = "create",
+                  nDrones = 5, simParamBee = SP)
+  apiary <- createMultiColony(queens, simParamBee = SP)
+  apiary <- buildUp(apiary, nWorkers = 10, nDrones = 5, simParamBee = SP)
+  queenIds <- getCasteId(apiary, caste = "queen", collapse = TRUE, simParamBee = SP)
+  nInd <- c(3, 1, 4, 2)
+
+  for (caste in c("workers", "drones", "virginQueens")) {
+    lastId <- SP$lastId
+    newApiary <- addCastePop(apiary, caste = caste, nInd = nInd, simParamBee = SP)
+    newIds <- as.character((lastId + 1):(lastId + sum(nInd)))
+    expect_equal(SP$lastId, lastId + sum(nInd))
+    expect_true(all(SP$caste[newIds] == caste))
+    expect_equal(rownames(SP$pedigree)[(lastId + 1):SP$lastId], newIds)
+    expect_equal(unname(SP$pedigree[newIds, "mother"]),
+                 rep(as.integer(queenIds), times = nInd))
+    expect_false(any(sapply(SP$recHist[newIds], is.null)))
+    for (colony in seq_len(nColonies(apiary))) {
+      # Existing individuals are kept and the new ones come from the right
+      # queen (csd homozygous workers and virgin queens are not added)
+      oldIds <- getCasteId(apiary[[colony]], caste = caste, simParamBee = SP)
+      ids <- getCasteId(newApiary[[colony]], caste = caste, simParamBee = SP)
+      expect_true(all(oldIds %in% ids))
+      added <- setdiff(ids, oldIds)
+      expect_true(all(added %in% newIds))
+      expect_true(all(SP$pedigree[added, "mother"] == as.integer(queenIds[colony])))
+    }
+  }
 # ---- cross plans with character IDs ----
 
 test_that("cross plans match character colony IDs independently of queen IDs", {

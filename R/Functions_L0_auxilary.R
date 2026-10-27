@@ -6441,7 +6441,7 @@ createCrossPlan <- function(x,
     } else {
       print("Cross plan, drone colonies")
       ids <- getId(droneColonies)
-      crossPlan <- lapply(1:length(virginId), FUN = function(x) unique(sample(x = ids, size = nDrones[x], replace = TRUE)))
+      crossPlan <- lapply(1:length(virginId), FUN = function(x) unique(ids[sample.int(length(ids), size = nDrones[x], replace = TRUE)]))
     }
   }
   names(crossPlan) <- virginId

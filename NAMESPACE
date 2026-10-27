@@ -210,7 +210,7 @@ import(Rcpp)
 importFrom(R6,R6Class)
 importFrom(Rdpack,reprompt)
 importFrom(extraDistr,rtpois)
-importFrom(future.apply,future_lapply)
+importFrom(future.apply,future_mapply)
 importFrom(methods,
   "slot<-",
   classLabel,

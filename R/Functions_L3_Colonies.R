@@ -69,12 +69,23 @@ createMultiColony <- function(
         colonies = vector(mode = "list", length = n)
       )
       if (populateColonies) {
-        ids <- (simParamBee$lastColonyId + 1):(simParamBee$lastColonyId + n)
 
-        ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
+        end_lastColonyId <- simParamBee$lastColonyId + n
+        ids <- (simParamBee$lastColonyId+1):end_lastColonyId
+
+
+        ret@colonies <- lapply(X = seq_len(n),
+                                                    FUN = function(colony) {
           createColony(simParamBee = simParamBee, id = ids[colony])
         })
-        simParamBee$updateLastColonyId(n = n)
+
+        updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId
+        if (!updatedColonyIdBoolean) {
+          simParamBee$updateLastColonyId(n = n)
+        }
+      } else {
+
+
       }
     }
   } else {
@@ -95,16 +106,21 @@ createMultiColony <- function(
     if (nInd(x) < n) {
       stop("Not enough individuals in the x to create n colonies!")
     }
-    ret <- new(
-      Class = "MultiColony",
-      colonies = vector(mode = "list", length = n)
-    )
-    ids <- (simParamBee$lastColonyId + 1):(simParamBee$lastColonyId + n)
 
-    ret@colonies <- future_lapply(X = seq_len(n), FUN = function(colony) {
-      createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+    ret <- new(Class = "MultiColony", colonies = vector(mode = "list", length = n))
+    end_lastColonyId <- simParamBee$lastColonyId + n
+    ids <- (simParamBee$lastColonyId+1):end_lastColonyId
+
+    ret@colonies <- lapply(X = seq_len(n),
+                                                FUN = function(colony) {
+          createColony(x = x[colony], simParamBee = simParamBee, id = ids[colony])
+
     })
-    simParamBee$updateLastColonyId(n = n)
+
+    updatedColonyIdBoolean <- simParamBee$lastColonyId == end_lastColonyId
+    if (!updatedColonyIdBoolean) {
+      simParamBee$updateLastColonyId(n = n)
+    }
   }
 
   validObject(ret)
