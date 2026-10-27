@@ -1826,7 +1826,7 @@ cross <- function(x,
       crossPlanDF <- crossPlanDF[crossPlanDF$virginID %in% IDs, ]
       crossPlanDF <- crossPlanDF[order(crossPlanDF$DPC), ]
       # Here I gather how many drones each DPC needs to produce
-      crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF_sample$DPC))
+      crossPlanDF_DPCtable <- as.data.frame(table(crossPlanDF$DPC))
       crossPlanDF_DPCtable <- crossPlanDF_DPCtable[order(as.character(crossPlanDF_DPCtable$Var1)),]
       colnames(crossPlanDF_DPCtable) <- c("DPC", "noDrones")
       # Here I select only the DPCs that have been sampled to produce drones
@@ -1841,11 +1841,11 @@ cross <- function(x,
       dronesByDPC_DF <- dronesByDPC_DF[order(as.character(dronesByDPC_DF$DPC)),]
       dronePop = mergePops(dronesByDPC)
 
-      if (any(!crossPlanDF_sample$DPC == dronesByDPC_DF$DPC)) {
+      if (any(!crossPlanDF$DPC == dronesByDPC_DF$DPC)) {
         stop("Something went wrong with cross plan - drone matching!")
       }
 
-      dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF_sample[, c("virginID"), drop = FALSE])
+      dronesByVirgin_DF <- cbind(dronesByDPC_DF, crossPlanDF[, c("virginID"), drop = FALSE])
       dronesByVirgin_DF <- dronesByVirgin_DF[order(match(dronesByVirgin_DF$virginID, IDs)),]
       dronesByVirgin_list <- lapply(IDs,
                                     FUN = function(x) dronesByVirgin_DF$droneID[dronesByVirgin_DF$virginID == x])
