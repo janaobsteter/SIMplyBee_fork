@@ -60,8 +60,7 @@ editor_options:
 - `createCrossPlan()` and `cross()` gain `nDPC` and `DPCAllocation` to limit
     the number of drone producing colonies available to each virgin queen,
     either a random or the nearest `nDPC` colonies for spatial cross plans (still in the 
-    specified radius).
-
+    specified radius). Virgin queen mates with exactly `nDPC` colonies when `nDrones >= nDPC`.
 
 - added functionality to map individual-level variance to colony-level variance and vice-versa
   with functions `mapIndToColonyVar()` and `mapColonyToIndVar()` functions. This is neccesary

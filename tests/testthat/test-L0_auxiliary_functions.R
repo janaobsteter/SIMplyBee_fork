@@ -2026,6 +2026,54 @@ test_that("createCrossPlan limits drone producing colonies with nDPC and DPCAllo
   expect_identical(unname(lengths(plan)), c(4L, 7L))
 })
 
+test_that("createCrossPlan uses every retained drone producing colony", {
+  founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
+  SP <- SimParamBee$new(founderGenomes, csdChr = NULL)
+  SP$nThreads <- 1L
+  basePop <- createVirginQueens(founderGenomes, simParamBee = SP)
+
+  virginColonies <- createMultiColony(basePop[1:10], simParamBee = SP)
+  virginColonies <- setLocation(virginColonies, location = lapply(1:10, function(i) c(0, 0)),
+                                simParamBee = SP)
+  droneColonies <- createMultiColony(basePop[11:22], simParamBee = SP)
+  droneColonies <- setLocation(droneColonies, location = lapply(1:12, function(d) c(d, 0)),
+                               simParamBee = SP)
+  dpcIds <- as.character(getId(droneColonies))
+  nDPCUsed <- function(plan) unname(sapply(plan, function(p) length(unique(p))))
+
+  set.seed(1)
+  for (spatial in c(FALSE, TRUE)) {
+    for (DPCAllocation in if (spatial) c("random", "nearest") else "random") {
+      createPlan <- function(nDrones, nDPC) {
+        createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = nDrones,
+                        nDPC = nDPC, DPCAllocation = DPCAllocation, spatial = spatial,
+                        radius = 20, simParamBee = SP)
+      }
+      # Few drones per colony: with sampling with replacement, some of the
+      # nDPC colonies would often be missed
+      plan <- createPlan(nDrones = 6, nDPC = 5)
+      expect_identical(unname(lengths(plan)), rep(6L, 10))
+      expect_identical(nDPCUsed(plan), rep(5L, 10))
+      expect_true(all(unlist(plan) %in% dpcIds))
+      plan <- createPlan(nDrones = 5, nDPC = 5)
+      expect_identical(nDPCUsed(plan), rep(5L, 10))
+      # Fewer drones than nDPC: one drone per colony
+      plan <- createPlan(nDrones = 3, nDPC = 5)
+      expect_identical(nDPCUsed(plan), rep(3L, 10))
+      # Varying nDrones per virgin queen
+      plan <- createPlan(nDrones = function(n) rep(c(2, 8), length.out = n), nDPC = 4)
+      expect_identical(unname(lengths(plan)), rep(c(2L, 8L), 5))
+      expect_identical(nDPCUsed(plan), rep(c(2L, 4L), 5))
+    }
+  }
+  # Without nDPC, all colonies are used when there are enough drones
+  plan <- createCrossPlan(x = virginColonies, droneColonies = droneColonies, nDrones = 12,
+                          spatial = FALSE, simParamBee = SP)
+  for (p in plan) {
+    expect_setequal(p, dpcIds)
+  }
+})
+
 test_that("cross uses a drone producing colony cross plan as given", {
   founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 100)
   SP <- SimParamBee$new(founderGenomes, csdChr = NULL)

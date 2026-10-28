@@ -6322,8 +6322,10 @@ editCsdLocus <- function(pop, alleles = NULL, simParamBee = NULL) {
 #'   will be used)
 #' @param nDPC, integer, number of drone producing colonies to use to create drones. This is only used when supplying
 #'   drone colonies. If there number of available DPCs is less than nDPCs, all are retained. If \code{NULL} and
-#'   \code{DPCAllocation} is 'random', all DPCs are retained.
-#'   all DPCs in the radius are included in the cross plan.
+#'   \code{DPCAllocation} is 'random', all DPCs (in the radius, when \code{spatial = TRUE}) are retained.
+#'   Each retained DPC provides at least one drone, so a virgin queen mates with drones from
+#'   exactly \code{min(nDPC, number of available DPCs)} colonies when \code{nDrones} is at least that
+#'   number.
 #' @param DPCAllocation, character, "random" (default) or "nearest", whether to retain nearest nDPC or random nDPC in
 #'   the radius. Only applicable to when creating spatial cross plans.
 #' @param spatial logical, whether the drone producing colonies should be sampled according
@@ -6450,13 +6452,18 @@ createCrossPlan <- function(x,
   }
   nDrones <- as.integer(nDrones)
 
-  # One drone producing colony ID per drone (with replacement), so that
-  # cross() can use the cross plan as given
-  sampleDPCPerDrone <- function(dpc, n) {
-    if (length(dpc) == 0) {
+  # One drone producing colony ID per worker, so that cross() can use the cross
+  # plan as given. Each colony provides at least one drone (when n >= number of
+  # colonies), the remaining drones are sampled from the colonies with replacement
+  sampleDPCPerWorker <- function(dpc, n) {
+    nDPCAvailable <- length(dpc)
+    if (nDPCAvailable == 0) {
       return(dpc)
     }
-    dpc[sample.int(length(dpc), size = n, replace = TRUE)]
+    if (n <= nDPCAvailable) {
+      return(dpc[sample.int(nDPCAvailable, size = n)])
+    }
+    c(dpc, dpc[sample.int(nDPCAvailable, size = n - nDPCAvailable, replace = TRUE)])
   }
 
   if (spatial) {
@@ -6476,7 +6483,7 @@ createCrossPlan <- function(x,
       queenDPC <- lapply(queenDPC, function(dpc) if (length(dpc) > nDPC) dpc[sample.int(length(dpc), nDPC)] else dpc)
     }
     crossPlan <- lapply(seq_along(virginId), FUN = function(i) {
-      sampleDPCPerDrone(queenDPC[[i]], nDrones[i])
+      sampleDPCPerWorker(queenDPC[[i]], nDrones[i])
     })
   } else  {
     if (!is.null(drones)) {
@@ -6490,9 +6497,9 @@ createCrossPlan <- function(x,
           queenDPC <- ids
         } else {
           # This queen's nDPC colonies, at random from all available
-          queenDPC <- ids[sample.int(length(ids), size = min(nDPC, length(ids)))]
+          queenDPC <- ids[sample.int(length(ids), size = min(nDPC, length(ids)), replace = FALSE)]
         }
-        sampleDPCPerDrone(queenDPC, nDrones[i])
+        sampleDPCPerWorker(queenDPC, nDrones[i])
       })
     }
   }
