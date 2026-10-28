@@ -38,8 +38,10 @@ will be used)}
 
 \item{nDPC, }{integer, number of drone producing colonies to use to create drones. This is only used when supplying
 drone colonies. If there number of available DPCs is less than nDPCs, all are retained. If \code{NULL} and
-\code{DPCAllocation} is 'random', all DPCs are retained.
-all DPCs in the radius are included in the cross plan.}
+\code{DPCAllocation} is 'random', all DPCs (in the radius, when \code{spatial = TRUE}) are retained.
+Each retained DPC provides at least one drone, so a virgin queen mates with drones from
+exactly \code{min(nDPC, number of available DPCs)} colonies when \code{nDrones} is at least that
+number.}
 
 \item{DPCAllocation, }{character, "random" (default) or "nearest", whether to retain nearest nDPC or random nDPC in
 the radius. Only applicable to when creating spatial cross plans.}
