@@ -226,7 +226,9 @@ as a single object. The cross plan is a list whose names are the IDs of either
 the virgin queens or the colonies you want to cross (but not both in the same
 cross plan!), and the content for each queen is either the IDs of drone or drone
 producing colonies she will mate with (again, use either only drone or only
-drone producing colony's IDs in one cross plan!). When providing drone IDs, you
+drone producing colony's IDs in one cross plan!). You need to specify
+tha father (as drone or drone colony) for each of the workers you intend to create.
+When providing drone IDs, you
 also have to provide the males through the `drones` argument as a single `Pop`
 class that represents the DCA with all the drones. The DCA can represent a DCA
 of randomly assembled drones in the vicinity, a 'global' DCA of all drones
@@ -235,6 +237,10 @@ producing colonies' IDs, you need to provide the males through the
 `droneColonies` argument as a single `MultiColony` class. Mating with drone
 producing colonies might be computationally more efficient since only the drones
 needed for mating are created on the spot.
+When creating the cross plan and providing drone colonies,
+you can limit how many of them contribute drones for mating of each virgin queen
+by providing a `nDPC` argument. If this is not specified, drones for each virgin queen are
+sampled from all the provided drone colonies.
 
 You can use the cross plan either to gain more control over mating and create
 the cross plan in a manual manner, or to simply reduce the computational burden
@@ -328,6 +334,10 @@ Next, we create a spatial cross plan for mating our colonies. We set the radius
 to however far we believe our drone can fly according to the scale of locations
 coordinates. All the drones within that area then have the same probability of
 mating with the queen, which follows the believe that drones aggregate in a DCA.
+ When creating a spatial cross plan, we can also limit the number of drone colonies
+ that contribute drones for the mating of each virgin queen via `nDPC`. Additionally,
+ you can also specify whether you want the nearest (within the radius) or a random
+ `nDPC` via the `DPCAllocation` argument.
 
 ```{r}
 crossPlan2 <- createCrossPlan(x = beekeeper3,
@@ -406,8 +416,10 @@ beekeeper4 <- cross(x = beekeeper4,
                     crossPlan = "create",
                     spatial = FALSE,
                     nDrones = 12,
+                    nDPC = 5,
                     checkCross = "warning")
 nFathers(beekeeper4)
+sapply(getFathers(beekeeper4), FUN = function(x) length(unique(x@mother)))
 
 beekeeper5 <- cross(x = beekeeper5,
                     droneColonies = c(beekeeper1, beekeeper2, beekeeper3),
@@ -415,8 +427,11 @@ beekeeper5 <- cross(x = beekeeper5,
                     spatial = TRUE,
                     radius = 8,
                     nDrones = 12,
+                    nDPC = 5,
+                    DPCAllocation = "random",
                     checkCross = "warning")
 nFathers(beekeeper5)
+sapply(getFathers(beekeeper5), FUN = function(x) length(unique(x@mother)))
 ```
 
 # Special cases

@@ -20,27 +20,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Quick set-up instructions
-
-Here, we show how you should set-up the parallel back-end on different
-environments. We recommend running these lines at the beginning of the
-simulation. We do recommend reading the remaining of this vignette.
-
-```{r quick_setup, eval=F, echo=T}
-library(SIMplyBee)
-library(future)
-
-NWORKERS <- 8 # Choose a worker count within your allocated resources
-
-# Choose ONE backend (each plan() call replaces the previous plan)
-plan(sequential) # Default: no parallel workers
-# plan(multicore, workers = NWORKERS) # Forking, where supported
-# plan(multisession, workers = NWORKERS) # Separate local R processes (PSOCK)
-# plan(cluster, workers = c("machine1", "machine2")) # Remote R processes
-
-# Run your simulation here, then stop the parallel backend
-plan(sequential)
-```
 
 # Introduction
 
@@ -57,116 +36,110 @@ options to the `plan` function: no parallelisation (`sequential`), forking
 (`multicore`), PSOCK (`multisession`), and running R processes on multiple
 machines (`cluster`). You can read more about these options in the `future`
 documentation (<https://cran.r-project.org/web/packages/future/index.html>).
+Different options are best suited / viable on different systems.
 
-The two parallelisation controls have different roles:
+AlphaSimR, and hence SIMplyBee, also uses another parallelisation concept (OpenMP)
+to parallelise when creating new individuals (`SP$nThreads`). In SIMplyBee, creating
+individuals it usually not a bottle neck, but rather creating colonies and  `MultiColony`
+operations, hence parallelisation with `future` makes more sense. Do note, that the two
+parallelisations compete with eachother for core memory, so it's best to limit
+one of them to 1 core. If you're creating a small number of colonies with  a lot of individuals,
+then use `future::plan(sequential)`, which is the default so you don't have to do anything,
+and set `SP$nThreads` to more than one if available. On the other hand, if you plan to 
+simulate a lot of colonies, then we recommend you set `SP$nThreads <- 1L`
+and use one of the `future::plan()` that parallelises across colonies (see below).
 
-- `future::plan()` selects the backend and worker count for colony operations
-  implemented with `future_lapply()`.
-- `SP$nThreads` controls native threads in supported SIMplyBee and AlphaSimR
-  routines. Setting it does not create or configure future workers.
 
-When using multiple workers, `SP$nThreads <- 1L` is a useful starting point to
-avoid requesting multiple native threads inside each worker. Choose worker and
-thread counts together to fit the resources allocated to your simulation.
-The following setup is shown without execution during vignette rendering.
-
-```{r nThread_setup, eval=FALSE}
-library(package = "SIMplyBee")
-library(package = "future")
-
-# Set the desired number of workers within your allocated resources
-plan(multisession, workers = 8)
-# Alternatively, replace the preceding line with:
-# plan(multisession, workers = availableCores())
-
-founderGenomes <- quickHaplo(nInd = 30, nChr = 1, segSites = 100)
-SP <- SimParamBee$new(founderGenomes)
-SP$nThreads <- 1L # Native threads, independently of the future worker count
-
-# Run your simulation here, then release the workers
-plan(sequential)
-```
-
-Two mechanisms used by these backends are `FORK` and `PSOCK`.
+Two mechanisms used by the `future` parallel backends are `FORK` and `PSOCK`.
 The forking (`FORK`) creates subprocesses that share memory and objects with the
 parent process, which means it's very efficient! However, such parallelisation
-is not supported on Windows. On an HPC cluster, follow the site's policy and
-scheduler allocation when choosing a backend and worker count.
+is not supported on Windows and usually, also not on HPC clusters. However,
+do check with your HPC maintainer if such behaviour is allowed.
 
-The alternative, PSOCK, can be used on all system, but it works by creating a
+The alternative,`PSOCK`, can be used on all system, but it works by creating a
 separate R process for each subprocess (that communicate through sockets),
 meaning that the whole environment needs to be copied to each subprocess,
 creating a larger memory overhead. (adapted from
 <https://cran.r-project.org/web/packages/abn/vignettes/multiprocessing.html>).
 
+# Set-up instructions
+
+Here, we show how you should set-up the parallel back-end on different
+environments. These need to be set at the beginning of your simulation.
+The default plan `sequential` uses one core and is used by default, so that
+one doesn't need to be specified exclusively.
+As already mentioned, if running on a local Ubuntu machine, `multicore` is
+ the most efficient and quick option. When running on HPC, you will probably need to do with 
+ `multisession` option, which splits the work between workers, but does have a 
+ setting-up overhead. We hence do not recommend parallelising with low number of colonies 
+ (see benchmarking below).
+
+```{r quick_setup, eval=F, echo=T}
+library(SIMplyBee)
+library(future)
+library(parallelly)
+
+# Determine the number of available cores automatically
+NWORKERS <- parallelly::availableCores() 
+
+# Choose ONE backend (each plan() call replaces the previous plan)
+plan(sequential) # Default: no parallel workers
+plan(multicore, workers = NWORKERS) # Forking, where supported - allowed on Ubuntu machines (not on HPC)
+plan(multisession, workers = NWORKERS) # Separate local R processes (PSOCK), allowed on HPCs
+plan(cluster, workers = c("machine1", "machine2")) # Remote R processes
+
+SP$nThreads <- 1L # Limit OpenMP parallelisation when using future parallel backend
+options(future.globals.maxSize = 1024^3) # This should be around third to a half of the worker memory
+```
+
 We profiled the following piece of code using different parallelisation options.
 
 ```{r defining_testing_function}
 create_bee_colonies <- function() {
-  founderGenomes <- quickHaplo(nInd = 20, nChr = 1, segSites = 50)
-  SP <- SimParamBee$new(founderGenomes)
-  
-  basePop <- createVirginQueens(founderGenomes)
-  drones = createDrones(basePop, nInd = 100)
-  baseColonies <- createMultiColony(cross(basePop, drones = drones, crossPlan = "create"))
-  baseColonies <- buildUp(baseColonies, nWorkers = 10, nDrones = 10)
-  baseColonies <- supersede(baseColonies)
-  baseColonies <- cross(baseColonies, drones = drones, crossPlan = "create")
-  tmp = split(baseColonies)
+  apiary <- buildUp(apiary, simParamBee = SP)
+  tmp <- split(apiary, p = 0.3, simParamBee = SP)
+  apiary <- tmp$remnant
+  splits <- tmp$split
+  rm(tmp)
+
+  # Create a few virgin queens per colony, since csd homozygous ones are removed
+  virginQueens <- createVirginQueens(apiary, nInd = 5, simParamBee = SP)
+  hasVQ <- !sapply(virginQueens, FUN = is.null)
+  virginQueens <- lapply(virginQueens[hasVQ], FUN = function(pop) pop[1])
+  splits <- splits[hasVQ]
+  splits <- reQueen(splits, queen = mergePops(virginQueens), simParamBee = SP)
+  rm(virginQueens)
+
+  splits <- cross(splits, droneColonies = apiary[seq_len(nDPC)],
+                                    nDrones = 15, crossPlan = "create",
+                                    simParamBee = SP)
+
+  splits <- buildUp(splits, simParamBee = SP)
+  # Summer
+  half <- seq_len(floor(nCol / 2))
+  tmp <- swarm(apiary[half], simParamBee = SP)
+  rm(tmp)
+  tmp <- supersede(apiary[-half], simParamBee = SP)
+  rm(tmp)
+  # Autumn
+  apiary <- downsize(apiary, p = 0.5, simParamBee = SP)
 }
 ```
 
-We set up different parallelisation back-ends with the following code, where
-`ncores` was either 1, 8, or 16. All options were tested on an HPC cluster.
+The code above was profiled using either the `sequential` plan with 1 core,
+or a `multisession` plan with 4, 8, or 16 cores. The runtimes were benchmarked against the previous CRAN version
+of the SIMplyBee 0.4.1. All options were tested on an HPC cluster with SGE scheduler.
 
-```{r parallelisation_options, eval=F, echo=T}
-
-# First one - sequential
-plan(sequential)
-create_bee_colonies()
-
-# Second one - use forking
-nCores = 1
-plan(multicore, workers = nCores)
-create_bee_colonies()
+You can see that the current version 0.5.0 is significantly faster than the 0.4.1 version, which
+is due to code optimisation that has nothing to do with parallelisation.
+Additional benefit comes from parallelising the code, but the pay-off is larger with
+increasing the number of colonies. As explained above, this is due to the overhead time
+for setting up a parallele back-end that is independent of the number of colonies.
+With small number of colonies, this overhead time is large compared to the running time,
+while when the number of colonies increase, the overhead proportion decreases.
 
 
-# Third one - use PSOCK parallelisation
-plan(multisession, workers = nCores)
-create_bee_colonies()
+```{r time_memory_optimisation, echo=FALSE, out.width='100%'}
+#knitr::include_graphics("parallelisation_time_mean.png")
 ```
 
-Here are the results of running these different options. You can see that the
-time can be significantly improved when running on multiple cores. When running
-on a single core, setting up the parallelisation cluster via `FORK` or `PSOCK`
-actually adds some overhead time.
-
-```{r meanTime_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("parallelisation_time_mean.png")
-```
-
-```{r meanPCPU_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("parallelisation_cpu_mean.png")
-```
-
-```{r meanRSS_figure, echo=FALSE, out.width='100%'}
-knitr::include_graphics("parallelisation_memory_mean.png")
-```
-
-The functions that are currently explicitily parallelised:
-
--   L1: cross, pullCasteP, createCastePop
-
--   L2: supersede, split, swarm, setEvents, combine, setLocation, reQueen,
-    addCastePop, removeCastePop, resetEvents, collapse
-
--   L3: createMultiColony
-
-The following figure shows the benefit of parallelised (p, in blue) vs
-sequential/non-parallelised functions (np, in red) when run on a Linux machine
-with 16 cores. The figure shows the mean and the standard deviation across 10
-replicates.
-
-```{r functions_time, echo=FALSE, out.width='100%'}
-knitr::include_graphics("parallelisation_function_timings_unix.png")
-```

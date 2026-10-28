@@ -48,101 +48,33 @@ editor_options:
 - cross plans with drone producing colonies now hold one colony ID per drone
     (a colony ID can repeat), and `cross()` uses them as given: each entry is
     one drone (father). `createCrossPlan()` returns `nDrones` colony IDs per
-    virgin queen; hand-made plans must list a colony once per drone (for
+    virgin queen; hand-made plans must list a drone producing colony / drone father for every
+    worker that will be created (for
     example, `c("5", "5")` for two drones from colony 5). Previously, a plan
     listed the available colonies and `cross()` sampled `nDrones` from them.
-    Seeded results of crossing with drone producing colonies change.
-    `cross()` no longer evaluates `nDrones` itself (when `nDrones` is a
-    function, it was called a second time, so the number of drones in the
-    created cross plan and the number used for mating could differ);
-    `nDrones` is used only when creating the cross plan.
+    We do recommend creating cross plans through `createCrossPlan()` function and
+    not manually. 
 
 ## New features
 
 - `createCrossPlan()` and `cross()` gain `nDPC` and `DPCAllocation` to limit
     the number of drone producing colonies available to each virgin queen,
-    either a random or the nearest `nDPC` colonies (in the radius, for spatial
-    cross plans). Spatial cross plans now include all drone producing colonies
-    in the radius (previously at most 10, the default of `RANN::nn2()`).
+    either a random or the nearest `nDPC` colonies for spatial cross plans (still in the 
+    specified radius).
 
-- Both variance mappings now return `h2Queen`, `h2Worker`,
-    `h2WorkerGroup`, and `h2Colony`, with `NA` for zero total variance.
 
 - added functionality to map individual-level variance to colony-level variance and vice-versa
-  with functions 'mapIndToColonyVar' and 'mapColonyToIndVar'
+  with functions `mapIndToColonyVar()` and `mapColonyToIndVar()` functions. This is neccesary
+  to set the correct individual-level variance components that would result in the required
+  colony-level variance components.
 
 - Parallelised major colony operations with `future` and `future.apply`.
-    New vignette describes how to use parallelisation. This is an experimental feature!
+    New vignette describes how to use parallelisation. 
 
 ## Other
 
 - Added a shared `inst/REFERENCES.bib` bibliography for package help and
     vignettes.
-
--   MultiColony operations parallelised with `future` now send each worker
-    only its own chunk of colonies, instead of the whole MultiColony and the
-    calling function's environment (including, for example, all drones in
-    `cross()`). This reduces memory use on parallel workers, which could
-    previously be killed (e.g., by HPC memory limits) with errors such as
-    `FutureInterruptError` or `FutureLaunchError` ("error writing to
-    connection"). Only creating individuals (`createCastePop()` and the
-    virgin queens in `swarm()` and `supersede()`), `pullCastePop()`, and
-    `removeCastePop()` on MultiColony objects now run in parallel; cheap
-    bookkeeping steps (e.g., adding the fathers in `cross()`, `reQueen()`,
-    `setLocation()`, `setEvents()`, `combine()`, and pulling workers in
-    `swarm()` and `split()`) run sequentially. Seeded results after
-    `cross()` differ from previous development versions, since `cross()` no
-    longer consumes random numbers for setting up parallel streams.
-
--   MultiColony functions now send parallel workers much less data, which
-    reduces run time and memory use, especially with `plan(multisession)`:
-
-    -   `createCastePop()` (and hence `addWorkers()`, `addDrones()`,
-        `addVirginQueens()`, and `buildUp()`) sends each worker only the
-        colonies' queens (with their fathers) and a slimmed copy of
-        `SimParamBee` without the pedigree, recombination, and caste
-        records; the records of the new individuals are added to
-        `SimParamBee` in the main R session
-    -   `swarm()` and `supersede()` create the virgin queens on the
-        workers and return only the one that prevails in each colony
-        (a Colony uses the same code, without parallel workers)
-    -   `swarm()` and `split()` pull the workers in the main R session and
-        no longer send colonies to workers
-
-    Run times with 1000 colonies (16 chromosomes, 100 workers per colony),
-    sequential / `plan(multisession, workers = 4)`, in seconds:
-
-    | function                     | before      | now        |
-    |------------------------------|-------------|------------|
-    | `buildUp()`                  | 68.7 / 31.8 | 22.6 / 7.0 |
-    | `addVirginQueens(nInd = 10)` | 57.0 / 23.9 | 7.1 / 2.2  |
-    | `swarm()`                    | 36.0 / 35.3 | 11.3 / 6.7 |
-    | `split()`                    | 16.3 / 21.7 | 2.5 / 2.4  |
-    | `supersede()`                | 27.3 / 14.8 | 7.3 / 2.8  |
-    | `removeWorkers(p = 0.3)`     |             | 1.5 / 2.2  |
-
-    Parallel futures pay off when there is a lot of work per colony (e.g.,
-    creating many workers or virgin queens per colony), but not for every
-    function or simulation size (e.g., removing or pulling individuals is
-    faster sequentially), so we recommend timing a few steps of your
-    simulation with `plan(sequential)` and `plan(multisession)`.
-
--   MultiColony functions now use `future.apply::future_mapply()` instead of
-    `future_lapply()` to send colonies to parallel workers, which halved the
-    time of `buildUp()`, `swarm()`, and `supersede()` with
-    `plan(multisession)` and reduced the time of `removeCastePop()` and
-    `pullCastePop()` from about 10 to 2 seconds for 1000 colonies. Seeded
-    results are unchanged.
-
--   seeded results of `swarm()`, `split()`, and `supersede()` on a
-    MultiColony differ from previous versions, because random numbers are
-    now drawn in a different order (virgin queens are created and selected
-    on the parallel workers, and workers are pulled in the main R session);
-    `removeCastePop(p = 1)` on a MultiColony no longer consumes random
-    numbers. Sequential and parallel futures still give the same results.
-    Seeded results of `swarm()` and `supersede()` on a Colony also differ,
-    since the virgin queens are created from the queen's fathers in a random
-    order (as for a MultiColony).
 
 ## Bug fixes
 
@@ -150,19 +82,16 @@ editor_options:
     drones when all sampled drone producing colonies produce the same number
     of drones.
 
+- `createCrossPlan` capped the spatial matches to 10 drone producing colonies. Now,
+   it samples from all available drone producing colonies in the specified radius (
+    unless specifying the `nDPC` parameter)
+
 - `createCrossPlan()` with `drones` now assigns drones to the right virgin
     queens when IDs are not in sorted order, and uses `SimParamBee$nFathers`
     when `nDrones` is `NULL`.
 
 - `getFathers()` with `collapse = TRUE` on a MultiColony no longer fails.
 
--   with `plan(sequential)`, `createCastePop()` on a MultiColony no longer
-    duplicates caste records in `SimParamBee` and `createMultiColony()` no
-    longer advances the colony ID counter twice; sequential and parallel
-    futures now give the same seeded results
-
--   `supersede()` on a MultiColony no longer generates random numbers in
-    parallel workers without a declared parallel-safe seed
 
 -   `cross()` and `buildUp()` now pass `simParamBee` to all internal calls
     instead of relying on a global `SP` object
@@ -180,16 +109,6 @@ editor_options:
 -   `createCrossPlan()` with a single drone producing colony now samples
     only that colony; previously it sampled from colony IDs 1 to that
     colony's ID
-
--   `createCastePop()` on a MultiColony, and `swarm()` and `supersede()`
-    on a Colony or MultiColony, now record all created virgin queens,
-    including csd homozygous ones that are removed, as virgin queens in
-    `SimParamBee` (previously they were recorded as workers with
-    `plan(sequential)` or on a Colony)
-
--   recombination records (`SP$recHist`) of individuals created on a
-    MultiColony with parallel futures are now named by their IDs
-    (previously, e.g., `"1.341"` instead of `"341"`)
 
 - `calcQueensPHomBrood()`, `pHomBrood()`, and `nHomBrood()` now warn and
     return `NA_real_` for queenless colonies, allowing `MultiColony` summaries
